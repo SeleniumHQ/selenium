@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.actions.wheel_input &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.common.actions.wheel_input &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.actions.wheel_input </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -217,7 +217,7 @@
 
 
 <div class="viewcode-block" id="ScrollOrigin">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.ScrollOrigin">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.ScrollOrigin">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScrollOrigin</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">],</span> <span class="n">x_offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span> <span class="o">=</span> <span class="n">origin</span>
@@ -225,14 +225,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_y_offset</span> <span class="o">=</span> <span class="n">y_offset</span>
 
 <div class="viewcode-block" id="ScrollOrigin.from_element">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.ScrollOrigin.from_element">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.ScrollOrigin.from_element">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_element</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ScrollOrigin.from_viewport">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.ScrollOrigin.from_viewport">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.ScrollOrigin.from_viewport">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_viewport</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">"viewport"</span><span class="p">,</span> <span class="n">x_offset</span><span class="p">,</span> <span class="n">y_offset</span><span class="p">)</span></div>
@@ -253,7 +253,7 @@
 
 
 <div class="viewcode-block" id="WheelInput">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.WheelInput">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.WheelInput">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WheelInput</span><span class="p">(</span><span class="n">InputDevice</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -261,13 +261,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">interaction</span><span class="o">.</span><span class="n">WHEEL</span>
 
 <div class="viewcode-block" id="WheelInput.encode">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.WheelInput.encode">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.WheelInput.encode">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"actions"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="WheelInput.create_scroll">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.WheelInput.create_scroll">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.WheelInput.create_scroll">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_scroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta_x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta_y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">):</span>
             <span class="n">origin</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"element-6066-11e4-a52e-4f735466cecf"</span><span class="p">:</span> <span class="n">origin</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
@@ -285,7 +285,7 @@
 
 
 <div class="viewcode-block" id="WheelInput.create_pause">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.WheelInput.create_pause">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.wheel_input.html#selenium.webdriver.common.actions.wheel_input.WheelInput.create_pause">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pause_duration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_action</span><span class="p">({</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"pause"</span><span class="p">,</span> <span class="s2">"duration"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">pause_duration</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)})</span></div>
 </div>

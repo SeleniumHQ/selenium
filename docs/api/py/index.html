@@ -46,10 +46,10 @@
   
   
   
-    <title>Selenium Client Driver &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>Selenium Client Driver &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
-    <script src="_static/documentation_options.js?v=9464611f"></script>
+    <script src="_static/documentation_options.js?v=90a25026"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="#" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="#" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> Selenium Client Driver </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="#" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="#" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="#" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="#" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="#"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -242,8 +242,8 @@
 <tr class="row-odd"><td><p><strong>Docs</strong>:</p></td>
 <td><p><a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py">https://www.selenium.dev/selenium/docs/api/py</a></p></td>
 </tr>
-<tr class="row-even"><td><p><strong>API Docs</strong>:</p></td>
-<td><p><a class="reference external" href="api.html">api.html</a></p></td>
+<tr class="row-even"><td><p><strong>API Reference</strong>:</p></td>
+<td><p><a class="reference external" href="https://www.selenium.dev/selenium/docs/api/py/api.html">https://www.selenium.dev/selenium/docs/api/py/api.html</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -270,22 +270,29 @@
 </section>
 <section id="installing">
 <h2 id="installing">Installing<a class="headerlink" href="#installing" title="Link to this heading">¶</a></h2>
-<p>If you have <a class="reference external" href="https://pip.pypa.io/">pip</a> on your system, you can simply install or upgrade the Python bindings:</p>
+<p>Install or upgrade the Python bindings with <cite>pip &lt;https://pip.pypa.io/&gt;</cite>.</p>
+<p>Latest official release:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">selenium</span>
 </pre></div>
 </div>
-<p>You may want to consider using a <a class="reference external" href="https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments">virtual environment</a>
-to create isolated Python environments.</p>
+<p>Nightly development release:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="o">--</span><span class="n">index</span><span class="o">-</span><span class="n">url</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">test</span><span class="o">.</span><span class="n">pypi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">simple</span><span class="o">/</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">index</span><span class="o">-</span><span class="n">url</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pypi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">simple</span><span class="o">/</span> <span class="n">selenium</span>
+</pre></div>
+</div>
+<p>Note: you should consider using a
+<a class="reference external" href="https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments">virtual environment</a>
+to create an isolated Python environment for installation.</p>
 </section>
 <section id="drivers">
 <h2 id="drivers">Drivers<a class="headerlink" href="#drivers" title="Link to this heading">¶</a></h2>
 <p>Selenium requires a driver to interface with the chosen browser (chromedriver, edgedriver, geckodriver, etc).</p>
-<p>In older versions of Selenium, it was necessary to install and manage these drivers yourself. You had to make sure the driver
-executable was available on your system <cite>PATH</cite>, or specified explicitly in code. Modern versions of Selenium handle browser and
-driver installation for you with <a class="reference external" href="https://www.selenium.dev/documentation/selenium_manager">Selenium Manager</a>. You generally
-don’t have to worry about driver installation or configuration now that it’s done for you when you instantiate a WebDriver.
-Selenium Manager works with most supported platforms and browsers. If it doesn’t meet your needs, you can still install and
-specify browsers and drivers yourself.</p>
+<p>In older versions of Selenium, it was necessary to install and manage these drivers yourself. You had to make sure the
+driver executable was available on your system <cite>PATH</cite>, or specified explicitly in code. Modern versions of Selenium
+handle browser and driver installation for you with
+<a class="reference external" href="https://www.selenium.dev/documentation/selenium_manager">Selenium Manager</a>. You generally don’t have to worry about
+driver installation or configuration now that it’s done for you when you instantiate a WebDriver. Selenium Manager works
+with most supported platforms and browsers. If it doesn’t meet your needs, you can still install and specify browsers
+and drivers yourself.</p>
 <p>Links to some of the more popular browser drivers:</p>
 <table>
 <tbody>
@@ -348,8 +355,8 @@ specify browsers and drivers yourself.</p>
 </section>
 <section id="example-2">
 <h2 id="example-2">Example 2:<a class="headerlink" href="#example-2" title="Link to this heading">¶</a></h2>
-<p>Selenium WebDriver is often used as a basis for testing web applications. Here is a simple example using Python’s standard
-<a class="reference external" href="http://docs.python.org/3/library/unittest.html">unittest</a> library:</p>
+<p>Selenium WebDriver is often used as a basis for testing web applications. Here is a simple example using Python’s
+standard <a class="reference external" href="http://docs.python.org/3/library/unittest.html">unittest</a> library:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium</span><span class="w"> </span><span class="kn">import</span> <span class="n">webdriver</span>
 
@@ -372,8 +379,8 @@ specify browsers and drivers yourself.</p>
 <section id="selenium-grid-optional">
 <h2 id="selenium-grid-optional">Selenium Grid (optional)<a class="headerlink" href="#selenium-grid-optional" title="Link to this heading">¶</a></h2>
 <p>For local Selenium scripts, the Java server is not needed.</p>
-<p>To use Selenium remotely, you need to also run the Selenium grid.
-For information on running Selenium Grid: <a class="reference external" href="https://www.selenium.dev/documentation/grid/getting_started/">https://www.selenium.dev/documentation/grid/getting_started/</a></p>
+<p>To use Selenium remotely, you need to also run a Selenium Grid. For information on running Selenium Grid:
+<a class="reference external" href="https://www.selenium.dev/documentation/grid/getting_started/">https://www.selenium.dev/documentation/grid/getting_started/</a></p>
 <p>To use Remote WebDriver see: <a class="reference external" href="https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python">https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/?tab=python</a></p>
 </section>
 <section id="use-the-source-luke">
@@ -391,32 +398,31 @@ For information on running Selenium Grid: <a class="reference external" href="ht
 <h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
-<li><p>Fork the selenium repo and clone it locally</p></li>
+<li><p>Fork the selenium repo</p></li>
+<li><p>Clone your fork locally</p></li>
 <li><dl class="simple">
 <dt>Create a branch for your work</dt><dd><ul>
-<li><p>Run: <cite>git checkout -b my-cool-branch-name</cite></p></li>
+<li><p><cite>git checkout -b my-cool-branch-name</cite></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>Create a virtual environment and install tox</dt><dd><ul>
-<li><p>Run: <cite>python -m venv venv &amp;&amp; source venv/bin/activate &amp;&amp; pip install tox</cite></p></li>
+<li><p><cite>python -m venv venv &amp;&amp; source venv/bin/activate &amp;&amp; pip install tox</cite></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><p>Make your changes</p></li>
-<li><p>Run: <cite>tox -e linting</cite></p></li>
 <li><dl class="simple">
-<dt>If tox exits <cite>0</cite>, commit and push. Otherwise, fix the newly introduced style violations</dt><dd><ul>
-<li><p><cite>flake8</cite> requires manual fixes</p></li>
-<li><p><cite>black</cite> will rewrite the violations automatically, however the files are unstaged and should be staged again</p></li>
-<li><p><cite>isort</cite> will rewrite the violations automatically, however the files are unstaged and should be staged again</p></li>
+<dt>Run the linter/formatter</dt><dd><ul>
+<li><p><cite>tox -e linting</cite></p></li>
 </ul>
 </dd>
 </dl>
 </li>
+<li><p>If tox exits <cite>0</cite>, commit and push. Otherwise, fix the newly introduced style violations</p></li>
 <li><p>Submit a Pull Request</p></li>
 </ul>
 </div></blockquote>

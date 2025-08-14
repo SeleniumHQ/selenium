@@ -164,23 +164,42 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#getSnapshot()" class="member-name-link">getSnapshot</a>()</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#getAvailableNodes()" class="member-name-link">getAvailableNodes</a>()</code></div>
+<div class="col-last even-row-color">
+<div class="block">Gets all available nodes that are not DOWN or DRAINING.</div>
+</div>
+<div class="col-first odd-row-color"><code>abstract <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#getSnapshot()" class="member-name-link">getSnapshot</a>()</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Gets a snapshot of all node statuses currently in the grid model.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> with parameters of type <a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-first even-row-color"><code>abstract void</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#add(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">add</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;node)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-last even-row-color">
+<div class="block">Adds a node to the grid model, typically starting with DOWN availability until health checks
+ pass.</div>
+</div>
+<div class="col-first odd-row-color"><code>abstract void</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#refresh(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">refresh</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">Refreshes a node's status in the grid model.</div>
+</div>
 <div class="col-first even-row-color"><code>void</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#touch(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">touch</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;nodeStatus)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-second even-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#register(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">register</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Register a node status received from an event.</div>
+</div>
+<div class="col-first odd-row-color"><code>abstract void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#touch(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">touch</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;nodeStatus)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Updates the timestamp for a node to prevent it from being considered stale.</div>
+</div>
 </div>
 </section>
 </li>
@@ -195,6 +214,30 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalDistributor.</span><code><a href="../../distributor/local/LocalDistributor.html#getAvailableNodes()" class="member-name-link">getAvailableNodes</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#getAvailableNodes()" class="member-name-link">getAvailableNodes</a>()</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#getSnapshot()" class="member-name-link">getSnapshot</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#add(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">add</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;node)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#refresh(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">refresh</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>void</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#register(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">register</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>void</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#touch(org.openqa.selenium.grid.data.NodeStatus)" class="member-name-link">touch</a><wbr>(<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;nodeStatus)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>

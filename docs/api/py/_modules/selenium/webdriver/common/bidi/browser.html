@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.browser &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.common.bidi.browser &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.browser </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -210,11 +210,15 @@
 <span class="c1"># under the License.</span>
 
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserPromptHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.proxy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Proxy</span>
 
 
 <div class="viewcode-block" id="ClientWindowState">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowState">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowState">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ClientWindowState</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents a window state."""</span>
 
@@ -228,7 +232,7 @@
 
 
 <div class="viewcode-block" id="ClientWindowInfo">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ClientWindowInfo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents a client window information."""</span>
 
@@ -251,7 +255,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="n">active</span>
 
 <div class="viewcode-block" id="ClientWindowInfo.get_state">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_state">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Gets the state of the client window.</span>
 
@@ -263,7 +267,7 @@
 
 
 <div class="viewcode-block" id="ClientWindowInfo.get_client_window">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_client_window">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_client_window">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_client_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Gets the client window identifier.</span>
 
@@ -275,7 +279,7 @@
 
 
 <div class="viewcode-block" id="ClientWindowInfo.get_width">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_width">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_width">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Gets the width of the client window.</span>
 
@@ -287,7 +291,7 @@
 
 
 <div class="viewcode-block" id="ClientWindowInfo.get_height">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_height">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_height">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Gets the height of the client window.</span>
 
@@ -299,7 +303,7 @@
 
 
 <div class="viewcode-block" id="ClientWindowInfo.get_x">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_x">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_x">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Gets the x coordinate of the client window.</span>
 
@@ -311,7 +315,7 @@
 
 
 <div class="viewcode-block" id="ClientWindowInfo.get_y">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_y">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_y">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Gets the y coordinate of the client window.</span>
 
@@ -323,7 +327,7 @@
 
 
 <div class="viewcode-block" id="ClientWindowInfo.is_active">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.is_active">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.is_active">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Checks if the client window is active.</span>
 
@@ -335,7 +339,7 @@
 
 
 <div class="viewcode-block" id="ClientWindowInfo.from_dict">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.from_dict">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.ClientWindowInfo.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ClientWindowInfo"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a ClientWindowInfo instance from a dictionary.</span>
@@ -399,7 +403,7 @@
 
 
 <div class="viewcode-block" id="Browser">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Browser</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    BiDi implementation of the browser module.</span>
@@ -409,20 +413,42 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
 
 <div class="viewcode-block" id="Browser.create_user_context">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.create_user_context">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_user_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.create_user_context">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_user_context</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">accept_insecure_certs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">proxy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Proxy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unhandled_prompt_behavior</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UserPromptHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a new user context.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">            accept_insecure_certs: Optional flag to accept insecure TLS certificates</span>
+<span class="sd">            proxy: Optional proxy configuration for the user context</span>
+<span class="sd">            unhandled_prompt_behavior: Optional configuration for handling user prompts</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">        -------</span>
 <span class="sd">            str: The ID of the created user context.</span>
 <span class="sd">        """</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"browser.createUserContext"</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">accept_insecure_certs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"acceptInsecureCerts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">accept_insecure_certs</span>
+
+        <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"proxy"</span><span class="p">]</span> <span class="o">=</span> <span class="n">proxy</span><span class="o">.</span><span class="n">to_bidi_dict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">unhandled_prompt_behavior</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"unhandledPromptBehavior"</span><span class="p">]</span> <span class="o">=</span> <span class="n">unhandled_prompt_behavior</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"browser.createUserContext"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="s2">"userContext"</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Browser.get_user_contexts">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.get_user_contexts">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.get_user_contexts">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_user_contexts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Gets all user contexts.</span>
 
@@ -435,7 +461,7 @@
 
 
 <div class="viewcode-block" id="Browser.remove_user_context">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.remove_user_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.remove_user_context">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_user_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_context_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Removes a user context.</span>
 
@@ -455,7 +481,7 @@
 
 
 <div class="viewcode-block" id="Browser.get_client_windows">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.get_client_windows">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.get_client_windows">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_client_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ClientWindowInfo</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Gets all client windows.</span>
 

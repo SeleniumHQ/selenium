@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.actions.key_input &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.common.actions.key_input &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.actions.key_input </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -214,7 +214,7 @@
 
 
 <div class="viewcode-block" id="KeyInput">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">KeyInput</span><span class="p">(</span><span class="n">InputDevice</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -222,25 +222,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">interaction</span><span class="o">.</span><span class="n">KEY</span>
 
 <div class="viewcode-block" id="KeyInput.encode">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput.encode">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput.encode">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">"actions"</span><span class="p">:</span> <span class="p">[</span><span class="n">acts</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">for</span> <span class="n">acts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">]}</span></div>
 
 
 <div class="viewcode-block" id="KeyInput.create_key_down">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput.create_key_down">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput.create_key_down">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">TypingInteraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"keyDown"</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="KeyInput.create_key_up">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput.create_key_up">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput.create_key_up">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_key_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">TypingInteraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"keyUp"</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="KeyInput.create_pause">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput.create_pause">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.KeyInput.create_pause">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pause_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">Pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pause_duration</span><span class="p">))</span></div>
 </div>
@@ -248,7 +248,7 @@
 
 
 <div class="viewcode-block" id="TypingInteraction">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.TypingInteraction">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.TypingInteraction">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TypingInteraction</span><span class="p">(</span><span class="n">Interaction</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
@@ -256,7 +256,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
 
 <div class="viewcode-block" id="TypingInteraction.encode">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.TypingInteraction.encode">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.key_input.html#selenium.webdriver.common.actions.key_input.TypingInteraction.encode">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">}</span></div>
 </div>

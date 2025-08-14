@@ -141,11 +141,11 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createArgs()" class="member-name-link">createArgs</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)" class="member-name-link">createDriverService</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;exe,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)" class="member-name-link">createDriverService</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;exe,
  int&nbsp;port,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;args,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;environment)</code></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;args,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;environment)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadSystemProperties()" class="member-name-link">loadSystemProperties</a>()</code></div>
@@ -157,7 +157,7 @@ loadScripts(document, 'script');</script>
  capabilities</code>.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAllowedListIps(java.lang.String)" class="member-name-link">withAllowedListIps</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowedListIps)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAllowedListIps(java.lang.String)" class="member-name-link">withAllowedListIps</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowedListIps)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configures the comma-separated list of remote IPv4 addresses which are allowed to connect to
  the driver server.</div>
@@ -173,12 +173,12 @@ loadScripts(document, 'script');</script>
 <div class="block">Allows the driver to be used with potentially incompatible versions of the browser.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withLoglevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)" class="member-name-link">withLoglevel</a><wbr>(<a href="../chromium/ChromiumDriverLogLevel.html" title="enum class in org.openqa.selenium.chromium">ChromiumDriverLogLevel</a>&nbsp;logLevel)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withLoglevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)" class="member-name-link">withLoglevel</a><wbr>(@Nullable <a href="../chromium/ChromiumDriverLogLevel.html" title="enum class in org.openqa.selenium.chromium">ChromiumDriverLogLevel</a>&nbsp;logLevel)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configures the driver server log level.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withReadableTimestamp(java.lang.Boolean)" class="member-name-link">withReadableTimestamp</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;readableTimestamp)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withReadableTimestamp(java.lang.Boolean)" class="member-name-link">withReadableTimestamp</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;readableTimestamp)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configures the format of the logging for the driver server.</div>
 </div>
@@ -272,7 +272,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withLoglevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)">
 <h3>withLoglevel</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></span>&nbsp;<span class="element-name">withLoglevel</span><wbr><span class="parameters">(<a href="../chromium/ChromiumDriverLogLevel.html" title="enum class in org.openqa.selenium.chromium">ChromiumDriverLogLevel</a>&nbsp;logLevel)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></span>&nbsp;<span class="element-name">withLoglevel</span><wbr><span class="parameters">(@Nullable <a href="../chromium/ChromiumDriverLogLevel.html" title="enum class in org.openqa.selenium.chromium">ChromiumDriverLogLevel</a>&nbsp;logLevel)</span></div>
 <div class="block">Configures the driver server log level.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -311,7 +311,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withAllowedListIps(java.lang.String)">
 <h3>withAllowedListIps</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></span>&nbsp;<span class="element-name">withAllowedListIps</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowedListIps)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></span>&nbsp;<span class="element-name">withAllowedListIps</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowedListIps)</span></div>
 <div class="block">Configures the comma-separated list of remote IPv4 addresses which are allowed to connect to
  the driver server.</div>
 <dl class="notes">
@@ -325,7 +325,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withReadableTimestamp(java.lang.Boolean)">
 <h3>withReadableTimestamp</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></span>&nbsp;<span class="element-name">withReadableTimestamp</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;readableTimestamp)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></span>&nbsp;<span class="element-name">withReadableTimestamp</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;readableTimestamp)</span></div>
 <div class="block">Configures the format of the logging for the driver server.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -358,11 +358,11 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)">
 <h3>createDriverService</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a></span>&nbsp;<span class="element-name">createDriverService</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;exe,
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a></span>&nbsp;<span class="element-name">createDriverService</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;exe,
  int&nbsp;port,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;args,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;environment)</span></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;args,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;environment)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../remote/service/DriverService.Builder.html#createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)">createDriverService</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="EdgeDriverService.html" title="class in org.openqa.selenium.edge">EdgeDriverService</a>,<wbr><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&gt;</code></dd>

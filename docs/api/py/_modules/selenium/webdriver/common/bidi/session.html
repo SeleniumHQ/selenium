@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.session &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.common.bidi.session &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.session </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -209,17 +209,109 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
 
 
+<div class="viewcode-block" id="UserPromptHandlerType">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.UserPromptHandlerType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserPromptHandlerType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Represents the behavior of the user prompt handler."""</span>
+
+    <span class="n">ACCEPT</span> <span class="o">=</span> <span class="s2">"accept"</span>
+    <span class="n">DISMISS</span> <span class="o">=</span> <span class="s2">"dismiss"</span>
+    <span class="n">IGNORE</span> <span class="o">=</span> <span class="s2">"ignore"</span>
+
+    <span class="n">VALID_TYPES</span> <span class="o">=</span> <span class="p">{</span><span class="n">ACCEPT</span><span class="p">,</span> <span class="n">DISMISS</span><span class="p">,</span> <span class="n">IGNORE</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="UserPromptHandler">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.UserPromptHandler">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserPromptHandler</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Represents the configuration of the user prompt handler."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">alert</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">before_unload</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">confirm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialize UserPromptHandler.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        -----------</span>
+<span class="sd">            alert: Handler type for alert prompts</span>
+<span class="sd">            before_unload: Handler type for beforeUnload prompts</span>
+<span class="sd">            confirm: Handler type for confirm prompts</span>
+<span class="sd">            default: Default handler type for all prompts</span>
+<span class="sd">            file: Handler type for file picker prompts</span>
+<span class="sd">            prompt: Handler type for prompt dialogs</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">        ------</span>
+<span class="sd">            ValueError: If any handler type is not valid</span>
+<span class="sd">        """</span>
+        <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">"alert"</span><span class="p">,</span> <span class="n">alert</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"before_unload"</span><span class="p">,</span> <span class="n">before_unload</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"confirm"</span><span class="p">,</span> <span class="n">confirm</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"default"</span><span class="p">,</span> <span class="n">default</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"file"</span><span class="p">,</span> <span class="n">file</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"prompt"</span><span class="p">,</span> <span class="n">prompt</span><span class="p">),</span>
+        <span class="p">]:</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">UserPromptHandlerType</span><span class="o">.</span><span class="n">VALID_TYPES</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Invalid </span><span class="si">{</span><span class="n">field_name</span><span class="si">}</span><span class="s2"> handler type: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">. Must be one of </span><span class="si">{</span><span class="n">UserPromptHandlerType</span><span class="o">.</span><span class="n">VALID_TYPES</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">alert</span> <span class="o">=</span> <span class="n">alert</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_unload</span> <span class="o">=</span> <span class="n">before_unload</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">confirm</span> <span class="o">=</span> <span class="n">confirm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">prompt</span>
+
+<div class="viewcode-block" id="UserPromptHandler.to_dict">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.UserPromptHandler.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Convert the UserPromptHandler to a dictionary for BiDi protocol.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        -------</span>
+<span class="sd">            Dict[str, str]: Dictionary representation suitable for BiDi protocol</span>
+<span class="sd">        """</span>
+        <span class="n">field_mapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"alert"</span><span class="p">:</span> <span class="s2">"alert"</span><span class="p">,</span>
+            <span class="s2">"before_unload"</span><span class="p">:</span> <span class="s2">"beforeUnload"</span><span class="p">,</span>
+            <span class="s2">"confirm"</span><span class="p">:</span> <span class="s2">"confirm"</span><span class="p">,</span>
+            <span class="s2">"default"</span><span class="p">:</span> <span class="s2">"default"</span><span class="p">,</span>
+            <span class="s2">"file"</span><span class="p">:</span> <span class="s2">"file"</span><span class="p">,</span>
+            <span class="s2">"prompt"</span><span class="p">:</span> <span class="s2">"prompt"</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">dict_key</span> <span class="ow">in</span> <span class="n">field_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">dict_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="Session">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.Session">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.Session">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Session</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
 
 <div class="viewcode-block" id="Session.subscribe">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.Session.subscribe">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.Session.subscribe">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">events</span><span class="p">,</span> <span class="n">browsing_contexts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">"events"</span><span class="p">:</span> <span class="n">events</span><span class="p">,</span>
@@ -232,7 +324,7 @@
 
 
 <div class="viewcode-block" id="Session.unsubscribe">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.Session.unsubscribe">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.Session.unsubscribe">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">unsubscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">events</span><span class="p">,</span> <span class="n">browsing_contexts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">"events"</span><span class="p">:</span> <span class="n">events</span><span class="p">,</span>
@@ -245,7 +337,7 @@
 
 
 <div class="viewcode-block" id="Session.status">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.Session.status">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.Session.status">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        The session.status command returns information about the remote end's readiness</span>

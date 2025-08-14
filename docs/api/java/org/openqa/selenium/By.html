@@ -95,7 +95,8 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="By.ByClassName.html" title="class in org.openqa.selenium">By.ByClassName</a></code>, <code><a href="By.ByCssSelector.html" title="class in org.openqa.selenium">By.ByCssSelector</a></code>, <code><a href="By.ById.html" title="class in org.openqa.selenium">By.ById</a></code>, <code><a href="By.ByLinkText.html" title="class in org.openqa.selenium">By.ByLinkText</a></code>, <code><a href="By.ByName.html" title="class in org.openqa.selenium">By.ByName</a></code>, <code><a href="By.ByPartialLinkText.html" title="class in org.openqa.selenium">By.ByPartialLinkText</a></code>, <code><a href="By.ByTagName.html" title="class in org.openqa.selenium">By.ByTagName</a></code>, <code><a href="By.ByXPath.html" title="class in org.openqa.selenium">By.ByXPath</a></code>, <code><a href="support/pagefactory/ByAll.html" title="class in org.openqa.selenium.support.pagefactory">ByAll</a></code>, <code><a href="support/pagefactory/ByChained.html" title="class in org.openqa.selenium.support.pagefactory">ByChained</a></code>, <code><a href="support/ByIdOrName.html" title="class in org.openqa.selenium.support">ByIdOrName</a></code>, <code><a href="support/locators/RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">By</span>
+<div class="type-signature"><span class="annotations">@NullMarked
+</span><span class="modifiers">public abstract class </span><span class="element-name type-name-label">By</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">Mechanism used to locate elements within a document. In order to create your own locating
  mechanisms, it is possible to subclass this class and override the protected methods as required,
@@ -187,7 +188,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Find elements via the driver's underlying W3C Selector engine.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;o)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;o)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findElement(org.openqa.selenium.SearchContext)" class="member-name-link">findElement</a><wbr>(<a href="SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code></div>
@@ -402,7 +403,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="equals(java.lang.Object)">
 <h3>equals</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">equals</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;o)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">equals</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;o)</span></div>
 <dl class="notes">
 <dt>Overrides:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></dd>

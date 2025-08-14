@@ -139,41 +139,52 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createArgs()" class="member-name-link">createArgs</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)" class="member-name-link">createDriverService</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;exe,
- int&nbsp;port,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;args,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;environment)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connectToExisting(int)" class="member-name-link">connectToExisting</a><wbr>(int&nbsp;marionettePort)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Configures geckodriver to connect to an existing Firefox instance via the specified
+ Marionette port.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createArgs()" class="member-name-link">createArgs</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadSystemProperties()" class="member-name-link">loadSystemProperties</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)" class="member-name-link">createDriverService</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;exe,
+ int&nbsp;port,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;args,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;environment)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#score(org.openqa.selenium.Capabilities)" class="member-name-link">score</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadSystemProperties()" class="member-name-link">loadSystemProperties</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#score(org.openqa.selenium.Capabilities)" class="member-name-link">score</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Provides a measure of how strongly this <a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service"><code>DriverService</code></a> supports the given <code>
  capabilities</code>.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAllowHosts(java.lang.String)" class="member-name-link">withAllowHosts</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowHosts)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withAllowHosts(java.lang.String)" class="member-name-link">withAllowHosts</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowHosts)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Values of the Host header to allow for incoming requests.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)" class="member-name-link">withLogLevel</a><wbr>(<a href="FirefoxDriverLogLevel.html" title="enum class in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withProfileRoot(java.io.File)" class="member-name-link">withProfileRoot</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;root)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)" class="member-name-link">withLogLevel</a><wbr>(@Nullable <a href="FirefoxDriverLogLevel.html" title="enum class in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withProfileRoot(java.io.File)" class="member-name-link">withProfileRoot</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;root)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">This is necessary when you do not have permissions to write to the default directory.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withTruncatedLogs(java.lang.Boolean)" class="member-name-link">withTruncatedLogs</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;truncate)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withTruncatedLogs(java.lang.Boolean)" class="member-name-link">withTruncatedLogs</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;truncate)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withWebSocketPort(java.lang.Integer)" class="member-name-link">withWebSocketPort</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;websocketPort)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Configures the WebSocket port for BiDi.</div>
+</div>
 </div>
 </div>
 </div>
@@ -228,7 +239,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withAllowHosts(java.lang.String)">
 <h3>withAllowHosts</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withAllowHosts</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowHosts)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withAllowHosts</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;allowHosts)</span></div>
 <div class="block">Values of the Host header to allow for incoming requests.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -241,7 +252,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)">
 <h3>withLogLevel</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withLogLevel</span><wbr><span class="parameters">(<a href="FirefoxDriverLogLevel.html" title="enum class in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withLogLevel</span><wbr><span class="parameters">(@Nullable <a href="FirefoxDriverLogLevel.html" title="enum class in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>logLevel</code> - which log events to record.</dd>
@@ -253,7 +264,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withTruncatedLogs(java.lang.Boolean)">
 <h3>withTruncatedLogs</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withTruncatedLogs</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;truncate)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withTruncatedLogs</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;truncate)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>truncate</code> - whether to truncate long lines in the log. Log lines are truncated by
@@ -266,11 +277,40 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="withProfileRoot(java.io.File)">
 <h3>withProfileRoot</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withProfileRoot</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;root)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withProfileRoot</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;root)</span></div>
 <div class="block">This is necessary when you do not have permissions to write to the default directory.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>root</code> - location to store temporary profiles Defaults to the system temporary directory.</dd>
+<dt>Returns:</dt>
+<dd>A self reference.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="connectToExisting(int)">
+<h3>connectToExisting</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">connectToExisting</span><wbr><span class="parameters">(int&nbsp;marionettePort)</span></div>
+<div class="block">Configures geckodriver to connect to an existing Firefox instance via the specified
+ Marionette port.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>marionettePort</code> - The port where Marionette is listening on the existing Firefox
+     instance.</dd>
+<dt>Returns:</dt>
+<dd>A self reference.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="withWebSocketPort(java.lang.Integer)">
+<h3>withWebSocketPort</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></span>&nbsp;<span class="element-name">withWebSocketPort</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;websocketPort)</span></div>
+<div class="block">Configures the WebSocket port for BiDi. A value of 0 will automatically allocate a free port.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>websocketPort</code> - The port to use for WebSocket communication, or 0 for automatic
+     allocation.</dd>
 <dt>Returns:</dt>
 <dd>A self reference.</dd>
 </dl>
@@ -299,11 +339,11 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)">
 <h3>createDriverService</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a></span>&nbsp;<span class="element-name">createDriverService</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;exe,
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a></span>&nbsp;<span class="element-name">createDriverService</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;exe,
  int&nbsp;port,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;args,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;environment)</span></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;args,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;environment)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../remote/service/DriverService.Builder.html#createDriverService(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)">createDriverService</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>,<wbr><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a>&gt;</code></dd>

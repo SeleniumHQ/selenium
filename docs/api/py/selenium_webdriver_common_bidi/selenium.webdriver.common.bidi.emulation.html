@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>selenium.webdriver.common.bidi.emulation &#8212; Selenium 4.36.0.202508121825 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
+    <script src="../_static/documentation_options.js?v=90a25026"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Selenium 4.36.0.202508121825 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
+          <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.emulation </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#selenium-webdriver-common-bidi-selenium-webdriver-common-bidi-emulation--page-root" class="md-nav__link">selenium.webdriver.common.bidi.emulation</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.latitude" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates.latitude</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.longitude" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates.longitude</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.accuracy" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates.accuracy</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.altitude" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates.altitude</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.altitude_accuracy" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates.altitude_accuracy</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.heading" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates.heading</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.speed" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates.speed</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.to_dict" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationCoordinates.to_dict()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationPositionError" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationPositionError</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationPositionError.TYPE_POSITION_UNAVAILABLE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationPositionError.TYPE_POSITION_UNAVAILABLE</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.GeolocationPositionError.to_dict" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GeolocationPositionError.to_dict()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.Emulation" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Emulation</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.emulation.Emulation.set_geolocation_override" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Emulation.set_geolocation_override()</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.rst.txt">Show Source</a> </li>
+
+<li id="searchbox" class="md-nav__item"></li>
+
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="module-selenium.webdriver.common.bidi.emulation">
+<span id="selenium-webdriver-common-bidi-emulation"></span><h1 id="selenium-webdriver-common-bidi-selenium-webdriver-common-bidi-emulation--page-root">selenium.webdriver.common.bidi.emulation<a class="headerlink" href="#selenium-webdriver-common-bidi-selenium-webdriver-common-bidi-emulation--page-root" title="Link to this heading">¶</a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.emulation.Emulation" title="selenium.webdriver.common.bidi.emulation.Emulation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Emulation</span></code></a>(conn)</p></td>
+<td><p>BiDi implementation of the emulation module.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates" title="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeolocationCoordinates</span></code></a>(latitude, longitude)</p></td>
+<td><p>Represents geolocation coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.bidi.emulation.GeolocationPositionError" title="selenium.webdriver.common.bidi.emulation.GeolocationPositionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeolocationPositionError</span></code></a>([type])</p></td>
+<td><p>Represents a geolocation position error.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.emulation.</span></span><span class="sig-name descname"><span class="pre">GeolocationCoordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accuracy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitude_accuracy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heading</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/emulation.html#GeolocationCoordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates" title="Link to this definition">¶</a></dt>
+<dd><p>Represents geolocation coordinates.</p>
+<p>Initialize GeolocationCoordinates.</p>
+<section id="parameters">
+<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><p>latitude: Latitude coordinate (-90.0 to 90.0).
+longitude: Longitude coordinate (-180.0 to 180.0).
+accuracy: Accuracy in meters (&gt;= 0.0), defaults to 1.0.
+altitude: Altitude in meters or None, defaults to None.
+altitude_accuracy: Altitude accuracy in meters (&gt;= 0.0) or None, defaults to None.
+heading: Heading in degrees (0.0 to 360.0) or None, defaults to None.
+speed: Speed in meters per second (&gt;= 0.0) or None, defaults to None.</p>
+</div></blockquote>
+</section>
+<section id="raises">
+<h2 id="raises">Raises:<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><p>ValueError: If coordinates are out of valid range or if altitude_accuracy is provided without altitude.</p>
+</div></blockquote>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.latitude">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">latitude</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.latitude" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.longitude">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">longitude</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.longitude" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.accuracy">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accuracy</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.accuracy" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.altitude">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">altitude</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.altitude" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.altitude_accuracy">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">altitude_accuracy</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.altitude_accuracy" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.heading">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">heading</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.heading" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.speed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">speed</span></span><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.speed" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/emulation.html#GeolocationCoordinates.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.to_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</section>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationPositionError">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.emulation.</span></span><span class="sig-name descname"><span class="pre">GeolocationPositionError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'positionUnavailable'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/emulation.html#GeolocationPositionError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationPositionError" title="Link to this definition">¶</a></dt>
+<dd><p>Represents a geolocation position error.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationPositionError.TYPE_POSITION_UNAVAILABLE">
+<span class="sig-name descname"><span class="pre">TYPE_POSITION_UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'positionUnavailable'</span></em><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationPositionError.TYPE_POSITION_UNAVAILABLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.GeolocationPositionError.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/emulation.html#GeolocationPositionError.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.GeolocationPositionError.to_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.Emulation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.bidi.emulation.</span></span><span class="sig-name descname"><span class="pre">Emulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/emulation.html#Emulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.Emulation" title="Link to this definition">¶</a></dt>
+<dd><p>BiDi implementation of the emulation module.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.emulation.Emulation.set_geolocation_override">
+<span class="sig-name descname"><span class="pre">set_geolocation_override</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates" title="selenium.webdriver.common.bidi.emulation.GeolocationCoordinates"><span class="pre">GeolocationCoordinates</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#selenium.webdriver.common.bidi.emulation.GeolocationPositionError" title="selenium.webdriver.common.bidi.emulation.GeolocationPositionError"><span class="pre">GeolocationPositionError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contexts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_contexts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/emulation.html#Emulation.set_geolocation_override"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.emulation.Emulation.set_geolocation_override" title="Link to this definition">¶</a></dt>
+<dd><p>Set geolocation override for the given contexts or user contexts.</p>
+<section id="id1">
+<h2 id="id1">Parameters:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><p>coordinates: Geolocation coordinates to emulate, or None.
+error: Geolocation error to emulate, or None.
+contexts: List of browsing context IDs to apply the override to.
+user_contexts: List of user context IDs to apply the override to.</p>
+</div></blockquote>
+</section>
+<section id="id2">
+<h2 id="id2">Raises:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><dl class="simple">
+<dt>ValueError: If both coordinates and error are provided, or if both contexts</dt><dd><p>and user_contexts are provided, or if neither contexts nor
+user_contexts are provided.</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</dd></dl>
+</dd></dl>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2009-2025 Software Freedom Conservancy.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

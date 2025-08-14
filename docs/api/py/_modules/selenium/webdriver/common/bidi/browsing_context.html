@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.browsing_context &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.common.bidi.browsing_context &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.browsing_context </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -209,6 +209,8 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
@@ -217,7 +219,7 @@
 
 
 <div class="viewcode-block" id="ReadinessState">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.ReadinessState">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.ReadinessState">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReadinessState</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents the stage of document loading at which a navigation command will return."""</span>
 
@@ -228,7 +230,7 @@
 
 
 <div class="viewcode-block" id="UserPromptType">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptType">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UserPromptType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents the possible user prompt types."""</span>
 
@@ -240,7 +242,7 @@
 
 
 <div class="viewcode-block" id="NavigationInfo">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationInfo">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationInfo">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NavigationInfo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Provides details of an ongoing navigation."""</span>
 
@@ -257,7 +259,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
 
 <div class="viewcode-block" id="NavigationInfo.from_json">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationInfo.from_json">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationInfo.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"NavigationInfo"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a NavigationInfo instance from a dictionary.</span>
@@ -292,7 +294,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContextInfo">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BrowsingContextInfo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents the properties of a navigable."""</span>
 
@@ -315,7 +317,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client_window</span> <span class="o">=</span> <span class="n">client_window</span>
 
 <div class="viewcode-block" id="BrowsingContextInfo.from_json">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo.from_json">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextInfo.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"BrowsingContextInfo"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a BrowsingContextInfo instance from a dictionary.</span>
@@ -378,7 +380,7 @@
 
 
 <div class="viewcode-block" id="DownloadWillBeginParams">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DownloadWillBeginParams</span><span class="p">(</span><span class="n">NavigationInfo</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Parameters for the downloadWillBegin event."""</span>
 
@@ -394,7 +396,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">suggested_filename</span> <span class="o">=</span> <span class="n">suggested_filename</span>
 
 <div class="viewcode-block" id="DownloadWillBeginParams.from_json">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams.from_json">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DownloadWillBeginParams"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a DownloadWillBeginParams instance from a dictionary.</span>
@@ -439,7 +441,7 @@
 
 
 <div class="viewcode-block" id="UserPromptOpenedParams">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UserPromptOpenedParams</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Parameters for the userPromptOpened event."""</span>
 
@@ -458,7 +460,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span> <span class="o">=</span> <span class="n">default_value</span>
 
 <div class="viewcode-block" id="UserPromptOpenedParams.from_json">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams.from_json">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptOpenedParams.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"UserPromptOpenedParams"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a UserPromptOpenedParams instance from a dictionary.</span>
@@ -503,7 +505,7 @@
 
 
 <div class="viewcode-block" id="UserPromptClosedParams">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UserPromptClosedParams</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Parameters for the userPromptClosed event."""</span>
 
@@ -520,7 +522,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">user_text</span> <span class="o">=</span> <span class="n">user_text</span>
 
 <div class="viewcode-block" id="UserPromptClosedParams.from_json">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams.from_json">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptClosedParams.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"UserPromptClosedParams"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a UserPromptClosedParams instance from a dictionary.</span>
@@ -560,7 +562,7 @@
 
 
 <div class="viewcode-block" id="HistoryUpdatedParams">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HistoryUpdatedParams</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Parameters for the historyUpdated event."""</span>
 
@@ -575,7 +577,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
 
 <div class="viewcode-block" id="HistoryUpdatedParams.from_json">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams.from_json">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.HistoryUpdatedParams.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"HistoryUpdatedParams"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a HistoryUpdatedParams instance from a dictionary.</span>
@@ -609,66 +611,387 @@
 
 
 
-<div class="viewcode-block" id="BrowsingContextEvent">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">BrowsingContextEvent</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Base class for browsing context events."""</span>
+<div class="viewcode-block" id="ContextCreated">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.ContextCreated">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContextCreated</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.contextCreated event."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">event_class</span> <span class="o">=</span> <span class="n">event_class</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">kwargs</span>
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.contextCreated"</span>
 
-<div class="viewcode-block" id="BrowsingContextEvent.from_json">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContextEvent.from_json">[docs]</a>
+<div class="viewcode-block" id="ContextCreated.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.ContextCreated.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"BrowsingContextEvent"</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Creates a BrowsingContextEvent instance from a dictionary.</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">            json: A dictionary containing the event information.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            BrowsingContextEvent: A new instance of BrowsingContextEvent.</span>
-<span class="sd">        """</span>
-        <span class="n">event_class</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_class"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">event_class</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">event_class</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"event_class is required and must be a string"</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">event_class</span><span class="o">=</span><span class="n">event_class</span><span class="p">,</span> <span class="o">**</span><span class="n">json</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">BrowsingContextInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">BrowsingContextInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
 </div>
 
 
 
+<div class="viewcode-block" id="ContextDestroyed">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContextDestroyed</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.contextDestroyed event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.contextDestroyed"</span>
+
+<div class="viewcode-block" id="ContextDestroyed.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.ContextDestroyed.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">BrowsingContextInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">BrowsingContextInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NavigationStarted">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationStarted">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NavigationStarted</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.navigationStarted event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.navigationStarted"</span>
+
+<div class="viewcode-block" id="NavigationStarted.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationStarted.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">NavigationInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NavigationCommitted">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NavigationCommitted</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.navigationCommitted event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.navigationCommitted"</span>
+
+<div class="viewcode-block" id="NavigationCommitted.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationCommitted.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">NavigationInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NavigationFailed">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationFailed">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NavigationFailed</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.navigationFailed event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.navigationFailed"</span>
+
+<div class="viewcode-block" id="NavigationFailed.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationFailed.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">NavigationInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NavigationAborted">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationAborted">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NavigationAborted</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.navigationAborted event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.navigationAborted"</span>
+
+<div class="viewcode-block" id="NavigationAborted.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.NavigationAborted.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">NavigationInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DomContentLoaded">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DomContentLoaded</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.domContentLoaded event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.domContentLoaded"</span>
+
+<div class="viewcode-block" id="DomContentLoaded.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DomContentLoaded.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">NavigationInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Load">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.Load">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Load</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.load event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.load"</span>
+
+<div class="viewcode-block" id="Load.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.Load.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">NavigationInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FragmentNavigated">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FragmentNavigated</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.fragmentNavigated event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.fragmentNavigated"</span>
+
+<div class="viewcode-block" id="FragmentNavigated.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.FragmentNavigated.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">NavigationInfo</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json</span>
+        <span class="k">return</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DownloadWillBegin">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownloadWillBegin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.downloadWillBegin event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.downloadWillBegin"</span>
+
+<div class="viewcode-block" id="DownloadWillBegin.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBegin.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">DownloadWillBeginParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UserPromptOpened">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserPromptOpened</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.userPromptOpened event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.userPromptOpened"</span>
+
+<div class="viewcode-block" id="UserPromptOpened.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptOpened.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">UserPromptOpenedParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="UserPromptClosed">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserPromptClosed</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.userPromptClosed event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.userPromptClosed"</span>
+
+<div class="viewcode-block" id="UserPromptClosed.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.UserPromptClosed.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">UserPromptClosedParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="HistoryUpdated">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HistoryUpdated</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.historyUpdated event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.historyUpdated"</span>
+
+<div class="viewcode-block" id="HistoryUpdated.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.HistoryUpdated.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">HistoryUpdatedParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="EventConfig">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.EventConfig">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EventConfig</span><span class="p">:</span>
+    <span class="n">event_key</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">bidi_event</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">event_class</span><span class="p">:</span> <span class="nb">type</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_EventManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Class to manage event subscriptions and callbacks for BrowsingContext."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">event_configs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EventConfig</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_configs</span> <span class="o">=</span> <span class="n">event_configs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_to_class</span> <span class="o">=</span> <span class="p">{</span><span class="n">config</span><span class="o">.</span><span class="n">bidi_event</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">event_class</span> <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">event_configs</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_available_events</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">event_configs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="c1"># Thread safety lock for subscription operations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subscription_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EventConfig</span><span class="p">:</span>
+        <span class="n">event_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">event_config</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event '</span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2">' not found. Available events: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_available_events</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">event_config</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">subscribe_to_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bidi_event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">contexts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Subscribe to a BiDi event if not already subscribed.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        ----------</span>
+<span class="sd">            bidi_event: The BiDi event name.</span>
+<span class="sd">            contexts: Optional browsing context IDs to subscribe to.</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subscription_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bidi_event</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span>
+                <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">bidi_event</span><span class="p">,</span> <span class="n">browsing_contexts</span><span class="o">=</span><span class="n">contexts</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">bidi_event</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">unsubscribe_from_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bidi_event</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Unsubscribe from a BiDi event if no more callbacks exist.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">        ----------</span>
+<span class="sd">            bidi_event: The BiDi event name.</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subscription_lock</span><span class="p">:</span>
+            <span class="n">callback_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bidi_event</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">callback_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">callback_list</span><span class="p">:</span>
+                <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">bidi_event</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">bidi_event</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_callback_to_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bidi_event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subscription_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">bidi_event</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_callback_from_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bidi_event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subscription_lock</span><span class="p">:</span>
+            <span class="n">callback_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bidi_event</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">callback_list</span> <span class="ow">and</span> <span class="n">callback_id</span> <span class="ow">in</span> <span class="n">callback_list</span><span class="p">:</span>
+                <span class="n">callback_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">contexts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">event_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+        <span class="n">callback_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">add_callback</span><span class="p">(</span><span class="n">event_config</span><span class="o">.</span><span class="n">event_class</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+
+        <span class="c1"># Subscribe to the event if needed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subscribe_to_event</span><span class="p">(</span><span class="n">event_config</span><span class="o">.</span><span class="n">bidi_event</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+
+        <span class="c1"># Track the callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_callback_to_tracking</span><span class="p">(</span><span class="n">event_config</span><span class="o">.</span><span class="n">bidi_event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">callback_id</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">event_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+        <span class="c1"># Remove the callback from the connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">remove_callback</span><span class="p">(</span><span class="n">event_config</span><span class="o">.</span><span class="n">event_class</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span>
+
+        <span class="c1"># Remove from tracking collections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_callback_from_tracking</span><span class="p">(</span><span class="n">event_config</span><span class="o">.</span><span class="n">bidi_event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span>
+
+        <span class="c1"># Unsubscribe if no more callbacks exist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unsubscribe_from_event</span><span class="p">(</span><span class="n">event_config</span><span class="o">.</span><span class="n">bidi_event</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_event_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Clear all event handlers from the browsing context."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subscription_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">bidi_event</span><span class="p">,</span> <span class="n">callback_ids</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="n">event_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_to_class</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bidi_event</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">event_class</span><span class="p">:</span>
+                    <span class="c1"># Remove all callbacks for this event</span>
+                    <span class="k">for</span> <span class="n">callback_id</span> <span class="ow">in</span> <span class="n">callback_ids</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">remove_callback</span><span class="p">(</span><span class="n">event_class</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">bidi_event</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+
 <div class="viewcode-block" id="BrowsingContext">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BrowsingContext</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""BiDi implementation of the browsingContext module."""</span>
 
-    <span class="n">EVENTS</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">"context_created"</span><span class="p">:</span> <span class="s2">"browsingContext.contextCreated"</span><span class="p">,</span>
-        <span class="s2">"context_destroyed"</span><span class="p">:</span> <span class="s2">"browsingContext.contextDestroyed"</span><span class="p">,</span>
-        <span class="s2">"dom_content_loaded"</span><span class="p">:</span> <span class="s2">"browsingContext.domContentLoaded"</span><span class="p">,</span>
-        <span class="s2">"download_will_begin"</span><span class="p">:</span> <span class="s2">"browsingContext.downloadWillBegin"</span><span class="p">,</span>
-        <span class="s2">"fragment_navigated"</span><span class="p">:</span> <span class="s2">"browsingContext.fragmentNavigated"</span><span class="p">,</span>
-        <span class="s2">"history_updated"</span><span class="p">:</span> <span class="s2">"browsingContext.historyUpdated"</span><span class="p">,</span>
-        <span class="s2">"load"</span><span class="p">:</span> <span class="s2">"browsingContext.load"</span><span class="p">,</span>
-        <span class="s2">"navigation_aborted"</span><span class="p">:</span> <span class="s2">"browsingContext.navigationAborted"</span><span class="p">,</span>
-        <span class="s2">"navigation_committed"</span><span class="p">:</span> <span class="s2">"browsingContext.navigationCommitted"</span><span class="p">,</span>
-        <span class="s2">"navigation_failed"</span><span class="p">:</span> <span class="s2">"browsingContext.navigationFailed"</span><span class="p">,</span>
-        <span class="s2">"navigation_started"</span><span class="p">:</span> <span class="s2">"browsingContext.navigationStarted"</span><span class="p">,</span>
-        <span class="s2">"user_prompt_closed"</span><span class="p">:</span> <span class="s2">"browsingContext.userPromptClosed"</span><span class="p">,</span>
-        <span class="s2">"user_prompt_opened"</span><span class="p">:</span> <span class="s2">"browsingContext.userPromptOpened"</span><span class="p">,</span>
+    <span class="n">EVENT_CONFIGS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"context_created"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"context_created"</span><span class="p">,</span> <span class="s2">"browsingContext.contextCreated"</span><span class="p">,</span> <span class="n">ContextCreated</span><span class="p">),</span>
+        <span class="s2">"context_destroyed"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"context_destroyed"</span><span class="p">,</span> <span class="s2">"browsingContext.contextDestroyed"</span><span class="p">,</span> <span class="n">ContextDestroyed</span><span class="p">),</span>
+        <span class="s2">"dom_content_loaded"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"dom_content_loaded"</span><span class="p">,</span> <span class="s2">"browsingContext.domContentLoaded"</span><span class="p">,</span> <span class="n">DomContentLoaded</span><span class="p">),</span>
+        <span class="s2">"download_will_begin"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span>
+            <span class="s2">"download_will_begin"</span><span class="p">,</span> <span class="s2">"browsingContext.downloadWillBegin"</span><span class="p">,</span> <span class="n">DownloadWillBegin</span>
+        <span class="p">),</span>
+        <span class="s2">"fragment_navigated"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"fragment_navigated"</span><span class="p">,</span> <span class="s2">"browsingContext.fragmentNavigated"</span><span class="p">,</span> <span class="n">FragmentNavigated</span><span class="p">),</span>
+        <span class="s2">"history_updated"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"history_updated"</span><span class="p">,</span> <span class="s2">"browsingContext.historyUpdated"</span><span class="p">,</span> <span class="n">HistoryUpdated</span><span class="p">),</span>
+        <span class="s2">"load"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"load"</span><span class="p">,</span> <span class="s2">"browsingContext.load"</span><span class="p">,</span> <span class="n">Load</span><span class="p">),</span>
+        <span class="s2">"navigation_aborted"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"navigation_aborted"</span><span class="p">,</span> <span class="s2">"browsingContext.navigationAborted"</span><span class="p">,</span> <span class="n">NavigationAborted</span><span class="p">),</span>
+        <span class="s2">"navigation_committed"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span>
+            <span class="s2">"navigation_committed"</span><span class="p">,</span> <span class="s2">"browsingContext.navigationCommitted"</span><span class="p">,</span> <span class="n">NavigationCommitted</span>
+        <span class="p">),</span>
+        <span class="s2">"navigation_failed"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"navigation_failed"</span><span class="p">,</span> <span class="s2">"browsingContext.navigationFailed"</span><span class="p">,</span> <span class="n">NavigationFailed</span><span class="p">),</span>
+        <span class="s2">"navigation_started"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"navigation_started"</span><span class="p">,</span> <span class="s2">"browsingContext.navigationStarted"</span><span class="p">,</span> <span class="n">NavigationStarted</span><span class="p">),</span>
+        <span class="s2">"user_prompt_closed"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"user_prompt_closed"</span><span class="p">,</span> <span class="s2">"browsingContext.userPromptClosed"</span><span class="p">,</span> <span class="n">UserPromptClosed</span><span class="p">),</span>
+        <span class="s2">"user_prompt_opened"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"user_prompt_opened"</span><span class="p">,</span> <span class="s2">"browsingContext.userPromptOpened"</span><span class="p">,</span> <span class="n">UserPromptOpened</span><span class="p">),</span>
     <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_manager</span> <span class="o">=</span> <span class="n">_EventManager</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENT_CONFIGS</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BrowsingContext.get_event_names">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_event_names">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_event_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Get a list of all available event names.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        -------</span>
+<span class="sd">            List[str]: A list of event names that can be used with event handlers.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">EVENT_CONFIGS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
 
 <div class="viewcode-block" id="BrowsingContext.activate">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.activate">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.activate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Activates and focuses the given top-level traversable.</span>
 
@@ -685,7 +1008,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.capture_screenshot">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.capture_screenshot">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.capture_screenshot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">capture_screenshot</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -717,7 +1040,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.close">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.close">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prompt_unload</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Closes a top-level traversable.</span>
 
@@ -735,7 +1058,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.create">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.create">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.create">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -769,7 +1092,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.get_tree">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_tree">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.get_tree">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_tree</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">max_depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -798,7 +1121,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.handle_user_prompt">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.handle_user_prompt">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.handle_user_prompt">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_user_prompt</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -823,7 +1146,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.locate_nodes">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.locate_nodes">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.locate_nodes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">locate_nodes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -859,7 +1182,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.navigate">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.navigate">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.navigate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">navigate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -887,7 +1210,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.print">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.print">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.print">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">print</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -936,7 +1259,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.reload">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.reload">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.reload">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -966,7 +1289,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.set_viewport">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.set_viewport">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.set_viewport">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_viewport</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1001,7 +1324,7 @@
 
 
 <div class="viewcode-block" id="BrowsingContext.traverse_history">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.traverse_history">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.traverse_history">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">traverse_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Traverses the history of a given navigable by a delta.</span>
 
@@ -1019,52 +1342,8 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_on_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Set a callback function to subscribe to a browsing context event.</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            event_name: The event to subscribe to.</span>
-<span class="sd">            callback: The callback function to execute on event.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            int: callback id</span>
-<span class="sd">        """</span>
-        <span class="n">event</span> <span class="o">=</span> <span class="n">BrowsingContextEvent</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
-
-        <span class="k">def</span><span class="w"> </span><span class="nf">_callback</span><span class="p">(</span><span class="n">event_data</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">event_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="s2">"context_created"</span><span class="p">]</span> <span class="ow">or</span> <span class="n">event_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="s2">"context_destroyed"</span><span class="p">]:</span>
-                <span class="n">info</span> <span class="o">=</span> <span class="n">BrowsingContextInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">event_data</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-                <span class="n">callback</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">event_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="s2">"download_will_begin"</span><span class="p">]:</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="n">DownloadWillBeginParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">event_data</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-                <span class="n">callback</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">event_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="s2">"user_prompt_opened"</span><span class="p">]:</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="n">UserPromptOpenedParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">event_data</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-                <span class="n">callback</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">event_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="s2">"user_prompt_closed"</span><span class="p">]:</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="n">UserPromptClosedParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">event_data</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-                <span class="n">callback</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">event_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="s2">"history_updated"</span><span class="p">]:</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="n">HistoryUpdatedParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">event_data</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-                <span class="n">callback</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># For navigation events</span>
-                <span class="n">info</span> <span class="o">=</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">event_data</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-                <span class="n">callback</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
-
-        <span class="n">callback_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">add_callback</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">_callback</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">callback_id</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">callback_id</span>
-
 <div class="viewcode-block" id="BrowsingContext.add_event_handler">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.add_event_handler">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.add_event_handler">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">contexts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add an event handler to the browsing context.</span>
 
@@ -1078,28 +1357,11 @@
 <span class="sd">        -------</span>
 <span class="sd">            int: callback id</span>
 <span class="sd">        """</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">event_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="n">event</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
-
-        <span class="n">callback_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_event</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"events"</span><span class="p">:</span> <span class="p">[</span><span class="n">event_name</span><span class="p">]}</span>
-            <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">params</span><span class="p">[</span><span class="s2">"browsingContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">contexts</span>
-            <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">callback_id</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">callback_id</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_manager</span><span class="o">.</span><span class="n">add_event_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BrowsingContext.remove_event_handler">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.remove_event_handler">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.remove_event_handler">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Remove an event handler from the browsing context.</span>
 
@@ -1108,37 +1370,14 @@
 <span class="sd">            event: The event to unsubscribe from.</span>
 <span class="sd">            callback_id: The callback id to remove.</span>
 <span class="sd">        """</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">event_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="n">event</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Event </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
-
-        <span class="n">event_obj</span> <span class="o">=</span> <span class="n">BrowsingContextEvent</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">remove_callback</span><span class="p">(</span><span class="n">event_obj</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span>
-            <span class="n">callbacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">callback_id</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span>
-                <span class="n">callbacks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">callbacks</span><span class="p">:</span>
-                    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"events"</span><span class="p">:</span> <span class="p">[</span><span class="n">event_name</span><span class="p">]}</span>
-                    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">))</span>
-                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_manager</span><span class="o">.</span><span class="n">remove_event_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BrowsingContext.clear_event_handlers">
-<a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.clear_event_handlers">[docs]</a>
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext.clear_event_handlers">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_event_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Clear all event handlers from the browsing context."""</span>
-        <span class="k">for</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span>
-            <span class="n">event</span> <span class="o">=</span> <span class="n">BrowsingContextEvent</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">callback_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">remove_callback</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"events"</span><span class="p">:</span> <span class="p">[</span><span class="n">event_name</span><span class="p">]}</span>
-            <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span> <span class="o">=</span> <span class="p">{}</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_manager</span><span class="o">.</span><span class="n">clear_event_handlers</span><span class="p">()</span></div>
 </div>
 
 </pre></div>

@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.support.event_firing_webdriver &#8212; Selenium 4.35.0.202506301117 documentation</title>
+    <title>selenium.webdriver.support.event_firing_webdriver &#8212; Selenium 4.36.0.202508121825 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=9464611f"></script>
+    <script src="../../../../_static/documentation_options.js?v=90a25026"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.35.0.202506301117 documentation"
+        <a href="../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.35.0.202506301117 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.support.event_firing_webdriver </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.35.0.202506301117 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.35.0.202506301117 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.35.0.202506301117 documentation">Selenium 4.35.0.202506301117 documentation</a>
+       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
   </label>
   
 
@@ -231,7 +231,7 @@
 
 
 <div class="viewcode-block" id="EventFiringWebDriver">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EventFiringWebDriver</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""A wrapper around an arbitrary WebDriver instance which supports firing</span>
 <span class="sd">    events."""</span>
@@ -279,57 +279,57 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span>
 
 <div class="viewcode-block" id="EventFiringWebDriver.get">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"navigate_to"</span><span class="p">,</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"get"</span><span class="p">,</span> <span class="p">(</span><span class="n">url</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebDriver.back">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.back">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">back</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"navigate_back"</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,),</span> <span class="s2">"back"</span><span class="p">,</span> <span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebDriver.forward">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"navigate_forward"</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,),</span> <span class="s2">"forward"</span><span class="p">,</span> <span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebDriver.execute_script">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_script">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="n">unwrapped_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">script</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap_element_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"execute_script"</span><span class="p">,</span> <span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"execute_script"</span><span class="p">,</span> <span class="n">unwrapped_args</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebDriver.execute_async_script">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.execute_async_script">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_async_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="n">unwrapped_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">script</span><span class="p">,)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap_element_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"execute_script"</span><span class="p">,</span> <span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"execute_async_script"</span><span class="p">,</span> <span class="n">unwrapped_args</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebDriver.close">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"close"</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,),</span> <span class="s2">"close"</span><span class="p">,</span> <span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebDriver.quit">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.quit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"quit"</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,),</span> <span class="s2">"quit"</span><span class="p">,</span> <span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebDriver.find_element">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_element">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"find"</span><span class="p">,</span> <span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"find_element"</span><span class="p">,</span> <span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebDriver.find_elements">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver.find_elements">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"find"</span><span class="p">,</span> <span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"find_elements"</span><span class="p">,</span> <span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 
@@ -387,7 +387,7 @@
 
 
 <div class="viewcode-block" id="EventFiringWebElement">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EventFiringWebElement</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""A wrapper around WebElement instance which supports firing events."""</span>
 
@@ -405,31 +405,31 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span>
 
 <div class="viewcode-block" id="EventFiringWebElement.click">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.click">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"click"</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"click"</span><span class="p">,</span> <span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebElement.clear">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"change_value_of"</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"clear"</span><span class="p">,</span> <span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebElement.send_keys">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.send_keys">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"change_value_of"</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"send_keys"</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebElement.find_element">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_element">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"find"</span><span class="p">,</span> <span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"find_element"</span><span class="p">,</span> <span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="EventFiringWebElement.find_elements">
-<a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement.find_elements">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dispatch</span><span class="p">(</span><span class="s2">"find"</span><span class="p">,</span> <span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">),</span> <span class="s2">"find_elements"</span><span class="p">,</span> <span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 

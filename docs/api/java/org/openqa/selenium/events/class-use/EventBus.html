@@ -59,19 +59,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><a href="#org.openqa.selenium.events.zeromq">org.openqa.selenium.events.zeromq</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor">org.openqa.selenium.grid.distributor</a></div>
-<div class="col-last even-row-color">
-<div class="block">The <a href="../../grid/distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor"><code>Distributor</code></a> is responsible for assigning new
- calls to Create Session to a <a href="../../grid/node/Node.html" title="class in org.openqa.selenium.grid.node"><code>Node</code></a>.</div>
-</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.distributor.local">org.openqa.selenium.grid.distributor.local</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.server">org.openqa.selenium.grid.server</a></div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.sessionmap.local">org.openqa.selenium.grid.sessionmap.local</a></div>
+<div class="col-first even-row-color"><a href="#org.openqa.selenium.grid.server">org.openqa.selenium.grid.server</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><a href="#org.openqa.selenium.grid.sessionmap.local">org.openqa.selenium.grid.sessionmap.local</a></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <section class="class-uses">
 <ul class="block-list">
@@ -111,20 +106,6 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="org.openqa.selenium.grid.distributor">
-<h2>Uses of <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a> in <a href="../../grid/distributor/package-summary.html">org.openqa.selenium.grid.distributor</a></h2>
-<div class="caption"><span>Constructors in <a href="../../grid/distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> with parameters of type <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier</div>
-<div class="table-header col-second">Constructor</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="../../grid/distributor/GridModel.html#%3Cinit%3E(org.openqa.selenium.events.EventBus)" class="member-name-link">GridModel</a><wbr>(<a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;events)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
-</div>
-</section>
-</li>
-<li>
 <section class="detail" id="org.openqa.selenium.grid.distributor.local">
 <h2>Uses of <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a> in <a href="../../grid/distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a></h2>
 <div class="caption"><span>Constructors in <a href="../../grid/distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a></span></div>
@@ -146,6 +127,20 @@ loadScripts(document, 'script');</script>
  int&nbsp;newSessionThreadPoolSize,
  <a href="../../grid/data/SlotMatcher.html" title="interface in org.openqa.selenium.grid.data">SlotMatcher</a>&nbsp;slotMatcher,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;purgeNodesInterval)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../../grid/distributor/local/LocalGridModel.html#%3Cinit%3E(org.openqa.selenium.events.EventBus)" class="member-name-link">LocalGridModel</a><wbr>(<a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;events)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../grid/distributor/local/LocalNodeRegistry.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,int,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.security.Secret,java.time.Duration,java.util.concurrent.ScheduledExecutorService,java.time.Duration,java.util.concurrent.ScheduledExecutorService)" class="member-name-link">LocalNodeRegistry</a><wbr>(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+ <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
+ int&nbsp;newSessionThreadPoolSize,
+ <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+ <a href="../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;healthcheckInterval,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledExecutorService</a>&nbsp;nodeHealthCheckService,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;purgeNodesInterval,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledExecutorService</a>&nbsp;purgeDeadNodesService)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -172,7 +167,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-second even-row-color"><code><a href="../../grid/node/local/LocalNode.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.google.common.base.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int)" class="member-name-link">LocalNode</a><wbr>(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-second even-row-color"><code><a href="../../grid/node/local/LocalNode.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int)" class="member-name-link">LocalNode</a><wbr>(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;gridUri,
@@ -181,7 +176,7 @@ loadScripts(document, 'script');</script>
  int&nbsp;drainAfterSessionCount,
  boolean&nbsp;cdpEnabled,
  boolean&nbsp;bidiEnabled,
- com.google.common.base.Ticker&nbsp;ticker,
+ com.github.benmanes.caffeine.cache.Ticker&nbsp;ticker,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;sessionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;heartbeatPeriod,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../grid/node/local/SessionSlot.html" title="class in org.openqa.selenium.grid.node.local">SessionSlot</a>&gt;&nbsp;factories,

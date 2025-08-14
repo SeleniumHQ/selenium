@@ -1,0 +1,30 @@
+selenium.webdriver.common.bidi.input
+====================================
+
+.. automodule:: selenium.webdriver.common.bidi.input
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ElementOrigin
+      FileDialogInfo
+      FileDialogOpened
+      Input
+      KeyDownAction
+      KeySourceActions
+      KeyUpAction
+      NoneSourceActions
+      Origin
+      PauseAction
+      PointerCommonProperties
+      PointerDownAction
+      PointerMoveAction
+      PointerParameters
+      PointerSourceActions
+      PointerType
+      PointerUpAction
+      WheelScrollAction
+      WheelSourceActions
+   

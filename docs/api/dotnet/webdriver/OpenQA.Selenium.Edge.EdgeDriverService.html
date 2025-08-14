@@ -152,10 +152,13 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
       <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_EnableAppendLog">ChromiumDriverService.EnableAppendLog</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_WhitelistedIPAddresses">ChromiumDriverService.WhitelistedIPAddresses</a>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_LogLevel">ChromiumDriverService.LogLevel</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_AllowedIPAddresses">ChromiumDriverService.AllowedIPAddresses</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_ReadableTimestamp">ChromiumDriverService.ReadableTimestamp</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverProcessStarting">DriverService.DriverProcessStarting</a>
@@ -224,43 +227,6 @@ Class EdgeDriverService  <a class="header-action link-secondary" title="View sou
 
 
 
-  <h2 class="section" id="properties">Properties
-</h2>
-
-
-  <a id="OpenQA_Selenium_Edge_EdgeDriverService_UseVerboseLogging_" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.UseVerboseLogging*"></a>
-
-  <h3 id="OpenQA_Selenium_Edge_EdgeDriverService_UseVerboseLogging" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.UseVerboseLogging">
-  UseVerboseLogging
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L54"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the service should use verbose logging.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use EnableVerboseLogging&quot;)]
-public bool UseVerboseLogging { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -269,7 +235,7 @@ public bool UseVerboseLogging { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService">
   CreateDefaultService()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L55"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the EdgeDriverService.</p>
@@ -302,7 +268,7 @@ public bool UseVerboseLogging { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService_System_String_" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String)">
   CreateDefaultService(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L75"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable.</p>
@@ -341,7 +307,7 @@ public bool UseVerboseLogging { get; set; }</code></pre>
 
   <h3 id="OpenQA_Selenium_Edge_EdgeDriverService_CreateDefaultService_System_String_System_String_" data-uid="OpenQA.Selenium.Edge.EdgeDriverService.CreateDefaultService(System.String,System.String)">
   CreateDefaultService(string?, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L99"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Edge/EdgeDriverService.cs/#L89"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name.</p>
