@@ -90,6 +90,7 @@ class HandleSession implements HttpHandler, Closeable {
 
     @Override
     public void close() {
+      // must not call super.close() here, to ensure the HttpClient stays alive
       // set the last use here, to ensure we have to calculate the real inactivity of the client
       entry.lastUse = Instant.now();
       entry.inUse.decrementAndGet();
