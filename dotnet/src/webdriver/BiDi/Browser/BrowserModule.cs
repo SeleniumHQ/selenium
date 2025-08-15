@@ -31,7 +31,7 @@ public sealed class BrowserModule(Broker broker) : Module(broker)
 
     public async Task<UserContextInfo> CreateUserContextAsync(CreateUserContextOptions? options = null)
     {
-        var @params = new CreateUserContextCommandParameters(options?.AcceptInsecureCerts, options?.Proxy, options?.UnhandledPromptBehavior);
+        var @params = new CreateUserContextParameters(options?.AcceptInsecureCerts, options?.Proxy, options?.UnhandledPromptBehavior);
 
         return await Broker.ExecuteCommandAsync<CreateUserContextCommand, UserContextInfo>(new CreateUserContextCommand(@params), options).ConfigureAwait(false);
     }
@@ -43,7 +43,7 @@ public sealed class BrowserModule(Broker broker) : Module(broker)
 
     public async Task<EmptyResult> RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null)
     {
-        var @params = new RemoveUserContextCommandParameters(userContext);
+        var @params = new RemoveUserContextParameters(userContext);
 
         return await Broker.ExecuteCommandAsync<RemoveUserContextCommand, EmptyResult>(new RemoveUserContextCommand(@params), options).ConfigureAwait(false);
     }

@@ -22,10 +22,10 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class ContinueResponseCommand(ContinueResponseCommandParameters @params)
-    : Command<ContinueResponseCommandParameters, EmptyResult>(@params, "network.continueResponse");
+internal sealed class ContinueResponseCommand(ContinueResponseParameters @params)
+    : Command<ContinueResponseParameters, EmptyResult>(@params, "network.continueResponse");
 
-internal sealed record ContinueResponseCommandParameters(Request Request, IEnumerable<SetCookieHeader>? Cookies, IEnumerable<AuthCredentials>? Credentials, IEnumerable<Header>? Headers, string? ReasonPhrase, long? StatusCode) : CommandParameters;
+internal sealed record ContinueResponseParameters(Request Request, IEnumerable<SetCookieHeader>? Cookies, IEnumerable<AuthCredentials>? Credentials, IEnumerable<Header>? Headers, string? ReasonPhrase, long? StatusCode) : Parameters;
 
 public sealed class ContinueResponseOptions : CommandOptions
 {

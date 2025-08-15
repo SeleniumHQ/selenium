@@ -23,10 +23,10 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class PrintCommand(PrintCommandParameters @params)
-    : Command<PrintCommandParameters, PrintResult>(@params, "browsingContext.print");
+internal sealed class PrintCommand(PrintParameters @params)
+    : Command<PrintParameters, PrintResult>(@params, "browsingContext.print");
 
-internal sealed record PrintCommandParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : CommandParameters;
+internal sealed record PrintParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : Parameters;
 
 public sealed class PrintOptions : CommandOptions
 {
