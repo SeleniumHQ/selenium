@@ -23,10 +23,10 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class GetTreeCommand(GetTreeCommandParameters @params)
-    : Command<GetTreeCommandParameters, GetTreeResult>(@params, "browsingContext.getTree");
+internal sealed class GetTreeCommand(GetTreeParameters @params)
+    : Command<GetTreeParameters, GetTreeResult>(@params, "browsingContext.getTree");
 
-internal sealed record GetTreeCommandParameters(long? MaxDepth, BrowsingContext? Root) : CommandParameters;
+internal sealed record GetTreeParameters(long? MaxDepth, BrowsingContext? Root) : Parameters;
 
 public sealed class GetTreeOptions : CommandOptions
 {

@@ -24,7 +24,7 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class GetClientWindowsCommand()
-    : Command<CommandParameters, GetClientWindowsResult>(CommandParameters.Empty, "browser.getClientWindows");
+    : Command<Parameters, GetClientWindowsResult>(Parameters.Empty, "browser.getClientWindows");
 
 public sealed class GetClientWindowsOptions : CommandOptions;
 

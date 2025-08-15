@@ -22,10 +22,10 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class CaptureScreenshotCommand(CaptureScreenshotCommandParameters @params)
-    : Command<CaptureScreenshotCommandParameters, CaptureScreenshotResult>(@params, "browsingContext.captureScreenshot");
+internal sealed class CaptureScreenshotCommand(CaptureScreenshotParameters @params)
+    : Command<CaptureScreenshotParameters, CaptureScreenshotResult>(@params, "browsingContext.captureScreenshot");
 
-internal sealed record CaptureScreenshotCommandParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : CommandParameters;
+internal sealed record CaptureScreenshotParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : Parameters;
 
 public sealed class CaptureScreenshotOptions : CommandOptions
 {
