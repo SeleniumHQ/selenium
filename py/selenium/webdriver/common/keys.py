@@ -64,7 +64,7 @@ class Keys:
     EQUALS = "\ue019"
 
     # Keys representing number pad digits
-    NUMPAD0 = "\ue01a"  
+    NUMPAD0 = "\ue01a"
     NUMPAD1 = "\ue01b"
     NUMPAD2 = "\ue01c"
     NUMPAD3 = "\ue01d"
@@ -74,7 +74,7 @@ class Keys:
     NUMPAD7 = "\ue021"
     NUMPAD8 = "\ue022"
     NUMPAD9 = "\ue023"
-    
+
     MULTIPLY = "\ue024"
     ADD = "\ue025"
     SEPARATOR = "\ue026"
