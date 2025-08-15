@@ -27,7 +27,7 @@ internal sealed class ContinueResponseCommand(ContinueResponseParameters @params
 
 internal sealed record ContinueResponseParameters(Request Request, IEnumerable<SetCookieHeader>? Cookies, IEnumerable<AuthCredentials>? Credentials, IEnumerable<Header>? Headers, string? ReasonPhrase, long? StatusCode) : Parameters;
 
-public sealed class ContinueResponseOptions : Options
+public sealed class ContinueResponseOptions : CommandOptions
 {
     public IEnumerable<SetCookieHeader>? Cookies { get; set; }
 

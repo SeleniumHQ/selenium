@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.BiDi.Browser;
 internal sealed class GetClientWindowsCommand()
     : Command<Parameters, GetClientWindowsResult>(Parameters.Empty, "browser.getClientWindows");
 
-public sealed class GetClientWindowsOptions : Options;
+public sealed class GetClientWindowsOptions : CommandOptions;
 
 public sealed record GetClientWindowsResult : EmptyResult, IReadOnlyList<ClientWindowInfo>
 {

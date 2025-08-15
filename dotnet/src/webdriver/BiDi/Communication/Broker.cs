@@ -179,7 +179,7 @@ public sealed class Broker : IAsyncDisposable
         }
     }
 
-    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, Options? options)
+    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options)
         where TCommand : Command
         where TResult : EmptyResult
     {
@@ -188,7 +188,7 @@ public sealed class Broker : IAsyncDisposable
         return (TResult)result;
     }
 
-    private async Task<EmptyResult> ExecuteCommandCoreAsync<TCommand>(TCommand command, Options? options)
+    private async Task<EmptyResult> ExecuteCommandCoreAsync<TCommand>(TCommand command, CommandOptions? options)
         where TCommand : Command
     {
         command.Id = Interlocked.Increment(ref _currentCommandId);

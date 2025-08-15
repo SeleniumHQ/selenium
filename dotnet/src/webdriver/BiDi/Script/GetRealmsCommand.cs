@@ -28,7 +28,7 @@ internal sealed class GetRealmsCommand(GetRealmsParameters @params)
 
 internal sealed record GetRealmsParameters(BrowsingContext.BrowsingContext? Context, RealmType? Type) : Parameters;
 
-public sealed class GetRealmsOptions : Options
+public sealed class GetRealmsOptions : CommandOptions
 {
     public BrowsingContext.BrowsingContext? Context { get; set; }
 

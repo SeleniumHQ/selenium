@@ -26,7 +26,7 @@ internal sealed class NavigateCommand(NavigateParameters @params)
 
 internal sealed record NavigateParameters(BrowsingContext Context, string Url, ReadinessState? Wait) : Parameters;
 
-public sealed class NavigateOptions : Options
+public sealed class NavigateOptions : CommandOptions
 {
     public ReadinessState? Wait { get; set; }
 }

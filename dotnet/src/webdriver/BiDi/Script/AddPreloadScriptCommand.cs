@@ -27,7 +27,7 @@ internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params
 
 internal sealed record AddPreloadScriptParameters(string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : Parameters;
 
-public sealed class AddPreloadScriptOptions : Options
+public sealed class AddPreloadScriptOptions : CommandOptions
 {
     public AddPreloadScriptOptions() { }
 

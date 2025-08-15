@@ -39,7 +39,7 @@ internal sealed record ContinueWithAuthDefaultCredentials(Request Request) : Con
 
 internal sealed record ContinueWithAuthCancelCredentials(Request Request) : ContinueWithAuthNoCredentials(Request);
 
-public abstract class ContinueWithAuthOptions : Options;
+public abstract class ContinueWithAuthOptions : CommandOptions;
 
 public sealed class ContinueWithAuthCredentialsOptions : ContinueWithAuthOptions;
 

@@ -28,7 +28,7 @@ internal sealed class LocateNodesCommand(LocateNodesParameters @params)
 
 internal sealed record LocateNodesParameters(BrowsingContext Context, Locator Locator, long? MaxNodeCount, Script.SerializationOptions? SerializationOptions, IEnumerable<Script.ISharedReference>? StartNodes) : Parameters;
 
-public sealed class LocateNodesOptions : Options
+public sealed class LocateNodesOptions : CommandOptions
 {
     public long? MaxNodeCount { get; set; }
 

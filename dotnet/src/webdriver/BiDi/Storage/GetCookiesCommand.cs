@@ -30,7 +30,7 @@ internal sealed class GetCookiesCommand(GetCookiesParameters @params)
 
 internal sealed record GetCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 
-public sealed class GetCookiesOptions : Options
+public sealed class GetCookiesOptions : CommandOptions
 {
     public CookieFilter? Filter { get; set; }
 

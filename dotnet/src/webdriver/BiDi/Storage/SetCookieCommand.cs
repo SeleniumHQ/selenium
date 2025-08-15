@@ -40,7 +40,7 @@ public sealed record PartialCookie(string Name, Network.BytesValue Value, string
     public DateTimeOffset? Expiry { get; set; }
 }
 
-public sealed class SetCookieOptions : Options
+public sealed class SetCookieOptions : CommandOptions
 {
     public PartitionDescriptor? Partition { get; set; }
 }

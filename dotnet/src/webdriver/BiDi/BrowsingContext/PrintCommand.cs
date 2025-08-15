@@ -28,7 +28,7 @@ internal sealed class PrintCommand(PrintParameters @params)
 
 internal sealed record PrintParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : Parameters;
 
-public sealed class PrintOptions : Options
+public sealed class PrintOptions : CommandOptions
 {
     public bool? Background { get; set; }
 

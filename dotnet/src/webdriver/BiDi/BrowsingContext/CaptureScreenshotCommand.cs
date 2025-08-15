@@ -27,7 +27,7 @@ internal sealed class CaptureScreenshotCommand(CaptureScreenshotParameters @para
 
 internal sealed record CaptureScreenshotParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : Parameters;
 
-public sealed class CaptureScreenshotOptions : Options
+public sealed class CaptureScreenshotOptions : CommandOptions
 {
     public ScreenshotOrigin? Origin { get; set; }
 

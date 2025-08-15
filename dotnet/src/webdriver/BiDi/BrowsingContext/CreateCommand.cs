@@ -26,7 +26,7 @@ internal sealed class CreateCommand(CreateParameters @params)
 
 internal sealed record CreateParameters(ContextType Type, BrowsingContext? ReferenceContext, bool? Background, Browser.UserContext? UserContext) : Parameters;
 
-public sealed class CreateOptions : Options
+public sealed class CreateOptions : CommandOptions
 {
     public BrowsingContext? ReferenceContext { get; set; }
 

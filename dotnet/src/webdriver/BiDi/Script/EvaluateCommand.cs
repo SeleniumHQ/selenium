@@ -27,7 +27,7 @@ internal sealed class EvaluateCommand(EvaluateParameters @params)
 
 internal sealed record EvaluateParameters(string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : Parameters;
 
-public sealed class EvaluateOptions : Options
+public sealed class EvaluateOptions : CommandOptions
 {
     public ResultOwnership? ResultOwnership { get; set; }
 

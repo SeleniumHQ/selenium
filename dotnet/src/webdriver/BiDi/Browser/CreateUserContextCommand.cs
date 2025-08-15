@@ -26,7 +26,7 @@ internal sealed class CreateUserContextCommand(CreateUserContextParameters @para
 
 internal sealed record CreateUserContextParameters(bool? AcceptInsecureCerts, Session.ProxyConfiguration? Proxy, Session.UserPromptHandler? UnhandledPromptBehavior) : Parameters;
 
-public sealed class CreateUserContextOptions : Options
+public sealed class CreateUserContextOptions : CommandOptions
 {
     public bool? AcceptInsecureCerts { get; set; }
 

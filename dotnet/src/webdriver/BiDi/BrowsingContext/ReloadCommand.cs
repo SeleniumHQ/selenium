@@ -26,7 +26,7 @@ internal sealed class ReloadCommand(ReloadParameters @params)
 
 internal sealed record ReloadParameters(BrowsingContext Context, bool? IgnoreCache, ReadinessState? Wait) : Parameters;
 
-public sealed class ReloadOptions : Options
+public sealed class ReloadOptions : CommandOptions
 {
     public bool? IgnoreCache { get; set; }
 

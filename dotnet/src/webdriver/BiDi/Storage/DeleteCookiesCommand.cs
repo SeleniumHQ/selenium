@@ -26,7 +26,7 @@ internal sealed class DeleteCookiesCommand(DeleteCookiesParameters @params)
 
 internal sealed record DeleteCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 
-public sealed class DeleteCookiesOptions : Options
+public sealed class DeleteCookiesOptions : CommandOptions
 {
     public CookieFilter? Filter { get; set; }
 

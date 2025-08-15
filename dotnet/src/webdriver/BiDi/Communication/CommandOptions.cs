@@ -21,7 +21,7 @@ using System;
 
 namespace OpenQA.Selenium.BiDi.Communication;
 
-public abstract class Options
+public abstract class CommandOptions
 {
     public TimeSpan? Timeout { get; set; }
 }

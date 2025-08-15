@@ -26,7 +26,7 @@ internal sealed class SetViewportCommand(SetViewportParameters @params)
 
 internal sealed record SetViewportParameters(BrowsingContext Context, Viewport? Viewport, double? DevicePixelRatio) : Parameters;
 
-public sealed class SetViewportOptions : Options
+public sealed class SetViewportOptions : CommandOptions
 {
     public Viewport? Viewport { get; set; }
 

@@ -28,7 +28,7 @@ internal sealed class GetTreeCommand(GetTreeParameters @params)
 
 internal sealed record GetTreeParameters(long? MaxDepth, BrowsingContext? Root) : Parameters;
 
-public sealed class GetTreeOptions : Options
+public sealed class GetTreeOptions : CommandOptions
 {
     public GetTreeOptions() { }
 
