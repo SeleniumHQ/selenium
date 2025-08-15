@@ -21,9 +21,9 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-internal sealed class UninstallCommand(UninstallCommandParameters @params)
-    : Command<UninstallCommandParameters, EmptyResult>(@params, "webExtension.uninstall");
+internal sealed class UninstallCommand(UninstallParameters @params)
+    : Command<UninstallParameters, EmptyResult>(@params, "webExtension.uninstall");
 
-internal sealed record UninstallCommandParameters(Extension Extension) : CommandParameters;
+internal sealed record UninstallParameters(Extension Extension) : Parameters;
 
 public sealed class UninstallOptions : CommandOptions;

@@ -26,14 +26,14 @@ public sealed class WebExtensionModule(Broker broker) : Module(broker)
 {
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
     {
-        var @params = new InstallCommandParameters(extensionData);
+        var @params = new InstallParameters(extensionData);
 
         return await Broker.ExecuteCommandAsync<InstallCommand, InstallResult>(new InstallCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
     {
-        var @params = new UninstallCommandParameters(extension);
+        var @params = new UninstallParameters(extension);
 
         return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options).ConfigureAwait(false);
     }
