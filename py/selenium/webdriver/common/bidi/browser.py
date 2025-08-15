@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
+import warnings
 from typing import Optional
 
 from selenium.webdriver.common.bidi.common import command_builder
@@ -54,6 +54,16 @@ class ClientWindowInfo:
         self.y = y
         self.active = active
 
+    def get_state(self) -> str:
+        """Gets the state of the client window.
+
+        Returns:
+        -------
+            str: The state of the client window (one of the ClientWindowState constants).
+        """
+        warnings.warn("get_state method is deprecated, use `state` property instead", DeprecationWarning, stacklevel=2)
+        return self.state
+
     @property
     def state(self) -> str:
         """Gets the state of the client window.
@@ -76,6 +86,20 @@ class ClientWindowInfo:
             raise ValueError(f"Invalid state: {value}. Must be one of {ClientWindowState.VALID_STATES}")
         self._state = value
 
+    def get_client_window(self) -> str:
+        """Gets the client window identifier.
+
+        Returns:
+        -------
+            str: The client window identifier.
+        """
+        warnings.warn(
+            "get_client_window method is deprecated, use `client_window` property instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.client_window
+
     @property
     def client_window(self) -> str:
         """Gets the client window identifier.
@@ -95,6 +119,16 @@ class ClientWindowInfo:
         if not isinstance(value, str):
             raise ValueError("clientWindow must be a string")
         self._client_window = value
+
+    def get_width(self) -> int:
+        """Gets the width of the client window.
+
+        Returns:
+        -------
+            int: The width of the client window.
+        """
+        warnings.warn("get_width method is deprecated, use `width` property instead", DeprecationWarning, stacklevel=2)
+        return self.width
 
     @property
     def width(self) -> int:
@@ -116,6 +150,18 @@ class ClientWindowInfo:
             raise ValueError(f"width must be a non-negative integer, got {value}")
         self._width = value
 
+    def get_height(self) -> int:
+        """Gets the height of the client window.
+
+        Returns:
+        -------
+            int: The height of the client window.
+        """
+        warnings.warn(
+            "get_height method is deprecated, use `height` property instead", DeprecationWarning, stacklevel=2
+        )
+        return self.height
+
     @property
     def height(self) -> int:
         """Gets the height of the client window.
@@ -136,6 +182,16 @@ class ClientWindowInfo:
             raise ValueError(f"height must be a non-negative integer, got {value}")
         self._height = value
 
+    def get_x(self) -> int:
+        """Gets the x coordinate of the client window.
+
+        Returns:
+        -------
+            int: The x coordinate of the client window.
+        """
+        warnings.warn("get_x method is deprecated, use `x` property instead", DeprecationWarning, stacklevel=2)
+        return self.x
+
     @property
     def x(self) -> int:
         """Gets the x coordinate of the client window.
@@ -155,6 +211,16 @@ class ClientWindowInfo:
         if not isinstance(value, int):
             raise ValueError(f"x must be an integer, got {type(value).__name__}")
         self._x = value
+
+    def get_y(self) -> int:
+        """Gets the y coordinate of the client window.
+
+        Returns:
+        -------
+            int: The y coordinate of the client window.
+        """
+        warnings.warn("get_y method is deprecated, use `y` property instead", DeprecationWarning, stacklevel=2)
+        return self.y
 
     @property
     def y(self) -> int:
@@ -178,7 +244,7 @@ class ClientWindowInfo:
 
     @property
     def active(self):
-        """Gets the Window Status
+        """Gets the Window Status.
 
         Returns:
         -------
@@ -188,7 +254,7 @@ class ClientWindowInfo:
 
     @active.setter
     def active(self, value) -> None:
-        """Sets the Window Status
+        """Sets the Window Status.
 
         Returns: None
         """
@@ -229,9 +295,7 @@ class ClientWindowInfo:
 
 
 class Browser:
-    """
-    BiDi implementation of the browser module.
-    """
+    """BiDi implementation of the browser module."""
 
     def __init__(self, conn):
         self.conn = conn
