@@ -29,7 +29,7 @@ internal class ContinueWithAuthCommand(ContinueWithAuthParameters @params)
 [JsonDerivedType(typeof(ContinueWithAuthCredentials), "provideCredentials")]
 [JsonDerivedType(typeof(ContinueWithAuthDefaultCredentials), "default")]
 [JsonDerivedType(typeof(ContinueWithAuthCancelCredentials), "cancel")]
-internal abstract record ContinueWithAuthParameters(Request Request) : CommandParameters;
+internal abstract record ContinueWithAuthParameters(Request Request) : Parameters;
 
 internal sealed record ContinueWithAuthCredentials(Request Request, AuthCredentials Credentials) : ContinueWithAuthParameters(Request);
 
@@ -39,7 +39,7 @@ internal sealed record ContinueWithAuthDefaultCredentials(Request Request) : Con
 
 internal sealed record ContinueWithAuthCancelCredentials(Request Request) : ContinueWithAuthNoCredentials(Request);
 
-public abstract class ContinueWithAuthOptions : CommandOptions;
+public abstract class ContinueWithAuthOptions : Options;
 
 public sealed class ContinueWithAuthCredentialsOptions : ContinueWithAuthOptions;
 

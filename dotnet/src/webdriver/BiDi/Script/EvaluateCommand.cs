@@ -22,12 +22,12 @@ using System;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed class EvaluateCommand(EvaluateCommandParameters @params)
-    : Command<EvaluateCommandParameters, EvaluateResult>(@params, "script.evaluate");
+internal sealed class EvaluateCommand(EvaluateParameters @params)
+    : Command<EvaluateParameters, EvaluateResult>(@params, "script.evaluate");
 
-internal sealed record EvaluateCommandParameters(string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : CommandParameters;
+internal sealed record EvaluateParameters(string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : Parameters;
 
-public sealed class EvaluateOptions : CommandOptions
+public sealed class EvaluateOptions : Options
 {
     public ResultOwnership? ResultOwnership { get; set; }
 

@@ -21,12 +21,12 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-internal sealed class DeleteCookiesCommand(DeleteCookiesCommandParameters @params)
-    : Command<DeleteCookiesCommandParameters, DeleteCookiesResult>(@params, "storage.deleteCookies");
+internal sealed class DeleteCookiesCommand(DeleteCookiesParameters @params)
+    : Command<DeleteCookiesParameters, DeleteCookiesResult>(@params, "storage.deleteCookies");
 
-internal sealed record DeleteCookiesCommandParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : CommandParameters;
+internal sealed record DeleteCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 
-public sealed class DeleteCookiesOptions : CommandOptions
+public sealed class DeleteCookiesOptions : Options
 {
     public CookieFilter? Filter { get; set; }
 
