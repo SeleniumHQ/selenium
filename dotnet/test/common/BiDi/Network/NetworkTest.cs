@@ -29,7 +29,9 @@ class NetworkTest : BiDiTestFixture
     [Test]
     public async Task CanAddDataCollector()
     {
-        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], int.MaxValue);
+        // Firefox doesn't like int.MaxValue as max encoded data size
+        // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
+        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
 
         Assert.That(collector, Is.Not.Null);
     }
@@ -222,7 +224,9 @@ class NetworkTest : BiDiTestFixture
     [Test]
     public async Task CanGetData()
     {
-        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], int.MaxValue);
+        // Firefox doesn't like int.MaxValue as max encoded data size
+        // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
+        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
 
         TaskCompletionSource<string> responseBodyCompletionSource = new();
 
