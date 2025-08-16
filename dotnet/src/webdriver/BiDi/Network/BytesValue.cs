@@ -29,6 +29,13 @@ public abstract record BytesValue
 {
     public static implicit operator BytesValue(string value) => new StringBytesValue(value);
     public static implicit operator BytesValue(byte[] value) => new Base64BytesValue(Convert.ToBase64String(value));
+
+    public static explicit operator string(BytesValue value) => value switch
+    {
+        StringBytesValue stringBytesValue => stringBytesValue.Value,
+        Base64BytesValue base64BytesValue => System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(base64BytesValue.Value)),
+        _ => throw new InvalidCastException($"Cannot cast '{value.GetType()}' to '{typeof(string)}'.")
+    };
 }
 
 public sealed record StringBytesValue(string Value) : BytesValue;

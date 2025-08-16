@@ -19,12 +19,21 @@
 
 using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
+using System;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 class NetworkTest : BiDiTestFixture
 {
+    [Test]
+    public async Task CanAddDataCollector()
+    {
+        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], int.MaxValue);
+
+        Assert.That(collector, Is.Not.Null);
+    }
+
     [Test]
     public async Task CanAddIntercept()
     {
@@ -208,6 +217,28 @@ class NetworkTest : BiDiTestFixture
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED").Or.Message.Contain("NS_ERROR_ABORT"));
+    }
+
+    [Test]
+    public async Task CanGetData()
+    {
+        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], int.MaxValue);
+
+        TaskCompletionSource<string> responseBodyCompletionSource = new();
+
+        await using var _ = await bidi.Network.OnResponseCompletedAsync(async e =>
+        {
+            if (e.Response.Url.Contains("simpleTest.html"))
+            {
+                responseBodyCompletionSource.SetResult((string)await bidi.Network.GetDataAsync(DataType.Response, e.Request.Request));
+            }
+        });
+
+        await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
+
+        var responseBody = await responseBodyCompletionSource.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(responseBody, Contains.Substring("Hello WebDriver"));
     }
 
     [Test]
