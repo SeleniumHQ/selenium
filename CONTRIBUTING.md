@@ -14,12 +14,10 @@ the defect. If the issue can't be reproduced it will be closed.
 Please provide [concise reproducible test cases](http://sscce.org/)
 and describe what results you are seeing and what results you expect.
 
-Issues shouldn't be used for support. Please address questions to the
-[`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
+Issues shouldn't be used for support. To raise a bug, please go here-
+(https://github.com/SeleniumHQ/selenium/issues)).
 Discussion of high level project ideas or non-technical topics should
-move to the
-[`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers)
-instead.
+move to the Selenium Slack channel (https://inviter.co/seleniumhq).
 
 We also need help with triaging
 [issues that needs investigation](https://github.com/SeleniumHQ/selenium/labels/I-needs%20investigation).
