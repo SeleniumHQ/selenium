@@ -1,4 +1,4 @@
-// <copyright file="WebDriver.Extensions.cs" company="Selenium Committers">
+// <copyright file="WebExtensionModule.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,28 +17,24 @@
 // under the License.
 // </copyright>
 
-using System;
+using OpenQA.Selenium.BiDi.Communication;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi;
+namespace OpenQA.Selenium.BiDi.WebExtension;
 
-public static class WebDriverExtensions
+public sealed class WebExtensionModule(Broker broker) : Module(broker)
 {
-    public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null)
+    public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
     {
-        if (webDriver is null) throw new ArgumentNullException(nameof(webDriver));
+        var @params = new InstallParameters(extensionData);
 
-        string? webSocketUrl = null;
+        return await Broker.ExecuteCommandAsync<InstallCommand, InstallResult>(new InstallCommand(@params), options).ConfigureAwait(false);
+    }
 
-        if (webDriver is IHasCapabilities hasCapabilities)
-        {
-            webSocketUrl = hasCapabilities.Capabilities.GetCapability("webSocketUrl")?.ToString();
-        }
+    public async Task<EmptyResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
+    {
+        var @params = new UninstallParameters(extension);
 
-        if (webSocketUrl is null) throw new BiDiException("The driver is not compatible with bidirectional protocol or \"webSocketUrl\" not enabled in driver options.");
-
-        var bidi = await BiDi.ConnectAsync(webSocketUrl, options).ConfigureAwait(false);
-
-        return bidi;
+        return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options).ConfigureAwait(false);
     }
 }
