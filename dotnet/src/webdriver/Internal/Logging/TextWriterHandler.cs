@@ -19,25 +19,22 @@
 
 using System.IO;
 
-#nullable enable
+namespace OpenQA.Selenium.Internal.Logging;
 
-namespace OpenQA.Selenium.Internal.Logging
+/// <summary>
+/// Represents a log handler that writes log events to the given text writer.
+/// </summary>
+public class TextWriterHandler(TextWriter writer) : ILogHandler
 {
-    /// <summary>
-    /// Represents a log handler that writes log events to the given text writer.
-    /// </summary>
-    public class TextWriterHandler(TextWriter writer) : ILogHandler
-    {
-        // performance trick to avoid expensive Enum.ToString() with fixed length
-        private static readonly string[] _levels = { "TRACE", "DEBUG", " INFO", " WARN", "ERROR" };
+    // performance trick to avoid expensive Enum.ToString() with fixed length
+    private static readonly string[] _levels = { "TRACE", "DEBUG", " INFO", " WARN", "ERROR" };
 
-        /// <summary>
-        /// Handles a log event by writing it to the text writer.
-        /// </summary>
-        /// <param name="logEvent">The log event to handle.</param>
-        public void Handle(LogEvent logEvent)
-        {
-            writer.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
-        }
+    /// <summary>
+    /// Handles a log event by writing it to the text writer.
+    /// </summary>
+    /// <param name="logEvent">The log event to handle.</param>
+    public void Handle(LogEvent logEvent)
+    {
+        writer.WriteLine($"{logEvent.Timestamp:HH:mm:ss.fff} {_levels[(int)logEvent.Level]} {logEvent.IssuedBy.Name}: {logEvent.Message}");
     }
 }

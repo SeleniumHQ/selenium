@@ -22,8 +22,11 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+      after { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
+
       it_behaves_like 'driver that can be started concurrently', exclude: [
         {browser: %i[safari safari_preview]},
+        {browser: :firefox, reason: 'https://github.com/SeleniumHQ/selenium/issues/15451'},
         {driver: :remote, rbe: true, reason: 'Cannot start 2+ drivers at once.'}
       ]
 
@@ -59,8 +62,7 @@ module Selenium
 
       it 'refreshes the page' do
         driver.navigate.to url_for('javascriptPage.html')
-        sleep 1 # javascript takes too long to load
-        driver.find_element(id: 'updatediv').click
+        short_wait { driver.find_element(id: 'updatediv') }.click
         expect(driver.find_element(id: 'dynamo').text).to eq('Fish and chips!')
         driver.navigate.refresh
         wait_for_element(id: 'dynamo')
@@ -241,15 +243,6 @@ module Selenium
           element = driver.find_element(name: 'form2')
           children = element.find_elements(name: 'selectomatic')
           expect(children.size).to eq(2)
-        end
-      end
-
-      describe '#script' do
-        it 'executes script with deprecation warning' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          expect {
-            expect(driver.script('return document.title;')).to eq('XHTML Test Page')
-          }.to have_deprecated(:driver_script)
         end
       end
 

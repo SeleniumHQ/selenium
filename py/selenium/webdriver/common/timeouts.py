@@ -26,9 +26,7 @@ if TYPE_CHECKING:
         script: int
 
 else:
-    from typing import Dict
-
-    JSONTimeouts = Dict[str, int]
+    JSONTimeouts = dict[str, int]
 
 
 class _TimeoutsDescriptor:
@@ -78,15 +76,15 @@ class Timeouts:
 
     This does not set the value on the remote end.
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.implicit_wait`
     - Set
         - `self.implicit_wait` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
     """
 
@@ -95,15 +93,15 @@ class Timeouts:
 
     This does not set the value on the remote end.
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.page_load`
     - Set
         - `self.page_load` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
     """
 
@@ -113,14 +111,14 @@ class Timeouts:
 
     This does not set the value on the remote end.
 
-    Usage
+    Usage:
     ------
     - Get
         - `self.script`
     - Set
         - `self.script` = `value`
 
-    Parameters
+    Parameters:
     -----------
     `value`: `float`
     """

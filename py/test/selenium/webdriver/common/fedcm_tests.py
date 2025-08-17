@@ -21,6 +21,7 @@ from selenium.common.exceptions import NoAlertPresentException
 
 
 @pytest.mark.xfail_safari(reason="FedCM not supported")
+@pytest.mark.xfail_chrome(reason="https://issues.chromium.org/u/0/issues/425801332")
 @pytest.mark.xfail_firefox(reason="FedCM not supported")
 @pytest.mark.xfail_ie(reason="FedCM not supported")
 @pytest.mark.xfail_remote(reason="FedCM not supported, since remote uses Firefox")
@@ -62,16 +63,19 @@ class TestFedCM:
         driver.execute_script("triggerFedCm();")
         dialog = driver.fedcm_dialog()
         assert dialog.title == "Sign in to localhost with localhost"
+        dialog.dismiss()
 
     def test_trigger_and_verify_dialog_subtitle(self, driver):
         driver.execute_script("triggerFedCm();")
         dialog = driver.fedcm_dialog()
         assert dialog.subtitle is None
+        dialog.dismiss()
 
     def test_trigger_and_verify_dialog_type(self, driver):
         driver.execute_script("triggerFedCm();")
         dialog = driver.fedcm_dialog()
         assert dialog.type == "AccountChooser"
+        dialog.dismiss()
 
     def test_trigger_and_verify_account_list(self, driver):
         driver.execute_script("triggerFedCm();")
@@ -79,6 +83,7 @@ class TestFedCM:
         accounts = dialog.get_accounts()
         assert len(accounts) > 0
         assert accounts[0].name == "John Doe"
+        dialog.dismiss()
 
     def test_select_account(self, driver):
         driver.execute_script("triggerFedCm();")
@@ -86,6 +91,7 @@ class TestFedCM:
         dialog.select_account(1)
         driver.fedcm_dialog()  # Wait for dialog to become interactable
         # dialog.click_continue()
+        dialog.dismiss()
 
     def test_dialog_cancel(self, driver):
         driver.execute_script("triggerFedCm();")
@@ -136,3 +142,4 @@ class TestFedCM:
         driver.execute_script("triggerFedCm();")
         dialog = driver.fedcm_dialog()
         assert dialog.type == "AccountChooser"
+        dialog.dismiss()

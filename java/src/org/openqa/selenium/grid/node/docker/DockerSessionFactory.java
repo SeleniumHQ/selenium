@@ -91,6 +91,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Duration sessionTimeout;
+  private final Duration serverStartTimeout;
   private final Docker docker;
   private final URI dockerUri;
   private final Image browserImage;
@@ -108,6 +109,7 @@ public class DockerSessionFactory implements SessionFactory {
       Tracer tracer,
       HttpClient.Factory clientFactory,
       Duration sessionTimeout,
+      Duration serverStartTimeout,
       Docker docker,
       URI dockerUri,
       Image browserImage,
@@ -123,6 +125,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
+    this.serverStartTimeout = Require.nonNull("Server start timeout", serverStartTimeout);
     this.docker = Require.nonNull("Docker command", docker);
     this.dockerUri = Require.nonNull("Docker URI", dockerUri);
     this.browserImage = Require.nonNull("Docker browser image", browserImage);
@@ -181,7 +184,7 @@ public class DockerSessionFactory implements SessionFactory {
               "Waiting for server to start (container id: %s, url %s)",
               container.getId(), remoteAddress));
       try {
-        waitForServerToStart(client, Duration.ofMinutes(1));
+        waitForServerToStart(client, serverStartTimeout);
       } catch (TimeoutException e) {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
@@ -367,7 +370,7 @@ public class DockerSessionFactory implements SessionFactory {
         clientFactory.createClient(ClientConfig.defaultConfig().baseUri(videoContainerUrl));
     try {
       LOG.fine(String.format("Waiting for video recording... (id: %s)", videoContainer.getId()));
-      waitForServerToStart(videoClient, Duration.ofMinutes(1));
+      waitForServerToStart(videoClient, serverStartTimeout);
     } catch (Exception e) {
       videoContainer.stop(Duration.ofSeconds(10));
       String message =

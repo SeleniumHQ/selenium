@@ -17,12 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Modules.Script;
+using OpenQA.Selenium.BiDi.Communication.Json.Internal;
+using OpenQA.Selenium.BiDi.Script;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-#nullable enable
 
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 
@@ -31,40 +30,39 @@ internal class RemoteValueConverter : JsonConverter<RemoteValue>
 {
     public override RemoteValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        var jsonDocument = JsonDocument.ParseValue(ref reader);
-
-        if (jsonDocument.RootElement.ValueKind == JsonValueKind.String)
+        if (reader.TokenType == JsonTokenType.String)
         {
-            return new RemoteValue.String(jsonDocument.RootElement.GetString()!);
+            return new StringRemoteValue(reader.GetString()!);
         }
 
-        return jsonDocument.RootElement.GetProperty("type").ToString() switch
+        return reader.GetDiscriminator("type") switch
         {
-            "number" => jsonDocument.Deserialize<RemoteValue.Number>(options),
-            "boolean" => jsonDocument.Deserialize<RemoteValue.Boolean>(options),
-            "string" => jsonDocument.Deserialize<RemoteValue.String>(options),
-            "null" => jsonDocument.Deserialize<RemoteValue.Null>(options),
-            "undefined" => jsonDocument.Deserialize<RemoteValue.Undefined>(options),
-            "symbol" => jsonDocument.Deserialize<RemoteValue.Symbol>(options),
-            "array" => jsonDocument.Deserialize<RemoteValue.Array>(options),
-            "object" => jsonDocument.Deserialize<RemoteValue.Object>(options),
-            "function" => jsonDocument.Deserialize<RemoteValue.Function>(options),
-            "regexp" => jsonDocument.Deserialize<RemoteValue.RegExp>(options),
-            "date" => jsonDocument.Deserialize<RemoteValue.Date>(options),
-            "map" => jsonDocument.Deserialize<RemoteValue.Map>(options),
-            "set" => jsonDocument.Deserialize<RemoteValue.Set>(options),
-            "weakmap" => jsonDocument.Deserialize<RemoteValue.WeakMap>(options),
-            "weakset" => jsonDocument.Deserialize<RemoteValue.WeakSet>(options),
-            "generator" => jsonDocument.Deserialize<RemoteValue.Generator>(options),
-            "error" => jsonDocument.Deserialize<RemoteValue.Error>(options),
-            "proxy" => jsonDocument.Deserialize<RemoteValue.Proxy>(options),
-            "promise" => jsonDocument.Deserialize<RemoteValue.Promise>(options),
-            "typedarray" => jsonDocument.Deserialize<RemoteValue.TypedArray>(options),
-            "arraybuffer" => jsonDocument.Deserialize<RemoteValue.ArrayBuffer>(options),
-            "nodelist" => jsonDocument.Deserialize<RemoteValue.NodeList>(options),
-            "htmlcollection" => jsonDocument.Deserialize<RemoteValue.HtmlCollection>(options),
-            "node" => jsonDocument.Deserialize<RemoteValue.Node>(options),
-            "window" => jsonDocument.Deserialize<RemoteValue.WindowProxy>(options),
+            "number" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NumberRemoteValue>()),
+            "boolean" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<BooleanRemoteValue>()),
+            "bigint" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<BigIntRemoteValue>()),
+            "string" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<StringRemoteValue>()),
+            "null" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NullRemoteValue>()),
+            "undefined" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<UndefinedRemoteValue>()),
+            "symbol" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<SymbolRemoteValue>()),
+            "array" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ArrayRemoteValue>()),
+            "object" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ObjectRemoteValue>()),
+            "function" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<FunctionRemoteValue>()),
+            "regexp" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<RegExpRemoteValue>()),
+            "date" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DateRemoteValue>()),
+            "map" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<MapRemoteValue>()),
+            "set" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<SetRemoteValue>()),
+            "weakmap" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WeakMapRemoteValue>()),
+            "weakset" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WeakSetRemoteValue>()),
+            "generator" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<GeneratorRemoteValue>()),
+            "error" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ErrorRemoteValue>()),
+            "proxy" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ProxyRemoteValue>()),
+            "promise" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<PromiseRemoteValue>()),
+            "typedarray" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<TypedArrayRemoteValue>()),
+            "arraybuffer" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<ArrayBufferRemoteValue>()),
+            "nodelist" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NodeListRemoteValue>()),
+            "htmlcollection" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<HtmlCollectionRemoteValue>()),
+            "node" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<NodeRemoteValue>()),
+            "window" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<WindowProxyRemoteValue>()),
             _ => null,
         };
     }

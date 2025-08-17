@@ -193,4 +193,12 @@ impl SeleniumManager for SafariTPManager {
     fn set_download_browser(&mut self, download_browser: bool) {
         self.download_browser = download_browser;
     }
+
+    fn is_snap(&self, _browser_path: &str) -> bool {
+        false
+    }
+
+    fn get_snap_path(&self) -> Option<PathBuf> {
+        None
+    }
 }

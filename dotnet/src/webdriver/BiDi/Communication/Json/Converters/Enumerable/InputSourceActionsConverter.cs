@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Modules.Input;
+using OpenQA.Selenium.BiDi.Communication.Json.Internal;
+using OpenQA.Selenium.BiDi.Input;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-#nullable enable
 
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
 
@@ -45,7 +45,7 @@ internal class InputSourceActionsConverter : JsonConverter<SourceActions>
             case KeyActions keys:
                 writer.WriteString("type", "key");
                 writer.WritePropertyName("actions");
-                JsonSerializer.Serialize(writer, keys.Actions.Select(a => a as IKeySourceAction), options);
+                JsonSerializer.Serialize(writer, keys.Actions.Select(a => a as IKeySourceAction), options.GetTypeInfo<IEnumerable<IKeySourceAction?>>());
 
                 break;
             case PointerActions pointers:
@@ -53,23 +53,23 @@ internal class InputSourceActionsConverter : JsonConverter<SourceActions>
                 if (pointers.Options is not null)
                 {
                     writer.WritePropertyName("parameters");
-                    JsonSerializer.Serialize(writer, pointers.Options, options);
+                    JsonSerializer.Serialize(writer, pointers.Options, options.GetTypeInfo(typeof(PointerParameters)));
                 }
 
                 writer.WritePropertyName("actions");
-                JsonSerializer.Serialize(writer, pointers.Actions.Select(a => a as IPointerSourceAction), options);
+                JsonSerializer.Serialize(writer, pointers.Actions.Select(a => a as IPointerSourceAction), options.GetTypeInfo<IEnumerable<IPointerSourceAction?>>());
 
                 break;
             case WheelActions wheels:
                 writer.WriteString("type", "wheel");
                 writer.WritePropertyName("actions");
-                JsonSerializer.Serialize(writer, wheels.Actions.Select(a => a as IWheelSourceAction), options);
+                JsonSerializer.Serialize(writer, wheels.Actions.Select(a => a as IWheelSourceAction), options.GetTypeInfo<IEnumerable<IWheelSourceAction?>>());
 
                 break;
             case NoneActions none:
                 writer.WriteString("type", "none");
                 writer.WritePropertyName("actions");
-                JsonSerializer.Serialize(writer, none.Actions.Select(a => a as INoneSourceAction), options);
+                JsonSerializer.Serialize(writer, none.Actions.Select(a => a as INoneSourceAction), options.GetTypeInfo<IEnumerable<INoneSourceAction?>>());
 
                 break;
         }

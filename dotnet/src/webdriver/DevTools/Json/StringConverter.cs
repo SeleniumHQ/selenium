@@ -22,8 +22,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-#nullable enable
-
 namespace OpenQA.Selenium.DevTools.Json;
 
 internal sealed class StringConverter : JsonConverter<string?>

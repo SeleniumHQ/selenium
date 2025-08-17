@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List
 from typing import Optional
 
 from .account import Account
@@ -46,7 +45,7 @@ class Dialog:
         result = self._driver.fedcm.subtitle
         return result.get("subtitle") if result else None
 
-    def get_accounts(self) -> List[Account]:
+    def get_accounts(self) -> list[Account]:
         """Gets the list of accounts shown in the dialog."""
         accounts = self._driver.fedcm.account_list
         return [Account(account) for account in accounts]

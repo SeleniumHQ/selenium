@@ -67,8 +67,8 @@ module Selenium
         # @option opts [Array<String>] window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(profile: nil, **opts)
-          super(**opts)
+        def initialize(profile: nil, **)
+          super(**)
 
           @profile = profile
 

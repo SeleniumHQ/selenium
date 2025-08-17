@@ -61,25 +61,12 @@ module Selenium
         end
 
         def run(*command)
-          WebDriver.logger.debug("Executing Process #{command}", id: :selenium_manager)
+          stdout, stderr, status = execute_command(*command)
+          result = parse_result_and_log(stdout)
 
-          begin
-            stdout, stderr, status = Open3.capture3(*command)
-          rescue StandardError => e
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
-          end
+          validate_command_result(command, status, result, stderr)
 
-          json_output = stdout.empty? ? {'logs' => [], 'result' => {}} : JSON.parse(stdout)
-          json_output['logs'].each do |log|
-            level = log['level'].casecmp('info').zero? ? 'debug' : log['level'].downcase
-            WebDriver.logger.send(level, log['message'], id: :selenium_manager)
-          end
-
-          result = json_output['result']
-          return result unless status.exitstatus.positive? || result.nil?
-
-          raise Error::WebDriverError,
-                "Unsuccessful command executed: #{command} - Code #{status.exitstatus}\n#{result}\n#{stderr}"
+          result
         end
 
         def platform_location
@@ -97,6 +84,38 @@ module Selenium
           else
             raise Error::WebDriverError, "unsupported platform: #{Platform.os}"
           end
+        end
+
+        def execute_command(*command)
+          WebDriver.logger.debug("Executing Process #{command}", id: :selenium_manager)
+
+          Open3.capture3(*command)
+        rescue StandardError => e
+          raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
+        end
+
+        def parse_result_and_log(stdout)
+          json_output = stdout.empty? ? {'logs' => [], 'result' => {}} : JSON.parse(stdout)
+
+          json_output['logs'].each do |log|
+            level = log['level'].casecmp('info').zero? ? 'debug' : log['level'].downcase
+            WebDriver.logger.send(level, log['message'], id: :selenium_manager)
+          end
+
+          json_output['result']
+        end
+
+        def validate_command_result(command, status, result, stderr)
+          if status.nil? || status.exitstatus.nil?
+            WebDriver.logger.info("No exit status for: #{command}. Assuming success if result is present.",
+                                  id: :selenium_manager)
+          end
+
+          return unless status&.exitstatus&.positive? || result.nil?
+
+          code = status&.exitstatus || 'exit status not available'
+          raise Error::WebDriverError,
+                "Unsuccessful command executed: #{command} - Code #{code}\n#{result}\n#{stderr}"
         end
       end
     end # SeleniumManager

@@ -3,7 +3,7 @@ package(
         "//dotnet/src/webdriver:__pkg__",
         "//dotnet/test/common:__pkg__",
         "//java/src/org/openqa/selenium/manager:__pkg__",
-        "//javascript/node/selenium-webdriver:__pkg__",
+        "//javascript/selenium-webdriver:__pkg__",
         "//py:__pkg__",
         "//rb:__pkg__",
     ],

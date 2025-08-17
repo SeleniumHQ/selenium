@@ -56,10 +56,22 @@ module Selenium
 
         def long_wait
           @long_wait ||= Wait.new(timeout: 30)
+
+          return @long_wait unless block_given?
+
+          result = nil
+          @long_wait.until { result = yield }
+          result
         end
 
         def short_wait
           @short_wait ||= Wait.new(timeout: 3)
+
+          return @short_wait unless block_given?
+
+          result = nil
+          @short_wait.until { result = yield }
+          result
         end
 
         def wait_for_alert
@@ -100,6 +112,13 @@ module Selenium
           end
 
           [width, height]
+        end
+
+        def create_tempfile
+          Tempfile.new.tap do |file|
+            file.write('This is a dummy test file')
+            file.close
+          end
         end
       end # Helpers
     end # SpecSupport

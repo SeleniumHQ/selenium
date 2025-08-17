@@ -27,33 +27,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tox==4.6.4
-      - name: Test with tox
+          pip install tox==4.27.0
+      - name: Generate docs
         run: tox -c py/tox.ini
         env:
           TOXENV: docs
-
-  lint:
-    name: Lint
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v4
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install tox==4.6.4
-      - name: Test with tox
-        run: tox -c py/tox.ini
-        env:
-          # If this fails, it will exit. Local work should be using `tox -e linting` prior to committing.
-          # the linting-ci recipe exists solely for CI and will not attempt to rewrite any files in-place etc.
-          TOXENV: linting-ci
 
   mypy:
     name: Mypy
@@ -69,11 +47,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tox==4.6.4
-      - name: Test with tox
+          pip install tox==4.27.0
+      - name: Run type checking
         run: |
-          tox -c py/tox.ini -- --cobertura-xml-report ci || true
-          bash <(curl -s https://codecov.io/bash) -f py/ci/cobertura.xml
+          tox -c py/tox.ini || true
         env:
           TOXENV: mypy
 
@@ -112,8 +89,8 @@ jobs:
       os: ${{ matrix.os }}
       cache-key: py-browser-${{ matrix.browser }}
       run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }}-bidi
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:common-${{ matrix.browser }}-bidi
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:test-${{ matrix.browser }}
 
   safari-tests:
     name: Browser Tests
@@ -131,4 +108,4 @@ jobs:
       os: ${{ matrix.os }}
       cache-key: py-browser-${{ matrix.browser }}
       run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:test-${{ matrix.browser }}

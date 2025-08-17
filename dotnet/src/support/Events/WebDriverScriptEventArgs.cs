@@ -19,33 +19,32 @@
 
 using System;
 
-namespace OpenQA.Selenium.Support.Events
+namespace OpenQA.Selenium.Support.Events;
+
+/// <summary>
+/// Provides data for events relating to executing JavaScript.
+/// </summary>
+public class WebDriverScriptEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for events relating to executing JavaScript.
+    /// Initializes a new instance of the <see cref="WebDriverScriptEventArgs"/> class.
     /// </summary>
-    public class WebDriverScriptEventArgs : EventArgs
+    /// <param name="driver">The WebDriver instance used to execute the script.</param>
+    /// <param name="script">The script executed by the driver.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="script"/> are <see langword="null"/>.</exception>
+    public WebDriverScriptEventArgs(IWebDriver driver, string script)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebDriverScriptEventArgs"/> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used to execute the script.</param>
-        /// <param name="script">The script executed by the driver.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="script"/> are <see langword="null"/>.</exception>
-        public WebDriverScriptEventArgs(IWebDriver driver, string script)
-        {
-            this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-            this.Script = script ?? throw new ArgumentNullException(nameof(script));
-        }
-
-        /// <summary>
-        /// Gets the WebDriver instance used to execute the script.
-        /// </summary>
-        public IWebDriver Driver { get; }
-
-        /// <summary>
-        /// Gets the script executed by the driver.
-        /// </summary>
-        public string Script { get; }
+        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        this.Script = script ?? throw new ArgumentNullException(nameof(script));
     }
+
+    /// <summary>
+    /// Gets the WebDriver instance used to execute the script.
+    /// </summary>
+    public IWebDriver Driver { get; }
+
+    /// <summary>
+    /// Gets the script executed by the driver.
+    /// </summary>
+    public string Script { get; }
 }

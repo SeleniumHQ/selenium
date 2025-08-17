@@ -96,17 +96,20 @@ public class DriverFinder {
         String driverName = service.getDriverName();
         result = new Result(service.getExecutable());
         if (result.getDriverPath() == null) {
-          result = new Result(System.getProperty(service.getDriverProperty()));
+          result = new Result(System.getenv(service.getDriverEnvironmentVariable()));
           if (result.getDriverPath() == null) {
-            List<String> arguments = toArguments();
-            result = seleniumManager.getBinaryPaths(arguments);
-            Require.state(options.getBrowserName(), Path.of(result.getBrowserPath()))
-                .isExecutable();
-          } else {
-            LOG.fine(
-                String.format(
-                    "Skipping Selenium Manager, path to %s found in system property: %s",
-                    driverName, result.getDriverPath()));
+            result = new Result(System.getProperty(service.getDriverProperty()));
+            if (result.getDriverPath() == null) {
+              List<String> arguments = toArguments();
+              result = seleniumManager.getBinaryPaths(arguments);
+              Require.state(options.getBrowserName(), Path.of(result.getBrowserPath()))
+                  .isExecutable();
+            } else {
+              LOG.fine(
+                  String.format(
+                      "Skipping Selenium Manager, path to %s found in system property: %s",
+                      driverName, result.getDriverPath()));
+            }
           }
         } else {
           LOG.fine(

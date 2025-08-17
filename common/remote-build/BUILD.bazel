@@ -38,8 +38,9 @@ platform(
         "@platforms//cpu:x86_64",
     ],
     exec_properties = {
-        "container-image": "docker://docker.io/shs96c/selenium-remote-build@sha256:314b60a3c2b82f512c0f3fdba0aed8983f2b9bfdf2901a4f41511abdfd6dd74a",
+        "container-image": "docker://docker.io/selenium/selenium-remote-build@sha256:ca164352826812f02eaa1b4dab89adcf5b3e57deb6798dd9f15d004099db59fe",
         "OSFamily": "Linux",
+        "dockerNetwork": "standard",  # Allow internet access for the Rust tests
         "dockerReuse": "True",
         "dockerRunAsRoot": "False",
         "dockerUseEntrypoint": "True",

@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.interactions;
 
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.Point;
 
 /**
  * Provides coordinates of an element for advanced interactions. Note that some coordinates (such as
  * screen coordinates) are evaluated lazily since the element may have to be scrolled into view.
  */
+@NullMarked
 public interface Coordinates {
 
   /**

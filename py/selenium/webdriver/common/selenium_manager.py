@@ -22,7 +22,6 @@ import subprocess
 import sys
 import sysconfig
 from pathlib import Path
-from typing import List
 from typing import Optional
 
 from selenium.common import WebDriverException
@@ -36,7 +35,7 @@ class SeleniumManager:
     This implementation is still in beta, and may change.
     """
 
-    def binary_paths(self, args: List) -> dict:
+    def binary_paths(self, args: list) -> dict:
         """Determines the locations of the requested assets.
 
         :Args:
@@ -103,7 +102,7 @@ class SeleniumManager:
         return path
 
     @staticmethod
-    def _run(args: List[str]) -> dict:
+    def _run(args: list[str]) -> dict:
         """Executes the Selenium Manager Binary.
 
         :Args:
@@ -132,7 +131,7 @@ class SeleniumManager:
         return result
 
     @staticmethod
-    def _process_logs(log_items: List[dict]):
+    def _process_logs(log_items: list[dict]):
         for item in log_items:
             if item["level"] == "WARN":
                 logger.warning(item["message"])

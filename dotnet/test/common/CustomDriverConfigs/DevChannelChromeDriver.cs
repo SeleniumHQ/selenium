@@ -17,29 +17,28 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Chrome
+namespace OpenQA.Selenium.Chrome;
+
+public class DevChannelChromeDriver : ChromeDriver
 {
-    public class DevChannelChromeDriver : ChromeDriver
+    public DevChannelChromeDriver()
+        : base(DefaultOptions)
     {
-        public DevChannelChromeDriver()
-            : base(DefaultOptions)
-        {
-        }
+    }
 
-        // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-        public DevChannelChromeDriver(ChromeOptions options)
-            : base(options)
-        {
-        }
+    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
+    public DevChannelChromeDriver(ChromeOptions options)
+        : base(options)
+    {
+    }
 
-        public DevChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
-            : base(service, options)
-        {
-        }
+    public DevChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
+        : base(service, options)
+    {
+    }
 
-        public static ChromeOptions DefaultOptions
-        {
-            get { return new ChromeOptions() { BrowserVersion = "dev" }; }
-        }
+    public static ChromeOptions DefaultOptions
+    {
+        get { return new ChromeOptions() { BrowserVersion = "dev" }; }
     }
 }

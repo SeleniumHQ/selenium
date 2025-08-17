@@ -18,17 +18,31 @@ jobs:
     steps:
       - uses: actions/stale@v9
         with:
-          stale-issue-message: 'This issue is stale because it has been open 280 days with no activity. Remove stale label or comment or this will be closed in 14 days.'
+          stale-issue-message: 'This issue is stale because it has been open 180 days with no activity. Remove stale label or comment or this will be closed in 14 days.'
           close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
-          stale-issue-label: 'I-stale'
+          stale-issue-label: 'J-stale'
+          stale-pr-label: 'J-stale'
           days-before-stale: 180
           days-before-close: 14
           exempt-all-milestones: true
       - uses: actions/stale@v9
         with:
           close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
-          stale-issue-label: 'R-awaiting answer'
+          stale-issue-label: 'J-awaiting answer'
           days-before-stale: -1
           days-before-close: 14
-          labels-to-add-when-unstale: 'needs-triaging'
-
+          labels-to-add-when-unstale: 'A-needs-triaging'
+      - uses: actions/stale@v9
+        with:
+          close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
+          stale-issue-label: 'J-logging'
+          days-before-stale: -1
+          days-before-close: 14
+          labels-to-add-when-unstale: 'A-needs-triaging'
+      - uses: actions/stale@v9
+        with:
+          close-issue-message: 'This issue was closed because we did not receive any additional information after 14 days.'
+          stale-issue-label: 'J-issue-template'
+          days-before-stale: -1
+          days-before-close: 14
+          labels-to-add-when-unstale: 'A-needs-triaging'

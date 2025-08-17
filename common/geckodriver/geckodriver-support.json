@@ -2,7 +2,7 @@
   "geckodriver-releases": [
     {
       "geckodriver-version": "0.36.0",
-      "min-firefox-version": 115
+      "min-firefox-version": 128
     },
     {
       "geckodriver-version": "0.35.0",

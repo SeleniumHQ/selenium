@@ -98,7 +98,7 @@ def test_get_extensions_from_extension_files(options, mocker):
     assert "foo" in options.extensions
 
 
-def test_get_extensions_from_encoded_extensions(options, mocker):
+def test_get_extensions_from_encoded_extensions(options):
     options._extensions = ["foo"]
     assert "foo" in options.extensions
 

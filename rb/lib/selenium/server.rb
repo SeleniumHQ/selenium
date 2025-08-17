@@ -183,7 +183,7 @@ module Selenium
     def initialize(jar, opts = {})
       raise Errno::ENOENT, jar unless File.exist?(jar)
 
-      @java = opts.fetch(:java, 'java')
+      @java = opts.fetch(:java, 'java') || 'java'
       @jar = jar
       @host = '127.0.0.1'
       @role = opts.fetch(:role, 'standalone')

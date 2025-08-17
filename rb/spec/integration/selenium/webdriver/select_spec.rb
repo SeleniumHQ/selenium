@@ -29,6 +29,7 @@ module Selenium
         let(:multi_disabled) { described_class.new(driver.find_element(name: 'multi_disabled')) }
 
         before { driver.navigate.to url_for('formPage.html') }
+        after { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
 
         describe '#initialize' do
           it 'raises exception if not a select element' do

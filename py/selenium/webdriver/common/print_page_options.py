@@ -16,14 +16,10 @@
 # under the License.
 
 
-from typing import TYPE_CHECKING
-from typing import List
-from typing import Optional
-from typing import Type
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from typing import Literal
-    from typing import TypedDict
+    from typing import Literal, TypedDict
 
     Orientation = Literal["portrait", "landscape"]
 
@@ -44,14 +40,13 @@ if TYPE_CHECKING:
         orientation: Orientation
         scale: float
         shrinkToFit: bool
-        pageRanges: List[str]
+        pageRanges: list[str]
 
 else:
     from typing import Any
-    from typing import Dict
 
     Orientation = str
-    _MarginOpts = _PageOpts = _PrintOpts = Dict[str, Any]
+    _MarginOpts = _PageOpts = _PrintOpts = dict[str, Any]
 
 
 class _PageSettingsDescriptor:
@@ -126,7 +121,7 @@ class _PageOrientationDescriptor:
 class _ValidateTypeDescriptor:
     """Base Class Descriptor which validates type of any subclass attribute."""
 
-    def __init__(self, name, expected_type: Type):
+    def __init__(self, name, expected_type: type):
         self.name = name
         self.expected_type = expected_type
 
@@ -171,12 +166,12 @@ class PrintOptions:
     - Set
         - `self.page_height` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[float]`
     - Set
@@ -186,19 +181,19 @@ class PrintOptions:
     page_width = _PageSettingsDescriptor("width")
     """Gets and Sets page_width:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.page_width`
     - Set
         - `self.page_width` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[float]`
     - Set
@@ -208,19 +203,19 @@ class PrintOptions:
     margin_top = _MarginSettingsDescriptor("top")
     """Gets and Sets margin_top:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.margin_top`
     - Set
         - `self.margin_top` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[float]`
     - Set
@@ -230,19 +225,19 @@ class PrintOptions:
     margin_bottom = _MarginSettingsDescriptor("bottom")
     """Gets and Sets margin_bottom:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.margin_bottom`
     - Set
         - `self.margin_bottom` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[float]`
     - Set
@@ -252,19 +247,19 @@ class PrintOptions:
     margin_left = _MarginSettingsDescriptor("left")
     """Gets and Sets margin_left:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.margin_left`
     - Set
         - `self.margin_left` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[float]`
     - Set
@@ -274,19 +269,19 @@ class PrintOptions:
     margin_right = _MarginSettingsDescriptor("right")
     """Gets and Sets margin_right:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.margin_right`
     - Set
         - `self.margin_right` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[float]`
     - Set
@@ -296,19 +291,19 @@ class PrintOptions:
     scale = _ScaleDescriptor("scale")
     """Gets and Sets scale:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.scale`
     - Set
         - `self.scale` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `float`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[float]`
     - Set
@@ -318,19 +313,19 @@ class PrintOptions:
     orientation = _PageOrientationDescriptor("orientation")
     """Gets and Sets orientation:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.orientation`
     - Set
         - `self.orientation` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `Orientation`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[Orientation]`
     - Set
@@ -340,19 +335,19 @@ class PrintOptions:
     background = _ValidateBackGround("background")
     """Gets and Sets background:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.background`
     - Set
         - `self.background` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `bool`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[bool]`
     - Set
@@ -362,19 +357,19 @@ class PrintOptions:
     shrink_to_fit = _ValidateShrinkToFit("shrinkToFit")
     """Gets and Sets shrink_to_fit:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.shrink_to_fit`
     - Set
         - `self.shrink_to_fit` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: `bool`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[bool]`
     - Set
@@ -384,19 +379,19 @@ class PrintOptions:
     page_ranges = _ValidatePageRanges("pageRanges")
     """Gets and Sets page_ranges:
 
-    Usage
-    -----
+    Usage:
+    ------
     - Get
         - `self.page_ranges`
     - Set
         - `self.page_ranges` = `value`
 
-    Parameters
-    ----------
+    Parameters:
+    -----------
     `value`: ` List[str]`
 
-    Returns
-    -------
+    Returns:
+    --------
     - Get
         - `Optional[List[str]]`
     - Set
@@ -423,13 +418,13 @@ class PrintOptions:
     def set_page_size(self, page_size: dict) -> None:
         """Sets the page size to predefined or custom dimensions.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         page_size: dict
         A dictionary containing `height` and `width` as keys with respective values.
 
-        Example
-        -------
+        Example:
+        --------
         self.set_page_size(PageSize.A4)  # A4 predefined size
         self.set_page_size({"height": 15.0, "width": 20.0})  # Custom size in cm
         """

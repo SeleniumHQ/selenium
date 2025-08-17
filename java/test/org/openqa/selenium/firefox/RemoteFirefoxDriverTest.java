@@ -62,6 +62,7 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
     FirefoxOptions options = new FirefoxOptions();
     String dir = "foo/bar";
     options.addPreference("browser.download.dir", dir);
+    options.addArguments("-remote-allow-system-access");
     localDriver = new WebDriverBuilder().get(options);
 
     ((HasContext) localDriver).setContext(FirefoxCommandContext.CHROME);
@@ -78,6 +79,7 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
     FirefoxOptions options = new FirefoxOptions();
     String dir = "foo/bar";
     options.addPreference("browser.download.dir", dir);
+    options.addArguments("-remote-allow-system-access");
 
     localDriver = new WebDriverBuilder().get(options);
 

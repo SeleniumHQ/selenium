@@ -16,6 +16,7 @@
 # under the License.
 
 """Tests for advanced user interactions."""
+
 import pytest
 
 from selenium.common.exceptions import MoveTargetOutOfBoundsException

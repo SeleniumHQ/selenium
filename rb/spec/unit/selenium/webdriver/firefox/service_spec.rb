@@ -51,7 +51,7 @@ module Selenium
           it 'does not create args by default' do
             service = described_class.new
 
-            expect(service.extra_args).to be_empty
+            expect(service.extra_args.count).to eq 2
           end
 
           it 'uses sets log path to stdout' do
@@ -73,9 +73,31 @@ module Selenium
           end
 
           it 'uses provided args' do
-            service = described_class.new(args: ['--foo', '--bar'])
+            service = described_class.new(args: %w[--foo --bar])
+            expect(service.extra_args).to include(*%w[--foo --bar])
+          end
 
-            expect(service.extra_args).to eq ['--foo', '--bar']
+          it 'there is a zero port for websocket' do
+            service = described_class.new
+            ws_index = service.extra_args.index('--websocket-port')
+            port = service.extra_args[ws_index + 1].to_i
+            expect(port).to be_zero
+          end
+
+          context 'with connect existing' do
+            it 'does not uses websocket-port' do
+              service = described_class.new(args: ['--connect-existing'])
+              expect(service.extra_args).not_to include('--websocket-port')
+              expect(service.extra_args).to eq(['--connect-existing'])
+            end
+          end
+
+          context 'with websocket port' do
+            it 'does not add websocket-port' do
+              service = described_class.new(args: ['--websocket-port=1234'])
+              expect(service.extra_args).not_to include('--websocket-port=0')
+              expect(service.extra_args).to eq(['--websocket-port=1234'])
+            end
           end
         end
 

@@ -61,8 +61,6 @@ class BrowserTest : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "BiDi GetClientWindows command not yet supported by Chrome 133")]
-    [IgnoreBrowser(Selenium.Browser.Edge, "BiDi GetClientWindows command not yet supported by Edge 133")]
     public async Task CanGetClientWindows()
     {
         var clientWindows = await bidi.Browser.GetClientWindowsAsync();

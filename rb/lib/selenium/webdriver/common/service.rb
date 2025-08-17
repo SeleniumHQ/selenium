@@ -28,27 +28,27 @@ module Selenium
       class << self
         attr_reader :driver_path
 
-        def chrome(**opts)
-          Chrome::Service.new(**opts)
+        def chrome(**)
+          Chrome::Service.new(**)
         end
 
-        def firefox(**opts)
-          Firefox::Service.new(**opts)
+        def firefox(**)
+          Firefox::Service.new(**)
         end
 
-        def ie(**opts)
-          IE::Service.new(**opts)
+        def ie(**)
+          IE::Service.new(**)
         end
         alias internet_explorer ie
 
-        def edge(**opts)
-          Edge::Service.new(**opts)
+        def edge(**)
+          Edge::Service.new(**)
         end
         alias microsoftedge edge
         alias msedge edge
 
-        def safari(**opts)
-          Safari::Service.new(**opts)
+        def safari(**)
+          Safari::Service.new(**)
         end
 
         def driver_path=(path)

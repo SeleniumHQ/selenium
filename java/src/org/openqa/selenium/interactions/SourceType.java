@@ -17,20 +17,24 @@
 
 package org.openqa.selenium.interactions;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 /** One of the allowing types for an {@link InputSource}. */
+@NullMarked
 public enum SourceType {
   KEY("key"),
   NONE(null),
   POINTER("pointer"),
   WHEEL("wheel");
 
-  private final String type;
+  private final @Nullable String type;
 
-  SourceType(String type) {
+  SourceType(@Nullable String type) {
     this.type = type;
   }
 
-  public String getType() {
+  public @Nullable String getType() {
     return type;
   }
 }

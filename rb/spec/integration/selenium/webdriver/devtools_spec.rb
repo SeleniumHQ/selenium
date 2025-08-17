@@ -54,6 +54,26 @@ module Selenium
         }.to raise_error(RuntimeError, 'This is fine!')
       end
 
+      describe '#target' do
+        it 'target type defaults to page' do
+          driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
+          expect(driver.devtools.target.get_target_info.dig('result', 'targetInfo', 'type')).to eq 'page'
+        end
+
+        it 'target type is service_worker' do
+          driver.devtools.page.navigate(url: url_for('service_worker.html'))
+          sleep 0.5 # wait for service worker to register
+          target = driver.devtools(target_type: 'service_worker').target
+          expect(target.get_target_info.dig('result', 'targetInfo', 'type')).to eq 'service_worker'
+        end
+
+        it 'throws an error for unknown target type' do
+          driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
+          expect { driver.devtools(target_type: 'unknown') }
+            .to raise_error(Selenium::WebDriver::Error::WebDriverError, "Target type 'unknown' not found")
+        end
+      end
+
       describe '#register' do
         let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
         let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }

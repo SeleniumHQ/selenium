@@ -35,6 +35,7 @@ public class Reference {
   private final String name;
   private final String tag;
   private final String digest;
+  private final String platform;
 
   @VisibleForTesting
   Reference(String domain, String name, String tag, String digest) {
@@ -42,6 +43,16 @@ public class Reference {
     this.name = Require.nonNull("Name", name);
     this.tag = tag;
     this.digest = digest;
+    this.platform = getDefaultPlatform();
+  }
+
+  @VisibleForTesting
+  Reference(String domain, String name, String tag, String digest, String platform) {
+    this.domain = Require.nonNull("Domain", domain);
+    this.name = Require.nonNull("Name", name);
+    this.tag = tag;
+    this.digest = digest;
+    this.platform = Require.nonNull("Platform", platform);
   }
 
   // Logic taken from https://github.com/distribution/distribution/blob/main/reference/normalize.go
@@ -53,15 +64,15 @@ public class Reference {
     String remainder = splitDockerDomain.get("remainder");
 
     String name;
-    String digest = null;
+    String digest =
+        splitDockerDomain.get("digest").isEmpty() ? null : splitDockerDomain.get("digest");
+    String platform = splitDockerDomain.get("platform");
     String tag = DEFAULT_TAG;
 
-    int digestSep = remainder.indexOf("@");
     int tagSep = remainder.indexOf(":");
-    if (digestSep > -1 && tagSep > -1) {
-      digest = remainder.substring(digestSep + 1);
-      name = remainder.substring(0, digestSep);
+    if (digest != null) {
       tag = null;
+      name = remainder;
     } else if (tagSep > -1) {
       tag = remainder.substring(tagSep + 1);
       name = remainder.substring(0, tagSep);
@@ -74,12 +85,27 @@ public class Reference {
           String.format("Invalid reference format: repository name (%s) must be lowercase", name));
     }
 
-    return new Reference(domain, name, tag, digest);
+    return new Reference(domain, name, tag, digest, platform);
   }
 
   private static ImmutableMap<String, String> splitDockerDomain(String name) {
     String domain;
     String remainder;
+    String platform = getDefaultPlatform();
+    String digest = "";
+
+    // Check if the name contains a platform part
+    int platformSep = name.lastIndexOf("@");
+    if (platformSep > -1) {
+      String[] parts = name.substring(platformSep + 1).split("/");
+      if (parts.length == 2) {
+        platform = name.substring(platformSep + 1);
+      } else if (parts[0].contains(":")) {
+        digest = name.substring(platformSep + 1);
+      }
+      name = name.substring(0, platformSep);
+    }
+
     int domSep = name.indexOf("/");
     String possibleDomain = domSep == -1 ? "" : name.substring(0, domSep);
     if (domSep == -1
@@ -99,7 +125,8 @@ public class Reference {
     if (DEFAULT_DOMAIN.equals(domain) && !remainder.contains("/")) {
       remainder = String.format("%s/%s", DEFAULT_REPO, remainder);
     }
-    return ImmutableMap.of("domain", domain, "remainder", remainder);
+    return ImmutableMap.of(
+        "domain", domain, "remainder", remainder, "platform", platform, "digest", digest);
   }
 
   public String getDomain() {
@@ -116,6 +143,10 @@ public class Reference {
 
   public String getDigest() {
     return digest;
+  }
+
+  public String getPlatform() {
+    return platform;
   }
 
   public String getFamiliarName() {
@@ -142,6 +173,16 @@ public class Reference {
     return familiar.toString();
   }
 
+  private static String getDefaultPlatform() {
+    String arch = System.getProperty("os.arch").toLowerCase();
+    if (arch.contains("amd64") || arch.contains("x86_64")) {
+      arch = "amd64";
+    } else if (arch.contains("arm64") || arch.contains("aarch64")) {
+      arch = "arm64";
+    }
+    return "linux/" + arch;
+  }
+
   @Override
   public String toString() {
     return "Reference{"
@@ -157,6 +198,8 @@ public class Reference {
         + ", digest='"
         + digest
         + '\''
+        + ", platform='"
+        + platform
         + '}';
   }
 
@@ -170,11 +213,12 @@ public class Reference {
     return this.domain.equals(that.domain)
         && this.name.equals(that.name)
         && Objects.equals(tag, that.tag)
-        && Objects.equals(digest, that.digest);
+        && Objects.equals(digest, that.digest)
+        && Objects.equals(platform, that.platform);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(domain, name, tag, digest);
+    return Objects.hash(domain, name, tag, digest, platform);
   }
 }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Demo</title>
+    <script>
+        function setTheme(theme) {
+            document.cookie = "theme=" + theme + "; path=/; SameSite=None; Secure"
+            applyTheme()
+        }
+
+        function getCookie(name) {
+            let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+            return match ? match[2] : null
+        }
+
+        function applyTheme() {
+            let theme = getCookie("theme")
+            document.body.style.backgroundColor = theme || "white"
+        }
+
+        window.onload = applyTheme
+    </script>
+</head>
+<body>
+    <h1>Cookie-Based Demo</h1>
+    <button id="blue-btn" onclick="setTheme('lightblue')">Light Blue</button>
+    <button id="green-btn" onclick="setTheme('lightgreen')">Light Green</button>
+    <button id="reset-btn" onclick="setTheme('white')">Reset</button>
+    <p>Open this page in multiple tabs/windows to see the shared cookie behavior.</p>
+    <p>If you open it in a separate user context, the theme will reset.</p>
+</body>
+</html>

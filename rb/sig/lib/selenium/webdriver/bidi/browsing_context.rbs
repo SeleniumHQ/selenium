@@ -10,6 +10,8 @@ module Selenium
 
         def handle_user_prompt: (String context, bool accept, String text) -> untyped
 
+        def activate: (String? context_id) -> Hash[nil, nil]
+
         def navigate: (String url, String? context_id) -> void
 
         def set_viewport: (String context_id, Integer width, Integer height, Float device_pixel_ratio) -> Hash[nil, nil]

@@ -20,15 +20,14 @@
 using OpenQA.Selenium.Edge;
 using System;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium.Remote;
+
+// This is a simple wrapper class to create a RemoteWebDriver that
+// has no parameters in the constructor.
+public class EdgeRemoteWebDriver : RemoteWebDriver
 {
-    // This is a simple wrapper class to create a RemoteWebDriver that
-    // has no parameters in the constructor.
-    public class EdgeRemoteWebDriver : RemoteWebDriver
+    public EdgeRemoteWebDriver()
+        : base(new Uri("http://127.0.0.1:6000/wd/hub/"), new EdgeOptions())
     {
-        public EdgeRemoteWebDriver()
-            : base(new Uri("http://127.0.0.1:6000/wd/hub/"), new EdgeOptions())
-        {
-        }
     }
 }

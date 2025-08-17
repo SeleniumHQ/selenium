@@ -22,7 +22,7 @@ import warnings
 from base64 import b64encode
 from typing import Optional
 from urllib import parse
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 import urllib3
 
@@ -145,20 +145,16 @@ class RemoteConnection:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
     """
 
-    browser_name = None
+    browser_name: Optional[str] = None
     # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
     import os
     import socket
 
     import certifi
 
-    _timeout = (
-        float(os.getenv("GLOBAL_DEFAULT_TIMEOUT", str(socket.getdefaulttimeout())))
-        if os.getenv("GLOBAL_DEFAULT_TIMEOUT") is not None
-        else socket.getdefaulttimeout()
-    )
+    _timeout = socket.getdefaulttimeout()
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
-    _client_config: ClientConfig = None
+    _client_config: Optional[ClientConfig] = None
 
     system = platform.system().lower()
     if system == "darwin":
@@ -168,6 +164,10 @@ class RemoteConnection:
     extra_headers = None
     user_agent = f"selenium/{__version__} (python {system})"
 
+    @property
+    def client_config(self):
+        return self._client_config
+
     @classmethod
     def get_timeout(cls):
         """:Returns:
@@ -176,7 +176,7 @@ class RemoteConnection:
         Remote Connection
         """
         warnings.warn(
-            "get_timeout() in RemoteConnection is deprecated, get timeout from ClientConfig instance instead",
+            "get_timeout() in RemoteConnection is deprecated, get timeout from client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -190,7 +190,7 @@ class RemoteConnection:
             - timeout - timeout value for http requests in seconds
         """
         warnings.warn(
-            "set_timeout() in RemoteConnection is deprecated, set timeout to ClientConfig instance in constructor instead",
+            "set_timeout() in RemoteConnection is deprecated, set timeout in client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -200,7 +200,7 @@ class RemoteConnection:
     def reset_timeout(cls):
         """Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT."""
         warnings.warn(
-            "reset_timeout() in RemoteConnection is deprecated, use reset_timeout() in ClientConfig instance instead",
+            "reset_timeout() in RemoteConnection is deprecated, use reset_timeout() in client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -215,7 +215,7 @@ class RemoteConnection:
         REQUESTS_CA_BUNDLE env variable if set.
         """
         warnings.warn(
-            "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from ClientConfig instance instead",
+            "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -231,7 +231,7 @@ class RemoteConnection:
             - path - path of a .pem encoded certificate chain.
         """
         warnings.warn(
-            "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs to ClientConfig instance in constructor instead",
+            "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs in client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -298,7 +298,9 @@ class RemoteConnection:
                 return SOCKSProxyManager(self._proxy_url, **pool_manager_init_args)
             if self._identify_http_proxy_auth():
                 self._proxy_url, self._basic_proxy_auth = self._separate_http_proxy_auth()
-                pool_manager_init_args["proxy_headers"] = urllib3.make_headers(proxy_basic_auth=self._basic_proxy_auth)
+                pool_manager_init_args["proxy_headers"] = urllib3.make_headers(
+                    proxy_basic_auth=unquote(self._basic_proxy_auth)
+                )
             return urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
 
         return urllib3.PoolManager(**pool_manager_init_args)
@@ -328,35 +330,35 @@ class RemoteConnection:
 
         if remote_server_addr:
             warnings.warn(
-                "setting remote_server_addr in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting remote_server_addr in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if not keep_alive:
             warnings.warn(
-                "setting keep_alive in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting keep_alive in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if ignore_certificates:
             warnings.warn(
-                "setting ignore_certificates in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting ignore_certificates in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if init_args_for_pool_manager:
             warnings.warn(
-                "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if ignore_proxy:
             warnings.warn(
-                "setting ignore_proxy in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting ignore_proxy in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -437,10 +439,10 @@ class RemoteConnection:
         try:
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))
-            if 399 < statuscode <= 500:
-                if statuscode == 401:
-                    return {"status": statuscode, "value": "Authorization Required"}
-                return {"status": statuscode, "value": str(statuscode) if not data else data.strip()}
+            if statuscode == 401:
+                return {"status": statuscode, "value": "Authorization Required"}
+            if statuscode >= 400:
+                return {"status": statuscode, "value": response.reason if not data else data.strip()}
             content_type = []
             if response.headers.get("Content-Type", None):
                 content_type = response.headers.get("Content-Type", None).split(";")

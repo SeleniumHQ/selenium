@@ -27,12 +27,13 @@ module Selenium
         # @return [DevTools]
         #
 
-        def devtools
-          @devtools ||= begin
+        def devtools(target_type: 'page')
+          @devtools ||= {}
+          @devtools[target_type] ||= begin
             require 'selenium/devtools'
             Selenium::DevTools.version ||= devtools_version
             Selenium::DevTools.load_version
-            Selenium::WebDriver::DevTools.new(url: devtools_url)
+            Selenium::WebDriver::DevTools.new(url: devtools_url, target_type: target_type)
           end
         end
       end # HasDevTools

@@ -55,7 +55,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupportingCdp() {
-    return true;
+    return false;
   }
 
   @Override

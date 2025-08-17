@@ -1,41 +1,12 @@
 # Configuration for Label Commenter - https://github.com/peaceiris/actions-label-commenter
 labels:
-  - name: needs-triaging
+  - name: A-needs-triaging
     labeled:
       issue:
         body: |
           @{{ issue.user.login }}, thank you for creating this issue. We will troubleshoot it as soon as we can.
 
-          ---
-          <details>
-            <summary>Info for maintainers</summary>
-            <div>
-              <br>
-              <p>
-                Triage this issue by using labels.
-              </p>
-              <p>
-                If information is missing, add a helpful comment and then <code>I-issue-template</code> label.
-              </p>
-              <p>
-                If the issue is a question, add the <code>I-question</code> label.
-              </p>
-              <p>
-                If the issue is valid but there is no time to troubleshoot it, consider adding the <code>help wanted</code> label.
-              </p>
-              <p>
-                If the issue requires changes or fixes from an external project (e.g., ChromeDriver, GeckoDriver, MSEdgeDriver, W3C),
-               add the applicable <code>G-*</code> label, and it will provide the correct link and auto-close the
-               issue.
-              </p>
-              <p>
-                After troubleshooting the issue, please add the <code>R-awaiting answer</code> label.
-              </p>
-              <p>
-                Thank you!
-              </p>
-            </div>
-          </details>
+          Selenium Triage Team: remember to follow the [Triage Guide](https://github.com/SeleniumHQ/selenium/wiki/How-to-Triage-Issues)
   - name: G-w3c
     labeled:
       issue:
@@ -101,18 +72,18 @@ labels:
 
           Feel free to comment the issues that you raise back in this issue. Thank you.
         action: close
-  - name: I-issue-template
+  - name: J-issue-template
     labeled:
       issue:
         body: |
           Hi, @{{ issue.user.login }}.
-          Please follow the issue template, we need more information to reproduce the issue.
+          Please follow the issue template; we need more information to reproduce the issue.
 
           Either a complete code snippet and URL/HTML (if more than one file is needed, provide a GitHub repo and instructions to run the code), the specific versions used, or a more detailed description to help us understand the issue.
 
           Note: If you cannot share your code and URL/HTML, any complete code snippet and URL/HTML that reproduces the issue is good enough.
 
-          Reply to this issue when all information is provided, thank you.
+          Reply to this issue when all information is provided. Thank you.
   - name: I-question
     labeled:
       issue:
@@ -122,14 +93,14 @@ labels:
           * 📮 [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
           * 🗣 Our [IRC/Slack/Matrix channels](https://www.selenium.dev/support/) where the community can help you as well
         action: close
-  - name: help wanted
+  - name: R-help wanted
     labeled:
       issue:
         body: |
           This issue is looking for contributors.
 
           Please comment below or reach out to us through our [IRC/Slack/Matrix channels](https://www.selenium.dev/support/) if you are interested.
-  - name: I-logging
+  - name: J-logging
     labeled:
       issue:
         body: |
@@ -137,3 +108,29 @@ labels:
 
           Please turn on logging and re-run your code. Information on how to adjust logs for your language can be found in our
           [Troubleshooting documentation](https://www.selenium.dev/documentation/webdriver/troubleshooting/logging/).
+  - name: B-support
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+
+          This is related to code in the Support packages. The support packages contain example code that
+          many users find helpful, but they do not necessarily represent the best practices for using Selenium,
+          and the Selenium team is not prioritizing work on them right now.
+          This doesn't mean that we won't ever work on them, but it is not on our roadmap as we push to release Selenium 5.
+
+          We actively encourage people to create their own wrapper and helper code that makes sense for them.
+          If you have any questions, please [contact us](https://www.selenium.dev/support)
+      pr:
+        body: |
+          Thank you, @{{ pull_request.user.login }} for this code suggestion.
+
+          The support packages contain example code that many users find helpful, but they do not necessarily represent
+          the best practices for using Selenium, and the Selenium team is not currently merging changes to them.
+
+          We actively encourage people to add the wrapper and helper code that makes sense for them to their own frameworks.
+          If you have any questions, please [contact us](https://www.selenium.dev/support)
+        action: close
+
+
+

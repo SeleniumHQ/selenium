@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -75,8 +76,7 @@ class RemoteWebDriverDownloadTest {
     options.setEnableDownloads(true);
 
     capabilities =
-        new PersistentCapabilities(browser.getCapabilities())
-            .setCapability("se:downloadsEnabled", true);
+        new PersistentCapabilities(browser.getCapabilities()).setCapability(ENABLE_DOWNLOADS, true);
 
     Deployment deployment =
         DeploymentTypes.STANDALONE.start(
@@ -194,7 +194,7 @@ class RemoteWebDriverDownloadTest {
 
     Capabilities caps =
         new PersistentCapabilities(Objects.requireNonNull(browser).getCapabilities())
-            .setCapability("se:downloadsEnabled", false);
+            .setCapability(ENABLE_DOWNLOADS, false);
 
     WebDriver driver = new RemoteWebDriver(gridUrl, caps);
     Assertions.assertThrows(

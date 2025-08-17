@@ -20,32 +20,7 @@
 
 const dirAtoms = '../../../javascript/atoms/'
 const dirLocators = dirAtoms + 'locators/'
-const dirWgxpath = '../../../third_party/js/wgxpath/'
 
-goog.addDependency(dirWgxpath + 'wgxpath.js', ['wgxpath'], []);
-goog.addDependency(dirWgxpath + 'context.js', ['wgxpath.Context'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'ieAttrWrapper.js', ['wgxpath.IEAttrWrapper'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'lexer.js', ['wgxpath.Lexer'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'userAgent.js', ['wgxpath.userAgent'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'nodeset.js', ['wgxpath.NodeSet'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'node.js', ['wgxpath.Node'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'parser.js', ['wgxpath.Parser'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'nsResolver.js', ['wgxpath.nsResolver'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'dataType.js', ['wgxpath.DataType'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'expr.js', ['wgxpath.Expr'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'binaryExpr.js', ['wgxpath.BinaryExpr'], ['wgxpath', 'wgxpath.Expr', 'wgxpath.DataType']);
-goog.addDependency(dirWgxpath + 'filterExpr.js', ['wgxpath.FilterExpr'], ['wgxpath', 'wgxpath.Expr']);
-goog.addDependency(dirWgxpath + 'pathExpr.js', ['wgxpath.PathExpr'], ['wgxpath', 'wgxpath.Expr']);
-goog.addDependency(dirWgxpath + 'unaryExpr.js', ['wgxpath.UnaryExpr'], ['wgxpath', 'wgxpath.Expr']);
-goog.addDependency(dirWgxpath + 'unionExpr.js', ['wgxpath.UnionExpr'], ['wgxpath', 'wgxpath.Expr']);
-goog.addDependency(dirWgxpath + 'step.js', ['wgxpath.Step'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'literal.js', ['wgxpath.Literal'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'predicates.js', ['wgxpath.Predicates'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'number.js', ['wgxpath.Number'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'functionCall.js', ['wgxpath.FunctionCall'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'kindTest.js', ['wgxpath.KindTest'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'nodeTest.js', ['wgxpath.NodeTest'], ['wgxpath']);
-goog.addDependency(dirWgxpath + 'nameTest.js', ['wgxpath.NameTest'], ['wgxpath']);
 goog.addDependency(dirAtoms + 'bot.js', ['bot'], []);
 goog.addDependency(dirAtoms + 'userAgent.js', ['bot.userAgent'], ['goog.userAgent', 'goog.userAgent.product']);
 goog.addDependency(dirAtoms + 'action.js', ['bot.action'], ['bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'goog.array', 'goog.dom', 'goog.dom.NodeType', 'goog.dom.TagName', 'goog.events.EventType', 'goog.userAgent', 'goog.Uri']);

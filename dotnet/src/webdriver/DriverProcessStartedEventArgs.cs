@@ -19,56 +19,31 @@
 
 using System;
 using System.Diagnostics;
-using System.IO;
 
-#nullable enable
+namespace OpenQA.Selenium;
 
-namespace OpenQA.Selenium
+/// <summary>
+/// Provides data for the DriverProcessStarted event of a <see cref="DriverService"/> object.
+/// </summary>
+public class DriverProcessStartedEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for the DriverProcessStarted event of a <see cref="DriverService"/> object.
+    /// Initializes a new instance of the <see cref="DriverProcessStartingEventArgs"/> class.
     /// </summary>
-    public class DriverProcessStartedEventArgs : EventArgs
+    /// <param name="driverProcess">The <see cref="Process"/> object started.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driverProcess"/> is <see langword="null"/>.</exception>
+    public DriverProcessStartedEventArgs(Process driverProcess)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DriverProcessStartingEventArgs"/> class.
-        /// </summary>
-        /// <param name="driverProcess">The <see cref="Process"/> object started.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="driverProcess"/> is <see langword="null"/>.</exception>
-        public DriverProcessStartedEventArgs(Process driverProcess)
+        if (driverProcess is null)
         {
-            if (driverProcess is null)
-            {
-                throw new ArgumentNullException(nameof(driverProcess));
-            }
-
-            this.ProcessId = driverProcess.Id;
-            if (driverProcess.StartInfo.RedirectStandardOutput && !driverProcess.StartInfo.UseShellExecute)
-            {
-                this.StandardOutputStreamReader = driverProcess.StandardOutput;
-            }
-
-            if (driverProcess.StartInfo.RedirectStandardError && !driverProcess.StartInfo.UseShellExecute)
-            {
-                this.StandardErrorStreamReader = driverProcess.StandardError;
-            }
+            throw new ArgumentNullException(nameof(driverProcess));
         }
 
-        /// <summary>
-        /// Gets the unique ID of the driver executable process.
-        /// </summary>
-        public int ProcessId { get; }
-
-        /// <summary>
-        /// Gets a <see cref="StreamReader"/> object that can be used to read the contents
-        /// printed to <c>stdout</c> by a driver service process.
-        /// </summary>
-        public StreamReader? StandardOutputStreamReader { get; }
-
-        /// <summary>
-        /// Gets a <see cref="StreamReader"/> object that can be used to read the contents
-        /// printed to <c>stderr</c> by a driver service process.
-        /// </summary>
-        public StreamReader? StandardErrorStreamReader { get; }
+        this.ProcessId = driverProcess.Id;
     }
+
+    /// <summary>
+    /// Gets the unique ID of the driver executable process.
+    /// </summary>
+    public int ProcessId { get; }
 }

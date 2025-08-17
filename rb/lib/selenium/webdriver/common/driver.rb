@@ -68,9 +68,9 @@ module Selenium
       # @api private
       #
 
-      def initialize(bridge: nil, listener: nil, **opts)
+      def initialize(bridge: nil, listener: nil, **)
         @devtools = nil
-        bridge ||= create_bridge(**opts)
+        bridge ||= create_bridge(**)
         @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
         add_extensions(@bridge.browser)
       end
@@ -104,15 +104,8 @@ module Selenium
       # @see Script
       #
 
-      def script(*args)
-        if args.any?
-          WebDriver.logger.deprecate('`Driver#script` as an alias for `#execute_script`',
-                                     '`Driver#execute_script`',
-                                     id: :driver_script)
-          execute_script(*args)
-        else
-          @script ||= WebDriver::Script.new(bridge)
-        end
+      def script
+        @script ||= WebDriver::Script.new(bridge)
       end
 
       #
@@ -138,8 +131,8 @@ module Selenium
       # @see ActionBuilder
       #
 
-      def action(**opts)
-        bridge.action(**opts)
+      def action(**)
+        bridge.action(**)
       end
 
       #
@@ -188,7 +181,7 @@ module Selenium
         bridge.quit
       ensure
         @service_manager&.stop
-        @devtools&.close
+        @devtools&.each_value(&:close)
       end
 
       #
@@ -232,8 +225,8 @@ module Selenium
       #   The value returned from the script.
       #
 
-      def execute_script(script, *args)
-        bridge.execute_script(script, *args)
+      def execute_script(script, *)
+        bridge.execute_script(script, *)
       end
 
       # Execute an asynchronous piece of JavaScript in the context of the
@@ -251,8 +244,8 @@ module Selenium
       # @return [WebDriver::Element,Integer,Float,Boolean,NilClass,String,Array]
       #
 
-      def execute_async_script(script, *args)
-        bridge.execute_async_script(script, *args)
+      def execute_async_script(script, *)
+        bridge.execute_async_script(script, *)
       end
 
       #

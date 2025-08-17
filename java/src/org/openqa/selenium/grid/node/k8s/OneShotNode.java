@@ -415,7 +415,7 @@ public class OneShotNode extends Node {
   @Override
   public void drain() {
     events.fire(new NodeDrainStarted(getId()));
-    draining = true;
+    draining.set(true);
   }
 
   @Override

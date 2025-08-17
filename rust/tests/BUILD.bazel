@@ -10,15 +10,24 @@ rust_test_suite(
     size = "small",
     srcs = glob(["**/*_tests.rs"]),
     data = [
-        "common.rs",
         "//rust:selenium-manager",
     ],
     edition = "2021",
+    rustc_env = {
+        "CARGO_BIN_EXE_selenium-manager": "rust/selenium-manager",
+    },
+    shared_srcs = glob(
+        ["**/*.rs"],
+        exclude = ["**/*_tests.rs"],
+    ),
     tags = [
         "no-sandbox",
         "requires-network",
     ],
-    deps = ["//rust:selenium_manager"] + all_crate_deps(
+    deps = [
+        "//rust:selenium_manager",
+        "@rules_rust//tools/runfiles",
+    ] + all_crate_deps(
         package_name = "rust",
         normal = True,
         normal_dev = True,

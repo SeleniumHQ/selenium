@@ -24,11 +24,24 @@ use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command_by_os;
 use std::borrow::BorrowMut;
 use std::env::consts::OS;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 #[allow(dead_code)]
 pub fn get_selenium_manager() -> Command {
-    Command::new(env!("CARGO_BIN_EXE_selenium-manager"))
+    let path = PathBuf::from(env!("CARGO_BIN_EXE_selenium-manager"));
+
+    if path.exists() {
+        return Command::new(path);
+    }
+
+    if cfg!(windows) {
+        let exe_path = path.with_extension("exe");
+        if exe_path.exists() {
+            return Command::new(exe_path);
+        }
+    }
+
+    panic!("Binary not found {}", path_to_string(&path));
 }
 
 #[allow(dead_code)]

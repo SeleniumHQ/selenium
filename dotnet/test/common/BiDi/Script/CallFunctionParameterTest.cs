@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Script;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -31,8 +30,8 @@ class CallFunctionParameterTest : BiDiTestFixture
         var res = await context.Script.CallFunctionAsync("() => { return 1 + 2; }", false);
 
         Assert.That(res, Is.Not.Null);
-        Assert.That(res.Realm, Is.Not.Null);
-        Assert.That((res.Result as RemoteValue.Number).Value, Is.EqualTo(3));
+        Assert.That(((EvaluateResultSuccess)res).Realm, Is.Not.Null);
+        Assert.That((res.AsSuccessResult() as NumberRemoteValue).Value, Is.EqualTo(3));
     }
 
     [Test]
@@ -75,9 +74,9 @@ class CallFunctionParameterTest : BiDiTestFixture
             Arguments = ["abc", 42]
         });
 
-        Assert.That(res.Result, Is.AssignableFrom<RemoteValue.Array>());
-        Assert.That((string)(res.Result as RemoteValue.Array).Value[0], Is.EqualTo("abc"));
-        Assert.That((int)(res.Result as RemoteValue.Array).Value[1], Is.EqualTo(42));
+        Assert.That(res.AsSuccessResult(), Is.AssignableFrom<ArrayRemoteValue>());
+        Assert.That((string)(res.AsSuccessResult() as ArrayRemoteValue).Value[0], Is.EqualTo("abc"));
+        Assert.That((int)(res.AsSuccessResult() as ArrayRemoteValue).Value[1], Is.EqualTo(42));
     }
 
     [Test]
@@ -90,8 +89,8 @@ class CallFunctionParameterTest : BiDiTestFixture
             """, false);
 
         Assert.That(res, Is.Not.Null);
-        Assert.That(res.Result, Is.AssignableFrom<RemoteValue.WindowProxy>());
-        Assert.That((res.Result as RemoteValue.WindowProxy).Value, Is.Not.Null);
+        Assert.That(res.AsSuccessResult(), Is.AssignableFrom<WindowProxyRemoteValue>());
+        Assert.That((res.AsSuccessResult() as WindowProxyRemoteValue).Value, Is.Not.Null);
     }
 
     [Test]
@@ -104,8 +103,8 @@ class CallFunctionParameterTest : BiDiTestFixture
             """, false);
 
         Assert.That(res, Is.Not.Null);
-        Assert.That(res.Result, Is.AssignableFrom<RemoteValue.Node>());
-        Assert.That((res.Result as RemoteValue.Node).Value, Is.Not.Null);
+        Assert.That(res.AsSuccessResult(), Is.AssignableFrom<NodeRemoteValue>());
+        Assert.That((res.AsSuccessResult() as NodeRemoteValue).Value, Is.Not.Null);
     }
 
     [Test]
@@ -132,13 +131,13 @@ class CallFunctionParameterTest : BiDiTestFixture
             """, awaitPromise: false);
 
         Assert.That(res, Is.Not.Null);
-        Assert.That(res.Result, Is.AssignableFrom<RemoteValue.Promise>());
+        Assert.That(res.AsSuccessResult(), Is.AssignableFrom<PromiseRemoteValue>());
     }
 
     [Test]
     public async Task CanCallFunctionWithThisParameter()
     {
-        var thisParameter = new LocalValue.Object([["some_property", 42]]);
+        var thisParameter = new ObjectLocalValue([["some_property", 42]]);
 
         var res = await context.Script.CallFunctionAsync<int>("""
             function(){return this.some_property}
@@ -156,9 +155,9 @@ class CallFunctionParameterTest : BiDiTestFixture
         });
 
         Assert.That(res, Is.Not.Null);
-        Assert.That((res.Result as RemoteValue.Object).Handle, Is.Not.Null);
-        Assert.That((string)(res.Result as RemoteValue.Object).Value[0][0], Is.EqualTo("a"));
-        Assert.That((int)(res.Result as RemoteValue.Object).Value[0][1], Is.EqualTo(1));
+        Assert.That((res.AsSuccessResult() as ObjectRemoteValue).Handle, Is.Not.Null);
+        Assert.That((string)(res.AsSuccessResult() as ObjectRemoteValue).Value[0][0], Is.EqualTo("a"));
+        Assert.That((int)(res.AsSuccessResult() as ObjectRemoteValue).Value[0][1], Is.EqualTo(1));
     }
 
     [Test]
@@ -170,17 +169,18 @@ class CallFunctionParameterTest : BiDiTestFixture
         });
 
         Assert.That(res, Is.Not.Null);
-        Assert.That((res.Result as RemoteValue.Object).Handle, Is.Null);
-        Assert.That((string)(res.Result as RemoteValue.Object).Value[0][0], Is.EqualTo("a"));
-        Assert.That((int)(res.Result as RemoteValue.Object).Value[0][1], Is.EqualTo(1));
+        Assert.That((res.AsSuccessResult() as ObjectRemoteValue).Handle, Is.Null);
+        Assert.That((string)(res.AsSuccessResult() as ObjectRemoteValue).Value[0][0], Is.EqualTo("a"));
+        Assert.That((int)(res.AsSuccessResult() as ObjectRemoteValue).Value[0][1], Is.EqualTo(1));
     }
 
     [Test]
-    public void CanCallFunctionThatThrowsException()
+    public async Task CanCallFunctionThatThrowsExceptionAsync()
     {
-        var action = () => context.Script.CallFunctionAsync("))) !!@@## some invalid JS script (((", false);
+        var action = await context.Script.CallFunctionAsync("))) !!@@## some invalid JS script (((", false);
 
-        Assert.That(action, Throws.InstanceOf<ScriptEvaluateException>().And.Message.Contain("SyntaxError:"));
+        Assert.That(action, Is.TypeOf<EvaluateResultException>());
+        Assert.That(((EvaluateResultException)action).ExceptionDetails.Text, Does.Contain("SyntaxError:"));
     }
 
     [Test]
@@ -191,7 +191,7 @@ class CallFunctionParameterTest : BiDiTestFixture
 
         var res = await context.Script.CallFunctionAsync("() => window.foo", true, targetOptions: new() { Sandbox = "sandbox" });
 
-        Assert.That(res.Result, Is.AssignableFrom<RemoteValue.Undefined>());
+        Assert.That(res.AsSuccessResult(), Is.AssignableFrom<UndefinedRemoteValue>());
 
         // Make changes in the sandbox
         await context.Script.CallFunctionAsync("() => { window.foo = 2; }", true, targetOptions: new() { Sandbox = "sandbox" });
@@ -199,22 +199,22 @@ class CallFunctionParameterTest : BiDiTestFixture
         // Check if the changes are present in the sandbox
         res = await context.Script.CallFunctionAsync("() => window.foo", true, targetOptions: new() { Sandbox = "sandbox" });
 
-        Assert.That(res.Result, Is.AssignableFrom<RemoteValue.Number>());
-        Assert.That((res.Result as RemoteValue.Number).Value, Is.EqualTo(2));
+        Assert.That(res.AsSuccessResult(), Is.AssignableFrom<NumberRemoteValue>());
+        Assert.That((res.AsSuccessResult() as NumberRemoteValue).Value, Is.EqualTo(2));
     }
 
     [Test]
     public async Task CanCallFunctionInARealm()
     {
-        await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Tab);
+        await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
         var realms = await bidi.Script.GetRealmsAsync();
 
-        await bidi.Script.CallFunctionAsync("() => { window.foo = 3; }", true, new Target.Realm(realms[0].Realm));
-        await bidi.Script.CallFunctionAsync("() => { window.foo = 5; }", true, new Target.Realm(realms[1].Realm));
+        await bidi.Script.CallFunctionAsync("() => { window.foo = 3; }", true, new RealmTarget(realms[0].Realm));
+        await bidi.Script.CallFunctionAsync("() => { window.foo = 5; }", true, new RealmTarget(realms[1].Realm));
 
-        var res1 = await bidi.Script.CallFunctionAsync<int>("() => window.foo", true, new Target.Realm(realms[0].Realm));
-        var res2 = await bidi.Script.CallFunctionAsync<int>("() => window.foo", true, new Target.Realm(realms[1].Realm));
+        var res1 = await bidi.Script.CallFunctionAsync<int>("() => window.foo", true, new RealmTarget(realms[0].Realm));
+        var res2 = await bidi.Script.CallFunctionAsync<int>("() => window.foo", true, new RealmTarget(realms[1].Realm));
 
         Assert.That(res1, Is.EqualTo(3));
         Assert.That(res2, Is.EqualTo(5));

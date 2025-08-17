@@ -60,6 +60,6 @@ public class ContinueRequestParameters {
   }
 
   public Map<String, Object> toMap() {
-    return map;
+    return Map.copyOf(map);
   }
 }

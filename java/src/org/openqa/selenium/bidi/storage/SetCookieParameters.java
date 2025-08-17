@@ -38,6 +38,6 @@ public class SetCookieParameters {
     map.put("cookie", cookie.toMap());
     partitionDescriptor.ifPresent(descriptor -> map.put("partition", descriptor));
 
-    return map;
+    return Map.copyOf(map);
   }
 }

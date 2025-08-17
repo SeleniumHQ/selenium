@@ -21,69 +21,68 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class SvgElementTest : DriverTestFixture
 {
-    [TestFixture]
-    public class SvgElementTest : DriverTestFixture
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "wontfix: https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")]
+    public void ShouldClickOnGraphVisualElements()
     {
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "wontfix: https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")]
-        public void ShouldClickOnGraphVisualElements()
+        if (TestUtilities.IsOldIE(driver))
         {
-            if (TestUtilities.IsOldIE(driver))
-            {
-                Assert.Ignore("SVG support only exists in IE9+");
-            }
-
-            driver.Url = svgPage;
-            IWebElement svg = driver.FindElement(By.CssSelector("svg"));
-
-            ReadOnlyCollection<IWebElement> groupElements = svg.FindElements(By.CssSelector("g"));
-            Assert.That(groupElements, Has.Count.EqualTo(5));
-
-            groupElements[1].Click();
-            IWebElement resultElement = driver.FindElement(By.Id("result"));
-            WaitFor(() => { return resultElement.Text == "slice_red"; }, "Element text was not 'slice_red'");
-            Assert.That(resultElement.Text, Is.EqualTo("slice_red"));
-
-            groupElements[2].Click();
-            resultElement = driver.FindElement(By.Id("result"));
-            WaitFor(() => { return resultElement.Text == "slice_green"; }, "Element text was not 'slice_green'");
-            Assert.That(resultElement.Text, Is.EqualTo("slice_green"));
+            Assert.Ignore("SVG support only exists in IE9+");
         }
 
-        [Test]
-        public void ShouldClickOnGraphTextElements()
+        driver.Url = svgPage;
+        IWebElement svg = driver.FindElement(By.CssSelector("svg"));
+
+        ReadOnlyCollection<IWebElement> groupElements = svg.FindElements(By.CssSelector("g"));
+        Assert.That(groupElements, Has.Count.EqualTo(5));
+
+        groupElements[1].Click();
+        IWebElement resultElement = driver.FindElement(By.Id("result"));
+        WaitFor(() => { return resultElement.Text == "slice_red"; }, "Element text was not 'slice_red'");
+        Assert.That(resultElement.Text, Is.EqualTo("slice_red"));
+
+        groupElements[2].Click();
+        resultElement = driver.FindElement(By.Id("result"));
+        WaitFor(() => { return resultElement.Text == "slice_green"; }, "Element text was not 'slice_green'");
+        Assert.That(resultElement.Text, Is.EqualTo("slice_green"));
+    }
+
+    [Test]
+    public void ShouldClickOnGraphTextElements()
+    {
+        if (TestUtilities.IsOldIE(driver))
         {
-            if (TestUtilities.IsOldIE(driver))
-            {
-                Assert.Ignore("SVG support only exists in IE9+");
-            }
-
-            driver.Url = svgPage;
-            IWebElement svg = driver.FindElement(By.CssSelector("svg"));
-            ReadOnlyCollection<IWebElement> textElements = svg.FindElements(By.CssSelector("text"));
-
-            IWebElement appleElement = FindAppleElement(textElements);
-            Assert.That(appleElement, Is.Not.Null);
-
-            appleElement.Click();
-            IWebElement resultElement = driver.FindElement(By.Id("result"));
-            WaitFor(() => { return resultElement.Text == "text_apple"; }, "Element text was not 'text_apple'");
-            Assert.That(resultElement.Text, Is.EqualTo("text_apple"));
+            Assert.Ignore("SVG support only exists in IE9+");
         }
 
-        private IWebElement FindAppleElement(IEnumerable<IWebElement> textElements)
-        {
-            foreach (IWebElement currentElement in textElements)
-            {
-                if (currentElement.Text.Contains("Apple"))
-                {
-                    return currentElement;
-                }
-            }
+        driver.Url = svgPage;
+        IWebElement svg = driver.FindElement(By.CssSelector("svg"));
+        ReadOnlyCollection<IWebElement> textElements = svg.FindElements(By.CssSelector("text"));
 
-            return null;
+        IWebElement appleElement = FindAppleElement(textElements);
+        Assert.That(appleElement, Is.Not.Null);
+
+        appleElement.Click();
+        IWebElement resultElement = driver.FindElement(By.Id("result"));
+        WaitFor(() => { return resultElement.Text == "text_apple"; }, "Element text was not 'text_apple'");
+        Assert.That(resultElement.Text, Is.EqualTo("text_apple"));
+    }
+
+    private IWebElement FindAppleElement(IEnumerable<IWebElement> textElements)
+    {
+        foreach (IWebElement currentElement in textElements)
+        {
+            if (currentElement.Text.Contains("Apple"))
+            {
+                return currentElement;
+            }
         }
+
+        return null;
     }
 }

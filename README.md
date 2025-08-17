@@ -15,8 +15,7 @@
   <a href="#developing">Developing</a> •
   <a href="#testing">Testing</a> •
   <a href="#documenting">Documenting</a> •
-  <a href="#releasing">Releasing</a> •
-  <a href="#license">License</a>
+  <a href="#releasing">Releasing</a>
 </p>
 
 <br>
@@ -201,7 +200,14 @@ for Maven to use locally by deploying to your local maven repository (`~/.m2/rep
 
 #### Updating Dependencies
 
-Dependencies are defined in the file [maven_deps.bzl](https://github.com/SeleniumHQ/selenium/blob/trunk/java/maven_deps.bzl).
+Dependencies are defined in the file [MODULE.bazel](https://github.com/SeleniumHQ/selenium/blob/trunk/MODULE.bazel).
+
+To update a dependency, modify the version in the `MODULE.bazel` file and run:
+
+```shell
+RULES_JVM_EXTERNAL_REPIN=1 bazel run @maven//:pin
+```
+
 To automatically update and pin new dependencies, run:
 
 ```shell
@@ -210,15 +216,36 @@ To automatically update and pin new dependencies, run:
 
 ### Python
 
-You can run Python code locally by updating generated files in the python directory using:
+#### Linting and Formatting
+
+We follow the [PEP8 Style Guide for Python Code](https://peps.python.org/pep-0008) (except we use a 120 character line length).
+This is checked and enforced with [ruff](https://docs.astral.sh/ruff/), a linting/formatting tool.
+There is also an auto-formatting script that can be run: `./scripts/format.sh`
+
+#### Local Installation
+
+To run Python code locally without building/installing the package, you must first install the dependencies:
 ```shell
-./go py:update
+pip install -r py/requirements.txt
 ```
 
-To install Selenium locally based on a specific commit, you can use:
+Then, build the generated files and copy them into your local source tree:
+```shell
+./go py:local_dev
+```
+
+After that, you can import the selenium package directly from source from the `py` directory.
+
+Instead of running from source, you can build and install the selenium package (wheel) locally:
 ```shell
 ./go py:install
 ```
+
+This will attempt to install into the global Python `site-packages` directory,
+which might not be writable. To avoid this, you should create and activate a
+[virtual environment](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-virtual-environments)
+before installing.
+
 
 ### Ruby
 
@@ -239,7 +266,7 @@ you can configure it use Bazel artifacts:
 1. Open `rb/` as a main project directory.
 2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:update` from the `selenium` (parent) directory.
 3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
-4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables secified in [Ruby Testing](#ruby-2) section below.
+4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables specified in [Ruby Testing](#ruby-2) section below.
 
 ### Rust
 
@@ -283,6 +310,9 @@ Tests can also be filtered by tag like:
 bazel test //<language>/... --test_tag_filters=this,-not-this
 ```
 
+If there are multiple `--test_tag_filters`, only the last one is considered,
+so be careful if also using an inherited config
+
 ### Java
 
 <details>
@@ -315,13 +345,13 @@ bazel test //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
 To run the tests run:
 
 ```sh
-bazel test //javascript/node/selenium-webdriver:tests
+bazel test //javascript/selenium-webdriver:all
 ```
 
 You can use `--test_env` to pass in the browser name as `SELENIUM_BROWSER`.
 
 ```sh
-bazel test //javascript/node/selenium-webdriver:tests --test_env=SELENIUM_BROWSER=firefox
+bazel test //javascript/selenium-webdriver:all --test_env=SELENIUM_BROWSER=firefox
 ```
 
 </details>
@@ -498,8 +528,6 @@ To update API documentation for a specific language: `./go <language>:docs`
 
 To update all documentation: `./go all:docs`
 
-Note that JavaScript generation is [currently broken](https://github.com/SeleniumHQ/selenium/issues/10185).
-
 
 ## Releasing
 
@@ -524,7 +552,3 @@ If you have access to the Selenium EngFlow repository, you can have the assets b
 ```shell
 ./go all:release['--config', 'release']
 ```
-
-## License
-
-Selenium's source code is made available under the [Apache 2.0 license](https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE).

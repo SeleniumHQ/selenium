@@ -15,40 +15,41 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
 from typing import Any
-from typing import Dict
-from typing import Type
 
-from selenium.common.exceptions import DetachedShadowRootException
-from selenium.common.exceptions import ElementClickInterceptedException
-from selenium.common.exceptions import ElementNotInteractableException
-from selenium.common.exceptions import ElementNotSelectableException
-from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import ImeActivationFailedException
-from selenium.common.exceptions import ImeNotAvailableException
-from selenium.common.exceptions import InsecureCertificateException
-from selenium.common.exceptions import InvalidArgumentException
-from selenium.common.exceptions import InvalidCookieDomainException
-from selenium.common.exceptions import InvalidCoordinatesException
-from selenium.common.exceptions import InvalidElementStateException
-from selenium.common.exceptions import InvalidSelectorException
-from selenium.common.exceptions import InvalidSessionIdException
-from selenium.common.exceptions import JavascriptException
-from selenium.common.exceptions import MoveTargetOutOfBoundsException
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.common.exceptions import NoSuchCookieException
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
-from selenium.common.exceptions import NoSuchShadowRootException
-from selenium.common.exceptions import NoSuchWindowException
-from selenium.common.exceptions import ScreenshotException
-from selenium.common.exceptions import SessionNotCreatedException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import UnableToSetCookieException
-from selenium.common.exceptions import UnexpectedAlertPresentException
-from selenium.common.exceptions import UnknownMethodException
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import (
+    DetachedShadowRootException,
+    ElementClickInterceptedException,
+    ElementNotInteractableException,
+    ElementNotSelectableException,
+    ElementNotVisibleException,
+    ImeActivationFailedException,
+    ImeNotAvailableException,
+    InsecureCertificateException,
+    InvalidArgumentException,
+    InvalidCookieDomainException,
+    InvalidCoordinatesException,
+    InvalidElementStateException,
+    InvalidSelectorException,
+    InvalidSessionIdException,
+    JavascriptException,
+    MoveTargetOutOfBoundsException,
+    NoAlertPresentException,
+    NoSuchCookieException,
+    NoSuchElementException,
+    NoSuchFrameException,
+    NoSuchShadowRootException,
+    NoSuchWindowException,
+    ScreenshotException,
+    SessionNotCreatedException,
+    StaleElementReferenceException,
+    TimeoutException,
+    UnableToSetCookieException,
+    UnexpectedAlertPresentException,
+    UnknownMethodException,
+    WebDriverException,
+)
 
 
 class ExceptionMapping:
@@ -141,7 +142,7 @@ class ErrorCode:
 class ErrorHandler:
     """Handles errors returned by the WebDriver server."""
 
-    def check_response(self, response: Dict[str, Any]) -> None:
+    def check_response(self, response: dict[str, Any]) -> None:
         """Checks that a JSON response from the WebDriver does not have an
         error.
 
@@ -161,25 +162,24 @@ class ErrorHandler:
         if isinstance(status, int):
             value_json = response.get("value", None)
             if value_json and isinstance(value_json, str):
-                import json
-
                 try:
                     value = json.loads(value_json)
-                    if len(value) == 1:
-                        value = value["value"]
-                    status = value.get("error", None)
-                    if not status:
-                        status = value.get("status", ErrorCode.UNKNOWN_ERROR)
-                        message = value.get("value") or value.get("message")
-                        if not isinstance(message, str):
-                            value = message
-                            message = message.get("message")
-                    else:
-                        message = value.get("message", None)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message")
+                        else:
+                            message = value.get("message", None)
                 except ValueError:
                     pass
 
-        exception_class: Type[WebDriverException]
+        exception_class: type[WebDriverException]
         e = ErrorCode()
         error_codes = [item for item in dir(e) if not item.startswith("__")]
         for error_code in error_codes:

@@ -36,6 +36,7 @@ module Selenium
                                 'It should end with .png extension',
                                 id: :screenshot
         end
+        WebDriver.logger.debug("Saving screenshot to #{Dir.pwd}/#{png_path}")
         File.open(png_path, 'wb') { |f| f << screenshot_as(:png, full_page: full_page) }
       end
 

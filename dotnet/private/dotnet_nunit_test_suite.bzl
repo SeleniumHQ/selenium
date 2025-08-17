@@ -78,7 +78,7 @@ _BROWSERS = {
             ],
         }),
         "data": [],
-        "tags": ["skip-remote"],
+        "tags": ["skip-rbe"],
     },
     "safari": {
         "args": [
@@ -90,7 +90,7 @@ _BROWSERS = {
             ],
         }),
         "data": [],
-        "tags": ["skip-remote"],
+        "tags": ["skip-rbe"],
     },
 }
 

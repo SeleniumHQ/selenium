@@ -45,7 +45,7 @@ pub const EDGE_NAMES: &[&str] = &[
 ];
 pub const EDGEDRIVER_NAME: &str = "msedgedriver";
 pub const WEBVIEW2_NAME: &str = "webview2";
-const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
+const DRIVER_URL: &str = "https://msedgedriver.microsoft.com/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
 const BROWSER_URL: &str = "https://edgeupdates.microsoft.com/api/products/";
@@ -550,6 +550,14 @@ impl SeleniumManager for EdgeManager {
 
     fn set_download_browser(&mut self, download_browser: bool) {
         self.download_browser = download_browser;
+    }
+
+    fn is_snap(&self, _browser_path: &str) -> bool {
+        false
+    }
+
+    fn get_snap_path(&self) -> Option<PathBuf> {
+        None
     }
 }
 

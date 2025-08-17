@@ -15,10 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Optional
+
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.common.service import Service
+from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
@@ -28,10 +31,10 @@ class ChromiumDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        browser_name: str = None,
-        vendor_prefix: str = None,
+        browser_name: Optional[str] = None,
+        vendor_prefix: Optional[str] = None,
         options: ArgOptions = ArgOptions(),
-        service: Service = None,
+        service: Optional[Service] = None,
         keep_alive: bool = True,
     ) -> None:
         """Creates a new WebDriver instance of the ChromiumDriver. Starts the
@@ -96,7 +99,8 @@ class ChromiumDriver(RemoteWebDriver):
                     offline=False,
                     latency=5,  # additional latency (ms)
                     download_throughput=500 * 1024,  # maximal throughput
-                    upload_throughput=500 * 1024)  # maximal throughput
+                    upload_throughput=500 * 1024,
+                )  # maximal throughput
 
             Note: 'throughput' can be used to set both (for download and upload).
         """
@@ -116,7 +120,7 @@ class ChromiumDriver(RemoteWebDriver):
         :Usage:
             ::
 
-                driver.set_permissions('clipboard-read', 'denied')
+                driver.set_permissions("clipboard-read", "denied")
         """
         self.execute("setPermissions", {"descriptor": {"name": name}, "state": value})
 
@@ -148,6 +152,33 @@ class ChromiumDriver(RemoteWebDriver):
         """:Returns: An error message when there is any issue in a Cast
         session."""
         return self.execute("getIssueMessage")["value"]
+
+    @property
+    def log_types(self):
+        """Gets a list of the available log types.
+
+        Example:
+        --------
+        >>> driver.log_types
+        """
+        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)["value"]
+
+    def get_log(self, log_type):
+        """Gets the log for a given log type.
+
+        Parameters:
+        -----------
+        log_type : str
+            - Type of log that which will be returned
+
+        Example:
+        --------
+        >>> driver.get_log("browser")
+        >>> driver.get_log("driver")
+        >>> driver.get_log("client")
+        >>> driver.get_log("server")
+        """
+        return self.execute(Command.GET_LOG, {"type": log_type})["value"]
 
     def set_sink_to_use(self, sink_name: str) -> dict:
         """Sets a specific sink, using its name, as a Cast session receiver
@@ -191,3 +222,9 @@ class ChromiumDriver(RemoteWebDriver):
             pass
         finally:
             self.service.stop()
+
+    def download_file(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def get_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError

@@ -63,14 +63,21 @@ public class Credential {
 
   /** Creates a credential from a map. */
   public static Credential fromMap(Map<String, Object> map) {
+    Object credentialId = Require.nonNull("credentialId", map.get("credentialId"));
+    Object isResidentCredential =
+        Require.nonNull("isResidentCredential", map.get("isResidentCredential"));
+    Object rpId = map.get("rpId");
+    Object privateKey = Require.nonNull("privateKey", map.get("privateKey"));
+    Object userHandle = map.get("userHandle");
+    Object signCount = Require.nonNull("signCount", map.get("signCount"));
     Base64.Decoder decoder = Base64.getUrlDecoder();
     return new Credential(
-        decoder.decode((String) map.get("credentialId")),
-        (boolean) map.get("isResidentCredential"),
-        (String) map.get("rpId"),
-        new PKCS8EncodedKeySpec(decoder.decode((String) map.get("privateKey"))),
-        map.get("userHandle") == null ? null : decoder.decode((String) map.get("userHandle")),
-        ((Long) map.get("signCount")).intValue());
+        decoder.decode((String) credentialId),
+        (boolean) isResidentCredential,
+        (String) rpId,
+        new PKCS8EncodedKeySpec(decoder.decode((String) privateKey)),
+        userHandle == null ? null : decoder.decode((String) userHandle),
+        ((Long) signCount).intValue());
   }
 
   private Credential(

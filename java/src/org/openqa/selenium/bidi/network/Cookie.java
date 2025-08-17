@@ -25,7 +25,8 @@ public class Cookie {
   public enum SameSite {
     STRICT("strict"),
     LAX("lax"),
-    NONE("none");
+    NONE("none"),
+    DEFAULT("default");
 
     private final String type;
 
@@ -182,6 +183,6 @@ public class Cookie {
 
     getExpiry().ifPresent(expiryValue -> map.put("expiry", expiryValue));
 
-    return map;
+    return Map.copyOf(map);
   }
 }

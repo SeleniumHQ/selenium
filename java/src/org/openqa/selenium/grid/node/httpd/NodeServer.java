@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.BuildInfo;
@@ -74,7 +73,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class NodeServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
-  private final AtomicBoolean nodeRegistered = new AtomicBoolean(false);
   private Node node;
   private EventBus bus;
   private final Thread shutdownHook =
@@ -130,7 +128,7 @@ public class NodeServer extends TemplateGridServerCommand {
 
     HttpHandler readinessCheck =
         req -> {
-          if (node.getStatus().hasCapacity()) {
+          if (node.isReady() && node.getStatus().hasCapacity()) {
             return new HttpResponse()
                 .setStatus(HTTP_OK)
                 .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
@@ -147,7 +145,7 @@ public class NodeServer extends TemplateGridServerCommand {
         NodeAddedEvent.listener(
             nodeId -> {
               if (node.getId().equals(nodeId)) {
-                nodeRegistered.set(true);
+                node.register();
                 LOG.info("Node has been added");
               }
             }));
@@ -237,7 +235,7 @@ public class NodeServer extends TemplateGridServerCommand {
               Failsafe.with(registrationPolicy)
                   .run(
                       () -> {
-                        if (nodeRegistered.get()) {
+                        if (node.isRegistered()) {
                           throw new InterruptedException("Stopping registration thread.");
                         }
                         HealthCheck.Result check = node.getHealthCheck().check();

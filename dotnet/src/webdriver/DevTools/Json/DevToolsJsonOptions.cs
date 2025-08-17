@@ -19,8 +19,6 @@
 
 using System.Text.Json;
 
-#nullable enable
-
 namespace OpenQA.Selenium.DevTools.Json;
 
 internal static class DevToolsJsonOptions

@@ -14,15 +14,16 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from selenium.webdriver.common.by import By
 
 
 class LocatorConverter:
     def convert(self, by, value):
         # Default conversion logic
-        if by == "id":
-            return "css selector", f'[id="{value}"]'
-        elif by == "class name":
-            return "css selector", f".{value}"
-        elif by == "name":
-            return "css selector", f'[name="{value}"]'
+        if by == By.ID:
+            return By.CSS_SELECTOR, f'[id="{value}"]'
+        elif by == By.CLASS_NAME:
+            return By.CSS_SELECTOR, f".{value}"
+        elif by == By.NAME:
+            return By.CSS_SELECTOR, f'[name="{value}"]'
         return by, value

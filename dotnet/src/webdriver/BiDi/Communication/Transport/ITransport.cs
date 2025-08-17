@@ -21,8 +21,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 
-#nullable enable
-
 namespace OpenQA.Selenium.BiDi.Communication.Transport;
 
 interface ITransport : IDisposable

@@ -17,7 +17,8 @@
 
 import * as React from 'react'
 import QueuedSessions from '../../components/QueuedSessions/QueuedSessions'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import { render } from '../utils/render-utils'
 
 const sessionQueueRequests: string[] = [
   '{"acceptInsecureCerts":true,"browserName":"chrome","goog:chromeOptions":{"args":["--start-maximized"],"extensions":[]}}'

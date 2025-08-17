@@ -36,6 +36,6 @@ public class ElementClipRectangle extends ClipRectangle {
   public Map<String, Object> toMap() {
     map.put("type", super.getType().toString());
 
-    return map;
+    return Map.copyOf(map);
   }
 }

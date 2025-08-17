@@ -80,6 +80,6 @@ public class Locator {
   }
 
   public Map<String, Object> toMap() {
-    return map;
+    return Map.copyOf(map);
   }
 }

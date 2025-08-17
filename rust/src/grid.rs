@@ -106,15 +106,16 @@ impl SeleniumManager for GridManager {
     }
 
     fn request_driver_version(&mut self) -> Result<String, Error> {
-        let major_browser_version_binding = self.get_major_browser_version();
-        let major_browser_version = major_browser_version_binding.as_str();
+        let is_nightly = self.is_nightly(self.get_driver_version());
+        let major_driver_version_binding = self.get_major_driver_version();
+        let major_driver_version = major_driver_version_binding.as_str();
         let cache_path = self.get_cache_path()?;
         let mut metadata = get_metadata(self.get_logger(), &cache_path);
 
         match get_driver_version_from_metadata(
             &metadata.drivers,
             self.driver_name,
-            major_browser_version,
+            major_driver_version,
         ) {
             Some(driver_version) => {
                 self.log.trace(format!(
@@ -135,8 +136,12 @@ impl SeleniumManager for GridManager {
                     .into_iter()
                     .filter(|r| {
                         r.assets.iter().any(|url| {
-                            url.browser_download_url.contains(GRID_RELEASE)
-                                && !url.browser_download_url.contains(SNAPSHOT)
+                            if is_nightly {
+                                url.browser_download_url.contains(SNAPSHOT)
+                            } else {
+                                url.browser_download_url.contains(GRID_RELEASE)
+                                    && !url.browser_download_url.contains(SNAPSHOT)
+                            }
                         })
                     })
                     .collect();
@@ -155,15 +160,20 @@ impl SeleniumManager for GridManager {
 
                     let index_release =
                         driver_url.rfind(GRID_RELEASE).unwrap() + GRID_RELEASE.len() + 1;
-                    let driver_version = parse_version(
-                        driver_url.as_str()[index_release..].to_string(),
-                        self.get_logger(),
-                    )?;
+                    let driver_version = if is_nightly {
+                        let index_jar = driver_url.rfind(GRID_EXTENSION).unwrap() - 1;
+                        driver_url.as_str()[index_release..index_jar].to_string()
+                    } else {
+                        parse_version(
+                            driver_url.as_str()[index_release..].to_string(),
+                            self.get_logger(),
+                        )?
+                    };
 
                     let driver_ttl = self.get_ttl();
                     if driver_ttl > 0 {
                         metadata.drivers.push(create_driver_metadata(
-                            major_browser_version,
+                            major_driver_version,
                             self.driver_name,
                             &driver_version,
                             driver_ttl,
@@ -285,5 +295,13 @@ impl SeleniumManager for GridManager {
 
     fn set_download_browser(&mut self, download_browser: bool) {
         self.download_browser = download_browser;
+    }
+
+    fn is_snap(&self, _browser_path: &str) -> bool {
+        false
+    }
+
+    fn get_snap_path(&self) -> Option<PathBuf> {
+        None
     }
 }

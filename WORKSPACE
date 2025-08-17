@@ -6,6 +6,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "io_bazel_rules_closure",
+    integrity = "sha256-lJjlc2jvuCuYXbHtQmp2fL8boDmP167WMvw5CGVOGx4=",
     strip_prefix = "rules_closure-0.12.0",
     url = "https://github.com/bazelbuild/rules_closure/archive/refs/tags/0.12.0.tar.gz",
 )

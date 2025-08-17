@@ -20,6 +20,7 @@ use crate::common::{assert_output, get_selenium_manager, get_stdout};
 use exitcode::DATAERR;
 use rstest::rstest;
 use std::env::consts::OS;
+use std::path::Path;
 
 mod common;
 
@@ -134,7 +135,7 @@ fn invalid_geckodriver_version_test() {
     r"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 )]
 fn browser_path_test(#[case] os: String, #[case] browser: String, #[case] browser_path: String) {
-    if OS.eq(&os) {
+    if OS.eq(&os) && Path::new(&browser_path).exists() {
         let mut cmd = get_selenium_manager();
         cmd.args(["--browser", &browser, "--browser-path", &browser_path])
             .assert()

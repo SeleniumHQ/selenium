@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -259,8 +258,8 @@ class BrowsingContextTest : BiDiTestFixture
     {
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Origin = Origin.Document,
-            Clip = new ClipRectangle.Box(5, 5, 10, 10)
+            Origin = ScreenshotOrigin.Document,
+            Clip = new BoxClipRectangle(5, 5, 10, 10)
         });
 
         Assert.That(screenshot, Is.Not.Null);
@@ -272,8 +271,8 @@ class BrowsingContextTest : BiDiTestFixture
     {
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Origin = Origin.Viewport,
-            Clip = new ClipRectangle.Box(5, 5, 10, 10)
+            Origin = ScreenshotOrigin.Viewport,
+            Clip = new BoxClipRectangle(5, 5, 10, 10)
         });
 
         Assert.That(screenshot, Is.Not.Null);
@@ -285,11 +284,11 @@ class BrowsingContextTest : BiDiTestFixture
     {
         await context.NavigateAsync(UrlBuilder.WhereIs("formPage.html"), new() { Wait = ReadinessState.Complete });
 
-        var nodes = await context.LocateNodesAsync(new Locator.Css("#checky"));
+        var nodes = await context.LocateNodesAsync(new CssLocator("#checky"));
 
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Clip = new ClipRectangle.Element(nodes[0])
+            Clip = new ElementClipRectangle(nodes[0])
         });
 
         Assert.That(screenshot, Is.Not.Null);

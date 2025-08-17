@@ -30,6 +30,9 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
+import org.openqa.selenium.bidi.browsingcontext.CreateContextParameters;
+import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.bidi.module.Storage;
 import org.openqa.selenium.bidi.network.BytesValue;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -60,7 +63,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canGetCookieByName() {
     String key = generateUniqueKey();
     String value = "set";
@@ -121,11 +123,58 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  // TODO: Once Browser module is added this test needs to be added
-  public void canGetCookieInAUserContext() {}
+  public void canGetCookieInAUserContext() {
+    Browser browser = new Browser(driver);
+    String userContext = browser.createUserContext();
+    String windowHandle = driver.getWindowHandle();
+
+    String key = generateUniqueKey();
+    String value = "set";
+
+    PartitionDescriptor descriptor = new StorageKeyPartitionDescriptor().userContext(userContext);
+
+    SetCookieParameters parameters =
+        new SetCookieParameters(
+            new PartialCookie(
+                key, new BytesValue(BytesValue.Type.STRING, value), appServer.getHostName()),
+            descriptor);
+
+    storage.setCookie(parameters);
+
+    CookieFilter cookieFilter = new CookieFilter();
+    cookieFilter.name(key);
+    cookieFilter.value(new BytesValue(BytesValue.Type.STRING, "set"));
+
+    BrowsingContext context =
+        new BrowsingContext(
+            driver, new CreateContextParameters(WindowType.TAB).userContext(userContext));
+
+    driver.switchTo().window(context.getId());
+
+    GetCookiesParameters params = new GetCookiesParameters(cookieFilter, descriptor);
+
+    GetCookiesResult result = storage.getCookies(params);
+
+    assertThat(result.getCookies().get(0).getValue().getValue()).isEqualTo(value);
+    PartitionKey partitionKey = result.getPartitionKey();
+
+    assertThat(partitionKey.getUserContext()).isNotNull();
+    assertThat(partitionKey.getUserContext()).isEqualTo(userContext);
+
+    driver.switchTo().window(windowHandle);
+
+    PartitionDescriptor browsingContextPartitionDescriptor =
+        new BrowsingContextPartitionDescriptor(windowHandle);
+
+    GetCookiesParameters params1 =
+        new GetCookiesParameters(cookieFilter, browsingContextPartitionDescriptor);
+
+    GetCookiesResult result1 = storage.getCookies(params1);
+
+    assertThat(result1.getCookies().size()).isEqualTo(0);
+  }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canAddCookie() {
     String key = generateUniqueKey();
     String value = "foo";
@@ -208,8 +257,8 @@ class StorageCommandsTest extends JupiterTestBase {
     assertThat(key.getUserContext()).isEqualTo("default");
   }
 
-  @Test
   @NotYetImplemented(EDGE)
+  @Test
   public void canGetAllCookies() {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
@@ -237,7 +286,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canDeleteAllCookies() {
     addCookieOnServerSide(new Cookie("foo", "set"));
     assertSomeCookiesArePresent();
@@ -251,7 +299,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void canDeleteCookieWithName() {
     String key1 = generateUniqueKey();
     String key2 = generateUniqueKey();
@@ -273,7 +320,6 @@ class StorageCommandsTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
     driver.get(appServer.whereIs("/common/animals"));
 

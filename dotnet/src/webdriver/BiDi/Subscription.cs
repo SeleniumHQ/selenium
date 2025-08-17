@@ -22,17 +22,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-#nullable enable
-
 namespace OpenQA.Selenium.BiDi;
 
 public class Subscription : IAsyncDisposable
 {
-    private readonly Modules.Session.Subscription _subscription;
+    private readonly Session.Subscription _subscription;
     private readonly Broker _broker;
     private readonly Communication.EventHandler _eventHandler;
 
-    internal Subscription(Modules.Session.Subscription subscription, Broker broker, Communication.EventHandler eventHandler)
+    internal Subscription(Session.Subscription subscription, Broker broker, Communication.EventHandler eventHandler)
     {
         _subscription = subscription;
         _broker = broker;
@@ -62,5 +60,5 @@ public class BrowsingContextsSubscriptionOptions : SubscriptionOptions
         Timeout = options?.Timeout;
     }
 
-    public IEnumerable<Modules.BrowsingContext.BrowsingContext>? Contexts { get; set; }
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
 }

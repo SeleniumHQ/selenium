@@ -6,7 +6,7 @@ exports_files(
         "js_protocol.json",
     ],
     visibility = [
-        "//javascript/node/selenium-webdriver:__pkg__",
+        "//javascript/selenium-webdriver:__pkg__",
         "//py:__pkg__",
         "//rb/lib/selenium/devtools:__pkg__",
     ],

@@ -64,7 +64,6 @@ module Selenium
 
         describe '#install_addon' do
           it 'install and uninstall xpi file' do
-            Selenium::WebDriver.logger.level = :debug
             ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
             id = driver.install_addon(ext)
 
@@ -144,7 +143,8 @@ module Selenium
         end
 
         it 'can get and set context' do
-          reset_driver!(prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
+          reset_driver!(args: ['-remote-allow-system-access'],
+                        prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
             expect(driver.context).to eq 'content'
 
             driver.context = 'chrome'

@@ -31,8 +31,8 @@ module Selenium
         File.read(File.expand_path("../atoms/#{function}.js", __FILE__))
       end
 
-      def execute_atom(function_name, *arguments)
-        execute_script(atom_script(function_name), *arguments)
+      def execute_atom(function_name, *)
+        execute_script(atom_script(function_name), *)
       end
     end # Atoms
   end # WebDriver

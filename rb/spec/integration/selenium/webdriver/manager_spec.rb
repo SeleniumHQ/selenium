@@ -25,7 +25,13 @@ module Selenium
       describe 'cookie management' do
         before { driver.navigate.to url_for('xhtmlTest.html') }
 
-        after { driver.manage.delete_all_cookies }
+        after do
+          if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome
+            reset_driver!
+          else
+            driver.manage.delete_all_cookies
+          end
+        end
 
         it 'sets correct defaults' do
           driver.manage.add_cookie name: 'default',
@@ -237,7 +243,6 @@ module Selenium
 
         it 'deletes one' do
           driver.manage.add_cookie name: 'foo', value: 'bar'
-
           driver.manage.delete_cookie('foo')
           expect(driver.manage.all_cookies.find { |c| c[:name] == 'foo' }).to be_nil
         end
@@ -252,6 +257,22 @@ module Selenium
         it 'throws error when fetching non-existent cookie' do
           expect { driver.manage.cookie_named('non-existent') }
             .to raise_exception(Error::NoSuchCookieError)
+        end
+
+        it 'throws an error when cookie name is an empty string' do
+          expect { driver.manage.delete_cookie('') }
+            .to raise_error(ArgumentError, /Cookie name cannot be null or empty/)
+        end
+
+        it 'throws an error when cookie name is a nil string' do
+          expect { driver.manage.delete_cookie(nil) }
+            .to raise_error(ArgumentError, /Cookie name cannot be null or empty/)
+        end
+
+        it 'allows deleting a cookies using a symbol' do
+          driver.manage.add_cookie name: :foo, value: 'bar'
+          driver.manage.delete_cookie(:foo)
+          expect(driver.manage.all_cookies).to be_empty
         end
       end
     end # Options

@@ -1,5 +1,5 @@
 # Used to create a development image for working on Selenium
-FROM shs96c/selenium-remote-build:latest
+FROM selenium/selenium-remote-build:latest
 
 USER root
 

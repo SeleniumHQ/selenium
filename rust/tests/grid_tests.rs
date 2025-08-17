@@ -20,6 +20,7 @@ use crate::common::{assert_output, get_selenium_manager, get_stdout};
 use exitcode::DATAERR;
 use rstest::rstest;
 use selenium_manager::logger::JsonOutput;
+use selenium_manager::{NIGHTLY, SNAPSHOT};
 use std::path::Path;
 use std::str;
 
@@ -51,6 +52,7 @@ fn grid_latest_test() {
 #[case("4.8.0")]
 #[case("4.9.0")]
 #[case("4.10.0")]
+#[case("nightly")]
 fn grid_version_test(#[case] grid_version: &str) {
     let mut cmd = get_selenium_manager();
     cmd.args(["--grid", grid_version, "--output", "json"])
@@ -63,7 +65,12 @@ fn grid_version_test(#[case] grid_version: &str) {
     let json: JsonOutput = serde_json::from_str(&stdout).unwrap();
     let jar = Path::new(&json.result.driver_path);
     let jar_name = jar.file_name().unwrap().to_str().unwrap();
-    assert!(jar_name.contains(grid_version));
+    let version_label = if grid_version.eq_ignore_ascii_case(NIGHTLY) {
+        SNAPSHOT
+    } else {
+        grid_version
+    };
+    assert!(jar_name.contains(version_label));
 }
 
 #[rstest]

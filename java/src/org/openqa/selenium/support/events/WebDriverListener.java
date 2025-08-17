@@ -909,21 +909,21 @@ public interface WebDriverListener {
 
   /**
    * This action will be performed each time before {@link
-   * WebDriver.Timeouts#setScriptTimeout(Duration)} is called.
+   * WebDriver.Timeouts#scriptTimeout(Duration)} is called.
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
    */
-  default void beforeSetScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
+  default void beforeScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
 
   /**
    * This action will be performed each time after {@link
-   * WebDriver.Timeouts#setScriptTimeout(Duration)} is called.
+   * WebDriver.Timeouts#scriptTimeout(Duration)} is called.
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
    */
-  default void afterSetScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
+  default void afterScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
 
   /**
    * This action will be performed each time before {@link

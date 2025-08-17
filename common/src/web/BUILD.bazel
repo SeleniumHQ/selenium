@@ -9,7 +9,7 @@ filegroup(
     visibility = [
         "//dotnet/test:__subpackages__",
         "//java/test/org/openqa/selenium/environment:__pkg__",
-        "//javascript/node/selenium-webdriver:__pkg__",
+        "//javascript/selenium-webdriver:__pkg__",
         "//py:__pkg__",
         "//rb/spec:__subpackages__",
     ],
@@ -21,6 +21,6 @@ js_library(
         ":web",
     ],
     visibility = [
-        "//javascript/node/selenium-webdriver:__subpackages__",
+        "//javascript/selenium-webdriver:__subpackages__",
     ],
 )

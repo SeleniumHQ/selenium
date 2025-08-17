@@ -30,23 +30,22 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-#nullable enable
-
 namespace OpenQA.Selenium.BiDi.Communication;
 
-public class Broker : IAsyncDisposable
+public sealed class Broker : IAsyncDisposable
 {
-    private readonly ILogger _logger = Log.GetLogger<Broker>();
+    private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly BiDi _bidi;
     private readonly ITransport _transport;
 
-    private readonly ConcurrentDictionary<int, TaskCompletionSource<JsonElement>> _pendingCommands = new();
+    private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
     private readonly BlockingCollection<MessageEvent> _pendingEvents = [];
+    private readonly Dictionary<string, Type> _eventTypesMap = [];
 
     private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
 
-    private int _currentCommandId;
+    private long _currentCommandId;
 
     private static readonly TaskFactory _myTaskFactory = new(CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskContinuationOptions.None, TaskScheduler.Default);
 
@@ -56,16 +55,20 @@ public class Broker : IAsyncDisposable
 
     private readonly BiDiJsonSerializerContext _jsonSerializerContext;
 
-    internal Broker(BiDi bidi, ITransport transport)
+    internal Broker(BiDi bidi, Uri url)
     {
         _bidi = bidi;
-        _transport = transport;
+        _transport = new WebSocketTransport(url);
 
         var jsonSerializerOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+
+            // BiDi returns special numbers such as "NaN" as strings
+            // Additionally, -0 is returned as a string "-0"
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
             Converters =
             {
                 new BrowsingContextConverter(_bidi),
@@ -73,7 +76,7 @@ public class Broker : IAsyncDisposable
                 new BrowserClientWindowConverter(),
                 new NavigationConverter(),
                 new InterceptConverter(_bidi),
-                new RequestConverter(_bidi),
+                new RequestConverter(),
                 new ChannelConverter(),
                 new HandleConverter(_bidi),
                 new InternalIdConverter(_bidi),
@@ -83,11 +86,11 @@ public class Broker : IAsyncDisposable
                 new DateTimeOffsetConverter(),
                 new PrintPageRangeConverter(),
                 new InputOriginConverter(),
+                new WebExtensionConverter(_bidi),
                 new SubscriptionConverter(),
                 new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
 
                 // https://github.com/dotnet/runtime/issues/72604
-                new Json.Converters.Polymorphic.MessageConverter(),
                 new Json.Converters.Polymorphic.EvaluateResultConverter(),
                 new Json.Converters.Polymorphic.RemoteValueConverter(),
                 new Json.Converters.Polymorphic.RealmInfoConverter(),
@@ -101,6 +104,7 @@ public class Broker : IAsyncDisposable
                 new Json.Converters.Enumerable.GetUserContextsResultConverter(),
                 new Json.Converters.Enumerable.GetClientWindowsResultConverter(),
                 new Json.Converters.Enumerable.GetRealmsResultConverter(),
+                new Json.Converters.Enumerable.GetTreeResultConverter(),
             }
         };
 
@@ -120,23 +124,18 @@ public class Broker : IAsyncDisposable
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
-
-            var message = JsonSerializer.Deserialize(new ReadOnlySpan<byte>(data), _jsonSerializerContext.Message);
-
-            switch (message)
+            try
             {
-                case MessageSuccess messageSuccess:
-                    _pendingCommands[messageSuccess.Id].SetResult(messageSuccess.Result);
-                    _pendingCommands.TryRemove(messageSuccess.Id, out _);
-                    break;
-                case MessageEvent messageEvent:
-                    _pendingEvents.Add(messageEvent);
-                    break;
-                case MessageError mesageError:
-                    _pendingCommands[mesageError.Id].SetException(new BiDiException($"{mesageError.Error}: {mesageError.Message}"));
-                    _pendingCommands.TryRemove(mesageError.Id, out _);
-                    break;
+                var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+
+                ProcessReceivedMessage(data);
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested is not true && _logger.IsEnabled(LogEventLevel.Error))
+                {
+                    _logger.Error($"Couldn't process received BiDi remote message: {ex}");
+                }
             }
         }
     }
@@ -153,7 +152,7 @@ public class Broker : IAsyncDisposable
                     {
                         foreach (var handler in eventHandlers.ToArray()) // copy handlers avoiding modified collection while iterating
                         {
-                            var args = (EventArgs)result.Params.Deserialize(handler.EventArgsType, _jsonSerializerContext)!;
+                            var args = result.Params;
 
                             args.BiDi = _bidi;
 
@@ -175,7 +174,7 @@ public class Broker : IAsyncDisposable
             {
                 if (_logger.IsEnabled(LogEventLevel.Error))
                 {
-                    _logger.Error($"Unhandled error processing BiDi event: {ex}");
+                    _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
                 }
             }
         }
@@ -183,24 +182,19 @@ public class Broker : IAsyncDisposable
 
     public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options)
         where TCommand : Command
+        where TResult : EmptyResult
     {
-        var jsonElement = await ExecuteCommandCoreAsync(command, options).ConfigureAwait(false);
+        var result = await ExecuteCommandCoreAsync(command, options).ConfigureAwait(false);
 
-        return (TResult)jsonElement.Deserialize(typeof(TResult), _jsonSerializerContext)!;
+        return (TResult)result;
     }
 
-    public async Task ExecuteCommandAsync<TCommand>(TCommand command, CommandOptions? options)
-        where TCommand : Command
-    {
-        await ExecuteCommandCoreAsync(command, options).ConfigureAwait(false);
-    }
-
-    private async Task<JsonElement> ExecuteCommandCoreAsync<TCommand>(TCommand command, CommandOptions? options)
+    private async Task<EmptyResult> ExecuteCommandCoreAsync<TCommand>(TCommand command, CommandOptions? options)
         where TCommand : Command
     {
         command.Id = Interlocked.Increment(ref _currentCommandId);
 
-        var tcs = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
 
@@ -208,7 +202,7 @@ public class Broker : IAsyncDisposable
 
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
 
-        _pendingCommands[command.Id] = tcs;
+        _pendingCommands[command.Id] = new(command.Id, command.ResultType, tcs);
 
         var data = JsonSerializer.SerializeToUtf8Bytes(command, typeof(TCommand), _jsonSerializerContext);
 
@@ -220,6 +214,8 @@ public class Broker : IAsyncDisposable
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options = null)
         where TEventArgs : EventArgs
     {
+        _eventTypesMap[eventName] = typeof(TEventArgs);
+
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
         if (options is BrowsingContextsSubscriptionOptions browsingContextsOptions)
@@ -247,6 +243,8 @@ public class Broker : IAsyncDisposable
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options = null)
         where TEventArgs : EventArgs
     {
+        _eventTypesMap[eventName] = typeof(TEventArgs);
+
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
         if (options is BrowsingContextsSubscriptionOptions browsingContextsOptions)
@@ -271,7 +269,7 @@ public class Broker : IAsyncDisposable
         }
     }
 
-    public async Task UnsubscribeAsync(Modules.Session.Subscription subscription, EventHandler eventHandler)
+    public async Task UnsubscribeAsync(Session.Subscription subscription, EventHandler eventHandler)
     {
         var eventHandlers = _eventHandlers[eventHandler.EventName];
 
@@ -310,5 +308,125 @@ public class Broker : IAsyncDisposable
         {
             await _eventEmitterTask.ConfigureAwait(false);
         }
+
+        _transport.Dispose();
+
+        GC.SuppressFinalize(this);
     }
+
+    private void ProcessReceivedMessage(byte[]? data)
+    {
+        long? id = default;
+        string? type = default;
+        string? method = default;
+        string? error = default;
+        string? message = default;
+        Utf8JsonReader resultReader = default;
+        Utf8JsonReader paramsReader = default;
+
+        Utf8JsonReader reader = new(new ReadOnlySpan<byte>(data));
+        reader.Read();
+
+        reader.Read(); // "{"
+
+        while (reader.TokenType == JsonTokenType.PropertyName)
+        {
+            string? propertyName = reader.GetString();
+            reader.Read();
+
+            switch (propertyName)
+            {
+                case "id":
+                    id = reader.GetInt64();
+                    break;
+
+                case "type":
+                    type = reader.GetString();
+                    break;
+
+                case "method":
+                    method = reader.GetString();
+                    break;
+
+                case "result":
+                    resultReader = reader; // cloning reader with current position
+                    break;
+
+                case "params":
+                    paramsReader = reader; // cloning reader with current position
+                    break;
+
+                case "error":
+                    error = reader.GetString();
+                    break;
+
+                case "message":
+                    message = reader.GetString();
+                    break;
+            }
+
+            reader.Skip();
+            reader.Read();
+        }
+
+        switch (type)
+        {
+            case "success":
+                if (id is null) throw new JsonException("The remote end responded with 'success' message type, but missed required 'id' property.");
+
+                if (_pendingCommands.TryGetValue(id.Value, out var successCommand))
+                {
+                    var messageSuccess = JsonSerializer.Deserialize(ref resultReader, successCommand.ResultType, _jsonSerializerContext)!;
+                    successCommand.TaskCompletionSource.SetResult((EmptyResult)messageSuccess);
+                    _pendingCommands.TryRemove(id.Value, out _);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'success' message type, but no pending command with id {id} was found.");
+                }
+
+                break;
+
+            case "event":
+                if (method is null) throw new JsonException("The remote end responded with 'event' message type, but missed required 'method' property.");
+
+                if (_eventTypesMap.TryGetValue(method, out var eventType))
+                {
+                    var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventType, _jsonSerializerContext)!;
+
+                    var messageEvent = new MessageEvent(method, eventArgs);
+                    _pendingEvents.Add(messageEvent);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'event' message type, but no event type mapping for method '{method}' was found.");
+                }
+
+                break;
+
+            case "error":
+                if (id is null) throw new JsonException("The remote end responded with 'error' message type, but missed required 'id' property.");
+
+                if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
+                {
+                    errorCommand.TaskCompletionSource.SetException(new BiDiException($"{error}: {message}"));
+                    _pendingCommands.TryRemove(id.Value, out _);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'error' message type, but no pending command with id {id} was found.");
+                }
+
+                break;
+        }
+    }
+
+    class CommandInfo(long id, Type resultType, TaskCompletionSource<EmptyResult> taskCompletionSource)
+    {
+        public long Id { get; } = id;
+
+        public Type ResultType { get; } = resultType;
+
+        public TaskCompletionSource<EmptyResult> TaskCompletionSource { get; } = taskCompletionSource;
+    };
 }

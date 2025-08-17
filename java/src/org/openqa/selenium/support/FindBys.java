@@ -44,10 +44,9 @@ import org.openqa.selenium.support.pagefactory.ByChained;
 public @interface FindBys {
   FindBy[] value();
 
-  class FindByBuilder extends AbstractFindByBuilder {
+  class FindByBuilder extends AbstractFindByBuilder<FindBys> {
     @Override
-    public By buildIt(Object annotation, Field field) {
-      FindBys findBys = (FindBys) annotation;
+    public By buildIt(FindBys findBys, Field field) {
       assertValidFindBys(findBys);
 
       FindBy[] findByArray = findBys.value();

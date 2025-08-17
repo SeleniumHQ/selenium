@@ -72,7 +72,7 @@ java_binary(
 
 npm_link_package(
     name = "node_modules/selenium-webdriver",
-    src = "//javascript/node/selenium-webdriver",
+    src = "//javascript/selenium-webdriver",
 )
 
 platform(

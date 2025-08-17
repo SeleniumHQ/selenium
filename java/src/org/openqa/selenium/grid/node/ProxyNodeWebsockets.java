@@ -54,7 +54,7 @@ public class ProxyNodeWebsockets
   private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
   private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
   private static final ImmutableSet<String> CDP_ENDPOINT_CAPS =
-      ImmutableSet.of("goog:chromeOptions", "moz:debuggerAddress", "ms:edgeOptions");
+      ImmutableSet.of("goog:chromeOptions", "ms:edgeOptions");
   private final HttpClient.Factory clientFactory;
   private final Node node;
   private final String gridSubPath;

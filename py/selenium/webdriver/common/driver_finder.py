@@ -68,11 +68,11 @@ class DriverFinder:
                 if Path(output["driver_path"]).is_file():
                     self._paths["driver_path"] = output["driver_path"]
                 else:
-                    raise ValueError(f'The driver path is not a valid file: {output["driver_path"]}')
+                    raise ValueError(f"The driver path is not a valid file: {output['driver_path']}")
                 if Path(output["browser_path"]).is_file():
                     self._paths["browser_path"] = output["browser_path"]
                 else:
-                    raise ValueError(f'The browser path is not a valid file: {output["browser_path"]}')
+                    raise ValueError(f"The browser path is not a valid file: {output['browser_path']}")
         except Exception as err:
             msg = f"Unable to obtain driver for {browser}"
             raise NoSuchDriverException(msg) from err

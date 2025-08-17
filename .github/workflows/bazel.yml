@@ -122,7 +122,7 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: bazel-contrib/setup-bazel@0.13.0
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
@@ -136,9 +136,12 @@ jobs:
           repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.13.0
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
           bazelrc: common --color=yes
+      - name: Setup curl for Ubuntu
+        if: inputs.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Setup Fluxbox and Xvfb
         if: inputs.os == 'ubuntu' && inputs.browser != ''
         run: |
@@ -152,9 +155,6 @@ jobs:
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
-      - name: Setup curl for Ubuntu
-        if: inputs.os == 'ubuntu'
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Run Bazel
         run: ${{ inputs.run }}
       - name: Start SSH session

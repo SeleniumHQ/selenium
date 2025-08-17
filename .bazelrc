@@ -24,10 +24,10 @@ build --flag_alias=headless=//common:headless
 
 # Set the default java toolchain
 
-build --java_language_version=17
-build --java_runtime_version=remotejdk_17
-build --tool_java_language_version=17
-build --tool_java_runtime_version=remotejdk_17
+build --java_language_version=21
+build --java_runtime_version=remotejdk_21
+build --tool_java_language_version=21
+build --tool_java_runtime_version=remotejdk_21
 
 # We target java 11 by default
 
@@ -119,9 +119,9 @@ build:release --stamp
 build:release --compilation_mode=opt
 
 # As regular `release` but all the build work happens on the RBE
-build:remote_release --config=release
-build:remote_release --config=remote
-build:remote_release --remote_download_toplevel
+build:rbe_release --config=release
+build:rbe_release --config=rbe
+build:rbe_release --remote_download_toplevel
 
 # RBE
 import %workspace%/.bazelrc.remote

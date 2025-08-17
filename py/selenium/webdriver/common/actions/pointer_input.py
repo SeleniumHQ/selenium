@@ -15,17 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Union
+from typing import Any, Optional, Union
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webelement import WebElement
 
 from .input_device import InputDevice
-from .interaction import POINTER
-from .interaction import POINTER_KINDS
+from .interaction import POINTER, POINTER_KINDS
 
 
 class PointerInput(InputDevice):
@@ -70,7 +66,7 @@ class PointerInput(InputDevice):
     def encode(self):
         return {"type": self.type, "parameters": {"pointerType": self.kind}, "id": self.name, "actions": self.actions}
 
-    def _convert_keys(self, actions: Dict[str, Any]):
+    def _convert_keys(self, actions: dict[str, Any]):
         out = {}
         for k, v in actions.items():
             if v is None:

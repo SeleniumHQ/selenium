@@ -28,6 +28,5 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote/http",
         artifact("io.opentelemetry:opentelemetry-api"),
-        artifact("io.opentelemetry.semconv:opentelemetry-semconv"),
     ],
 )

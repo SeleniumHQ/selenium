@@ -46,6 +46,6 @@ public class CreateContextParameters {
 
   public Map<String, Object> toMap() {
     map.put("type", windowType.toString());
-    return map;
+    return Map.copyOf(map);
   }
 }

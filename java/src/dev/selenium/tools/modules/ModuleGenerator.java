@@ -108,7 +108,8 @@ public class ModuleGenerator {
     Set<String> openTo = new TreeSet<>();
     boolean isOpen = false;
 
-    for (int i = 0; i < args.length; i++) {
+    int argCount = args.length;
+    for (int i = 0; i < argCount; i++) {
       String flag = args[i];
       String next = args[++i];
       switch (flag) {

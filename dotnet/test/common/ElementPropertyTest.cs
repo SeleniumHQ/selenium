@@ -19,31 +19,30 @@
 
 using NUnit.Framework;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class ElementPropertyTest : DriverTestFixture
 {
-    [TestFixture]
-    public class ElementPropertyTest : DriverTestFixture
+    [Test]
+    [IgnoreBrowser(Browser.Remote)]
+    public void ShouldReturnNullWhenGettingTheValueOfAPropertyThatIsNotListed()
     {
-        [Test]
-        [IgnoreBrowser(Browser.Remote)]
-        public void ShouldReturnNullWhenGettingTheValueOfAPropertyThatIsNotListed()
-        {
-            driver.Url = simpleTestPage;
-            IWebElement head = driver.FindElement(By.XPath("/html"));
-            string attribute = head.GetDomProperty("cheese");
-            Assert.That(attribute, Is.Null);
-        }
+        driver.Url = simpleTestPage;
+        IWebElement head = driver.FindElement(By.XPath("/html"));
+        string attribute = head.GetDomProperty("cheese");
+        Assert.That(attribute, Is.Null);
+    }
 
-        [Test]
-        [IgnoreBrowser(Browser.Remote)]
-        public void CanRetrieveTheCurrentValueOfAProperty()
-        {
-            driver.Url = formsPage;
-            IWebElement element = driver.FindElement(By.Id("working"));
+    [Test]
+    [IgnoreBrowser(Browser.Remote)]
+    public void CanRetrieveTheCurrentValueOfAProperty()
+    {
+        driver.Url = formsPage;
+        IWebElement element = driver.FindElement(By.Id("working"));
 
-            Assert.That(element.GetDomProperty("value"), Is.Empty);
-            element.SendKeys("hello world");
-            Assert.That(element.GetDomProperty("value"), Is.EqualTo("hello world"));
-        }
+        Assert.That(element.GetDomProperty("value"), Is.Empty);
+        element.SendKeys("hello world");
+        Assert.That(element.GetDomProperty("value"), Is.EqualTo("hello world"));
     }
 }

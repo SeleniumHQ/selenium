@@ -32,14 +32,13 @@ module Selenium
                       DriverExtensions::HasBiDi,
                       DriverExtensions::HasLogEvents,
                       DriverExtensions::HasNetworkInterception,
-                      DriverExtensions::HasWebStorage,
                       DriverExtensions::PrintsPage].freeze
 
         include LocalDriver
 
-        def initialize(options: nil, service: nil, url: nil, **opts)
+        def initialize(options: nil, service: nil, url: nil, **)
           caps, url = initialize_local_driver(options, service, url)
-          super(caps: caps, url: url, **opts)
+          super(caps: caps, url: url, **)
         end
 
         def browser

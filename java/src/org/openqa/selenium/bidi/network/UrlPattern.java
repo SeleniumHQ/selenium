@@ -50,6 +50,6 @@ public class UrlPattern {
 
   public Map<String, String> toMap() {
     map.put("type", "pattern");
-    return map;
+    return Map.copyOf(map);
   }
 }

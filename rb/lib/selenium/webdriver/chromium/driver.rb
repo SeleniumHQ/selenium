@@ -32,7 +32,6 @@ module Selenium
                       DriverExtensions::HasFedCmDialog,
                       DriverExtensions::HasNetworkConditions,
                       DriverExtensions::HasNetworkInterception,
-                      DriverExtensions::HasWebStorage,
                       DriverExtensions::HasLaunching,
                       DriverExtensions::HasPermissions,
                       DriverExtensions::DownloadsFiles,

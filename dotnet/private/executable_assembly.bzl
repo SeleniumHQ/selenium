@@ -75,6 +75,7 @@ def create_executable_assembly(ctx, extra_srcs, extra_deps):
             internals_visible_to = None,
             internals_visible_to_cs = None,
             langversion = ctx.attr.langversion,
+            nullable = ctx.attr.nullable,
             resources = ctx.files.resources,
             srcs = ctx.files.srcs + extra_srcs,
             out = ctx.attr.out,
@@ -142,6 +143,9 @@ csharp_executable = rule(
         ),
         "langversion": attr.string(
             doc = "The version string for the C# language.",
+        ),
+        "nullable": attr.string(
+            doc = "Enable nullable context, or nullable warnings.",
         ),
         "resources": attr.label_list(
             doc = "A list of files to embed in the DLL as resources.",

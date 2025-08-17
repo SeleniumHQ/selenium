@@ -16,8 +16,7 @@
 # under the License.
 from . import interaction
 from .input_device import InputDevice
-from .interaction import Interaction
-from .interaction import Pause
+from .interaction import Interaction, Pause
 
 
 class KeyInput(InputDevice):

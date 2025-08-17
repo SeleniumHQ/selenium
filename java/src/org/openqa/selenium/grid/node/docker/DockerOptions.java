@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -63,9 +64,14 @@ public class DockerOptions {
   static final String DEFAULT_DOCKER_URL = "unix:/var/run/docker.sock";
   static final String DEFAULT_VIDEO_IMAGE = "false";
   static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
+  static final int DEFAULT_SERVER_START_TIMEOUT = 60;
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
+  private static final Pattern LINUX_DEVICE_MAPPING_WITH_DEFAULT_PERMISSIONS =
+      Pattern.compile("^([\\w/-]+):([\\w/-]+)$");
+  private static final Pattern LINUX_DEVICE_MAPPING_WITH_PERMISSIONS =
+      Pattern.compile("^([\\w/-]+):([\\w/-]+):(\\w+)$");
   private final Config config;
 
   public DockerOptions(Config config) {
@@ -104,6 +110,11 @@ public class DockerOptions {
     }
   }
 
+  private Duration getServerStartTimeout() {
+    return Duration.ofSeconds(
+        config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
+  }
+
   private boolean isEnabled(Docker docker) {
     if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
       return false;
@@ -133,10 +144,11 @@ public class DockerOptions {
         config.getAll(DOCKER_SECTION, "host-config-keys").orElseGet(Collections::emptyList);
 
     Multimap<String, Capabilities> kinds = HashMultimap.create();
-    for (int i = 0; i < allConfigs.size(); i++) {
+    int configsCount = allConfigs.size();
+    for (int i = 0; i < configsCount; i++) {
       String imageName = allConfigs.get(i);
       i++;
-      if (i == allConfigs.size()) {
+      if (i == configsCount) {
         throw new DockerException("Unable to find JSON config");
       }
       Capabilities stereotype =
@@ -179,6 +191,7 @@ public class DockerOptions {
                     tracer,
                     clientFactory,
                     options.getSessionTimeout(),
+                    getServerStartTimeout(),
                     docker,
                     getDockerUri(),
                     image,
@@ -200,23 +213,17 @@ public class DockerOptions {
   }
 
   protected List<Device> getDevicesMapping() {
-    Pattern linuxDeviceMappingWithDefaultPermissionsPattern =
-        Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+)$");
-    Pattern linuxDeviceMappingWithPermissionsPattern =
-        Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+):([\\w]+)$");
-
     List<String> devices =
         config.getAll(DOCKER_SECTION, "devices").orElseGet(Collections::emptyList);
 
     List<Device> deviceMapping = new ArrayList<>();
     for (String device : devices) {
       String deviceMappingDefined = device.trim();
-      Matcher matcher =
-          linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+      Matcher matcher = LINUX_DEVICE_MAPPING_WITH_DEFAULT_PERMISSIONS.matcher(deviceMappingDefined);
 
       if (matcher.matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), null));
-      } else if ((matcher = linuxDeviceMappingWithPermissionsPattern.matcher(deviceMappingDefined))
+      } else if ((matcher = LINUX_DEVICE_MAPPING_WITH_PERMISSIONS.matcher(deviceMappingDefined))
           .matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
       }

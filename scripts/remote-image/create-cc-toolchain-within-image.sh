@@ -5,7 +5,7 @@ set -eux -o pipefail
 apt-get update
 apt-get install -qy ca-certificates curl
 
-curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.16.0/bazelisk-linux-amd64
+curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.25.0/bazelisk-linux-amd64
 chmod +x /usr/bin/bazel
 
 temp="$(mktemp -d)"

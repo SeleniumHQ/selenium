@@ -1,26 +1,24 @@
-**Thanks for contributing to Selenium!**
-**A PR well described will help maintainers to quickly review and merge it**
+<!-- Thanks for Contributing to Selenium! -->
+<!-- Please read our contribution guidelines: https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md -->
 
-Before submitting your PR, please check our [contributing](https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md) guidelines.
-Avoid large PRs, help reviewers by making them as simple and short as possible.
+### 🔗 Related Issues
+<!-- Example: Fixes #1234 or Closes #5678 -->
+<!-- If the reason for this PR is not obvious, consider creating an issue for it first -->
 
-<!--- Provide a general summary of your changes in the Title above -->
+### 💥 What does this PR do?
+<!-- Describe what this change includes and how it works -->
 
-### Motivation and Context
-<!--- Why is this change required? What problem does it solve? -->
+### 🔧 Implementation Notes
+<!--- Why did you implement it this way? -->
+<!--- What alternatives to this approach did you consider? -->
 
-### Types of changes
-<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to change)
+### 💡 Additional Considerations
+<!--- Are there any decisions that need to be made before accepting this PR? -->
+<!--- Is there any follow-on work that needs to be done? (e.g., docs, tests, etc.) -->
 
-### Checklist
-<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
-<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
-- [ ] I have read the [contributing](https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md) document.
-- [ ] My change requires a change to the documentation.
-- [ ] I have updated the documentation accordingly.
-- [ ] I have added tests to cover my changes.
-- [ ] All new and existing tests passed.
-<!--- Provide a general summary of your changes in the Title above -->
+### 🔄 Types of changes
+<!-- ✂️ Please delete anything that doesn't apply -->
+- Cleanup (formatting, renaming)
+- Bug fix (backwards compatible)
+- New feature (non-breaking change which adds functionality *and tests!*)
+- Breaking change (fix or feature that would cause existing functionality to change)

@@ -1,94 +1,128 @@
 name: 🐛 Bug Report
 description: File a bug report
 title: "[🐛 Bug]: "
-labels: [ I-defect, needs-triaging ]
+labels: [ I-defect, A-needs-triaging ]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!
   - type: textarea
-    id: what-happened
+    id: description
     attributes:
-      label: What happened?
-      description: |
-        Describe clearly and concisely the bug including instructions showing how to reproduce it.
+      label: Description
       placeholder: |
-        Please add as many details as possible to avoid assumptions from our side. How do you
-        trigger this bug? What did you expect to happen? Please walk us through it step by step.
-        Notes:
-        If the issue is with Google Chrome consider logging an issue with ChromeDriver instead:
-        https://bugs.chromium.org/p/chromedriver
-        If the issue is with Firefox GeckoDriver (aka Marionette) consider logging an issue with
-        Mozilla: https://bugzilla.mozilla.org/buglist.cgi?product=Testing&component=Marionette
-        If the issue is with Microsoft Edge consider logging an issue with Microsoft instead:
-        https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/
-        If the issue is with Safari, only Safari 10+ is supported. Please log any Safari issue
-        with Apple: https://bugreport.apple.com/
+        Include details like:
+        - What you were trying to do
+        - What you expected to happen
+        - What actually happened
+        - Any relevant context or configuration
+        - Stacktrace or error message if applicable
     validations:
       required: true
   - type: textarea
-    id: repro-command
+    id: reproduction
     attributes:
-      label: How can we reproduce the issue?
-      description: |
-        Share with a code snippet or a GitHub repo to reproduce the issue.
+      label: Reproducible Code
       placeholder: |
-        Please share the code script to reproduce the issue. If more than one file is needed,
-        create a GitHub repository and share the link.
-        This will be automatically formatted into code, so no need for backticks.
-        Be sure to include an SSCCE (Short, Self Contained, Correct
-        [compilable] example) http://sscce.org/
-        Issues without a reproduction script are likely to stall and eventually be closed.
+        (This section renders as code, no need for backticks)
+
+        * We can't fix an issue we can't reproduce.
+        * If more than one file is needed, create a new GitHub repository and link it here.
+        * Reproduction should be SSCCE: Short, Self Contained, Correct (Compilable), Example.
       render: shell
     validations:
       required: true
   - type: textarea
     id: logs
     attributes:
-      label: Relevant log output
-      description: |
-        Please copy and paste any relevant log output.
-        Ideally, turn on more detailed logging: https://www.selenium.dev/documentation/webdriver/troubleshooting/logging/
-        This will be automatically formatted, so no need for backticks.
-      render: shell
-    validations:
-      required: true
-  - type: input
-    id: operating-system
+      label: Debugging Logs
+      placeholder: |
+        Note: the stack trace should be in the explanation section above
+        Instructions for enabling and referencing logs can be found in the links below
+      render: logs
+  - type: markdown
+    id: link
     attributes:
-      label: Operating System
-      description: What host operating system are you using to run Selenium?
-      placeholder: Windows 10? macOS BigSur? Ubuntu?
-    validations:
-      required: true
+      value: |
+        **Read our [logging documentation](https://www.selenium.dev/documentation/webdriver/troubleshooting/logging/)**
+        **Link to a [gist](https://gist.github.com/) if logs are too long**
+        &nbsp;
+
+        ## Help us Address Your Issue Faster!
   - type: input
     id: selenium-version
     attributes:
-      label: Selenium version
-      description: What programming language release version of Selenium?
-      placeholder: Java 4.0.0? Ruby 4.0.3? (please use the full version number).
+      label: What version of Selenium are you currently using?
+      description: Important! The latest released version of Selenium is 4.35 and we can't fix old versions.
+      placeholder: e.g., 4.17.0
     validations:
       required: true
-  - type: input
-    id: browser-versions
+  - type: checkboxes
+    id: prerequisites
     attributes:
-      label: What are the browser(s) and version(s) where you see this issue?
-      description: What browser and versions are you using?
-      placeholder: Example - Chrome 90, Firefox 88, etc.
-    validations:
-      required: true
-  - type: input
-    id: browser-driver-versions
+      label: The following statements are true
+      options:
+        - label: This applies to the most recent version of Selenium (we can't fix old versions)
+          required: true
+        - label: This hasn't already been reported (I searched and didn't find it)
+          required: true
+        - label: All information necessary to reproduce the issue has been provided above
+          required: true
+  - type: dropdown
+    id: regression
     attributes:
-      label: What are the browser driver(s) and version(s) where you see this issue?
-      description: What browser driver(s) are you using?
-      placeholder: Example - ChromeDriver 94.0.4606.61, GeckoDriver 0.30.0, etc.
+      label: Did this work for you before?
+      options:
+        - Not sure, this is my first time trying it
+        - Yes this is a regression
     validations:
       required: true
   - type: input
-    id: selenium-grid-version
+    id: last-good
+    attributes:
+      label: If yes, what version of Selenium did it work with?
+      placeholder: "e.g., 4.8.0"
+    validations:
+      required: false
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating System
+      options:
+        - "--"
+        - Windows
+        - macOS
+        - Linux (specify in the description)
+    validations:
+      required: true
+  - type: dropdown
+    id: bindings
+    attributes:
+      label: Selenium Language Binding
+      options:
+        - "--"
+        - Java
+        - Python
+        - C#/.NET
+        - JavaScript/Node.js
+        - Ruby
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Which browsers are you experiencing the issue with?
+      multiple: true
+      options:
+        - Chrome
+        - Firefox
+        - Edge
+        - Safari
+        - IE
+        - Other (please specify in the description)
+  - type: dropdown
+    id: grid
     attributes:
       label: Are you using Selenium Grid?
-      description: What version of Selenium Grid are you using?
-      placeholder: Example - 4.0.0
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true

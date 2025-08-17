@@ -23,5 +23,5 @@ java/build/production
 java/client/build
 java/server/build
 javascript/grid-ui/node_modules
-javascript/node/selenium-webdriver/node_modules
+javascript/selenium-webdriver/node_modules
 node_modules

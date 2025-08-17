@@ -3,7 +3,7 @@
   "packageManager": "pnpm@9.15.4",
   "workspaces": [
     "javascript/grid-ui",
-    "javascript/node/selenium-webdriver"
+    "javascript/selenium-webdriver"
   ],
   "repository": {
     "type": "git",

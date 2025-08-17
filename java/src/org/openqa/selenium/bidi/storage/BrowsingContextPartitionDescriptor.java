@@ -33,6 +33,6 @@ public class BrowsingContextPartitionDescriptor extends PartitionDescriptor {
     map.put("type", super.type.toString());
     map.put("context", this.context);
 
-    return map;
+    return Map.copyOf(map);
   }
 }

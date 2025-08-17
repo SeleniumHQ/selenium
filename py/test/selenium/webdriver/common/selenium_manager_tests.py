@@ -31,9 +31,10 @@ def test_gets_results(monkeypatch):
     expected_output = {"driver_path": "/path/to/driver"}
     lib_path = "selenium.webdriver.common.selenium_manager.SeleniumManager"
 
-    with mock.patch(lib_path + "._get_binary", return_value="/path/to/sm") as mock_get_binary, mock.patch(
-        lib_path + "._run", return_value=expected_output
-    ) as mock_run:
+    with (
+        mock.patch(lib_path + "._get_binary", return_value="/path/to/sm") as mock_get_binary,
+        mock.patch(lib_path + "._run", return_value=expected_output) as mock_run,
+    ):
         SeleniumManager().binary_paths([])
 
         mock_get_binary.assert_called_once()

@@ -4,7 +4,12 @@ load("//rb/spec:tests.bzl", "rb_integration_test")
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
-        browsers = ["chrome"],  # No need to run in other browsers.
+        # No need to run in other browsers.
+        browsers = [
+            "chrome",
+            "chrome-beta",
+        ],
+        data = ["//common/extensions"],
     )
     for file in glob(["*_spec.rb"])
 ]

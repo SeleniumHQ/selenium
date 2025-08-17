@@ -24,175 +24,151 @@ module Selenium
     class BiDi
       describe Network, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
                         only: {browser: %i[chrome edge firefox]} do
+        after { |example| reset_driver!(example: example) }
+
         it 'adds an intercept' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
-            expect(intercept).not_to be_nil
-          end
+          network = described_class.new(driver.bidi)
+          intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
+          expect(intercept).not_to be_nil
         end
 
         it 'adds an intercept with a default pattern type' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            pattern = 'http://localhost:4444/formPage.html'
-            intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]], url_patterns: pattern)
-            expect(intercept).not_to be_nil
-          end
+          network = described_class.new(driver.bidi)
+          pattern = 'http://localhost:4444/formPage.html'
+          intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]], url_patterns: pattern)
+          expect(intercept).not_to be_nil
         end
 
         it 'adds an intercept with a url pattern' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            pattern = 'http://localhost:4444/formPage.html'
-            intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]],
-                                              url_patterns: pattern,
-                                              pattern_type: :url)
-            expect(intercept).not_to be_nil
-          end
+          network = described_class.new(driver.bidi)
+          pattern = 'http://localhost:4444/formPage.html'
+          intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]],
+                                            url_patterns: pattern,
+                                            pattern_type: :url)
+          expect(intercept).not_to be_nil
         end
 
         it 'removes an intercept' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
-            expect(network.remove_intercept(intercept['intercept'])).to be_empty
-          end
+          network = described_class.new(driver.bidi)
+          intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
+          expect(network.remove_intercept(intercept['intercept'])).to be_empty
         end
 
         it 'continues with auth' do
           username = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first
           password = SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            phases = [Selenium::WebDriver::BiDi::Network::PHASES[:auth_required]]
-            network.add_intercept(phases: phases)
-            network.on(:auth_required) do |event|
-              request_id = event['request']['request']
-              network.continue_with_auth(request_id, username, password)
-            end
-
-            driver.navigate.to url_for('basicAuth')
-            expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+          network = described_class.new(driver.bidi)
+          phases = [Selenium::WebDriver::BiDi::Network::PHASES[:auth_required]]
+          network.add_intercept(phases: phases)
+          network.on(:auth_required) do |event|
+            request_id = event['request']['request']
+            network.continue_with_auth(request_id, username, password)
           end
+
+          driver.navigate.to url_for('basicAuth')
+          expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
         end
 
         it 'continues without auth' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            network.add_intercept(phases: [described_class::PHASES[:auth_required]])
-            network.on(:auth_required) do |event|
-              request_id = event['request']['request']
-              network.continue_without_auth(request_id)
-            end
-
-            expect { driver.navigate.to url_for('basicAuth') }.to raise_error(Error::WebDriverError)
+          network = described_class.new(driver.bidi)
+          network.add_intercept(phases: [described_class::PHASES[:auth_required]])
+          network.on(:auth_required) do |event|
+            request_id = event['request']['request']
+            network.continue_without_auth(request_id)
           end
+
+          expect { driver.navigate.to url_for('basicAuth') }.to raise_error(Error::WebDriverError)
         end
 
         it 'cancels auth' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            network.add_intercept(phases: [described_class::PHASES[:auth_required]])
-            network.on(:auth_required) do |event|
-              request_id = event['request']['request']
-              network.cancel_auth(request_id)
-            end
-
-            driver.navigate.to url_for('basicAuth')
-            expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
+          network = described_class.new(driver.bidi)
+          network.add_intercept(phases: [described_class::PHASES[:auth_required]])
+          network.on(:auth_required) do |event|
+            request_id = event['request']['request']
+            network.cancel_auth(request_id)
           end
+
+          driver.navigate.to url_for('basicAuth')
+          expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
         end
 
         it 'continues request' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            network.add_intercept(phases: [described_class::PHASES[:before_request]])
-            network.on(:before_request) do |event|
-              request_id = event['request']['request']
-              network.continue_request(id: request_id)
-            end
-
-            driver.navigate.to url_for('formPage.html')
-            expect(driver.find_element(name: 'login')).to be_displayed
+          network = described_class.new(driver.bidi)
+          network.add_intercept(phases: [described_class::PHASES[:before_request]])
+          network.on(:before_request) do |event|
+            request_id = event['request']['request']
+            network.continue_request(id: request_id)
           end
+
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.find_element(name: 'login')).to be_displayed
         end
 
         it 'fails request' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            network.add_intercept(phases: [described_class::PHASES[:before_request]])
-            network.on(:before_request) do |event|
-              request_id = event['request']['request']
-              network.fail_request(request_id)
-            end
-
-            expect { driver.navigate.to url_for('formPage.html') }.to raise_error(Error::WebDriverError)
+          network = described_class.new(driver.bidi)
+          network.add_intercept(phases: [described_class::PHASES[:before_request]])
+          network.on(:before_request) do |event|
+            request_id = event['request']['request']
+            network.fail_request(request_id)
           end
+
+          expect { driver.navigate.to url_for('formPage.html') }.to raise_error(Error::WebDriverError)
         end
 
         it 'continues response' do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            network.add_intercept(phases: [described_class::PHASES[:response_started]])
-            network.on(:response_started) do |event|
-              request_id = event['request']['request']
-              network.continue_response(id: request_id)
-            end
-
-            driver.navigate.to url_for('formPage.html')
-            expect(driver.find_element(name: 'login')).to be_displayed
+          network = described_class.new(driver.bidi)
+          network.add_intercept(phases: [described_class::PHASES[:response_started]])
+          network.on(:response_started) do |event|
+            request_id = event['request']['request']
+            network.continue_response(id: request_id)
           end
+
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.find_element(name: 'login')).to be_displayed
         end
 
-        it 'provides response', except: { browser: :firefox,
-                                         reason: 'https://github.com/w3c/webdriver-bidi/issues/747' } do
-          reset_driver!(web_socket_url: true) do |driver|
-            network = described_class.new(driver.bidi)
-            network.add_intercept(phases: [described_class::PHASES[:response_started]])
-            network.on(:response_started) do |event|
-              request_id = event['request']['request']
-              network.provide_response(
-                id: request_id,
-                status: 200,
-                headers: [
-                  {
-                    name: 'foo',
-                    value: {
-                      type: 'string',
-                      value: 'bar'
-                    }
+        it 'provides response', except: {browser: :firefox,
+                                         reason: 'https://github.com/w3c/webdriver-bidi/issues/747'} do
+          network = described_class.new(driver.bidi)
+          network.add_intercept(phases: [described_class::PHASES[:response_started]])
+          network.on(:response_started) do |event|
+            request_id = event['request']['request']
+            network.provide_response(
+              id: request_id,
+              status: 200,
+              headers: [
+                {
+                  name: 'foo',
+                  value: {
+                    type: 'string',
+                    value: 'bar'
                   }
-                ],
-                body: {
-                  type: 'string',
-                  value: '<html><head><title>Hello World!</title></head><body/></html>'
                 }
-              )
-            end
-
-            driver.navigate.to url_for('formPage.html')
-            source = driver.page_source
-            expect(source).not_to include('There should be a form here:')
-            expect(source).to include('Hello World!')
+              ],
+              body: {
+                type: 'string',
+                value: '<html><head><title>Hello World!</title></head><body/></html>'
+              }
+            )
           end
+
+          driver.navigate.to url_for('formPage.html')
+          source = driver.page_source
+          expect(source).not_to include('There should be a form here:')
+          expect(source).to include('Hello World!')
         end
 
         it 'sets the cache to bypass' do
-          reset_driver!(web_socket_url: true) do |driver|
-            browsing_context = BrowsingContext.new(driver).create
-            network = described_class.new(driver.bidi)
-            network.set_cache_behavior('bypass', browsing_context)
-            expect(network.set_cache_behavior('bypass', browsing_context)).to be_a(Hash)
-          end
+          browsing_context = BrowsingContext.new(driver).create
+          network = described_class.new(driver.bidi)
+          network.set_cache_behavior('bypass', browsing_context)
+          expect(network.set_cache_behavior('bypass', browsing_context)).to be_a(Hash)
         end
 
         it 'sets the cache to default' do
-          reset_driver!(web_socket_url: true) do |driver|
-            browsing_context = BrowsingContext.new(driver).create
-            network = described_class.new(driver.bidi)
-            expect(network.set_cache_behavior('default', browsing_context)).to be_a(Hash)
-          end
+          browsing_context = BrowsingContext.new(driver).create
+          network = described_class.new(driver.bidi)
+          expect(network.set_cache_behavior('default', browsing_context)).to be_a(Hash)
         end
       end
     end

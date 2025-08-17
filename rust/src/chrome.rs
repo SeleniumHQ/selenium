@@ -35,7 +35,7 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::option::Option;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -50,6 +50,8 @@ const CFT_MACOS_APP_NAME: &str =
     "Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing";
 const MIN_CHROME_VERSION_CFT: i32 = 113;
 const MIN_CHROMEDRIVER_VERSION_CFT: i32 = 115;
+const CHROMIUM_SNAP_LINK: &str = "/snap/bin/chromium";
+const CHROMIUM_SNAP_BINARY: &str = "/snap/chromium/current/usr/lib/chromium-browser/chrome";
 
 pub struct ChromeManager {
     pub browser_name: &'static str,
@@ -586,6 +588,15 @@ impl SeleniumManager for ChromeManager {
 
     fn set_download_browser(&mut self, download_browser: bool) {
         self.download_browser = download_browser;
+    }
+
+    fn is_snap(&self, browser_path: &str) -> bool {
+        LINUX.is(self.get_os())
+            && (browser_path.eq(CHROMIUM_SNAP_LINK) || browser_path.eq(CHROMIUM_SNAP_BINARY))
+    }
+
+    fn get_snap_path(&self) -> Option<PathBuf> {
+        Some(Path::new(CHROMIUM_SNAP_BINARY).to_path_buf())
     }
 }
 

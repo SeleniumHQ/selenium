@@ -29,6 +29,7 @@ import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContextInfo;
+import org.openqa.selenium.bidi.browsingcontext.HistoryUpdated;
 import org.openqa.selenium.bidi.browsingcontext.NavigationInfo;
 import org.openqa.selenium.bidi.browsingcontext.UserPromptClosed;
 import org.openqa.selenium.bidi.browsingcontext.UserPromptOpened;
@@ -88,6 +89,16 @@ public class BrowsingContextInspector implements AutoCloseable {
             }
           });
 
+  private final Event<HistoryUpdated> historyUpdated =
+      new Event<>(
+          "browsingContext.historyUpdated",
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.read(HistoryUpdated.class);
+            }
+          });
+
   public BrowsingContextInspector(WebDriver driver) {
     this(new HashSet<>(), driver);
   }
@@ -140,16 +151,20 @@ public class BrowsingContextInspector implements AutoCloseable {
     addNavigationEventListener("browsingContext.load", consumer);
   }
 
-  private void onDownloadWillBegin(Consumer<NavigationInfo> consumer) {
+  public void onDownloadWillBegin(Consumer<NavigationInfo> consumer) {
     addNavigationEventListener("browsingContext.downloadWillBegin", consumer);
   }
 
-  private void onNavigationAborted(Consumer<NavigationInfo> consumer) {
+  public void onNavigationAborted(Consumer<NavigationInfo> consumer) {
     addNavigationEventListener("browsingContext.navigationAborted", consumer);
   }
 
-  private void onNavigationFailed(Consumer<NavigationInfo> consumer) {
+  public void onNavigationFailed(Consumer<NavigationInfo> consumer) {
     addNavigationEventListener("browsingContext.navigationFailed", consumer);
+  }
+
+  public void onNavigationCommitted(Consumer<NavigationInfo> consumer) {
+    addNavigationEventListener("browsingContext.navigationCommitted", consumer);
   }
 
   public void onUserPromptClosed(Consumer<UserPromptClosed> consumer) {
@@ -165,6 +180,14 @@ public class BrowsingContextInspector implements AutoCloseable {
       this.bidi.addListener(userPromptOpened, consumer);
     } else {
       this.bidi.addListener(browsingContextIds, userPromptOpened, consumer);
+    }
+  }
+
+  public void onHistoryUpdated(Consumer<HistoryUpdated> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(historyUpdated, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, historyUpdated, consumer);
     }
   }
 
@@ -186,6 +209,7 @@ public class BrowsingContextInspector implements AutoCloseable {
     this.bidi.clearListener(browsingContextDestroyed);
     this.bidi.clearListener(userPromptOpened);
     this.bidi.clearListener(userPromptClosed);
+    this.bidi.clearListener(historyUpdated);
 
     navigationEventSet.forEach(this.bidi::clearListener);
   }

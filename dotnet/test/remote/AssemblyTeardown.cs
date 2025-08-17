@@ -21,31 +21,30 @@ using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.Remote
-{
-    [SetUpFixture]
-    // Outside a namespace to affect the entire assembly
-    public class MySetUpClass
-    {
-        [OneTimeSetUp]
-        public async Task RunBeforeAnyTestAsync()
-        {
-            await EnvironmentManager.Instance.WebServer.StartAsync();
-            if (EnvironmentManager.Instance.Browser == Browser.Remote)
-            {
-                await EnvironmentManager.Instance.RemoteServer.StartAsync();
-            }
-        }
+namespace OpenQA.Selenium.Remote;
 
-        [OneTimeTearDown]
-        public async Task RunAfterAnyTestsAsync()
+[SetUpFixture]
+// Outside a namespace to affect the entire assembly
+public class MySetUpClass
+{
+    [OneTimeSetUp]
+    public async Task RunBeforeAnyTestAsync()
+    {
+        await EnvironmentManager.Instance.WebServer.StartAsync();
+        if (EnvironmentManager.Instance.Browser == Browser.Remote)
         {
-            EnvironmentManager.Instance.CloseCurrentDriver();
-            await EnvironmentManager.Instance.WebServer.StopAsync();
-            if (EnvironmentManager.Instance.Browser == Browser.Remote)
-            {
-                await EnvironmentManager.Instance.RemoteServer.StopAsync();
-            }
+            await EnvironmentManager.Instance.RemoteServer.StartAsync();
+        }
+    }
+
+    [OneTimeTearDown]
+    public async Task RunAfterAnyTestsAsync()
+    {
+        EnvironmentManager.Instance.CloseCurrentDriver();
+        await EnvironmentManager.Instance.WebServer.StopAsync();
+        if (EnvironmentManager.Instance.Browser == Browser.Remote)
+        {
+            await EnvironmentManager.Instance.RemoteServer.StopAsync();
         }
     }
 }
