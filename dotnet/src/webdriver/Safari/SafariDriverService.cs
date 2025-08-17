@@ -20,10 +20,7 @@
 using OpenQA.Selenium.Internal;
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Safari;
 
@@ -33,6 +30,13 @@ namespace OpenQA.Selenium.Safari;
 public sealed class SafariDriverService : DriverService
 {
     private const string DefaultSafariDriverServiceExecutableName = "safaridriver";
+
+    /// <summary>
+    /// Value to enable diagnose logging.
+    /// When set to true, the SafariDriver will be started with the --diagnose flag.
+    /// Logs will be written to ~/Library/Logs/com.apple.WebDriver/
+    /// </summary>
+    public bool? Diagnose  { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SafariDriverService"/> class.
@@ -59,6 +63,12 @@ public sealed class SafariDriverService : DriverService
         get
         {
             StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
+
+            if (this.Diagnose is true)
+            {
+                argsBuilder.Append(" --diagnose");
+            }
+
             return argsBuilder.ToString();
         }
     }
