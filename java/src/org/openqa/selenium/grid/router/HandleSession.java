@@ -21,7 +21,6 @@ import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
@@ -29,7 +28,6 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import java.io.Closeable;
-import java.io.Reader;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
@@ -50,9 +48,8 @@ import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.ErrorCodec;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -237,7 +234,7 @@ class HandleSession implements HttpHandler, Closeable {
                       return entry;
                     }
 
-                    ClientConfig config = fetchNodeSessionTimeout(sessionUri);
+                    ClientConfig config = fetchNodeSessionTimeout(sessionUri).withRetries();
                     HttpClient httpClient = httpClientFactory.createClient(config);
 
                     return new CacheEntry(httpClient, 1);
@@ -254,37 +251,18 @@ class HandleSession implements HttpHandler, Closeable {
   }
 
   private ClientConfig fetchNodeSessionTimeout(URI uri) {
-    ClientConfig config = ClientConfig.defaultConfig().baseUri(uri).withRetries();
+    ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
     Duration sessionTimeout = config.readTimeout();
     try (HttpClient httpClient = httpClientFactory.createClient(config)) {
-      HttpRequest statusRequest = new HttpRequest(GET, "/status");
+      HttpRequest statusRequest = new HttpRequest(GET, "/se/grid/node/status");
       HttpResponse res = httpClient.execute(statusRequest);
-      Reader reader = reader(res);
-      Json JSON = new Json();
-      JsonInput in = JSON.newInput(reader);
-      in.beginObject();
-      // Skip everything until we find "value"
-      while (in.hasNext()) {
-        if ("value".equals(in.nextName())) {
-          in.beginObject();
-          while (in.hasNext()) {
-            if ("node".equals(in.nextName())) {
-              NodeStatus nodeStatus = in.read(NodeStatus.class);
-              sessionTimeout = nodeStatus.getSessionTimeout();
-              LOG.fine(
-                  "Fetched session timeout from node status (read timeout: "
-                      + sessionTimeout.toSeconds()
-                      + " seconds) for "
-                      + uri);
-            } else {
-              in.skipValue();
-            }
-          }
-          in.endObject();
-        } else {
-          in.skipValue();
-        }
-      }
+      NodeStatus nodeStatus = Values.get(res, NodeStatus.class);
+      sessionTimeout = nodeStatus.getSessionTimeout();
+      LOG.fine(
+          "Fetched session timeout from node status (read timeout: "
+              + sessionTimeout.toSeconds()
+              + " seconds) for "
+              + uri);
     } catch (Exception e) {
       LOG.fine(
           "Use default from ClientConfig (read timeout: "
