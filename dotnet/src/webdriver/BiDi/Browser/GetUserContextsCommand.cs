@@ -24,7 +24,7 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class GetUserContextsCommand()
-    : Command<CommandParameters, GetUserContextsResult>(CommandParameters.Empty, "browser.getUserContexts");
+    : Command<Parameters, GetUserContextsResult>(Parameters.Empty, "browser.getUserContexts");
 
 public class GetUserContextsOptions : CommandOptions;
 
