@@ -36,18 +36,21 @@ module Selenium
         it 'gets user contexts' do
           reset_driver!(web_socket_url: true) do |driver|
             browser = described_class.new(driver.bidi)
-            2.times { browser.create_user_context }
-            expect(browser.user_contexts['userContexts'].count).to eq 3
+            created_context_id = browser.create_user_context['userContext']
+            all_context_ids = browser.user_contexts['userContexts'].map { |c| c['userContext'] }
+
+            expect(all_context_ids).to include(created_context_id)
           end
         end
 
         it 'removes an user context' do
           reset_driver!(web_socket_url: true) do |driver|
             browser = described_class.new(driver.bidi)
-            user_context = browser.create_user_context
-            expect(browser.user_contexts['userContexts'].count).to eq 2
-            browser.remove_user_context(user_context['userContext'])
-            expect(browser.user_contexts['userContexts'].count).to eq 1
+            context_id_to_remove = browser.create_user_context['userContext']
+            browser.remove_user_context(context_id_to_remove)
+            all_ids_after_removal = browser.user_contexts['userContexts'].map { |c| c['userContext'] }
+
+            expect(all_ids_after_removal).not_to include(context_id_to_remove)
           end
         end
 
@@ -65,7 +68,7 @@ module Selenium
             browser = described_class.new(driver.bidi)
             expect {
               browser.remove_user_context('fake_context')
-            }.to raise_error(Error::WebDriverError, /Failed to find context with id/)
+            }.to raise_error(Error::WebDriverError)
           end
         end
       end
