@@ -37,7 +37,7 @@ import os
 from pathlib import Path
 import re
 from textwrap import dedent, indent as tw_indent
-from typing import Optional, Self, List, Union, Iterator, cast
+from typing import Optional, List, Union, Iterator, cast
 
 import inflection  # type: ignore
 
