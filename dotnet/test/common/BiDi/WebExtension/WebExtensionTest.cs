@@ -64,9 +64,9 @@ class WebExtensionTest : BiDiTestFixture
     {
         var path = LocateRelativePath("common/extensions/webextensions-selenium-example.zip");
 
-        string base64 = Convert.ToBase64String(File.ReadAllBytes(path));
+        var bytes = File.ReadAllBytes(path);
 
-        var result = await bidi.WebExtension.InstallAsync(new ExtensionBase64Encoded(base64));
+        var result = await bidi.WebExtension.InstallAsync(new ExtensionBase64Encoded(bytes));
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Extension, Is.Not.Null);
