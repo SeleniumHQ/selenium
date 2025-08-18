@@ -20,10 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# This is a copy of https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
+# This is a modified copy of:
+# - https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
 # The license above is theirs and MUST be preserved.
 
-# flake8: noqa
+# flake8: noqa: E501
 
 import builtins
 from dataclasses import dataclass
@@ -389,12 +390,12 @@ class CdpType:
         CDP metadata.
         '''
         def_to_json = dedent('''\
-            def to_json(self):
+            def to_json(self) -> str:
                 return self.value''')
 
         def_from_json = dedent('''\
             @classmethod
-            def from_json(cls, json):
+            def from_json(cls, json: str) -> AXValueSourceType:
                 return cls(json)''')
 
         code = f'class {self.id}(enum.Enum):\n'
@@ -435,8 +436,8 @@ class CdpType:
         # Emit to_json() method. The properties are sorted in the same order as
         # above for readability.
         def_to_json = dedent('''\
-            def to_json(self):
-                json = dict()
+            def to_json(self) -> T_JSON_DICT:
+                json: T_JSON_DICT = dict()
         ''')
         assigns = (p.generate_to_json(dict_='json') for p in props)
         def_to_json += indent('\n'.join(assigns), 4)
@@ -448,7 +449,7 @@ class CdpType:
         # as above for readability.
         def_from_json = dedent('''\
             @classmethod
-            def from_json(cls, json):
+            def from_json(cls, json: T_JSON_DICT) -> AXValue:
                 return cls(
         ''')
         from_jsons = []
