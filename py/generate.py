@@ -37,7 +37,7 @@ import os
 from pathlib import Path
 import re
 from textwrap import dedent, indent as tw_indent
-from typing import Optional , cast, List, Union, Iterator
+from typing import Optional, Self, List, Union, Iterator, cast
 
 import inflection  # type: ignore
 
@@ -393,9 +393,9 @@ class CdpType:
             def to_json(self) -> str:
                 return self.value''')
 
-        def_from_json = dedent('''\
+        def_from_json = dedent(f'''\
             @classmethod
-            def from_json(cls, json: str) -> AXValueSourceType:
+            def from_json(cls, json: str) -> {self.id}:
                 return cls(json)''')
 
         code = f'class {self.id}(enum.Enum):\n'
@@ -447,9 +447,9 @@ class CdpType:
 
         # Emit from_json() method. The properties are sorted in the same order
         # as above for readability.
-        def_from_json = dedent('''\
+        def_from_json = dedent(f'''\
             @classmethod
-            def from_json(cls, json: T_JSON_DICT) -> AXValue:
+            def from_json(cls, json: T_JSON_DICT) -> {self.id}:
                 return cls(
         ''')
         from_jsons = []
