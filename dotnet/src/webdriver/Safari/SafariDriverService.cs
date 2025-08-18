@@ -32,9 +32,9 @@ public sealed class SafariDriverService : DriverService
     private const string DefaultSafariDriverServiceExecutableName = "safaridriver";
 
     /// <summary>
-    /// Value to enable diagnose logging.
-    /// When set to true, the SafariDriver will be started with the --diagnose flag.
-    /// Logs will be written to ~/Library/Logs/com.apple.WebDriver/
+    /// Enable diagnose logging.
+    /// When set to <see langword="true"/>, the <b>SafariDriver</b> will be started with the <i>--diagnose</i> flag.
+    /// Logs will be written to <i>~/Library/Logs/com.apple.WebDriver/</i>.
     /// </summary>
     public bool? Diagnose  { get; set; }
 
