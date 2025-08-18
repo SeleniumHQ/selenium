@@ -1,4 +1,4 @@
-// <copyright file="NewCommand.cs" company="Selenium Committers">
+// <copyright file="WebExtensionConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,22 +17,31 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.WebExtension;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi.Session;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-internal sealed class NewCommand(NewParameters @params)
-    : Command<NewParameters, NewResult>(@params, "session.new");
-
-internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
-
-public sealed class NewOptions : CommandOptions;
-
-public sealed record NewResult(string SessionId, Capability Capability) : EmptyResult;
-
-public sealed record Capability(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
+internal class WebExtensionConverter : JsonConverter<Extension>
 {
-    public ProxyConfiguration? Proxy { get; set; }
+    private readonly BiDi _bidi;
 
-    public string? WebSocketUrl { get; set; }
+    public WebExtensionConverter(BiDi bidi)
+    {
+        _bidi = bidi;
+    }
+
+    public override Extension? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var id = reader.GetString();
+
+        return new Extension(_bidi, id!);
+    }
+
+    public override void Write(Utf8JsonWriter writer, Extension value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.Id);
+    }
 }

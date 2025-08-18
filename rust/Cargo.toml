@@ -12,28 +12,28 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver res
 """
 
 [dependencies]
-clap = { version = "4.5.40", features = ["derive", "cargo"] }
+clap = { version = "4.5.45", features = ["derive", "cargo"] }
 log = "0.4.27"
 env_logger = "0.11.8"
 regex = "1.11.1"
-tokio = { version = "1.46.1", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
+tokio = { version = "1.47.1", default-features = false, features = ["macros", "net", "rt-multi-thread"] }
 tempfile = "3.20.0"
-reqwest = { version = "0.12.22", default-features = false, features = ["rustls-tls"] }
-zip = { version = "4.2.0", default-features = false, features = ["deflate"] }
+reqwest = { version = "0.12.23", default-features = false, features = ["rustls-tls"] }
+zip = { version = "4.3.0", default-features = false, features = ["deflate"] }
 directories = "6.0.0"
 serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.140"
+serde_json = "1.0.142"
 flate2 = "1.1.2"
 tar = "0.4.44"
 infer = "0.19.0"
 exitcode = "1.1.2"
-toml = "0.8.23"
+toml = "0.9.5"
 bzip2 = "0.6.0"
 sevenz-rust = "0.6.1"
 xz2 = "0.1.7"
 walkdir = "2.5.0"
 debpkg = "0.6.0"
-anyhow = { version = "1.0.98", default-features = false, features = ["backtrace", "std"] }
+anyhow = { version = "1.0.99", default-features = false, features = ["backtrace", "std"] }
 apple-flat-package = "0.20.0"
 which = "8.0.0"
 fs2 = "0.4.3"
@@ -45,7 +45,7 @@ winapi = { version = "0.3.9", features = ["winver", "winnt", "sysinfoapi"] }
 [dev-dependencies]
 assert_cmd = "2.0.17"
 is_executable = "1.0.4"
-rstest = { version = "0.25.0", default-features = false }
+rstest = { version = "0.26.1", default-features = false }
 
 [profile.release]
 opt-level = 'z'     # Optimize for size

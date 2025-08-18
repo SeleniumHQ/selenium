@@ -21,10 +21,10 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class NavigateCommand(NavigateCommandParameters @params)
-    : Command<NavigateCommandParameters, NavigateResult>(@params, "browsingContext.navigate");
+internal sealed class NavigateCommand(NavigateParameters @params)
+    : Command<NavigateParameters, NavigateResult>(@params, "browsingContext.navigate");
 
-internal sealed record NavigateCommandParameters(BrowsingContext Context, string Url, ReadinessState? Wait) : CommandParameters;
+internal sealed record NavigateParameters(BrowsingContext Context, string Url, ReadinessState? Wait) : Parameters;
 
 public sealed class NavigateOptions : CommandOptions
 {

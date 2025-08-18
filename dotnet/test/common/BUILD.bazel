@@ -17,6 +17,7 @@ filegroup(
     srcs = [],
     data = [
         "appconfig.json",
+        "//common/extensions",
         "//common/src/web",
         "//dotnet/src/webdriver:manager-linux",
         "//dotnet/src/webdriver:manager-macos",
