@@ -1,4 +1,4 @@
-// <copyright file="NewCommand.cs" company="Selenium Committers">
+// <copyright file="Extension.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,22 +17,24 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Session;
+namespace OpenQA.Selenium.BiDi.WebExtension;
 
-internal sealed class NewCommand(NewParameters @params)
-    : Command<NewParameters, NewResult>(@params, "session.new");
-
-internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
-
-public sealed class NewOptions : CommandOptions;
-
-public sealed record NewResult(string SessionId, Capability Capability) : EmptyResult;
-
-public sealed record Capability(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
+public sealed class Extension
 {
-    public ProxyConfiguration? Proxy { get; set; }
+    private readonly BiDi _bidi;
 
-    public string? WebSocketUrl { get; set; }
+    public Extension(BiDi bidi, string id)
+    {
+        _bidi = bidi;
+        Id = id;
+    }
+
+    internal string Id { get; }
+
+    public Task UninstallAsync(UninstallOptions? options = null)
+    {
+        return _bidi.WebExtension.UninstallAsync(this, options);
+    }
 }

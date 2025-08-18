@@ -1,0 +1,17 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class Browser
+        @bidi: BiDi
+
+        def initialize: (BiDi bidi) -> void
+
+        def create_user_context: () -> Hash[String, String]
+
+        def user_contexts: () -> Array[Hash[String, String]]
+
+        def remove_user_context: (String user_context) -> Hash[nil, nil]
+      end
+    end
+  end
+end

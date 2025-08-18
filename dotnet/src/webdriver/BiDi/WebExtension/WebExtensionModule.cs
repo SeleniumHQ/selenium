@@ -1,4 +1,4 @@
-// <copyright file="NewCommand.cs" company="Selenium Committers">
+// <copyright file="WebExtensionModule.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -18,21 +18,23 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Session;
+namespace OpenQA.Selenium.BiDi.WebExtension;
 
-internal sealed class NewCommand(NewParameters @params)
-    : Command<NewParameters, NewResult>(@params, "session.new");
-
-internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
-
-public sealed class NewOptions : CommandOptions;
-
-public sealed record NewResult(string SessionId, Capability Capability) : EmptyResult;
-
-public sealed record Capability(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
+public sealed class WebExtensionModule(Broker broker) : Module(broker)
 {
-    public ProxyConfiguration? Proxy { get; set; }
+    public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
+    {
+        var @params = new InstallParameters(extensionData);
 
-    public string? WebSocketUrl { get; set; }
+        return await Broker.ExecuteCommandAsync<InstallCommand, InstallResult>(new InstallCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
+    {
+        var @params = new UninstallParameters(extension);
+
+        return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options).ConfigureAwait(false);
+    }
 }
