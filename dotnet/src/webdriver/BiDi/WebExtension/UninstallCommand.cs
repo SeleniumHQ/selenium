@@ -1,4 +1,4 @@
-// <copyright file="NewCommand.cs" company="Selenium Committers">
+// <copyright file="UninstallCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -19,20 +19,11 @@
 
 using OpenQA.Selenium.BiDi.Communication;
 
-namespace OpenQA.Selenium.BiDi.Session;
+namespace OpenQA.Selenium.BiDi.WebExtension;
 
-internal sealed class NewCommand(NewParameters @params)
-    : Command<NewParameters, NewResult>(@params, "session.new");
+internal sealed class UninstallCommand(UninstallParameters @params)
+    : Command<UninstallParameters, EmptyResult>(@params, "webExtension.uninstall");
 
-internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
+internal sealed record UninstallParameters(Extension Extension) : Parameters;
 
-public sealed class NewOptions : CommandOptions;
-
-public sealed record NewResult(string SessionId, Capability Capability) : EmptyResult;
-
-public sealed record Capability(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
-{
-    public ProxyConfiguration? Proxy { get; set; }
-
-    public string? WebSocketUrl { get; set; }
-}
+public sealed class UninstallOptions : CommandOptions;
