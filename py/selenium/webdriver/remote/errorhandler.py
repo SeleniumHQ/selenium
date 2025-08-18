@@ -173,10 +173,7 @@ class ErrorHandler:
                             message = value.get("value") or value.get("message")
                             if not isinstance(message, str):
                                 value = message
-                                if isinstance(message, dict):
-                                    message = message.get("message")
-                                else:
-                                    message = None
+                                message = message.get("message")  if isinstance(message, dict) else None
                         else:
                             message = value.get("message", None)
                 except ValueError:
@@ -206,8 +203,7 @@ class ErrorHandler:
 
         stacktrace = None
         st_value = None
-        if isinstance(value, dict):
-            st_value = value.get("stackTrace") or value.get("stacktrace")
+        st_value = value.get("stackTrace") or value.get("stacktrace")
         if st_value:
             if isinstance(st_value, str):
                 stacktrace = st_value.split("\n")

@@ -180,8 +180,6 @@ class Credential:
     def from_dict(cls, data: dict[str, Any]) -> "Credential":
         _id = urlsafe_b64decode(f"{data['credentialId']}==")
         is_resident_credential = bool(data["isResidentCredential"])
-        if "rpId" not in data:
-            raise KeyError("Missing required field 'rpId' in credential data.")
         rp_id = data["rpId"]
         private_key = urlsafe_b64decode(f"{data['privateKey']}==")
         sign_count = int(data["signCount"])
