@@ -28,8 +28,3 @@ internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params)
 internal sealed record UnsubscribeByIdParameters(IEnumerable<Subscription> Subscriptions) : Parameters;
 
 public sealed class UnsubscribeByIdOptions : CommandOptions;
-
-public sealed class UnsubscribeByAttributesOptions : CommandOptions
-{
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
-}
