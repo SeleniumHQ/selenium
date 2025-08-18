@@ -935,11 +935,10 @@ pub trait SeleniumManager {
         err: Error,
     ) -> Result<(), Error> {
         if *is_driver_in_path {
-            self.get_logger().warn(format!(
-                "Exception managing {}: {}",
-                self.get_browser_name(),
-                err
-            ));
+            self.get_logger().debug_or_warn(
+                format!("Exception managing {}: {}", self.get_browser_name(), err),
+                self.is_offline(),
+            );
             Ok(())
         } else {
             Err(err)

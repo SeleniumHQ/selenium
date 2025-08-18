@@ -47,10 +47,10 @@ fn browser_latest_download_test(#[case] browser: String) {
 }
 
 #[rstest]
-#[case("chrome", "113")]
-#[case("chrome", "131.0.6725.0")]
+#[case("chrome", "131")]
+#[case("chrome", "131.0.6778.264")]
 #[case("chrome", "beta")]
-#[case("firefox", "116")]
+#[case("firefox", "121")]
 #[case("firefox", "121.0.1")]
 #[case("firefox", "beta")]
 #[case("firefox", "esr")]
