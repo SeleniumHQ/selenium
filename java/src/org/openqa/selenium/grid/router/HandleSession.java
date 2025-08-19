@@ -257,19 +257,11 @@ class HandleSession implements HttpHandler, Closeable {
       HttpRequest statusRequest = new HttpRequest(GET, "/se/grid/node/status");
       HttpResponse res = httpClient.execute(statusRequest);
       NodeStatus nodeStatus = Values.get(res, NodeStatus.class);
-      sessionTimeout = nodeStatus.getSessionTimeout();
-      LOG.fine(
-          "Fetched session timeout from node status (read timeout: "
-              + sessionTimeout.toSeconds()
-              + " seconds) for "
-              + uri);
-    } catch (Exception e) {
-      LOG.fine(
-          "Use default from ClientConfig (read timeout: "
-              + config.readTimeout().toSeconds()
-              + " seconds) for "
-              + uri);
+      if (nodeStatus != null) {
+        sessionTimeout = nodeStatus.getSessionTimeout();
+      }
     }
+    LOG.fine("Set read timeout: " + sessionTimeout.toSeconds() + " seconds for " + uri);
     config = config.readTimeout(sessionTimeout);
     return config;
   }
