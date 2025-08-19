@@ -17,16 +17,16 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.openqa.selenium.internal.Require;
 import org.tomlj.Toml;
@@ -108,14 +108,14 @@ public class TomlConfig implements Config {
                 .map(TomlTable::toMap)
                 .map(this::toEntryList)
                 .flatMap(Collection::stream)
-                .collect(ImmutableList.toImmutableList()));
+                .collect(Collectors.toUnmodifiableList()));
       }
 
       return Optional.of(
           collection.stream()
               .filter(item -> (!(item instanceof Collection)))
               .map(String::valueOf)
-              .collect(ImmutableList.toImmutableList()));
+              .collect(Collectors.toUnmodifiableList()));
     }
 
     if (value instanceof TomlTable) {
@@ -127,7 +127,7 @@ public class TomlConfig implements Config {
 
   @Override
   public Set<String> getSectionNames() {
-    return ImmutableSortedSet.copyOf(toml.keySet());
+    return Collections.unmodifiableSortedSet(new TreeSet<>(toml.keySet()));
   }
 
   @Override
@@ -136,9 +136,9 @@ public class TomlConfig implements Config {
 
     Object raw = toml.get(section);
     if (!(raw instanceof TomlTable)) {
-      return ImmutableSortedSet.of();
+      return Collections.emptySortedSet();
     }
 
-    return ImmutableSortedSet.copyOf(((TomlTable) raw).keySet());
+    return Collections.unmodifiableSortedSet(new TreeSet<>(((TomlTable) raw).keySet()));
   }
 }

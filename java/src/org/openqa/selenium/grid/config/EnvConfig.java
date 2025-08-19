@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.grid.config;
 
-import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
-import static java.util.Comparator.naturalOrder;
-
-import com.google.common.collect.ImmutableList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -54,7 +53,7 @@ public class EnvConfig implements Config {
       value = System.getenv(value.substring(1));
     }
 
-    return Optional.ofNullable(value).map(ImmutableList::of);
+    return Optional.ofNullable(value).map(List::of);
   }
 
   @Override
@@ -64,7 +63,9 @@ public class EnvConfig implements Config {
         .filter(key -> key.split("_").length > 1)
         .map(key -> key.substring(0, key.indexOf('_')))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(toImmutableSortedSet(naturalOrder()));
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toCollection(TreeSet::new), Collections::unmodifiableSortedSet));
   }
 
   @Override
@@ -76,6 +77,8 @@ public class EnvConfig implements Config {
         .filter(key -> key.startsWith(prefix))
         .map(key -> key.substring(prefix.length()))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(toImmutableSortedSet(naturalOrder()));
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toCollection(TreeSet::new), Collections::unmodifiableSortedSet));
   }
 }

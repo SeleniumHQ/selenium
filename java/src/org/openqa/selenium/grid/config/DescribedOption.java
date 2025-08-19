@@ -18,31 +18,41 @@
 package org.openqa.selenium.grid.config;
 
 import static java.util.Comparator.comparing;
-import static java.util.Comparator.naturalOrder;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Sets;
-import com.google.common.primitives.Primitives;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /** Represents a configurable attribute of the Selenium Grid. */
 public class DescribedOption implements Comparable<DescribedOption> {
+
+  private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER =
+      Map.ofEntries(
+          Map.entry(boolean.class, Boolean.class),
+          Map.entry(byte.class, Byte.class),
+          Map.entry(char.class, Character.class),
+          Map.entry(double.class, Double.class),
+          Map.entry(float.class, Float.class),
+          Map.entry(int.class, Integer.class),
+          Map.entry(long.class, Long.class),
+          Map.entry(short.class, Short.class),
+          Map.entry(void.class, Void.class));
 
   public final String section;
   public final String optionName;
@@ -70,7 +80,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
     this.repeats = isCollection(type);
     this.quotable = isTomlStringType(type);
     this.example = configValue.example();
-    this.flags = ImmutableSortedSet.<String>naturalOrder().add(parameter.names()).build();
+    this.flags = Collections.unmodifiableSortedSet(new TreeSet<>(Arrays.asList(parameter.names())));
     this.defaultValue = defaultValue;
     this.hidden = parameter.hidden();
   }
@@ -78,12 +88,14 @@ public class DescribedOption implements Comparable<DescribedOption> {
   public static Set<DescribedOption> findAllMatchingOptions(Collection<Role> roles) {
     Objects.requireNonNull(roles);
 
-    Set<Role> minimized = ImmutableSet.copyOf(roles);
+    Set<Role> minimized = Set.copyOf(roles);
 
     return StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), false)
-        .filter(hasRoles -> !Sets.intersection(hasRoles.getRoles(), minimized).isEmpty())
+        .filter(hasRoles -> !Collections.disjoint(hasRoles.getRoles(), minimized))
         .flatMap(DescribedOption::getAllFields)
-        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toCollection(TreeSet::new), Collections::unmodifiableSortedSet));
   }
 
   private static Stream<DescribedOption> getAllFields(HasRoles hasRoles) {
@@ -201,7 +213,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
   }
 
   private boolean isTomlStringType(Type type) {
-    Class<?> derived = Primitives.wrap(deriveClass(type));
+    Class<?> derived = wrap(deriveClass(type));
 
     // Everything other than numbers and booleans must be quoted
     return !(Number.class.isAssignableFrom(derived) || Boolean.class.isAssignableFrom(derived));
@@ -229,5 +241,9 @@ public class DescribedOption implements Comparable<DescribedOption> {
     return type instanceof ParameterizedType
         && ((ParameterizedType) type).getRawType() instanceof Class
         && Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType());
+  }
+
+  private static <T> Class<T> wrap(Class<T> type) {
+    return (type.isPrimitive()) ? (Class<T>) PRIMITIVE_TO_WRAPPER.get(type) : type;
   }
 }

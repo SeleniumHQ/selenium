@@ -18,9 +18,6 @@
 package org.openqa.selenium.grid.config;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.primitives.Primitives;
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -35,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import org.openqa.selenium.internal.Require;
 
 /**
@@ -175,17 +173,18 @@ public class AnnotatedConfig implements Config {
       return Optional.empty();
     }
 
-    return Optional.of(ImmutableList.copyOf(values));
+    return Optional.of(List.copyOf(values));
   }
 
   @Override
   public Set<String> getSectionNames() {
-    return ImmutableSortedSet.copyOf(config.keySet());
+    return Collections.unmodifiableSortedSet(new TreeSet<>(config.keySet()));
   }
 
   @Override
   public Set<String> getOptions(String section) {
     Require.nonNull("Section name to get options for", section);
-    return ImmutableSortedSet.copyOf(config.getOrDefault(section, ImmutableMap.of()).keySet());
+    return Collections.unmodifiableSortedSet(
+        new TreeSet<>(config.getOrDefault(section, Map.of()).keySet()));
   }
 }

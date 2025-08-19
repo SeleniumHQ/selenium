@@ -17,22 +17,22 @@
 
 package org.openqa.selenium.grid.commands;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.openqa.selenium.grid.config.MapConfig;
 
 class DefaultHubConfig extends MapConfig {
 
   DefaultHubConfig() {
     super(
-        ImmutableMap.of(
+        Map.of(
             "events",
-                ImmutableMap.of(
+                Map.of(
                     "publish", "tcp://*:4442",
                     "subscribe", "tcp://*:4443",
                     "bind", true),
             "sessions",
-                ImmutableMap.of(
+                Map.of(
                     "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap"),
-            "server", ImmutableMap.of("port", 4444)));
+            "server", Map.of("port", 4444)));
   }
 }

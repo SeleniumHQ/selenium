@@ -20,23 +20,22 @@ package org.openqa.selenium.grid.config;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.openqa.selenium.json.Json;
 
 public class ConfigFlags implements HasRoles {
 
-  private static final ImmutableSet<String> IGNORED_SECTIONS =
-      ImmutableSet.of("java", "lc", "term");
+  private static final Set<String> IGNORED_SECTIONS = Set.of("java", "lc", "term");
 
   @Parameter(
       names = "--config",
@@ -61,7 +60,7 @@ public class ConfigFlags implements HasRoles {
 
   public Config readConfigFiles() {
     if (configFiles == null || configFiles.isEmpty()) {
-      return new MapConfig(ImmutableMap.of());
+      return new MapConfig(Map.of());
     }
 
     return new CompoundConfig(configFiles.stream().map(Configs::from).toArray(Config[]::new));
@@ -106,12 +105,12 @@ public class ConfigFlags implements HasRoles {
             .collect(
                 Collectors.toMap(
                     DescribedOption::section,
-                    ImmutableSortedSet::of,
-                    (l, r) ->
-                        ImmutableSortedSet.<DescribedOption>naturalOrder()
-                            .addAll(l)
-                            .addAll(r)
-                            .build()));
+                    option -> Collections.unmodifiableSortedSet(new TreeSet<>(Set.of(option))),
+                    (l, r) -> {
+                      SortedSet<DescribedOption> merged = new TreeSet<>(l);
+                      merged.addAll(r);
+                      return Collections.unmodifiableSortedSet(merged);
+                    }));
 
     StringBuilder demoToml = new StringBuilder();
     demoToml.append("Configuration help for Toml config file").append("\n\n");

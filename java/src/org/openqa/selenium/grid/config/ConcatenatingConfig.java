@@ -17,17 +17,15 @@
 
 package org.openqa.selenium.grid.config;
 
-import static java.util.Comparator.naturalOrder;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedSet;
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.openqa.selenium.internal.Require;
 
 public class ConcatenatingConfig implements Config {
@@ -48,7 +46,7 @@ public class ConcatenatingConfig implements Config {
                 entry ->
                     new AbstractMap.SimpleImmutableEntry<>(
                         String.valueOf(entry.getKey()), String.valueOf(entry.getValue())))
-            .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Override
@@ -62,7 +60,7 @@ public class ConcatenatingConfig implements Config {
         .filter(entry -> key.equalsIgnoreCase(entry.getKey()))
         .map(Map.Entry::getValue)
         .findFirst()
-        .map(ImmutableList::of);
+        .map(List::of);
   }
 
   @Override
@@ -76,7 +74,9 @@ public class ConcatenatingConfig implements Config {
         .filter(key -> key.indexOf(separator) > -1)
         .map(key -> key.substring(0, key.indexOf(separator)))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toCollection(TreeSet::new), Collections::unmodifiableSortedSet));
   }
 
   @Override
@@ -90,6 +90,8 @@ public class ConcatenatingConfig implements Config {
         .filter(key -> key.length() > actualPrefix.length() + 1)
         .map(key -> key.substring(actualPrefix.length()))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(ImmutableSortedSet.toImmutableSortedSet(naturalOrder()));
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toCollection(TreeSet::new), Collections::unmodifiableSortedSet));
   }
 }
