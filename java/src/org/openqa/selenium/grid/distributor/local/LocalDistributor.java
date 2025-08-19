@@ -28,7 +28,6 @@ import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -245,7 +244,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   @Override
   public boolean isReady() {
     try {
-      return ImmutableSet.of(bus, sessions).parallelStream()
+      return Set.of(bus, sessions).parallelStream()
           .map(HasReadyState::isReady)
           .reduce(true, Boolean::logicalAnd);
     } catch (RuntimeException e) {

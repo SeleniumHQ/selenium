@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -69,7 +69,7 @@ public class DefaultSlotSelector implements SlotSelector {
                     .filter(slot -> slot.getSession() == null)
                     .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
                     .map(Slot::getId))
-        .collect(toImmutableSet());
+        .collect(Collectors.toUnmodifiableSet());
   }
 
   @VisibleForTesting
