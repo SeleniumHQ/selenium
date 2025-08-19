@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
@@ -28,6 +29,7 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import java.io.Closeable;
 import java.net.URI;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
@@ -43,8 +45,10 @@ import java.util.logging.Logger;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.ExecutorServices;
 import org.openqa.selenium.concurrent.GuardedRunnable;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.ErrorCodec;
 import org.openqa.selenium.remote.SessionId;
@@ -230,8 +234,7 @@ class HandleSession implements HttpHandler, Closeable {
                       return entry;
                     }
 
-                    ClientConfig config =
-                        ClientConfig.defaultConfig().baseUri(sessionUri).withRetries();
+                    ClientConfig config = fetchNodeSessionTimeout(sessionUri).withRetries();
                     HttpClient httpClient = httpClientFactory.createClient(config);
 
                     return new CacheEntry(httpClient, 1);
@@ -245,6 +248,22 @@ class HandleSession implements HttpHandler, Closeable {
             throw t;
           }
         });
+  }
+
+  private ClientConfig fetchNodeSessionTimeout(URI uri) {
+    ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
+    Duration sessionTimeout = config.readTimeout();
+    try (HttpClient httpClient = httpClientFactory.createClient(config)) {
+      HttpRequest statusRequest = new HttpRequest(GET, "/se/grid/node/status");
+      HttpResponse res = httpClient.execute(statusRequest);
+      NodeStatus nodeStatus = Values.get(res, NodeStatus.class);
+      if (nodeStatus != null) {
+        sessionTimeout = nodeStatus.getSessionTimeout();
+      }
+    }
+    LOG.fine("Set read timeout: " + sessionTimeout.toSeconds() + " seconds for " + uri);
+    config = config.readTimeout(sessionTimeout);
+    return config;
   }
 
   @Override
