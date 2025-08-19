@@ -22,8 +22,8 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe Browser, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
-                        only: {browser: %i[chrome edge firefox]} do
+      describe Browser, exclusive: { bidi: true, reason: 'only executed when bidi is enabled' },
+               only: { browser: %i[chrome edge firefox] } do
         it 'creates an user context' do
           reset_driver!(web_socket_url: true) do |driver|
             browser = described_class.new(driver.bidi)
@@ -69,6 +69,35 @@ module Selenium
             expect {
               browser.remove_user_context('fake_context')
             }.to raise_error(Error::WebDriverError)
+          end
+        end
+
+        it 'get windows' do
+          reset_driver!(web_socket_url: true) do |driver|
+            browser = described_class.new(driver.bidi)
+            windows = browser.windows
+
+            window = windows.first
+
+            expect(window).to be_a(Selenium::WebDriver::BiDi::Browser::Window)
+            expect(window).to have_attributes(
+              handle: an_instance_of(String),
+              active: be(false),
+              state: 'normal',
+              height: an_instance_of(Integer),
+              width: an_instance_of(Integer)
+            )
+          end
+        end
+
+        it 'checks if a window is active' do
+          reset_driver!(web_socket_url: true) do |driver|
+            browser = described_class.new(driver.bidi)
+            driver.execute_script('window.focus();')
+            browser.windows.find(&:active?)
+
+            expect(active_window).to be_a(Selenium::WebDriver::BiDi::Browser::Window)
+            expect(active_window.active?).to be(true)
           end
         end
       end

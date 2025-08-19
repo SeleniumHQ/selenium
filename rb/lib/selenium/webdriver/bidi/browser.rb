@@ -21,6 +21,11 @@ module Selenium
   module WebDriver
     class BiDi
       class Browser
+        Window = Struct.new(:handle, :active, :height, :width, :x, :y, :state) do
+          def active?
+            active
+          end
+        end
         def initialize(bidi)
           @bidi = bidi
         end
@@ -36,7 +41,24 @@ module Selenium
         def remove_user_context(user_context)
           @bidi.send_cmd('browser.removeUserContext', userContext: user_context)
         end
-      end
+
+        def windows
+          response = @bidi.send_cmd('browser.getClientWindows')
+
+          response['clientWindows'].map do |win_data|
+            attributes = {
+              handle: win_data['clientWindow'],
+              active: win_data['active'],
+              height: win_data['height'],
+              width: win_data['width'],
+              x: win_data['x'],
+              y: win_data['y'],
+              state: win_data['state']
+            }
+            Window.new(**attributes)
+          end
+        end
+      end # Browser
     end # BiDi
   end # WebDriver
 end # Selenium
