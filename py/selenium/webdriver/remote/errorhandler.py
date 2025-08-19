@@ -202,7 +202,6 @@ class ErrorHandler:
             screen = value["screen"]
 
         stacktrace = None
-        st_value = None
         st_value = value.get("stackTrace") or value.get("stacktrace")
         if st_value:
             if isinstance(st_value, str):
