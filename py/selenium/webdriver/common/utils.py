@@ -147,8 +147,8 @@ def is_url_connectable(
         - scheme - URL scheme
     """
     try:
-        res = urllib.request.urlopen(f"{scheme}://{host}:{port}/status")
-        return res.getcode() == 200
+        with urllib.request.urlopen(f"{scheme}://{host}:{port}/status") as res:
+            return res.getcode() == 200
     except Exception:
         return False
 
