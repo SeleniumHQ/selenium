@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional, Union
+
 
 from selenium.webdriver.remote.command import Command
 
@@ -26,6 +26,7 @@ from .pointer_actions import PointerActions
 from .pointer_input import PointerInput
 from .wheel_actions import WheelActions
 from .wheel_input import WheelInput
+from typing import Optional, Union, Dict, List, Any
 
 
 class ActionBuilder:
@@ -40,7 +41,7 @@ class ActionBuilder:
         mouse = mouse or PointerInput(interaction.POINTER_MOUSE, "mouse")
         keyboard = keyboard or KeyInput(interaction.KEY)
         wheel = wheel or WheelInput(interaction.WHEEL)
-        self.devices = [mouse, keyboard, wheel]
+        self.devices: List[Union[PointerInput, KeyInput, WheelInput]] = [mouse, keyboard, wheel]
         self._key_action = KeyActions(keyboard)
         self._pointer_action = PointerActions(mouse, duration=duration)
         self._wheel_action = WheelActions(wheel)
@@ -62,11 +63,11 @@ class ActionBuilder:
 
     @property
     def pointer_inputs(self) -> list[PointerInput]:
-        return [device for device in self.devices if device.type == interaction.POINTER]
+        return [device for device in self.devices if isinstance(device, PointerInput)]
 
     @property
     def key_inputs(self) -> list[KeyInput]:
-        return [device for device in self.devices if device.type == interaction.KEY]
+        return [device for device in self.devices if isinstance(device, KeyInput)]
 
     @property
     def key_action(self) -> KeyActions:
@@ -159,7 +160,7 @@ class ActionBuilder:
         >>> el = driver.find_element(id: "some_id")
         >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys").perform()
         """
-        enc = {"actions": []}
+        enc: Dict[str, List[Any]] = {"actions": []}
         for device in self.devices:
             encoded = device.encode()
             if encoded["actions"]:
