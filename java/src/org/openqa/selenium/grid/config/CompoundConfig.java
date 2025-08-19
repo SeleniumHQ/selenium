@@ -48,7 +48,7 @@ public class CompoundConfig implements Config {
             .filter(Optional::isPresent)
             .map(Optional::get)
             .flatMap(Collection::stream)
-            .toList();
+            .collect(Collectors.toUnmodifiableList());
 
     return values.isEmpty() ? Optional.empty() : Optional.of(values);
   }
