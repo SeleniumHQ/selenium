@@ -18,7 +18,7 @@
 """Utility functions."""
 
 import socket
-import urllib
+import urllib.request
 from collections.abc import Iterable
 from typing import Optional, Union
 
