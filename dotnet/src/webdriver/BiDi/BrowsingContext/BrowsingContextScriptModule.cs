@@ -41,7 +41,7 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
 
         options.Context = context;
 
-        return await scriptModule.GetRealmsAsync(options).ConfigureAwait(false);
+        return (await scriptModule.GetRealmsAsync(options).ConfigureAwait(false)).Realms;
     }
 
     public Task<EvaluateResult> EvaluateAsync(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)

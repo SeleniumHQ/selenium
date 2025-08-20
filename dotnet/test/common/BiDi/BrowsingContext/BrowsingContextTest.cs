@@ -105,10 +105,10 @@ class BrowsingContextTest : BiDiTestFixture
 
         var tree = await context.GetTreeAsync();
 
-        Assert.That(tree, Has.Count.EqualTo(1));
-        Assert.That(tree[0].Context, Is.EqualTo(context));
-        Assert.That(tree[0].Children, Has.Count.EqualTo(1));
-        Assert.That(tree[0].Children[0].Url, Does.Contain("formPage.html"));
+        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
+        Assert.That(tree.Contexts[0].Children, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts[0].Children[0].Url, Does.Contain("formPage.html"));
     }
 
     [Test]
@@ -118,9 +118,9 @@ class BrowsingContextTest : BiDiTestFixture
 
         var tree = await context.GetTreeAsync(new() { MaxDepth = 0 });
 
-        Assert.That(tree, Has.Count.EqualTo(1));
-        Assert.That(tree[0].Context, Is.EqualTo(context));
-        Assert.That(tree[0].Children, Is.Null);
+        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
+        Assert.That(tree.Contexts[0].Children, Is.Null);
     }
 
     [Test]
@@ -131,7 +131,7 @@ class BrowsingContextTest : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree, Has.Count.GreaterThanOrEqualTo(2));
+        Assert.That(tree.Contexts, Has.Count.GreaterThanOrEqualTo(2));
     }
 
     [Test]
@@ -143,7 +143,7 @@ class BrowsingContextTest : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Select(i => i.Context), Does.Not.Contain(window));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(window));
     }
 
     [Test]
@@ -155,7 +155,7 @@ class BrowsingContextTest : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Select(i => i.Context), Does.Not.Contain(tab));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(tab));
     }
 
     [Test]
@@ -284,11 +284,11 @@ class BrowsingContextTest : BiDiTestFixture
     {
         await context.NavigateAsync(UrlBuilder.WhereIs("formPage.html"), new() { Wait = ReadinessState.Complete });
 
-        var nodes = await context.LocateNodesAsync(new CssLocator("#checky"));
+        var nodesResult = await context.LocateNodesAsync(new CssLocator("#checky"));
 
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Clip = new ElementClipRectangle(nodes[0])
+            Clip = new ElementClipRectangle(nodesResult.Nodes[0])
         });
 
         Assert.That(screenshot, Is.Not.Null);

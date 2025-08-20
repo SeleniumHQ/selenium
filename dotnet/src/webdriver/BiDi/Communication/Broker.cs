@@ -99,13 +99,7 @@ public sealed class Broker : IAsyncDisposable
                 //
 
                 // Enumerable
-                new Json.Converters.Enumerable.GetCookiesResultConverter(),
-                new Json.Converters.Enumerable.LocateNodesResultConverter(),
                 new Json.Converters.Enumerable.InputSourceActionsConverter(),
-                new Json.Converters.Enumerable.GetUserContextsResultConverter(),
-                new Json.Converters.Enumerable.GetClientWindowsResultConverter(),
-                new Json.Converters.Enumerable.GetRealmsResultConverter(),
-                new Json.Converters.Enumerable.GetTreeResultConverter(),
             }
         };
 

@@ -38,12 +38,12 @@ class BrowserTest : BiDiTestFixture
         var userContext1 = await bidi.Browser.CreateUserContextAsync();
         var userContext2 = await bidi.Browser.CreateUserContextAsync();
 
-        var userContexts = await bidi.Browser.GetUserContextsAsync();
+        var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 
-        Assert.That(userContexts, Is.Not.Null);
-        Assert.That(userContexts, Has.Count.GreaterThanOrEqualTo(2));
-        Assert.That(userContexts, Does.Contain(userContext1));
-        Assert.That(userContexts, Does.Contain(userContext2));
+        Assert.That(userContextsResult, Is.Not.Null);
+        Assert.That(userContextsResult.UserContexts, Has.Count.GreaterThanOrEqualTo(2));
+        Assert.That(userContextsResult.UserContexts, Does.Contain(userContext1));
+        Assert.That(userContextsResult.UserContexts, Does.Contain(userContext2));
     }
 
     [Test]
@@ -54,19 +54,19 @@ class BrowserTest : BiDiTestFixture
 
         await userContext2.UserContext.RemoveAsync();
 
-        var userContexts = await bidi.Browser.GetUserContextsAsync();
+        var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 
-        Assert.That(userContexts, Does.Contain(userContext1));
-        Assert.That(userContexts, Does.Not.Contain(userContext2));
+        Assert.That(userContextsResult.UserContexts, Does.Contain(userContext1));
+        Assert.That(userContextsResult.UserContexts, Does.Not.Contain(userContext2));
     }
 
     [Test]
     public async Task CanGetClientWindows()
     {
-        var clientWindows = await bidi.Browser.GetClientWindowsAsync();
+        var clientWindowsResult = await bidi.Browser.GetClientWindowsAsync();
 
-        Assert.That(clientWindows, Is.Not.Null);
-        Assert.That(clientWindows, Has.Count.GreaterThanOrEqualTo(1));
-        Assert.That(clientWindows[0].ClientWindow, Is.Not.Null);
+        Assert.That(clientWindowsResult, Is.Not.Null);
+        Assert.That(clientWindowsResult.ClientWindows, Has.Count.GreaterThanOrEqualTo(1));
+        Assert.That(clientWindowsResult.ClientWindows[0].ClientWindow, Is.Not.Null);
     }
 }
