@@ -16,7 +16,7 @@
 # under the License.
 
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from selenium.webdriver.remote.command import Command
 
@@ -41,7 +41,7 @@ class ActionBuilder:
         mouse = mouse or PointerInput(interaction.POINTER_MOUSE, "mouse")
         keyboard = keyboard or KeyInput(interaction.KEY)
         wheel = wheel or WheelInput(interaction.WHEEL)
-        self.devices: List[Union[PointerInput, KeyInput, WheelInput]] = [mouse, keyboard, wheel]
+        self.devices: list[Union[PointerInput, KeyInput, WheelInput]] = [mouse, keyboard, wheel]
         self._key_action = KeyActions(keyboard)
         self._pointer_action = PointerActions(mouse, duration=duration)
         self._wheel_action = WheelActions(wheel)
@@ -160,7 +160,7 @@ class ActionBuilder:
         >>> el = driver.find_element(id: "some_id")
         >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys").perform()
         """
-        enc: Dict[str, List[Any]] = {"actions": []}
+        enc: dict[str, list[Any]] = {"actions": []}
         for device in self.devices:
             encoded = device.encode()
             if encoded["actions"]:
