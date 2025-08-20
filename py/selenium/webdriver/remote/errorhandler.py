@@ -173,7 +173,7 @@ class ErrorHandler:
                             message = value.get("value") or value.get("message")
                             if not isinstance(message, str):
                                 value = message
-                                message = message.get("message")
+                                message = message.get("message") if isinstance(message, dict) else None
                         else:
                             message = value.get("message", None)
                 except ValueError:
