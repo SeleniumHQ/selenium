@@ -16,6 +16,7 @@
 # under the License.
 
 
+from typing import Any, Dict, List, Optional, Union
 
 from selenium.webdriver.remote.command import Command
 
@@ -26,7 +27,6 @@ from .pointer_actions import PointerActions
 from .pointer_input import PointerInput
 from .wheel_actions import WheelActions
 from .wheel_input import WheelInput
-from typing import Optional, Union, Dict, List, Any
 
 
 class ActionBuilder:
