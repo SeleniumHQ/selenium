@@ -29,12 +29,17 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
 import com.google.common.collect.ImmutableMap;
+
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
@@ -89,9 +94,9 @@ class GridStatusHandler implements HttpHandler {
             new HttpResponse()
                 .setContent(
                     asJson(
-                        ImmutableMap.of(
+                        Map.of(
                             "value",
-                            ImmutableMap.of(
+                            Map.of(
                                 "ready", false, "message", "Unable to read distributor status."))));
 
         HTTP_RESPONSE.accept(span, response);
@@ -111,9 +116,9 @@ class GridStatusHandler implements HttpHandler {
             new HttpResponse()
                 .setContent(
                     asJson(
-                        ImmutableMap.of(
+                        Map.of(
                             "value",
-                            ImmutableMap.of(
+                            Map.of(
                                 "ready",
                                 false,
                                 "message",
@@ -136,19 +141,20 @@ class GridStatusHandler implements HttpHandler {
       List<Map<String, Object>> nodeResults =
           status.getNodes().stream()
               .map(
-                  node ->
-                      new ImmutableMap.Builder<String, Object>()
-                          .put("id", node.getNodeId())
-                          .put("uri", node.getExternalUri())
-                          .put("maxSessions", node.getMaxSessionCount())
-                          .put("sessionTimeout", node.getSessionTimeout().toMillis())
-                          .put("osInfo", node.getOsInfo())
-                          .put("heartbeatPeriod", node.getHeartbeatPeriod().toMillis())
-                          .put("availability", node.getAvailability())
-                          .put("version", node.getVersion())
-                          .put("slots", node.getSlots())
-                          .build())
-              .collect(toList());
+                  node -> {
+                    Map<String, Object> nodeMap = new HashMap<>();
+                    nodeMap.put("id", node.getNodeId());
+                    nodeMap.put("uri", node.getExternalUri());
+                    nodeMap.put("maxSessions", node.getMaxSessionCount());
+                    nodeMap.put("sessionTimeout", node.getSessionTimeout().toMillis());
+                    nodeMap.put("osInfo", node.getOsInfo());
+                    nodeMap.put("heartbeatPeriod", node.getHeartbeatPeriod().toMillis());
+                    nodeMap.put("availability", node.getAvailability());
+                    nodeMap.put("version", node.getVersion());
+                    nodeMap.put("slots", node.getSlots());
+                    return Collections.unmodifiableMap(nodeMap);
+                  })
+              .collect(Collectors.toList());
 
       ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
       value.put("ready", ready);
