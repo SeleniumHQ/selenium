@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +68,7 @@ public class Grid {
   }
 
   public List<Node> getNodes() {
-    ImmutableList.Builder<Node> toReturn = ImmutableList.builder();
+    List<Node> toReturn = new ArrayList<>();
 
     for (NodeStatus status : distributorStatus.getNodes()) {
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
@@ -105,7 +105,7 @@ public class Grid {
               osInfo));
     }
 
-    return toReturn.build();
+    return Collections.unmodifiableList(toReturn);
   }
 
   public int getNodeCount() {

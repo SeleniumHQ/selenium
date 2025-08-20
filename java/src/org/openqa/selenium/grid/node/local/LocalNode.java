@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
@@ -36,8 +35,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.Ticker;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +45,9 @@ import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,7 +174,7 @@ public class LocalNode extends Node implements Closeable {
     this.maxSessionCount =
         Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.heartbeatPeriod = heartbeatPeriod;
-    this.factories = ImmutableList.copyOf(factories);
+    this.factories = List.copyOf(factories);
     Require.nonNull("Registration secret", registrationSecret);
     this.configuredSessionCount = drainAfterSessionCount;
     this.drainAfterSessions = this.configuredSessionCount > 0;
@@ -580,8 +579,8 @@ public class LocalNode extends Node implements Closeable {
   private Capabilities setDownloadsDirectory(TemporaryFilesystem downloadsTfs, Capabilities caps) {
     File tempDir = downloadsTfs.createTempDir("download", "");
     if (Browser.CHROME.is(caps) || Browser.EDGE.is(caps)) {
-      ImmutableMap<String, Serializable> map =
-          ImmutableMap.of(
+      Map<String, Serializable> map =
+          Map.of(
               "download.prompt_for_download",
               false,
               "download.default_directory",
@@ -592,8 +591,8 @@ public class LocalNode extends Node implements Closeable {
       return appendPrefs(caps, optionsKey, map);
     }
     if (Browser.FIREFOX.is(caps)) {
-      ImmutableMap<String, Serializable> map =
-          ImmutableMap.of(
+      Map<String, Serializable> map =
+          Map.of(
               "browser.download.folderList", 2, "browser.download.dir", tempDir.getAbsolutePath());
       return appendPrefs(caps, "moz:firefoxOptions", map);
     }
@@ -744,8 +743,8 @@ public class LocalNode extends Node implements Closeable {
           Arrays.stream(Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {}))
               .map(File::getName)
               .collect(Collectors.toList());
-      ImmutableMap<String, Object> data = ImmutableMap.of("names", collected);
-      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
+      Map<String, Object> data = Map.of("names", collected);
+      Map<String, Map<String, Object>> result = Map.of("value", data);
       return new HttpResponse().setContent(asJson(result));
     }
     if (req.getMethod().equals(HttpMethod.DELETE)) {
@@ -786,11 +785,11 @@ public class LocalNode extends Node implements Closeable {
             String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
       }
       String content = Zip.zip(allFiles[0]);
-      ImmutableMap<String, Object> data =
-          ImmutableMap.of(
+      Map<String, Object> data =
+          Map.of(
               "filename", filename,
               "contents", content);
-      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
+      Map<String, Map<String, Object>> result = Map.of("value", data);
       return new HttpResponse().setContent(asJson(result));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -829,7 +828,7 @@ public class LocalNode extends Node implements Closeable {
           String.format("Expected there to be only 1 file. There were: %s", allFiles.length));
     }
 
-    ImmutableMap<String, Object> result = ImmutableMap.of("value", allFiles[0].getAbsolutePath());
+    Map<String, Object> result = Map.of("value", allFiles[0].getAbsolutePath());
 
     return new HttpResponse().setContent(asJson(result));
   }
@@ -971,7 +970,7 @@ public class LocalNode extends Node implements Closeable {
                       lastStarted,
                       session);
                 })
-            .collect(toImmutableSet());
+            .collect(Collectors.toUnmodifiableSet());
 
     Availability availability = isDraining() ? DRAINING : UP;
 
@@ -1063,7 +1062,7 @@ public class LocalNode extends Node implements Closeable {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
+    return Map.of(
         "id", getId(),
         "uri", externalUri,
         "maxSessions", maxSessionCount,
@@ -1079,7 +1078,7 @@ public class LocalNode extends Node implements Closeable {
     private final URI uri;
     private final URI gridUri;
     private final Secret registrationSecret;
-    private final ImmutableList.Builder<SessionSlot> factories;
+    private final List<SessionSlot> factories;
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
@@ -1097,7 +1096,7 @@ public class LocalNode extends Node implements Closeable {
       this.uri = Require.nonNull("Remote node URI", uri);
       this.gridUri = Require.nonNull("Grid URI", gridUri);
       this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
-      this.factories = ImmutableList.builder();
+      this.factories = new ArrayList<>();
     }
 
     public Builder add(Capabilities stereotype, SessionFactory factory) {
@@ -1163,7 +1162,7 @@ public class LocalNode extends Node implements Closeable {
           ticker,
           sessionTimeout,
           heartbeatPeriod,
-          factories.build(),
+          Collections.unmodifiableList(factories),
           registrationSecret,
           managedDownloadsEnabled,
           connectionLimitPerSession);

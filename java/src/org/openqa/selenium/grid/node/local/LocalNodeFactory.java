@@ -17,11 +17,12 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import com.google.common.collect.ImmutableList;
+
 import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -110,7 +111,7 @@ public class LocalNodeFactory {
       List<DriverService.Builder<?, ?>> builders,
       ImmutableCapabilities stereotype,
       SlotMatcher slotMatcher) {
-    ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
+    List<SessionFactory> toReturn = new ArrayList<>();
     String webDriverExecutablePath =
         String.valueOf(stereotype.asMap().getOrDefault("se:webDriverExecutable", ""));
 
@@ -146,6 +147,6 @@ public class LocalNodeFactory {
                       driverServiceBuilder));
             });
 
-    return toReturn.build();
+    return Collections.unmodifiableList(toReturn);
   }
 }

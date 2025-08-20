@@ -20,9 +20,6 @@ package org.openqa.selenium.grid.node.docker;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.docker.Device.device;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -30,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -143,7 +141,8 @@ public class DockerOptions {
     List<String> hostConfigKeys =
         config.getAll(DOCKER_SECTION, "host-config-keys").orElseGet(Collections::emptyList);
 
-    Multimap<String, Capabilities> kinds = HashMultimap.create();
+    Map<String, Collection<Capabilities>> kinds = new HashMap<>();
+
     int configsCount = allConfigs.size();
     for (int i = 0; i < configsCount; i++) {
       String imageName = allConfigs.get(i);
@@ -154,7 +153,7 @@ public class DockerOptions {
       Capabilities stereotype =
           options.enhanceStereotype(JSON.toType(allConfigs.get(i), Capabilities.class));
 
-      kinds.put(imageName, stereotype);
+      kinds.computeIfAbsent(imageName, k -> new ArrayList<>()).add(stereotype);
     }
 
     List<Device> devicesMapping = getDevicesMapping();
@@ -180,36 +179,41 @@ public class DockerOptions {
         Math.min(
             config.getInt("node", "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
             DEFAULT_MAX_SESSIONS);
-    ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
+    Map<Capabilities, Collection<SessionFactory>> factories = new HashMap<>();
+
     kinds.forEach(
-        (name, caps) -> {
-          Image image = docker.getImage(name);
-          for (int i = 0; i < maxContainerCount; i++) {
-            factories.put(
-                caps,
-                new DockerSessionFactory(
-                    tracer,
-                    clientFactory,
-                    options.getSessionTimeout(),
-                    getServerStartTimeout(),
-                    docker,
-                    getDockerUri(),
-                    image,
-                    caps,
-                    devicesMapping,
-                    videoImage,
-                    assetsPath,
-                    networkName,
-                    info.isPresent(),
-                    capabilities -> options.getSlotMatcher().matches(caps, capabilities),
-                    hostConfig,
-                    hostConfigKeys));
-          }
-          LOG.info(
-              String.format(
-                  "Mapping %s to docker image %s %d times", caps, name, maxContainerCount));
-        });
-    return factories.build().asMap();
+        (name, capsCollection) ->
+            capsCollection.forEach(
+                caps -> {
+                  Image image = docker.getImage(name);
+                  for (int i = 0; i < maxContainerCount; i++) {
+                    factories
+                        .computeIfAbsent(caps, k -> new ArrayList<>())
+                        .add(
+                            new DockerSessionFactory(
+                                tracer,
+                                clientFactory,
+                                options.getSessionTimeout(),
+                                getServerStartTimeout(),
+                                docker,
+                                getDockerUri(),
+                                image,
+                                caps,
+                                devicesMapping,
+                                videoImage,
+                                assetsPath,
+                                networkName,
+                                info.isPresent(),
+                                capabilities ->
+                                    options.getSlotMatcher().matches(caps, capabilities),
+                                hostConfig,
+                                hostConfigKeys));
+                  }
+                  LOG.info(
+                      String.format(
+                          "Mapping %s to docker image %s %d times", caps, name, maxContainerCount));
+                }));
+    return Collections.unmodifiableMap(factories);
   }
 
   protected List<Device> getDevicesMapping() {

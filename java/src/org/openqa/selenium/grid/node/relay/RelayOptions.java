@@ -20,14 +20,14 @@ package org.openqa.selenium.grid.node.relay;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient.Version;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -152,7 +152,7 @@ public class RelayOptions {
             .orElseThrow(
                 () -> new ConfigException("Unable to find configs for " + getServiceUri()));
 
-    Multimap<Integer, Capabilities> parsedConfigs = HashMultimap.create();
+    Map<Integer, List<Capabilities>> parsedConfigs = new HashMap<>();
     int configsCount = allConfigs.size();
     for (int i = 0; i < configsCount; i++) {
       int maxSessions;
@@ -167,29 +167,32 @@ public class RelayOptions {
       }
       Capabilities stereotype =
           JSON.toType(extractConfiguredValue(allConfigs.get(i)), Capabilities.class);
-      parsedConfigs.put(maxSessions, stereotype);
+      parsedConfigs.computeIfAbsent(maxSessions, k -> new ArrayList<>()).add(stereotype);
     }
 
-    ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
+    Map<Capabilities, List<SessionFactory>> factories = new HashMap<>();
     LOG.info(String.format("Adding relay configs for %s", getServiceUri()));
     parsedConfigs.forEach(
-        (maxSessions, stereotype) -> {
-          ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
-          for (int i = 0; i < maxSessions; i++) {
-            factories.put(
-                immutable,
-                new RelaySessionFactory(
-                    tracer,
-                    clientFactory,
-                    sessionTimeout,
-                    getServiceUri(),
-                    getServiceStatusUri(),
-                    getServiceProtocolVersion(),
-                    immutable));
-          }
-          LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
-        });
-    return factories.build().asMap();
+        (maxSessions, stereotypeList) ->
+            stereotypeList.forEach(
+                stereotype -> {
+                  ImmutableCapabilities immutable = new ImmutableCapabilities(stereotype);
+                  for (int i = 0; i < maxSessions; i++) {
+                    factories
+                        .computeIfAbsent(immutable, k -> new ArrayList<>())
+                        .add(
+                            new RelaySessionFactory(
+                                tracer,
+                                clientFactory,
+                                sessionTimeout,
+                                getServiceUri(),
+                                getServiceStatusUri(),
+                                getServiceProtocolVersion(),
+                                immutable));
+                  }
+                  LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
+                }));
+    return Collections.unmodifiableMap(factories);
   }
 
   private String extractConfiguredValue(String keyValue) {
