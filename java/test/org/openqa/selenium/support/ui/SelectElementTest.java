@@ -29,6 +29,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
+import java.util.Arrays;
+import java.util.List;
+
 class SelectElementTest extends JupiterTestBase {
 
   @BeforeEach
@@ -176,8 +179,11 @@ class SelectElementTest extends JupiterTestBase {
     WebElement selectElement = driver.findElement(By.id("invisible_multi_select"));
     Select select = new Select(selectElement);
 
-    assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByContainsVisibleText("Apples"));
+    List<String> options = Arrays.asList("Apples", "Pears", "Oranges", "Lemons");
+    options.forEach(
+      option ->
+        assertThatExceptionOfType(NoSuchElementException.class)
+          .isThrownBy(() -> select.selectByVisibleText(option)));
   }
 
   @Test
@@ -196,6 +202,18 @@ class SelectElementTest extends JupiterTestBase {
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> select.selectByVisibleText("Disabled"));
+  }
+
+  @Test
+  void shouldThrowExceptionOnSelectByVisibleTextIfOptionHidden() {
+    WebElement selectElement = driver.findElement(By.id("invisible_multi_select"));
+    Select select = new Select(selectElement);
+
+    List<String> options = Arrays.asList("Apples", "Pears", "Oranges", "Lemons");
+    options.forEach(
+        option ->
+            assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> select.selectByVisibleText(option)));
   }
 
   @Test
