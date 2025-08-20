@@ -93,8 +93,7 @@ public class RouterServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return Set.of(
-        DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE, SESSION_QUEUE_ROLE);
+    return Set.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override

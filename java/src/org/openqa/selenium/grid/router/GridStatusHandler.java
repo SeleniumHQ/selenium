@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.router;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
@@ -29,7 +28,6 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
 import com.google.common.collect.ImmutableMap;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +37,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;

@@ -65,8 +65,7 @@ public class NetworkOptions {
 
     if (checkOrigin || allowedOrigins.isPresent()) {
       toReturn =
-          toReturn.andThen(
-              new CheckOriginHeader(allowedOrigins.orElse(List.of()), SKIP_CHECKS_ON));
+          toReturn.andThen(new CheckOriginHeader(allowedOrigins.orElse(List.of()), SKIP_CHECKS_ON));
     }
 
     return toReturn;

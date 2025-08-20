@@ -23,7 +23,6 @@ import static org.openqa.selenium.remote.http.Route.matching;
 
 import java.io.Closeable;
 import java.util.Set;
-
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
