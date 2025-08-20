@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +24,7 @@ import java.io.UncheckedIOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import org.openqa.selenium.internal.Require;
 
@@ -88,7 +88,7 @@ public class JarFileResource implements Resource {
   @Override
   public Set<Resource> list() {
     if (!isDirectory()) {
-      return ImmutableSet.of();
+      return Set.of();
     }
 
     String prefix = entryName.endsWith("/") ? entryName : entryName + "/";
@@ -100,7 +100,7 @@ public class JarFileResource implements Resource {
         .filter(e -> !e.getName().equals(prefix))
         .filter(e -> e.getName().split("/").length == count)
         .map(e -> new JarFileResource(jarFile, e.getName(), prefix))
-        .collect(ImmutableSet.toImmutableSet());
+        .collect(Collectors.toUnmodifiableSet());
   }
 
   @Override

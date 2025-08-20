@@ -23,12 +23,12 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
-import com.google.common.collect.ImmutableMap;
 import io.lettuce.core.KeyValue;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -139,7 +139,7 @@ public class RedisBackedSessionMap extends SessionMap {
 
       span.addEvent("Inserted into the database", attributeMap);
       connection.mset(
-          ImmutableMap.of(
+          Map.of(
               uriKey, uriValue,
               stereotypeKey, stereotypeJson,
               capabilitiesKey, capabilitiesJson,

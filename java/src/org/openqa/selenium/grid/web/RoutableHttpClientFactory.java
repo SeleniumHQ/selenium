@@ -19,10 +19,10 @@ package org.openqa.selenium.grid.web;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Map;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -61,7 +61,7 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
             response.setStatus(404);
             response.setContent(
                 asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value", request.getUri(),
                         "message", "Unable to route " + request,
                         "error", UnsupportedCommandException.class.getName())));
