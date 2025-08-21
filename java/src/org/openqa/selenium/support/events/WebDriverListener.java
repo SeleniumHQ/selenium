@@ -604,6 +604,9 @@ public interface WebDriverListener {
   default void afterGetCssValue(WebElement element, String propertyName, String result) {}
 
   /**
+   * This method will be called before {@link TakesScreenshot#getScreenshotAs(OutputType)} is
+   * called.
+   *
    * @param element - decorated WebElement instance
    * @param target - target type, @see OutputType
    * @param <X> - return type for getScreenshotAs.
@@ -611,8 +614,7 @@ public interface WebDriverListener {
   default <X> void beforeGetScreenshotAs(WebElement element, OutputType<X> target) {}
 
   /**
-   * This action will be performed each time after {@link WebDriver.TargetLocator#alert()} is
-   * called.
+   * This method will be called after {@link TakesScreenshot#getScreenshotAs(OutputType)} is called.
    *
    * @param element - decorated WebElement instance
    * @param target - target type, @see OutputType
