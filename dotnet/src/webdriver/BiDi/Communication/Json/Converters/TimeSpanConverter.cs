@@ -1,4 +1,4 @@
-// <copyright file="BytesValue.cs" company="Selenium Committers">
+// <copyright file="TimeSpanConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -18,19 +18,27 @@
 // </copyright>
 
 using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi.Network;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(StringBytesValue), "string")]
-[JsonDerivedType(typeof(Base64BytesValue), "base64")]
-public abstract record BytesValue
+internal class TimeSpanConverter : JsonConverter<TimeSpan>
 {
-    public static implicit operator BytesValue(string value) => new StringBytesValue(value);
-    public static implicit operator BytesValue(byte[] value) => new Base64BytesValue(value);
+    public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TryGetInt64(out long milliseconds) is false)
+        {
+            var doubleValue = reader.GetDouble();
+
+            milliseconds = Convert.ToInt64(doubleValue);
+        }
+
+        return TimeSpan.FromMilliseconds(milliseconds);
+    }
+
+    public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options)
+    {
+        writer.WriteNumberValue(value.TotalMilliseconds);
+    }
 }
-
-public sealed record StringBytesValue(string Value) : BytesValue;
-
-public sealed record Base64BytesValue(ReadOnlyMemory<byte> Value) : BytesValue;

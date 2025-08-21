@@ -250,7 +250,7 @@ class BrowsingContextTest : BiDiTestFixture
         var screenshot = await context.CaptureScreenshotAsync();
 
         Assert.That(screenshot, Is.Not.Null);
-        Assert.That(screenshot.Data, Is.Not.Empty);
+        Assert.That(screenshot.Data.Length, Is.Not.Zero);
     }
 
     [Test]
@@ -263,7 +263,7 @@ class BrowsingContextTest : BiDiTestFixture
         });
 
         Assert.That(screenshot, Is.Not.Null);
-        Assert.That(screenshot.Data, Is.Not.Empty);
+        Assert.That(screenshot.Data.Length, Is.Not.Zero);
     }
 
     [Test]
@@ -276,7 +276,7 @@ class BrowsingContextTest : BiDiTestFixture
         });
 
         Assert.That(screenshot, Is.Not.Null);
-        Assert.That(screenshot.Data, Is.Not.Empty);
+        Assert.That(screenshot.Data.Length, Is.Not.Zero);
     }
 
     [Test]
@@ -292,7 +292,7 @@ class BrowsingContextTest : BiDiTestFixture
         });
 
         Assert.That(screenshot, Is.Not.Null);
-        Assert.That(screenshot.Data, Is.Not.Empty);
+        Assert.That(screenshot.Data.Length, Is.Not.Zero);
     }
 
     [Test]
@@ -313,6 +313,6 @@ class BrowsingContextTest : BiDiTestFixture
         var pdf = await context.PrintAsync();
 
         Assert.That(pdf, Is.Not.Null);
-        Assert.That(pdf.Data, Is.Not.Empty);
+        Assert.That(pdf.Data.Length, Is.Not.Zero);
     }
 }
