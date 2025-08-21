@@ -23,7 +23,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-modal": "3.16.3",
-    "react-router-dom": "6.27.0",
+    "react-router-dom": "6.30.1",
     "source-map-explorer": "2.5.3"
   },
   "scripts": {
