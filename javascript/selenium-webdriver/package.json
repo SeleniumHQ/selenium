@@ -25,7 +25,7 @@
   "dependencies": {
     "@bazel/runfiles": "^6.3.1",
     "jszip": "^3.10.1",
-    "tmp": "^0.2.3",
+    "tmp": "^0.2.5",
     "ws": "^8.18.2"
   },
   "devDependencies": {
