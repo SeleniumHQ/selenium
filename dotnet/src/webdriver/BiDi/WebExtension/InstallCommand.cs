@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
@@ -35,7 +36,7 @@ public abstract record ExtensionData;
 
 public sealed record ExtensionArchivePath(string Path) : ExtensionData;
 
-public sealed record ExtensionBase64Encoded(string Value) : ExtensionData;
+public sealed record ExtensionBase64Encoded(ReadOnlyMemory<byte> Value) : ExtensionData;
 
 public sealed record ExtensionPath(string Path) : ExtensionData;
 
