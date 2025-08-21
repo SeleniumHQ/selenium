@@ -107,7 +107,7 @@ register_toolchains("@dotnet_toolchains//:all")
 oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
 oci.pull(
     name = "java_image_base",
-    digest = "sha256:1df9f3e6a2de0544dd04f1840aa811d334045c9126f9e93d8da45448061ad51e",
+    digest = "sha256:4d41893f2e35d2d1a3a14fea495798b86c39b028b7f341f7f5a6edaa07fcaf46",
     image = "gcr.io/distroless/java17",
 )
 oci.pull(
