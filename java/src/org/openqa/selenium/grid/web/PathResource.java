@@ -22,6 +22,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -88,7 +90,10 @@ public class PathResource implements Resource {
       return files
           .filter(allowedSubpaths)
           .map(PathResource::new)
-          .collect(Collectors.toUnmodifiableSet());
+          .collect(
+          Collectors.collectingAndThen(
+              Collectors.toCollection(LinkedHashSet::new),
+              set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

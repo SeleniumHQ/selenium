@@ -25,8 +25,10 @@ import com.google.common.annotations.VisibleForTesting;
 import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -178,7 +180,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
                                   sessionRequest.getRequestId().equals(entry.getKey())))
               .filter(entry -> isTimedOut(now, entry.getValue()))
               .map(Map.Entry::getKey)
-              .collect(Collectors.toSet());
+              .collect(
+          Collectors.collectingAndThen(
+              Collectors.toCollection(LinkedHashSet::new),
+              set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
     } finally {
       readLock.unlock();
     }

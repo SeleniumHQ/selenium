@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.web;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import org.openqa.selenium.internal.Require;
@@ -67,9 +68,9 @@ public class MergedResource implements Resource {
 
   @Override
   public Set<Resource> list() {
-    Set<Resource> resources = new HashSet<>(base.list());
+    Set<Resource> resources = new LinkedHashSet<>(base.list());
     next.ifPresent(res -> resources.addAll(res.list()));
-    return Collections.unmodifiableSet(resources);
+    return Collections.unmodifiableSet(new LinkedHashSet<>(resources));
   }
 
   @Override

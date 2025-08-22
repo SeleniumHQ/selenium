@@ -21,6 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -100,7 +102,10 @@ public class JarFileResource implements Resource {
         .filter(e -> !e.getName().equals(prefix))
         .filter(e -> e.getName().split("/").length == count)
         .map(e -> new JarFileResource(jarFile, e.getName(), prefix))
-        .collect(Collectors.toUnmodifiableSet());
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toCollection(LinkedHashSet::new),
+                set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
   }
 
   @Override
