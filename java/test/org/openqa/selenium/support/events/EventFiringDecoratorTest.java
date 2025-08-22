@@ -479,7 +479,11 @@ class EventFiringDecoratorTest {
 
           @Override
           public <X> void afterGetScreenshotAs(WebElement element, OutputType<X> target, X result) {
-            acc.append("afterGetScreenshotAs ").append(target).append(" ").append(result).append("\n");
+            acc.append("afterGetScreenshotAs ")
+                .append(target)
+                .append(" ")
+                .append(result)
+                .append("\n");
           }
         };
 
@@ -999,31 +1003,35 @@ class EventFiringDecoratorTest {
     when(((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64)).thenReturn(result);
 
     CollectorListener listener =
-      new CollectorListener() {
-        @Override
-        public <X> void beforeGetScreenshotAs(WebDriver driver, OutputType<X> target) {
-          acc.append("beforeGetScreenshotAs ").append(target).append("\n");
-        }
+        new CollectorListener() {
+          @Override
+          public <X> void beforeGetScreenshotAs(WebDriver driver, OutputType<X> target) {
+            acc.append("beforeGetScreenshotAs ").append(target).append("\n");
+          }
 
-        @Override
-        public <X> void afterGetScreenshotAs(WebDriver driver, OutputType<X> target, X result) {
-          acc.append("afterGetScreenshotAs ").append(target).append(" ").append(result).append("\n");
-        }
-      };
+          @Override
+          public <X> void afterGetScreenshotAs(WebDriver driver, OutputType<X> target, X result) {
+            acc.append("afterGetScreenshotAs ")
+                .append(target)
+                .append(" ")
+                .append(result)
+                .append("\n");
+          }
+        };
     WebDriver decorated = new EventFiringDecorator<>(listener).decorate(driver);
 
     ((TakesScreenshot) decorated).getScreenshotAs(OutputType.BASE64);
 
     assertThat(listener.acc.toString().trim())
-      .isEqualTo(
-        String.join(
-          "\n",
-          "beforeAnyCall getScreenshotAs",
-          "beforeAnyWebDriverCall getScreenshotAs",
-          "beforeGetScreenshotAs OutputType.BASE64",
-          "afterGetScreenshotAs OutputType.BASE64 " + result,
-          "afterAnyWebDriverCall getScreenshotAs",
-          "afterAnyCall getScreenshotAs"));
+        .isEqualTo(
+            String.join(
+                "\n",
+                "beforeAnyCall getScreenshotAs",
+                "beforeAnyWebDriverCall getScreenshotAs",
+                "beforeGetScreenshotAs OutputType.BASE64",
+                "afterGetScreenshotAs OutputType.BASE64 " + result,
+                "afterAnyWebDriverCall getScreenshotAs",
+                "afterAnyCall getScreenshotAs"));
   }
 
   @Test
