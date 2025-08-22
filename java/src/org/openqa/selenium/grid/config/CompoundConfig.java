@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.config;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -58,7 +60,10 @@ public class CompoundConfig implements Config {
     return allConfigs.stream()
         .map(Config::getSectionNames)
         .flatMap(Collection::stream)
-        .collect(Collectors.toCollection(TreeSet::new));
+        .collect(Collectors.collectingAndThen(
+            Collectors.toCollection(TreeSet::new),
+            Collections::unmodifiableSortedSet
+        ));
   }
 
   @Override
@@ -68,6 +73,9 @@ public class CompoundConfig implements Config {
     return allConfigs.stream()
         .map(config -> config.getOptions(section))
         .flatMap(Collection::stream)
-        .collect(Collectors.toCollection(TreeSet::new));
+        .collect(Collectors.collectingAndThen(
+            Collectors.toCollection(TreeSet::new),
+            Collections::unmodifiableSortedSet
+        ));
   }
 }
