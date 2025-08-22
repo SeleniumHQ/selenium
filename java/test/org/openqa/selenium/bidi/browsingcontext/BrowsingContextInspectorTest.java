@@ -31,6 +31,7 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowsingContextInspectorTest extends JupiterTestBase {
 
@@ -229,6 +230,28 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
       NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
       assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
       assertThat(navigationInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
+  void canListenToDownloadWillBeginEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<DownloadInfo> future = new CompletableFuture<>();
+
+      inspector.onDownloadWillBegin(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/downloads/download.html"), ReadinessState.COMPLETE);
+
+      driver.findElement(By.id("file-1")).click();
+
+      DownloadInfo downloadInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(downloadInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(downloadInfo.getUrl()).contains("/downloads/file_1.txt");
+      assertThat(downloadInfo.getSuggestedFilename()).isEqualTo("file_1.txt");
     }
   }
 }
