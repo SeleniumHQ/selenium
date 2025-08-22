@@ -19,7 +19,9 @@ package org.openqa.selenium.grid.distributor.selector;
 
 import static org.openqa.selenium.grid.data.Availability.UP;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.openqa.selenium.Capabilities;
@@ -69,6 +71,9 @@ public class GreedySlotSelector implements SlotSelector {
                     .filter(slot -> slot.getSession() == null)
                     .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
                     .map(Slot::getId))
-        .collect(Collectors.toUnmodifiableSet());
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toCollection(LinkedHashSet::new),
+                set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
   }
 }

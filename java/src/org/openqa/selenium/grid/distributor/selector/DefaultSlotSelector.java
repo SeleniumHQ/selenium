@@ -20,7 +20,9 @@ package org.openqa.selenium.grid.distributor.selector;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,7 +71,11 @@ public class DefaultSlotSelector implements SlotSelector {
                     .filter(slot -> slot.getSession() == null)
                     .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
                     .map(Slot::getId))
-        .collect(Collectors.toUnmodifiableSet());
+        // Any collector used here needs to maintain the insertion order
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toCollection(LinkedHashSet::new),
+                set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
   }
 
   @VisibleForTesting

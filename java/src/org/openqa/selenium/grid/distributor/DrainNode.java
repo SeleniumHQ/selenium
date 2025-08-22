@@ -45,8 +45,7 @@ public class DrainNode implements HttpHandler {
     if (value) {
       response.setContent(
           asJson(
-              Map.of(
-                  "value", value, "message", "Node status was successfully set to draining.")));
+              Map.of("value", value, "message", "Node status was successfully set to draining.")));
     } else {
       response.setContent(
           asJson(
