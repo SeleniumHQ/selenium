@@ -336,19 +336,19 @@ public interface WebDriverListener {
    * This method will be called before {@link TakesScreenshot#getScreenshotAs(OutputType)} is
    * called.
    *
-   * @param driver - decorated WebDriver instance
-   * @param target - target type, @see OutputType
-   * @param <X> - return type for getScreenshotAs.
+   * @param driver decorated WebDriver instance
+   * @param target target type, see {@link OutputType}
+   * @param <X> return type for getScreenshotAs
    */
   default <X> void beforeGetScreenshotAs(WebDriver driver, OutputType<X> target) {}
 
   /**
    * This method will be called after {@link TakesScreenshot#getScreenshotAs(OutputType)} is called.
    *
-   * @param driver - decorated WebDriver instance
-   * @param target - target type, @see OutputType
-   * @param result - object in which is stored information about the screenshot.
-   * @param <X> - return type for getScreenshotAs.
+   * @param driver decorated WebDriver instance
+   * @param target target type, see {@link OutputType}
+   * @param result object that stores the screenshot information
+   * @param <X> return type for getScreenshotAs
    */
   default <X> void afterGetScreenshotAs(WebDriver driver, OutputType<X> target, X result) {}
 
@@ -607,19 +607,19 @@ public interface WebDriverListener {
    * This method will be called before {@link TakesScreenshot#getScreenshotAs(OutputType)} is
    * called.
    *
-   * @param element - decorated WebElement instance
-   * @param target - target type, @see OutputType
-   * @param <X> - return type for getScreenshotAs.
+   * @param element decorated WebElement instance
+   * @param target target type, see {@link OutputType}
+   * @param <X> return type for getScreenshotAs
    */
   default <X> void beforeGetScreenshotAs(WebElement element, OutputType<X> target) {}
 
   /**
    * This method will be called after {@link TakesScreenshot#getScreenshotAs(OutputType)} is called.
    *
-   * @param element - decorated WebElement instance
-   * @param target - target type, @see OutputType
-   * @param result - object in which is stored information about the screenshot.
-   * @param <X> - return type for getScreenshotAs.
+   * @param element decorated WebElement instance
+   * @param target target type, see {@link OutputType}
+   * @param result result object that stores the screenshot information
+   * @param <X> return type for getScreenshotAs
    */
   default <X> void afterGetScreenshotAs(WebElement element, OutputType<X> target, X result) {}
 

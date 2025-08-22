@@ -473,12 +473,12 @@ class EventFiringDecoratorTest {
           }
 
           @Override
-          public <X> void beforeGetScreenshotAs(WebElement driver, OutputType<X> target) {
+          public <X> void beforeGetScreenshotAs(WebElement element, OutputType<X> target) {
             acc.append("beforeGetScreenshotAs ").append(target).append("\n");
           }
 
           @Override
-          public <X> void afterGetScreenshotAs(WebElement driver, OutputType<X> target, X result) {
+          public <X> void afterGetScreenshotAs(WebElement element, OutputType<X> target, X result) {
             acc.append("afterGetScreenshotAs ").append(target).append(" ").append(result).append("\n");
           }
         };
