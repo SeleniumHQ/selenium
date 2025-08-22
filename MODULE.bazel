@@ -207,7 +207,7 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-testing",
         "io.opentelemetry:opentelemetry-sdk-trace",
         "it.ozimov:embedded-redis:0.7.3",
-        "net.bytebuddy:byte-buddy:1.17.6",
+        "net.bytebuddy:byte-buddy:1.17.7",
         "org.htmlunit:htmlunit-core-js:4.14.0",
         "org.apache.commons:commons-exec:1.5.0",
         "org.apache.logging.log4j:log4j-core:2.25.1",
