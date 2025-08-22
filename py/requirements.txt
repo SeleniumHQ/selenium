@@ -5,7 +5,7 @@ cffi==1.17.1
 chardet==5.2.0
 charset-normalizer==3.4.2
 colorama==0.4.6
-cryptography==45.0.6
+cryptography==45.0.5
 debugpy==1.8.14
 distlib==0.3.9
 docutils==0.21.2
