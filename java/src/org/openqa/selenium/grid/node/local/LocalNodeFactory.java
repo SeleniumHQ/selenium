@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node.local;
 
-
 import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
