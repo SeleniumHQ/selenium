@@ -31,6 +31,7 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowsingContextInspectorTest extends JupiterTestBase {
 
@@ -229,6 +230,31 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
       NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
       assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
       assertThat(navigationInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
+  void canListenToNavigationFailedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+
+      inspector.onNavigationFailed(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      try {
+        context.navigate(
+            "http://invalid-domain-that-does-not-exist.test/", ReadinessState.COMPLETE);
+      } catch (Exception e) {
+        // Expect an exception due to navigation failure
+      }
+
+      NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(navigationInfo.getUrl())
+          .isEqualTo("http://invalid-domain-that-does-not-exist.test/");
     }
   }
 }
