@@ -181,9 +181,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
               .filter(entry -> isTimedOut(now, entry.getValue()))
               .map(Map.Entry::getKey)
               .collect(
-          Collectors.collectingAndThen(
-              Collectors.toCollection(LinkedHashSet::new),
-              set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
+                  Collectors.collectingAndThen(
+                      Collectors.toCollection(LinkedHashSet::new),
+                      set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
     } finally {
       readLock.unlock();
     }

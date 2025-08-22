@@ -91,9 +91,9 @@ public class PathResource implements Resource {
           .filter(allowedSubpaths)
           .map(PathResource::new)
           .collect(
-          Collectors.collectingAndThen(
-              Collectors.toCollection(LinkedHashSet::new),
-              set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
+              Collectors.collectingAndThen(
+                  Collectors.toCollection(LinkedHashSet::new),
+                  set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
