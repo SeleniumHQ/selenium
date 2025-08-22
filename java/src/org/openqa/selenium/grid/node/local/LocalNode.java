@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -970,7 +971,10 @@ public class LocalNode extends Node implements Closeable {
                       lastStarted,
                       session);
                 })
-            .collect(Collectors.toUnmodifiableSet());
+            .collect(
+                Collectors.collectingAndThen(
+                    Collectors.toCollection(LinkedHashSet::new),
+                    set -> Collections.unmodifiableSet(new LinkedHashSet<>(set))));
 
     Availability availability = isDraining() ? DRAINING : UP;
 
