@@ -268,9 +268,9 @@ distlib==0.4.0 \
     # via
     #   -r py/requirements.txt
     #   virtualenv
-docutils==0.22 \
-    --hash=sha256:4ed966a0e96a0477d852f7af31bdcb3adc049fbb35ccba358c2ea8a03287615e \
-    --hash=sha256:ba9d57750e92331ebe7c08a1bbf7a7f8143b86c476acd51528b042216a6aad0f
+docutils==0.21.2 \
+    --hash=sha256:3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f \
+    --hash=sha256:dafca5b9e384f0e419294eb4d2ff9fa826435bf15f15b7bd45723e8ad76811b2
     # via
     #   -r py/requirements.txt
     #   readme-renderer
