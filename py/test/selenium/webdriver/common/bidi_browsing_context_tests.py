@@ -767,8 +767,8 @@ def test_add_event_handler_history_updated(driver, pages):
     assert callback_id is not None
 
     context_id = driver.current_window_handle
-    url1 = pages.url("simpleTest.html")
-    driver.browsing_context.navigate(context=context_id, url=url1, wait=ReadinessState.COMPLETE)
+    url = pages.url("simpleTest.html")
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     # Use history.pushState to trigger history updated event
     driver.script.execute("() => { history.pushState({}, '', '/new-path'); }")
