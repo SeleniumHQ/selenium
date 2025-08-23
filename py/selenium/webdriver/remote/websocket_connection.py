@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import json
 import logging
 from ssl import CERT_NONE
@@ -28,15 +29,14 @@ logger = logging.getLogger(__name__)
 
 
 class WebSocketConnection:
-    _response_wait_timeout = 30
-    _response_wait_interval = 0.1
-
     _max_log_message_size = 9999
 
-    def __init__(self, url):
+    def __init__(self, url, timeout, interval):
         self.callbacks = {}
         self.session_id = None
         self.url = url
+        self.response_wait_timeout = timeout
+        self.response_wait_interval = interval
 
         self._id = 0
         self._messages = {}
@@ -46,7 +46,7 @@ class WebSocketConnection:
         self._wait_until(lambda: self._started)
 
     def close(self):
-        self._ws_thread.join(timeout=self._response_wait_timeout)
+        self._ws_thread.join(timeout=self.response_wait_timeout)
         self._ws.close()
         self._started = False
         self._ws = None
@@ -142,8 +142,8 @@ class WebSocketConnection:
                 Thread(target=callback, args=(params,)).start()
 
     def _wait_until(self, condition):
-        timeout = self._response_wait_timeout
-        interval = self._response_wait_interval
+        timeout = self.response_wait_timeout
+        interval = self.response_wait_interval
 
         while timeout > 0:
             result = condition()
