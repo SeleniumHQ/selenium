@@ -32,12 +32,17 @@ class WebSocketConnection:
     _max_log_message_size = 9999
 
     def __init__(self, url, timeout, interval):
-        self.callbacks = {}
-        self.session_id = None
+        if not isinstance(timeout, (int, float)) or timeout < 0:
+            raise WebDriverException("timeout must be a positive number")
+        if not isinstance(interval, (int, float)) or timeout < 0:
+            raise WebDriverException("interval must be a positive number")
+
         self.url = url
         self.response_wait_timeout = timeout
         self.response_wait_interval = interval
 
+        self.callbacks = {}
+        self.session_id = None
         self._id = 0
         self._messages = {}
         self._started = False
