@@ -1,4 +1,4 @@
-load("@rules_oci//oci:defs.bzl", "oci_image", "oci_tarball")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_push")
 
 def docker_image(name, repo_tags = [], ports = [], visibility = None, **kwargs):
     if len(ports) != 0:
@@ -10,9 +10,10 @@ def docker_image(name, repo_tags = [], ports = [], visibility = None, **kwargs):
         **kwargs
     )
 
-    oci_tarball(
-        name = "%s.tar" % name,
+    oci_push(
+        name = "%s.push" % name,
         image = ":%s" % name,
-        repo_tags = repo_tags,
+        remote_tags = repo_tags,
+        repository = "index.docker.io/shs/%s" % name,
         visibility = visibility,
     )
