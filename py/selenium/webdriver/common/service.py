@@ -65,7 +65,7 @@ class Service(ABC):
         elif log_output is None or log_output == subprocess.DEVNULL:
             self.log_output = subprocess.DEVNULL
         else:
-            self.log_output = cast(Union[int, IOBase],log_output)
+            self.log_output = cast(Union[int, IOBase], log_output)
 
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
