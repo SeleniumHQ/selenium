@@ -756,9 +756,6 @@ def test_add_event_handler_user_prompt_closed(driver, pages):
     driver.browsing_context.remove_event_handler("user_prompt_closed", callback_id)
 
 
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_firefox
-@pytest.mark.xfail_edge
 def test_add_event_handler_history_updated(driver, pages):
     """Test adding event handler for history_updated event."""
     events_received = []
@@ -769,16 +766,17 @@ def test_add_event_handler_history_updated(driver, pages):
     callback_id = driver.browsing_context.add_event_handler("history_updated", on_history_updated)
     assert callback_id is not None
 
-    # Navigate to a page and use history API to trigger the event
     context_id = driver.current_window_handle
     url = pages.url("simpleTest.html")
     driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
 
     # Use history.pushState to trigger history updated event
-    driver.execute_script("history.pushState({}, '', '/new-path');")
+    driver.script.execute("() => { history.pushState({}, '', '/new-path'); }")
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) > 0)
 
-    assert len(events_received) == 1
-    assert any("/new-path" in event.url for event in events_received)
+    assert len(events_received) >= 1
+    assert "/new-path" in events_received[0].url
+    assert events_received[0].context == context_id
 
     driver.browsing_context.remove_event_handler("history_updated", callback_id)
 
