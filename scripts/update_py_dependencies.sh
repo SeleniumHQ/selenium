@@ -47,7 +47,7 @@ pip install -r "${REQUIREMENTS_FILE}" > /dev/null
 echo "upgrading outdated dependencies ..."
 echo
 pip list --outdated | while read -r line; do
-    if [[ ! "${line}" =~ "Version Latest" && ! "${line}" =~ "----" ]]; then
+    if [[ ! "${line}" =~ "Version" && ! "${line}" =~ "----" ]]; then
         read -ra fields <<< "${line}"
         package="${fields[0]}"
         echo "upgrading ${package} from ${fields[1]} to ${fields[2]}"

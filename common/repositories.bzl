@@ -50,8 +50,8 @@ js_library(
 
     http_archive(
         name = "linux_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/143.0b2/linux-x86_64/en-US/firefox-143.0b2.tar.xz",
-        sha256 = "70a8af598dedca123b72422811ec04e5a28060778d4a86622f4ecd400f234a78",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/143.0b3/linux-x86_64/en-US/firefox-143.0b3.tar.xz",
+        sha256 = "ea43085f0a47d14a8c088175b489c8af149f59703aec20e6dd2bbf01e36d36fc",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -72,8 +72,8 @@ js_library(
 
     dmg_archive(
         name = "mac_beta_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/143.0b2/mac/en-US/Firefox%20143.0b2.dmg",
-        sha256 = "52f9a7a944f857b207bc79f66ae2d600ff8736264d708d6c0fa5138aea664f97",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/143.0b3/mac/en-US/Firefox%20143.0b3.dmg",
+        sha256 = "0e392fc487de20c31c4fe66e25473f91ce001dd6e56528409720f7b9934f34e0",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -165,8 +165,8 @@ js_library(
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.microsoft.com/139.0.3405.102/edgedriver_linux64.zip",
-        sha256 = "e092178901c011ccfddc0556193742a01f206d71b5bb1a12cc1ba7a243262fc2",
+        url = "https://msedgedriver.microsoft.com/139.0.3405.111/edgedriver_linux64.zip",
+        sha256 = "76f1c0e35120e37848c174eee1368150b7c2461b8e4907c80bcfc2e61b93c471",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -182,8 +182,8 @@ js_library(
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.microsoft.com/139.0.3405.102/edgedriver_mac64.zip",
-        sha256 = "98aa637081061ea610c1f70be09fdea6b5f5b3a46c94a87ca291e2285bad1328",
+        url = "https://msedgedriver.microsoft.com/139.0.3405.111/edgedriver_mac64.zip",
+        sha256 = "c97588078c6f661dd6c66b858f5e21dc9cbcee40420a2b2e839a05803e0e468f",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
