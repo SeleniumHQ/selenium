@@ -138,10 +138,10 @@ class WebDriverWait(Generic[D]):
         raise TimeoutException(message, screen, stacktrace)
 
     def until_not(self, method: Callable[[D], T], message: str = "") -> Union[T, Literal[True]]:
-        """Wait until the method returns a value that is not False.
+        """Wait until the method returns a value that is False.
 
         Calls the method provided with the driver as an argument until the
-        return value does not evaluate to ``False``.
+        return value evaluates to ``False``.
 
         Parameters:
         -----------
