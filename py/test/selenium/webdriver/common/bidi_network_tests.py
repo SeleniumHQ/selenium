@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
 
+from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.network import Request
 from selenium.webdriver.common.by import By
 
@@ -68,29 +68,26 @@ def test_clear_request_handlers(driver, pages):
     assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
 
 
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_edge
 def test_continue_request(driver, pages):
     def callback(request: Request):
         request.continue_request()
 
     callback_id = driver.network.add_request_handler("before_request", callback)
     assert callback_id is not None, "Request handler not added"
-    pages.load("formPage.html")
+    url = pages.url("formPage.html")
+    driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
     assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
 
 
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_edge
 def test_continue_with_auth(driver):
-    callback_id = driver.network.add_auth_handler("user", "passwd")
+    callback_id = driver.network.add_auth_handler("postman", "password")
     assert callback_id is not None, "Request handler not added"
-    driver.get("https://httpbin.org/basic-auth/user/passwd")
+    driver.browsing_context.navigate(
+        context=driver.current_window_handle, url="https://postman-echo.com/basic-auth", wait=ReadinessState.COMPLETE
+    )
     assert "authenticated" in driver.page_source, "Authorization failed"
 
 
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_edge
 def test_remove_auth_handler(driver):
     callback_id = driver.network.add_auth_handler("user", "passwd")
     assert callback_id is not None, "Request handler not added"
