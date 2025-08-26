@@ -1,3 +1,10 @@
+## 4.35.0
+
+- Add CDP for Chrome 139 and remove 136
+- Fix typos in javascript & rb (#16019)
+- add `default` as a value for SameSite (#16129)
+- [bidi]: fix flaky bidi network test - `can request cookies` (#16141)
+
 ## 4.34.0
 
 - Bumping to nightly versions

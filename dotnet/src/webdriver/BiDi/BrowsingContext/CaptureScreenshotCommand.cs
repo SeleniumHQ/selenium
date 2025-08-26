@@ -18,14 +18,15 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class CaptureScreenshotCommand(CaptureScreenshotCommandParameters @params)
-    : Command<CaptureScreenshotCommandParameters, CaptureScreenshotResult>(@params, "browsingContext.captureScreenshot");
+internal sealed class CaptureScreenshotCommand(CaptureScreenshotParameters @params)
+    : Command<CaptureScreenshotParameters, CaptureScreenshotResult>(@params, "browsingContext.captureScreenshot");
 
-internal sealed record CaptureScreenshotCommandParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : CommandParameters;
+internal sealed record CaptureScreenshotParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : Parameters;
 
 public sealed class CaptureScreenshotOptions : CommandOptions
 {
@@ -56,9 +57,9 @@ public sealed record BoxClipRectangle(double X, double Y, double Width, double H
 
 public sealed record ElementClipRectangle(Script.ISharedReference Element) : ClipRectangle;
 
-public sealed record CaptureScreenshotResult(string Data) : EmptyResult
+public sealed record CaptureScreenshotResult(ReadOnlyMemory<byte> Data) : EmptyResult
 {
     public static implicit operator byte[](CaptureScreenshotResult captureScreenshotResult) => captureScreenshotResult.ToByteArray();
 
-    public byte[] ToByteArray() => System.Convert.FromBase64String(Data);
+    public byte[] ToByteArray() => Data.ToArray();
 }

@@ -36,6 +36,7 @@ public sealed class BiDi : IAsyncDisposable
     private Script.ScriptModule? _scriptModule;
     private Log.LogModule? _logModule;
     private Storage.StorageModule? _storageModule;
+    private WebExtension.WebExtensionModule? _webExtensionModule;
 
     private readonly object _moduleLock = new();
 
@@ -150,12 +151,25 @@ public sealed class BiDi : IAsyncDisposable
         }
     }
 
+    public WebExtension.WebExtensionModule WebExtension
+    {
+        get
+        {
+            if (_webExtensionModule is not null) return _webExtensionModule;
+            lock (_moduleLock)
+            {
+                _webExtensionModule ??= new WebExtension.WebExtensionModule(_broker);
+            }
+            return _webExtensionModule;
+        }
+    }
+
     public Task<Session.StatusResult> StatusAsync()
     {
         return SessionModule.StatusAsync();
     }
 
-    public static async Task<BiDi> ConnectAsync(string url)
+    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
     {
         var bidi = new BiDi(url);
 

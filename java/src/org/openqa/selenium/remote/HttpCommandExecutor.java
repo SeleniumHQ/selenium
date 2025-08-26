@@ -47,8 +47,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private final URL remoteServer;
   public final HttpClient client;
-  private final HttpClient.Factory httpClientFactory;
-  private final Map<String, CommandInfo> additionalCommands;
+  protected final HttpClient.Factory httpClientFactory;
+  protected final Map<String, CommandInfo> additionalCommands;
   protected CommandCodec<HttpRequest> commandCodec;
   protected ResponseCodec<HttpResponse> responseCodec;
 

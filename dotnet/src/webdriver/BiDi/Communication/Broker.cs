@@ -84,8 +84,10 @@ public sealed class Broker : IAsyncDisposable
                 new RealmConverter(_bidi),
                 new RealmTypeConverter(),
                 new DateTimeOffsetConverter(),
+                new TimeSpanConverter(),
                 new PrintPageRangeConverter(),
                 new InputOriginConverter(),
+                new WebExtensionConverter(_bidi),
                 new SubscriptionConverter(),
                 new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
 

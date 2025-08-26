@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.35.0.202507081456"
-license = { text = "Apache 2.0" }
+version = "4.36.0.202508121825"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
 readme = "README.rst"
 requires-python = "~=3.9"
@@ -25,7 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     ]
 dependencies = [
-    "urllib3[socks]~=2.5.0",
+    "urllib3[socks]>=2.5.0,<3.0",
     "trio~=0.30.0",
     "trio-websocket~=0.12.2",
     "certifi>=2025.6.15",
@@ -67,7 +68,8 @@ binding = "Exec"
     "selenium-manager",
     "selenium-manager.exe",
     "CHANGES",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE",
 ]
 
 [tool.pytest.ini_options]
