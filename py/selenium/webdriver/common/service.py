@@ -208,9 +208,9 @@ class Service(ABC):
         try:
             start_info = None
             if sys.platform == "win32":
-                start_info = subprocess.STARTUPINFO()  # type: ignore[attr-defined]
-                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW  # type: ignore[attr-defined]
-                start_info.wShowWindow = subprocess.SW_HIDE  # type: ignore[attr-defined]
+                start_info = subprocess.STARTUPINFO()
+                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+                start_info.wShowWindow = subprocess.SW_HIDE
 
             self.process = subprocess.Popen(
                 cmd,
