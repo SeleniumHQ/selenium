@@ -33,30 +33,19 @@ public static class PortUtilities
     /// <returns>A random, free port to be listened on.</returns>
     public static int FindFreePort()
     {
-        // Prefer IPv6 dual-mode when available, but fall back robustly to IPv4
+        // Prefer IPv4, but fall back robustly to IPv6
         try
         {
-            using var ipV6socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
-
-            // Some platforms may not support DualMode or IPv6 at all; ignore failures and let bind decide
-            try
-            {
-                ipV6socket.DualMode = true;
-            }
-            catch
-            {
-                // Ignored; we'll still attempt to bind to IPv6 loopback
-            }
-
-            ipV6socket.Bind(new IPEndPoint(IPAddress.IPv6Loopback, 0));
-            return ((IPEndPoint)ipV6socket.LocalEndPoint!).Port;
-        }
-        catch(SocketException)
-        {
-            // If creating/binding the IPv6 socket fails for any reason, fall back to IPv4
             using var ipV4socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ipV4socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
             return ((IPEndPoint)ipV4socket.LocalEndPoint!).Port;
+        }
+        catch (SocketException)
+        {
+            // If creating/binding the IPv4 socket fails for any reason, fall back to IPv6
+            using var ipV6socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+            ipV6socket.Bind(new IPEndPoint(IPAddress.IPv6Loopback, 0));
+            return ((IPEndPoint)ipV6socket.LocalEndPoint!).Port;
         }
     }
 }
