@@ -28,12 +28,11 @@ namespace OpenQA.Selenium.Internal;
 public static class PortUtilities
 {
     /// <summary>
-    /// Finds a random, free port to be listened on.
+    /// Finds a random, free port to be listened on. Prefers IPv4, but falls back to IPv6 if necessary.
     /// </summary>
     /// <returns>A random, free port to be listened on.</returns>
     public static int FindFreePort()
     {
-        // Prefer IPv4, but fall back robustly to IPv6
         try
         {
             using var ipV4socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -42,7 +41,6 @@ public static class PortUtilities
         }
         catch (SocketException)
         {
-            // If creating/binding the IPv4 socket fails for any reason, fall back to IPv6
             using var ipV6socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
             ipV6socket.Bind(new IPEndPoint(IPAddress.IPv6Loopback, 0));
             return ((IPEndPoint)ipV6socket.LocalEndPoint!).Port;
