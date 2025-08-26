@@ -25,7 +25,7 @@ from selenium import webdriver
 
 
 def is_running_wayland():
-    return sys.platform.startswith("linux") and os.getenv("WAYLAND_DISPLAY")
+    return sys.platform == "linux" and os.getenv("WAYLAND_DISPLAY")
 
 
 @pytest.mark.skipif(not is_running_wayland(), reason="This test only runs on Linux under Wayland")

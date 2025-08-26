@@ -186,7 +186,7 @@ class Driver:
             return "Windows"
         elif sys.platform == "darwin":
             return "Darwin"
-        elif sys.platform.startswith("linux"):
+        elif sys.platform == "linux":
             return "Linux"
         else:
             return sys.platform.title()
@@ -404,7 +404,7 @@ def server(request):
     )
 
     remote_env = os.environ.copy()
-    if sys.platform.startswith("linux"):
+    if sys.platform == "linux":
         # There are issues with window size/position when running Firefox
         # under Wayland, so we use XWayland instead.
         remote_env["MOZ_ENABLE_WAYLAND"] = "0"
