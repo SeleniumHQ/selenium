@@ -15,10 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 import warnings
-from typing import Optional
+from typing import Any, Optional
 
 from selenium.webdriver.common.bidi.common import command_builder
+from selenium.webdriver.common.bidi.session import UserPromptHandler
 from selenium.webdriver.common.proxy import Proxy
 
 
@@ -243,7 +245,7 @@ class ClientWindowInfo:
         self._y = value
 
     @property
-    def active(self):
+    def active(self) -> bool:
         """Gets the Window Status.
 
         Returns:
@@ -269,6 +271,7 @@ class ClientWindowInfo:
         -------
             bool: True if the client window is active, False otherwise.
         """
+        warnings.warn("is_active method is deprecated, use `active` property instead", DeprecationWarning, stacklevel=2)
         return self.active
 
     @classmethod
@@ -284,13 +287,13 @@ class ClientWindowInfo:
             ClientWindowInfo: A new instance of ClientWindowInfo.
         """
         return cls(
-            client_window=data.get("clientWindow"),
-            state=data.get("state"),
-            width=data.get("width"),
-            height=data.get("height"),
-            x=data.get("x"),
-            y=data.get("y"),
-            active=data.get("active"),
+            client_window=data["clientWindow"],
+            state=data["state"],
+            width=data["width"],
+            height=data["height"],
+            x=data["x"],
+            y=data["y"],
+            active=data["active"],
         )
 
 
@@ -300,25 +303,34 @@ class Browser:
     def __init__(self, conn):
         self.conn = conn
 
-    def create_user_context(self, accept_insecure_certs: Optional[bool] = None, proxy: Optional[Proxy] = None) -> str:
+    def create_user_context(
+        self,
+        accept_insecure_certs: Optional[bool] = None,
+        proxy: Optional[Proxy] = None,
+        unhandled_prompt_behavior: Optional[UserPromptHandler] = None,
+    ) -> str:
         """Creates a new user context.
 
         Parameters:
         -----------
             accept_insecure_certs: Optional flag to accept insecure TLS certificates
             proxy: Optional proxy configuration for the user context
+            unhandled_prompt_behavior: Optional configuration for handling user prompts
 
         Returns:
         -------
             str: The ID of the created user context.
         """
-        params = {}
+        params: dict[str, Any] = {}
 
         if accept_insecure_certs is not None:
             params["acceptInsecureCerts"] = accept_insecure_certs
 
         if proxy is not None:
             params["proxy"] = proxy.to_bidi_dict()
+
+        if unhandled_prompt_behavior is not None:
+            params["unhandledPromptBehavior"] = unhandled_prompt_behavior.to_dict()
 
         result = self.conn.execute(command_builder("browser.createUserContext", params))
         return result["userContext"]
