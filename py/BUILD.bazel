@@ -332,7 +332,7 @@ py_wheel(
         "trio-websocket>=0.12.2,<1.0",
         "certifi>=2025.6.15",
         "typing_extensions>=4.14.0,<5.0",
-        "websocket-client>=1.8.0<2.0",
+        "websocket-client>=1.8.0,<2.0",
     ],
     strip_path_prefixes = [
         "py/",
