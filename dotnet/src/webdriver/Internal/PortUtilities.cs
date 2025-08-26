@@ -28,8 +28,11 @@ namespace OpenQA.Selenium.Internal;
 public static class PortUtilities
 {
     /// <summary>
-    /// Finds a random, free port to be listened on. Prefers IPv4, but falls back to IPv6 if necessary.
+    /// Finds a random, free port to be listened on.
     /// </summary>
+    /// <remarks>
+    /// Prefers IPv4, but falls back to IPv6 if necessary.
+    /// </remarks>
     /// <returns>A random, free port to be listened on.</returns>
     public static int FindFreePort()
     {
