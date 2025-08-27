@@ -28,9 +28,9 @@ namespace OpenQA.Selenium.BiDi.Network;
 public abstract record BytesValue
 {
     public static implicit operator BytesValue(string value) => new StringBytesValue(value);
-    public static implicit operator BytesValue(byte[] value) => new Base64BytesValue(Convert.ToBase64String(value));
+    public static implicit operator BytesValue(byte[] value) => new Base64BytesValue(value);
 }
 
 public sealed record StringBytesValue(string Value) : BytesValue;
 
-public sealed record Base64BytesValue(string Value) : BytesValue;
+public sealed record Base64BytesValue(ReadOnlyMemory<byte> Value) : BytesValue;

@@ -1,3 +1,4 @@
+// <copyright file="UninstallCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14,16 +15,15 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+// </copyright>
 
-package org.openqa.selenium.devtools.v136;
+using OpenQA.Selenium.BiDi.Communication;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+namespace OpenQA.Selenium.BiDi.WebExtension;
 
-@AutoService(CdpInfo.class)
-public class v136CdpInfo extends CdpInfo {
+internal sealed class UninstallCommand(UninstallParameters @params)
+    : Command<UninstallParameters, EmptyResult>(@params, "webExtension.uninstall");
 
-  public v136CdpInfo() {
-    super(136, v136Domains::new);
-  }
-}
+internal sealed record UninstallParameters(Extension Extension) : Parameters;
+
+public sealed class UninstallOptions : CommandOptions;

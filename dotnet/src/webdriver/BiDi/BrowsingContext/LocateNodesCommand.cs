@@ -23,10 +23,10 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class LocateNodesCommand(LocateNodesCommandParameters @params)
-    : Command<LocateNodesCommandParameters, LocateNodesResult>(@params, "browsingContext.locateNodes");
+internal sealed class LocateNodesCommand(LocateNodesParameters @params)
+    : Command<LocateNodesParameters, LocateNodesResult>(@params, "browsingContext.locateNodes");
 
-internal sealed record LocateNodesCommandParameters(BrowsingContext Context, Locator Locator, long? MaxNodeCount, Script.SerializationOptions? SerializationOptions, IEnumerable<Script.ISharedReference>? StartNodes) : CommandParameters;
+internal sealed record LocateNodesParameters(BrowsingContext Context, Locator Locator, long? MaxNodeCount, Script.SerializationOptions? SerializationOptions, IEnumerable<Script.ISharedReference>? StartNodes) : Parameters;
 
 public sealed class LocateNodesOptions : CommandOptions
 {
