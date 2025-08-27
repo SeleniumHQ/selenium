@@ -104,7 +104,7 @@ def test_get_client_windows(driver):
     assert isinstance(window_info.state, str)
     assert window_info.width > 0
     assert window_info.height > 0
-    assert isinstance(window_info.is_active(), bool)
+    assert isinstance(window_info.active, bool)
     assert window_info.x >= 0
     assert window_info.y >= 0
 
