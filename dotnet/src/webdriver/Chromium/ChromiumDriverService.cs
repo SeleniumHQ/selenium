@@ -163,6 +163,7 @@ public abstract class ChromiumDriverService : DriverService
                 argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
             }
 
+            argsBuilder.Append(" --enable-chrome-logs");
 
             return argsBuilder.ToString();
         }
