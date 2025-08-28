@@ -25,8 +25,8 @@
   "dependencies": {
     "@bazel/runfiles": "^6.3.1",
     "jszip": "^3.10.1",
-    "tmp": "^0.2.3",
-    "ws": "^8.18.2"
+    "tmp": "^0.2.5",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

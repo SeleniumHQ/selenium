@@ -33,7 +33,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-public class ReverseProxyHandler implements HttpHandler {
+public class ReverseProxyHandler implements HttpHandler, AutoCloseable {
 
   private static final Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
 
@@ -100,5 +100,10 @@ public class ReverseProxyHandler implements HttpHandler {
 
       return resp;
     }
+  }
+
+  @Override
+  public void close() {
+    upstream.close();
   }
 }

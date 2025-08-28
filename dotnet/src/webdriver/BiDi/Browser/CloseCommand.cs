@@ -22,6 +22,6 @@ using OpenQA.Selenium.BiDi.Communication;
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class CloseCommand()
-    : Command<CommandParameters, EmptyResult>(CommandParameters.Empty, "browser.close");
+    : Command<Parameters, EmptyResult>(Parameters.Empty, "browser.close");
 
 public sealed class CloseOptions : CommandOptions;

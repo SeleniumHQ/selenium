@@ -123,6 +123,7 @@ public class Select implements ISelect, WrapsElement {
   @Override
   public void selectByVisibleText(String text) {
     assertSelectIsEnabled();
+    assertSelectIsVisible();
 
     // try to find the option via XPATH ...
     List<WebElement> options =
@@ -130,6 +131,8 @@ public class Select implements ISelect, WrapsElement {
             By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
 
     for (WebElement option : options) {
+      if (!hasCssPropertyAndVisible(option))
+        throw new NoSuchElementException("Invisible option with text: " + text);
       setSelected(option, true);
       if (!isMultiple()) {
         return;
@@ -154,6 +157,8 @@ public class Select implements ISelect, WrapsElement {
 
       for (WebElement option : candidates) {
         if (trimmed.equals(option.getText().trim())) {
+          if (!hasCssPropertyAndVisible(option))
+            throw new NoSuchElementException("Invisible option with text: " + text);
           setSelected(option, true);
           if (!isMultiple()) {
             return;

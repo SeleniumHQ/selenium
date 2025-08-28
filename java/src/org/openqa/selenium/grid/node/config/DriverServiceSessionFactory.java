@@ -241,7 +241,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
         caps = readPrefixedCaps(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
-        final HttpClient fClient = client;
         return Either.right(
             new DefaultActiveSession(
                 tracer,
@@ -255,9 +254,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
                 Instant.now()) {
               @Override
               public void stop() {
-                try (fClient) {
-                  service.stop();
-                }
+                super.stop();
+                service.stop();
               }
             });
       } catch (Exception e) {

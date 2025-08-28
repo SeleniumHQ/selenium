@@ -21,9 +21,9 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-internal sealed class ReleaseActionsCommand(ReleaseActionsCommandParameters @params)
-    : Command<ReleaseActionsCommandParameters, EmptyResult>(@params, "input.releaseActions");
+internal sealed class ReleaseActionsCommand(ReleaseActionsParameters @params)
+    : Command<ReleaseActionsParameters, EmptyResult>(@params, "input.releaseActions");
 
-internal sealed record ReleaseActionsCommandParameters(BrowsingContext.BrowsingContext Context) : CommandParameters;
+internal sealed record ReleaseActionsParameters(BrowsingContext.BrowsingContext Context) : Parameters;
 
 public sealed class ReleaseActionsOptions : CommandOptions;
