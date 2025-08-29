@@ -201,7 +201,7 @@ class WebDriver(BaseWebDriver):
 
     def __init__(
         self,
-        command_executor: Union[str, RemoteConnection] = "http://127.0.0.1:4444",
+        command_executor: Union[str, RemoteConnection, Service] = "http://127.0.0.1:4444",
         keep_alive: bool = True,
         file_detector: Optional[FileDetector] = None,
         options: Optional[Union[BaseOptions, list[BaseOptions]]] = None,
@@ -214,9 +214,10 @@ class WebDriver(BaseWebDriver):
 
         Parameters:
         -----------
-        command_executor : str or remote_connection.RemoteConnection
-            - Either a string representing the URL of the remote server or a custom
-            remote_connection.RemoteConnection object. Defaults to 'http://127.0.0.1:4444/wd/hub'.
+        command_executor : str or remote_connection.RemoteConnection or service.Service
+            - Either a string representing the URL of the remote server, a Service (containing
+             the URL of the remote server), or a custom remote_connection.RemoteConnection object.
+             Defaults to 'http://127.0.0.1:4444/wd/hub'.
         keep_alive : bool (Deprecated)
             - Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive. Defaults to True.
         file_detector : object or None
@@ -243,10 +244,15 @@ class WebDriver(BaseWebDriver):
             capabilities = options.to_capabilities()
             _ignore_local_proxy = options._ignore_local_proxy
         self.command_executor = command_executor
+        if isinstance(self.command_executor, Service):
+            # Make sure the service doesn't drop before this drops.
+            # We don't use it, so it shouldn't be defined in types.
+            self._service = self.command_executor  # type: ignore[attr-defined]
+            self.command_executor = self.command_executor.service_url
         if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(
                 capabilities,
-                command_executor=command_executor,
+                command_executor=self.command_executor,
                 keep_alive=keep_alive,
                 ignore_local_proxy=_ignore_local_proxy,
                 client_config=client_config,
@@ -278,14 +284,6 @@ class WebDriver(BaseWebDriver):
         self._emulation = None
         self._input = None
         self._devtools = None
-
-    @classmethod
-    def from_service(cls, service: Service, *args, **kwargs) -> Self:
-        self = cls(service.service_url, *args, **kwargs)
-        # Make sure the service doesn't drop before this drops.
-        # We don't use it, so it shouldn't be defined in types.
-        self._service = service  # type: ignore[attr-defined]
-        return self
 
     def __repr__(self):
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
