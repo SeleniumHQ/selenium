@@ -31,6 +31,8 @@ from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 from typing import Any, Optional, Union, cast
 
+from typing_extensions import Self
+
 from selenium.common.exceptions import (
     InvalidArgumentException,
     JavascriptException,
@@ -60,6 +62,7 @@ from selenium.webdriver.common.virtual_authenticator import (
 from selenium.webdriver.support.relative_locator import RelativeBy
 
 from ..common.fedcm.dialog import Dialog
+from ..common.service import Service
 from .bidi_connection import BidiConnection
 from .client_config import ClientConfig
 from .command import Command
@@ -275,6 +278,14 @@ class WebDriver(BaseWebDriver):
         self._emulation = None
         self._input = None
         self._devtools = None
+
+    @classmethod
+    def from_service(cls, service: Service, *args, **kwargs) -> Self:
+        self = cls(service.service_url, *args, **kwargs)
+        # Make sure the service doesn't drop before this drops.
+        # We don't use it, so it shouldn't be defined in types.
+        self._service = service  # type: ignore[attr-defined]
+        return self
 
     def __repr__(self):
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
