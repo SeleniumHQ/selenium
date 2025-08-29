@@ -349,6 +349,8 @@ def driver(request):
     yield selenium_driver.driver
 
     if request.node.get_closest_marker("no_driver_after_test"):
+        if selenium_driver is not None:
+            selenium_driver.stop_driver()
         selenium_driver = None
 
 
