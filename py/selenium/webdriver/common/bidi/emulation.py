@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import re
 from typing import Any, Optional, Union
 
 from selenium.webdriver.common.bidi.common import command_builder
@@ -215,3 +216,67 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setGeolocationOverride", params))
+
+    def set_locale_override(
+        self,
+        locale: Optional[str] = None,
+        contexts: Optional[list[str]] = None,
+        user_contexts: Optional[list[str]] = None,
+    ) -> None:
+        """Set locale override for the given contexts or user contexts.
+
+        Parameters:
+        -----------
+            locale: Locale string (language tag) to emulate, or None to clear override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+        ------
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                       contexts nor user_contexts are provided, or if locale is invalid.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and userContexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or userContexts")
+
+        if locale is not None and not self._is_valid_language_tag(locale):
+            raise ValueError(f"Invalid language tag: {locale}")
+
+        params: dict[str, Any] = {"locale": locale}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setLocaleOverride", params))
+
+    def _is_valid_language_tag(self, tag: str) -> bool:
+        """Check if a language tag is structurally valid according to BCP 47.
+
+        This is a simplified validation that covers the most common cases.
+        Full BCP 47 validation would be more complex.
+
+        Parameters:
+        -----------
+            tag: The language tag to validate.
+
+        Returns:
+        --------
+            True if the tag is structurally valid, False otherwise.
+        """
+        if not tag or not isinstance(tag, str):
+            return False
+
+        # Basic BCP 47 language tag pattern
+        # Format: language[-script][-region][-variant][-extension][-privateuse]
+        # language: 2-3 lowercase letters
+        # script: 4 letters with first uppercase
+        # region: 2 uppercase letters or 3 digits
+        # variant: 5-8 alphanumeric characters or 4 characters starting with digit
+        pattern = r"^[a-z]{2,3}(?:-[A-Z][a-z]{3})?(?:-[A-Z]{2}|[0-9]{3})?(?:-[a-zA-Z0-9]{5,8}|[0-9][a-zA-Z0-9]{3})*(?:-[a-wy-zA-WY-Z0-9](?:-[a-zA-Z0-9]{2,8})+)*(?:-x(?:-[a-zA-Z0-9]{1,8})+)?$"  # noqa: E501
+
+        return bool(re.match(pattern, tag))
