@@ -31,8 +31,6 @@ from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 from typing import Any, Optional, Union, cast
 
-from typing_extensions import Self
-
 from selenium.common.exceptions import (
     InvalidArgumentException,
     JavascriptException,
