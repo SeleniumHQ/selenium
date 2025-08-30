@@ -23,6 +23,7 @@ from pathlib import Path
 import pytest
 
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -350,8 +351,13 @@ def driver(request):
 
     if request.node.get_closest_marker("no_driver_after_test"):
         if selenium_driver is not None:
-            selenium_driver.stop_driver()
-        selenium_driver = None
+            try:
+                selenium_driver.stop_driver()
+            except WebDriverException:
+                pass
+            except Exception:
+                raise
+            selenium_driver = None
 
 
 @pytest.fixture(scope="session", autouse=True)
