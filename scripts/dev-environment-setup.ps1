@@ -7,13 +7,26 @@ Function Install-ChocoPackage {
   param (
     [string]$PackageName,
     [string]$ExecutableName,
-    [string]$AdditionalParams = ""
+    [string]$AdditionalParams = $null
   )
+
+  $params = @(
+    "install",
+    $PackageName,
+    "-y"
+)
+
+# Add AdditionalParams only if it has a value
+if (-not [string]::IsNullOrWhiteSpace($AdditionalParams)) {
+    $params += $AdditionalParams
+}
 
   Write-Host "Checking installation of $PackageName"
   if (-Not (Get-Command $ExecutableName -ErrorAction SilentlyContinue)) {
     Write-Host "Installing $PackageName..."
-    choco install $PackageName -y $AdditionalParams
+    #choco install $PackageName -y $AdditionalParams
+    #Start-Process choco -ArgumentList 'install', 'visualstudio2022community', '--params "--add Microsoft.VisualStudio.Workload.NativeDesktop" --passive', '-y'
+    Start-Process choco -ArgumentList $params -Verbose -NoNewWindow -Wait 
     refreshenv -Path ...
   } else {
     Write-Host "$PackageName is already installed."
@@ -25,7 +38,7 @@ Function Install-JDK17 {
   $javaVersion = if ($javacInstalled) { & javac -version 2>&1 | Select-String -Pattern '"(\d+)' | ForEach-Object { $_.Matches.Groups[1].Value } }
 
   if (-Not $javacInstalled -or [int]$javaVersion -ne 17) {
-    Install-ChocoPackage -PackageName "openjdk17" -ExecutableName "javac"
+    Install-ChocoPackage -PackageName "openjdk17" -ExecutableName "javac" -AdditionalParams ""
   } else {
     Write-Host "JDK 17 is already installed."
   }
@@ -71,7 +84,7 @@ Function Clone-Repository {
 }
 
 Function Install-IntelliJ {
-  Install-ChocoPackage -PackageName "intellijidea-community" -ExecutableName "idea64"
+  Install-ChocoPackage -PackageName "intellijidea-community" -ExecutableName "idea64" -AdditionalParams ""
 
   $ideaPath = Get-ChildItem -Path "C:\Program Files\JetBrains" -Filter idea64.exe -Recurse -ErrorAction SilentlyContinue -Force | Select-Object -First 1 -ExpandProperty FullName
   & $ideaPath installPlugins "com.google.idea.bazel.ijwb"
@@ -118,15 +131,15 @@ if (-Not (Get-Command choco -ErrorAction SilentlyContinue)) {
 
 Install-JDK17
 Set-JavaEnvironmentVariable
-Install-ChocoPackage -PackageName "git" -ExecutableName "git"
-Install-ChocoPackage -PackageName "bazelisk" -ExecutableName "bazel"
-Install-ChocoPackage -PackageName "msys2" -ExecutableName "C:\tools\msys64\usr\bin\bash.exe" -AdditionalParams "--params '/InstallDir=C:\tools\msys64'"
+Install-ChocoPackage -PackageName "git" -ExecutableName "git" -AdditionalParams ""
+Install-ChocoPackage -PackageName "bazelisk" -ExecutableName "bazel"  -AdditionalParams ""
+Install-ChocoPackage -PackageName "msys2" -ExecutableName "C:\tools\msys64\usr\bin\bash.exe" -AdditionalParams '--params="/InstallDir=C:\tools\msys64"'
 Update-EnvironmentVariables -VariableName "PATH" -Value "C:\tools\msys64\usr\bin"
 Update-EnvironmentVariables -VariableName "BAZEL_SH" -Value "C:\tools\msys64\usr\bin\bash.exe"
-Install-ChocoPackage -PackageName "visualstudio2022community" -ExecutableName "devenv"
+Install-ChocoPackage -PackageName "visualstudio2022community" -ExecutableName "devenv" -AdditionalParams '--params="--add Microsoft.VisualStudio.Workload.NativeDesktop;includeRecommended --add Microsoft.VisualStudio.Workload.ManagedDesktop --passive"'
 
-Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\Installer\setup.exe"
-Read-Host -Prompt "Install C++ in Visual Studio then Press Enter to continue"
+# Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\Installer\setup.exe"
+# Read-Host -Prompt "Install C++ in Visual Studio then Press Enter to continue"
 
 $bazelVcPath = "C:\Program Files\Microsoft Visual Studio\2022\Community\VC"
 Update-EnvironmentVariables -VariableName "BAZEL_VC" -Value $bazelVcPath
