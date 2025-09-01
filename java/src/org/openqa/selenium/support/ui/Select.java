@@ -122,55 +122,7 @@ public class Select implements ISelect, WrapsElement {
    */
   @Override
   public void selectByVisibleText(String text) {
-    assertSelectIsEnabled();
-    assertSelectIsVisible();
-
-    // try to find the option via XPATH ...
-    List<WebElement> options =
-        element.findElements(
-            By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
-
-    for (WebElement option : options) {
-      if (!hasCssPropertyAndVisible(option))
-        throw new NoSuchElementException("Invisible option with text: " + text);
-      setSelected(option, true);
-      if (!isMultiple()) {
-        return;
-      }
-    }
-
-    boolean matched = !options.isEmpty();
-    if (!matched && text.contains(" ")) {
-      String subStringWithoutSpace = getLongestSubstringWithoutSpace(text);
-      List<WebElement> candidates;
-      if ("".equals(subStringWithoutSpace)) {
-        // hmm, text is either empty or contains only spaces - get all options ...
-        candidates = element.findElements(By.tagName("option"));
-      } else {
-        // get candidates via XPATH ...
-        candidates =
-            element.findElements(
-                By.xpath(".//option[contains(., " + Quotes.escape(subStringWithoutSpace) + ")]"));
-      }
-
-      String trimmed = text.trim();
-
-      for (WebElement option : candidates) {
-        if (trimmed.equals(option.getText().trim())) {
-          if (!hasCssPropertyAndVisible(option))
-            throw new NoSuchElementException("Invisible option with text: " + text);
-          setSelected(option, true);
-          if (!isMultiple()) {
-            return;
-          }
-          matched = true;
-        }
-      }
-    }
-
-    if (!matched) {
-      throw new NoSuchElementException("Cannot locate option with text: " + text);
-    }
+    selectByVisibleText(text, false);
   }
 
   /**
@@ -193,53 +145,7 @@ public class Select implements ISelect, WrapsElement {
    */
   @Override
   public void selectByContainsVisibleText(String text) {
-    assertSelectIsEnabled();
-    assertSelectIsVisible();
-
-    // try to find the option via XPATH ...
-    List<WebElement> options =
-        element.findElements(
-            By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
-
-    for (WebElement option : options) {
-      if (!hasCssPropertyAndVisible(option))
-        throw new NoSuchElementException("Invisible option with text: " + text);
-      setSelected(option, true);
-      if (!isMultiple()) {
-        return;
-      }
-    }
-
-    boolean matched = !options.isEmpty();
-    if (!matched) {
-      String searchText = text.contains(" ") ? getLongestSubstringWithoutSpace(text) : text;
-
-      List<WebElement> candidates;
-      if (searchText.isEmpty()) {
-        candidates = element.findElements(By.tagName("option"));
-      } else {
-        candidates =
-            element.findElements(
-                By.xpath(".//option[contains(., " + Quotes.escape(searchText) + ")]"));
-      }
-
-      String trimmed = text.trim();
-      for (WebElement option : candidates) {
-        if (option.getText().contains(trimmed)) {
-          if (!hasCssPropertyAndVisible(option))
-            throw new NoSuchElementException("Invisible option with text: " + text);
-          setSelected(option, true);
-          if (!isMultiple()) {
-            return;
-          }
-          matched = true;
-        }
-      }
-    }
-
-    if (!matched) {
-      throw new NoSuchElementException("Cannot locate option with text: " + text);
-    }
+    selectByVisibleText(text, true);
   }
 
   private String getLongestSubstringWithoutSpace(String s) {
@@ -422,6 +328,73 @@ public class Select implements ISelect, WrapsElement {
     assertOptionIsEnabled(option, select);
     if (option.isSelected() != select) {
       option.click();
+    }
+  }
+
+  /**
+   * @param text The visible text to match against. It can be a partial match of the option if
+   *     isPartialMatch = true
+   * @param isPartialMatch If true a partial match on the Options list will be performed, otherwise
+   *     exact match
+   * @throws NoSuchElementException If no matching option elements are found or matching options are
+   *     hidden
+   */
+  private void selectByVisibleText(String text, boolean isPartialMatch) {
+    assertSelectIsEnabled();
+    assertSelectIsVisible();
+
+    // try to find the option via XPATH ...
+    List<WebElement> options =
+        element.findElements(
+            By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
+
+    for (WebElement option : options) {
+      if (!hasCssPropertyAndVisible(option))
+        throw new NoSuchElementException("Invisible option with text: " + text);
+
+      setSelected(option, true);
+
+      if (!isMultiple()) {
+        return;
+      }
+    }
+
+    boolean matched = !options.isEmpty();
+    if (!matched) {
+      String searchText = text.contains(" ") ? getLongestSubstringWithoutSpace(text) : text;
+
+      List<WebElement> candidates;
+      if (searchText.isEmpty()) {
+        candidates = element.findElements(By.tagName("option"));
+      } else {
+        candidates =
+            element.findElements(
+                By.xpath(".//option[contains(., " + Quotes.escape(searchText) + ")]"));
+      }
+
+      String trimmed = text.trim();
+      for (WebElement option : candidates) {
+        boolean isMatchedOptionFound =
+            isPartialMatch
+                ? option.getText().contains(trimmed)
+                : option.getText().trim().equals(trimmed);
+
+        if (isMatchedOptionFound) {
+          if (!hasCssPropertyAndVisible(option))
+            throw new NoSuchElementException("Invisible option with text: " + text);
+
+          setSelected(option, true);
+
+          if (!isMultiple()) {
+            return;
+          }
+          matched = true;
+        }
+      }
+    }
+
+    if (!matched) {
+      throw new NoSuchElementException("Cannot locate option with text: " + text);
     }
   }
 
