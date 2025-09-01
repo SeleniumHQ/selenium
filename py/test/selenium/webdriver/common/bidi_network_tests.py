@@ -100,10 +100,17 @@ def test_remove_auth_handler(driver):
 @pytest.mark.xfail_edge(reason="Data URLs in Network requests are not implemented in Edge yet")
 @pytest.mark.xfail_firefox(reason="Data URLs in Network requests are not implemented in Firefox yet")
 def test_handler_with_data_url_request(driver, pages):
+    data_requests = []
     def callback(request: Request):
+        if request.url.startswith("data:"):
+            data_requests.append(request)
         request.continue_request()
 
     driver.network.add_request_handler("before_request", callback)
     url = pages.url("data_url.html")
     driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
-    driver.find_element(By.ID, "data-url-image").is_displayed(), "Request with Data URL failed"
+
+    # Assert that the BiDi event was captured.
+    assert len(data_requests) > 0
+    # Assert that the image is displayed.
+    assert driver.find_element(By.ID, "data-url-image").is_displayed()
