@@ -106,4 +106,4 @@ def test_handler_with_data_url_request(driver, pages):
     driver.network.add_request_handler("before_request", callback)
     url = pages.url("data_url.html")
     driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
-    driver.find_elements(By.ID, "data-url-image").is_displayed(), "Request with Data URL failed"
+    driver.find_element(By.ID, "data-url-image").is_displayed(), "Request with Data URL failed"
