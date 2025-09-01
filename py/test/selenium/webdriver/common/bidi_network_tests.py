@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
 
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.network import Request
@@ -93,3 +94,16 @@ def test_remove_auth_handler(driver):
     assert callback_id is not None, "Request handler not added"
     driver.network.remove_auth_handler(callback_id)
     assert driver.network.intercepts == [], "Intercept not removed"
+
+
+@pytest.mark.xfail_chrome(reason="Data URLs in Network requests are not implemented in Chrome yet")
+@pytest.mark.xfail_edge(reason="Data URLs in Network requests are not implemented in Edge yet")
+@pytest.mark.xfail_firefox(reason="Data URLs in Network requests are not implemented in Firefox yet")
+def test_handler_with_data_url_request(driver, pages):
+    def callback(request: Request):
+        request.continue_request()
+
+    driver.network.add_request_handler("before_request", callback)
+    url = pages.url("data_url.html")
+    driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
+    driver.find_elements(By.ID, "data-url-image").is_displayed(), "Request with Data URL failed"
