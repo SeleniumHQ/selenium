@@ -25,12 +25,13 @@ class WheelActions(Interaction):
     def __init__(self, source: Optional[WheelInput] = None):
         if source is None:
             source = WheelInput("wheel")
-        super().__init__(source)
+        super().__init__(source.type)
+        self._source = source
 
     def pause(self, duration: float = 0):
-        self.source.create_pause(duration)
+        self._source.create_pause(duration)
         return self
 
     def scroll(self, x=0, y=0, delta_x=0, delta_y=0, duration=0, origin="viewport"):
-        self.source.create_scroll(x, y, delta_x, delta_y, duration, origin)
+        self._source.create_scroll(x, y, delta_x, delta_y, duration, origin)
         return self
