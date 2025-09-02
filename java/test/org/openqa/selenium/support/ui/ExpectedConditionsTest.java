@@ -197,6 +197,13 @@ class ExpectedConditionsTest {
   }
 
   @Test
+  void urlFulfills_throwsNullPointerException_whenPredicateIsNull() {
+    assertThatExceptionOfType(NullPointerException.class)
+        .isThrownBy(() -> urlFulfills(null))
+        .withMessage("predicate cannot be null");
+  }
+
+  @Test
   void waitingForVisibilityOfElement_elementAlreadyVisible() {
     when(mockElement.isDisplayed()).thenReturn(true);
 

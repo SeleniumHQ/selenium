@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -167,6 +168,8 @@ public class ExpectedConditions {
    * @return true when the predicate applied to the current URL returns true, false otherwise
    */
   public static ExpectedCondition<Boolean> urlFulfills(Predicate<URI> predicate) {
+    Objects.requireNonNull(predicate, "predicate cannot be null");
+
     return new ExpectedCondition<Boolean>() {
       private String currentUrl = "";
 
