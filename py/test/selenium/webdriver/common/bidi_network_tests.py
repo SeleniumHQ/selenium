@@ -101,6 +101,7 @@ def test_remove_auth_handler(driver):
 @pytest.mark.xfail_firefox(reason="Data URLs in Network requests are not implemented in Firefox yet")
 def test_handler_with_data_url_request(driver, pages):
     data_requests = []
+
     def callback(request: Request):
         if request.url.startswith("data:"):
             data_requests.append(request)
