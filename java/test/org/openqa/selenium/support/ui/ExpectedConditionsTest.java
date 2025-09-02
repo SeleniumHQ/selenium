@@ -46,6 +46,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
+import static org.openqa.selenium.support.ui.ExpectedConditions.urlFulfills;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlMatches;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
@@ -54,6 +55,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfNestedElementsLocatedBy;
 
 import com.google.common.collect.Sets;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -155,6 +157,43 @@ class ExpectedConditionsTest {
 
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(() -> wait.until(urlMatches(".*\\/malformed.*")));
+  }
+
+  @Test
+  void waitingForUrlToBeOpened_urlFulfills() {
+    final String url = "https://example.com:8080/path";
+    when(mockDriver.getCurrentUrl()).thenReturn(url);
+
+    wait.until(urlFulfills(uri -> "https".equals(uri.getScheme())));
+    wait.until(urlFulfills(uri -> "example.com".equals(uri.getHost())));
+    wait.until(urlFulfills(uri -> uri.getPort() == 8080));
+    wait.until(urlFulfills(uri -> "/path".equals(uri.getPath())));
+  }
+
+  @Test
+  void waitingForUrlToBeOpened_urlFulfills_withAbsoluteUrl() {
+    final String url = "https://example.com/absolute/path";
+    when(mockDriver.getCurrentUrl()).thenReturn(url);
+
+    wait.until(urlFulfills(URI::isAbsolute));
+  }
+
+  @Test
+  void negative_waitingForUrlToBeOpened_urlFulfills() {
+    final String url = "http://example.com/path";
+    when(mockDriver.getCurrentUrl()).thenReturn(url);
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(urlFulfills(uri -> "https".equals(uri.getScheme()))));
+  }
+
+  @Test
+  void negative_waitingForUrlToBeOpened_urlFulfills_malformedUrl() {
+    final String url = "not-a-valid-url";
+    when(mockDriver.getCurrentUrl()).thenReturn(url);
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(urlFulfills(URI::isAbsolute)));
   }
 
   @Test

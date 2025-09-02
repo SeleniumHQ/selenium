@@ -18,9 +18,12 @@
 package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Joiner;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -153,6 +156,35 @@ public class ExpectedConditions {
       public String toString() {
         return String.format(
             "url to match the regex \"%s\". Current url: \"%s\"", regex, currentUrl);
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking that the current URL fulfills a given predicate.
+   *
+   * @param predicate a predicate that tests a URI and returns true if the condition is satisfied
+   * @return true when the predicate applied to the current URL returns true, false otherwise
+   */
+  public static ExpectedCondition<Boolean> urlFulfills(Predicate<URI> predicate) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentUrl = "";
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentUrl = driver.getCurrentUrl();
+        try {
+          URI uri = new URI(currentUrl);
+          return predicate.test(uri);
+        } catch (URISyntaxException e) {
+          return false;
+        }
+      }
+
+      @Override
+      public String toString() {
+        return String.format(
+            "url to apply a predicate. Current url: \"%s\"", currentUrl);
       }
     };
   }
