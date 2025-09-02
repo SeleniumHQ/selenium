@@ -1173,10 +1173,17 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function (textNode, lines,
   }
 
   if (textTransform == 'capitalize') {
-    // the unicode regex ending with /gu does not work in IE
-    var re = goog.userAgent.IE ? /(^|\s|\b)(\S)/g : /(^|\s|\b)(\S)/gu;
+    // 1) don't treat '_' as a separator (protects snake_case)
+    var re = /(^|[^'_0-9A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF])([A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9])/g;
     text = text.replace(re, function () {
       return arguments[1] + arguments[2].toUpperCase();
+    });
+
+    // 2) capitalize after opening "_" or "*"
+    // Preceded by start or a non-word (so it won't fire for snake_case)
+    re = /(^|[^'_0-9A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24B6-\u24E9])([_*])([A-Za-z\u00C0-\u02AF\u1E00-\u1EFF\u24D0-\u24E9])/g;
+    text = text.replace(re, function () {
+      return arguments[1] + arguments[2] + arguments[3].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {
     text = text.toUpperCase();
