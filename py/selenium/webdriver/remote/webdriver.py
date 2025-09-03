@@ -60,7 +60,6 @@ from selenium.webdriver.common.virtual_authenticator import (
 )
 from selenium.webdriver.support.relative_locator import RelativeBy
 
-from ..common.fedcm.dialog import Dialog
 from ..common.service import Service
 from .bidi_connection import BidiConnection
 from .client_config import ClientConfig
