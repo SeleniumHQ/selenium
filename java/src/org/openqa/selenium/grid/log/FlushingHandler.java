@@ -25,6 +25,7 @@ import java.util.logging.StreamHandler;
 class FlushingHandler extends StreamHandler {
 
   private OutputStream out;
+  // TODO: Re-add logging endpoints for Grid
 
   FlushingHandler(OutputStream out) {
     setOutputStream(out);
