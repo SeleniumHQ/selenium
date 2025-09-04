@@ -918,7 +918,7 @@ class WebDriver(BaseWebDriver):
             The first matching `WebElement` found on the page.
         """
         if by == "class name":
-            if " " in value.strip():
+            if value and any(char.isspace() for char in value.strip()):
                 raise InvalidSelectorException("Compound class names are not allowed.")
 
         by, value = self.locator_converter.convert(by, value)
@@ -958,7 +958,7 @@ class WebDriver(BaseWebDriver):
             list of `WebElements` matching locator strategy found on the page.
         """
         if by == "class name":
-            if " " in value.strip():
+            if value and any(char.isspace() for char in value.strip()):
                 raise InvalidSelectorException("Compound class names are not allowed.")
 
         by, value = self.locator_converter.convert(by, value)
