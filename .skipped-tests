@@ -51,6 +51,4 @@
 -//rb/spec/integration/selenium/webdriver:element-chrome
 -//rb/spec/integration/selenium/webdriver:element-chrome-bidi
 -//rb/spec/integration/selenium/webdriver:element-chrome-remote
--//rb/spec/integration/selenium/webdriver:manager-firefox-beta
--//rb/spec/integration/selenium/webdriver:manager-firefox-beta-remote
 -//rb:lint

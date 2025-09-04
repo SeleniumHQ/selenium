@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
@@ -56,9 +57,9 @@ public sealed record BoxClipRectangle(double X, double Y, double Width, double H
 
 public sealed record ElementClipRectangle(Script.ISharedReference Element) : ClipRectangle;
 
-public sealed record CaptureScreenshotResult(string Data) : EmptyResult
+public sealed record CaptureScreenshotResult(ReadOnlyMemory<byte> Data) : EmptyResult
 {
     public static implicit operator byte[](CaptureScreenshotResult captureScreenshotResult) => captureScreenshotResult.ToByteArray();
 
-    public byte[] ToByteArray() => System.Convert.FromBase64String(Data);
+    public byte[] ToByteArray() => Data.ToArray();
 }
