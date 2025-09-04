@@ -34,7 +34,6 @@ from typing import Any, Optional, Union, cast
 
 from selenium.common.exceptions import (
     InvalidArgumentException,
-    InvalidSelectorException,
     JavascriptException,
     NoSuchCookieException,
     NoSuchElementException,
@@ -917,10 +916,6 @@ class WebDriver(BaseWebDriver):
         WebElement
             The first matching `WebElement` found on the page.
         """
-        if by == "class name":
-            if value and any(char.isspace() for char in value.strip()):
-                raise InvalidSelectorException("Compound class names are not allowed.")
-
         by, value = self.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):
@@ -957,10 +952,6 @@ class WebDriver(BaseWebDriver):
         List[WebElement]
             list of `WebElements` matching locator strategy found on the page.
         """
-        if by == "class name":
-            if value and any(char.isspace() for char in value.strip()):
-                raise InvalidSelectorException("Compound class names are not allowed.")
-
         by, value = self.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):

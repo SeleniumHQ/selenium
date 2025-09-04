@@ -25,7 +25,7 @@ from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 from io import BytesIO
 
-from selenium.common.exceptions import InvalidSelectorException, JavascriptException, WebDriverException
+from selenium.common.exceptions import JavascriptException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 
@@ -598,12 +598,7 @@ class WebElement(BaseWebElement):
         WebElement
             The first matching `WebElement` found on the page.
         """
-        if by == "class name":
-            if value and any(char.isspace() for char in value.strip()):
-                raise InvalidSelectorException("Compound class names are not allowed.")
-
         by, value = self._parent.locator_converter.convert(by, value)
-
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 
     def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
@@ -632,12 +627,7 @@ class WebElement(BaseWebElement):
         List[WebElement]
             list of `WebElements` matching locator strategy found on the page.
         """
-        if by == "class name":
-            if value and any(char.isspace() for char in value.strip()):
-                raise InvalidSelectorException("Compound class names are not allowed.")
-
         by, value = self._parent.locator_converter.convert(by, value)
-
         return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value})["value"]
 
     def __hash__(self) -> int:
