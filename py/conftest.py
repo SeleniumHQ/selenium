@@ -16,7 +16,7 @@
 # under the License.
 
 import os
-import platform
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -182,7 +182,14 @@ class Driver:
 
     @property
     def exe_platform(self):
-        return platform.system()
+        if sys.platform == "win32":
+            return "Windows"
+        elif sys.platform == "darwin":
+            return "Darwin"
+        elif sys.platform == "linux":
+            return "Linux"
+        else:
+            return sys.platform.title()
 
     @property
     def browser_path(self):
@@ -397,7 +404,7 @@ def server(request):
     )
 
     remote_env = os.environ.copy()
-    if platform.system() == "Linux":
+    if sys.platform == "linux":
         # There are issues with window size/position when running Firefox
         # under Wayland, so we use XWayland instead.
         remote_env["MOZ_ENABLE_WAYLAND"] = "0"

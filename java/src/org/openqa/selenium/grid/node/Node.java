@@ -199,9 +199,7 @@ public abstract class Node implements HasReadyState, Routable {
                 .to(() -> new Drain(this, json))
                 .with(spanDecorator("node.drain").andThen(requiresSecret)),
             get("/se/grid/node/status")
-                .to(
-                    () ->
-                        req -> new HttpResponse().setContent(asJson(Map.of("value", getStatus()))))
+                .to(() -> req -> new HttpResponse().setContent(asJson(getStatus())))
                 .with(spanDecorator("node.node_status")),
             get("/status").to(() -> new StatusHandler(this)).with(spanDecorator("node.status")));
   }

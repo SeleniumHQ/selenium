@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
@@ -48,8 +49,8 @@ import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
-import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodec;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -256,10 +257,13 @@ class HandleSession implements HttpHandler, Closeable {
     try (HttpClient httpClient = httpClientFactory.createClient(config)) {
       HttpRequest statusRequest = new HttpRequest(GET, "/se/grid/node/status");
       HttpResponse res = httpClient.execute(statusRequest);
-      NodeStatus nodeStatus = Values.get(res, NodeStatus.class);
+      Json json = new Json();
+      NodeStatus nodeStatus = json.toType(string(res), NodeStatus.class);
       if (nodeStatus != null) {
         sessionTimeout = nodeStatus.getSessionTimeout();
       }
+    } catch (Exception e) {
+      LOG.fine("Unable to fetch status for " + uri);
     }
     LOG.fine("Set read timeout: " + sessionTimeout.toSeconds() + " seconds for " + uri);
     config = config.readTimeout(sessionTimeout);
