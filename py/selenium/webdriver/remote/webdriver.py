@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 """The WebDriver implementation."""
 
 import base64
@@ -33,6 +34,7 @@ from typing import Any, Optional, Union, cast
 
 from selenium.common.exceptions import (
     InvalidArgumentException,
+    InvalidSelectorException,
     JavascriptException,
     NoSuchCookieException,
     NoSuchElementException,
@@ -915,6 +917,10 @@ class WebDriver(BaseWebDriver):
         WebElement
             The first matching `WebElement` found on the page.
         """
+        if by == "class name":
+            if " " in value.strip():
+                raise InvalidSelectorException("Compound class names are not allowed.")
+
         by, value = self.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):
@@ -951,6 +957,10 @@ class WebDriver(BaseWebDriver):
         List[WebElement]
             list of `WebElements` matching locator strategy found on the page.
         """
+        if by == "class name":
+            if " " in value.strip():
+                raise InvalidSelectorException("Compound class names are not allowed.")
+
         by, value = self.locator_converter.convert(by, value)
 
         if isinstance(by, RelativeBy):
