@@ -22,8 +22,8 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe Browser, exclusive: { bidi: true, reason: 'only executed when bidi is enabled' },
-               only: { browser: %i[chrome edge] } do
+      describe Browser, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
+                        only: {browser: %i[chrome edge]} do
         after { |example| reset_driver!(example: example) }
 
         let(:bidi) { driver.bidi }
@@ -84,9 +84,6 @@ module Selenium
 
         it 'checks if a window is active' do
           browser = described_class.new(bidi)
-          browsing_context = BrowsingContext.new(driver.instance_variable_get(:@bridge))
-          window_handle = browser.windows.first.handle
-          browsing_context.activate
           expect(browser.windows.first).to be_active
         end
       end

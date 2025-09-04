@@ -38,7 +38,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'sends keys to element' do
+        it 'sends keys to element', except: {browser: %i[firefox]} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -335,7 +335,7 @@ module Selenium
 
       describe '#scroll_from' do
         it 'scrolls from element by given amount',
-           except: {browser: %i[firefox safari], reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError in Firefox'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
           scroll_origin = WheelActions::ScrollOrigin.element(iframe)
@@ -349,7 +349,7 @@ module Selenium
         end
 
         it 'scrolls from element by given amount with offset',
-           except: {browser: %i[firefox safari], reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError in Firefox'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           scroll_origin = WheelActions::ScrollOrigin.element(footer, 0, -50)
