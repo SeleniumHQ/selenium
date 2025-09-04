@@ -190,6 +190,7 @@ def test_should_not_be_able_to_locate_by_tag_name_multiple_elements_that_do_not_
 
 
 @pytest.mark.xfail_safari(reason="unlike chrome, safari raises NoSuchElementException")
+@pytest.mark.xfail_firefox(reason="unlike chrome, firefox raises NoSuchElementException")
 def test_finding_asingle_element_by_empty_tag_name_should_throw(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(InvalidSelectorException):
