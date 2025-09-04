@@ -275,7 +275,7 @@ module Selenium
                                          before_unload: 'accept',
                                          default: :dismiss
                                        })
-            
+
             expect(opts.as_json).to eq('browserName' => 'chrome',
                                        'unhandledPromptBehavior' => {
                                          'alert' => 'accept and notify',
