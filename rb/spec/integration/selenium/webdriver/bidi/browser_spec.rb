@@ -87,7 +87,6 @@ module Selenium
           browsing_context = BrowsingContext.new(driver.instance_variable_get(:@bridge))
           window_handle = browser.windows.first.handle
           browsing_context.activate
-          pp window_handle
           expect(browser.windows.first).to be_active
         end
       end
