@@ -39,6 +39,7 @@ class WebSocketConnection:
         self.url = url
 
         self._id = 0
+        self._sequence = 0
         self._messages = {}
         self._started = False
 
@@ -78,12 +79,15 @@ class WebSocketConnection:
             return self._deserialize_result(result, command)
 
     def add_callback(self, event, callback):
+        self.add_callback_with_sequence(event, lambda _, x: callback(x))
+
+    def add_callback_with_sequence(self, event, callback):
         event_name = event.event_class
         if event_name not in self.callbacks:
             self.callbacks[event_name] = []
 
-        def _callback(params):
-            callback(event.from_json(params))
+        def _callback(sequence, params):
+            callback(sequence, event.from_json(params))
 
         self.callbacks[event_name].append(_callback)
         return id(_callback)
@@ -113,7 +117,8 @@ class WebSocketConnection:
             self._started = True
 
         def on_message(ws, message):
-            self._process_message(message)
+            self._sequence += 1
+            self._process_message(self._sequence, message)
 
         def on_error(ws, error):
             logger.debug(f"error: {error}")
@@ -129,7 +134,7 @@ class WebSocketConnection:
         self._ws_thread = Thread(target=run_socket)
         self._ws_thread.start()
 
-    def _process_message(self, message):
+    def _process_message(self, sequence, message):
         message = json.loads(message)
         logger.debug(f"<- {message}"[: self._max_log_message_size])
 
@@ -139,7 +144,7 @@ class WebSocketConnection:
         if "method" in message:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
-                Thread(target=callback, args=(params,)).start()
+                Thread(target=callback, args=(sequence, params)).start()
 
     def _wait_until(self, condition):
         timeout = self._response_wait_timeout
