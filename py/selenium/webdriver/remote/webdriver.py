@@ -49,6 +49,7 @@ from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.fedcm.dialog import Dialog
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
@@ -59,7 +60,6 @@ from selenium.webdriver.common.virtual_authenticator import (
 )
 from selenium.webdriver.support.relative_locator import RelativeBy
 
-from ..common.fedcm.dialog import Dialog
 from .bidi_connection import BidiConnection
 from .client_config import ClientConfig
 from .command import Command
