@@ -190,7 +190,7 @@ def test_should_not_be_able_to_locate_by_tag_name_multiple_elements_that_do_not_
 
 
 @pytest.mark.xfail_firefox(reason="unlike chrome, firefox raises NoSuchElementException")
-@pytest.mark.xfail_remote(reason="some browsers raise NoSuchElementException")
+@pytest.mark.xfail_remote(reason="unlike chrome, firefox raises NoSuchElementException")
 @pytest.mark.xfail_safari(reason="unlike chrome, safari raises NoSuchElementException")
 def test_finding_asingle_element_by_empty_tag_name_should_throw(driver, pages):
     pages.load("formPage.html")
@@ -199,7 +199,7 @@ def test_finding_asingle_element_by_empty_tag_name_should_throw(driver, pages):
 
 
 @pytest.mark.xfail_firefox(reason="unlike chrome, firefox returns an empty list")
-@pytest.mark.xfail_remote(reason="some browsers return an empty list")
+@pytest.mark.xfail_remote(reason="unlike chrome, firefox returns an empty list")
 @pytest.mark.xfail_safari(reason="unlike chrome, safari returns an empty list")
 def test_finding_multiple_elements_by_empty_tag_name_should_throw(driver, pages):
     pages.load("formPage.html")
