@@ -168,14 +168,14 @@ copy_file(
 )
 
 copy_file(
-    name = "assets-nuget-build-netstandard20-targets",
-    src = "//dotnet/src/webdriver/assets:nuget/build/netstandard2.0/Selenium.WebDriver.targets",
+    name = "assets-nuget-build-targets",
+    src = "//dotnet/src/webdriver/assets:nuget/build/Selenium.WebDriver.targets",
     out = "Selenium.WebDriver.targets",
 )
 
 copy_file(
-    name = "assets-nuget-buildtransitive-netstandard20-targets",
-    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/netstandard2.0/Selenium.WebDriver.targets",
+    name = "assets-nuget-buildtransitive-targets",
+    src = "//dotnet/src/webdriver/assets:nuget/buildTransitive/Selenium.WebDriver.targets",
     out = "transitiveSelenium.WebDriver.targets",
 )
 
@@ -208,8 +208,8 @@ nuget_pack(
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-netstandard20-targets": "build/netstandard2.0/Selenium.WebDriver.targets",
-        ":assets-nuget-buildtransitive-netstandard20-targets": "buildTransitive/netstandard2.0/Selenium.WebDriver.targets",
+        ":assets-nuget-build-targets": "build/Selenium.WebDriver.targets",
+        ":assets-nuget-buildtransitive-targets": "buildTransitive/Selenium.WebDriver.targets",
     },
     id = "Selenium.WebDriver",
     libs = {
@@ -234,8 +234,8 @@ nuget_pack(
         "//common/manager:selenium-manager-macos": "manager/macos/selenium-manager",
         "//common/manager:selenium-manager-windows": "manager/windows/selenium-manager.exe",
         ":assets-nuget-readme": "README.md",
-        ":assets-nuget-build-netstandard20-targets": "build/netstandard2.0/Selenium.WebDriver.StrongNamed.targets",
-        ":assets-nuget-buildtransitive-netstandard20-targets": "buildTransitive/netstandard2.0/Selenium.WebDriver.StrongNamed.targets",
+        ":assets-nuget-build-targets": "build/Selenium.WebDriver.StrongNamed.targets",
+        ":assets-nuget-buildtransitive-targets": "buildTransitive/Selenium.WebDriver.StrongNamed.targets",
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {

@@ -22,10 +22,10 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class AddInterceptCommand(AddInterceptCommandParameters @params)
-    : Command<AddInterceptCommandParameters, AddInterceptResult>(@params, "network.addIntercept");
+internal sealed class AddInterceptCommand(AddInterceptParameters @params)
+    : Command<AddInterceptParameters, AddInterceptResult>(@params, "network.addIntercept");
 
-internal sealed record AddInterceptCommandParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : CommandParameters;
+internal sealed record AddInterceptParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : Parameters;
 
 public class AddInterceptOptions : CommandOptions
 {

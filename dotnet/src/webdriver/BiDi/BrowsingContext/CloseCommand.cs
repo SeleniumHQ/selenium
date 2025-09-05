@@ -21,10 +21,10 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class CloseCommand(CloseCommandParameters @params)
-    : Command<CloseCommandParameters, EmptyResult>(@params, "browsingContext.close");
+internal sealed class CloseCommand(CloseParameters @params)
+    : Command<CloseParameters, EmptyResult>(@params, "browsingContext.close");
 
-internal sealed record CloseCommandParameters(BrowsingContext Context, bool? PromptUnload) : CommandParameters;
+internal sealed record CloseParameters(BrowsingContext Context, bool? PromptUnload) : Parameters;
 
 public sealed class CloseOptions : CommandOptions
 {

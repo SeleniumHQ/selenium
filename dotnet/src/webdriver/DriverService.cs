@@ -26,6 +26,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium;
 
@@ -36,6 +37,8 @@ public abstract class DriverService : ICommandServer
 {
     private bool isDisposed;
     private Process? driverServiceProcess;
+
+    private static readonly ILogger _logger = Log.GetLogger(typeof(DriverService));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DriverService"/> class.
@@ -243,11 +246,22 @@ public abstract class DriverService : ICommandServer
         this.driverServiceProcess.StartInfo.UseShellExecute = false;
         this.driverServiceProcess.StartInfo.CreateNoWindow = this.HideCommandPromptWindow;
 
+        this.driverServiceProcess.StartInfo.RedirectStandardOutput = true;
+        this.driverServiceProcess.StartInfo.RedirectStandardError = true;
+
+        this.driverServiceProcess.OutputDataReceived += this.OnDriverProcessDataReceived;
+        this.driverServiceProcess.ErrorDataReceived += this.OnDriverProcessDataReceived;
+
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
 
+        // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
         this.driverServiceProcess.Start();
+        this.driverServiceProcess.BeginOutputReadLine();
+        this.driverServiceProcess.BeginErrorReadLine();
+
         bool serviceAvailable = this.WaitForServiceInitialization();
+
         DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
         this.OnDriverProcessStarted(processStartedEventArgs);
 
@@ -274,6 +288,12 @@ public abstract class DriverService : ICommandServer
             if (disposing)
             {
                 this.Stop();
+
+                if (this.driverServiceProcess is not null)
+                {
+                    this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
+                    this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
+                }
             }
 
             this.isDisposed = true;
@@ -306,6 +326,22 @@ public abstract class DriverService : ICommandServer
         }
 
         this.DriverProcessStarted?.Invoke(this, eventArgs);
+    }
+
+    /// <summary>
+    /// Handles the output and error data received from the driver process.
+    /// </summary>
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">The data received event arguments.</param>
+    protected virtual void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
+    {
+        if (string.IsNullOrEmpty(args.Data))
+            return;
+
+        if (_logger.IsEnabled(LogEventLevel.Trace))
+        {
+            _logger.Trace(args.Data);
+        }
     }
 
     /// <summary>
