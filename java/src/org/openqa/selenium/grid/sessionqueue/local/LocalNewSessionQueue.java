@@ -55,6 +55,7 @@ import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.data.TraceSessionRequest;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.MBean;
 import org.openqa.selenium.grid.jmx.ManagedAttribute;
 import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -110,6 +111,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
             thread.setName(NAME);
             return thread;
           });
+  private final MBean jmxBean;
 
   public LocalNewSessionQueue(
       Tracer tracer,
@@ -139,7 +141,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         requestTimeoutCheck.toMillis(),
         MILLISECONDS);
 
-    new JMXHelper().register(this);
+    // Manage JMX and unregister on close()
+    this.jmxBean = new JMXHelper().register(this);
   }
 
   public static NewSessionQueue create(Config config) {
@@ -502,6 +505,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   @Override
   public void close() {
     shutdownGracefully(NAME, service);
+
+    if (jmxBean != null) {
+      new JMXHelper().unregister(jmxBean.getObjectName());
+    }
   }
 
   private void failDueToTimeout(RequestId reqId) {

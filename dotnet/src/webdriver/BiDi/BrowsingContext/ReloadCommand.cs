@@ -21,10 +21,10 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class ReloadCommand(ReloadCommandParameters @params)
-    : Command<ReloadCommandParameters, NavigateResult>(@params, "browsingContext.reload");
+internal sealed class ReloadCommand(ReloadParameters @params)
+    : Command<ReloadParameters, NavigateResult>(@params, "browsingContext.reload");
 
-internal sealed record ReloadCommandParameters(BrowsingContext Context, bool? IgnoreCache, ReadinessState? Wait) : CommandParameters;
+internal sealed record ReloadParameters(BrowsingContext Context, bool? IgnoreCache, ReadinessState? Wait) : Parameters;
 
 public sealed class ReloadOptions : CommandOptions
 {

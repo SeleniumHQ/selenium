@@ -26,6 +26,7 @@ const SameSite = {
   STRICT: 'strict',
   LAX: 'lax',
   NONE: 'none',
+  DEFAULT: 'default',
 
   findByName(name) {
     return (

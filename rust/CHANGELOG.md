@@ -1,3 +1,8 @@
+0.4.35
+======
+* Normalize architecture strings sent to Plausible (#15970)
+* Update base URL for Edge web driver (#16056)
+
 0.4.34
 ======
 * Electron support in Selenium-Manager (#13954) (#15752)

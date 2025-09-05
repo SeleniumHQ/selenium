@@ -325,3 +325,39 @@ class Proxy:
             if attr_value:
                 proxy_caps[proxy] = attr_value
         return proxy_caps
+
+    def to_bidi_dict(self):
+        """Convert proxy settings to BiDi format.
+
+        Returns:
+        -------
+            dict: Proxy configuration in BiDi format.
+        """
+        proxy_type = self.proxyType["string"].lower()
+        result = {"proxyType": proxy_type}
+
+        if proxy_type == "manual":
+            if self.httpProxy:
+                result["httpProxy"] = self.httpProxy
+            if self.sslProxy:
+                result["sslProxy"] = self.sslProxy
+            if self.socksProxy:
+                result["socksProxy"] = self.socksProxy
+            if self.socksVersion is not None:
+                result["socksVersion"] = self.socksVersion
+            if self.noProxy:
+                # Convert comma-separated string to list
+                if isinstance(self.noProxy, str):
+                    result["noProxy"] = [host.strip() for host in self.noProxy.split(",") if host.strip()]
+                elif isinstance(self.noProxy, list):
+                    if not all(isinstance(h, str) for h in self.noProxy):
+                        raise TypeError("no_proxy list must contain only strings")
+                    result["noProxy"] = self.noProxy
+                else:
+                    raise TypeError("no_proxy must be a comma-separated string or a list of strings")
+
+        elif proxy_type == "pac":
+            if self.proxyAutoconfigUrl:
+                result["proxyAutoconfigUrl"] = self.proxyAutoconfigUrl
+
+        return result
