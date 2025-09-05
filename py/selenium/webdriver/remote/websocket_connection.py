@@ -79,7 +79,7 @@ class WebSocketConnection:
             return self._deserialize_result(result, command)
 
     def add_callback(self, event, callback):
-        self.add_callback_with_sequence(event, lambda _, x: callback(x))
+        return self.add_callback_with_sequence(event, lambda _, x: callback(x))
 
     def add_callback_with_sequence(self, event, callback):
         event_name = event.event_class
