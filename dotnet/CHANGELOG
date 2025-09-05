@@ -1,3 +1,29 @@
+v4.35.0
+======
+* Add CDP for Chrome 139 and remove 136
+* [bidi] Get tree command returns GetTreeResult object (#15978)
+* [bidi] Initialize internal modules without Lazy (#15979)
+* [bidi] Add UnhandledPromptBehavior option to create User Context (#16034)
+* Re-pack Selenium Manager as native dependency (#16048)
+* [bidi] Remove NavigateBack and NavigateForward as not a part… (#16068)
+* Support IPv6 to find free tcp port via DualMode (#16016)
+* Fix GetContext docs in Firefox driver
+* Sending GeckoDriver output to a log file. (#16081)
+* [bidi] Preserve BiDi global options when instantiating BiDi (#16080)
+* Fix race condition for .net framework when internal tracing enabled (#16091)
+* [bidi] Make BiDi ctor private
+* [bidi] BiDi class is not inheritable
+* [bidi] Return EmptyResult object which might be non-empty
+* [bidi] Expose internal spec methods to be truly publicly available
+* Enabling Chrome and Edge driver services to set log level (#16098)
+* Remove long awaited obsolete members (#16121)
+* Change default internal log level to Warn (#16126)
+* Truncate log and set profile root in Firefox (GeckoDriver) (#16131)
+* Add readable timestamps to log in Chromium browsers (#16133)
+* add `default` as a value for SameSite (#16129)
+* Enabling drivers to set log to console. (#16097)
+* Fix the issue when service wants to write into disposed stream (#16148)
+
 v4.34.0
 ======
 * Add CDP for Chrome 138 and remove 135

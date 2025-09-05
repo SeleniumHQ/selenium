@@ -81,3 +81,5 @@ jobs:
     with:
       version: ${{ needs.github-release.outputs.version }}
       sha: ${{ github.sha }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
