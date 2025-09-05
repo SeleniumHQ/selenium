@@ -18,6 +18,7 @@
 # under the License.
 
 require 'zip'
+require 'zip/version' # Not required automatically
 require 'tempfile'
 require 'find'
 require 'base64'
@@ -30,6 +31,7 @@ module Selenium
 
     module Zipper
       EXTENSIONS = %w[.zip .xpi].freeze
+      RUBYZIP_V3 = Zip::VERSION >= '3.0.0'
 
       class << self
         def unzip(path)
@@ -42,7 +44,11 @@ module Selenium
               dirname = File.dirname(to)
 
               FileUtils.mkdir_p dirname
-              zip.extract(entry, to)
+              if RUBYZIP_V3
+                zip.extract(entry, entry.name, destination_directory: destination)
+              else
+                zip.extract(entry, to)
+              end
             end
           end
 
@@ -75,7 +81,11 @@ module Selenium
           # Don't use Tempfile since it lacks rb_file_s_rename permission on Windows.
           Dir.mktmpdir do |tmp_dir|
             zip_path = File.join(tmp_dir, 'webdriver-zip')
-            Zip::File.open(zip_path, Zip::File::CREATE, &blk)
+            if RUBYZIP_V3
+              Zip::File.open(zip_path, create: true, &blk)
+            else
+              Zip::File.open(zip_path, Zip::File::CREATE, &blk)
+            end
           end
         end
 

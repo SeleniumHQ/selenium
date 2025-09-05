@@ -96,6 +96,11 @@ public abstract class ChromiumDriverService : DriverService
     public string? AllowedIPAddresses { get; set; }
 
     /// <summary>
+    /// Adds readable timestamps to log
+    /// </summary>
+    public bool ReadableTimestamp { get; set; }
+
+    /// <summary>
     /// Gets the command-line arguments for the driver service.
     /// </summary>
     protected override string CommandLineArguments
@@ -128,6 +133,11 @@ public abstract class ChromiumDriverService : DriverService
                 argsBuilder.Append(" --append-log");
             }
 
+            if (this.ReadableTimestamp)
+            {
+                argsBuilder.Append(" --readable-timestamp");
+            }
+
             if (!string.IsNullOrEmpty(this.LogPath))
             {
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --log-path=\"{0}\"", this.LogPath);
@@ -150,10 +160,7 @@ public abstract class ChromiumDriverService : DriverService
 
             if (this.LogLevel != ChromiumDriverLogLevel.Default)
             {
-                if (Enum.IsDefined(typeof(ChromiumDriverLogLevel), this.LogLevel))
-                {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
-                }
+                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
             }
 
 
