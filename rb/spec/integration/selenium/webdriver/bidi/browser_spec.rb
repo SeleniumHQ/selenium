@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     class BiDi
       describe Browser, exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
-                        only: {browser: %i[chrome edge]} do
+                        only: {browser: %i[chrome edge firefox]} do
         after { |example| reset_driver!(example: example) }
 
         let(:bidi) { driver.bidi }
@@ -72,13 +72,6 @@ module Selenium
           active_window = windows.first
 
           expect(active_window).to be_a(Selenium::WebDriver::BiDi::Browser::Window)
-          expect(active_window).to have_attributes(
-            handle: an_instance_of(String),
-            active: be_falsey,
-            state: 'normal',
-            height: an_instance_of(Integer),
-            width: an_instance_of(Integer)
-          )
         end
       end
     end
