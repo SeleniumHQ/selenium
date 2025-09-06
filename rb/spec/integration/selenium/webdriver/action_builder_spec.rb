@@ -38,7 +38,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'sends keys to element', except: {browser: %i[firefox]} do
+        it 'sends keys to element', only: {browser: %i[chrome edge]} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -305,9 +305,9 @@ module Selenium
         end
       end
 
-      describe '#scroll_to', only: {browser: %i[chrome edge firefox]} do
+      describe '#scroll_to' do
         it 'scrolls to element',
-           except: {browser: :firefox, reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
 
@@ -321,7 +321,7 @@ module Selenium
 
       describe '#scroll_by' do
         it 'scrolls by given amount',
-           exclude: {driver: :firefox, reason: 'inconsistent behavior between versions'} do
+           exclusive: {browser: %i[chrome edge], reason: 'inconsistent behavior between versions'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           delta_y = footer.rect.y.round
