@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import platform
+import sys
 from os import path
 
 import pytest
@@ -91,7 +91,7 @@ def test_add_encoded_extension(options):
 
 
 def test_get_extensions_from_extension_files(options, mocker):
-    null = "NUL" if platform.system().lower() == "windows" else "/dev/null"
+    null = "NUL" if sys.platform == "win32" else "/dev/null"
     mocker.patch("selenium.webdriver.chromium.options.open").return_value = open(null)
     mocker.patch("base64.b64encode").return_value = b"foo"
     options._extension_files = ["foo"]
