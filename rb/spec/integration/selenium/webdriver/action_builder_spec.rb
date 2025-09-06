@@ -38,7 +38,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'sends keys to element', only: {browser: %i[chrome edge]} do
+        it 'sends keys to element', only: {browser: %i[chrome edge firefox]} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
