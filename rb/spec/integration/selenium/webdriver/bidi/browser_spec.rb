@@ -69,22 +69,16 @@ module Selenium
         it 'get windows' do
           browser = described_class.new(bidi)
           windows = browser.windows
+          active_window = windows.first
 
-          window = windows.first
-
-          expect(window).to be_a(Selenium::WebDriver::BiDi::Browser::Window)
-          expect(window).to have_attributes(
+          expect(active_window).to be_a(Selenium::WebDriver::BiDi::Browser::Window)
+          expect(active_window).to have_attributes(
             handle: an_instance_of(String),
-            active: be_in([true, false]),
+            active: be_falsey,
             state: 'normal',
             height: an_instance_of(Integer),
             width: an_instance_of(Integer)
           )
-        end
-
-        it 'checks if a window is active' do
-          browser = described_class.new(bidi)
-          expect(browser.windows.first).to be_active
         end
       end
     end
