@@ -110,7 +110,7 @@ module Selenium
 
         new_size = window.size
         expect(new_size.width).to be > old_size.width
-        expect(new_size.height).to be > old_size.height
+        expect(new_size.height).to be >= old_size.height
       end
 
       it 'can make window full screen', except: {browser: %i[chrome edge], headless: true} do

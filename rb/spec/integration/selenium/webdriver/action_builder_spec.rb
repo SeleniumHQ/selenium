@@ -42,6 +42,7 @@ module Selenium
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
+          driver.execute_script('arguments[0].scrollIntoView({block: "center", inline: "nearest"});', input)
 
           driver.action.send_keys(input, 'abcd').perform
           wait.until { input.property(:value).length == 4 }
