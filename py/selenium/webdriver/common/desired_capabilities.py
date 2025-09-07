@@ -27,22 +27,19 @@ class DesiredCapabilities:
 
         from selenium import webdriver
         from selenium.webdriver.firefox.options import Options
-        
+
         selenium_grid_url = "http://198.0.0.1:4444/wd/hub"
-        
+
         # Create a new Options object for the desired browser.
         options = Options()
-        
+
         # Set capabilities on the Options object.
         # Note: "platform" and "version" are now "platformName" and "browserVersion".
         options.set_capability("platformName", "WINDOWS")
         options.browser_version = "10"
-        
+
         # Instantiate an instance of Remote WebDriver with the new options.
-        driver = webdriver.Remote(
-            command_executor=selenium_grid_url,
-            options=options
-        )
+        driver = webdriver.Remote(command_executor=selenium_grid_url, options=options)
 
     Note: Always use '.copy()' on the DesiredCapabilities object to avoid the side
     effects of altering the Global class instance.
