@@ -32,8 +32,8 @@ class DesiredCapabilities:
 
         # Create a new Options object for the desired browser.
         options = Options()
-        options.set_capability("platformName", "WINDOWS")
-        options.browser_version = "10"
+        options.set_capability("platformName", "windows")
+        options.browser_version = "142"
 
         # Instantiate an instance of Remote WebDriver with the new options.
         driver = webdriver.Remote(command_executor=selenium_grid_url, options=options)
