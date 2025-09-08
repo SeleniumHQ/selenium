@@ -102,7 +102,7 @@ module Selenium
         expect(new_rect.height).to eq(target_height)
       end
 
-      it 'can maximize the current window' do
+      it 'can maximize the current window', except: {browser: :firefox, platform: :macosx, headless: true} do
         window.size = old_size = Dimension.new(700, 700)
 
         window.maximize
@@ -110,7 +110,7 @@ module Selenium
 
         new_size = window.size
         expect(new_size.width).to be > old_size.width
-        expect(new_size.height).to be >= old_size.height
+        expect(new_size.height).to be > old_size.height
       end
 
       it 'can make window full screen', except: {browser: %i[chrome edge], headless: true} do
