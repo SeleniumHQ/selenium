@@ -17,14 +17,14 @@
 
 from typing import Optional
 
-from .interaction import Interaction
+from .interaction import WHEEL, Interaction
 from .wheel_input import WheelInput
 
 
 class WheelActions(Interaction):
     def __init__(self, source: Optional[WheelInput] = None):
         if source is None:
-            source = WheelInput("wheel")
+            source = WheelInput(WHEEL)
         super().__init__(source)
 
     def pause(self, duration: float = 0):
