@@ -333,7 +333,6 @@ public abstract class DriverService : ICommandServer
     /// </summary>
     /// <param name="sender">The sender of the event.</param>
     /// <param name="args">The data received event arguments.</param>
-    /// <param name="isError">A value indicating whether the data received is from the error stream.</param>
     protected virtual void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
     {
         if (string.IsNullOrEmpty(args.Data))

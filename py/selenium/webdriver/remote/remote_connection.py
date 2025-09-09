@@ -16,8 +16,8 @@
 # under the License.
 
 import logging
-import platform
 import string
+import sys
 import warnings
 from base64 import b64encode
 from typing import Optional
@@ -156,7 +156,7 @@ class RemoteConnection:
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
     _client_config: Optional[ClientConfig] = None
 
-    system = platform.system().lower()
+    system = sys.platform
     if system == "darwin":
         system = "mac"
 
