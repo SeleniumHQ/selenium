@@ -27,7 +27,7 @@ module Selenium
 
         expect {
           driver.find_element(id: 'nonexistent')
-        }.to raise_error(WebDriver::Error::NoSuchElementError, /#no-such-element-exception/)
+        }.to raise_error(WebDriver::Error::NoSuchElementError, /#nosuchelementexception/)
       end
 
       it 'has backtrace locations' do
