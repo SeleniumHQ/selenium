@@ -17,35 +17,28 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.Map;
-import java.util.TreeMap;
 import org.openqa.selenium.json.JsonInput;
 
-public class NavigationInfo {
+public class DownloadInfo extends NavigationInfo {
 
-  private final String browsingContextId;
+  private final String suggestedFilename;
 
-  private final String navigationId;
-
-  private final long timestamp;
-
-  private final String url;
-
-  protected NavigationInfo(
-      String browsingContextId, String navigationId, long timestamp, String url) {
-    this.browsingContextId = browsingContextId;
-    this.navigationId = navigationId;
-    this.timestamp = timestamp;
-    this.url = url;
+  private DownloadInfo(
+      String browsingContextId,
+      String navigationId,
+      long timestamp,
+      String url,
+      String suggestedFilename) {
+    super(browsingContextId, navigationId, timestamp, url);
+    this.suggestedFilename = suggestedFilename;
   }
 
-  public static NavigationInfo fromJson(JsonInput input) {
+  public static DownloadInfo fromJson(JsonInput input) {
     String browsingContextId = null;
     String navigationId = null;
     long timestamp = 0;
     String url = null;
+    String suggestedFilename = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -66,6 +59,10 @@ public class NavigationInfo {
           url = input.read(String.class);
           break;
 
+        case "suggestedFilename":
+          suggestedFilename = input.read(String.class);
+          break;
+
         default:
           input.skipValue();
           break;
@@ -74,33 +71,10 @@ public class NavigationInfo {
 
     input.endObject();
 
-    return new NavigationInfo(browsingContextId, navigationId, timestamp, url);
+    return new DownloadInfo(browsingContextId, navigationId, timestamp, url, suggestedFilename);
   }
 
-  public String getBrowsingContextId() {
-    return browsingContextId;
-  }
-
-  public String getNavigationId() {
-    return navigationId;
-  }
-
-  public long getTimestamp() {
-    return timestamp;
-  }
-
-  public String getUrl() {
-    return url;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-
-    toReturn.put("browsingContextId", this.getBrowsingContextId());
-    toReturn.put("navigationId", this.getNavigationId());
-    toReturn.put("timestamp", this.getTimestamp());
-    toReturn.put("url", this.getUrl());
-
-    return unmodifiableMap(toReturn);
+  public String getSuggestedFilename() {
+    return suggestedFilename;
   }
 }

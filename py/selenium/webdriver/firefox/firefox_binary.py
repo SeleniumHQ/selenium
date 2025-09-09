@@ -17,8 +17,8 @@
 
 
 import os
+import sys
 import time
-from platform import system
 from subprocess import DEVNULL, STDOUT, Popen
 
 from typing_extensions import deprecated
@@ -45,7 +45,7 @@ class FirefoxBinary:
         # a while the pipe would fill up and Firefox would freeze.
         self._log_file = log_file or DEVNULL
         self.command_line = None
-        self.platform = system().lower()
+        self.platform = sys.platform
         if not self._start_cmd:
             self._start_cmd = self._get_firefox_start_cmd()
         if not self._start_cmd.strip():
