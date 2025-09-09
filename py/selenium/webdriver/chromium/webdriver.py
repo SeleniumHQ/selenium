@@ -17,13 +17,12 @@
 
 from typing import Optional
 
+from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.chromium.service import ChromiumService
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
-from .options import ChromiumOptions
-from .service import ChromiumService
 
 
 class ChromiumDriver(RemoteWebDriver):
@@ -32,8 +31,8 @@ class ChromiumDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        browser_name: Optional[str] = None,
-        vendor_prefix: Optional[str] = None,
+        browser_name: str,
+        vendor_prefix: str,
         options: Optional[ChromiumOptions] = None,
         service: Optional[ChromiumService] = None,
         keep_alive: bool = True,
@@ -62,8 +61,8 @@ class ChromiumDriver(RemoteWebDriver):
 
         executor = ChromiumRemoteConnection(
             remote_server_addr=self.service.service_url,
-            browser_name=str(browser_name),
-            vendor_prefix=str(vendor_prefix),
+            browser_name=browser_name,
+            vendor_prefix=vendor_prefix,
             keep_alive=keep_alive,
             ignore_proxy=options._ignore_local_proxy,
         )
