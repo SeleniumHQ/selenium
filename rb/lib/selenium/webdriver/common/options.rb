@@ -131,9 +131,18 @@ module Selenium
 
       def process_w3c_options(options)
         w3c_options = options.select { |key, val| w3c?(key) && !val.nil? }
-        w3c_options[:unhandled_prompt_behavior] &&= w3c_options[:unhandled_prompt_behavior]&.to_s&.tr('_', ' ')
+        w3c_options[:unhandled_prompt_behavior] &&=
+          process_unhandled_prompt_behavior_value(w3c_options[:unhandled_prompt_behavior])
         options.delete_if { |key, _val| w3c?(key) }
         w3c_options
+      end
+
+      def process_unhandled_prompt_behavior_value(value)
+        if value.is_a?(Hash)
+          value.transform_values { |v| process_unhandled_prompt_behavior_value(v) }
+        else
+          value&.to_s&.tr('_', ' ')
+        end
       end
 
       def process_browser_options(_browser_options)
