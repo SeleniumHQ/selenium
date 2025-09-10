@@ -17,8 +17,8 @@
 
 from typing import Optional
 
-from .interaction import Interaction
-from .wheel_input import WheelInput
+from selenium.webdriver.common.actions.interaction import Interaction
+from selenium.webdriver.common.actions.wheel_input import WheelInput
 
 
 class WheelActions(Interaction):
