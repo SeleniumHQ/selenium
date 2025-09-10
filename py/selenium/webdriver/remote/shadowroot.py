@@ -17,8 +17,8 @@
 
 from hashlib import md5 as md5_hash
 
-from ..common.by import By
-from .command import Command
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.command import Command
 
 
 class ShadowRoot:

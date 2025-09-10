@@ -27,11 +27,24 @@ internal class DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
 {
     public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return DateTimeOffset.FromUnixTimeMilliseconds(reader.GetInt64());
+        return DateTimeOffset.FromUnixTimeMilliseconds((long)reader.GetDouble()); // still might get a double
     }
 
     public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
     {
         writer.WriteNumberValue(value.ToUnixTimeMilliseconds());
+    }
+}
+
+internal class DateTimeOffsetSecondsConverter : JsonConverter<DateTimeOffset>
+{
+    public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return DateTimeOffset.FromUnixTimeSeconds((long)reader.GetDouble()); // still might get a double
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
+    {
+        writer.WriteNumberValue(value.ToUnixTimeSeconds());
     }
 }

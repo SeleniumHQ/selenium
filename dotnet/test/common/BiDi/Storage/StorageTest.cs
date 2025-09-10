@@ -81,7 +81,7 @@ class StorageTest : BiDiTestFixture
     {
         driver.Url = UrlBuilder.WhereIs("animals");
 
-        var expiry = DateTime.Now.AddDays(1);
+        var expiry = DateTimeOffset.Now.AddDays(1);
 
         await context.Storage.SetCookieAsync(new("fish", "cod", UrlBuilder.HostName)
         {
@@ -106,7 +106,7 @@ class StorageTest : BiDiTestFixture
         Assert.That(cookie.Secure, Is.False);
         Assert.That(cookie.SameSite, Is.EqualTo(SameSite.Lax));
         Assert.That(cookie.Size, Is.EqualTo(7));
-        // Assert.That(cookie.Expiry, Is.EqualTo(expiry)); // chrome issue
+        Assert.That(cookie.Expiry, Is.EqualTo(expiry).Within(1).Seconds);
     }
 
     [Test]
