@@ -22,9 +22,8 @@ from typing import Any, Optional
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.common import command_builder
-
-from .log import LogEntryAdded
-from .session import Session
+from selenium.webdriver.common.bidi.log import LogEntryAdded
+from selenium.webdriver.common.bidi.session import Session
 
 
 class ResultOwnership:

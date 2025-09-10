@@ -20,13 +20,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Union
 
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.actions.key_input import KeyInput
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+from selenium.webdriver.common.actions.wheel_input import ScrollOrigin, WheelInput
+from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.webelement import WebElement
-
-from .actions.action_builder import ActionBuilder
-from .actions.key_input import KeyInput
-from .actions.pointer_input import PointerInput
-from .actions.wheel_input import ScrollOrigin, WheelInput
-from .utils import keys_to_typing
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
