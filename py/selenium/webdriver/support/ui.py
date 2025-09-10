@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .select import Select
-from .wait import WebDriverWait
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.wait import WebDriverWait
 
 __all__ = ["Select", "WebDriverWait"]

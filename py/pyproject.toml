@@ -27,11 +27,11 @@ classifiers = [
     ]
 dependencies = [
     "urllib3[socks]>=2.5.0,<3.0",
-    "trio~=0.30.0",
-    "trio-websocket~=0.12.2",
+    "trio>=0.30.0,<1.0",
+    "trio-websocket>=0.12.2,<1.0",
     "certifi>=2025.6.15",
-    "typing_extensions~=4.14.0",
-    "websocket-client~=1.8.0",
+    "typing_extensions>=4.14.0,<5.0",
+    "websocket-client>=1.8.0,<2.0",
     ]
 
 [project.urls]
@@ -144,7 +144,7 @@ respect-gitignore = true
 target-version = "py39"
 
 [tool.ruff.lint]
-extend-select = ["E4", "E7", "E9", "F", "I", "E501", "RUF022"]
+extend-select = ["E4", "E7", "E9", "F", "I", "E501", "RUF022", "TID252"]
 fixable = ["ALL"]
 
 [tool.ruff.format]
