@@ -28,9 +28,8 @@ from io import BytesIO
 from selenium.common.exceptions import JavascriptException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
-
-from .command import Command
-from .shadowroot import ShadowRoot
+from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.shadowroot import ShadowRoot
 
 # TODO: When moving to supporting python 3.9 as the minimum version we can
 # use built in importlib_resources.files.

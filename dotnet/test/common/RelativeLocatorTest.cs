@@ -224,7 +224,7 @@ public class RelativeLocatorTest : DriverTestFixture
         {
             var rect2 = driver.FindElement(RelativeBy.WithLocator(By.Id("rect4")).Near(rect));
 
-        }, Throws.TypeOf<NoSuchElementException>().With.Message.EqualTo("Unable to find element; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception"));
+        }, Throws.TypeOf<NoSuchElementException>().With.Message.EqualTo("Unable to find element; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception"));
     }
 
     //------------------------------------------------------------------

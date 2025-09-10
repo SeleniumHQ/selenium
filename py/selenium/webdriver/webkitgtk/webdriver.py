@@ -20,9 +20,8 @@ from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
-from .options import Options
-from .service import Service
+from selenium.webdriver.webkitgtk.options import Options
+from selenium.webdriver.webkitgtk.service import Service
 
 
 class WebDriver(RemoteWebDriver):

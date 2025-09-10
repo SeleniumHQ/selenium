@@ -23,11 +23,10 @@ from io import BytesIO
 from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
-from .options import Options
-from .remote_connection import FirefoxRemoteConnection
-from .service import Service
 
 
 class WebDriver(RemoteWebDriver):
