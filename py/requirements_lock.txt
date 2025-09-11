@@ -655,9 +655,9 @@ rich==14.1.0 \
     # via
     #   -r py/requirements.txt
     #   twine
-secretstorage==3.3.0 \
-    --hash=sha256:30cfdef28829dad64d6ea1ed08f8eff6aa115a77068926bcc9f5225d5a3246aa \
-    --hash=sha256:5c36f6537a523ec5f969ef9fad61c98eb9e017bc601d811e53aa25bece64892f
+secretstorage==3.3.3 \
+    --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \
+    --hash=sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99
     # via
     #   -r py/requirements.txt
     #   keyring
