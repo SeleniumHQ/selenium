@@ -27,11 +27,10 @@ from urllib.parse import unquote, urlparse
 import urllib3
 
 from selenium import __version__
-
-from . import utils
-from .client_config import ClientConfig
-from .command import Command
-from .errorhandler import ErrorCode
+from selenium.webdriver.remote import utils
+from selenium.webdriver.remote.client_config import ClientConfig
+from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.errorhandler import ErrorCode
 
 LOGGER = logging.getLogger(__name__)
 

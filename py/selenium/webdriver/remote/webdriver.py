@@ -58,22 +58,21 @@ from selenium.webdriver.common.virtual_authenticator import (
     VirtualAuthenticatorOptions,
     required_virtual_authenticator,
 )
+from selenium.webdriver.remote.bidi_connection import BidiConnection
+from selenium.webdriver.remote.client_config import ClientConfig
+from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.errorhandler import ErrorHandler
+from selenium.webdriver.remote.fedcm import FedCM
+from selenium.webdriver.remote.file_detector import FileDetector, LocalFileDetector
+from selenium.webdriver.remote.locator_converter import LocatorConverter
+from selenium.webdriver.remote.mobile import Mobile
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.script_key import ScriptKey
+from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.switch_to import SwitchTo
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 from selenium.webdriver.support.relative_locator import RelativeBy
-
-from .bidi_connection import BidiConnection
-from .client_config import ClientConfig
-from .command import Command
-from .errorhandler import ErrorHandler
-from .fedcm import FedCM
-from .file_detector import FileDetector, LocalFileDetector
-from .locator_converter import LocatorConverter
-from .mobile import Mobile
-from .remote_connection import RemoteConnection
-from .script_key import ScriptKey
-from .shadowroot import ShadowRoot
-from .switch_to import SwitchTo
-from .webelement import WebElement
-from .websocket_connection import WebSocketConnection
 
 cdp = None
 
