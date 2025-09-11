@@ -17,7 +17,7 @@
 
 from typing import Optional
 
-from .account import Account
+from selenium.webdriver.common.fedcm.account import Account
 
 
 class Dialog:

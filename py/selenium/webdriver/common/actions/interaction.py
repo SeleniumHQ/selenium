@@ -16,7 +16,7 @@
 # under the License.
 from typing import Union
 
-from .input_device import InputDevice
+from selenium.webdriver.common.actions.input_device import InputDevice
 
 KEY = "key"
 POINTER = "pointer"
