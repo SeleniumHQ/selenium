@@ -217,7 +217,9 @@ public class SeleniumManager {
 
         binary = getBinaryInCache(SELENIUM_MANAGER + extension);
         if (!Files.exists(binary)) {
-          try (InputStream inputStream = findBinaryInClasspath(folder, extension)) {
+          String binaryPathInJar = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
+          try (InputStream inputStream =
+              requireNonNull(getClass().getResourceAsStream(binaryPathInJar))) {
             Files.createDirectories(binary.getParent());
             saveToFileSafely(inputStream, binary);
           }
@@ -249,13 +251,6 @@ public class SeleniumManager {
     } finally {
       Files.deleteIfExists(temporaryFile);
     }
-  }
-
-  private InputStream findBinaryInClasspath(String folder, String extension) {
-    String binaryPathInJar = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
-    return requireNonNull(
-        getClass().getResourceAsStream(binaryPathInJar),
-        () -> "Resource not found in classpath: " + binaryPathInJar);
   }
 
   /**
