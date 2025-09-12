@@ -10,8 +10,9 @@
 # - run `bazel run //py:requirements.update` to generate a new `py/requirements_lock.txt` file
 # - deactivate and remove the temporary virtual env
 #
-# After running this script, you should also manually check package dependency versions in
-# `py/pyproject.toml`, `py/tox.ini` and `py/BUILD.bazel`, and update those if needed.
+# After running this script, you should also manually check package dependency
+# versions in `py/pyproject.toml`, `py/tox.ini`, py/BUILD.bazel`,
+# `py/docs/requirements.txt`, and update those if needed.
 #
 # Once all dependencies are updated, create a new Pull Request with the changes.
 
