@@ -147,7 +147,7 @@ class BuildFile
 
   def parse_file(file_name)
     @file_name = file_name
-    data = IO.read(file_name)
+    data = File.read(file_name)
     parse(data)
   end
 
