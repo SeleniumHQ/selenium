@@ -21,6 +21,7 @@ const assert = require('node:assert')
 const { Browser, By } = require('selenium-webdriver')
 const { Pages, suite } = require('../../lib/test')
 const { Network } = require('selenium-webdriver/bidi/network')
+const { Header, BytesValue } = require('selenium-webdriver/bidi/networkTypes')
 const { AddInterceptParameters } = require('selenium-webdriver/bidi/addInterceptParameters')
 const { InterceptPhase } = require('selenium-webdriver/bidi/interceptPhase')
 const { until } = require('selenium-webdriver/index')
@@ -154,13 +155,21 @@ suite(
         let counter = 0
 
         await network.beforeRequestSent(async (event) => {
-          await network.provideResponse(new ProvideResponseParameters(event.request.request))
+          await network.provideResponse(new ProvideResponseParameters(event.request.request)
+            .statusCode(200)
+            .headers([
+              new Header("Content-Type", new BytesValue("string", "text/html"))
+            ])
+            .body(new BytesValue("string", "<html><body>Hello world</body></html>"))
+          )
           counter = counter + 1
         })
 
         await driver.get(Pages.logEntryAdded)
+        await driver.wait(until.elementTextContains(driver.findElement(By.css('body')), 'Hello world'));
 
         assert.strictEqual(counter >= 1, true)
+        assert.equal((await driver.getPageSource()).includes('Hello world'), true)
       })
     })
   },

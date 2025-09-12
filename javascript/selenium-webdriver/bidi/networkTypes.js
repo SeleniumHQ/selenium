@@ -119,6 +119,17 @@ class Header {
   get value() {
     return this._value
   }
+
+  /**
+   * Converts the Header to a map.
+   * @returns {Map<string, string>} A map representation of the Header.
+   */
+  asMap() {
+    const map = new Map()
+    map.set('name', this._name)
+    map.set('value', Object.fromEntries(this._value.asMap()))
+    return map
+  }  
 }
 
 /**
