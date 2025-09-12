@@ -102,6 +102,11 @@ public class Zip {
       while ((entry = zis.getNextEntry()) != null) {
         File file = new File(outputDir, entry.getName());
         if (entry.isDirectory()) {
+          String canonicalOutputDirPath = outputDir.getCanonicalPath();
+          String canonicalDirPath = file.getCanonicalPath();
+          if (!canonicalDirPath.startsWith(canonicalOutputDirPath + File.separator)) {
+            throw new IOException("Directory entry is outside of the target dir: " + entry.getName());
+          }
           FileHandler.createDir(file);
           continue;
         }
