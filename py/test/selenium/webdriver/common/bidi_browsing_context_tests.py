@@ -807,6 +807,41 @@ def test_add_event_handler_download_will_begin(driver, pages):
     driver.browsing_context.remove_event_handler("download_will_begin", callback_id)
 
 
+@pytest.mark.xfail_firefox
+def test_add_event_handler_download_end(driver, pages):
+    """Test adding event handler for download_end event."""
+    events_received = []
+
+    def on_download_end(info):
+        events_received.append(info)
+
+    callback_id = driver.browsing_context.add_event_handler("download_end", on_download_end)
+    assert callback_id is not None
+
+    context_id = driver.current_window_handle
+    url = pages.url("downloads/download.html")
+    driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
+
+    driver.find_element(By.ID, "file-1").click()
+
+    driver.find_element(By.ID, "file-2").click()
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) > 1)
+
+    assert len(events_received) == 2
+
+    download_event = events_received[0]
+    assert download_event.download_params is not None
+    assert download_event.download_params.status == "complete"
+    assert download_event.download_params.context == context_id
+    assert download_event.download_params.timestamp is not None
+    assert "downloads/file_1.txt" in download_event.download_params.url
+    # we assert that atleast the str "file_1" is present in the downloaded file since multiple downloads
+    # will have numbered suffix like file_1 (1)
+    assert "file_1" in download_event.download_params.filepath
+
+    driver.browsing_context.remove_event_handler("download_end", callback_id)
+
+
 def test_add_event_handler_with_specific_contexts(driver):
     """Test adding event handler with specific browsing contexts."""
     events_received = []
