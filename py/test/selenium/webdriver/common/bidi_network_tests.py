@@ -15,7 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import time
 
+import pytest
+
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.network import Request
 from selenium.webdriver.common.by import By
@@ -93,3 +97,27 @@ def test_remove_auth_handler(driver):
     assert callback_id is not None, "Request handler not added"
     driver.network.remove_auth_handler(callback_id)
     assert driver.network.intercepts == [], "Intercept not removed"
+
+
+@pytest.mark.xfail_chrome(reason="Data URLs in Network requests are not implemented in Chrome yet")
+@pytest.mark.xfail_edge(reason="Data URLs in Network requests are not implemented in Edge yet")
+@pytest.mark.xfail_firefox(reason="Data URLs in Network requests are not implemented in Firefox yet")
+def test_handler_with_data_url_request(driver, pages):
+    data_requests = []
+    exceptions = []
+
+    def callback(request: Request):
+        if request.url.startswith("data:"):
+            data_requests.append(request)
+        try:
+            request.continue_request()
+        except WebDriverException as e:
+            exceptions.append(e)
+
+    driver.network.add_request_handler("before_request", callback)
+    url = pages.url("data_url.html")
+    driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
+    time.sleep(1)  # give callback time to complete
+    assert driver.find_element(By.ID, "data-url-image").is_displayed()
+    assert len(data_requests) > 0, "BiDi event not captured"
+    assert len(exceptions) == 0, "Exception raised when continuing request in callback"

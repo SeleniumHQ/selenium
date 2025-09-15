@@ -235,13 +235,13 @@ limitations under the License.
     function testShouldRetainTheFormattingOfTextWithinAPreElement() {
       var text = getVisibleTextByElementId("preformatted");
 
-      assertEquals("   This section has a preformatted\n    text block    \n  split in four lines\n         ", text);
+      assertEquals("   This section has a preformatted\n    text block\n  split in four lines\n         ", text);
     }
 
     function testShouldRetainTheFormattingOfTextWithinAPreElementThatIsWithinARegularBlock() {
       var text = getVisibleTextByElementId("div-with-pre");
 
-      assertEquals("before pre\n   This section has a preformatted\n    text block    \n  split in four lines\n         \nafter pre", text);
+      assertEquals("before pre\n   This section has a preformatted\n    text block\n  split in four lines\n         \nafter pre", text);
     }
 
     function testGetVisibleTextShouldHandleCssContentReplacement() {
@@ -263,6 +263,11 @@ limitations under the License.
       assertEquals("hello, world! bla-bla-bla", text);
       text = getVisibleTextByElementId("uppercased");
       assertEquals("HELLO, WORLD! BLA-BLA-BLA", text);
+
+      text = getVisibleTextByElementId("capitalized_accented_character");
+      assertEquals("Fecha De Expiración", text);
+      text = getVisibleTextByElementId("capitalized_enye");
+      assertEquals("Mañana", text);
 
       text = getVisibleTextByElementId("capitalized-1");
       assertEquals("Äåìî", text);
@@ -421,6 +426,11 @@ limitations under the License.
     <a id="capitalized" style="text-transform: capitalize">hello, world! bla-bla-BLA</a><br/>
     <a id="lowercased" style="text-transform: lowercase">Hello, world! bla-bla-BLA</a><br/>
     <a id="uppercased" style="text-transform: uppercase">hello, world! bla-bla-BLA</a><br/>
+  </div>
+
+  <div>
+    <a id="capitalized_accented_character" style="text-transform: capitalize">Fecha de expiración</a><br/>
+    <a id="capitalized_enye" style="text-transform: capitalize">mañana</a><br/>
   </div>
 
   <div>
