@@ -825,19 +825,27 @@ def test_add_event_handler_download_end(driver, pages):
     driver.find_element(By.ID, "file-1").click()
 
     driver.find_element(By.ID, "file-2").click()
-    WebDriverWait(driver, 5).until(lambda d: len(events_received) > 1)
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) == 2)
 
     assert len(events_received) == 2
 
-    download_event = events_received[0]
-    assert download_event.download_params is not None
-    assert download_event.download_params.status == "complete"
-    assert download_event.download_params.context == context_id
-    assert download_event.download_params.timestamp is not None
-    assert "downloads/file_1.txt" in download_event.download_params.url
-    # we assert that atleast the str "file_1" is present in the downloaded file since multiple downloads
+    for ev in events_received:
+        assert ev.download_params is not None
+        assert ev.download_params.status == "complete"
+        assert ev.download_params.context == context_id
+        assert ev.download_params.timestamp is not None
+
+    # we assert that atleast "file_1" is present in the downloaded file since multiple downloads
     # will have numbered suffix like file_1 (1)
-    assert "file_1" in download_event.download_params.filepath
+    assert any(
+        "downloads/file_1.txt" in ev.download_params.url and "file_1" in ev.download_params.filepath
+        for ev in events_received
+    )
+
+    assert any(
+        "downloads/file_2.jpg" in ev.download_params.url and "file_2" in ev.download_params.filepath
+        for ev in events_received
+    )
 
     driver.browsing_context.remove_event_handler("download_end", callback_id)
 
