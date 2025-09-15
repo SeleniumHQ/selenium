@@ -184,6 +184,8 @@ maven.install(
         "com.google.auto.service:auto-service:1.1.1",
         "com.google.auto.service:auto-service-annotations:1.1.1",
         "com.google.googlejavaformat:google-java-format:1.28.0",
+        "com.google.protobuf:protobuf-java:3.25.5",
+        "com.google.protobuf.nano:protobuf-javanano:3.1.0",
         "com.graphql-java:graphql-java:24.1",
         "dev.failsafe:failsafe:3.3.2",
         "io.grpc:grpc-context:1.74.0",
@@ -213,6 +215,7 @@ maven.install(
         "org.bouncycastle:bcpkix-jdk18on:1.81",
         "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
         "org.hsqldb:hsqldb:2.7.4",
+        "org.jboss.marshalling:jboss-marshalling:2.2.3.Final",
         "org.jspecify:jspecify:1.0.0",
         "org.junit.jupiter:junit-jupiter-api",
         "org.junit.jupiter:junit-jupiter-engine",
@@ -232,7 +235,7 @@ maven.install(
     ],
     boms = [
         "io.opentelemetry:opentelemetry-bom:1.53.0",
-        "io.netty:netty-bom:4.1.121.Final",
+        "io.netty:netty-bom:4.2.4.Final",
         "org.junit:junit-bom:5.13.4",
     ],
     excluded_artifacts = [

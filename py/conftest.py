@@ -23,6 +23,7 @@ from pathlib import Path
 import pytest
 
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -101,7 +102,6 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("driver", metafunc.config.option.drivers, indirect=True)
 
 
-driver_instance = None
 selenium_driver = None
 
 
@@ -276,7 +276,8 @@ class Driver:
 
     @property
     def driver(self):
-        self._driver = self._initialize_driver()
+        if self._driver is None:
+            self._driver = self._initialize_driver()
         return self._driver
 
     @property
@@ -297,21 +298,15 @@ class Driver:
             kwargs["service"] = self.service
         return getattr(webdriver, self.driver_class)(**kwargs)
 
-    @property
     def stop_driver(self):
-        def fin():
-            global driver_instance
-            if self._driver is not None:
-                self._driver.quit()
-            self._driver = None
-            driver_instance = None
-
-        return fin
+        driver_to_stop = self._driver
+        self._driver = None
+        if driver_to_stop is not None:
+            driver_to_stop.quit()
 
 
 @pytest.fixture(scope="function")
 def driver(request):
-    global driver_instance
     global selenium_driver
     driver_class = getattr(request, "param", "Chrome").lower()
 
@@ -345,38 +340,43 @@ def driver(request):
 
         request.addfinalizer(selenium_driver.stop_driver)
 
-    if driver_instance is None:
-        driver_instance = selenium_driver.driver
-
-    yield driver_instance
     # Close the browser after BiDi tests. Those make event subscriptions
     # and doesn't seems to be stable enough, causing the flakiness of the
     # subsequent tests.
     # Remove this when BiDi implementation and API is stable.
-    if selenium_driver.bidi:
+    if selenium_driver is not None and selenium_driver.bidi:
         request.addfinalizer(selenium_driver.stop_driver)
 
+    yield selenium_driver.driver
+
     if request.node.get_closest_marker("no_driver_after_test"):
-        driver_instance = None
+        if selenium_driver is not None:
+            try:
+                selenium_driver.stop_driver()
+            except WebDriverException:
+                pass
+            except Exception:
+                raise
+            selenium_driver = None
 
 
 @pytest.fixture(scope="session", autouse=True)
 def stop_driver(request):
     def fin():
-        global driver_instance
-        if driver_instance is not None:
-            driver_instance.quit()
-        driver_instance = None
+        global selenium_driver
+        if selenium_driver is not None:
+            selenium_driver.stop_driver()
+        selenium_driver = None
 
     request.addfinalizer(fin)
 
 
 def pytest_exception_interact(node, call, report):
     if report.failed:
-        global driver_instance
-        if driver_instance is not None:
-            driver_instance.quit()
-        driver_instance = None
+        global selenium_driver
+        if selenium_driver is not None:
+            selenium_driver.stop_driver()
+        selenium_driver = None
 
 
 @pytest.fixture
