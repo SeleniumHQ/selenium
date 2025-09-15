@@ -1,3 +1,9 @@
+4.35.0 (2025-08-12)
+=========================
+* Add CDP for Chrome 139 and remove 136
+* Fix typos in javascript & rb (#16019)
+* Allow to use `rubyzip` v3 (#16108)
+
 4.34.0 (2025-06-29)
 =========================
 * Add CDP for Chrome 138 and remove 135

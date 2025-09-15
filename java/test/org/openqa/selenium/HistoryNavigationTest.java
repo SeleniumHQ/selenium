@@ -35,9 +35,9 @@ public class HistoryNavigationTest extends JupiterTestBase {
   @Test
   @Ignore(value = SAFARI, reason = "Hanging")
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
-    ((JavascriptExecutor) driver)
-        .executeScript("window.open(arguments[0], 'newWindow')", pages.formPage);
+    ((JavascriptExecutor) driver).executeScript("window.open('', 'newWindow')");
     wait.until(windowToBeSwitchedToWithName("newWindow"));
+    driver.get(pages.formPage);
     wait.until(titleIs("We Leave From Here"));
     String originalTitle = driver.getTitle();
     driver.get(pages.blankPage);
