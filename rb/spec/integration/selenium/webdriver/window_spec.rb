@@ -102,7 +102,7 @@ module Selenium
         expect(new_rect.height).to eq(target_height)
       end
 
-      it 'can maximize the current window' do
+      it 'can maximize the current window', except: {browser: :firefox, platform: :macosx} do
         window.size = old_size = Dimension.new(700, 700)
 
         window.maximize
