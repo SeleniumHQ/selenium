@@ -363,6 +363,7 @@ public class LocalNodeRegistry implements NodeRegistry {
         .collect(ImmutableSet.toImmutableSet());
   }
 
+  @Override
   public Set<NodeStatus> getUpNodes() {
     Lock readLock = this.lock.readLock();
     readLock.lock();
