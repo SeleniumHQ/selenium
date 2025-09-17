@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class NoSuchElementException extends NotFoundException {
 
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#no-such-element-exception";
+  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#nosuchelementexception";
 
   public NoSuchElementException(@Nullable String reason) {
     super(reason);

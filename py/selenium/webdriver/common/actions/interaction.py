@@ -16,11 +16,13 @@
 # under the License.
 from typing import Union
 
+from selenium.webdriver.common.actions.input_device import InputDevice
+
 KEY = "key"
 POINTER = "pointer"
 NONE = "none"
 WHEEL = "wheel"
-SOURCE_TYPES = {KEY, POINTER, NONE}
+SOURCE_TYPES = {KEY, POINTER, WHEEL, NONE}
 
 POINTER_MOUSE = "mouse"
 POINTER_TOUCH = "touch"
@@ -32,7 +34,7 @@ POINTER_KINDS = {POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN}
 class Interaction:
     PAUSE = "pause"
 
-    def __init__(self, source: str) -> None:
+    def __init__(self, source: InputDevice) -> None:
         self.source = source
 
 

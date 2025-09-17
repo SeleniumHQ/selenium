@@ -19,10 +19,10 @@ import errno
 import logging
 import os
 import subprocess
+import sys
 from abc import ABC, abstractmethod
 from collections.abc import Mapping
 from io import IOBase
-from platform import system
 from subprocess import PIPE
 from time import sleep
 from typing import IO, Any, Optional, Union, cast
@@ -205,13 +205,13 @@ class Service(ABC):
         """
         cmd = [path]
         cmd.extend(self.command_line_args())
-        close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
+        close_file_descriptors = self.popen_kw.pop("close_fds", sys.platform != "win32")
         try:
             start_info = None
-            if system() == "Windows":
-                start_info = subprocess.STARTUPINFO()  # type: ignore[attr-defined]
-                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW  # type: ignore[attr-defined]
-                start_info.wShowWindow = subprocess.SW_HIDE  # type: ignore[attr-defined]
+            if sys.platform == "win32":
+                start_info = subprocess.STARTUPINFO()
+                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+                start_info.wShowWindow = subprocess.SW_HIDE
 
             self.process = subprocess.Popen(
                 cmd,
