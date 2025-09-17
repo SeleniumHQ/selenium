@@ -19,6 +19,7 @@ from typing import NoReturn, Optional, Union, overload
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import ByType
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 
@@ -48,8 +49,7 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
     warnings.warn("This method is deprecated and may be removed in future versions. Please use `locate_with` instead.")
     if not tag_name:
         raise WebDriverException("tag_name can not be null")
-    return RelativeBy({"css selector": tag_name})
-
+    return RelativeBy({By.CSS_SELECTOR: tag_name})
 
 def locate_with(by: ByType, using: str) -> "RelativeBy":
     """Start searching for relative objects your search criteria with By.
