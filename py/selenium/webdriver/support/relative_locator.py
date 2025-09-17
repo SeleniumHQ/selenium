@@ -18,8 +18,7 @@ import warnings
 from typing import NoReturn, Optional, Union, overload
 
 from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.by import ByType
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webelement import WebElement
 
 
@@ -50,6 +49,7 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
     if not tag_name:
         raise WebDriverException("tag_name can not be null")
     return RelativeBy({By.CSS_SELECTOR: tag_name})
+
 
 def locate_with(by: ByType, using: str) -> "RelativeBy":
     """Start searching for relative objects your search criteria with By.

@@ -20,6 +20,7 @@ from typing import Literal, Optional
 
 ByType = Literal["id", "xpath", "link text", "partial link text", "name", "tag name", "class name", "css selector"]
 
+
 class By:
     """Set of supported locator strategies.
 
@@ -74,7 +75,6 @@ class By:
     >>> element = driver.find_element(By.CSS_SELECTOR, "div.myElement")
     """
 
-  
     ID: ByType = "id"
     XPATH: ByType = "xpath"
     LINK_TEXT: ByType = "link text"
@@ -97,6 +97,3 @@ class By:
     @classmethod
     def clear_custom_finders(cls) -> None:
         cls._custom_finders.clear()
-
-
-
