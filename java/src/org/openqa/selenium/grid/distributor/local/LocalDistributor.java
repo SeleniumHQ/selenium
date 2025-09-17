@@ -466,7 +466,8 @@ public class LocalDistributor extends Distributor implements Closeable {
   }
 
   private boolean isNotSupported(Capabilities caps) {
-    return getAvailableNodes().stream().noneMatch(node -> node.hasCapability(caps, slotMatcher));
+    return nodeRegistry.getUpNodes().stream()
+        .noneMatch(node -> node.hasCapability(caps, slotMatcher));
   }
 
   private boolean reserve(SlotId id) {
@@ -560,21 +561,28 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
 
     private void checkMatchingSlot(List<SessionRequestCapability> sessionRequests) {
-      for (SessionRequestCapability request : sessionRequests) {
-        long unmatchableCount =
-            request.getDesiredCapabilities().stream()
-                .filter(LocalDistributor.this::isNotSupported)
-                .count();
-
-        if (unmatchableCount == request.getDesiredCapabilities().size()) {
-          LOG.info(
-              "No nodes support the capabilities in the request: "
-                  + request.getDesiredCapabilities());
-          SessionNotCreatedException exception =
-              new SessionNotCreatedException("No nodes support the capabilities in the request");
-          sessionQueue.complete(request.getRequestId(), Either.left(exception));
-        }
-      }
+      // Get UP nodes once to avoid lock & loop over multiple requests
+      Set<NodeStatus> upNodes = nodeRegistry.getUpNodes();
+      // Filter and reject only requests where NO capabilities are supported by ANY UP node
+      // This prevents rejecting requests when nodes support capabilities but are just busy
+      sessionRequests.stream()
+          .filter(
+              request ->
+                  request.getDesiredCapabilities().stream()
+                      .noneMatch(
+                          caps ->
+                              upNodes.stream()
+                                  .anyMatch(node -> node.hasCapability(caps, slotMatcher))))
+          .forEach(
+              request -> {
+                LOG.info(
+                    "No nodes support the capabilities in the request: "
+                        + request.getDesiredCapabilities());
+                SessionNotCreatedException exception =
+                    new SessionNotCreatedException(
+                        "No nodes support the capabilities in the request");
+                sessionQueue.complete(request.getRequestId(), Either.left(exception));
+              });
     }
 
     private void handleNewSessionRequest(SessionRequest sessionRequest) {
