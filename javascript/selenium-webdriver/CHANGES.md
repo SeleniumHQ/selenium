@@ -1,3 +1,15 @@
+## 4.36.0
+
+- Bumping versions to nightly
+- Update dependency tmp to ^0.2.5 (#16172)
+    > * Update dependency tmp to ^0.2.5
+    > * Repin dependencies
+- Update dependency ws to ^8.18.3 (#16009)
+    > * Update dependency ws to ^8.18.3
+    > * Repin dependencies
+- update devtools versions
+- bump versions in preparation for release
+
 ## 4.35.0
 
 - Add CDP for Chrome 139 and remove 136

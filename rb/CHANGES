@@ -1,3 +1,17 @@
+4.36.0 (2025-09-18)
+=========================
+* Bumping versions to nightly
+* [BiDi] Create browser module, added user context related methods (#15371)
+    > * Create browser module, added user context related methods
+    > * Fix formatting issues
+    > * Fix delete cookie test
+    > * Fix tests for firefox browser contexts
+* BiDi get client windows (#16211)
+* Fix links to exception documentation on website (#16305)
+* Update `unhandled_prompt_behavior` capability to support hash syntax (#16289)
+* update devtools versions
+* bump versions in preparation for release
+
 4.35.0 (2025-08-12)
 =========================
 * Add CDP for Chrome 139 and remove 136
