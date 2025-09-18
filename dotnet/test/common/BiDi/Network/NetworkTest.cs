@@ -19,12 +19,23 @@
 
 using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
+using System;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 class NetworkTest : BiDiTestFixture
 {
+    [Test]
+    public async Task CanAddDataCollector()
+    {
+        // Firefox doesn't like int.MaxValue as max encoded data size
+        // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
+        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+
+        Assert.That(collector, Is.Not.Null);
+    }
+
     [Test]
     public async Task CanAddIntercept()
     {
@@ -208,6 +219,30 @@ class NetworkTest : BiDiTestFixture
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
 
         Assert.That(action, Throws.TypeOf<BiDiException>().With.Message.Contain("net::ERR_FAILED").Or.Message.Contain("NS_ERROR_ABORT"));
+    }
+
+    [Test]
+    public async Task CanGetData()
+    {
+        // Firefox doesn't like int.MaxValue as max encoded data size
+        // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
+        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+
+        TaskCompletionSource<string> responseBodyCompletionSource = new();
+
+        await using var _ = await bidi.Network.OnResponseCompletedAsync(async e =>
+        {
+            if (e.Response.Url.Contains("simpleTest.html"))
+            {
+                responseBodyCompletionSource.SetResult((string)await bidi.Network.GetDataAsync(DataType.Response, e.Request.Request));
+            }
+        });
+
+        await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
+
+        var responseBody = await responseBodyCompletionSource.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(responseBody, Contains.Substring("Hello WebDriver"));
     }
 
     [Test]

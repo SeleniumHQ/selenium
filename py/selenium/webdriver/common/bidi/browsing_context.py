@@ -20,8 +20,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Optional, Union
 
 from selenium.webdriver.common.bidi.common import command_builder
-
-from .session import Session
+from selenium.webdriver.common.bidi.session import Session
 
 
 class ReadinessState:
@@ -183,41 +182,17 @@ class DownloadWillBeginParams(NavigationInfo):
 
     @classmethod
     def from_json(cls, json: dict) -> "DownloadWillBeginParams":
-        """Creates a DownloadWillBeginParams instance from a dictionary.
-
-        Parameters:
-        -----------
-            json: A dictionary containing the download parameters.
-
-        Returns:
-        -------
-            DownloadWillBeginParams: A new instance of DownloadWillBeginParams.
-        """
-        context = json.get("context")
-        if context is None or not isinstance(context, str):
-            raise ValueError("context is required and must be a string")
-
-        navigation = json.get("navigation")
-        if navigation is not None and not isinstance(navigation, str):
-            raise ValueError("navigation must be a string")
-
-        timestamp = json.get("timestamp")
-        if timestamp is None or not isinstance(timestamp, int) or timestamp < 0:
-            raise ValueError("timestamp is required and must be a non-negative integer")
-
-        url = json.get("url")
-        if url is None or not isinstance(url, str):
-            raise ValueError("url is required and must be a string")
+        nav_info = NavigationInfo.from_json(json)
 
         suggested_filename = json.get("suggestedFilename")
         if suggested_filename is None or not isinstance(suggested_filename, str):
             raise ValueError("suggestedFilename is required and must be a string")
 
         return cls(
-            context=context,
-            navigation=navigation,
-            timestamp=timestamp,
-            url=url,
+            context=nav_info.context,
+            navigation=nav_info.navigation,
+            timestamp=nav_info.timestamp,
+            url=nav_info.url,
             suggested_filename=suggested_filename,
         )
 
@@ -375,6 +350,91 @@ class HistoryUpdatedParams:
         )
 
 
+class DownloadCanceledParams(NavigationInfo):
+    def __init__(
+        self,
+        context: str,
+        navigation: Optional[str],
+        timestamp: int,
+        url: str,
+        status: str = "canceled",
+    ):
+        super().__init__(context, navigation, timestamp, url)
+        self.status = status
+
+    @classmethod
+    def from_json(cls, json: dict) -> "DownloadCanceledParams":
+        nav_info = NavigationInfo.from_json(json)
+
+        status = json.get("status")
+        if status is None or status != "canceled":
+            raise ValueError("status is required and must be 'canceled'")
+
+        return cls(
+            context=nav_info.context,
+            navigation=nav_info.navigation,
+            timestamp=nav_info.timestamp,
+            url=nav_info.url,
+            status=status,
+        )
+
+
+class DownloadCompleteParams(NavigationInfo):
+    def __init__(
+        self,
+        context: str,
+        navigation: Optional[str],
+        timestamp: int,
+        url: str,
+        status: str = "complete",
+        filepath: Optional[str] = None,
+    ):
+        super().__init__(context, navigation, timestamp, url)
+        self.status = status
+        self.filepath = filepath
+
+    @classmethod
+    def from_json(cls, json: dict) -> "DownloadCompleteParams":
+        nav_info = NavigationInfo.from_json(json)
+
+        status = json.get("status")
+        if status is None or status != "complete":
+            raise ValueError("status is required and must be 'complete'")
+
+        filepath = json.get("filepath")
+        if filepath is not None and not isinstance(filepath, str):
+            raise ValueError("filepath must be a string if provided")
+
+        return cls(
+            context=nav_info.context,
+            navigation=nav_info.navigation,
+            timestamp=nav_info.timestamp,
+            url=nav_info.url,
+            status=status,
+            filepath=filepath,
+        )
+
+
+class DownloadEndParams:
+    """Parameters for the downloadEnd event."""
+
+    def __init__(
+        self,
+        download_params: Union[DownloadCanceledParams, DownloadCompleteParams],
+    ):
+        self.download_params = download_params
+
+    @classmethod
+    def from_json(cls, json: dict) -> "DownloadEndParams":
+        status = json.get("status")
+        if status == "canceled":
+            return cls(DownloadCanceledParams.from_json(json))
+        elif status == "complete":
+            return cls(DownloadCompleteParams.from_json(json))
+        else:
+            raise ValueError("status must be either 'canceled' or 'complete'")
+
+
 class ContextCreated:
     """Event class for browsingContext.contextCreated event."""
 
@@ -523,6 +583,16 @@ class HistoryUpdated:
         return HistoryUpdatedParams.from_json(json)
 
 
+class DownloadEnd:
+    """Event class for browsingContext.downloadEnd event."""
+
+    event_class = "browsingContext.downloadEnd"
+
+    @classmethod
+    def from_json(cls, json: dict):
+        return DownloadEndParams.from_json(json)
+
+
 @dataclass
 class EventConfig:
     event_key: str
@@ -638,6 +708,7 @@ class BrowsingContext:
         "context_created": EventConfig("context_created", "browsingContext.contextCreated", ContextCreated),
         "context_destroyed": EventConfig("context_destroyed", "browsingContext.contextDestroyed", ContextDestroyed),
         "dom_content_loaded": EventConfig("dom_content_loaded", "browsingContext.domContentLoaded", DomContentLoaded),
+        "download_end": EventConfig("download_end", "browsingContext.downloadEnd", DownloadEnd),
         "download_will_begin": EventConfig(
             "download_will_begin", "browsingContext.downloadWillBegin", DownloadWillBegin
         ),

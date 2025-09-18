@@ -26,6 +26,15 @@ namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed partial class NetworkModule(Broker broker) : Module(broker)
 {
+    public async Task<Collector> AddDataCollectorAsync(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, AddDataCollectorOptions? options = null)
+    {
+        var @params = new AddDataCollectorParameters(DataTypes, MaxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
+
+        var result = await Broker.ExecuteCommandAsync<AddDataCollectorCommand, AddDataCollectorResult>(new AddDataCollectorCommand(@params), options).ConfigureAwait(false);
+
+        return result.Collector;
+    }
+
     public async Task<Intercept> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null)
     {
         var @params = new AddInterceptParameters(phases, options?.Contexts, options?.UrlPatterns);
@@ -33,6 +42,13 @@ public sealed partial class NetworkModule(Broker broker) : Module(broker)
         var result = await Broker.ExecuteCommandAsync<AddInterceptCommand, AddInterceptResult>(new AddInterceptCommand(@params), options).ConfigureAwait(false);
 
         return result.Intercept;
+    }
+
+    public async Task<EmptyResult> RemoveDataCollectorAsync(Collector collector, RemoveDataCollectorOptions? options = null)
+    {
+        var @params = new RemoveDataCollectorParameters(collector);
+
+        return await Broker.ExecuteCommandAsync<RemoveDataCollectorCommand, EmptyResult>(new RemoveDataCollectorCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null)
@@ -68,6 +84,15 @@ public sealed partial class NetworkModule(Broker broker) : Module(broker)
         var @params = new FailRequestParameters(request);
 
         return await Broker.ExecuteCommandAsync<FailRequestCommand, EmptyResult>(new FailRequestCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null)
+    {
+        var @params = new GetDataParameters(dataType, request, options?.Collector, options?.Disown);
+
+        var result = await Broker.ExecuteCommandAsync<GetDataCommand, GetDataResult>(new GetDataCommand(@params), options).ConfigureAwait(false);
+
+        return result.Bytes;
     }
 
     public async Task<EmptyResult> ProvideResponseAsync(Request request, ProvideResponseOptions? options = null)
