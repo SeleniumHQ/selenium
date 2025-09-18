@@ -27,7 +27,7 @@ internal class SetClientWindowStateCommand(SetClientWindowStateCommandParameters
 
 [JsonDerivedType(typeof(SetClientWindowNamedStateCommandParameters))]
 [JsonDerivedType(typeof(SetClientWindowRectStateCommandParameters))]
-internal abstract record SetClientWindowStateCommandParameters(ClientWindow ClientWindow) : CommandParameters;
+internal abstract record SetClientWindowStateCommandParameters(ClientWindow ClientWindow) : Parameters;
 
 internal record SetClientWindowNamedStateCommandParameters(ClientWindow ClientWindow, ClientWindowNamedState State) : SetClientWindowStateCommandParameters(ClientWindow);
 
@@ -45,9 +45,9 @@ internal record SetClientWindowRectStateCommandParameters(ClientWindow ClientWin
     public int? Y { get; set; } = Options?.Y;
 }
 
-public record SetClientWindowNamedStateOptions : CommandOptions;
+public sealed class SetClientWindowNamedStateOptions : CommandOptions;
 
-public record SetClientWindowRectStateOptions : CommandOptions
+public sealed class SetClientWindowRectStateOptions : CommandOptions
 {
     public int? Width { get; set; }
 
