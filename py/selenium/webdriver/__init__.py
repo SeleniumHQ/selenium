@@ -44,7 +44,7 @@ from selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions  # 
 from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService  # noqa
 from selenium.webdriver.wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
 
-__version__ = "4.36.0.202508121825"
+__version__ = "4.36.0"
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [
