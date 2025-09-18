@@ -5,7 +5,7 @@ ASSEMBLY_VERSION = "4.0.0.0"
 SUPPORTED_NET_STANDARD_VERSIONS = ["netstandard2.0"]
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
-    "v137",
+    "v140",
     "v138",
     "v139",
 ]
