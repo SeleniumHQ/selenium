@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
@@ -47,6 +48,8 @@ public class ChromeDriverService extends DriverService {
    * the {@link #createDefaultService() default service}.
    */
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
+
+  public static final String CHROME_DRIVER_EXE_ENVIRONMENT_VARIABLE = "SE_CHROMEDRIVER";
 
   /** System property that toggles the formatting of the timestamps of the logs */
   public static final String CHROME_DRIVER_READABLE_TIMESTAMP =
@@ -100,11 +103,11 @@ public class ChromeDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public ChromeDriverService(
-      File executable,
+      @Nullable File executable,
       int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment)
+      @Nullable Duration timeout,
+      @Nullable List<String> args,
+      @Nullable Map<String, String> environment)
       throws IOException {
     super(
         executable,
@@ -120,6 +123,10 @@ public class ChromeDriverService extends DriverService {
 
   public String getDriverProperty() {
     return CHROME_DRIVER_EXE_PROPERTY;
+  }
+
+  public String getDriverEnvironmentVariable() {
+    return CHROME_DRIVER_EXE_ENVIRONMENT_VARIABLE;
   }
 
   @Override
@@ -145,13 +152,13 @@ public class ChromeDriverService extends DriverService {
   public static class Builder
       extends DriverService.Builder<ChromeDriverService, ChromeDriverService.Builder> {
 
-    private Boolean disableBuildCheck;
-    private Boolean readableTimestamp;
-    private Boolean appendLog;
-    private Boolean verbose;
-    private Boolean silent;
-    private String allowedListIps;
-    private ChromiumDriverLogLevel logLevel;
+    private @Nullable Boolean disableBuildCheck;
+    private @Nullable Boolean readableTimestamp;
+    private @Nullable Boolean appendLog;
+    private @Nullable Boolean verbose;
+    private @Nullable Boolean silent;
+    private @Nullable String allowedListIps;
+    private @Nullable ChromiumDriverLogLevel logLevel;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -196,7 +203,7 @@ public class ChromeDriverService extends DriverService {
      * @param logLevel {@link ChromiumDriverLogLevel} for desired log level output.
      * @return A self reference.
      */
-    public Builder withLogLevel(ChromiumDriverLogLevel logLevel) {
+    public Builder withLogLevel(@Nullable ChromiumDriverLogLevel logLevel) {
       this.logLevel = logLevel;
       this.silent = false;
       this.verbose = false;
@@ -238,7 +245,7 @@ public class ChromeDriverService extends DriverService {
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
      */
-    public Builder withAllowedListIps(String allowedListIps) {
+    public Builder withAllowedListIps(@Nullable String allowedListIps) {
       this.allowedListIps = allowedListIps;
       return this;
     }
@@ -249,7 +256,7 @@ public class ChromeDriverService extends DriverService {
      * @param readableTimestamp Whether the timestamp of the log is readable.
      * @return A self reference.
      */
-    public Builder withReadableTimestamp(Boolean readableTimestamp) {
+    public Builder withReadableTimestamp(@Nullable Boolean readableTimestamp) {
       this.readableTimestamp = readableTimestamp;
       return this;
     }
@@ -315,7 +322,11 @@ public class ChromeDriverService extends DriverService {
 
     @Override
     protected ChromeDriverService createDriverService(
-        File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
+        @Nullable File exe,
+        int port,
+        @Nullable Duration timeout,
+        @Nullable List<String> args,
+        @Nullable Map<String, String> environment) {
       try {
         return new ChromeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

@@ -25,14 +25,14 @@ namespace OpenQA.Selenium.BiDi.Script;
 [JsonDerivedType(typeof(ContextTarget))]
 public abstract record Target;
 
-public record RealmTarget(Realm Realm) : Target;
+public sealed record RealmTarget(Realm Realm) : Target;
 
-public record ContextTarget(BrowsingContext.BrowsingContext Context) : Target
+public sealed record ContextTarget(BrowsingContext.BrowsingContext Context) : Target
 {
     public string? Sandbox { get; set; }
 }
 
-public class ContextTargetOptions
+public sealed class ContextTargetOptions
 {
     public string? Sandbox { set; get; }
 }

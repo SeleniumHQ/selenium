@@ -30,8 +30,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.ScriptKey;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -330,6 +332,26 @@ public interface WebDriverListener {
    */
   default void afterResetInputState(WebDriver driver) {}
 
+  /**
+   * This method will be called before {@link TakesScreenshot#getScreenshotAs(OutputType)} is
+   * called.
+   *
+   * @param driver decorated WebDriver instance
+   * @param target target type, see {@link OutputType}
+   * @param <X> return type for getScreenshotAs
+   */
+  default <X> void beforeGetScreenshotAs(WebDriver driver, OutputType<X> target) {}
+
+  /**
+   * This method will be called after {@link TakesScreenshot#getScreenshotAs(OutputType)} is called.
+   *
+   * @param driver decorated WebDriver instance
+   * @param target target type, see {@link OutputType}
+   * @param result object that stores the screenshot information
+   * @param <X> return type for getScreenshotAs
+   */
+  default <X> void afterGetScreenshotAs(WebDriver driver, OutputType<X> target, X result) {}
+
   // WebElement
 
   /**
@@ -580,6 +602,26 @@ public interface WebDriverListener {
    * @param result - result of the method call (value of the css property)
    */
   default void afterGetCssValue(WebElement element, String propertyName, String result) {}
+
+  /**
+   * This method will be called before {@link TakesScreenshot#getScreenshotAs(OutputType)} is
+   * called.
+   *
+   * @param element decorated WebElement instance
+   * @param target target type, see {@link OutputType}
+   * @param <X> return type for getScreenshotAs
+   */
+  default <X> void beforeGetScreenshotAs(WebElement element, OutputType<X> target) {}
+
+  /**
+   * This method will be called after {@link TakesScreenshot#getScreenshotAs(OutputType)} is called.
+   *
+   * @param element decorated WebElement instance
+   * @param target target type, see {@link OutputType}
+   * @param result result object that stores the screenshot information
+   * @param <X> return type for getScreenshotAs
+   */
+  default <X> void afterGetScreenshotAs(WebElement element, OutputType<X> target, X result) {}
 
   // Navigation (WebDriver.Navigation)
 
@@ -913,30 +955,8 @@ public interface WebDriverListener {
    *
    * @param timeouts The timeouts object that will be called
    * @param duration The duration that will be passed to the method
-   * @deprecated Use {@link #beforeScriptTimeout(WebDriver.Timeouts, Duration)} instead.
-   */
-  @Deprecated
-  default void beforeSetScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
-
-  /**
-   * This action will be performed each time before {@link
-   * WebDriver.Timeouts#scriptTimeout(Duration)} is called.
-   *
-   * @param timeouts The timeouts object that will be called
-   * @param duration The duration that will be passed to the method
    */
   default void beforeScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
-
-  /**
-   * This action will be performed each time after {@link
-   * WebDriver.Timeouts#scriptTimeout(Duration)} is called.
-   *
-   * @param timeouts The timeouts object that will be called
-   * @param duration The duration that will be passed to the method
-   * @deprecated Use {@link #afterScriptTimeout(WebDriver.Timeouts, Duration)} instead.
-   */
-  @Deprecated
-  default void afterSetScriptTimeout(WebDriver.Timeouts timeouts, Duration duration) {}
 
   /**
    * This action will be performed each time after {@link

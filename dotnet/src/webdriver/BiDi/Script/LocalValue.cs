@@ -282,36 +282,36 @@ public abstract record LocalValue
 
 public abstract record PrimitiveProtocolLocalValue : LocalValue;
 
-public record NumberLocalValue(double Value) : PrimitiveProtocolLocalValue
+public sealed record NumberLocalValue(double Value) : PrimitiveProtocolLocalValue
 {
     public static explicit operator NumberLocalValue(double n) => new NumberLocalValue(n);
 }
 
-public record StringLocalValue(string Value) : PrimitiveProtocolLocalValue;
+public sealed record StringLocalValue(string Value) : PrimitiveProtocolLocalValue;
 
-public record NullLocalValue : PrimitiveProtocolLocalValue;
+public sealed record NullLocalValue : PrimitiveProtocolLocalValue;
 
-public record UndefinedLocalValue : PrimitiveProtocolLocalValue;
+public sealed record UndefinedLocalValue : PrimitiveProtocolLocalValue;
 
-public record BooleanLocalValue(bool Value) : PrimitiveProtocolLocalValue;
+public sealed record BooleanLocalValue(bool Value) : PrimitiveProtocolLocalValue;
 
-public record BigIntLocalValue(string Value) : PrimitiveProtocolLocalValue;
+public sealed record BigIntLocalValue(string Value) : PrimitiveProtocolLocalValue;
 
-public record ChannelLocalValue(ChannelProperties Value) : LocalValue
+public sealed record ChannelLocalValue(ChannelProperties Value) : LocalValue
 {
     // AddPreloadScript takes arguments typed as ChannelLocalValue but still requires "type":"channel"
     [JsonInclude]
     internal string Type => "channel";
 }
 
-public record ArrayLocalValue(IEnumerable<LocalValue> Value) : LocalValue;
+public sealed record ArrayLocalValue(IEnumerable<LocalValue> Value) : LocalValue;
 
-public record DateLocalValue(string Value) : LocalValue;
+public sealed record DateLocalValue(string Value) : LocalValue;
 
-public record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
+public sealed record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
 
-public record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
+public sealed record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
 
-public record RegExpLocalValue(RegExpValue Value) : LocalValue;
+public sealed record RegExpLocalValue(RegExpValue Value) : LocalValue;
 
-public record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue;
+public sealed record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue;

@@ -32,7 +32,6 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
@@ -50,7 +49,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.HasLogEvents;
-import org.openqa.selenium.remote.html5.AddWebStorage;
 import org.openqa.selenium.support.decorators.Decorated;
 
 /**
@@ -66,9 +64,6 @@ public class Augmenter {
 
   public Augmenter() {
     Set<Augmentation<?>> augmentations = new HashSet<>();
-    Stream.of(new AddWebStorage())
-        .forEach(provider -> augmentations.add(createAugmentation(provider)));
-
     StreamSupport.stream(ServiceLoader.load(AugmenterProvider.class).spliterator(), false)
         .forEach(provider -> augmentations.add(createAugmentation(provider)));
 

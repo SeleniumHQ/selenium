@@ -21,8 +21,8 @@ namespace OpenQA.Selenium.BiDi.Input;
 
 public abstract record Origin;
 
-public record ViewportOrigin() : Origin;
+public sealed record ViewportOrigin() : Origin;
 
-public record PointerOrigin() : Origin;
+public sealed record PointerOrigin() : Origin;
 
-public record ElementOrigin(Script.ISharedReference Element) : Origin;
+public sealed record ElementOrigin(Script.ISharedReference Element) : Origin;

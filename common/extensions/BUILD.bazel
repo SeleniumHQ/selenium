@@ -7,6 +7,7 @@ filegroup(
         "**/*",
     ]),
     visibility = [
+        "//dotnet/test/common:__pkg__",
         "//java/test/org/openqa/selenium/chrome:__pkg__",
         "//java/test/org/openqa/selenium/edge:__pkg__",
         "//java/test/org/openqa/selenium/environment:__pkg__",

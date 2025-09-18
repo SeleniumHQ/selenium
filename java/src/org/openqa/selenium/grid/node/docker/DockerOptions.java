@@ -68,6 +68,10 @@ public class DockerOptions {
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
+  private static final Pattern LINUX_DEVICE_MAPPING_WITH_DEFAULT_PERMISSIONS =
+      Pattern.compile("^([\\w/-]+):([\\w/-]+)$");
+  private static final Pattern LINUX_DEVICE_MAPPING_WITH_PERMISSIONS =
+      Pattern.compile("^([\\w/-]+):([\\w/-]+):(\\w+)$");
   private final Config config;
 
   public DockerOptions(Config config) {
@@ -209,23 +213,17 @@ public class DockerOptions {
   }
 
   protected List<Device> getDevicesMapping() {
-    Pattern linuxDeviceMappingWithDefaultPermissionsPattern =
-        Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+)$");
-    Pattern linuxDeviceMappingWithPermissionsPattern =
-        Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+):([\\w]+)$");
-
     List<String> devices =
         config.getAll(DOCKER_SECTION, "devices").orElseGet(Collections::emptyList);
 
     List<Device> deviceMapping = new ArrayList<>();
     for (String device : devices) {
       String deviceMappingDefined = device.trim();
-      Matcher matcher =
-          linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+      Matcher matcher = LINUX_DEVICE_MAPPING_WITH_DEFAULT_PERMISSIONS.matcher(deviceMappingDefined);
 
       if (matcher.matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), null));
-      } else if ((matcher = linuxDeviceMappingWithPermissionsPattern.matcher(deviceMappingDefined))
+      } else if ((matcher = LINUX_DEVICE_MAPPING_WITH_PERMISSIONS.matcher(deviceMappingDefined))
           .matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
       }

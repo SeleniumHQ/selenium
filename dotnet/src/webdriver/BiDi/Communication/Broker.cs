@@ -75,6 +75,7 @@ public sealed class Broker : IAsyncDisposable
                 new BrowserUserContextConverter(_bidi),
                 new BrowserClientWindowConverter(_bidi),
                 new NavigationConverter(),
+                new CollectorConverter(_bidi),
                 new InterceptConverter(_bidi),
                 new RequestConverter(),
                 new ChannelConverter(),
@@ -86,6 +87,7 @@ public sealed class Broker : IAsyncDisposable
                 new DateTimeOffsetConverter(),
                 new PrintPageRangeConverter(),
                 new InputOriginConverter(),
+                new WebExtensionConverter(_bidi),
                 new SubscriptionConverter(),
                 new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
 
@@ -103,6 +105,7 @@ public sealed class Broker : IAsyncDisposable
                 new Json.Converters.Enumerable.GetUserContextsResultConverter(),
                 new Json.Converters.Enumerable.GetClientWindowsResultConverter(),
                 new Json.Converters.Enumerable.GetRealmsResultConverter(),
+                new Json.Converters.Enumerable.GetTreeResultConverter(),
             }
         };
 
@@ -176,12 +179,6 @@ public sealed class Broker : IAsyncDisposable
                 }
             }
         }
-    }
-
-    public async Task ExecuteCommandAsync<TCommand>(TCommand command, CommandOptions? options)
-        where TCommand : Command
-    {
-        await ExecuteCommandCoreAsync(command, options).ConfigureAwait(false);
     }
 
     public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options)

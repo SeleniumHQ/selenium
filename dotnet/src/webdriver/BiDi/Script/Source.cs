@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record Source(Realm Realm)
+public sealed record Source(Realm Realm)
 {
     public BrowsingContext.BrowsingContext? Context { get; set; }
 }

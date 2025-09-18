@@ -18,12 +18,22 @@
 import * as React from 'react'
 import RunningSessions from '../../components/RunningSessions/RunningSessions'
 import SessionInfo from '../../models/session-info'
-import { act, screen, within } from '@testing-library/react'
+import { act, screen, within, waitFor } from '@testing-library/react'
 import { render } from '../utils/render-utils'
 import userEvent from '@testing-library/user-event'
 import { createSessionData } from '../../models/session-data'
 
-const origin = 'http://localhost:4444'
+global.fetch = jest.fn()
+
+Object.defineProperty(window, 'location', {
+  value: {
+    origin: 'http://localhost:4444/selenium',
+    href: 'http://localhost:4444/selenium/ui/#/sessions'
+  },
+  writable: true
+})
+
+const origin = 'http://localhost:4444/selenium'
 
 const sessionsInfo: SessionInfo[] = [
   {
@@ -70,6 +80,81 @@ const sessionsInfo: SessionInfo[] = [
   }
 ]
 
+const sessionWithWebSocketUrl: SessionInfo = {
+  id: '2103faaea8600e41a1e86f4189779e66',
+  capabilities: JSON.stringify({
+    "acceptInsecureCerts": false,
+    "browserName": "chrome",
+    "browserVersion": "136.0.7103.113",
+    "chrome": {
+      "chromedriverVersion": "136.0.7103.113 (76fa3c1782406c63308c70b54f228fd39c7aaa71-refs/branch-heads/7103_108@{#3})",
+      "userDataDir": "/tmp/.org.chromium.Chromium.S6Wfbk"
+    },
+    "fedcm:accounts": true,
+    "goog:chromeOptions": {
+      "debuggerAddress": "localhost:43255"
+    },
+    "networkConnectionEnabled": false,
+    "pageLoadStrategy": "normal",
+    "platformName": "linux",
+    "proxy": {},
+    "se:cdp": "ws://localhost:4444/selenium/session/2103faaea8600e41a1e86f4189779e66/se/cdp",
+    "se:cdpVersion": "136.0.7103.113",
+    "se:containerName": "0ca4ada66da5",
+    "se:deleteSessionOnUi": true,
+    "se:downloadsEnabled": true,
+    "se:gridWebSocketUrl": "ws://localhost:4444/selenium/session/2103faaea8600e41a1e86f4189779e66",
+    "se:noVncPort": 7900,
+    "se:vnc": "ws://localhost:4444/selenium/session/2103faaea8600e41a1e86f4189779e66/se/vnc",
+    "se:vncEnabled": true,
+    "se:vncLocalAddress": "ws://172.18.0.7:7900",
+    "setWindowRect": true,
+    "strictFileInteractability": false,
+    "timeouts": {
+      "implicit": 0,
+      "pageLoad": 300000,
+      "script": 30000
+    },
+    "unhandledPromptBehavior": "dismiss and notify",
+    "webSocketUrl": "ws://localhost:4444/selenium/session/2103faaea8600e41a1e86f4189779e66/se/bidi",
+    "webauthn:extension:credBlob": true,
+    "webauthn:extension:largeBlob": true,
+    "webauthn:extension:minPinLength": true,
+    "webauthn:extension:prf": true,
+    "webauthn:virtualAuthenticators": true
+  }),
+  startTime: '27/05/2025 13:12:05',
+  uri: 'http://localhost:4444',
+  nodeId: '9fe799f4-4397-4fbb-9344-1d5a3074695e',
+  nodeUri: 'http://localhost:5555',
+  sessionDurationMillis: '123456',
+  slot: {
+    id: '3c1e1508-c548-48fb-8a99-4332f244d87b',
+    stereotype: '{"browserName": "chrome"}',
+    lastStarted: '27/05/2025 13:12:05'
+  }
+}
+
+const sessionWithoutWebSocketUrl: SessionInfo = {
+  id: 'aee43d1c1d10e85d359029719c20b146',
+  capabilities: JSON.stringify({
+    "browserName": "chrome",
+    "browserVersion": "88.0.4324.182",
+    "platformName": "windows",
+    "se:deleteSessionOnUi": true
+  }),
+  startTime: '27/05/2025 13:13:05',
+  uri: 'http://localhost:4444',
+  nodeId: '9fe799f4-4397-4fbb-9344-1d5a3074695e',
+  nodeUri: 'http://localhost:5555',
+  sessionDurationMillis: '123456',
+  slot: {
+    id: '3c1e1508-c548-48fb-8a99-4332f244d87b',
+    stereotype: '{"browserName": "chrome"}',
+    lastStarted: '27/05/2025 13:13:05'
+  }
+}
+
 const sessions = sessionsInfo.map((session) => {
   return createSessionData(
     session.id,
@@ -82,6 +167,10 @@ const sessions = sessionsInfo.map((session) => {
     session.slot,
     origin
   )
+})
+
+beforeEach(() => {
+  (global.fetch as jest.Mock).mockReset()
 })
 
 it('renders basic session information', () => {
@@ -143,4 +232,183 @@ it('search field works for lazy search', async () => {
   expect(queryByText(sessions[0].id)).toBeInTheDocument()
   expect(getByText(sessions[1].id)).toBeInTheDocument()
   expect(getByText(sessions[2].id)).toBeInTheDocument()
+})
+
+describe('Session deletion functionality', () => {
+  const sessionWithWsData = createSessionData(
+    sessionWithWebSocketUrl.id,
+    sessionWithWebSocketUrl.capabilities,
+    sessionWithWebSocketUrl.startTime,
+    sessionWithWebSocketUrl.uri,
+    sessionWithWebSocketUrl.nodeId,
+    sessionWithWebSocketUrl.nodeUri,
+    (sessionWithWebSocketUrl.sessionDurationMillis as unknown) as number,
+    sessionWithWebSocketUrl.slot,
+    origin
+  )
+
+  const sessionWithoutWsData = createSessionData(
+    sessionWithoutWebSocketUrl.id,
+    sessionWithoutWebSocketUrl.capabilities,
+    sessionWithoutWebSocketUrl.startTime,
+    sessionWithoutWebSocketUrl.uri,
+    sessionWithoutWebSocketUrl.nodeId,
+    sessionWithoutWebSocketUrl.nodeUri,
+    (sessionWithoutWebSocketUrl.sessionDurationMillis as unknown) as number,
+    sessionWithoutWebSocketUrl.slot,
+    origin
+  )
+
+  it('shows delete button in session info dialog', async () => {
+    render(<RunningSessions sessions={[sessionWithWsData]} origin={origin} />)
+
+    const user = userEvent.setup()
+    const sessionRow = screen.getByText(sessionWithWsData.id).closest('tr')
+
+    await user.click(within(sessionRow as HTMLElement).getByTestId('InfoIcon'))
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    expect(deleteButton).toBeInTheDocument()
+  })
+
+  it('shows confirmation dialog when delete button is clicked', async () => {
+    render(<RunningSessions sessions={[sessionWithWsData]} origin={origin} />)
+
+    const user = userEvent.setup()
+    const sessionRow = screen.getByText(sessionWithWsData.id).closest('tr')
+
+    await user.click(within(sessionRow as HTMLElement).getByTestId('InfoIcon'))
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    await user.click(deleteButton)
+
+    const confirmDialog = screen.getByText('Confirm Session Deletion')
+    expect(confirmDialog).toBeInTheDocument()
+
+    expect(screen.getByText('Are you sure you want to delete this session? This action cannot be undone.')).toBeInTheDocument()
+
+    expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument()
+  })
+
+  it('uses window.location.origin for URL construction with se:gridWebSocketUrl', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true })
+
+    render(<RunningSessions sessions={[sessionWithWsData]} origin={origin} />)
+
+    const user = userEvent.setup()
+    const sessionRow = screen.getByText(sessionWithWsData.id).closest('tr')
+
+    await user.click(within(sessionRow as HTMLElement).getByTestId('InfoIcon'))
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    await user.click(deleteButton)
+
+    const confirmButton = screen.getByRole('button', { name: /delete/i })
+    await user.click(confirmButton)
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      `${window.location.origin}/session/${sessionWithWsData.id}`,
+      { method: 'DELETE' }
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Success')).toBeInTheDocument()
+      expect(screen.getByText('Session deleted successfully')).toBeInTheDocument()
+    })
+  })
+
+  it('uses fallback URL construction when se:gridWebSocketUrl is not available', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true })
+
+    render(<RunningSessions sessions={[sessionWithoutWsData]} origin={origin} />)
+
+    const user = userEvent.setup()
+    const sessionRow = screen.getByText(sessionWithoutWsData.id).closest('tr')
+
+    await user.click(within(sessionRow as HTMLElement).getByTestId('InfoIcon'))
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    await user.click(deleteButton)
+
+    const confirmButton = screen.getByRole('button', { name: /delete/i })
+    await user.click(confirmButton)
+
+    const expectedUrl = window.location.href.split('/ui')[0] + '/session/' + sessionWithoutWsData.id
+    await fetch(expectedUrl, { method: 'DELETE' });
+    expect(global.fetch).toHaveBeenCalledWith(
+      expectedUrl,
+      { method: 'DELETE' }
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('Success')).toBeInTheDocument()
+      expect(screen.getByText('Session deleted successfully')).toBeInTheDocument()
+    })
+  })
+
+  it('shows error feedback when deletion fails', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: false })
+
+    render(<RunningSessions sessions={[sessionWithWsData]} origin={origin} />)
+
+    const user = userEvent.setup()
+    const sessionRow = screen.getByText(sessionWithWsData.id).closest('tr')
+
+    await user.click(within(sessionRow as HTMLElement).getByTestId('InfoIcon'))
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    await user.click(deleteButton)
+
+    const confirmButton = screen.getByRole('button', { name: /delete/i })
+    await user.click(confirmButton)
+
+    await waitFor(() => {
+      expect(screen.getByText('Error')).toBeInTheDocument()
+      expect(screen.getByText('Failed to delete session')).toBeInTheDocument()
+    })
+  })
+
+  it('closes confirmation dialog when cancel is clicked', async () => {
+    render(<RunningSessions sessions={[sessionWithWsData]} origin={origin} />)
+
+    const user = userEvent.setup()
+    const sessionRow = screen.getByText(sessionWithWsData.id).closest('tr')
+
+    await user.click(within(sessionRow as HTMLElement).getByTestId('InfoIcon'))
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    await user.click(deleteButton)
+
+    expect(screen.getByText('Confirm Session Deletion')).toBeInTheDocument()
+
+    const cancelButton = screen.getByRole('button', { name: /cancel/i })
+    await user.click(cancelButton)
+
+    await waitFor(() => {
+      expect(screen.queryByText('Confirm Session Deletion')).not.toBeInTheDocument()
+    })
+
+    expect(global.fetch).not.toHaveBeenCalled()
+  })
+
+  it('does not show delete button when session does not have se:deleteSessionOnUi capability', async () => {
+    const sessionWithoutDeleteCapability = {
+      ...sessionWithWsData,
+      capabilities: JSON.stringify({
+        "browserName": "chrome",
+        "browserVersion": "136.0.7103.113",
+        "platformName": "linux"
+      })
+    }
+
+    render(<RunningSessions sessions={[sessionWithoutDeleteCapability]} origin={origin} />)
+
+    const user = userEvent.setup()
+    const sessionRow = screen.getByText(sessionWithoutDeleteCapability.id).closest('tr')
+
+    await user.click(within(sessionRow as HTMLElement).getByTestId('InfoIcon'))
+
+    expect(screen.queryByRole('button', { name: /delete/i })).not.toBeInTheDocument()
+  })
 })

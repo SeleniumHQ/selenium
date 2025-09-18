@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-public record CapabilitiesRequest
+public sealed record CapabilitiesRequest
 {
     public CapabilityRequest? AlwaysMatch { get; set; }
 

@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public class Request
+public sealed class Request
 {
     internal Request(string id)
     {

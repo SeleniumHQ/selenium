@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public record UserPromptClosedEventArgs(BiDi BiDi, BrowsingContext Context, bool Accepted)
+public sealed record UserPromptClosedEventArgs(BiDi BiDi, BrowsingContext Context, bool Accepted)
     : BrowsingContextEventArgs(BiDi, Context)
 {
     [JsonInclude]

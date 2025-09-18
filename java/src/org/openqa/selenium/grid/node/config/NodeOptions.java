@@ -77,6 +77,7 @@ public class NodeOptions {
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
   public static final int DEFAULT_DRAIN_AFTER_SESSION_COUNT = 0;
   public static final int DEFAULT_CONNECTION_LIMIT = 10;
+  public static final boolean DEFAULT_DELETE_SESSION_ON_UI = false;
   public static final boolean DEFAULT_ENABLE_CDP = true;
   public static final boolean DEFAULT_ENABLE_BIDI = true;
   static final String NODE_SECTION = "node";
@@ -301,6 +302,13 @@ public class NodeOptions {
             .getInt(NODE_SECTION, "drain-after-session-count")
             .orElse(DEFAULT_DRAIN_AFTER_SESSION_COUNT),
         DEFAULT_DRAIN_AFTER_SESSION_COUNT);
+  }
+
+  @VisibleForTesting
+  boolean isSessionDeletedOnUi() {
+    return config
+        .getBool(NODE_SECTION, "delete-session-on-ui")
+        .orElse(DEFAULT_DELETE_SESSION_ON_UI);
   }
 
   @VisibleForTesting
@@ -749,6 +757,10 @@ public class NodeOptions {
           new PersistentCapabilities(capabilities)
               .setCapability("se:vncEnabled", true)
               .setCapability("se:noVncPort", noVncPort());
+    }
+    if (isSessionDeletedOnUi()) {
+      capabilities =
+          new PersistentCapabilities(capabilities).setCapability("se:deleteSessionOnUi", true);
     }
     if (isManagedDownloadsEnabled() && canConfigureDownloadsDir(capabilities)) {
       capabilities = new PersistentCapabilities(capabilities).setCapability(ENABLE_DOWNLOADS, true);

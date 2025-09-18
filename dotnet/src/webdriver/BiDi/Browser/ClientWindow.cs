@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public record ClientWindow
+public sealed record ClientWindow
 {
     internal ClientWindow(BiDi bidi, string id)
     {

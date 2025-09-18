@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record WindowProxyProperties(BrowsingContext.BrowsingContext Context);
+public sealed record WindowProxyProperties(BrowsingContext.BrowsingContext Context);

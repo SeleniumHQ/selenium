@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record ResponseContent(long Size);
+public sealed record ResponseContent(long Size);

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public class BrowsingContextScriptModule(BrowsingContext context, ScriptModule scriptModule)
+public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptModule scriptModule)
 {
     public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
     {

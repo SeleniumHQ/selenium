@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -45,5 +47,23 @@ class GeckoDriverServiceTest {
     builderMock.withTimeout(customTimeout);
     builderMock.build();
     verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
+  }
+
+  @Test
+  void shouldStopServiceWhenSessionCreationFails() {
+    // Create Firefox options that will cause session creation to fail
+    FirefoxOptions options = new FirefoxOptions();
+    options.setBinary("/path/to/nonexistent/firefox/binary");
+
+    // Create a service
+    GeckoDriverService service = GeckoDriverService.createDefaultService();
+    GeckoDriverService serviceSpy = spy(service);
+
+    // Attempt to create driver - should fail and cleanup the service
+    assertThatExceptionOfType(Exception.class)
+        .isThrownBy(() -> new FirefoxDriver(serviceSpy, options));
+
+    // Verify that the service was stopped
+    assertThat(serviceSpy.isRunning()).isFalse();
   }
 }

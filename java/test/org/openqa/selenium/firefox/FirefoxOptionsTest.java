@@ -37,8 +37,6 @@ import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -234,21 +232,6 @@ class FirefoxOptionsTest {
         .containsEntry("string.pref", "some value")
         .containsEntry("int.pref", 42)
         .containsEntry("boolean.pref", true);
-  }
-
-  @Test
-  void canConvertOptionsWithBinaryToCapabilitiesAndRestoreBack() throws IOException {
-    // Don't assume Firefox is actually installed and available
-    Path tempFile = Files.createTempFile("firefoxoptions", "test");
-
-    FirefoxOptions options =
-        new FirefoxOptions(
-            new MutableCapabilities(
-                new FirefoxOptions().setBinary(new FirefoxBinary(tempFile.toFile()))));
-    Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2)
-        .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("binary", tempFile.toFile().getPath());
   }
 
   @Test

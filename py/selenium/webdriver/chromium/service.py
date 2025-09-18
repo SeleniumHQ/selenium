@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from io import IOBase
-from typing import Optional, Sequence
+from typing import Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service

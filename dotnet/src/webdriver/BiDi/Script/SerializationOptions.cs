@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public class SerializationOptions
+public sealed class SerializationOptions
 {
     public long? MaxDomDepth { get; set; }
 

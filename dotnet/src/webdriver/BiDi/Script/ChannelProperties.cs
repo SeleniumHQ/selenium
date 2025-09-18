@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record ChannelProperties(Channel Channel)
+public sealed record ChannelProperties(Channel Channel)
 {
     public SerializationOptions? SerializationOptions { get; set; }
 

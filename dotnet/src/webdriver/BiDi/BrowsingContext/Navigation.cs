@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public record Navigation(string Id);
+public sealed record Navigation(string Id);

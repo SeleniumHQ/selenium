@@ -241,6 +241,7 @@ public class Proxy
     /// </summary>
     [JsonPropertyName("ftpProxy")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    [Obsolete("FTP proxy support is deprecated and will be removed in the 4.37 version.")]
     public string? FtpProxy
     {
         get => this.ftpProxyLocation;

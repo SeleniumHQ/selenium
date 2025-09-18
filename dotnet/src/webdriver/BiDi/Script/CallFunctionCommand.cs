@@ -22,12 +22,12 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal class CallFunctionCommand(CallFunctionCommandParameters @params)
-    : Command<CallFunctionCommandParameters, EvaluateResult>(@params, "script.callFunction");
+internal sealed class CallFunctionCommand(CallFunctionParameters @params)
+    : Command<CallFunctionParameters, EvaluateResult>(@params, "script.callFunction");
 
-internal record CallFunctionCommandParameters(string FunctionDeclaration, bool AwaitPromise, Target Target, IEnumerable<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : CommandParameters;
+internal sealed record CallFunctionParameters(string FunctionDeclaration, bool AwaitPromise, Target Target, IEnumerable<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : Parameters;
 
-public record CallFunctionOptions : CommandOptions
+public sealed class CallFunctionOptions : CommandOptions
 {
     public IEnumerable<LocalValue>? Arguments { get; set; }
 

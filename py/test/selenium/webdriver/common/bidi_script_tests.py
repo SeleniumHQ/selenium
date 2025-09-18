@@ -60,7 +60,7 @@ def test_logs_console_errors(driver, pages):
     log_entries = []
 
     def log_error(entry):
-        if entry.level == "error":
+        if entry.level == LogLevel.ERROR:
             log_entries.append(entry)
 
     driver.script.add_console_message_handler(log_error)
@@ -561,3 +561,312 @@ def test_disown_handles(driver, pages):
             target={"context": driver.current_window_handle},
             arguments=[{"handle": handle}],
         )
+
+
+# Tests for high-level SCRIPT API commands - pin, unpin, and execute
+
+
+def test_pin_script(driver, pages):
+    """Test pinning a script."""
+    function_declaration = "() => { window.pinnedScriptExecuted = 'yes'; }"
+
+    script_id = driver.script.pin(function_declaration)
+    assert script_id is not None
+    assert isinstance(script_id, str)
+
+    pages.load("blank.html")
+
+    result = driver.script.execute("() => window.pinnedScriptExecuted")
+    assert result["value"] == "yes"
+
+
+def test_unpin_script(driver, pages):
+    """Test unpinning a script."""
+    function_declaration = "() => { window.unpinnableScript = 'executed'; }"
+
+    script_id = driver.script.pin(function_declaration)
+    driver.script.unpin(script_id)
+
+    pages.load("blank.html")
+
+    result = driver.script.execute("() => typeof window.unpinnableScript")
+    assert result["value"] == "undefined"
+
+
+def test_execute_script_with_null_argument(driver, pages):
+    """Test executing script with undefined argument."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """(arg) => {
+            if(arg!==null)
+                throw Error("Argument should be null, but was "+arg);
+            return arg;
+        }""",
+        None,
+    )
+
+    assert result["type"] == "null"
+
+
+def test_execute_script_with_number_argument(driver, pages):
+    """Test executing script with number argument."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """(arg) => {
+            if(arg!==1.4)
+                throw Error("Argument should be 1.4, but was "+arg);
+            return arg;
+        }""",
+        1.4,
+    )
+
+    assert result["type"] == "number"
+    assert result["value"] == 1.4
+
+
+def test_execute_script_with_nan(driver, pages):
+    """Test executing script with NaN argument."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """(arg) => {
+            if(!Number.isNaN(arg))
+                throw Error("Argument should be NaN, but was "+arg);
+            return arg;
+        }""",
+        float("nan"),
+    )
+
+    assert result["type"] == "number"
+    assert result["value"] == "NaN"
+
+
+def test_execute_script_with_inf(driver, pages):
+    """Test executing script with number argument."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """(arg) => {
+            if(arg!==Infinity)
+                throw Error("Argument should be Infinity, but was "+arg);
+            return arg;
+        }""",
+        float("inf"),
+    )
+
+    assert result["type"] == "number"
+    assert result["value"] == "Infinity"
+
+
+def test_execute_script_with_minus_inf(driver, pages):
+    """Test executing script with number argument."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """(arg) => {
+            if(arg!==-Infinity)
+                throw Error("Argument should be -Infinity, but was "+arg);
+            return arg;
+        }""",
+        float("-inf"),
+    )
+
+    assert result["type"] == "number"
+    assert result["value"] == "-Infinity"
+
+
+def test_execute_script_with_bigint_argument(driver, pages):
+    """Test executing script with BigInt argument."""
+    pages.load("blank.html")
+
+    # Use a large integer that exceeds JavaScript safe integer limit
+    large_int = 9007199254740992
+    result = driver.script.execute(
+        """(arg) => {
+            if(arg !== 9007199254740992n)
+                throw Error("Argument should be 9007199254740992n (BigInt), but was "+arg+" (type: "+typeof arg+")");
+            return arg;
+        }""",
+        large_int,
+    )
+
+    assert result["type"] == "bigint"
+    assert result["value"] == str(large_int)
+
+
+def test_execute_script_with_boolean_argument(driver, pages):
+    """Test executing script with boolean argument."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """(arg) => {
+            if(arg!==true)
+                throw Error("Argument should be true, but was "+arg);
+            return arg;
+        }""",
+        True,
+    )
+
+    assert result["type"] == "boolean"
+    assert result["value"] is True
+
+
+def test_execute_script_with_string_argument(driver, pages):
+    """Test executing script with string argument."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """(arg) => {
+            if(arg!=="hello world")
+                throw Error("Argument should be 'hello world', but was "+arg);
+            return arg;
+        }""",
+        "hello world",
+    )
+
+    assert result["type"] == "string"
+    assert result["value"] == "hello world"
+
+
+def test_execute_script_with_date_argument(driver, pages):
+    """Test executing script with date argument."""
+    import datetime
+
+    pages.load("blank.html")
+
+    date = datetime.datetime(2023, 12, 25, 10, 30, 45)
+    result = driver.script.execute(
+        """(arg) => {
+            if(!(arg instanceof Date))
+                throw Error("Argument type should be Date, but was "+
+                    Object.prototype.toString.call(arg));
+            if(arg.getFullYear() !== 2023)
+                throw Error("Year should be 2023, but was "+arg.getFullYear());
+            return arg;
+        }""",
+        date,
+    )
+
+    assert result["type"] == "date"
+    assert "2023-12-25T10:30:45" in result["value"]
+
+
+def test_execute_script_with_array_argument(driver, pages):
+    """Test executing script with array argument."""
+    pages.load("blank.html")
+
+    test_list = [1, 2, 3]
+
+    result = driver.script.execute(
+        """(arg) => {
+            if(!(arg instanceof Array))
+                throw Error("Argument type should be Array, but was "+
+                    Object.prototype.toString.call(arg));
+            if(arg.length !== 3)
+                throw Error("Array should have 3 elements, but had "+arg.length);
+            return arg;
+        }""",
+        test_list,
+    )
+
+    assert result["type"] == "array"
+    values = result["value"]
+    assert len(values) == 3
+
+
+def test_execute_script_with_multiple_arguments(driver, pages):
+    """Test executing script with multiple arguments."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """(a, b, c) => {
+            if(a !== 1) throw Error("First arg should be 1");
+            if(b !== "test") throw Error("Second arg should be 'test'");
+            if(c !== true) throw Error("Third arg should be true");
+            return a + b.length + (c ? 1 : 0);
+        }""",
+        1,
+        "test",
+        True,
+    )
+
+    assert result["type"] == "number"
+    assert result["value"] == 6  # 1 + 4 + 1
+
+
+def test_execute_script_returns_promise(driver, pages):
+    """Test executing script that returns a promise."""
+    pages.load("blank.html")
+
+    result = driver.script.execute(
+        """() => {
+            return Promise.resolve("async result");
+        }""",
+    )
+
+    assert result["type"] == "string"
+    assert result["value"] == "async result"
+
+
+def test_execute_script_with_exception(driver, pages):
+    """Test executing script that throws an exception."""
+    pages.load("blank.html")
+
+    from selenium.common.exceptions import WebDriverException
+
+    with pytest.raises(WebDriverException) as exc_info:
+        driver.script.execute(
+            """() => {
+                throw new Error("Test error message");
+            }""",
+        )
+
+    assert "Test error message" in str(exc_info.value)
+
+
+def test_execute_script_accessing_dom(driver, pages):
+    """Test executing script that accesses DOM elements."""
+    pages.load("formPage.html")
+
+    result = driver.script.execute(
+        """() => {
+            return document.title;
+        }""",
+    )
+
+    assert result["type"] == "string"
+    assert result["value"] == "We Leave From Here"
+
+
+def test_execute_script_with_nested_objects(driver, pages):
+    """Test executing script with nested object arguments."""
+    pages.load("blank.html")
+
+    nested_data = {
+        "user": {
+            "name": "John",
+            "age": 30,
+            "hobbies": ["reading", "coding"],
+        },
+        "settings": {"theme": "dark", "notifications": True},
+    }
+
+    result = driver.script.execute(
+        """(data) => {
+            return {
+                userName: data.user.name,
+                userAge: data.user.age,
+                hobbyCount: data.user.hobbies.length,
+                theme: data.settings.theme
+            };
+        }""",
+        nested_data,
+    )
+
+    assert result["type"] == "object"
+    value_dict = {k: v["value"] for k, v in result["value"]}
+    assert value_dict["userName"] == "John"
+    assert value_dict["userAge"] == 30
+    assert value_dict["hobbyCount"] == 2

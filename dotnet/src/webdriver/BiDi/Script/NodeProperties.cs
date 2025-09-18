@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record NodeProperties(long NodeType, long ChildNodeCount)
+public sealed record NodeProperties(long NodeType, long ChildNodeCount)
 {
     [JsonInclude]
     public IReadOnlyDictionary<string, string>? Attributes { get; internal set; }

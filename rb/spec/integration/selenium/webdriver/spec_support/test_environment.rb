@@ -57,6 +57,10 @@ module Selenium
           end
         end
 
+        def browser_version
+          ENV.fetch('WD_BROWSER_VERSION', 'stable')
+        end
+
         def driver_instance(...)
           @driver_instance || create_driver!(...)
         end
@@ -204,7 +208,7 @@ module Selenium
           {
             browser: browser,
             driver: driver,
-            version: driver_instance.capabilities.browser_version,
+            version: browser_version,
             platform: Platform.os,
             ci: Platform.ci,
             rbe: rbe?

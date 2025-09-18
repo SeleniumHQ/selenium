@@ -32,34 +32,34 @@ internal sealed class SessionModule(Broker broker) : Module(broker)
 
     public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null)
     {
-        var @params = new SubscribeCommandParameters(events, options?.Contexts);
+        var @params = new SubscribeParameters(events, options?.Contexts);
 
         return await Broker.ExecuteCommandAsync<SubscribeCommand, SubscribeResult>(new(@params), options).ConfigureAwait(false);
     }
 
-    public async Task UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
+    public async Task<EmptyResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
     {
-        var @params = new UnsubscribeByIdCommandParameters(subscriptions);
+        var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        await Broker.ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<UnsubscribeByIdCommand, EmptyResult>(new UnsubscribeByIdCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task UnsubscribeAsync(IEnumerable<string> eventNames, UnsubscribeByAttributesOptions? options = null)
+    public async Task<EmptyResult> UnsubscribeAsync(IEnumerable<string> eventNames, UnsubscribeByAttributesOptions? options = null)
     {
-        var @params = new UnsubscribeByAttributesCommandParameters(eventNames, options?.Contexts);
+        var @params = new UnsubscribeByAttributesParameters(eventNames, options?.Contexts);
 
-        await Broker.ExecuteCommandAsync(new UnsubscribeByAttributesCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<UnsubscribeByAttributesCommand, EmptyResult>(new UnsubscribeByAttributesCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilitiesRequest, NewOptions? options = null)
     {
-        var @params = new NewCommandParameters(capabilitiesRequest);
+        var @params = new NewParameters(capabilitiesRequest);
 
         return await Broker.ExecuteCommandAsync<NewCommand, NewResult>(new NewCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task EndAsync(EndOptions? options = null)
+    public async Task<EmptyResult> EndAsync(EndOptions? options = null)
     {
-        await Broker.ExecuteCommandAsync(new EndCommand(), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<EndCommand, EmptyResult>(new EndCommand(), options).ConfigureAwait(false);
     }
 }

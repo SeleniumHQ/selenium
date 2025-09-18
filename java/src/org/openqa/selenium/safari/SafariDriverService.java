@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
@@ -49,6 +50,8 @@ public class SafariDriverService extends DriverService {
    */
   public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
 
+  public static final String SAFARI_DRIVER_EXE_ENVIRONMENT_VARIABLE = "SE_SAFARIDRIVER";
+
   public static final String SAFARI_DRIVER_LOGGING = "webdriver.safari.logging";
 
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
@@ -62,11 +65,11 @@ public class SafariDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public SafariDriverService(
-      File executable,
+      @Nullable File executable,
       int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment)
+      @Nullable Duration timeout,
+      @Nullable List<String> args,
+      @Nullable Map<String, String> environment)
       throws IOException {
     super(
         executable,
@@ -82,6 +85,10 @@ public class SafariDriverService extends DriverService {
 
   public String getDriverProperty() {
     return SAFARI_DRIVER_EXE_PROPERTY;
+  }
+
+  public String getDriverEnvironmentVariable() {
+    return SAFARI_DRIVER_EXE_ENVIRONMENT_VARIABLE;
   }
 
   public File getDriverExecutable() {
@@ -120,7 +127,7 @@ public class SafariDriverService extends DriverService {
   public static class Builder
       extends DriverService.Builder<SafariDriverService, SafariDriverService.Builder> {
 
-    private Boolean diagnose;
+    private @Nullable Boolean diagnose;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -133,13 +140,13 @@ public class SafariDriverService extends DriverService {
       return score;
     }
 
-    public Builder withLogging(Boolean logging) {
+    public Builder withLogging(@Nullable Boolean logging) {
       this.diagnose = logging;
       return this;
     }
 
     @Override
-    public Builder withLogFile(File logFile) {
+    public Builder withLogFile(@Nullable File logFile) {
       throw new WebDriverException(
           "Can not set log location for Safari; use withLogging(true) and locate log in"
               + " ~/Library/Logs/com.apple.WebDriver/");
@@ -163,7 +170,11 @@ public class SafariDriverService extends DriverService {
 
     @Override
     protected SafariDriverService createDriverService(
-        File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
+        @Nullable File exe,
+        int port,
+        @Nullable Duration timeout,
+        @Nullable List<String> args,
+        @Nullable Map<String, String> environment) {
       try {
         withLogOutput(OutputStream.nullOutputStream());
         return new SafariDriverService(exe, port, timeout, args, environment);

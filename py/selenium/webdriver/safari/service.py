@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from collections.abc import Mapping
-from typing import Optional, Sequence
+from collections.abc import Mapping, Sequence
+from typing import Optional
 
 from selenium.webdriver.common import service
 

@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.34.0.202505232017"
-license = { text = "Apache 2.0" }
+version = "4.36.0.202508121825"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
 readme = "README.rst"
 requires-python = "~=3.9"
@@ -25,12 +26,12 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     ]
 dependencies = [
-    "urllib3[socks]~=2.4.0",
-    "trio~=0.30.0",
-    "trio-websocket~=0.12.2",
-    "certifi>=2025.4.26",
-    "typing_extensions~=4.14.0",
-    "websocket-client~=1.8.0",
+    "urllib3[socks]>=2.5.0,<3.0",
+    "trio>=0.30.0,<1.0",
+    "trio-websocket>=0.12.2,<1.0",
+    "certifi>=2025.6.15",
+    "typing_extensions>=4.14.0,<5.0",
+    "websocket-client>=1.8.0,<2.0",
     ]
 
 [project.urls]
@@ -50,8 +51,9 @@ exclude = ["test*"]
 namespaces = true
 # include-package-data is `true` by default in pyproject.toml
 
-[[tool.setuptools-rust.bins]]
+[[tool.setuptools-rust.ext-modules]]
 target = "selenium.webdriver.common.selenium-manager"
+binding = "Exec"
 
 [tool.setuptools.package-data]
 "*" = [
@@ -66,7 +68,8 @@ target = "selenium.webdriver.common.selenium-manager"
     "selenium-manager",
     "selenium-manager.exe",
     "CHANGES",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE",
 ]
 
 [tool.pytest.ini_options]
@@ -141,7 +144,7 @@ respect-gitignore = true
 target-version = "py39"
 
 [tool.ruff.lint]
-extend-select = ["E4", "E7", "E9", "F", "I", "E501", "RUF022"]
+extend-select = ["E4", "E7", "E9", "F", "I", "E501", "RUF022", "TID252"]
 fixable = ["ALL"]
 
 [tool.ruff.format]
