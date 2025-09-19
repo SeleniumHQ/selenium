@@ -72,10 +72,9 @@ public class Network implements AutoCloseable {
   private final Function<JsonInput, BytesValue> getDataResultMapper =
       jsonInput -> {
         Map<String, Object> result = jsonInput.read(Map.class);
-        @SuppressWarnings("unchecked")
-        Map<String, Object> bytesMap = (Map<String, Object>) result.get("bytes");
+        Object bytesObj = result.get("bytes");
 
-        try (StringReader reader = new StringReader(JSON.toJson(bytesMap));
+        try (StringReader reader = new StringReader(JSON.toJson(bytesObj));
             JsonInput bytesInput = JSON.newInput(reader)) {
           return BytesValue.fromJson(bytesInput);
         }
