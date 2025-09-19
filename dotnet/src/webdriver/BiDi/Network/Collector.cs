@@ -1,4 +1,4 @@
-// <copyright file="StableChannelChromeDriver.cs" company="Selenium Committers">
+// <copyright file="Collector.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,28 +17,42 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Chrome;
+using System;
+using System.Threading.Tasks;
 
-public class StableChannelChromeDriver : ChromeDriver
+namespace OpenQA.Selenium.BiDi.Network;
+
+public sealed class Collector : IAsyncDisposable
 {
-    public StableChannelChromeDriver()
-        : base(DefaultOptions)
+    private readonly BiDi _bidi;
+
+    internal Collector(BiDi bidi, string id)
     {
+        _bidi = bidi;
+        Id = id;
     }
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelChromeDriver(ChromeOptions options)
-        : base(options)
+    internal string Id { get; }
+
+    public async Task RemoveAsync()
     {
+        await _bidi.Network.RemoveDataCollectorAsync(this).ConfigureAwait(false);
     }
 
-    public StableChannelChromeDriver(ChromeDriverService service, ChromeOptions options)
-        : base(service, options)
+    public async ValueTask DisposeAsync()
     {
+        await RemoveAsync();
     }
 
-    public static ChromeOptions DefaultOptions
+    public override bool Equals(object? obj)
     {
-        get { return new ChromeOptions(); }
+        if (obj is Collector collectortObj) return collectortObj.Id == Id;
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
     }
 }

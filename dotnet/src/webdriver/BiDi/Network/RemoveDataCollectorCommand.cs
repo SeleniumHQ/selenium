@@ -1,3 +1,4 @@
+// <copyright file="RemoveDataCollectorCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14,21 +15,15 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+// </copyright>
 
-package org.openqa.selenium.remote.http;
+using OpenQA.Selenium.BiDi.Communication;
 
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.WebDriverException;
+namespace OpenQA.Selenium.BiDi.Network;
 
-@NullMarked
-public class ConnectionFailedException extends WebDriverException {
+internal sealed class RemoveDataCollectorCommand(RemoveDataCollectorParameters @params)
+    : Command<RemoveDataCollectorParameters, EmptyResult>(@params, "network.removeDataCollector");
 
-  public ConnectionFailedException(@Nullable String message) {
-    super(message);
-  }
+internal sealed record RemoveDataCollectorParameters(Collector Collector) : Parameters;
 
-  public ConnectionFailedException(@Nullable String message, @Nullable Throwable cause) {
-    super(message, cause);
-  }
-}
+public class RemoveDataCollectorOptions : CommandOptions;

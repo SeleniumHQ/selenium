@@ -75,6 +75,7 @@ public sealed class Broker : IAsyncDisposable
                 new BrowserUserContextConverter(bidi),
                 new BrowserClientWindowConverter(),
                 new NavigationConverter(),
+                new CollectorConverter(_bidi),
                 new InterceptConverter(_bidi),
                 new RequestConverter(),
                 new ChannelConverter(),

@@ -1,3 +1,4 @@
+// <copyright file="GetDataCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14,21 +15,22 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+// </copyright>
 
-package org.openqa.selenium.remote.http;
+using OpenQA.Selenium.BiDi.Communication;
 
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.WebDriverException;
+namespace OpenQA.Selenium.BiDi.Network;
 
-@NullMarked
-public class ConnectionFailedException extends WebDriverException {
+internal sealed class GetDataCommand(GetDataParameters @params)
+    : Command<GetDataParameters, GetDataResult>(@params, "network.getData");
 
-  public ConnectionFailedException(@Nullable String message) {
-    super(message);
-  }
+internal sealed record GetDataParameters(DataType DataType, Request Request, Collector? Collector, bool? Disown) : Parameters;
 
-  public ConnectionFailedException(@Nullable String message, @Nullable Throwable cause) {
-    super(message, cause);
-  }
+public sealed class GetDataOptions : CommandOptions
+{
+    public Collector? Collector { get; set; }
+
+    public bool? Disown { get; set; }
 }
+
+public sealed record GetDataResult(BytesValue Bytes) : EmptyResult;
