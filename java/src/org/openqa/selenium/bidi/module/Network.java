@@ -17,31 +17,40 @@
 
 package org.openqa.selenium.bidi.module;
 
+import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.network.AddDataCollectorParameters;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.BeforeRequestSent;
+import org.openqa.selenium.bidi.network.BytesValue;
 import org.openqa.selenium.bidi.network.CacheBehavior;
 import org.openqa.selenium.bidi.network.ContinueRequestParameters;
 import org.openqa.selenium.bidi.network.ContinueResponseParameters;
 import org.openqa.selenium.bidi.network.FetchError;
+import org.openqa.selenium.bidi.network.GetDataParameters;
 import org.openqa.selenium.bidi.network.ProvideResponseParameters;
 import org.openqa.selenium.bidi.network.ResponseDetails;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 
 public class Network implements AutoCloseable {
 
   private final Set<String> browsingContextIds;
+
+  private static final Json JSON = new Json();
 
   private final BiDi bidi;
 
@@ -59,6 +68,18 @@ public class Network implements AutoCloseable {
 
   private final Event<ResponseDetails> authRequired =
       new Event<>("network.authRequired", ResponseDetails::fromJsonMap);
+
+  private final Function<JsonInput, BytesValue> getDataResultMapper =
+      jsonInput -> {
+        Map<String, Object> result = jsonInput.read(Map.class);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> bytesMap = (Map<String, Object>) result.get("bytes");
+
+        try (StringReader reader = new StringReader(JSON.toJson(bytesMap));
+            JsonInput bytesInput = JSON.newInput(reader)) {
+          return BytesValue.fromJson(bytesInput);
+        }
+      };
 
   public Network(WebDriver driver) {
     this(new HashSet<>(), driver);
@@ -153,6 +174,29 @@ public class Network implements AutoCloseable {
         new Command<>(
             "network.setCacheBehavior",
             Map.of("cacheBehavior", cacheBehavior.toString(), "contexts", contexts)));
+  }
+
+  public String addDataCollector(AddDataCollectorParameters parameters) {
+    Require.nonNull("Add data collector parameters", parameters);
+    return this.bidi.send(
+        new Command<>(
+            "network.addDataCollector",
+            parameters.toMap(),
+            jsonInput -> {
+              Map<String, Object> result = jsonInput.read(Map.class);
+              return (String) result.get("collector");
+            }));
+  }
+
+  public void removeDataCollector(String collector) {
+    Require.nonNull("Collector", collector);
+    this.bidi.send(new Command<>("network.removeDataCollector", Map.of("collector", collector)));
+  }
+
+  public BytesValue getData(GetDataParameters parameters) {
+    Require.nonNull("Get data parameters", parameters);
+    return this.bidi.send(
+        new Command<>("network.getData", parameters.toMap(), getDataResultMapper));
   }
 
   public void onBeforeRequestSent(Consumer<BeforeRequestSent> consumer) {
