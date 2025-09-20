@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi.module;
 
-import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -43,14 +42,11 @@ import org.openqa.selenium.bidi.network.GetDataParameters;
 import org.openqa.selenium.bidi.network.ProvideResponseParameters;
 import org.openqa.selenium.bidi.network.ResponseDetails;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
 public class Network implements AutoCloseable {
 
   private final Set<String> browsingContextIds;
-
-  private static final Json JSON = new Json();
 
   private final BiDi bidi;
 
@@ -71,13 +67,18 @@ public class Network implements AutoCloseable {
 
   private final Function<JsonInput, BytesValue> getDataResultMapper =
       jsonInput -> {
-        Map<String, Object> result = jsonInput.read(Map.class);
-        Object bytesObj = result.get("bytes");
-
-        try (StringReader reader = new StringReader(JSON.toJson(bytesObj));
-            JsonInput bytesInput = JSON.newInput(reader)) {
-          return BytesValue.fromJson(bytesInput);
+        jsonInput.beginObject();
+        BytesValue bytes = null;
+        while (jsonInput.hasNext()) {
+          String name = jsonInput.nextName();
+          if ("bytes".equals(name)) {
+            bytes = BytesValue.fromJson(jsonInput);
+          } else {
+            jsonInput.skipValue();
+          }
         }
+        jsonInput.endObject();
+        return bytes;
       };
 
   public Network(WebDriver driver) {
