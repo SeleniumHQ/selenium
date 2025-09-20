@@ -255,6 +255,11 @@ public abstract class DriverService : ICommandServer
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
 
+        if (_logger.IsEnabled(LogEventLevel.Debug))
+        {
+            _logger.Debug("Starting driver service process");
+        }
+
         // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
         this.driverServiceProcess.Start();
         this.driverServiceProcess.BeginOutputReadLine();
@@ -268,6 +273,11 @@ public abstract class DriverService : ICommandServer
         if (!serviceAvailable)
         {
             throw new WebDriverException($"Cannot start the driver service on {this.ServiceUrl}");
+        }
+
+        if (_logger.IsEnabled(LogEventLevel.Debug))
+        {
+            _logger.Debug("Driver service process is started");
         }
     }
 
@@ -407,6 +417,11 @@ public abstract class DriverService : ICommandServer
     /// otherwise; <see langword="false"/>.</returns>
     private bool WaitForServiceInitialization()
     {
+        if (_logger.IsEnabled(LogEventLevel.Debug))
+        {
+            _logger.Debug("Waiting until driver service is initialized");
+        }
+
         bool isInitialized = false;
         DateTime timeout = DateTime.Now.Add(this.InitializationTimeout);
         while (!isInitialized && DateTime.Now < timeout)
@@ -418,6 +433,11 @@ public abstract class DriverService : ICommandServer
             }
 
             isInitialized = this.IsInitialized;
+        }
+
+        if (_logger.IsEnabled(LogEventLevel.Debug))
+        {
+            _logger.Debug($"Driver service initialization status: {isInitialized}");
         }
 
         return isInitialized;
