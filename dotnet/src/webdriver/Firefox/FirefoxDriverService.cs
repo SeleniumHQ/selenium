@@ -250,21 +250,21 @@ public sealed class FirefoxDriverService : DriverService
     /// </summary>
     /// <param name="sender">The sender of the event.</param>
     /// <param name="args">The data received event arguments.</param>
-    protected override void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
+    protected override void OnDriverProcessDataReceived(string? data)
     {
-        if (string.IsNullOrEmpty(args.Data))
+        if (string.IsNullOrEmpty(data))
             return;
 
         if (!string.IsNullOrEmpty(this.LogPath))
         {
             if (logWriter != null)
             {
-                logWriter.WriteLine(args.Data);
+                logWriter.WriteLine(data);
             }
         }
         else
         {
-            base.OnDriverProcessDataReceived(sender, args);
+            base.OnDriverProcessDataReceived(data);
         }
     }
 

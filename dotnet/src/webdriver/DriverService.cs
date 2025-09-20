@@ -27,6 +27,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal.Logging;
+using System.Threading;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
@@ -170,40 +172,47 @@ public abstract class DriverService : ICommandServer
     /// </summary>
     protected virtual bool HasShutdown => true;
 
+    static TaskFactory _tf = new TaskFactory();
+
     /// <summary>
     /// Gets a value indicating whether the service is responding to HTTP requests.
     /// </summary>
-    protected virtual bool IsInitialized
+    protected virtual async Task<bool> IsInitialized()
     {
-        get
+        bool isInitialized = false;
+
+        try
         {
-            bool isInitialized = false;
-
-            try
+            using (var httpClient = new HttpClient())
             {
-                using (var httpClient = new HttpClient())
-                {
-                    httpClient.DefaultRequestHeaders.ConnectionClose = true;
-                    httpClient.Timeout = TimeSpan.FromSeconds(5);
+                //httpClient.DefaultRequestHeaders.ConnectionClose = true;
+                //httpClient.Timeout = TimeSpan.FromSeconds(2);
 
-                    Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
-                    using (var response = Task.Run(async () => await httpClient.GetAsync(serviceHealthUri)).GetAwaiter().GetResult())
-                    {
-                        // Checking the response from the 'status' end point. Note that we are simply checking
-                        // that the HTTP status returned is a 200 status, and that the response has the correct
-                        // Content-Type header. A more sophisticated check would parse the JSON response and
-                        // validate its values. At the moment we do not do this more sophisticated check.
-                        isInitialized = response.StatusCode == HttpStatusCode.OK && response.Content.Headers.ContentType is { MediaType: string mediaType } && mediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    }
+                Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
+
+                _logger.Debug($"Probing HTTP: {serviceHealthUri}");
+
+                _logger.Debug("Sending GET");
+
+                using (var response = await httpClient.GetAsync(serviceHealthUri).ConfigureAwait(false))
+                {
+                    // Checking the response from the 'status' end point. Note that we are simply checking
+                    // that the HTTP status returned is a 200 status, and that the response has the correct
+                    // Content-Type header. A more sophisticated check would parse the JSON response and
+                    // validate its values. At the moment we do not do this more sophisticated check.
+                    isInitialized = response.StatusCode == HttpStatusCode.OK && response.Content.Headers.ContentType is { MediaType: string mediaType } && mediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+
+                    _logger.Debug($"Probed HTTP: {isInitialized}");
                 }
             }
-            catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
-            {
-                // Do nothing. The exception is expected, meaning driver service is not initialized.
-            }
-
-            return isInitialized;
         }
+        catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
+        {
+            _logger.Warn($"Probing failed: {ex}");
+            // Do nothing. The exception is expected, meaning driver service is not initialized.
+        }
+
+        return isInitialized;
     }
 
     /// <summary>
@@ -215,11 +224,15 @@ public abstract class DriverService : ICommandServer
         GC.SuppressFinalize(this);
     }
 
+    // Replaced Task-based readers with dedicated threads
+    private Thread? _outputThread;
+    private Thread? _errorThread;
+
     /// <summary>
     /// Starts the DriverService if it is not already running.
     /// </summary>
     [MemberNotNull(nameof(driverServiceProcess))]
-    public void Start()
+    public async Task Start()
     {
         if (this.driverServiceProcess != null)
         {
@@ -249,8 +262,8 @@ public abstract class DriverService : ICommandServer
         this.driverServiceProcess.StartInfo.RedirectStandardOutput = true;
         this.driverServiceProcess.StartInfo.RedirectStandardError = true;
 
-        this.driverServiceProcess.OutputDataReceived += this.OnDriverProcessDataReceived;
-        this.driverServiceProcess.ErrorDataReceived += this.OnDriverProcessDataReceived;
+        //this.driverServiceProcess.OutputDataReceived += this.OnDriverProcessDataReceived;
+        //this.driverServiceProcess.ErrorDataReceived += this.OnDriverProcessDataReceived;
 
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
@@ -262,10 +275,83 @@ public abstract class DriverService : ICommandServer
 
         // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
         this.driverServiceProcess.Start();
-        this.driverServiceProcess.BeginOutputReadLine();
-        this.driverServiceProcess.BeginErrorReadLine();
+        //this.driverServiceProcess.BeginOutputReadLine();
+        //this.driverServiceProcess.BeginErrorReadLine();
 
-        bool serviceAvailable = this.WaitForServiceInitialization();
+        if (_logger.IsEnabled(LogEventLevel.Trace))
+        {
+            // Capture a stable reference to the process to avoid races with Stop() nulling the field
+            var proc = this.driverServiceProcess;
+
+            _outputThread = new Thread(() =>
+            {
+                try
+                {
+                    if (proc == null)
+                    {
+                        return;
+                    }
+
+                    using (var reader = proc.StandardOutput)
+                    {
+                        string? line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            OnDriverProcessDataReceived(line);
+                        }
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Process or stream disposed during shutdown; ignore
+                }
+                catch (IOException)
+                {
+                    // Stream closed; ignore
+                }
+            })
+            {
+                IsBackground = true,
+                Name = "DriverService-stdout"
+            };
+
+            _errorThread = new Thread(() =>
+            {
+                try
+                {
+                    if (proc == null)
+                    {
+                        return;
+                    }
+
+                    using (var reader = proc.StandardError)
+                    {
+                        string? line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            OnDriverProcessDataReceived(line);
+                        }
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Process or stream disposed during shutdown; ignore
+                }
+                catch (IOException)
+                {
+                    // Stream closed; ignore
+                }
+            })
+            {
+                IsBackground = true,
+                Name = "DriverService-stderr"
+            };
+
+            _outputThread.Start();
+            _errorThread.Start();
+        }
+
+        bool serviceAvailable = await this.WaitForServiceInitialization().ConfigureAwait(false);
 
         DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
         this.OnDriverProcessStarted(processStartedEventArgs);
@@ -301,8 +387,8 @@ public abstract class DriverService : ICommandServer
 
                 if (this.driverServiceProcess is not null)
                 {
-                    this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
-                    this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
+                    //this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
+                    //this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
                 }
             }
 
@@ -343,14 +429,14 @@ public abstract class DriverService : ICommandServer
     /// </summary>
     /// <param name="sender">The sender of the event.</param>
     /// <param name="args">The data received event arguments.</param>
-    protected virtual void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
+    protected virtual void OnDriverProcessDataReceived(string? data)
     {
-        if (string.IsNullOrEmpty(args.Data))
+        if (string.IsNullOrEmpty(data))
             return;
 
         if (_logger.IsEnabled(LogEventLevel.Trace))
         {
-            _logger.Trace(args.Data);
+            _logger.Trace(data);
         }
     }
 
@@ -378,7 +464,7 @@ public abstract class DriverService : ICommandServer
                             // we'll retry. We wait for exit here, since catching the exception
                             // for a failed HTTP request due to a closed socket is particularly
                             // expensive.
-                            using (var response = Task.Run(async () => await httpClient.GetAsync(shutdownUrl)).GetAwaiter().GetResult())
+                            using (var response = Task.Run(async () => await httpClient.GetAsync(shutdownUrl).ConfigureAwait(false)).GetAwaiter().GetResult())
                             {
 
                             }
@@ -404,8 +490,17 @@ public abstract class DriverService : ICommandServer
                 }
             }
 
+            // Wait for output/error reader threads to finish to avoid IO deadlocks
+            _outputThread?.Join();
+            _errorThread?.Join();
+
             this.driverServiceProcess.Dispose();
             this.driverServiceProcess = null;
+
+            if (_logger.IsEnabled(LogEventLevel.Debug))
+            {
+                _logger.Debug("Driver service is stopped");
+            }
         }
     }
 
@@ -415,29 +510,32 @@ public abstract class DriverService : ICommandServer
     /// </summary>
     /// <returns><see langword="true"/> if the service is properly started and receiving HTTP requests;
     /// otherwise; <see langword="false"/>.</returns>
-    private bool WaitForServiceInitialization()
+    private async Task<bool> WaitForServiceInitialization()
     {
         if (_logger.IsEnabled(LogEventLevel.Debug))
         {
             _logger.Debug("Waiting until driver service is initialized");
         }
 
+        var sw = Stopwatch.StartNew();
+
         bool isInitialized = false;
         DateTime timeout = DateTime.Now.Add(this.InitializationTimeout);
         while (!isInitialized && DateTime.Now < timeout)
         {
+            _logger.Debug("LOOP");
             // If the driver service process has exited, we can exit early.
-            if (!this.IsRunning)
-            {
-                break;
-            }
+            //if (!this.IsRunning)
+            //{
+            //    break;
+            //}
 
-            isInitialized = this.IsInitialized;
+            isInitialized = await this.IsInitialized().ConfigureAwait(false);
         }
 
         if (_logger.IsEnabled(LogEventLevel.Debug))
         {
-            _logger.Debug($"Driver service initialization status: {isInitialized}");
+            _logger.Debug($"Driver service initialization status: {isInitialized} {sw.Elapsed}");
         }
 
         return isInitialized;

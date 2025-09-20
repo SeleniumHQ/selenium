@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Remote;
 
@@ -29,5 +30,5 @@ public interface ICommandServer : IDisposable
     /// <summary>
     /// Starts the server.
     /// </summary>
-    void Start();
+    Task Start();
 }

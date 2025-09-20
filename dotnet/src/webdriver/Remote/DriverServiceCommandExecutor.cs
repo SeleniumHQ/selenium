@@ -115,7 +115,7 @@ public class DriverServiceCommandExecutor : ICommandExecutor
         Response toReturn;
         if (commandToExecute.Name == DriverCommand.NewSession)
         {
-            this.service.Start();
+            await this.service.Start().ConfigureAwait(false);
         }
 
         // Use a try-catch block to catch exceptions for the Quit
