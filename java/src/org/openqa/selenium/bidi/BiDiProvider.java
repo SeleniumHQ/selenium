@@ -44,15 +44,29 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
 
   @Override
   public HasBiDi getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
+    return new HasBiDi() {
+      private volatile Optional<BiDi> biDi;
 
-    URI wsUri = getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
+      @Override
+      public Optional<BiDi> maybeGetBiDi() {
+        if (biDi == null) {
+          synchronized (this) {
+            if (biDi == null) {
+              URI wsUri =
+                  getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
 
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-    HttpClient wsClient = clientFactory.createClient(wsConfig);
-    Connection connection = new Connection(wsClient, wsUri.toString());
+              HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+              ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+              HttpClient wsClient = clientFactory.createClient(wsConfig);
+              Connection connection = new Connection(wsClient, wsUri.toString());
 
-    return () -> Optional.of(new BiDi(connection));
+              biDi = Optional.of(new BiDi(connection));
+            }
+          }
+        }
+        return biDi;
+      }
+    };
   }
 
   private Optional<URI> getBiDiUrl(Capabilities caps) {

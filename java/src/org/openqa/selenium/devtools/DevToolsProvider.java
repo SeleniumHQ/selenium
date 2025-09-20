@@ -42,14 +42,28 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   @Override
   public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
-    Object cdpVersion = caps.getCapability("se:cdpVersion");
-    String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
+    return new HasDevTools() {
+      private volatile Optional<DevTools> devTools;
 
-    CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
-    Optional<DevTools> devTools =
-        SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
+      @Override
+      public Optional<DevTools> maybeGetDevTools() {
+        if (devTools == null) {
+          synchronized (this) {
+            if (devTools == null) {
+              Object cdpVersion = caps.getCapability("se:cdpVersion");
+              String version =
+                  cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
 
-    return () -> devTools;
+              CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
+              this.devTools =
+                  SeleniumCdpConnection.create(caps)
+                      .map(conn -> new DevTools(info::getDomains, conn));
+            }
+          }
+        }
+        return devTools;
+      }
+    };
   }
 
   private String getCdpUrl(Capabilities caps) {
