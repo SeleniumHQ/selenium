@@ -18,6 +18,7 @@
 # under the License.
 
 require File.expand_path('webdriver/spec_helper', __dir__)
+require 'etc'
 require 'selenium/server'
 
 module Selenium
@@ -122,6 +123,8 @@ module Selenium
               '-jar', 'selenium_server_deploy.jar',
               'standalone',
               '--port', port.to_s,
+              '--override-max-sessions', 'true',
+              '--max-sessions', Etc.nprocessors.to_s,
               'foo',
               'bar')
     end

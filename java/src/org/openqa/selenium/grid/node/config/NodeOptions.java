@@ -285,6 +285,43 @@ public class NodeOptions {
   }
 
   /**
+   * Safely parse an integer value for max-sessions with validation and logging. Guards against
+   * NumberFormatException and ensures the value is positive.
+   *
+   * @param value the string value to parse
+   * @param defaultValue the default value to use if parsing fails or value is invalid
+   * @param context descriptive context for logging (e.g., "driver config", "node config")
+   * @return a valid positive integer, or the default value if parsing fails
+   */
+  private static int parseMaxSessionsSafely(String value, int defaultValue, String context) {
+    if (value == null || value.trim().isEmpty()) {
+      LOG.log(
+          Level.WARNING,
+          "Max-sessions value is null or empty for {0}, using default: {1}",
+          new Object[] {context, defaultValue});
+      return defaultValue;
+    }
+
+    try {
+      int parsedValue = Integer.parseInt(value.trim());
+      if (parsedValue <= 0) {
+        LOG.log(
+            Level.WARNING,
+            "Max-sessions value {0} is not positive for {1}, using default: {2}",
+            new Object[] {parsedValue, context, defaultValue});
+        return defaultValue;
+      }
+      return parsedValue;
+    } catch (NumberFormatException e) {
+      LOG.log(
+          Level.WARNING,
+          "Invalid max-sessions value ''{0}'' for {1}, using default: {2}. Error: {3}",
+          new Object[] {value, context, defaultValue, e.getMessage()});
+      return defaultValue;
+    }
+  }
+
+  /**
    * Calculate the actual max-sessions per driver config based on the current configuration. This
    * method ensures consistency between getMaxSessions() and actual session allocation.
    */
@@ -323,8 +360,10 @@ public class NodeOptions {
           for (Map<String, String> configMap : configList) {
             String displayName = configMap.get("display-name");
             int driverMaxSessions =
-                Integer.parseInt(
-                    configMap.getOrDefault("max-sessions", String.valueOf(nodeMaxSessions)));
+                parseMaxSessionsSafely(
+                    configMap.get("max-sessions"),
+                    nodeMaxSessions,
+                    "driver config '" + displayName + "'");
             result.put(displayName, driverMaxSessions);
           }
         } else {
@@ -342,7 +381,11 @@ public class NodeOptions {
 
             // Check if driver config has explicit max-sessions within allowed range
             if (configMap.containsKey("max-sessions")) {
-              int explicitMaxSessions = Integer.parseInt(configMap.get("max-sessions"));
+              int explicitMaxSessions =
+                  parseMaxSessionsSafely(
+                      configMap.get("max-sessions"),
+                      sessionsPerDriverConfig,
+                      "driver config '" + displayName + "' explicit max-sessions");
               if (explicitMaxSessions >= 1 && explicitMaxSessions <= sessionsPerDriverConfig) {
                 driverMaxSessions = explicitMaxSessions;
               }
@@ -427,14 +470,37 @@ public class NodeOptions {
     // Then distribute remaining cores among flexible drivers
     if (flexibleDrivers.size() > 0 && remainingCores > 0) {
       int sessionsPerFlexibleDriver = Math.max(1, remainingCores / flexibleDrivers.size());
-      for (WebDriverInfo info : flexibleDrivers) {
-        sessionsPerDriver.put(info, sessionsPerFlexibleDriver);
+      int remainderCores = remainingCores % flexibleDrivers.size();
+
+      // Distribute base sessions to all flexible drivers
+      for (int i = 0; i < flexibleDrivers.size(); i++) {
+        WebDriverInfo info = flexibleDrivers.get(i);
+        int sessions = sessionsPerFlexibleDriver;
+
+        // Distribute remainder cores to the first 'remainderCores' drivers
+        if (i < remainderCores) {
+          sessions++;
+        }
+
+        sessionsPerDriver.put(info, sessions);
       }
+
+      LOG.log(
+          Level.FINE,
+          "Distributed {0} cores among {1} flexible drivers: {2} base sessions each, "
+              + "{3} drivers get +1 extra session",
+          new Object[] {
+            remainingCores, flexibleDrivers.size(), sessionsPerFlexibleDriver, remainderCores
+          });
     } else if (flexibleDrivers.size() > 0) {
       // No remaining cores, give each flexible driver 1 session
       for (WebDriverInfo info : flexibleDrivers) {
         sessionsPerDriver.put(info, 1);
       }
+      LOG.log(
+          Level.FINE,
+          "No remaining cores available, assigning 1 session to each of {0} flexible drivers",
+          flexibleDrivers.size());
     }
 
     return sessionsPerDriver;
