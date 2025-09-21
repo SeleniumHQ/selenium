@@ -66,6 +66,22 @@ class StressTest {
   public void setupServers() {
     browser = Objects.requireNonNull(Browser.detect());
 
+    // Start app server first
+    appServer =
+        new NettyServer(
+            new BaseServerOptions(new MemoizedConfig(new MapConfig(Map.of()))),
+            req -> {
+              try {
+                Thread.sleep(2000);
+              } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+              }
+              return new HttpResponse().setContent(Contents.string("<h1>Cheese</h1>", UTF_8));
+            });
+
+    tearDowns.add(() -> appServer.stop());
+    appServer.start();
+
     Deployment deployment =
         DeploymentTypes.DISTRIBUTED.start(
             browser.getCapabilities(),
@@ -86,21 +102,6 @@ class StressTest {
     tearDowns.add(deployment);
 
     server = deployment.getServer();
-
-    appServer =
-        new NettyServer(
-            new BaseServerOptions(new MemoizedConfig(new MapConfig(Map.of()))),
-            req -> {
-              try {
-                Thread.sleep(2000);
-              } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-              }
-              return new HttpResponse().setContent(Contents.string("<h1>Cheese</h1>", UTF_8));
-            });
-
-    tearDowns.add(() -> appServer.stop());
-    appServer.start();
   }
 
   @AfterEach

@@ -241,17 +241,13 @@ public class NodeOptions {
               + "Issues related to parallel testing with Internet Explored won't be accepted.");
       LOG.warning("Double check if enabling 'override-max-sessions' is really needed");
     }
-    // Use node max-sessions for initial driver discovery
-    int nodeMaxSessions = config.getInt(NODE_SECTION, "max-sessions").orElse(DEFAULT_MAX_SESSIONS);
-
-    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers =
-        discoverDrivers(nodeMaxSessions, factoryFactory);
+    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(factoryFactory);
 
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories =
         ImmutableMultimap.builder();
 
     addDriverFactoriesFromConfig(sessionFactories);
-    addDriverConfigs(factoryFactory, sessionFactories, nodeMaxSessions);
+    addDriverConfigs(factoryFactory, sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
 
@@ -272,7 +268,7 @@ public class NodeOptions {
         config.getBool(NODE_SECTION, "override-max-sessions").orElse(OVERRIDE_MAX_SESSIONS);
 
     // Always calculate sum of actual driver sessions for consistency
-    int totalActualSessions = calculateTotalMaxSessionsFromAllDrivers(maxSessions);
+    int totalActualSessions = calculateTotalMaxSessionsFromAllDrivers();
 
     if (overrideMaxSessions) {
       return totalActualSessions;
@@ -367,33 +363,32 @@ public class NodeOptions {
             result.put(displayName, driverMaxSessions);
           }
         } else {
-          // When override-max-sessions = false, use CPU-based distribution with explicit overrides
-          final int sessionsPerDriverConfig;
-          if (configList.size() > DEFAULT_MAX_SESSIONS) {
-            sessionsPerDriverConfig = 1;
-          } else {
-            sessionsPerDriverConfig = DEFAULT_MAX_SESSIONS / configList.size();
-          }
+          // When override-max-sessions = false, use optimized CPU distribution
+          List<String> driverNames =
+              configList.stream()
+                  .map(config -> config.get("display-name"))
+                  .collect(Collectors.toList());
+          Map<String, Integer> sessionsPerDriver = calculateOptimizedCpuDistribution(driverNames);
 
           for (Map<String, String> configMap : configList) {
             String displayName = configMap.get("display-name");
-            int driverMaxSessions = sessionsPerDriverConfig;
+            int driverMaxSessions = sessionsPerDriver.getOrDefault(displayName, 1);
 
             // Check if driver config has explicit max-sessions within allowed range
             if (configMap.containsKey("max-sessions")) {
               int explicitMaxSessions =
                   parseMaxSessionsSafely(
                       configMap.get("max-sessions"),
-                      sessionsPerDriverConfig,
+                      driverMaxSessions,
                       "driver config '" + displayName + "' explicit max-sessions");
-              if (explicitMaxSessions >= 1 && explicitMaxSessions <= sessionsPerDriverConfig) {
+              if (explicitMaxSessions >= 1 && explicitMaxSessions <= driverMaxSessions) {
                 driverMaxSessions = explicitMaxSessions;
               }
             } else {
               // Only apply node max-sessions override if driver config doesn't have explicit
               // max-sessions
               if (nodeMaxSessions != DEFAULT_MAX_SESSIONS) {
-                if (nodeMaxSessions >= 1 && nodeMaxSessions <= sessionsPerDriverConfig) {
+                if (nodeMaxSessions >= 1 && nodeMaxSessions <= driverMaxSessions) {
                   driverMaxSessions = nodeMaxSessions;
                 }
               }
@@ -423,13 +418,16 @@ public class NodeOptions {
           }
         } else {
           // When override-max-sessions = false, use optimized CPU distribution
-          Map<WebDriverInfo, Integer> sessionsPerDriver =
-              calculateOptimizedCpuDistribution(detectedDrivers);
+          List<String> driverNames =
+              detectedDrivers.stream()
+                  .map(WebDriverInfo::getDisplayName)
+                  .collect(Collectors.toList());
+          Map<String, Integer> sessionsPerDriver = calculateOptimizedCpuDistribution(driverNames);
 
           // Check if node max-sessions is explicitly set and within allowed range
           if (nodeMaxSessions != DEFAULT_MAX_SESSIONS) {
             for (WebDriverInfo info : detectedDrivers) {
-              int calculatedSessions = sessionsPerDriver.get(info);
+              int calculatedSessions = sessionsPerDriver.get(info.getDisplayName());
               if (nodeMaxSessions >= 1 && nodeMaxSessions <= calculatedSessions) {
                 result.put(info.getDisplayName(), nodeMaxSessions);
               } else {
@@ -437,8 +435,8 @@ public class NodeOptions {
               }
             }
           } else {
-            for (Map.Entry<WebDriverInfo, Integer> entry : sessionsPerDriver.entrySet()) {
-              result.put(entry.getKey().getDisplayName(), entry.getValue());
+            for (Map.Entry<String, Integer> entry : sessionsPerDriver.entrySet()) {
+              result.put(entry.getKey(), entry.getValue());
             }
           }
         }
@@ -448,33 +446,31 @@ public class NodeOptions {
     return result;
   }
 
-  private Map<WebDriverInfo, Integer> calculateOptimizedCpuDistribution(List<WebDriverInfo> infos) {
-    Map<WebDriverInfo, Integer> sessionsPerDriver = new HashMap<>();
+  private Map<String, Integer> calculateOptimizedCpuDistribution(List<String> driverNames) {
+    Map<String, Integer> sessionsPerDriver = new HashMap<>();
 
     // First, allocate sessions for constrained drivers (like Safari)
     int remainingCores = DEFAULT_MAX_SESSIONS;
-    List<WebDriverInfo> constrainedDrivers = new ArrayList<>();
-    List<WebDriverInfo> flexibleDrivers = new ArrayList<>();
+    List<String> flexibleDrivers = new ArrayList<>();
 
-    for (WebDriverInfo info : infos) {
-      if (info.getMaximumSimultaneousSessions() == 1
-          && SINGLE_SESSION_DRIVERS.contains(info.getDisplayName().toLowerCase(Locale.ENGLISH))) {
-        constrainedDrivers.add(info);
-        sessionsPerDriver.put(info, 1);
+    for (String driverName : driverNames) {
+      if (SINGLE_SESSION_DRIVERS.contains(driverName.toLowerCase(Locale.ENGLISH))) {
+        // Constrained drivers get exactly 1 session
+        sessionsPerDriver.put(driverName, 1);
         remainingCores--;
       } else {
-        flexibleDrivers.add(info);
+        flexibleDrivers.add(driverName);
       }
     }
 
     // Then distribute remaining cores among flexible drivers
-    if (flexibleDrivers.size() > 0 && remainingCores > 0) {
+    if (!flexibleDrivers.isEmpty() && remainingCores > 0) {
       int sessionsPerFlexibleDriver = Math.max(1, remainingCores / flexibleDrivers.size());
       int remainderCores = remainingCores % flexibleDrivers.size();
 
       // Distribute base sessions to all flexible drivers
       for (int i = 0; i < flexibleDrivers.size(); i++) {
-        WebDriverInfo info = flexibleDrivers.get(i);
+        String driverName = flexibleDrivers.get(i);
         int sessions = sessionsPerFlexibleDriver;
 
         // Distribute remainder cores to the first 'remainderCores' drivers
@@ -482,31 +478,19 @@ public class NodeOptions {
           sessions++;
         }
 
-        sessionsPerDriver.put(info, sessions);
+        sessionsPerDriver.put(driverName, sessions);
       }
-
-      LOG.log(
-          Level.FINE,
-          "Distributed {0} cores among {1} flexible drivers: {2} base sessions each, "
-              + "{3} drivers get +1 extra session",
-          new Object[] {
-            remainingCores, flexibleDrivers.size(), sessionsPerFlexibleDriver, remainderCores
-          });
-    } else if (flexibleDrivers.size() > 0) {
+    } else if (!flexibleDrivers.isEmpty()) {
       // No remaining cores, give each flexible driver 1 session
-      for (WebDriverInfo info : flexibleDrivers) {
-        sessionsPerDriver.put(info, 1);
+      for (String driverName : flexibleDrivers) {
+        sessionsPerDriver.put(driverName, 1);
       }
-      LOG.log(
-          Level.FINE,
-          "No remaining cores available, assigning 1 session to each of {0} flexible drivers",
-          flexibleDrivers.size());
     }
 
     return sessionsPerDriver;
   }
 
-  private int calculateTotalMaxSessionsFromAllDrivers(int nodeMaxSessions) {
+  private int calculateTotalMaxSessionsFromAllDrivers() {
     Map<String, Integer> actualMaxSessions = calculateActualMaxSessionsPerDriverConfig();
     return actualMaxSessions.values().stream().mapToInt(Integer::intValue).sum();
   }
@@ -650,8 +634,7 @@ public class NodeOptions {
 
   private void addDriverConfigs(
       Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory,
-      ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories,
-      int maxSessions) {
+      ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
 
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
 
@@ -721,10 +704,6 @@ public class NodeOptions {
               // Get actual max-sessions per driver config from centralized calculation
               Map<String, Integer> actualMaxSessionsPerConfig =
                   calculateActualMaxSessionsPerDriverConfig();
-              boolean overrideMaxSessions =
-                  config
-                      .getBool(NODE_SECTION, "override-max-sessions")
-                      .orElse(OVERRIDE_MAX_SESSIONS);
 
               // iterate over driver configs
               configList.forEach(
@@ -888,7 +867,7 @@ public class NodeOptions {
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
-      int maxSessions, Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
+      Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       return ImmutableMap.of();

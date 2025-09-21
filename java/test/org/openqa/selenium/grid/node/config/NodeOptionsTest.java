@@ -614,7 +614,7 @@ class NodeOptionsTest {
     }
 
     // Verify node max-sessions is within CPU limit (not the overridden value)
-    assertThat(nodeOptions.getMaxSessions()).isLessThanOrEqualTo(maxRecommendedSessions);
+    assertThat(nodeOptions.getMaxSessions()).isEqualTo(maxRecommendedSessions);
   }
 
   @Test

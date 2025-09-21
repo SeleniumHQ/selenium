@@ -23,7 +23,16 @@ require 'selenium/server'
 
 module Selenium
   describe Server do
-    let(:mock_process) { instance_double(WebDriver::ChildProcess).as_null_object }
+    let(:mock_process) do
+      instance_double(WebDriver::ChildProcess).tap do |mock|
+        allow(mock).to receive(:start)
+        allow(mock).to receive(:wait)
+        allow(mock).to receive(:stop)
+        allow(mock).to receive(:detach=)
+        allow(mock).to receive(:io)
+        allow(mock).to receive(:io=)
+      end
+    end
     let(:mock_poller) { instance_double(WebDriver::SocketPoller, connected?: true, closed?: true) }
     let(:repo) { 'https://api.github.com/repos/seleniumhq/selenium/releases' }
     let(:port) { WebDriver::PortProber.above(4444) }
@@ -49,7 +58,8 @@ module Selenium
     it 'uses the given jar file and port' do
       allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
       allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', '1234')
+        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', '1234',
+              '--override-max-sessions', 'true', '--max-sessions', Etc.nprocessors.to_s)
         .and_return(mock_process)
 
       server = described_class.new('selenium_server_deploy.jar', port: 1234, background: true)
@@ -58,13 +68,15 @@ module Selenium
       server.start
       expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
       expect(WebDriver::ChildProcess).to have_received(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', '1234')
+        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', '1234',
+              '--override-max-sessions', 'true', '--max-sessions', Etc.nprocessors.to_s)
     end
 
     it 'waits for the server process by default' do
       allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
       allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s)
+        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s,
+              '--override-max-sessions', 'true', '--max-sessions', Etc.nprocessors.to_s)
         .and_return(mock_process)
 
       server = described_class.new('selenium_server_deploy.jar', port: port)
@@ -75,14 +87,16 @@ module Selenium
 
       expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
       expect(WebDriver::ChildProcess).to have_received(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s)
+        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s,
+              '--override-max-sessions', 'true', '--max-sessions', Etc.nprocessors.to_s)
       expect(mock_process).to have_received(:wait)
     end
 
     it 'adds additional args' do
       allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
       allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s, 'foo', 'bar')
+        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s,
+              '--override-max-sessions', 'true', '--max-sessions', Etc.nprocessors.to_s, 'foo', 'bar')
         .and_return(mock_process)
 
       server = described_class.new('selenium_server_deploy.jar', port: port, background: true)
@@ -94,7 +108,8 @@ module Selenium
       expect(File).to have_received(:exist?).with('selenium_server_deploy.jar')
       expect(WebDriver::ChildProcess).to have_received(:build)
         .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone',
-              '--port', port.to_s, 'foo', 'bar')
+              '--port', port.to_s, '--override-max-sessions', 'true', '--max-sessions', Etc.nprocessors.to_s,
+              'foo', 'bar')
     end
 
     it 'adds additional JAVA options args' do
@@ -105,6 +120,8 @@ module Selenium
               '-jar', 'selenium_server_deploy.jar',
               'standalone',
               '--port', port.to_s,
+              '--override-max-sessions', 'true',
+              '--max-sessions', Etc.nprocessors.to_s,
               'foo',
               'bar')
         .and_return(mock_process)
@@ -197,7 +214,8 @@ module Selenium
     it 'raises Selenium::Server::Error if the server is not launched within the timeout' do
       allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
       allow(WebDriver::ChildProcess).to receive(:build)
-        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s)
+        .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', port.to_s,
+              '--override-max-sessions', 'true', '--max-sessions', Etc.nprocessors.to_s)
         .and_return(mock_process)
 
       poller = instance_double(WebDriver::SocketPoller)
