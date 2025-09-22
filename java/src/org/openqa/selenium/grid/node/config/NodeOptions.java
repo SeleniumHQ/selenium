@@ -274,9 +274,7 @@ public class NodeOptions {
       return totalActualSessions;
     } else {
       // When override-max-sessions = false, return sum of actual sessions but cap at CPU cores
-      return totalActualSessions > 0
-          ? Math.min(totalActualSessions, DEFAULT_MAX_SESSIONS)
-          : Math.min(maxSessions, DEFAULT_MAX_SESSIONS);
+      return Math.min(totalActualSessions, DEFAULT_MAX_SESSIONS);
     }
   }
 
