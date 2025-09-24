@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import java.io.StringReader;
+import java.util.Map;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
 public class DownloadEnded {
