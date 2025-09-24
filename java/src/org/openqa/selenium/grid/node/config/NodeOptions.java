@@ -454,6 +454,10 @@ public class NodeOptions {
                 throw new ConfigException("No driver configs were found!");
               }
 
+              // Handle session distribution for detect-drivers = false scenario
+              Map<String, Integer> sessionDistribution =
+                  calculateDriverConfigSessionDistribution(configList, maxSessions);
+
               List<DriverService.Builder<?, ?>> builderList = new ArrayList<>();
               ServiceLoader.load(DriverService.Builder.class).forEach(builderList::add);
 
@@ -506,9 +510,8 @@ public class NodeOptions {
                                     new ConfigException(
                                         "Unable to find matching driver for %s", stereotype));
 
-                    int driverMaxSessions =
-                        Integer.parseInt(
-                            thisConfig.getOrDefault("max-sessions", String.valueOf(maxSessions)));
+                    // Use calculated session distribution
+                    int driverMaxSessions = sessionDistribution.get(configName);
                     Require.positive("Driver max sessions", driverMaxSessions);
 
                     WebDriverInfo driverInfoConfig =
@@ -521,8 +524,7 @@ public class NodeOptions {
                             builder -> {
                               ImmutableCapabilities immutable =
                                   new ImmutableCapabilities(stereotype);
-                              int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
-                              for (int i = 0; i < maxDriverSessions; i++) {
+                              for (int i = 0; i < driverMaxSessions; i++) {
                                 driverConfigs.putAll(
                                     driverInfoConfig, factoryFactory.apply(immutable));
                               }
@@ -790,6 +792,75 @@ public class NodeOptions {
             entry.getKey().getDisplayName(),
             caps.toString().replaceAll("\\s+", " "),
             entry.getValue().size()));
+  }
+
+  private Map<String, Integer> calculateDriverConfigSessionDistribution(
+      List<Map<String, String>> configList, int nodeMaxSessions) {
+    Map<String, Integer> sessionDistribution = new HashMap<>();
+    boolean overrideMaxSessions =
+        config.getBool(NODE_SECTION, "override-max-sessions").orElse(OVERRIDE_MAX_SESSIONS);
+
+    // S2.1: No max-sessions given, distribute CPU cores among driver configurations
+    if (!config.getInt(NODE_SECTION, "max-sessions").isPresent()) {
+      int availableCores = DEFAULT_MAX_SESSIONS;
+      int numDrivers = configList.size();
+
+      // Distribute cores evenly, with remainder going to first drivers
+      int baseSessions = availableCores / numDrivers;
+      int remainder = availableCores % numDrivers;
+
+      for (int i = 0; i < configList.size(); i++) {
+        Map<String, String> driverConfig = configList.get(i);
+        String displayName = driverConfig.get("display-name");
+
+        // Check if driver has specific max-sessions (S2.3)
+        int driverSessions;
+        if (driverConfig.containsKey("max-sessions")) {
+          int specificMaxSessions = Integer.parseInt(driverConfig.get("max-sessions"));
+          if (overrideMaxSessions) {
+            driverSessions = specificMaxSessions;
+          } else {
+            // Respect CPU core distribution even with specific max-sessions
+            driverSessions = Math.min(specificMaxSessions, baseSessions + (i < remainder ? 1 : 0));
+          }
+        } else {
+          driverSessions = baseSessions + (i < remainder ? 1 : 0);
+        }
+
+        sessionDistribution.put(displayName, driverSessions);
+      }
+    } else {
+      // S2.2: Given max-sessions under [node] section
+      int configuredMaxSessions = nodeMaxSessions;
+
+      for (Map<String, String> driverConfig : configList) {
+        String displayName = driverConfig.get("display-name");
+
+        // Check if driver has specific max-sessions (S2.3)
+        int driverSessions;
+        if (driverConfig.containsKey("max-sessions")) {
+          int specificMaxSessions = Integer.parseInt(driverConfig.get("max-sessions"));
+          if (overrideMaxSessions) {
+            // S2.4: Unlimited configure max-sessions with override-max-sessions true
+            driverSessions = specificMaxSessions;
+          } else {
+            // S2.3: Specific driver max-sessions takes precedence but controlled by CPU cores
+            driverSessions = Math.min(specificMaxSessions, configuredMaxSessions);
+          }
+        } else {
+          // Use node max-sessions, but respect CPU limits if override is false
+          if (overrideMaxSessions) {
+            driverSessions = configuredMaxSessions;
+          } else {
+            driverSessions = Math.min(configuredMaxSessions, DEFAULT_MAX_SESSIONS);
+          }
+        }
+
+        sessionDistribution.put(displayName, driverSessions);
+      }
+    }
+
+    return sessionDistribution;
   }
 
   private String unquote(String input) {
