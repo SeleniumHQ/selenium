@@ -80,14 +80,13 @@ class SwitchTo:
                 driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])
         """
         if isinstance(frame_reference, str):
-            frame_name = frame_reference
             try:
                 frame_reference = self._driver.find_element(By.ID, frame_reference)
             except NoSuchElementException:
                 try:
                     frame_reference = self._driver.find_element(By.NAME, frame_reference)
                 except NoSuchElementException as exc:
-                    raise NoSuchFrameException(frame_name) from exc
+                    raise NoSuchFrameException(frame_reference) from exc
 
         self._driver.execute(Command.SWITCH_TO_FRAME, {"id": frame_reference})
 
