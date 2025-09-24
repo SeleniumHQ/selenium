@@ -28,12 +28,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
-import org.openqa.selenium.bidi.browsingcontext.BrowsingContextInfo;
-import org.openqa.selenium.bidi.browsingcontext.DownloadInfo;
-import org.openqa.selenium.bidi.browsingcontext.HistoryUpdated;
-import org.openqa.selenium.bidi.browsingcontext.NavigationInfo;
-import org.openqa.selenium.bidi.browsingcontext.UserPromptClosed;
-import org.openqa.selenium.bidi.browsingcontext.UserPromptOpened;
+import org.openqa.selenium.bidi.browsingcontext.*;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -70,6 +65,14 @@ public class BrowsingContextInspector implements AutoCloseable {
         }
       };
 
+  private final Function<Map<String, Object>, DownloadEnded> downloadWillEndMapper =
+      params -> {
+        try (StringReader reader = new StringReader(JSON.toJson(params));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.read(DownloadEnded.class);
+        }
+      };
+
   private final Event<BrowsingContextInfo> browsingContextCreated =
       new Event<>("browsingContext.contextCreated", browsingContextInfoMapper);
 
@@ -90,6 +93,9 @@ public class BrowsingContextInspector implements AutoCloseable {
 
   private final Event<DownloadInfo> downloadWillBeginEvent =
       new Event<>("browsingContext.downloadWillBegin", downloadWillBeginMapper);
+
+  private final Event<DownloadEnded> downloadWillEndEvent =
+      new Event<>("browsingContext.downloadEnd", downloadWillEndMapper);
 
   private final Event<UserPromptOpened> userPromptOpened =
       new Event<>(
@@ -171,6 +177,14 @@ public class BrowsingContextInspector implements AutoCloseable {
     }
   }
 
+  public void onDownloadEnd(Consumer<DownloadEnded> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(downloadWillEndEvent, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, downloadWillEndEvent, consumer);
+    }
+  }
+
   public void onNavigationAborted(Consumer<NavigationInfo> consumer) {
     addNavigationEventListener("browsingContext.navigationAborted", consumer);
   }
@@ -227,6 +241,7 @@ public class BrowsingContextInspector implements AutoCloseable {
     this.bidi.clearListener(userPromptClosed);
     this.bidi.clearListener(historyUpdated);
     this.bidi.clearListener(downloadWillBeginEvent);
+    this.bidi.clearListener(downloadWillEndEvent);
 
     navigationEventSet.forEach(this.bidi::clearListener);
   }
