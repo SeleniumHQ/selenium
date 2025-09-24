@@ -28,53 +28,19 @@ public class DownloadEnded {
   }
 
   public static DownloadEnded fromJson(JsonInput input) {
-    String browsingContextId = null;
-    String navigationId = null;
-    long timestamp = 0;
-    String url = null;
-    String status = null;
-    String filepath = null;
+    Map<String, Object> jsonMap = input.read(Map.class);
+    String status = (String) jsonMap.get("status");
 
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "context":
-          browsingContextId = input.read(String.class);
-          break;
-        case "navigation":
-          navigationId = input.read(String.class);
-          break;
-        case "timestamp":
-          timestamp = input.read(Long.class);
-          break;
-        case "url":
-          url = input.read(String.class);
-          break;
-        case "status":
-          status = input.read(String.class);
-          break;
-        case "filepath":
-          filepath = input.read(String.class);
-          break;
-        default:
-          input.skipValue();
-          break;
+    try (StringReader reader = new StringReader(new Json().toJson(jsonMap));
+        JsonInput jsonInput = new Json().newInput(reader)) {
+      if ("canceled".equals(status)) {
+        return new DownloadEnded(DownloadCanceled.fromJson(jsonInput));
+      } else if ("complete".equals(status)) {
+        return new DownloadEnded(DownloadCompleted.fromJson(jsonInput));
+      } else {
+        throw new IllegalArgumentException(
+            "status must be either 'canceled' or 'complete', but got: " + status);
       }
-    }
-    input.endObject();
-
-    // Create the appropriate object based on status
-    if ("canceled".equals(status)) {
-      DownloadCanceled canceled =
-          new DownloadCanceled(browsingContextId, navigationId, timestamp, url, status);
-      return new DownloadEnded(canceled);
-    } else if ("complete".equals(status)) {
-      DownloadCompleted completed =
-          new DownloadCompleted(browsingContextId, navigationId, timestamp, url, status, filepath);
-      return new DownloadEnded(completed);
-    } else {
-      throw new IllegalArgumentException(
-          "status must be either 'canceled' or 'complete', but got: " + status);
     }
   }
 
