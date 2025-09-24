@@ -65,7 +65,7 @@ public class BrowsingContextInspector implements AutoCloseable {
         }
       };
 
-  private final Function<Map<String, Object>, DownloadEnded> downloadWillEndMapper =
+  private final Function<Map<String, Object>, DownloadEnded> downloadEndMapper =
       params -> {
         try (StringReader reader = new StringReader(JSON.toJson(params));
             JsonInput input = JSON.newInput(reader)) {
@@ -94,8 +94,8 @@ public class BrowsingContextInspector implements AutoCloseable {
   private final Event<DownloadInfo> downloadWillBeginEvent =
       new Event<>("browsingContext.downloadWillBegin", downloadWillBeginMapper);
 
-  private final Event<DownloadEnded> downloadWillEndEvent =
-      new Event<>("browsingContext.downloadEnd", downloadWillEndMapper);
+  private final Event<DownloadEnded> downloadEndEvent =
+      new Event<>("browsingContext.downloadEnd", downloadEndMapper);
 
   private final Event<UserPromptOpened> userPromptOpened =
       new Event<>(
@@ -179,9 +179,9 @@ public class BrowsingContextInspector implements AutoCloseable {
 
   public void onDownloadEnd(Consumer<DownloadEnded> consumer) {
     if (browsingContextIds.isEmpty()) {
-      this.bidi.addListener(downloadWillEndEvent, consumer);
+      this.bidi.addListener(downloadEndEvent, consumer);
     } else {
-      this.bidi.addListener(browsingContextIds, downloadWillEndEvent, consumer);
+      this.bidi.addListener(browsingContextIds, downloadEndEvent, consumer);
     }
   }
 
@@ -241,7 +241,7 @@ public class BrowsingContextInspector implements AutoCloseable {
     this.bidi.clearListener(userPromptClosed);
     this.bidi.clearListener(historyUpdated);
     this.bidi.clearListener(downloadWillBeginEvent);
-    this.bidi.clearListener(downloadWillEndEvent);
+    this.bidi.clearListener(downloadEndEvent);
 
     navigationEventSet.forEach(this.bidi::clearListener);
   }
