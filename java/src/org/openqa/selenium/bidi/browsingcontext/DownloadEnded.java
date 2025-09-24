@@ -89,5 +89,4 @@ public class DownloadEnded {
   public boolean isCompleted() {
     return downloadParams instanceof DownloadCompleted;
   }
-
 }
