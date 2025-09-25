@@ -17,12 +17,16 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import static java.util.Objects.requireNonNullElse;
+
 import org.openqa.selenium.json.JsonInput;
 
 public class DownloadCompleted extends NavigationInfo {
 
   private final String status;
   private final String filepath;
+
+  private static final String COMPLETE = "complete";
 
   DownloadCompleted(
       String browsingContextId,
@@ -32,7 +36,7 @@ public class DownloadCompleted extends NavigationInfo {
       String status,
       String filepath) {
     super(browsingContextId, navigationId, timestamp, url);
-    this.status = status != null ? status : "complete";
+    this.status = requireNonNullElse(status, COMPLETE);
     this.filepath = filepath;
   }
 
@@ -41,7 +45,7 @@ public class DownloadCompleted extends NavigationInfo {
     String navigationId = null;
     long timestamp = 0;
     String url = null;
-    String status = "complete";
+    String status = COMPLETE;
     String filepath = null;
 
     input.beginObject();
@@ -65,8 +69,9 @@ public class DownloadCompleted extends NavigationInfo {
 
         case "status":
           status = input.read(String.class);
-          if (!"complete".equals(status)) {
-            throw new IllegalArgumentException("Expected status 'complete', but got: " + status);
+          if (!COMPLETE.equals(status)) {
+            throw new IllegalArgumentException(
+                "Expected status '" + COMPLETE + "' , but got: " + status);
           }
           break;
 

@@ -17,16 +17,20 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
+import static java.util.Objects.requireNonNullElse;
+
 import org.openqa.selenium.json.JsonInput;
 
 public class DownloadCanceled extends NavigationInfo {
 
   private final String status;
 
+  private static final String CANCELED = "canceled";
+
   DownloadCanceled(
       String browsingContextId, String navigationId, long timestamp, String url, String status) {
     super(browsingContextId, navigationId, timestamp, url);
-    this.status = status != null ? status : "canceled";
+    this.status = requireNonNullElse(status, CANCELED);
   }
 
   public static DownloadCanceled fromJson(JsonInput input) {
@@ -34,7 +38,7 @@ public class DownloadCanceled extends NavigationInfo {
     String navigationId = null;
     long timestamp = 0;
     String url = null;
-    String status = "canceled";
+    String status = CANCELED;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -57,8 +61,9 @@ public class DownloadCanceled extends NavigationInfo {
 
         case "status":
           status = input.read(String.class);
-          if (!"canceled".equals(status)) {
-            throw new IllegalArgumentException("Expected status 'canceled', but got: " + status);
+          if (!CANCELED.equals(status)) {
+            throw new IllegalArgumentException(
+                "Expected status '" + CANCELED + "' , but got: " + status);
           }
           break;
 

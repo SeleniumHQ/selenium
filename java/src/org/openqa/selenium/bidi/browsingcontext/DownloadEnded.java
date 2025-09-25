@@ -24,6 +24,9 @@ import org.openqa.selenium.json.JsonInput;
 
 public class DownloadEnded {
 
+  private static final String CANCELED = "canceled";
+  private static final String COMPLETE = "complete";
+
   private final NavigationInfo downloadParams;
 
   public DownloadEnded(NavigationInfo downloadParams) {
@@ -36,13 +39,13 @@ public class DownloadEnded {
 
     try (StringReader reader = new StringReader(new Json().toJson(jsonMap));
         JsonInput jsonInput = new Json().newInput(reader)) {
-      if ("canceled".equals(status)) {
+      if (CANCELED.equals(status)) {
         return new DownloadEnded(DownloadCanceled.fromJson(jsonInput));
-      } else if ("complete".equals(status)) {
+      } else if (COMPLETE.equals(status)) {
         return new DownloadEnded(DownloadCompleted.fromJson(jsonInput));
       } else {
         throw new IllegalArgumentException(
-            "status must be either 'canceled' or 'complete', but got: " + status);
+            "status must be either '" + CANCELED + "' or '" + COMPLETE + "', but got: " + status);
       }
     }
   }
