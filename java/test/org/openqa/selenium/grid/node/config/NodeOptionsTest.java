@@ -600,21 +600,22 @@ class NodeOptionsTest {
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config =
         new MapConfig(singletonMap("node", ImmutableMap.of("max-sessions", overriddenMaxSessions)));
-
-    NodeOptions nodeOptions = new NodeOptions(config);
     List<Capabilities> reported = new ArrayList<>();
     try {
-      nodeOptions.getSessionFactories(
-          caps -> {
-            reported.add(caps);
-            return Collections.singleton(HelperFactory.create(config, caps));
-          });
+      new NodeOptions(config)
+          .getSessionFactories(
+              caps -> {
+                reported.add(caps);
+                return Collections.singleton(HelperFactory.create(config, caps));
+              });
     } catch (ConfigException e) {
       // Fall through
     }
-
-    // Verify node max-sessions is within CPU limit (not the overridden value)
-    assertThat(nodeOptions.getMaxSessions()).isEqualTo(maxRecommendedSessions);
+    long chromeSlots =
+        reported.stream()
+            .filter(capabilities -> "chrome".equalsIgnoreCase(capabilities.getBrowserName()))
+            .count();
+    assertThat(chromeSlots).isEqualTo(maxRecommendedSessions);
   }
 
   @Test

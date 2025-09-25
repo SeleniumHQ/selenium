@@ -21,7 +21,6 @@ require 'selenium/webdriver/common/child_process'
 require 'selenium/webdriver/common/port_prober'
 require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
-require 'etc'
 
 module Selenium
   #
@@ -178,8 +177,6 @@ module Selenium
     # @option opts [true,false] :background Run the server in the background (default: false)
     # @option opts [true,false,String] :log Either a path to a log file,
     #                                      or true to pass server log to stdout.
-    # @option opts [true,false] :override_max_sessions Override the maximum number of sessions
-    # @option opts [Integer] :max_sessions Maximum number of concurrent sessions
     # @raise [Errno::ENOENT] if the jar file does not exist
     #
 
@@ -199,18 +196,6 @@ module Selenium
         @log ||= true
         @additional_args << '--log-level'
         @additional_args << opts[:log_level].to_s
-      end
-
-      override_max_sessions = opts.fetch(:override_max_sessions, true)
-      if override_max_sessions
-        @additional_args << '--override-max-sessions'
-        @additional_args << override_max_sessions.to_s
-      end
-
-      max_sessions = opts.fetch(:max_sessions, Etc.nprocessors)
-      if max_sessions
-        @additional_args << '--max-sessions'
-        @additional_args << max_sessions.to_s
       end
 
       @log_file = nil

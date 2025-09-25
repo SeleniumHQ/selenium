@@ -16,7 +16,6 @@
 # under the License.
 
 import collections
-import multiprocessing
 import os
 import re
 import shutil
@@ -171,10 +170,6 @@ class Server:
             "true",
             "--enable-managed-downloads",
             "true",
-            "--override-max-sessions",
-            "true",
-            "--max-sessions",
-            str(multiprocessing.cpu_count()),
         ]
         if self.host is not None:
             command.extend(["--host", self.host])

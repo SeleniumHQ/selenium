@@ -273,10 +273,16 @@ public class NodeOptions {
     if (overrideMaxSessions) {
       return totalActualSessions;
     } else {
-      // When override-max-sessions = false, return sum of actual sessions but cap at CPU cores
-      return totalActualSessions > 0
-          ? Math.min(totalActualSessions, DEFAULT_MAX_SESSIONS)
-          : Math.min(maxSessions, DEFAULT_MAX_SESSIONS);
+      // When explicit max-sessions is provided and within CPU cores, use it; otherwise cap at CPU
+      // cores
+      boolean hasExplicitMaxSessions = config.get(NODE_SECTION, "max-sessions").isPresent();
+      if (hasExplicitMaxSessions && maxSessions <= DEFAULT_MAX_SESSIONS) {
+        return maxSessions;
+      } else {
+        return totalActualSessions > 0
+            ? Math.min(totalActualSessions, DEFAULT_MAX_SESSIONS)
+            : Math.min(maxSessions, DEFAULT_MAX_SESSIONS);
+      }
     }
   }
 
@@ -368,7 +374,9 @@ public class NodeOptions {
               configList.stream()
                   .map(config -> config.get("display-name"))
                   .collect(Collectors.toList());
-          Map<String, Integer> sessionsPerDriver = calculateOptimizedCpuDistribution(driverNames);
+          boolean hasExplicitMaxSessions = nodeMaxSessions > DEFAULT_MAX_SESSIONS;
+          Map<String, Integer> sessionsPerDriver =
+              calculateOptimizedCpuDistribution(driverNames, false, hasExplicitMaxSessions);
 
           for (Map<String, String> configMap : configList) {
             String displayName = configMap.get("display-name");
@@ -422,10 +430,12 @@ public class NodeOptions {
               detectedDrivers.stream()
                   .map(WebDriverInfo::getDisplayName)
                   .collect(Collectors.toList());
-          Map<String, Integer> sessionsPerDriver = calculateOptimizedCpuDistribution(driverNames);
+          boolean hasExplicitMaxSessions = false;
+          Map<String, Integer> sessionsPerDriver =
+              calculateOptimizedCpuDistribution(driverNames, true, hasExplicitMaxSessions);
 
           // Check if node max-sessions is explicitly set and within allowed range
-          if (nodeMaxSessions != DEFAULT_MAX_SESSIONS) {
+          if (nodeMaxSessions < DEFAULT_MAX_SESSIONS) {
             for (WebDriverInfo info : detectedDrivers) {
               int calculatedSessions = sessionsPerDriver.get(info.getDisplayName());
               if (nodeMaxSessions >= 1 && nodeMaxSessions <= calculatedSessions) {
@@ -435,9 +445,7 @@ public class NodeOptions {
               }
             }
           } else {
-            for (Map.Entry<String, Integer> entry : sessionsPerDriver.entrySet()) {
-              result.put(entry.getKey(), entry.getValue());
-            }
+            result.putAll(sessionsPerDriver);
           }
         }
       }
@@ -446,44 +454,59 @@ public class NodeOptions {
     return result;
   }
 
-  private Map<String, Integer> calculateOptimizedCpuDistribution(List<String> driverNames) {
+  private Map<String, Integer> calculateOptimizedCpuDistribution(
+      List<String> driverNames, boolean detectDrivers, boolean hasExplicitMaxSessions) {
     Map<String, Integer> sessionsPerDriver = new HashMap<>();
 
-    // First, allocate sessions for constrained drivers (like Safari)
-    int remainingCores = DEFAULT_MAX_SESSIONS;
-    List<String> flexibleDrivers = new ArrayList<>();
-
-    for (String driverName : driverNames) {
-      if (SINGLE_SESSION_DRIVERS.contains(driverName.toLowerCase(Locale.ENGLISH))) {
-        // Constrained drivers get exactly 1 session
-        sessionsPerDriver.put(driverName, 1);
-        remainingCores--;
-      } else {
-        flexibleDrivers.add(driverName);
-      }
-    }
-
-    // Then distribute remaining cores among flexible drivers
-    if (!flexibleDrivers.isEmpty() && remainingCores > 0) {
-      int sessionsPerFlexibleDriver = Math.max(1, remainingCores / flexibleDrivers.size());
-      int remainderCores = remainingCores % flexibleDrivers.size();
-
-      // Distribute base sessions to all flexible drivers
-      for (int i = 0; i < flexibleDrivers.size(); i++) {
-        String driverName = flexibleDrivers.get(i);
-        int sessions = sessionsPerFlexibleDriver;
-
-        // Distribute remainder cores to the first 'remainderCores' drivers
-        if (i < remainderCores) {
-          sessions++;
+    // When detect-drivers is true and no explicit max-sessions is provided,
+    // each driver should get the full number of processors (except single-session drivers)
+    if (detectDrivers && !hasExplicitMaxSessions) {
+      for (String driverName : driverNames) {
+        if (SINGLE_SESSION_DRIVERS.contains(driverName.toLowerCase(Locale.ENGLISH))) {
+          // Constrained drivers (like Safari) get exactly 1 session
+          sessionsPerDriver.put(driverName, 1);
+        } else {
+          // Flexible drivers get the full number of available processors
+          sessionsPerDriver.put(driverName, DEFAULT_MAX_SESSIONS);
         }
-
-        sessionsPerDriver.put(driverName, sessions);
       }
-    } else if (!flexibleDrivers.isEmpty()) {
-      // No remaining cores, give each flexible driver 1 session
-      for (String driverName : flexibleDrivers) {
-        sessionsPerDriver.put(driverName, 1);
+    } else {
+      // Original logic: distribute cores among drivers
+      int remainingCores = DEFAULT_MAX_SESSIONS;
+      List<String> flexibleDrivers = new ArrayList<>();
+
+      for (String driverName : driverNames) {
+        if (SINGLE_SESSION_DRIVERS.contains(driverName.toLowerCase(Locale.ENGLISH))) {
+          // Constrained drivers get exactly 1 session
+          sessionsPerDriver.put(driverName, 1);
+          remainingCores--;
+        } else {
+          flexibleDrivers.add(driverName);
+        }
+      }
+
+      // Then distribute remaining cores among flexible drivers
+      if (!flexibleDrivers.isEmpty() && remainingCores > 0) {
+        int sessionsPerFlexibleDriver = Math.max(1, remainingCores / flexibleDrivers.size());
+        int remainderCores = remainingCores % flexibleDrivers.size();
+
+        // Distribute base sessions to all flexible drivers
+        for (int i = 0; i < flexibleDrivers.size(); i++) {
+          String driverName = flexibleDrivers.get(i);
+          int sessions = sessionsPerFlexibleDriver;
+
+          // Distribute remainder cores to the first 'remainderCores' drivers
+          if (i < remainderCores) {
+            sessions++;
+          }
+
+          sessionsPerDriver.put(driverName, sessions);
+        }
+      } else if (!flexibleDrivers.isEmpty()) {
+        // No remaining cores, give each flexible driver 1 session
+        for (String driverName : flexibleDrivers) {
+          sessionsPerDriver.put(driverName, 1);
+        }
       }
     }
 
