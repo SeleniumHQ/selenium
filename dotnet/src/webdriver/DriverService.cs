@@ -171,7 +171,7 @@ public abstract class DriverService : ICommandServer
     protected virtual bool HasShutdown => true;
 
     /// <summary>
-    /// Gets or sets a value indicating whether process redirection is enforced regardless of other settings.
+    /// Gets a value indicating whether process redirection is enforced regardless of other settings.
     /// </summary>
     /// <remarks>Set this property to <see langword="true"/> to force all process output and input streams to
     /// be redirected, even if redirection is not required by default behavior. This can be useful in scenarios where
