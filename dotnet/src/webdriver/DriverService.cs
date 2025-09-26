@@ -173,7 +173,7 @@ public abstract class DriverService : ICommandServer
     /// <summary>
     /// Gets a value indicating whether process redirection is enforced regardless of other settings.
     /// </summary>
-    /// <remarks>Set this property to <see langword="true"/> to force all process output and input streams to
+    /// <remarks>Set this property to <see langword="true"/> to force all process output and error streams to
     /// be redirected, even if redirection is not required by default behavior. This can be useful in scenarios where
     /// capturing process output is necessary for logging or analysis.</remarks>
     protected virtual internal bool EnableProcessRedirection { get; } = false;
