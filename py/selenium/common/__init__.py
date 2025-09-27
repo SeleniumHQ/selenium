@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .exceptions import (
+from selenium.common.exceptions import (
     DetachedShadowRootException,
     ElementClickInterceptedException,
     ElementNotInteractableException,

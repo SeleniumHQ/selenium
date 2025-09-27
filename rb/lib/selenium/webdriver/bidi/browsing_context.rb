@@ -109,7 +109,7 @@ module Selenium
           context_id ||= @bridge.window_handle
           @bidi.send_cmd('browsingContext.activate', context: context_id)
         end
-      end
+      end # BrowsingContext
     end # BiDi
   end # WebDriver
 end # Selenium
