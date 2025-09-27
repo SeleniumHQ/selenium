@@ -36,5 +36,4 @@ public interface ExecuteMethod {
    * @return The result of {@link Response#getValue()}.
    */
   @Nullable Object execute(String commandName, @Nullable Map<String, ?> parameters);
-
 }
