@@ -490,58 +490,66 @@ pub trait SeleniumManager {
                             discovered_version
                         ));
                     }
-                    let discovered_major_browser_version = self
-                        .get_major_version(&discovered_version)
-                        .unwrap_or_default();
+                    if self.is_browser_version_specific()
+                        && !self.get_browser_version().eq(&discovered_version)
+                    {
+                        download_browser = true;
+                    } else {
+                        let discovered_major_browser_version = self
+                            .get_major_version(&discovered_version)
+                            .unwrap_or_default();
 
-                    if self.is_browser_version_stable() || self.is_browser_version_unstable() {
-                        let online_browser_version = self.request_browser_version()?;
-                        if online_browser_version.is_some() {
-                            let major_online_browser_version =
-                                self.get_major_version(&online_browser_version.unwrap())?;
-                            if discovered_major_browser_version.eq(&major_online_browser_version) {
-                                self.get_logger().debug(format!(
-                                    "Discovered online {} version ({}) is the same as the detected local {} version",
-                                    self.get_browser_name(),
-                                    discovered_major_browser_version,
-                                    self.get_browser_name(),
-                                ));
-                                self.set_browser_version(discovered_version);
+                        if self.is_browser_version_stable() || self.is_browser_version_unstable() {
+                            let online_browser_version = self.request_browser_version()?;
+                            if online_browser_version.is_some() {
+                                let major_online_browser_version =
+                                    self.get_major_version(&online_browser_version.unwrap())?;
+                                if discovered_major_browser_version
+                                    .eq(&major_online_browser_version)
+                                {
+                                    self.get_logger().debug(format!(
+                                        "Discovered online {} version ({}) is the same as the detected local {} version",
+                                        self.get_browser_name(),
+                                        discovered_major_browser_version,
+                                        self.get_browser_name(),
+                                    ));
+                                    self.set_browser_version(discovered_version);
+                                } else {
+                                    self.get_logger().debug(format!(
+                                        "Discovered online {} version ({}) is different to the detected local {} version ({})",
+                                        self.get_browser_name(),
+                                        major_online_browser_version,
+                                        self.get_browser_name(),
+                                        discovered_major_browser_version,
+                                    ));
+                                    download_browser = true;
+                                }
                             } else {
-                                self.get_logger().debug(format!(
-                                    "Discovered online {} version ({}) is different to the detected local {} version ({})",
-                                    self.get_browser_name(),
-                                    major_online_browser_version,
-                                    self.get_browser_name(),
-                                    discovered_major_browser_version,
-                                ));
-                                download_browser = true;
+                                self.set_browser_version(discovered_version);
                             }
+                        } else if !major_browser_version.is_empty()
+                            && !self.is_browser_version_unstable()
+                            && !major_browser_version.eq(&discovered_major_browser_version)
+                        {
+                            self.get_logger().debug(format!(
+                                "Discovered {} version ({}) different to specified browser version ({})",
+                                self.get_browser_name(),
+                                discovered_major_browser_version,
+                                major_browser_version,
+                            ));
+                            download_browser = true;
                         } else {
                             self.set_browser_version(discovered_version);
                         }
-                    } else if !major_browser_version.is_empty()
-                        && !self.is_browser_version_unstable()
-                        && !major_browser_version.eq(&discovered_major_browser_version)
-                    {
-                        self.get_logger().debug(format!(
-                            "Discovered {} version ({}) different to specified browser version ({})",
-                            self.get_browser_name(),
-                            discovered_major_browser_version,
-                            major_browser_version,
-                        ));
-                        download_browser = true;
-                    } else {
-                        self.set_browser_version(discovered_version);
-                    }
-                    if self.is_webview2() && PathBuf::from(self.get_browser_path()).is_dir() {
-                        let browser_path = format!(
-                            r"{}\{}\msedge{}",
-                            self.get_browser_path(),
-                            &self.get_browser_version(),
-                            get_binary_extension(self.get_os())
-                        );
-                        self.set_browser_path(browser_path);
+                        if self.is_webview2() && PathBuf::from(self.get_browser_path()).is_dir() {
+                            let browser_path = format!(
+                                r"{}\{}\msedge{}",
+                                self.get_browser_path(),
+                                &self.get_browser_version(),
+                                get_binary_extension(self.get_os())
+                            );
+                            self.set_browser_path(browser_path);
+                        }
                     }
                 }
                 None => {
