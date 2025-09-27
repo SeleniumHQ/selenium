@@ -223,6 +223,11 @@ public sealed class FirefoxDriverService : DriverService
     }
 
     /// <summary>
+    /// Gets a value indicating whether process output redirection is required.
+    /// </summary>
+    protected internal override bool EnableProcessRedirection => LogPath is not null;
+
+    /// <summary>
     /// Called when the driver process is starting. This method sets up log file writing if a log path is specified.
     /// </summary>
     /// <param name="eventArgs">The event arguments containing information about the driver service process.</param>
