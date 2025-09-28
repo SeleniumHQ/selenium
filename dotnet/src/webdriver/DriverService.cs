@@ -268,12 +268,9 @@ public abstract class DriverService : ICommandServer
 
         this.driverServiceProcess.Start();
 
-        if (this.EnableProcessRedirection)
-        {
-            // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
-            this.driverServiceProcess.BeginOutputReadLine();
-            this.driverServiceProcess.BeginErrorReadLine();
-        }
+        // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
+        this.driverServiceProcess.BeginOutputReadLine();
+        this.driverServiceProcess.BeginErrorReadLine();
 
         bool serviceAvailable = this.WaitForServiceInitialization();
 
