@@ -2,11 +2,11 @@
 
 - Bumping versions to nightly
 - Update dependency tmp to ^0.2.5 (#16172)
-    > * Update dependency tmp to ^0.2.5
-    > * Repin dependencies
+  > - Update dependency tmp to ^0.2.5
+  > - Repin dependencies
 - Update dependency ws to ^8.18.3 (#16009)
-    > * Update dependency ws to ^8.18.3
-    > * Repin dependencies
+  > - Update dependency ws to ^8.18.3
+  > - Repin dependencies
 - update devtools versions
 - bump versions in preparation for release
 
