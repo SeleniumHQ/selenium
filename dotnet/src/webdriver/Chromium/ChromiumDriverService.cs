@@ -163,6 +163,8 @@ public abstract class ChromiumDriverService : DriverService
                 argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
             }
 
+            // Unconditionally redirect browser logs to the same log as the driver
+            argsBuilder.Append(" --enable-chrome-logs");
 
             return argsBuilder.ToString();
         }

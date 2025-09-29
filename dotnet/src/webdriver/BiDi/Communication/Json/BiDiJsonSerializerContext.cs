@@ -78,7 +78,6 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Session.SubscribeCommand))]
 [JsonSerializable(typeof(Session.SubscribeResult))]
 [JsonSerializable(typeof(Session.UnsubscribeByIdCommand))]
-[JsonSerializable(typeof(Session.UnsubscribeByAttributesCommand))]
 
 [JsonSerializable(typeof(Browser.CloseCommand), TypeInfoPropertyName = "Browser_CloseCommand")]
 [JsonSerializable(typeof(Browser.CreateUserContextCommand))]
@@ -118,13 +117,18 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(BrowsingContext.UserPromptOpenedEventArgs))]
 [JsonSerializable(typeof(BrowsingContext.UserPromptClosedEventArgs))]
 
+[JsonSerializable(typeof(Network.AddDataCollectorCommand))]
+[JsonSerializable(typeof(Network.AddDataCollectorResult))]
 [JsonSerializable(typeof(Network.AddInterceptCommand))]
 [JsonSerializable(typeof(Network.AddInterceptResult))]
 [JsonSerializable(typeof(Network.ContinueRequestCommand))]
 [JsonSerializable(typeof(Network.ContinueResponseCommand))]
 [JsonSerializable(typeof(Network.ContinueWithAuthCommand))]
 [JsonSerializable(typeof(Network.FailRequestCommand))]
+[JsonSerializable(typeof(Network.GetDataCommand))]
+[JsonSerializable(typeof(Network.GetDataResult))]
 [JsonSerializable(typeof(Network.ProvideResponseCommand))]
+[JsonSerializable(typeof(Network.RemoveDataCollectorCommand))]
 [JsonSerializable(typeof(Network.RemoveInterceptCommand))]
 [JsonSerializable(typeof(Network.SetCacheBehaviorCommand))]
 

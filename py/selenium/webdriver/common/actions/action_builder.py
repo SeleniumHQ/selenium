@@ -18,15 +18,14 @@
 
 from typing import Any, Optional, Union
 
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.key_actions import KeyActions
+from selenium.webdriver.common.actions.key_input import KeyInput
+from selenium.webdriver.common.actions.pointer_actions import PointerActions
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+from selenium.webdriver.common.actions.wheel_actions import WheelActions
+from selenium.webdriver.common.actions.wheel_input import WheelInput
 from selenium.webdriver.remote.command import Command
-
-from . import interaction
-from .key_actions import KeyActions
-from .key_input import KeyInput
-from .pointer_actions import PointerActions
-from .pointer_input import PointerInput
-from .wheel_actions import WheelActions
-from .wheel_input import WheelInput
 
 
 class ActionBuilder:

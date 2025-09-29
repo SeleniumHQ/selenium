@@ -17,11 +17,10 @@
 
 from typing import Optional
 
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-from .options import Options
-from .service import Service
 
 
 class WebDriver(ChromiumDriver):
