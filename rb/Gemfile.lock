@@ -6,6 +6,7 @@ PATH
     selenium-webdriver (4.36.0.nightly)
       base64 (~> 0.2)
       logger (~> 1.4)
+      prism (~> 1.0, < 1.5)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
