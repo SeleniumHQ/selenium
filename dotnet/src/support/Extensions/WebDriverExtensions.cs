@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Reflection;
 
@@ -117,7 +118,7 @@ public static class WebDriverExtensions
 
     private static object? ExecuteJavaScriptInternal(IWebDriver driver, string script, object?[] args)
     {
-        IJavaScriptExecutor? executor = GetDriverAs<IJavaScriptExecutor>(driver)
+        IJavaScriptExecutor executor = GetDriverAs<IJavaScriptExecutor>(driver)
             ?? throw new WebDriverException("Driver does not implement IJavaScriptExecutor");
 
         return executor.ExecuteScript(script, args);
@@ -141,5 +142,19 @@ public static class WebDriverExtensions
         }
 
         return convertedDriver;
+    }
+
+    /// <summary>
+    /// Performs an action that opens a new browser window, and returns an object that allows to switch between
+    /// the new and the old windows easily.
+    /// </summary>
+    /// <param name="driver">The driver instance to extend.</param>
+    /// <param name="actionThatOpensNewWindow">The action delegate that should open the new browser window.</param>
+    /// <returns>An instance of <see cref="WindowSwitcher"/> that allows to switch between the old and new windows.</returns>
+    public static WindowSwitcher WithWindowOpenedBy(this IWebDriver driver, Action actionThatOpensNewWindow)
+    {
+        var finder = new PopupWindowFinder(driver);
+        var newHandle = finder.Invoke(actionThatOpensNewWindow);
+        return new WindowSwitcher(driver, newHandle);
     }
 }
