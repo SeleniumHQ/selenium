@@ -129,14 +129,24 @@ public sealed class Broker : IAsyncDisposable
             {
                 var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
 
-                ProcessReceivedMessage(data);
+                try
+                {
+                    ProcessReceivedMessage(data);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occured while process remote message: {ex}");
+                    }
+                }
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             if (_logger.IsEnabled(LogEventLevel.Error))
             {
-                _logger.Error($"Couldn't receive or process BiDi remote message: {ex}");
+                _logger.Error($"Unhandled error occured while receiving remote messages: {ex}");
             }
 
             throw;
