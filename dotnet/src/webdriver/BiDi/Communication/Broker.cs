@@ -137,7 +137,7 @@ public sealed class Broker : IAsyncDisposable
                 {
                     if (_logger.IsEnabled(LogEventLevel.Error))
                     {
-                        _logger.Error($"Unhandled error occured while process remote message: {ex}");
+                        _logger.Error($"Unhandled error occured while processing remote message: {ex}");
                     }
                 }
             }
