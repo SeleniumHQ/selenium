@@ -1,3 +1,4 @@
+// <copyright file="CollectorConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14,21 +15,33 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+// </copyright>
 
-package org.openqa.selenium.remote.http;
+using OpenQA.Selenium.BiDi.Network;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.WebDriverException;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-@NullMarked
-public class ConnectionFailedException extends WebDriverException {
+internal class CollectorConverter : JsonConverter<Collector>
+{
+    private readonly BiDi _bidi;
 
-  public ConnectionFailedException(@Nullable String message) {
-    super(message);
-  }
+    public CollectorConverter(BiDi bidi)
+    {
+        _bidi = bidi;
+    }
 
-  public ConnectionFailedException(@Nullable String message, @Nullable Throwable cause) {
-    super(message, cause);
-  }
+    public override Collector? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var id = reader.GetString();
+
+        return new Collector(_bidi, id!);
+    }
+
+    public override void Write(Utf8JsonWriter writer, Collector value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.Id);
+    }
 }

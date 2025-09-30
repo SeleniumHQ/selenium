@@ -1,4 +1,4 @@
-// <copyright file="UnsubscribeCommand.cs" company="Selenium Committers">
+// <copyright file="Collector.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,14 +17,42 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Session;
+namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params)
-    : Command<UnsubscribeByIdParameters, EmptyResult>(@params, "session.unsubscribe");
+public sealed class Collector : IAsyncDisposable
+{
+    private readonly BiDi _bidi;
 
-internal sealed record UnsubscribeByIdParameters(IEnumerable<Subscription> Subscriptions) : Parameters;
+    internal Collector(BiDi bidi, string id)
+    {
+        _bidi = bidi;
+        Id = id;
+    }
 
-public sealed class UnsubscribeByIdOptions : CommandOptions;
+    internal string Id { get; }
+
+    public async Task RemoveAsync()
+    {
+        await _bidi.Network.RemoveDataCollectorAsync(this).ConfigureAwait(false);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await RemoveAsync();
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Collector collectortObj) return collectortObj.Id == Id;
+
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
+}

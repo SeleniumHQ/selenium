@@ -19,5 +19,6 @@ java_export(
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
+        "@maven//:org_jspecify_jspecify",
     ],
 )
