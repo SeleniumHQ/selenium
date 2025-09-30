@@ -136,7 +136,7 @@ public sealed class Broker : IAsyncDisposable
         {
             if (_logger.IsEnabled(LogEventLevel.Error))
             {
-                _logger.Error($"Couldn't process received BiDi remote message: {ex}");
+                _logger.Error($"Couldn't receive or process BiDi remote message: {ex}");
             }
 
             throw;
