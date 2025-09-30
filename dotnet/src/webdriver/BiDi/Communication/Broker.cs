@@ -123,21 +123,23 @@ public sealed class Broker : IAsyncDisposable
 
     private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            try
+            while (!cancellationToken.IsCancellationRequested)
             {
                 var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
 
                 ProcessReceivedMessage(data);
             }
-            catch (Exception ex)
+        }
+        catch (Exception ex)
+        {
+            if (cancellationToken.IsCancellationRequested is false && _logger.IsEnabled(LogEventLevel.Error))
             {
-                if (cancellationToken.IsCancellationRequested is not true && _logger.IsEnabled(LogEventLevel.Error))
-                {
-                    _logger.Error($"Couldn't process received BiDi remote message: {ex}");
-                }
+                _logger.Error($"Couldn't process received BiDi remote message: {ex}");
             }
+
+            throw;
         }
     }
 
