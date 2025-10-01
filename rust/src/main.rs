@@ -249,6 +249,7 @@ fn main() {
                 &driver_path,
                 &selenium_manager.get_browser_path_or_latest_from_cache(),
                 selenium_manager.get_receiver(),
+                selenium_manager.is_offline(),
             );
             flush_and_exit(OK, log, None);
         })
@@ -271,12 +272,20 @@ fn main() {
                         &best_driver_from_cache,
                         &selenium_manager.get_browser_path_or_latest_from_cache(),
                         selenium_manager.get_receiver(),
+                        selenium_manager.is_offline(),
                     );
                     flush_and_exit(OK, log, Some(err));
                 }
             }
             if selenium_manager.is_offline() {
                 log.warn(&err);
+                log_driver_and_browser_path(
+                    log,
+                    &Path::new(""),
+                    &selenium_manager.get_browser_path_or_latest_from_cache(),
+                    selenium_manager.get_receiver(),
+                    selenium_manager.is_offline(),
+                );
                 flush_and_exit(OK, log, Some(err));
             } else {
                 let error_msg = log
@@ -294,13 +303,15 @@ fn log_driver_and_browser_path(
     driver_path: &Path,
     browser_path: &str,
     receiver: &Receiver<String>,
+    is_offline: bool,
 ) {
     if let Ok(err) = receiver.try_recv() {
         log.warn(err);
     }
-    if driver_path.exists() {
+
+    if !driver_path.as_os_str().is_empty() && driver_path.exists() {
         log.info(format!("{}{}", DRIVER_PATH, driver_path.display()));
-    } else {
+    } else if !is_offline {
         log.error(format!("Driver unavailable: {}", driver_path.display()));
         flush_and_exit(UNAVAILABLE, log, None);
     }

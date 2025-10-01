@@ -31,3 +31,36 @@ fn offline_test() {
 
     assert!(stdout.contains("offline mode"));
 }
+
+#[test]
+fn offline_json_output_includes_browser_path_test() {
+    use serde_json::Value;
+
+    let mut cmd = get_selenium_manager();
+    cmd.args([
+        "--debug",
+        "--browser",
+        "chrome",
+        "--offline",
+        "--output",
+        "json"
+    ])
+    .assert()
+    .success()
+    .code(0);
+
+    let stdout = get_stdout(&mut cmd);
+
+    let json: Value = serde_json::from_str(&stdout)
+        .expect("Should be valid JSON");
+
+    assert!(json["result"].is_object(), "Result should be an object");
+    assert!(json["result"]["code"].is_number(), "Code should be a number");
+    assert_eq!(json["result"]["code"], 0, "Code should be 0 for success");
+
+    assert!(json["result"]["browser_path"].is_string(), "browser_path should be a string");
+
+    assert!(json["logs"].is_array(), "Logs should be an array");
+    let logs_str = json["logs"].to_string();
+    assert!(logs_str.contains("offline mode"), "Should mention offline mode in logs");
+}
