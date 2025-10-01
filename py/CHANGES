@@ -1,5 +1,5 @@
 Selenium 4.36.0
-* Bumping versions to nightly
+* Add CDP for Chrome 140 and remove 137
 * close ipv6 port in case of error (#16165)
 * Update docstring and comments in keys.py (#16187)
 * Fix formatting (#16189)
@@ -15,7 +15,6 @@ Selenium 4.36.0
 * Convert all relative imports to absolute imports (#16311)
 * Raise InvalidSelectorException for compound class names (#16291)
 * Fix type annotations in the chromium webdriver file (#16309)
-* bump versions in preparation for release
 
 Selenium 4.35.0
 * Add CDP for Chrome 139 and remove 136

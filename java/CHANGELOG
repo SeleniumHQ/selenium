@@ -1,43 +1,20 @@
 v4.36.0
 ======
+* Add CDP for Chrome 140 and remove 137
 * [grid] close the HttpClient after the session is gone
 * extend the scope of the properties of the HttpCommandExecutor class (#16186)
-    > set protected modifier to props
 * [grid] Improve readTimeout in handle session between Router and Node (#16163)
-    > * [grid] Improve readTimeout in handle session between Router and Node
-    > * Fix review comment
-    > * Check null might return from Values.get() and remove catch block
 * Unifying select class (#16220)
-    > * Updated Java Language Level to the JDK_17 for IntelliJ IDEA
-    > *  Fix select being able to select options hidden by css rules
-    > Fixes #15265
-    > * Formatted with ./scripts/format.sh
-    > * Change the JDK setting for IntelliJ back to JDK 11
 * Add hooks around getScreenshotAs in WebDriverListener #16232 (#16233)
-    > * Add hooks around getScreenshotAs in WebDriverListener #16232
-    > WebDriverListener has now default methods for both WebDriver and
-    > WebElement for clients to be notified before and after a
-    > screenshot is being taken.
-    > Fixes #16232
-    > * fixup! Add hooks around getScreenshotAs in WebDriverListener #16232
-    > * fixup! Add hooks around getScreenshotAs in WebDriverListener #16232
-    > * fixup! Add hooks around getScreenshotAs in WebDriverListener #16232
 * [grid] Simplify node status response handling in Router
-    > Fix an error is seen in docker-selenium after #16163
 * Refactored selectByContainsVisibleText and selectByVisibleText methods to remove code duplication (#16257)
 * [bidi]: add `DownloadInfo` class and test for `onDownloadWillBegin` (#16267)
 * [grid] update to netty 4.2.4 (#16194)
 * Fix links to exception documentation on website (#16305)
 * Fix concurrency issue in Selenium Manager (#16315)
-    > #16314 fix concurrency issue in Selenium Manager
-    > ... when executed by 2+ processes simultaneously on a machine with empty Selenium cache.
-    > Every process sees the file created by another process only when the file is fully completed.
 * Fix falsy Spotbugs warning about not closed resource (#16318)
-    > #16314 fix falsy Spotbugs warning about not closed resource
-    > I had to inline method `findBinaryInClasspath()` to make Spotbugs happy. I could not find any other way to suppress this falsy warning. :(
 * [grid] Fix regression Distributor rejecting requests when nodes have supported caps but no free slots (#16327)
 * Feat 14291/add jspecify annotations to exception classes pt4 (#16028)
-* update devtools versions
 
 v4.35.0
 ======
