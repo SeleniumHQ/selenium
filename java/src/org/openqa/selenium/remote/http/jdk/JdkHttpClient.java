@@ -80,6 +80,8 @@ public class JdkHttpClient implements HttpClient {
   private final ExecutorService executorService;
   private final Duration readTimeout;
   private final Duration connectTimeout;
+  private final Duration webSocketTimeout;
+  private final Duration webSocketInterval;
 
   JdkHttpClient(ClientConfig config) {
     Objects.requireNonNull(config, "Client config must be set");
@@ -87,6 +89,8 @@ public class JdkHttpClient implements HttpClient {
     this.messages = new JdkHttpMessages(config);
     this.readTimeout = config.readTimeout();
     this.connectTimeout = config.connectionTimeout();
+    this.webSocketTimeout = config.webSocketTimeout();
+    this.webSocketInterval = config.webSocketInterval();
     this.websockets = new ArrayList<>();
     this.handler = config.filter().andFinally(this::execute0);
 
@@ -244,7 +248,7 @@ public class JdkHttpClient implements HttpClient {
 
     try {
       underlyingSocket =
-          webSocketCompletableFuture.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
+          webSocketCompletableFuture.get(webSocketTimeout.toMillis(), TimeUnit.MILLISECONDS);
     } catch (CancellationException e) {
       throw new ConnectionFailedException("JdkWebSocket initial request canceled", e);
     } catch (ExecutionException e) {
@@ -314,7 +318,7 @@ public class JdkHttpClient implements HttpClient {
               long start = System.currentTimeMillis();
               CompletableFuture<java.net.http.WebSocket> future = makeCall.get();
               try {
-                future.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
+                future.get(webSocketTimeout.toMillis(), TimeUnit.MILLISECONDS);
               } catch (CancellationException e) {
                 throw new WebDriverException(e.getMessage(), e);
               } catch (ExecutionException e) {
