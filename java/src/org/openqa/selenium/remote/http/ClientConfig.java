@@ -35,6 +35,8 @@ public class ClientConfig {
   private final URI baseUri;
   private final Duration connectionTimeout;
   private final Duration readTimeout;
+  private final Duration webSocketTimeout;
+  private final Duration webSocketInterval;
   private final Filter filters;
   private final Proxy proxy;
   private final Credentials credentials;
@@ -45,6 +47,8 @@ public class ClientConfig {
       URI baseUri,
       Duration connectionTimeout,
       Duration readTimeout,
+      Duration webSocketTimeout,
+      Duration webSocketInterval,
       Filter filters,
       Proxy proxy,
       Credentials credentials,
@@ -53,6 +57,8 @@ public class ClientConfig {
     this.baseUri = baseUri;
     this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
     this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
+    this.webSocketTimeout = Require.nonNegative("WebSocket timeout", webSocketTimeout);
+    this.webSocketInterval = Require.nonNegative("WebSocket interval", webSocketInterval);
     this.filters = Require.nonNull("Filters", filters);
     this.proxy = proxy;
     this.credentials = credentials;
@@ -67,6 +73,10 @@ public class ClientConfig {
             Long.parseLong(System.getProperty("webdriver.httpclient.connectionTimeout", "10"))),
         Duration.ofSeconds(
             Long.parseLong(System.getProperty("webdriver.httpclient.readTimeout", "180"))),
+        Duration.ofSeconds(
+            Long.parseLong(System.getProperty("webdriver.httpclient.webSocketTimeout", "30"))),
+        Duration.ofMillis(
+            Long.parseLong(System.getProperty("webdriver.httpclient.webSocketInterval", "100"))),
         DEFAULT_FILTER,
         null,
         null,
@@ -79,6 +89,8 @@ public class ClientConfig {
         Require.nonNull("Base URI", baseUri),
         connectionTimeout,
         readTimeout,
+        webSocketTimeout,
+        webSocketInterval,
         filters,
         proxy,
         credentials,
@@ -111,6 +123,8 @@ public class ClientConfig {
         baseUri,
         Require.nonNull("Connection timeout", timeout),
         readTimeout,
+        webSocketTimeout,
+        webSocketInterval,
         filters,
         proxy,
         credentials,
@@ -127,6 +141,8 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         Require.nonNull("Read timeout", timeout),
+        webSocketTimeout,
+        webSocketInterval,
         filters,
         proxy,
         credentials,
@@ -138,12 +154,50 @@ public class ClientConfig {
     return readTimeout;
   }
 
+  public ClientConfig webSocketTimeout(Duration timeout) {
+    return new ClientConfig(
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        Require.nonNull("WebSocket timeout", timeout),
+        webSocketInterval,
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        version);
+  }
+
+  public Duration webSocketTimeout() {
+    return webSocketTimeout;
+  }
+
+  public ClientConfig webSocketInterval(Duration interval) {
+    return new ClientConfig(
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        webSocketTimeout,
+        Require.nonNull("WebSocket interval", interval),
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        version);
+  }
+
+  public Duration webSocketInterval() {
+    return webSocketInterval;
+  }
+
   public ClientConfig withFilter(Filter filter) {
     Require.nonNull("Filter", filter);
     return new ClientConfig(
         baseUri,
         connectionTimeout,
         readTimeout,
+        webSocketTimeout,
+        webSocketInterval,
         filter.andThen(DEFAULT_FILTER),
         proxy,
         credentials,
@@ -156,6 +210,8 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        webSocketTimeout,
+        webSocketInterval,
         filters.andThen(RETRY_FILTER),
         proxy,
         credentials,
@@ -172,6 +228,8 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        webSocketTimeout,
+        webSocketInterval,
         filters,
         Require.nonNull("Proxy", proxy),
         credentials,
@@ -188,6 +246,8 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        webSocketTimeout,
+        webSocketInterval,
         filters,
         proxy,
         Require.nonNull("Credentials", credentials),
@@ -204,6 +264,8 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        webSocketTimeout,
+        webSocketInterval,
         filters,
         proxy,
         credentials,
@@ -220,6 +282,8 @@ public class ClientConfig {
         baseUri,
         connectionTimeout,
         readTimeout,
+        webSocketTimeout,
+        webSocketInterval,
         filters,
         proxy,
         credentials,
@@ -240,6 +304,10 @@ public class ClientConfig {
         + connectionTimeout
         + ", readTimeout="
         + readTimeout
+        + ", webSocketTimeout="
+        + webSocketTimeout
+        + ", webSocketInterval="
+        + webSocketInterval
         + ", filters="
         + filters
         + ", proxy="
