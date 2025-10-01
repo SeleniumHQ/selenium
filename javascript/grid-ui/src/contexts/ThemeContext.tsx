@@ -38,20 +38,28 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [systemPrefersDark, setSystemPrefersDark] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem('theme-mode') as ThemeMode
-    if (saved) setThemeMode(saved)
-    setSystemPrefersDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = localStorage.getItem('theme-mode') as ThemeMode
+      if (saved) setThemeMode(saved)
+    }
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      setSystemPrefersDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
+    }
   }, [])
 
   useEffect(() => {
-    localStorage.setItem('theme-mode', themeMode)
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('theme-mode', themeMode)
+    }
   }, [themeMode])
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    const handler = (e: MediaQueryListEvent) => setSystemPrefersDark(e.matches)
-    mediaQuery.addEventListener('change', handler)
-    return () => mediaQuery.removeEventListener('change', handler)
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      const handler = (e: MediaQueryListEvent) => setSystemPrefersDark(e.matches)
+      mediaQuery.addEventListener('change', handler)
+      return () => mediaQuery.removeEventListener('change', handler)
+    }
   }, [])
 
   const isDark = themeMode === 'dark' || (themeMode === 'system' && systemPrefersDark)

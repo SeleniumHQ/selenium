@@ -42,17 +42,24 @@ it('cycles through theme modes on click', () => {
   
   const button = screen.getByRole('button')
   
-  // Should start with system mode
+  // Should start with system mode (AutoMode icon)
   expect(button).toHaveAttribute('aria-label', 'Toggle theme')
+  expect(screen.getByTestId('AutoModeIcon')).toBeInTheDocument()
   
   // Click to light mode
   fireEvent.click(button)
+  expect(screen.getByTestId('LightModeIcon')).toBeInTheDocument()
+  expect(screen.queryByTestId('AutoModeIcon')).not.toBeInTheDocument()
   
   // Click to dark mode
   fireEvent.click(button)
+  expect(screen.getByTestId('DarkModeIcon')).toBeInTheDocument()
+  expect(screen.queryByTestId('LightModeIcon')).not.toBeInTheDocument()
   
   // Click back to system mode
   fireEvent.click(button)
+  expect(screen.getByTestId('AutoModeIcon')).toBeInTheDocument()
+  expect(screen.queryByTestId('DarkModeIcon')).not.toBeInTheDocument()
 })
 
 it('responds to system preference changes', () => {
