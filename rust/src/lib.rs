@@ -624,17 +624,16 @@ pub trait SeleniumManager {
             if let Some(path) = browser_path {
                 self.get_logger()
                     .debug(format!("Found {} in PATH: {}", browser_name, &path));
-                if self.is_snap(&path) {
-                    if let Some(snap_path) = self.get_snap_path() {
-                        if snap_path.exists() {
-                            self.get_logger().debug(format!(
-                                "Using {} snap: {}",
-                                browser_name,
-                                path_to_string(snap_path.as_path())
-                            ));
-                            return Some(snap_path);
-                        }
-                    }
+                if self.is_snap(&path)
+                    && let Some(snap_path) = self.get_snap_path()
+                    && snap_path.exists()
+                {
+                    self.get_logger().debug(format!(
+                        "Using {} snap: {}",
+                        browser_name,
+                        path_to_string(snap_path.as_path())
+                    ));
+                    return Some(snap_path);
                 }
                 return Some(Path::new(&path).to_path_buf());
             }
