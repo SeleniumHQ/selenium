@@ -26,8 +26,8 @@ rules_closure_toolchains()
 
 http_archive(
     name = "rules_rust",
-    integrity = "sha256-eEXiHXSGUH6qD1bdI5KXZ/B04m0wIUeoyM7pmujzbbQ=",
-    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.55.5/rules_rust-0.55.5.tar.gz"],
+    integrity = "sha256-YrnH/f8jCpEqGAU+keNqauc+QSde9egtcFXqPtJuee4=",
+    urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.65.0/rules_rust-0.65.0.tar.gz"],
 )
 
 load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
@@ -48,3 +48,7 @@ crates_repository(
 load("@crates//:defs.bzl", "crate_repositories")
 
 crate_repositories()
+
+load("@rules_rust//cargo:deps.bzl", "cargo_dependencies")
+
+cargo_dependencies()

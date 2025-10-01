@@ -15,36 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
+use crate::chrome::{CHROME_NAME, CHROMEDRIVER_NAME, ChromeManager};
 use crate::config::ARCH::{ARM64, ARMV7, X32, X64};
 use crate::config::OS::{MACOS, WINDOWS};
-use crate::config::{str_to_os, ManagerConfig};
+use crate::config::{ManagerConfig, str_to_os};
 use crate::downloads::download_to_tmp_folder;
-use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
-use crate::electron::{ElectronManager, ELECTRON_NAME};
+use crate::edge::{EDGE_NAMES, EDGEDRIVER_NAME, EdgeManager, WEBVIEW2_NAME};
+use crate::electron::{ELECTRON_NAME, ElectronManager};
 use crate::files::get_win_file_version;
+use crate::files::{BrowserPath, parse_version, uncompress};
 use crate::files::{
     capitalize, collect_files_from_cache, create_path_if_not_exists, default_cache_folder,
     find_latest_from_cache, get_binary_extension, path_to_string,
 };
-use crate::files::{parse_version, uncompress, BrowserPath};
-use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
+use crate::firefox::{FIREFOX_NAME, FirefoxManager, GECKODRIVER_NAME};
 use crate::grid::GRID_NAME;
-use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
+use crate::iexplorer::{IE_NAMES, IEDRIVER_NAME, IExplorerManager};
 use crate::lock::Lock;
 use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, create_stats_metadata, get_browser_version_from_metadata,
     get_metadata, is_stats_in_metadata, write_metadata,
 };
-use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
-use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
+use crate::safari::{SAFARI_NAME, SAFARIDRIVER_NAME, SafariManager};
+use crate::safaritp::{SAFARITP_NAMES, SafariTPManager};
 use crate::shell::{
-    run_shell_command, run_shell_command_by_os, run_shell_command_with_log, Command,
+    Command, run_shell_command, run_shell_command_by_os, run_shell_command_with_log,
 };
-use crate::stats::{send_stats_to_plausible, Props};
-use anyhow::anyhow;
+use crate::stats::{Props, send_stats_to_plausible};
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -179,7 +179,7 @@ pub trait SeleniumManager {
     fn get_browser_url_for_download(&mut self, browser_version: &str) -> Result<String, Error>;
 
     fn get_browser_label_for_download(&self, _browser_version: &str)
-        -> Result<Option<&str>, Error>;
+    -> Result<Option<&str>, Error>;
 
     fn is_download_browser(&self) -> bool;
 
@@ -676,11 +676,7 @@ pub trait SeleniumManager {
             return None;
         }
         let first = vector.first().unwrap().to_string();
-        if first.is_empty() {
-            None
-        } else {
-            Some(first)
-        }
+        if first.is_empty() { None } else { Some(first) }
     }
 
     fn is_windows_admin(&self) -> bool {

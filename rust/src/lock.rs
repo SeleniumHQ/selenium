@@ -60,7 +60,7 @@ impl Lock {
 
     pub fn release(&mut self) {
         fs::remove_file(&self.path).unwrap_or_default();
-        self.file.unlock().unwrap_or_default();
+        FileExt::unlock(&self.file).unwrap_or_default();
         set_lock_path(None);
     }
 
