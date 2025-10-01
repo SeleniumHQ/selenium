@@ -67,7 +67,7 @@ jobs:
     with:
       name: Unit Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
-      cache-key: python-unit-test-${{ matrix.os }}}
+      cache-key: python-unit-test-${{ matrix.os }}
       run: bazel test //py:unit
 
   remote-tests:
