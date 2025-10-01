@@ -54,6 +54,9 @@ class Service(service.ChromiumService):
             **kwargs,
         )
 
+    def command_line_args(self) -> list[str]:
+        return ["--enable-chrome-logs", f"--port={self.port}"] + self._service_args
+
     @property
     def service_args(self) -> Sequence[str]:
         return self._service_args
