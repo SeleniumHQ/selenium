@@ -15,9 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { lightTheme } from './themes'
+import { lightTheme } from '../../theme/themes'
 
-// Backward compatibility - export light theme as default
-const theme = lightTheme
-
-export default theme
+export const useTheme = jest.fn(() => ({
+  themeMode: 'light',
+  setThemeMode: jest.fn(),
+  currentTheme: lightTheme,
+  isDark: false
+}))
