@@ -166,12 +166,17 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#getAvailableNodes()" class="member-name-link">getAvailableNodes</a>()</code></div>
 <div class="col-last even-row-color">
-<div class="block">Gets all available nodes that are not DOWN or DRAINING.</div>
+<div class="block">Gets all available nodes that are not DOWN or DRAINING and has free slots.</div>
 </div>
 <div class="col-first odd-row-color"><code>abstract <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">GridModel.</span><code><a href="../../distributor/GridModel.html#getSnapshot()" class="member-name-link">getSnapshot</a>()</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Gets a snapshot of all node statuses currently in the grid model.</div>
+</div>
+<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">NodeRegistry.</span><code><a href="../../distributor/NodeRegistry.html#getUpNodes()" class="member-name-link">getUpNodes</a>()</code></div>
+<div class="col-last even-row-color">
+<div class="block">Get all nodes that are UP.</div>
 </div>
 </div>
 <div class="caption"><span>Methods in <a href="../../distributor/package-summary.html">org.openqa.selenium.grid.distributor</a> with parameters of type <a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a></span></div>
@@ -220,6 +225,9 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">LocalGridModel.</span><code><a href="../../distributor/local/LocalGridModel.html#getSnapshot()" class="member-name-link">getSnapshot</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html" title="class or interface in java.util" class="external-link">Set</a><wbr>&lt;<a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">LocalNodeRegistry.</span><code><a href="../../distributor/local/LocalNodeRegistry.html#getUpNodes()" class="member-name-link">getUpNodes</a>()</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Methods in <a href="../../distributor/local/package-summary.html">org.openqa.selenium.grid.distributor.local</a> with parameters of type <a href="../NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a></span></div>
 <div class="summary-table three-column-summary">

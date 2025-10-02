@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Storage_PartialCookie" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie" class="text-break">
-Class PartialCookie  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
+Class PartialCookie  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -159,7 +159,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie__ctor_System_String_OpenQA_Selenium_BiDi_Network_BytesValue_System_String_" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.#ctor(System.String,OpenQA.Selenium.BiDi.Network.BytesValue,System.String)">
   PartialCookie(string, BytesValue, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -198,7 +198,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie_Domain" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.Domain">
   Domain
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -229,14 +229,15 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie_Expiry" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.Expiry">
   Expiry
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DateTimeOffset? Expiry { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(DateTimeOffsetSecondsConverter))]
+public DateTimeOffset? Expiry { get; set; }</code></pre>
   </div>
 
 
@@ -260,7 +261,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie_HttpOnly" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.HttpOnly">
   HttpOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -291,7 +292,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie_Name" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -322,7 +323,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie_Path" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.Path">
   Path
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -353,7 +354,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie_SameSite" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.SameSite">
   SameSite
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -384,7 +385,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie_Secure" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.Secure">
   Secure
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -415,7 +416,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_PartialCookie_Value" data-uid="OpenQA.Selenium.BiDi.Storage.PartialCookie.Value">
   Value
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -446,7 +447,7 @@ Class PartialCookie  <a class="header-action link-secondary" title="View source"
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L30" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/SetCookieCommand.cs/#L32" class="edit-link">Edit this page</a>
         </div>
 
 

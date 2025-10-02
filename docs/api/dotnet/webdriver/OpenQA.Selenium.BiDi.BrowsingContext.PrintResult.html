@@ -159,8 +159,8 @@ Class PrintResult  <a class="header-action link-secondary" title="View source" h
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_PrintResult__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintResult.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintResult__ctor_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintResult.#ctor(System.String)">
-  PrintResult(string)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_PrintResult__ctor_System_ReadOnlyMemory_System_Byte__" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.PrintResult.#ctor(System.ReadOnlyMemory{System.Byte})">
+  PrintResult(ReadOnlyMemory&lt;byte&gt;)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/PrintCommand.cs/#L115"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -168,12 +168,12 @@ Class PrintResult  <a class="header-action link-secondary" title="View source" h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public PrintResult(string Data)</code></pre>
+    <pre><code class="lang-csharp hljs">public PrintResult(ReadOnlyMemory&lt;byte&gt; Data)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>Data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dt><code>Data</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -203,7 +203,7 @@ Class PrintResult  <a class="header-action link-secondary" title="View source" h
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string Data { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ReadOnlyMemory&lt;byte&gt; Data { get; init; }</code></pre>
   </div>
 
 
@@ -212,7 +212,7 @@ Class PrintResult  <a class="header-action link-secondary" title="View source" h
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlymemory-1">ReadOnlyMemory</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
     <dd></dd>
   </dl>
 

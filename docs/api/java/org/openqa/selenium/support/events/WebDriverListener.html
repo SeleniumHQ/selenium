@@ -388,6 +388,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time after <a href="../../WebDriver.Window.html#getPosition()"><code>WebDriver.Window.getPosition()</code></a> is called.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default &lt;X&gt;&nbsp;void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetScreenshotAs(org.openqa.selenium.WebDriver,org.openqa.selenium.OutputType,X)" class="member-name-link">afterGetScreenshotAs</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target,
+ X&nbsp;result)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This method will be called after <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a> is called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default &lt;X&gt;&nbsp;void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetScreenshotAs(org.openqa.selenium.WebElement,org.openqa.selenium.OutputType,X)" class="member-name-link">afterGetScreenshotAs</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target,
+ X&nbsp;result)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This method will be called after <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a> is called.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#afterGetSize(org.openqa.selenium.WebDriver.Window,org.openqa.selenium.Dimension)" class="member-name-link">afterGetSize</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window,
  <a href="../../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;result)</code></div>
@@ -811,6 +825,20 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetPosition(org.openqa.selenium.WebDriver.Window)" class="member-name-link">beforeGetPosition</a><wbr>(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;window)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">This action will be performed each time before <a href="../../WebDriver.Window.html#getPosition()"><code>WebDriver.Window.getPosition()</code></a> is
+ called.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default &lt;X&gt;&nbsp;void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetScreenshotAs(org.openqa.selenium.WebDriver,org.openqa.selenium.OutputType)" class="member-name-link">beforeGetScreenshotAs</a><wbr>(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This method will be called before <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a> is
+ called.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default &lt;X&gt;&nbsp;void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#beforeGetScreenshotAs(org.openqa.selenium.WebElement,org.openqa.selenium.OutputType)" class="member-name-link">beforeGetScreenshotAs</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">This method will be called before <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a> is
  called.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
@@ -1443,6 +1471,39 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="beforeGetScreenshotAs(org.openqa.selenium.WebDriver,org.openqa.selenium.OutputType)">
+<h3>beforeGetScreenshotAs</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeGetScreenshotAs</span><wbr><span class="parameters">(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</span></div>
+<div class="block">This method will be called before <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a> is
+ called.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>X</code> - return type for getScreenshotAs</dd>
+<dt>Parameters:</dt>
+<dd><code>driver</code> - decorated WebDriver instance</dd>
+<dd><code>target</code> - target type, see <a href="../../OutputType.html" title="interface in org.openqa.selenium"><code>OutputType</code></a></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterGetScreenshotAs(org.openqa.selenium.WebDriver,org.openqa.selenium.OutputType,X)">
+<h3 id="afterGetScreenshotAs(org.openqa.selenium.WebDriver,org.openqa.selenium.OutputType,java.lang.Object)">afterGetScreenshotAs</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterGetScreenshotAs</span><wbr><span class="parameters">(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target,
+ X&nbsp;result)</span></div>
+<div class="block">This method will be called after <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a> is called.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>X</code> - return type for getScreenshotAs</dd>
+<dt>Parameters:</dt>
+<dd><code>driver</code> - decorated WebDriver instance</dd>
+<dd><code>target</code> - target type, see <a href="../../OutputType.html" title="interface in org.openqa.selenium"><code>OutputType</code></a></dd>
+<dd><code>result</code> - object that stores the screenshot information</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="beforeAnyWebElementCall(org.openqa.selenium.WebElement,java.lang.reflect.Method,java.lang.Object[])">
 <h3>beforeAnyWebElementCall</h3>
 <div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeAnyWebElementCall</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
@@ -1841,6 +1902,39 @@ loadScripts(document, 'script');</script>
 <dd><code>element</code> - - decorated WebElement instance</dd>
 <dd><code>propertyName</code> - - name of the css property</dd>
 <dd><code>result</code> - - result of the method call (value of the css property)</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="beforeGetScreenshotAs(org.openqa.selenium.WebElement,org.openqa.selenium.OutputType)">
+<h3>beforeGetScreenshotAs</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeGetScreenshotAs</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</span></div>
+<div class="block">This method will be called before <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a> is
+ called.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>X</code> - return type for getScreenshotAs</dd>
+<dt>Parameters:</dt>
+<dd><code>element</code> - decorated WebElement instance</dd>
+<dd><code>target</code> - target type, see <a href="../../OutputType.html" title="interface in org.openqa.selenium"><code>OutputType</code></a></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="afterGetScreenshotAs(org.openqa.selenium.WebElement,org.openqa.selenium.OutputType,X)">
+<h3 id="afterGetScreenshotAs(org.openqa.selenium.WebElement,org.openqa.selenium.OutputType,java.lang.Object)">afterGetScreenshotAs</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">afterGetScreenshotAs</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target,
+ X&nbsp;result)</span></div>
+<div class="block">This method will be called after <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a> is called.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>X</code> - return type for getScreenshotAs</dd>
+<dt>Parameters:</dt>
+<dd><code>element</code> - decorated WebElement instance</dd>
+<dd><code>target</code> - target type, see <a href="../../OutputType.html" title="interface in org.openqa.selenium"><code>OutputType</code></a></dd>
+<dd><code>result</code> - result object that stores the screenshot information</dd>
 </dl>
 </section>
 </li>

@@ -616,12 +616,12 @@
       <pre class="lines">
 
 
-99
-100
-101</pre>
+101
+102
+103</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_cookies'>all_cookies</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_cookies'>cookies</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_cookie'>cookie</span><span class='op'>|</span> <span class='id identifier rubyid_convert_cookie'>convert_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -736,12 +736,12 @@
       <pre class="lines">
 
 
-89
-90
-91</pre>
+91
+92
+93</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 91</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
@@ -790,6 +790,19 @@
   
 </ul>
 
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -799,12 +812,16 @@
 
 81
 82
-83</pre>
+83
+84
+85</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 81</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Cookie name cannot be null or empty</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_cookie'>delete_cookie</span> <span class='id identifier rubyid_name'>name</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -827,12 +844,12 @@
       <pre class="lines">
 
 
-103
-104
-105</pre>
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 105</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeouts'>timeouts</span>
   <span class='ivar'>@timeouts</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Timeouts.html" title="Selenium::WebDriver::Timeouts (class)">Timeouts</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Timeouts.html#initialize-instance_method" title="Selenium::WebDriver::Timeouts#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -857,12 +874,12 @@
       <pre class="lines">
 
 
-107
-108
-109</pre>
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 107</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/manager.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span>
   <span class='ivar'>@window</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Window.html" title="Selenium::WebDriver::Window (class)">Window</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Window.html#initialize-instance_method" title="Selenium::WebDriver::Window#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -877,7 +894,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Aug 14 19:47:13 2025 by
+  Generated on Thu Oct  2 15:22:00 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.2.8).
 </div>

@@ -101,7 +101,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record NavigationInfo : BrowsingContextEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextEventArgs&gt;, IEquatable&lt;NavigationInfo&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record NavigationInfo : BrowsingContextEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextEventArgs&gt;, IBaseNavigationInfo, IEquatable&lt;NavigationInfo&gt;</code></pre>
   </div>
 
 
@@ -122,6 +122,7 @@ Class NavigationInfo  <a class="header-action link-secondary" title="View source
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a>&gt;</div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.IBaseNavigationInfo.html">IBaseNavigationInfo</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.html">NavigationInfo</a>&gt;</div>
     </dd>
   </dl>
