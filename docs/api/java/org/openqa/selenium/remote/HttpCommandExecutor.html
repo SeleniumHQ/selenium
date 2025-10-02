@@ -114,11 +114,17 @@ implements <a href="CommandExecutor.html" title="interface in org.openqa.seleniu
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Field</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>final <a href="http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></div>
-<div class="col-second even-row-color"><code><a href="#client" class="member-name-link">client</a></code></div>
+<div class="col-first even-row-color"><code>protected final <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#additionalCommands" class="member-name-link">additionalCommands</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected <a href="CommandCodec.html" title="interface in org.openqa.selenium.remote">CommandCodec</a><wbr>&lt;<a href="http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></div>
-<div class="col-second odd-row-color"><code><a href="#commandCodec" class="member-name-link">commandCodec</a></code></div>
+<div class="col-first odd-row-color"><code>final <a href="http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#client" class="member-name-link">client</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>protected <a href="CommandCodec.html" title="interface in org.openqa.selenium.remote">CommandCodec</a><wbr>&lt;<a href="http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#commandCodec" class="member-name-link">commandCodec</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected final <a href="http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#httpClientFactory" class="member-name-link">httpClientFactory</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>protected <a href="ResponseCodec.html" title="interface in org.openqa.selenium.remote">ResponseCodec</a><wbr>&lt;<a href="http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#responseCodec" class="member-name-link">responseCodec</a></code></div>
@@ -221,6 +227,18 @@ implements <a href="CommandExecutor.html" title="interface in org.openqa.seleniu
 <section class="detail" id="client">
 <h3>client</h3>
 <div class="member-signature"><span class="modifiers">public final</span>&nbsp;<span class="return-type"><a href="http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></span>&nbsp;<span class="element-name">client</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="httpClientFactory">
+<h3>httpClientFactory</h3>
+<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></span>&nbsp;<span class="element-name">httpClientFactory</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="additionalCommands">
+<h3>additionalCommands</h3>
+<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;</span>&nbsp;<span class="element-name">additionalCommands</span></div>
 </section>
 </li>
 <li>

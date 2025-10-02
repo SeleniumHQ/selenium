@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.36.0.202508121825 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.36.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=90a25026"></script>
+    <script src="../../../../_static/documentation_options.js?v=48fdbe4b"></script>
     <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
+        <a href="../../../../index.html" title="Selenium 4.36.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.webdriver </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.36.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.36.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
+       title="Selenium 4.36.0 documentation">Selenium 4.36.0 documentation</a>
   </label>
   
 
@@ -208,6 +208,7 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
+
 <span class="sd">"""The WebDriver implementation."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
@@ -243,6 +244,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">Storage</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.webextension</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebExtension</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.by</span><span class="w"> </span><span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.fedcm.dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dialog</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgOptions</span><span class="p">,</span> <span class="n">BaseOptions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.print_page_options</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrintOptions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.timeouts</span><span class="w"> </span><span class="kn">import</span> <span class="n">Timeouts</span>
@@ -251,23 +253,21 @@
     <span class="n">VirtualAuthenticatorOptions</span><span class="p">,</span>
     <span class="n">required_virtual_authenticator</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.bidi_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">BidiConnection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.client_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.errorhandler</span><span class="w"> </span><span class="kn">import</span> <span class="n">ErrorHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.fedcm</span><span class="w"> </span><span class="kn">import</span> <span class="n">FedCM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.file_detector</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileDetector</span><span class="p">,</span> <span class="n">LocalFileDetector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.locator_converter</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocatorConverter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.mobile</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mobile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.remote_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteConnection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.script_key</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScriptKey</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.shadowroot</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShadowRoot</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.switch_to</span><span class="w"> </span><span class="kn">import</span> <span class="n">SwitchTo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.webelement</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebElement</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.websocket_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebSocketConnection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.support.relative_locator</span><span class="w"> </span><span class="kn">import</span> <span class="n">RelativeBy</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">..common.fedcm.dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dialog</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.bidi_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">BidiConnection</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.client_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClientConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.errorhandler</span><span class="w"> </span><span class="kn">import</span> <span class="n">ErrorHandler</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.fedcm</span><span class="w"> </span><span class="kn">import</span> <span class="n">FedCM</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.file_detector</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileDetector</span><span class="p">,</span> <span class="n">LocalFileDetector</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.locator_converter</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocatorConverter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.mobile</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mobile</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.remote_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteConnection</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.script_key</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScriptKey</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.shadowroot</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShadowRoot</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.switch_to</span><span class="w"> </span><span class="kn">import</span> <span class="n">SwitchTo</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.webelement</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebElement</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.websocket_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebSocketConnection</span>
 
 <span class="n">cdp</span> <span class="o">=</span> <span class="kc">None</span>
 

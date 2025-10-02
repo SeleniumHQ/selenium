@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.actions.key_actions &#8212; Selenium 4.36.0.202508121825 documentation</title>
+    <title>selenium.webdriver.common.actions.key_actions &#8212; Selenium 4.36.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=90a25026"></script>
+    <script src="../../../../../_static/documentation_options.js?v=48fdbe4b"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.36.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.actions.key_actions </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.36.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
+       title="Selenium 4.36.0 documentation">Selenium 4.36.0 documentation</a>
   </label>
   
 
@@ -211,11 +211,11 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">keys_to_typing</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.interaction</span><span class="w"> </span><span class="kn">import</span> <span class="n">KEY</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">,</span> <span class="n">WHEEL</span><span class="p">,</span> <span class="n">Interaction</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.key_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyInput</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.pointer_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">PointerInput</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.wheel_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">WheelInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.actions.interaction</span><span class="w"> </span><span class="kn">import</span> <span class="n">KEY</span><span class="p">,</span> <span class="n">Interaction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.actions.key_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.actions.pointer_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">PointerInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.actions.wheel_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">WheelInput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">keys_to_typing</span>
 
 
 <div class="viewcode-block" id="KeyActions">
@@ -225,18 +225,7 @@
         <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">source</span> <span class="o">=</span> <span class="n">KeyInput</span><span class="p">(</span><span class="n">KEY</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_source</span> <span class="o">=</span> <span class="n">source</span>
-
-        <span class="c1"># Determine the correct source type string based on the input object</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">KeyInput</span><span class="p">):</span>
-            <span class="n">source_type</span> <span class="o">=</span> <span class="n">KEY</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">PointerInput</span><span class="p">):</span>
-            <span class="n">source_type</span> <span class="o">=</span> <span class="n">POINTER</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">WheelInput</span><span class="p">):</span>
-            <span class="n">source_type</span> <span class="o">=</span> <span class="n">WHEEL</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">source_type</span> <span class="o">=</span> <span class="n">KEY</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source_type</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
 
 <div class="viewcode-block" id="KeyActions.key_down">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.key_actions.html#selenium.webdriver.common.actions.key_actions.KeyActions.key_down">[docs]</a>
@@ -268,7 +257,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_key_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">letter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyActions</span><span class="p">:</span>
-        <span class="n">meth</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_source</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+        <span class="n">meth</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
         <span class="n">meth</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 

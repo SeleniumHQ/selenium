@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.desired_capabilities &#8212; Selenium 4.36.0.202508121825 documentation</title>
+    <title>selenium.webdriver.common.desired_capabilities &#8212; Selenium 4.36.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=90a25026"></script>
+    <script src="../_static/documentation_options.js?v=48fdbe4b"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.36.0.202508121825 documentation"
+        <a href="../index.html" title="Selenium 4.36.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.desired_capabilities </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.36.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.36.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
+       title="Selenium 4.36.0 documentation">Selenium 4.36.0 documentation</a>
   </label>
   
 
@@ -242,20 +242,19 @@
 requesting remote webdrivers for connecting to selenium server or selenium grid.</p>
 <p>Usage Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">selenium</span><span class="w"> </span><span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.firefox.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">Options</span>
 
 <span class="n">selenium_grid_url</span> <span class="o">=</span> <span class="s2">"http://198.0.0.1:4444/wd/hub"</span>
 
-<span class="c1"># Create a desired capabilities object as a starting point.</span>
-<span class="n">capabilities</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">capabilities</span><span class="p">[</span><span class="s2">"platform"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"WINDOWS"</span>
-<span class="n">capabilities</span><span class="p">[</span><span class="s2">"version"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"10"</span>
+<span class="c1"># Create a new Options object for the desired browser.</span>
+<span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+<span class="n">options</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">"platformName"</span><span class="p">,</span> <span class="s2">"windows"</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">browser_version</span> <span class="o">=</span> <span class="s2">"142"</span>
 
-<span class="c1"># Instantiate an instance of Remote WebDriver with the desired capabilities.</span>
-<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">,</span> <span class="n">command_executor</span><span class="o">=</span><span class="n">selenium_grid_url</span><span class="p">)</span>
+<span class="c1"># Instantiate an instance of Remote WebDriver with the new options.</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Remote</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="n">selenium_grid_url</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Note: Always use ‘.copy()’ on the DesiredCapabilities object to avoid the side
-effects of altering the Global class instance.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX">
 <span class="sig-name descname"><span class="pre">FIREFOX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'acceptInsecureCerts':</span> <span class="pre">True,</span> <span class="pre">'browserName':</span> <span class="pre">'firefox',</span> <span class="pre">'moz:debuggerAddress':</span> <span class="pre">True}</span></em><a class="headerlink" href="#selenium.webdriver.common.desired_capabilities.DesiredCapabilities.FIREFOX" title="Link to this definition">¶</a></dt>

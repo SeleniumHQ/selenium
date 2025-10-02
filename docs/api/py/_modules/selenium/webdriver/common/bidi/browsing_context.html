@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.browsing_context &#8212; Selenium 4.36.0.202508121825 documentation</title>
+    <title>selenium.webdriver.common.bidi.browsing_context &#8212; Selenium 4.36.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=90a25026"></script>
+    <script src="../../../../../_static/documentation_options.js?v=48fdbe4b"></script>
     <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.36.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.36.0.202508121825 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.36.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.browsing_context </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0.202508121825 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.36.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.36.0.202508121825 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.36.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.36.0.202508121825 documentation">Selenium 4.36.0.202508121825 documentation</a>
+       title="Selenium 4.36.0 documentation">Selenium 4.36.0 documentation</a>
   </label>
   
 
@@ -214,8 +214,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 
 
 <div class="viewcode-block" id="ReadinessState">
@@ -399,41 +398,17 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadWillBeginParams.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DownloadWillBeginParams"</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Creates a DownloadWillBeginParams instance from a dictionary.</span>
-
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">            json: A dictionary containing the download parameters.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            DownloadWillBeginParams: A new instance of DownloadWillBeginParams.</span>
-<span class="sd">        """</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"context"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"context is required and must be a string"</span><span class="p">)</span>
-
-        <span class="n">navigation</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"navigation"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">navigation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">navigation</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"navigation must be a string"</span><span class="p">)</span>
-
-        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">timestamp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"timestamp is required and must be a non-negative integer"</span><span class="p">)</span>
-
-        <span class="n">url</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"url"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"url is required and must be a string"</span><span class="p">)</span>
+        <span class="n">nav_info</span> <span class="o">=</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
 
         <span class="n">suggested_filename</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"suggestedFilename"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">suggested_filename</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suggested_filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"suggestedFilename is required and must be a string"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
-            <span class="n">navigation</span><span class="o">=</span><span class="n">navigation</span><span class="p">,</span>
-            <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
-            <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+            <span class="n">navigation</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">navigation</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
             <span class="n">suggested_filename</span><span class="o">=</span><span class="n">suggested_filename</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
@@ -607,6 +582,109 @@
             <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
             <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
         <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DownloadCanceledParams">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadCanceledParams">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownloadCanceledParams</span><span class="p">(</span><span class="n">NavigationInfo</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">navigation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">timestamp</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"canceled"</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">navigation</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+
+<div class="viewcode-block" id="DownloadCanceledParams.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadCanceledParams.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DownloadCanceledParams"</span><span class="p">:</span>
+        <span class="n">nav_info</span> <span class="o">=</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">status</span> <span class="o">!=</span> <span class="s2">"canceled"</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"status is required and must be 'canceled'"</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+            <span class="n">navigation</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">navigation</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DownloadCompleteParams">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadCompleteParams">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownloadCompleteParams</span><span class="p">(</span><span class="n">NavigationInfo</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">navigation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">timestamp</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"complete"</span><span class="p">,</span>
+        <span class="n">filepath</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">navigation</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
+
+<div class="viewcode-block" id="DownloadCompleteParams.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadCompleteParams.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DownloadCompleteParams"</span><span class="p">:</span>
+        <span class="n">nav_info</span> <span class="o">=</span> <span class="n">NavigationInfo</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">status</span> <span class="o">!=</span> <span class="s2">"complete"</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"status is required and must be 'complete'"</span><span class="p">)</span>
+
+        <span class="n">filepath</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"filepath"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"filepath must be a string if provided"</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+            <span class="n">navigation</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">navigation</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">nav_info</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
+            <span class="n">filepath</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DownloadEndParams">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadEndParams">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownloadEndParams</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Parameters for the downloadEnd event."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">download_params</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DownloadCanceledParams</span><span class="p">,</span> <span class="n">DownloadCompleteParams</span><span class="p">],</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_params</span> <span class="o">=</span> <span class="n">download_params</span>
+
+<div class="viewcode-block" id="DownloadEndParams.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadEndParams.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DownloadEndParams"</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">"canceled"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">DownloadCanceledParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">"complete"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">DownloadCompleteParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"status must be either 'canceled' or 'complete'"</span><span class="p">)</span></div>
 </div>
 
 
@@ -837,6 +915,22 @@
 
 
 
+<div class="viewcode-block" id="DownloadEnd">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadEnd">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownloadEnd</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Event class for browsingContext.downloadEnd event."""</span>
+
+    <span class="n">event_class</span> <span class="o">=</span> <span class="s2">"browsingContext.downloadEnd"</span>
+
+<div class="viewcode-block" id="DownloadEnd.from_json">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.DownloadEnd.from_json">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">DownloadEndParams</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="EventConfig">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.EventConfig">[docs]</a>
 <span class="nd">@dataclass</span>
@@ -957,6 +1051,7 @@
         <span class="s2">"context_created"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"context_created"</span><span class="p">,</span> <span class="s2">"browsingContext.contextCreated"</span><span class="p">,</span> <span class="n">ContextCreated</span><span class="p">),</span>
         <span class="s2">"context_destroyed"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"context_destroyed"</span><span class="p">,</span> <span class="s2">"browsingContext.contextDestroyed"</span><span class="p">,</span> <span class="n">ContextDestroyed</span><span class="p">),</span>
         <span class="s2">"dom_content_loaded"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"dom_content_loaded"</span><span class="p">,</span> <span class="s2">"browsingContext.domContentLoaded"</span><span class="p">,</span> <span class="n">DomContentLoaded</span><span class="p">),</span>
+        <span class="s2">"download_end"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span><span class="s2">"download_end"</span><span class="p">,</span> <span class="s2">"browsingContext.downloadEnd"</span><span class="p">,</span> <span class="n">DownloadEnd</span><span class="p">),</span>
         <span class="s2">"download_will_begin"</span><span class="p">:</span> <span class="n">EventConfig</span><span class="p">(</span>
             <span class="s2">"download_will_begin"</span><span class="p">,</span> <span class="s2">"browsingContext.downloadWillBegin"</span><span class="p">,</span> <span class="n">DownloadWillBegin</span>
         <span class="p">),</span>

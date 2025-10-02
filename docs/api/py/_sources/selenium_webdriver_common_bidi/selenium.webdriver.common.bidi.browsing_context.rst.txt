@@ -13,6 +13,10 @@ selenium.webdriver.common.bidi.browsing\_context
       ContextCreated
       ContextDestroyed
       DomContentLoaded
+      DownloadCanceledParams
+      DownloadCompleteParams
+      DownloadEnd
+      DownloadEndParams
       DownloadWillBegin
       DownloadWillBeginParams
       EventConfig
