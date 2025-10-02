@@ -254,6 +254,7 @@ fn main() {
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
+            let browser_path = selenium_manager.get_browser_path_or_latest_from_cache();
             if selenium_manager.is_fallback_driver_from_cache()
                 && let Some(best_driver_from_cache) =
                     selenium_manager.find_best_driver_from_cache().unwrap()
@@ -269,13 +270,14 @@ fn main() {
                 log_driver_and_browser_path(
                     log,
                     &best_driver_from_cache,
-                    &selenium_manager.get_browser_path_or_latest_from_cache(),
+                    &browser_path,
                     selenium_manager.get_receiver(),
                 );
                 flush_and_exit(OK, log, Some(err));
             }
             if selenium_manager.is_offline() {
                 log.warn(&err);
+                log_browser_path(&log, &browser_path);
                 flush_and_exit(OK, log, Some(err));
             } else {
                 let error_msg = if log.is_debug_enabled() {
@@ -304,6 +306,10 @@ fn log_driver_and_browser_path(
         log.error(format!("Driver unavailable: {}", driver_path.display()));
         flush_and_exit(UNAVAILABLE, log, None);
     }
+    log_browser_path(log, browser_path);
+}
+
+fn log_browser_path(log: &Logger, browser_path: &str) {
     if !browser_path.is_empty() {
         log.info(format!("{}{}", BROWSER_PATH, browser_path));
     }
