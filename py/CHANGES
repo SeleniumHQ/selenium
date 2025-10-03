@@ -1,3 +1,21 @@
+Selenium 4.36.0
+* Add CDP for Chrome 140 and remove 137
+* close ipv6 port in case of error (#16165)
+* Update docstring and comments in keys.py (#16187)
+* Fix formatting (#16189)
+* Fix type annotation error and raise clearer error message (#16174)
+* Fix type annotation errors in service.py (#16250)
+* replace `platform.system()` with `sys.platform` (#16259)
+* Fix mypy type annotation issues in action_builder (#16207)
+* [bidi]: add `downloadEnd` event for browsing context (#16209)
+* Specify the full path for fedcm import in webdriver.py (#16286)
+* Fix mypy errors (#16283)
+* Update DesiredCapabilities example to use modern Options API (#16295)
+* Add args to is_url_connectable (#16212)
+* Convert all relative imports to absolute imports (#16311)
+* Raise InvalidSelectorException for compound class names (#16291)
+* Fix type annotations in the chromium webdriver file (#16309)
+
 Selenium 4.35.0
 * Add CDP for Chrome 139 and remove 136
 * [bidi]: implement bidi module - emulation (#15819)

@@ -1,3 +1,11 @@
+4.36.0 (2025-09-18)
+=========================
+* Add CDP for Chrome 140 and remove 137
+* [BiDi] Create browser module, added user context related methods (#15371)
+* BiDi get client windows (#16211)
+* Fix links to exception documentation on website (#16305)
+* Update `unhandled_prompt_behavior` capability to support hash syntax (#16289)
+
 4.35.0 (2025-08-12)
 =========================
 * Add CDP for Chrome 139 and remove 136
