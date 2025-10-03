@@ -1,4 +1,4 @@
-// <copyright file="NavigationInfo.cs" company="Selenium Committers">
+// <copyright file="IBaseNavigationInfo.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -21,5 +21,13 @@ using System;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record NavigationInfo(BiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : BrowsingContextEventArgs(BiDi, Context), IBaseNavigationInfo;
+public interface IBaseNavigationInfo
+{
+    BrowsingContext Context { get; }
+
+    Navigation? Navigation { get; }
+
+    DateTimeOffset Timestamp { get; }
+
+    string Url { get; }
+}
