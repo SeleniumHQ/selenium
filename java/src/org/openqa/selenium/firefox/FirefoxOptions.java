@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,6 +56,8 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public static final String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
   private Map<String, Object> firefoxOptions = Collections.unmodifiableMap(new TreeMap<>());
+  private Duration webSocketTimeout = Duration.ofSeconds(30);
+  private Duration webSocketInterval = Duration.ofMillis(100);
 
   public FirefoxOptions() {
     setCapability(CapabilityType.BROWSER_NAME, FIREFOX.browserName());
@@ -265,11 +268,53 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return this;
   }
 
+  /**
+   * Sets the WebSocket timeout for BiDi connections.
+   *
+   * @param webSocketTimeout the WebSocket timeout duration
+   * @return A self reference.
+   */
+  public FirefoxOptions setWebSocketTimeout(Duration webSocketTimeout) {
+    this.webSocketTimeout = Require.nonNull("WebSocket timeout", webSocketTimeout);
+    return this;
+  }
+
+  /**
+   * Gets the WebSocket timeout for BiDi connections.
+   *
+   * @return the WebSocket timeout duration
+   */
+  public Duration getWebSocketTimeout() {
+    return webSocketTimeout;
+  }
+
+  /**
+   * Sets the WebSocket interval for BiDi connections.
+   *
+   * @param webSocketInterval the WebSocket interval duration
+   * @return A self reference.
+   */
+  public FirefoxOptions setWebSocketInterval(Duration webSocketInterval) {
+    this.webSocketInterval = Require.nonNull("WebSocket interval", webSocketInterval);
+    return this;
+  }
+
+  /**
+   * Gets the WebSocket interval for BiDi connections.
+   *
+   * @return the WebSocket interval duration
+   */
+  public Duration getWebSocketInterval() {
+    return webSocketInterval;
+  }
+
   @Override
   protected Set<String> getExtraCapabilityNames() {
     Set<String> names = new TreeSet<>();
 
     names.add(FIREFOX_OPTIONS);
+    names.add("se:webSocketTimeout");
+    names.add("se:webSocketInterval");
 
     return Collections.unmodifiableSet(names);
   }
@@ -280,6 +325,12 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     if (FIREFOX_OPTIONS.equals(capabilityName)) {
       return Collections.unmodifiableMap(firefoxOptions);
+    }
+    if ("se:webSocketTimeout".equals(capabilityName)) {
+      return webSocketTimeout.toMillis();
+    }
+    if ("se:webSocketInterval".equals(capabilityName)) {
+      return webSocketInterval.toMillis();
     }
     return null;
   }

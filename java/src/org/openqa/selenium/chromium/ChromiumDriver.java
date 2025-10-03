@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.Browser.OPERA;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +120,21 @@ public class ChromiumDriver extends RemoteWebDriver
               return null;
             });
 
-    this.biDi = createBiDi(biDiUri);
+    // Extract WebSocket configuration from capabilities
+    Duration webSocketTimeout = Duration.ofSeconds(30); // Default value
+    Duration webSocketInterval = Duration.ofMillis(100); // Default value
+
+    Object timeoutCapability = originalCapabilities.getCapability("se:webSocketTimeout");
+    if (timeoutCapability instanceof Number) {
+      webSocketTimeout = Duration.ofSeconds(((Number) timeoutCapability).longValue());
+    }
+
+    Object intervalCapability = originalCapabilities.getCapability("se:webSocketInterval");
+    if (intervalCapability instanceof Number) {
+      webSocketInterval = Duration.ofMillis(((Number) intervalCapability).longValue());
+    }
+
+    this.biDi = createBiDi(biDiUri, webSocketTimeout, webSocketInterval);
 
     Optional<URI> reportedUri =
         CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
@@ -295,7 +310,7 @@ public class ChromiumDriver extends RemoteWebDriver
     return devTools;
   }
 
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
+  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, Duration webSocketTimeout, Duration webSocketInterval) {
     if (biDiUri.isEmpty()) {
       return Optional.empty();
     }
@@ -308,7 +323,10 @@ public class ChromiumDriver extends RemoteWebDriver
                         + " capability is set."));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+    ClientConfig wsConfig = ClientConfig.defaultConfig()
+        .baseUri(wsUri)
+        .webSocketTimeout(webSocketTimeout)
+        .webSocketInterval(webSocketInterval);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
     org.openqa.selenium.bidi.Connection biDiConnection =
