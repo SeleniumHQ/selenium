@@ -21,6 +21,7 @@ import com.google.auto.service.AutoService;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Predicate;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
@@ -43,21 +44,28 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
   @Override
   public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
     return new HasDevTools() {
-      private volatile Optional<DevTools> devTools;
+      private volatile DevTools devTools;
+      private final Object lock = new Object();
 
       @Override
       public Optional<DevTools> maybeGetDevTools() {
+        return Optional.ofNullable(devTools);
+      }
+
+      @Override
+      public DevTools getDevTools() {
         if (devTools == null) {
-          synchronized (this) {
+          synchronized (lock) {
             if (devTools == null) {
               Object cdpVersion = caps.getCapability("se:cdpVersion");
               String version =
-                  cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
+                cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
 
               CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
               this.devTools =
-                  SeleniumCdpConnection.create(caps)
-                      .map(conn -> new DevTools(info::getDomains, conn));
+                SeleniumCdpConnection.create(caps)
+                  .map(conn -> new DevTools(info::getDomains, conn))
+                  .orElseThrow(() -> new DevToolsException("Unable to create DevTools connection"));
             }
           }
         }

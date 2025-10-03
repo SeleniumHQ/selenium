@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.function.Predicate;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
@@ -45,22 +46,28 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
   @Override
   public HasBiDi getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
     return new HasBiDi() {
-      private volatile Optional<BiDi> biDi;
+      private volatile BiDi biDi;
+      private final Object lock = new Object();
 
       @Override
       public Optional<BiDi> maybeGetBiDi() {
+        return Optional.ofNullable(biDi);
+      }
+
+      @Override
+      public BiDi getBiDi() {
         if (biDi == null) {
-          synchronized (this) {
+          synchronized (lock) {
             if (biDi == null) {
               URI wsUri =
-                  getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
+                getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
 
               HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
               ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
               HttpClient wsClient = clientFactory.createClient(wsConfig);
               Connection connection = new Connection(wsClient, wsUri.toString());
 
-              biDi = Optional.of(new BiDi(connection));
+              biDi = new BiDi(connection);
             }
           }
         }
