@@ -1,4 +1,3 @@
-// <copyright file="NavigationInfo.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,11 +14,16 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-using System;
+package org.openqa.selenium.devtools.v140;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
 
-public sealed record NavigationInfo(BiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : BrowsingContextEventArgs(BiDi, Context), IBaseNavigationInfo;
+@AutoService(CdpInfo.class)
+public class v140CdpInfo extends CdpInfo {
+
+  public v140CdpInfo() {
+    super(140, v140Domains::new);
+  }
+}

@@ -11,10 +11,10 @@ load("//javascript/private:browsers.bzl", "BROWSERS")
 
 npm_link_all_packages(name = "node_modules")
 
-VERSION = "4.36.0-nightly202508121825"
+VERSION = "4.36.0"
 
 BROWSER_VERSIONS = [
-    "v137",
+    "v140",
     "v138",
     "v139",
 ]

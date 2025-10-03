@@ -1,3 +1,7 @@
+0.4.36
+======
+* Use DEBUG level for WARN traces in offline mode (#15836)
+
 0.4.35
 ======
 * Normalize architecture strings sent to Plausible (#15970)

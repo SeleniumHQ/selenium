@@ -43,5 +43,5 @@ def rust_test_suite(name, srcs = [], **kwargs):
 
         # Prefixed with `name` to allow parameterization with macros
         # The test name should not end with `.rs`
-        test_name = name + "_" + src[:-3]
+        test_name = name + "_" + src[:-3] + "_test"
         _wrap_with_fmt_test(test_name, kwargs.get("tags", []))
