@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import sys
+
 import pytest
 
 from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
@@ -43,6 +45,7 @@ def test_bespoke_options_for_virtual_authenticator():
     }
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Fails when run with Bazel on GH runners")
 def test_to_dict_with_defaults(options):
     default_options = options.to_dict()
     assert default_options["transport"] == VirtualAuthenticatorOptions.Transport.USB.value
