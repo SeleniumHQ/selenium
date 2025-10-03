@@ -1,3 +1,21 @@
+v4.36.0
+======
+* Add CDP for Chrome 140 and remove 137
+* [grid] close the HttpClient after the session is gone
+* extend the scope of the properties of the HttpCommandExecutor class (#16186)
+* [grid] Improve readTimeout in handle session between Router and Node (#16163)
+* Unifying select class (#16220)
+* Add hooks around getScreenshotAs in WebDriverListener #16232 (#16233)
+* [grid] Simplify node status response handling in Router
+* Refactored selectByContainsVisibleText and selectByVisibleText methods to remove code duplication (#16257)
+* [bidi]: add `DownloadInfo` class and test for `onDownloadWillBegin` (#16267)
+* [grid] update to netty 4.2.4 (#16194)
+* Fix links to exception documentation on website (#16305)
+* Fix concurrency issue in Selenium Manager (#16315)
+* Fix falsy Spotbugs warning about not closed resource (#16318)
+* [grid] Fix regression Distributor rejecting requests when nodes have supported caps but no free slots (#16327)
+* Feat 14291/add jspecify annotations to exception classes pt4 (#16028)
+
 v4.35.0
 ======
 * Add CDP for Chrome 139 and remove 136

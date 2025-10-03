@@ -15,9 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { lightTheme } from './themes'
+package org.openqa.selenium.devtools.v140;
 
-// Backward compatibility - export light theme as default
-const theme = lightTheme
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
 
-export default theme
+@AutoService(CdpInfo.class)
+public class v140CdpInfo extends CdpInfo {
+
+  public v140CdpInfo() {
+    super(140, v140Domains::new);
+  }
+}
