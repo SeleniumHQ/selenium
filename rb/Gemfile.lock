@@ -3,7 +3,7 @@ PATH
   specs:
     selenium-devtools (0.140.0)
       selenium-webdriver (~> 4.2)
-    selenium-webdriver (4.36.0)
+    selenium-webdriver (4.37.0.nightly)
       base64 (~> 0.2)
       json (<= 2.13.2)
       logger (~> 1.4)
@@ -95,7 +95,7 @@ GEM
     public_suffix (6.0.2)
     racc (1.8.1)
     racc (1.8.1-java)
-    rack (2.2.17)
+    rack (2.2.18)
     rainbow (3.1.1)
     rake (13.3.0)
     rb-fsevent (0.11.2)
