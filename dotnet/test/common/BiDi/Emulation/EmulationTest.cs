@@ -24,53 +24,145 @@ namespace OpenQA.Selenium.BiDi.Emulation;
 class EmulationTest : BiDiTestFixture
 {
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetTimezoneOverride()
     {
-        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync("UTC", new() { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(
+            async () => await bidi.Emulation.SetTimezoneOverrideAsync("UTC", new() { Contexts = [context] }),
+            Throws.Nothing);
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetTimezoneOverrideToDefault()
+    {
+        Assert.That(
+            async () => await bidi.Emulation.SetTimezoneOverrideAsync(null, new() { Contexts = [context] }),
+            Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetUserAgentOverride()
     {
-        Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync("MyUserAgent/1.0", new() { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(
+            async () => await bidi.Emulation.SetUserAgentOverrideAsync("MyUserAgent/1.0", new() { Contexts = [context] }),
+            Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetUserAgentOverrideToDefault()
+    {
+        Assert.That(
+            async () => await bidi.Emulation.SetUserAgentOverrideAsync(null, new() { Contexts = [context] }),
+            Throws.Nothing);
     }
 
     [Test]
     public void CanSetLocaleOverride()
     {
-        Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync("en-US", new() { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(
+            async () => await bidi.Emulation.SetLocaleOverrideAsync("en-US", new() { Contexts = [context] }),
+            Throws.Nothing);
     }
 
     [Test]
+    public void CanSetLocaleOverrideToDefault()
+    {
+        Assert.That(
+            async () => await bidi.Emulation.SetLocaleOverrideAsync(null, new() { Contexts = [context] }),
+            Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetForcedColorsModeThemeOverride()
     {
-        Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme.Light, new() { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(
+            async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme.Light, new() { Contexts = [context] }),
+            Throws.Nothing);
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetForcedColorsModeThemeOverrideToDefault()
+    {
+        Assert.That(
+            async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(null, new() { Contexts = [context] }),
+            Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetScriptingEnabled()
     {
-        Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(false, new() { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(null, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(
+            async () => await bidi.Emulation.SetScriptingEnabledAsync(false, new() { Contexts = [context] }),
+            Throws.Nothing);
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetScriptingEnabledToDefault()
+    {
+        Assert.That(
+            async () => await bidi.Emulation.SetScriptingEnabledAsync(null, new() { Contexts = [context] }),
+            Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public void CanSetScreenOrientationOverride()
     {
         var orientation = new ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);
-        Assert.That(async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(orientation, new() { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
+
+        Assert.That(
+            async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(orientation, new() { Contexts = [context] }),
+            Throws.Nothing);
     }
 
     [Test]
-    public void CanSetGeolocationOverride()
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetScreenOrientationOverrideToDefault()
     {
-        Assert.That(async () => await bidi.Emulation.SetGeolocationCoordinatesOverrideAsync(0, 0, new() { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetGeolocationCoordinatesOverrideAsync(new() { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetGeolocationPositionErrorOverrideAsync(new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(
+            async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(null, new() { Contexts = [context] }),
+            Throws.Nothing);
+    }
+
+    [Test]
+    public void CanSetGeolocationCoordinatesOverride()
+    {
+        Assert.That(
+            async () => await bidi.Emulation.SetGeolocationCoordinatesOverrideAsync(0, 0, new() { Contexts = [context] }),
+            Throws.Nothing);
+    }
+
+    [Test]
+    public void CanSetGeolocationCoordinatesOverrideToDefault()
+    {
+        Assert.That(
+            async () => await bidi.Emulation.SetGeolocationCoordinatesOverrideAsync(new() { Contexts = [context] }),
+            Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "invalid argument: Expected \"coordinates\" to be an object, got [object Undefined] undefined")]
+    public void CanSetGeolocationPositionErrorOverride()
+    {
+        Assert.That(
+            async () => await bidi.Emulation.SetGeolocationPositionErrorOverrideAsync(new() { Contexts = [context] }),
+            Throws.Nothing);
     }
 }
