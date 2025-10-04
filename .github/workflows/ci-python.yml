@@ -64,6 +64,7 @@ jobs:
         include:
           - os: ubuntu
           - os: windows
+          - os: macos
     with:
       name: Unit Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
@@ -102,8 +103,6 @@ jobs:
           - browser: chrome
             os: windows
           - browser: edge
-            os: windows
-          - browser: firefox
             os: windows
     with:
       name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
