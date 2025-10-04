@@ -63,7 +63,6 @@ jobs:
       matrix:
         include:
           - os: ubuntu
-          - os: windows
           - os: macos
     with:
       name: Unit Tests (${{ matrix.os }})

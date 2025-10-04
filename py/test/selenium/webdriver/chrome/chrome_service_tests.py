@@ -108,10 +108,6 @@ def test_log_output_null_default(driver, capfd) -> None:
     driver.quit()
 
 
-@pytest.mark.skipif(
-    sys.platform == "win32",
-    reason="chromedriver doesn't return an error on windows if you use an invalid profile path",
-)
 @pytest.mark.no_driver_after_test
 def test_driver_is_stopped_if_browser_cant_start(clean_driver, clean_options, driver_executable) -> None:
     clean_options.add_argument("--user-data-dir=/no/such/location")
