@@ -30,4 +30,11 @@ public sealed class EmulationModule(Broker broker) : Module(broker)
 
         return await Broker.ExecuteCommandAsync<SetTimezoneOverrideCommand, EmptyResult>(new SetTimezoneOverrideCommand(@params), options).ConfigureAwait(false);
     }
+
+    public async Task<EmptyResult> SetUserAgentOverrideAsync(string? userAgent, SetUserAgentOverrideOptions? options = null)
+    {
+        var @params = new SetUserAgentOverrideParameters(userAgent, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetUserAgentOverrideCommand, EmptyResult>(new SetUserAgentOverrideCommand(@params), options).ConfigureAwait(false);
+    }
 }

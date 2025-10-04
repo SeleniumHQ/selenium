@@ -1,4 +1,4 @@
-// <copyright file="EmulationTest.cs" company="Selenium Committers">
+// <copyright file="SetUserAgentOverrideCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,21 +17,19 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
+using System.Collections.Generic;
+using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-class EmulationTest : BiDiTestFixture
-{
-    [Test]
-    public void CanSetTimezoneOverride()
-    {
-        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync("UTC", new () { Contexts = [context] }), Throws.Nothing);
-    }
+internal sealed class SetUserAgentOverrideCommand(SetUserAgentOverrideParameters @params)
+    : Command<SetUserAgentOverrideParameters, EmptyResult>(@params, "emulation.setUserAgentOverride");
 
-    [Test]
-    public void CanSetUserAgentOverride()
-    {
-        Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync("MyUserAgent/1.0", new () { Contexts = [context] }), Throws.Nothing);
-    }
+internal sealed record SetUserAgentOverrideParameters(string? UserAgent, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+
+public sealed class SetUserAgentOverrideOptions : CommandOptions
+{
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
