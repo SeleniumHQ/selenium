@@ -27,11 +27,20 @@ class EmulationTest : BiDiTestFixture
     public void CanSetTimezoneOverride()
     {
         Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync("UTC", new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
     }
 
     [Test]
     public void CanSetUserAgentOverride()
     {
         Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync("MyUserAgent/1.0", new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+    }
+
+    [Test]
+    public void CanSetLocaleOverride()
+    {
+        Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync("en-US", new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
     }
 }

@@ -17,15 +17,16 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using OpenQA.Selenium.BiDi.Communication;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetTimezoneOverrideCommand(SetTimezoneOverrideParameters @params)
     : Command<SetTimezoneOverrideParameters, EmptyResult>(@params, "emulation.setTimezoneOverride");
 
-internal sealed record SetTimezoneOverrideParameters(string? Timezone, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+internal sealed record SetTimezoneOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? Timezone, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
 public sealed class SetTimezoneOverrideOptions : CommandOptions
 {

@@ -37,4 +37,11 @@ public sealed class EmulationModule(Broker broker) : Module(broker)
 
         return await Broker.ExecuteCommandAsync<SetUserAgentOverrideCommand, EmptyResult>(new SetUserAgentOverrideCommand(@params), options).ConfigureAwait(false);
     }
+
+    public async Task<EmptyResult> SetLocaleOverrideAsync(string? locale, SetLocaleOverrideOptions? options = null)
+    {
+        var @params = new SetLocaleOverrideParameters(locale, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetLocaleOverrideCommand, EmptyResult>(new SetLocaleOverrideCommand(@params), options).ConfigureAwait(false);
+    }
 }
