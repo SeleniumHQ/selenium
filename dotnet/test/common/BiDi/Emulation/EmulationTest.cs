@@ -57,4 +57,12 @@ class EmulationTest : BiDiTestFixture
         Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(false, new () { Contexts = [context] }), Throws.Nothing);
         Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(null, new () { Contexts = [context] }), Throws.Nothing);
     }
+
+    [Test]
+    public void CanSetScreenOrientationOverride()
+    {
+        var orientation = new ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);
+        Assert.That(async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(orientation, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+    }
 }

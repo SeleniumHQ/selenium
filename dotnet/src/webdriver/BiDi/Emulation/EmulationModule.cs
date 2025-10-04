@@ -58,4 +58,11 @@ public sealed class EmulationModule(Broker broker) : Module(broker)
 
         return await Broker.ExecuteCommandAsync<SetScriptingEnabledCommand, EmptyResult>(new SetScriptingEnabledCommand(@params), options).ConfigureAwait(false);
     }
+
+    public async Task<EmptyResult> SetScreenOrientationOverrideAsync(ScreenOrientation? screenOrientation, SetScreenOrientationOverrideOptions? options = null)
+    {
+        var @params = new SetScreenOrientationOverrideParameters(screenOrientation, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetScreenOrientationOverrideCommand, EmptyResult>(new SetScreenOrientationOverrideCommand(@params), options).ConfigureAwait(false);
+    }
 }
