@@ -9,7 +9,7 @@
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
-// Unless required by applicable law or agreed to in writing,
+// Unless required by applicable law or agreed in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
@@ -43,5 +43,12 @@ public sealed class EmulationModule(Broker broker) : Module(broker)
         var @params = new SetLocaleOverrideParameters(locale, options?.Contexts, options?.UserContexts);
 
         return await Broker.ExecuteCommandAsync<SetLocaleOverrideCommand, EmptyResult>(new SetLocaleOverrideCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme? theme, SetForcedColorsModeThemeOverrideOptions? options = null)
+    {
+        var @params = new SetForcedColorsModeThemeOverrideParameters(theme, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetForcedColorsModeThemeOverrideCommand, EmptyResult>(new SetForcedColorsModeThemeOverrideCommand(@params), options).ConfigureAwait(false);
     }
 }

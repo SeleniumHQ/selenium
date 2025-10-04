@@ -43,4 +43,11 @@ class EmulationTest : BiDiTestFixture
         Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync("en-US", new () { Contexts = [context] }), Throws.Nothing);
         Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
     }
+
+    [Test]
+    public void CanSetForcedColorsModeThemeOverride()
+    {
+        Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme.Light, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+    }
 }
