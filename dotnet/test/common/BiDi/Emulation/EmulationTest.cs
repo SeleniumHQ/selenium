@@ -26,43 +26,51 @@ class EmulationTest : BiDiTestFixture
     [Test]
     public void CanSetTimezoneOverride()
     {
-        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync("UTC", new () { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync("UTC", new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
     }
 
     [Test]
     public void CanSetUserAgentOverride()
     {
-        Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync("MyUserAgent/1.0", new () { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync("MyUserAgent/1.0", new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetUserAgentOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
     }
 
     [Test]
     public void CanSetLocaleOverride()
     {
-        Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync("en-US", new () { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync("en-US", new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetLocaleOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
     }
 
     [Test]
     public void CanSetForcedColorsModeThemeOverride()
     {
-        Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme.Light, new () { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme.Light, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
     }
 
     [Test]
     public void CanSetScriptingEnabled()
     {
-        Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(false, new () { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(false, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(null, new() { Contexts = [context] }), Throws.Nothing);
     }
 
     [Test]
     public void CanSetScreenOrientationOverride()
     {
         var orientation = new ScreenOrientation(ScreenOrientationNatural.Portrait, ScreenOrientationType.PortraitPrimary);
-        Assert.That(async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(orientation, new () { Contexts = [context] }), Throws.Nothing);
-        Assert.That(async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(orientation, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetScreenOrientationOverrideAsync(null, new() { Contexts = [context] }), Throws.Nothing);
+    }
+
+    [Test]
+    public void CanSetGeolocationOverride()
+    {
+        Assert.That(async () => await bidi.Emulation.SetGeolocationCoordinatesOverrideAsync(0, 0, new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetGeolocationCoordinatesOverrideAsync(new() { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetGeolocationPositionErrorOverrideAsync(new() { Contexts = [context] }), Throws.Nothing);
     }
 }

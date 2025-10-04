@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
 
@@ -64,5 +65,28 @@ public sealed class EmulationModule(Broker broker) : Module(broker)
         var @params = new SetScreenOrientationOverrideParameters(screenOrientation, options?.Contexts, options?.UserContexts);
 
         return await Broker.ExecuteCommandAsync<SetScreenOrientationOverrideCommand, EmptyResult>(new SetScreenOrientationOverrideCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null)
+    {
+        var coordinates = new GeolocationCoordinates(latitude, longitude, options?.Accuracy, options?.Altitude, options?.AltitudeAccuracy, options?.Heading, options?.Speed);
+
+        var @params = new SetGeolocationOverrideCoordinatesParameters(coordinates, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetGeolocationOverrideCommand, EmptyResult>(new SetGeolocationOverrideCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetGeolocationCoordinatesOverrideAsync(SetGeolocationOverrideOptions? options = null)
+    {
+        var @params = new SetGeolocationOverrideCoordinatesParameters(null, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetGeolocationOverrideCommand, EmptyResult>(new SetGeolocationOverrideCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetGeolocationPositionErrorOverrideAsync(SetGeolocationPositionErrorOverrideOptions? options = null)
+    {
+        var @params = new SetGeolocationOverridePositionErrorParameters(new GeolocationPositionError(), options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetGeolocationOverrideCommand, EmptyResult>(new SetGeolocationOverrideCommand(@params), options).ConfigureAwait(false);
     }
 }

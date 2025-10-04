@@ -178,5 +178,6 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Emulation.SetForcedColorsModeThemeOverrideCommand))]
 [JsonSerializable(typeof(Emulation.SetScriptingEnabledCommand))]
 [JsonSerializable(typeof(Emulation.SetScreenOrientationOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetGeolocationOverrideCommand))]
 
 internal partial class BiDiJsonSerializerContext : JsonSerializerContext;
