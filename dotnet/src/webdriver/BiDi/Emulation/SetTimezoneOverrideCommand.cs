@@ -1,4 +1,4 @@
-// <copyright file="EmulationModule.cs" company="Selenium Committers">
+// <copyright file="SetTimezoneOverrideCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,19 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-public sealed class EmulationModule(Broker broker) : Module(broker)
-{
-    public async Task<EmptyResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null)
-    {
-        var @params = new SetTimezoneOverrideParameters(timezone, options?.Contexts, options?.UserContexts);
+internal sealed class SetTimezoneOverrideCommand(SetTimezoneOverrideParameters @params)
+    : Command<SetTimezoneOverrideParameters, EmptyResult>(@params, "emulation.setTimezoneOverride");
 
-        return await Broker.ExecuteCommandAsync<SetTimezoneOverrideCommand, EmptyResult>(new SetTimezoneOverrideCommand(@params), options).ConfigureAwait(false);
-    }
+internal sealed record SetTimezoneOverrideParameters(string? Timezone, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+
+public sealed class SetTimezoneOverrideOptions : CommandOptions
+{
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }

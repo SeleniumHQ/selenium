@@ -1,4 +1,4 @@
-// <copyright file="EmulationModule.cs" company="Selenium Committers">
+// <copyright file="EmulationTest.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,16 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using OpenQA.Selenium.BiDi.Communication;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-public sealed class EmulationModule(Broker broker) : Module(broker)
+class EmulationTest : BiDiTestFixture
 {
-    public async Task<EmptyResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null)
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet")]
+    public void CanSetTimezoneOverride()
     {
-        var @params = new SetTimezoneOverrideParameters(timezone, options?.Contexts, options?.UserContexts);
-
-        return await Broker.ExecuteCommandAsync<SetTimezoneOverrideCommand, EmptyResult>(new SetTimezoneOverrideCommand(@params), options).ConfigureAwait(false);
+        Assert.That(async () => await bidi.Emulation.SetTimezoneOverrideAsync("UTC", new () { Contexts = [context] }), Throws.Nothing);
     }
 }
