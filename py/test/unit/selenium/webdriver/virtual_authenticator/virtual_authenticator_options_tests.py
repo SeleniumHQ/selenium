@@ -27,6 +27,7 @@ def options():
     return VirtualAuthenticatorOptions()
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Fails on Windoiws when run with Bazel on GHA runners")
 def test_bespoke_options_for_virtual_authenticator():
     assert VirtualAuthenticatorOptions(
         protocol="ctap1/u2f",
@@ -45,7 +46,7 @@ def test_bespoke_options_for_virtual_authenticator():
     }
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="Fails when run with Bazel on GH runners")
+@pytest.mark.skipif(sys.platform == "win32", reason="Fails on Windoiws when run with Bazel on GHA runners")
 def test_to_dict_with_defaults(options):
     default_options = options.to_dict()
     assert default_options["transport"] == VirtualAuthenticatorOptions.Transport.USB.value
