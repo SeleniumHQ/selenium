@@ -50,4 +50,11 @@ class EmulationTest : BiDiTestFixture
         Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme.Light, new () { Contexts = [context] }), Throws.Nothing);
         Assert.That(async () => await bidi.Emulation.SetForcedColorsModeThemeOverrideAsync(null, new () { Contexts = [context] }), Throws.Nothing);
     }
+
+    [Test]
+    public void CanSetScriptingEnabled()
+    {
+        Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(false, new () { Contexts = [context] }), Throws.Nothing);
+        Assert.That(async () => await bidi.Emulation.SetScriptingEnabledAsync(null, new () { Contexts = [context] }), Throws.Nothing);
+    }
 }

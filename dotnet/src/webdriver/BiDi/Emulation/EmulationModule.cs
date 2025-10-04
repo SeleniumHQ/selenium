@@ -51,4 +51,11 @@ public sealed class EmulationModule(Broker broker) : Module(broker)
 
         return await Broker.ExecuteCommandAsync<SetForcedColorsModeThemeOverrideCommand, EmptyResult>(new SetForcedColorsModeThemeOverrideCommand(@params), options).ConfigureAwait(false);
     }
+
+    public async Task<EmptyResult> SetScriptingEnabledAsync(bool? enabled, SetScriptingEnabledOptions? options = null)
+    {
+        var @params = new SetScriptingEnabledParameters(enabled, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetScriptingEnabledCommand, EmptyResult>(new SetScriptingEnabledCommand(@params), options).ConfigureAwait(false);
+    }
 }
