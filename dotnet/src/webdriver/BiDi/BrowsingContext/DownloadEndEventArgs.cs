@@ -18,18 +18,18 @@
 // </copyright>
 
 using System;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "status")]
-[JsonDerivedType(typeof(DownloadCanceledEventArgs), "canceled")]
-[JsonDerivedType(typeof(DownloadCompleteEventArgs), "complete")]
+// https://github.com/dotnet/runtime/issues/72604
+//[JsonPolymorphic(TypeDiscriminatorPropertyName = "status")]
+//[JsonDerivedType(typeof(DownloadCanceledEventArgs), "canceled")]
+//[JsonDerivedType(typeof(DownloadCompleteEventArgs), "complete")]
 public abstract record DownloadEndEventArgs(BiDi BiDi, BrowsingContext Context)
     : BrowsingContextEventArgs(BiDi, Context);
 
-public abstract record DownloadCanceledEventArgs(BiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
+public sealed record DownloadCanceledEventArgs(BiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
     : DownloadEndEventArgs(BiDi, Context), IBaseNavigationInfo;
 
-public abstract record DownloadCompleteEventArgs(BiDi BiDi, string? Filepath, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
+public sealed record DownloadCompleteEventArgs(BiDi BiDi, string? Filepath, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
     : DownloadEndEventArgs(BiDi, Context), IBaseNavigationInfo;
