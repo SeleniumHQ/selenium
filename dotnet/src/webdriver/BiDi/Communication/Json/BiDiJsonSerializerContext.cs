@@ -131,6 +131,7 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Network.RemoveDataCollectorCommand))]
 [JsonSerializable(typeof(Network.RemoveInterceptCommand))]
 [JsonSerializable(typeof(Network.SetCacheBehaviorCommand))]
+[JsonSerializable(typeof(Network.SetExtraHeadersCommand))]
 
 [JsonSerializable(typeof(Network.BeforeRequestSentEventArgs))]
 [JsonSerializable(typeof(Network.ResponseStartedEventArgs))]
