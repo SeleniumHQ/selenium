@@ -1,4 +1,4 @@
-// <copyright file="ResultOwnership.cs" company="Selenium Committers">
+// <copyright file="CamelCaseEnumConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,14 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-[JsonConverter(typeof(CamelCaseEnumConverter<ResultOwnership>))]
-public enum ResultOwnership
-{
-    Root,
-    None
-}
+public class CamelCaseEnumConverter<TEnum>() :
+    JsonStringEnumConverter<TEnum>(JsonNamingPolicy.CamelCase) where TEnum : struct, Enum;

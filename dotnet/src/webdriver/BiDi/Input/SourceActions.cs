@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -144,6 +145,7 @@ public sealed record PointerParameters
     public PointerType? PointerType { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<PointerType>))]
 public enum PointerType
 {
     Mouse,

@@ -83,14 +83,11 @@ public sealed class Broker : IAsyncDisposable
                 new InternalIdConverter(_bidi),
                 new PreloadScriptConverter(_bidi),
                 new RealmConverter(_bidi),
-                new RealmTypeConverter(),
-                new ScreenOrientationTypeConverter(),
                 new DateTimeOffsetConverter(),
                 new PrintPageRangeConverter(),
                 new InputOriginConverter(),
                 new WebExtensionConverter(_bidi),
                 new SubscriptionConverter(),
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
 
                 // https://github.com/dotnet/runtime/issues/72604
                 new Json.Converters.Polymorphic.EvaluateResultConverter(),

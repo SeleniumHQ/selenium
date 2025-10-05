@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -269,6 +270,7 @@ public sealed record WindowProxyRemoteValue(WindowProxyProperties Value) : Remot
     public InternalId? InternalId { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<Mode>))]
 public enum Mode
 {
     Open,
