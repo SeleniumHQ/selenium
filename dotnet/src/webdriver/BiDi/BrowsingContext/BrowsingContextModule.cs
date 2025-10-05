@@ -161,12 +161,12 @@ public sealed class BrowsingContextModule(Broker broker) : Module(broker)
         return await Broker.SubscribeAsync("browsingContext.load", handler, options).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnDownloadWillBeginAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
+    public async Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("browsingContext.downloadWillBegin", handler, options).ConfigureAwait(false);
     }
 
-    public async Task<Subscription> OnDownloadWillBeginAsync(Action<NavigationInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
+    public async Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("browsingContext.downloadWillBegin", handler, options).ConfigureAwait(false);
     }
