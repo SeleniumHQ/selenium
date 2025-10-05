@@ -43,7 +43,7 @@ public enum ScreenOrientationNatural
     Landscape
 }
 
-[JsonConverter(typeof(ScreenOrientationTypeConverter))]
+[JsonConverter(typeof(KebabCaseEnumConverter<ScreenOrientationType>))]
 public enum ScreenOrientationType
 {
     PortraitPrimary,

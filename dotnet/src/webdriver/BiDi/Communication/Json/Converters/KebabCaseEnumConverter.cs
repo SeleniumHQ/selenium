@@ -1,4 +1,4 @@
-// <copyright file="RealmType.cs" company="Selenium Committers">
+// <copyright file="KebabCaseEnumConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,20 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-[JsonConverter(typeof(KebabCaseEnumConverter<RealmType>))]
-public enum RealmType
-{
-    Window,
-    DedicatedWorker,
-    SharedWorker,
-    ServiceWorker,
-    Worker,
-    PaintWorker,
-    AudioWorker,
-    Worklet
-}
+public class KebabCaseEnumConverter<TEnum>() :
+    JsonStringEnumConverter<TEnum>(JsonNamingPolicy.KebabCaseLower) where TEnum : struct, Enum;
