@@ -251,4 +251,15 @@ class NetworkTest : BiDiTestFixture
         Assert.That(async () => await bidi.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
         Assert.That(async () => await context.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
     }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public async Task CanSetExtraHeaders()
+    {
+        var result = await bidi.Network.SetExtraHeadersAsync([new Header("x-test-header", "test-value")]);
+
+        Assert.That(result, Is.Not.Null);
+    }
 }

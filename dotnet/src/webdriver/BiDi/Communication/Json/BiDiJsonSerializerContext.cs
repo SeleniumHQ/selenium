@@ -86,6 +86,7 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Browser.RemoveUserContextCommand))]
 [JsonSerializable(typeof(Browser.GetClientWindowsCommand))]
 [JsonSerializable(typeof(Browser.GetClientWindowsResult))]
+[JsonSerializable(typeof(Browser.SetDownloadBehaviorCommand))]
 [JsonSerializable(typeof(Browser.UserContextInfo))]
 [JsonSerializable(typeof(IReadOnlyList<Browser.UserContextInfo>))]
 [JsonSerializable(typeof(IReadOnlyList<Browser.ClientWindowInfo>))]
@@ -112,6 +113,10 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(BrowsingContext.TraverseHistoryResult))]
 
 [JsonSerializable(typeof(BrowsingContext.BrowsingContextInfo))]
+[JsonSerializable(typeof(BrowsingContext.DownloadWillBeginEventArgs))]
+[JsonSerializable(typeof(BrowsingContext.DownloadEndEventArgs))]
+[JsonSerializable(typeof(BrowsingContext.DownloadCanceledEventArgs))]
+[JsonSerializable(typeof(BrowsingContext.DownloadCompleteEventArgs))]
 [JsonSerializable(typeof(BrowsingContext.HistoryUpdatedEventArgs))]
 [JsonSerializable(typeof(BrowsingContext.NavigationInfo))]
 [JsonSerializable(typeof(BrowsingContext.UserPromptOpenedEventArgs))]
@@ -131,6 +136,7 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Network.RemoveDataCollectorCommand))]
 [JsonSerializable(typeof(Network.RemoveInterceptCommand))]
 [JsonSerializable(typeof(Network.SetCacheBehaviorCommand))]
+[JsonSerializable(typeof(Network.SetExtraHeadersCommand))]
 
 [JsonSerializable(typeof(Network.BeforeRequestSentEventArgs))]
 [JsonSerializable(typeof(Network.ResponseStartedEventArgs))]
@@ -172,5 +178,12 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(WebExtension.InstallCommand))]
 [JsonSerializable(typeof(WebExtension.InstallResult))]
 [JsonSerializable(typeof(WebExtension.UninstallCommand))]
+[JsonSerializable(typeof(Emulation.SetTimezoneOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetUserAgentOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetLocaleOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetForcedColorsModeThemeOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetScriptingEnabledCommand))]
+[JsonSerializable(typeof(Emulation.SetScreenOrientationOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetGeolocationOverrideCommand))]
 
 internal partial class BiDiJsonSerializerContext : JsonSerializerContext;

@@ -52,4 +52,25 @@ public sealed class BrowserModule(Broker broker) : Module(broker)
     {
         return await Broker.ExecuteCommandAsync<GetClientWindowsCommand, GetClientWindowsResult>(new(), options).ConfigureAwait(false);
     }
+
+    public async Task<EmptyResult> SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null)
+    {
+        var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorAllowed(destinationFolder), options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetDownloadBehaviorCommand, EmptyResult>(new SetDownloadBehaviorCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null)
+    {
+        var @params = new SetDownloadBehaviorParameters(null, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetDownloadBehaviorCommand, EmptyResult>(new SetDownloadBehaviorCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null)
+    {
+        var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorDenied(), options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetDownloadBehaviorCommand, EmptyResult>(new SetDownloadBehaviorCommand(@params), options).ConfigureAwait(false);
+    }
 }

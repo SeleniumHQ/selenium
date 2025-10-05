@@ -84,6 +84,7 @@ public sealed class Broker : IAsyncDisposable
                 new PreloadScriptConverter(_bidi),
                 new RealmConverter(_bidi),
                 new RealmTypeConverter(),
+                new ScreenOrientationTypeConverter(),
                 new DateTimeOffsetConverter(),
                 new PrintPageRangeConverter(),
                 new InputOriginConverter(),
@@ -96,6 +97,7 @@ public sealed class Broker : IAsyncDisposable
                 new Json.Converters.Polymorphic.RemoteValueConverter(),
                 new Json.Converters.Polymorphic.RealmInfoConverter(),
                 new Json.Converters.Polymorphic.LogEntryConverter(),
+                new Json.Converters.Polymorphic.DownloadEndEventArgsConverter(),
                 //
 
                 // Enumerable
