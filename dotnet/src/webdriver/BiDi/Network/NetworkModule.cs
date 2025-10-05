@@ -65,6 +65,13 @@ public sealed partial class NetworkModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<SetCacheBehaviorCommand, EmptyResult>(new SetCacheBehaviorCommand(@params), options).ConfigureAwait(false);
     }
 
+    public async Task<EmptyResult> SetExtraHeadersAsync(IEnumerable<Header> headers, SetExtraHeadersOptions? options = null)
+    {
+        var @params = new SetExtraHeadersParameters(headers, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetExtraHeadersCommand, EmptyResult>(new SetExtraHeadersCommand(@params), options).ConfigureAwait(false);
+    }
+
     public async Task<EmptyResult> ContinueRequestAsync(Request request, ContinueRequestOptions? options = null)
     {
         var @params = new ContinueRequestParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.Method, options?.Url);

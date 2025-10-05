@@ -1,4 +1,4 @@
-// <copyright file="ResultOwnership.cs" company="Selenium Committers">
+// <copyright file="SetExtraHeadersCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,14 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
+using OpenQA.Selenium.BiDi.Communication;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.BiDi.Network;
 
-[JsonConverter(typeof(CamelCaseEnumConverter<ResultOwnership>))]
-public enum ResultOwnership
+internal sealed class SetExtraHeadersCommand(SetExtraHeadersParameters @params)
+    : Command<SetExtraHeadersParameters, EmptyResult>(@params, "network.setExtraHeaders");
+
+internal sealed record SetExtraHeadersParameters(IEnumerable<Header> Headers, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+
+public sealed class SetExtraHeadersOptions : CommandOptions
 {
-    Root,
-    None
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }

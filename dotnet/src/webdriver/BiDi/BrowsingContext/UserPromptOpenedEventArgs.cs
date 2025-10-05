@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
@@ -28,6 +29,7 @@ public sealed record UserPromptOpenedEventArgs(BiDi BiDi, BrowsingContext Contex
     public string? DefaultValue { get; internal set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<UserPromptType>))]
 public enum UserPromptType
 {
     Alert,

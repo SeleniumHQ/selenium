@@ -1,4 +1,4 @@
-// <copyright file="ResultOwnership.cs" company="Selenium Committers">
+// <copyright file="DownloadWillBeginEventArgs.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,14 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
-using System.Text.Json.Serialization;
+using System;
 
-namespace OpenQA.Selenium.BiDi.Script;
+namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-[JsonConverter(typeof(CamelCaseEnumConverter<ResultOwnership>))]
-public enum ResultOwnership
-{
-    Root,
-    None
-}
+public sealed record DownloadWillBeginEventArgs(BiDi BiDi, string SuggestedFilename, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
+    : BrowsingContextEventArgs(BiDi, Context), IBaseNavigationInfo;
