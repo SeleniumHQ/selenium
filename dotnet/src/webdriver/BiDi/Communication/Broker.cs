@@ -83,8 +83,6 @@ public sealed class Broker : IAsyncDisposable
                 new InternalIdConverter(_bidi),
                 new PreloadScriptConverter(_bidi),
                 new RealmConverter(_bidi),
-                new RealmTypeConverter(),
-                new ScreenOrientationTypeConverter(),
                 new DateTimeOffsetConverter(),
                 new PrintPageRangeConverter(),
                 new InputOriginConverter(),
