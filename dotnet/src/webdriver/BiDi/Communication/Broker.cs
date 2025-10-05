@@ -84,6 +84,7 @@ public sealed class Broker : IAsyncDisposable
                 new PreloadScriptConverter(_bidi),
                 new RealmConverter(_bidi),
                 new RealmTypeConverter(),
+                new ScreenOrientationTypeConverter(),
                 new DateTimeOffsetConverter(),
                 new PrintPageRangeConverter(),
                 new InputOriginConverter(),
@@ -96,6 +97,7 @@ public sealed class Broker : IAsyncDisposable
                 new Json.Converters.Polymorphic.RemoteValueConverter(),
                 new Json.Converters.Polymorphic.RealmInfoConverter(),
                 new Json.Converters.Polymorphic.LogEntryConverter(),
+                new Json.Converters.Polymorphic.DownloadEndEventArgsConverter(),
                 //
 
                 // Enumerable
@@ -123,21 +125,33 @@ public sealed class Broker : IAsyncDisposable
 
     private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            try
+            while (!cancellationToken.IsCancellationRequested)
             {
                 var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
 
-                ProcessReceivedMessage(data);
-            }
-            catch (Exception ex)
-            {
-                if (cancellationToken.IsCancellationRequested is not true && _logger.IsEnabled(LogEventLevel.Error))
+                try
                 {
-                    _logger.Error($"Couldn't process received BiDi remote message: {ex}");
+                    ProcessReceivedMessage(data);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occured while processing remote message: {ex}");
+                    }
                 }
             }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Error))
+            {
+                _logger.Error($"Unhandled error occured while receiving remote messages: {ex}");
+            }
+
+            throw;
         }
     }
 

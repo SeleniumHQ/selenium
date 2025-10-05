@@ -15,15 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v137;
+import { lightTheme } from '../../theme/themes'
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
-
-@AutoService(CdpInfo.class)
-public class v137CdpInfo extends CdpInfo {
-
-  public v137CdpInfo() {
-    super(137, v137Domains::new);
-  }
-}
+export const useTheme = jest.fn(() => ({
+  themeMode: 'light',
+  setThemeMode: jest.fn(),
+  currentTheme: lightTheme,
+  isDark: false
+}))

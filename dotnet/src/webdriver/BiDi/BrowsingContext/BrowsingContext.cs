@@ -167,14 +167,24 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.OnLoadAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnDownloadWillBeginAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, SubscriptionOptions? options = null)
     {
         return BiDi.BrowsingContext.OnDownloadWillBeginAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
-    public Task<Subscription> OnDownloadWillBeginAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
         return BiDi.BrowsingContext.OnDownloadWillBeginAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+    }
+
+    public Task<Subscription> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, SubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnDownloadEndAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+    }
+
+    public Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, SubscriptionOptions? options = null)
+    {
+        return BiDi.BrowsingContext.OnDownloadEndAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
     }
 
     public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
