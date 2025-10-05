@@ -90,7 +90,6 @@ public sealed class Broker : IAsyncDisposable
                 new InputOriginConverter(),
                 new WebExtensionConverter(_bidi),
                 new SubscriptionConverter(),
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
 
                 // https://github.com/dotnet/runtime/issues/72604
                 new Json.Converters.Polymorphic.EvaluateResultConverter(),

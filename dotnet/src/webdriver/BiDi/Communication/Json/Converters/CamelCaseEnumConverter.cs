@@ -1,4 +1,4 @@
-// <copyright file="NavigateCommand.cs" company="Selenium Committers">
+// <copyright file="CamelCaseEnumConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,28 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi.BrowsingContext;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-internal sealed class NavigateCommand(NavigateParameters @params)
-    : Command<NavigateParameters, NavigateResult>(@params, "browsingContext.navigate");
-
-internal sealed record NavigateParameters(BrowsingContext Context, string Url, ReadinessState? Wait) : Parameters;
-
-public sealed class NavigateOptions : CommandOptions
-{
-    public ReadinessState? Wait { get; set; }
-}
-
-[JsonConverter(typeof(CamelCaseEnumConverter<ReadinessState>))]
-public enum ReadinessState
-{
-    None,
-    Interactive,
-    Complete
-}
-
-public sealed record NavigateResult(Navigation? Navigation, string Url) : EmptyResult;
+public class CamelCaseEnumConverter<TEnum>() :
+    JsonStringEnumConverter<TEnum>(JsonNamingPolicy.CamelCase) where TEnum : struct, Enum;
