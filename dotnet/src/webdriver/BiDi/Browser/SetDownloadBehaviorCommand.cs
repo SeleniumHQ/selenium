@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.BiDi.Browser;
 internal sealed class SetDownloadBehaviorCommand(SetDownloadBehaviorParameters @params)
     : Command<SetDownloadBehaviorParameters, EmptyResult>(@params, "browser.setDownloadBehavior");
 
-internal sealed record SetDownloadBehaviorParameters(DownloadBehavior? DownloadBehavior, IEnumerable<UserContext>? UserContexts) : Parameters;
+internal sealed record SetDownloadBehaviorParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] DownloadBehavior? DownloadBehavior, IEnumerable<UserContext>? UserContexts) : Parameters;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(DownloadBehaviorAllowed), "allowed")]
