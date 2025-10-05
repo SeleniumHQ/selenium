@@ -113,6 +113,7 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 
 [JsonSerializable(typeof(BrowsingContext.BrowsingContextInfo))]
 [JsonSerializable(typeof(BrowsingContext.DownloadWillBeginEventArgs))]
+[JsonSerializable(typeof(BrowsingContext.DownloadEndEventArgs))]
 [JsonSerializable(typeof(BrowsingContext.HistoryUpdatedEventArgs))]
 [JsonSerializable(typeof(BrowsingContext.NavigationInfo))]
 [JsonSerializable(typeof(BrowsingContext.UserPromptOpenedEventArgs))]
