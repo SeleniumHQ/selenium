@@ -99,9 +99,9 @@ public abstract record RemoteValue
     }
 }
 
-public sealed record NumberRemoteValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolRemoteValue;
+public abstract record PrimitiveProtocolRemoteValue : RemoteValue;
 
-public sealed record NumberRemoteValue(double Value) : PrimitiveProtocolRemoteValue;
+public sealed record NumberRemoteValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolRemoteValue;
 
 public sealed record BooleanRemoteValue(bool Value) : PrimitiveProtocolRemoteValue;
 
