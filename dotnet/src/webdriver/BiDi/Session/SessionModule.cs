@@ -44,13 +44,6 @@ internal sealed class SessionModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<UnsubscribeByIdCommand, EmptyResult>(new UnsubscribeByIdCommand(@params), options).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> UnsubscribeAsync(IEnumerable<string> eventNames, UnsubscribeByAttributesOptions? options = null)
-    {
-        var @params = new UnsubscribeByAttributesParameters(eventNames, options?.Contexts);
-
-        return await Broker.ExecuteCommandAsync<UnsubscribeByAttributesCommand, EmptyResult>(new UnsubscribeByAttributesCommand(@params), options).ConfigureAwait(false);
-    }
-
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilitiesRequest, NewOptions? options = null)
     {
         var @params = new NewParameters(capabilitiesRequest);
