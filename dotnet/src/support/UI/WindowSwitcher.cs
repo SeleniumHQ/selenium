@@ -17,6 +17,7 @@ public class WindowSwitcher
     /// </summary>
     /// <param name="driver">The <see cref="IWebDriver"/> instance that controls the two windows.</param>
     /// <param name="newWindowHandle">The handle of the new window.</param>
+    /// <exception cref="ArgumentNullException">Either <paramref name="driver"/> or <paramref name="newWindowHandle"/> is null.</exception>
     /// <remarks>
     /// <para>
     /// It is recommended to use the <see cref="WebDriverExtensions.WithWindowOpenedBy"/> to instantiate this
@@ -29,8 +30,8 @@ public class WindowSwitcher
     /// </remarks>
     public WindowSwitcher(IWebDriver driver, string newWindowHandle)
     {
-        this.driver = driver;
-        this.newWindowHandle = newWindowHandle;
+        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        this.newWindowHandle = newWindowHandle ?? throw new ArgumentNullException(nameof(newWindowHandle));
         originalHandle = this.driver.CurrentWindowHandle;
     }
 
@@ -52,10 +53,38 @@ public class WindowSwitcher
     /// </example>
     public void Do(Action action)
     {
+        _ = Do(() =>
+        {
+            action();
+            return 0;
+        });
+    }
+
+    /// <summary>
+    /// Invokes the provided function on the newly opened window, and returns to use the original window afterward. This method returns whatever the function returns.
+    /// </summary>
+    /// <param name="func">The function to invoke on the newly opened window.</param>
+    /// <returns>Anything that <paramref name="func"/> returns.</returns>
+    /// <example>
+    /// <code>
+    /// const string expectedResult = "abc";
+    /// var result = driver.WithWindowOpenedBy(() => driver.FindElement(By.Id("openWindowId")).Click())
+    ///     .Do(() => {
+    ///         // Perform whatever you want with the new window, for example:
+    ///         driver.FindElement(By.Id("anElementOnTheNewWindow").Click();
+    ///         return driver.FindElement(By.Id("resultElement")).Text;
+    ///     });
+    /// Assert.That(result, Is.EqualTo(expected));
+    /// // Then continue to do stuff on the original window:
+    /// driver.FindElement(By.Id("anElementOnTheOriginalWindow").Click();
+    /// </code>
+    /// </example>
+    public T Do<T>(Func<T> func)
+    {
         SwitchToNewWindow();
         try
         {
-            action();
+            return func();
         }
         finally
         {
