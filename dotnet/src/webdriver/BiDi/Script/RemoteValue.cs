@@ -99,7 +99,7 @@ public abstract record RemoteValue
     }
 }
 
-public sealed record NumberRemoteValue([property: JsonConverter(typeof(BiDiDoubleConverter))] double Value) : PrimitiveProtocolRemoteValue;
+public sealed record NumberRemoteValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolRemoteValue;
 
 public sealed record NumberRemoteValue(double Value) : PrimitiveProtocolRemoteValue;
 

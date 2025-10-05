@@ -283,7 +283,7 @@ public abstract record LocalValue
 
 public abstract record PrimitiveProtocolLocalValue : LocalValue;
 
-public sealed record NumberLocalValue([property: JsonConverter(typeof(BiDiDoubleConverter))] double Value) : PrimitiveProtocolLocalValue
+public sealed record NumberLocalValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolLocalValue
 {
     public static explicit operator NumberLocalValue(double n) => new NumberLocalValue(n);
 }

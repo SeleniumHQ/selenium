@@ -1,4 +1,4 @@
-﻿// <copyright file="BiDiDoubleConverter.cs" company="Selenium Committers">
+// <copyright file="SpecialNumberConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 /// Serializes and deserializes <see cref="double"/> into a
 /// <see href="https://w3c.github.io/webdriver-bidi/#type-script-PrimitiveProtocolValue">BiDi spec-compliant number value</see>.
 /// </summary>
-internal sealed class BiDiDoubleConverter : JsonConverter<double>
+internal sealed class SpecialNumberConverter : JsonConverter<double>
 {
     public override double Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -36,7 +36,7 @@ internal sealed class BiDiDoubleConverter : JsonConverter<double>
             return d;
         }
 
-        var str = reader.GetString() ?? throw new JsonException();
+        var str = reader.GetString() ?? throw new JsonException("Cannot convert from null to remote number value");
 
         if (str.Equals("-0", StringComparison.Ordinal))
         {
