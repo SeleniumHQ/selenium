@@ -23,19 +23,19 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal class GetRealmsCommand(GetRealmsCommandParameters @params)
-    : Command<GetRealmsCommandParameters, GetRealmsResult>(@params, "script.getRealms");
+internal sealed class GetRealmsCommand(GetRealmsParameters @params)
+    : Command<GetRealmsParameters, GetRealmsResult>(@params, "script.getRealms");
 
-internal record GetRealmsCommandParameters(BrowsingContext.BrowsingContext? Context, RealmType? Type) : CommandParameters;
+internal sealed record GetRealmsParameters(BrowsingContext.BrowsingContext? Context, RealmType? Type) : Parameters;
 
-public record GetRealmsOptions : CommandOptions
+public sealed class GetRealmsOptions : CommandOptions
 {
     public BrowsingContext.BrowsingContext? Context { get; set; }
 
     public RealmType? Type { get; set; }
 }
 
-public record GetRealmsResult : EmptyResult, IReadOnlyList<RealmInfo>
+public sealed record GetRealmsResult : EmptyResult, IReadOnlyList<RealmInfo>
 {
     private readonly IReadOnlyList<RealmInfo> _realms;
 

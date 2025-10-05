@@ -22,12 +22,12 @@ using System;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal class EvaluateCommand(EvaluateCommandParameters @params)
-    : Command<EvaluateCommandParameters, EvaluateResult>(@params, "script.evaluate");
+internal sealed class EvaluateCommand(EvaluateParameters @params)
+    : Command<EvaluateParameters, EvaluateResult>(@params, "script.evaluate");
 
-internal record EvaluateCommandParameters(string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : CommandParameters;
+internal sealed record EvaluateParameters(string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : Parameters;
 
-public record EvaluateOptions : CommandOptions
+public sealed class EvaluateOptions : CommandOptions
 {
     public ResultOwnership? ResultOwnership { get; set; }
 
@@ -53,11 +53,11 @@ public abstract record EvaluateResult : EmptyResult
     }
 }
 
-public record EvaluateResultSuccess(RemoteValue Result, Realm Realm) : EvaluateResult
+public sealed record EvaluateResultSuccess(RemoteValue Result, Realm Realm) : EvaluateResult
 {
     public static implicit operator RemoteValue(EvaluateResultSuccess success) => success.Result;
 }
 
-public record EvaluateResultException(ExceptionDetails ExceptionDetails, Realm Realm) : EvaluateResult;
+public sealed record EvaluateResultException(ExceptionDetails ExceptionDetails, Realm Realm) : EvaluateResult;
 
-public record ExceptionDetails(long ColumnNumber, long LineNumber, StackTrace StackTrace, string Text);
+public sealed record ExceptionDetails(long ColumnNumber, long LineNumber, StackTrace StackTrace, string Text);

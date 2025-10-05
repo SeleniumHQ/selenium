@@ -18,16 +18,17 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal class CaptureScreenshotCommand(CaptureScreenshotCommandParameters @params)
-    : Command<CaptureScreenshotCommandParameters, CaptureScreenshotResult>(@params, "browsingContext.captureScreenshot");
+internal sealed class CaptureScreenshotCommand(CaptureScreenshotParameters @params)
+    : Command<CaptureScreenshotParameters, CaptureScreenshotResult>(@params, "browsingContext.captureScreenshot");
 
-internal record CaptureScreenshotCommandParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : CommandParameters;
+internal sealed record CaptureScreenshotParameters(BrowsingContext Context, ScreenshotOrigin? Origin, ImageFormat? Format, ClipRectangle? Clip) : Parameters;
 
-public record CaptureScreenshotOptions : CommandOptions
+public sealed class CaptureScreenshotOptions : CommandOptions
 {
     public ScreenshotOrigin? Origin { get; set; }
 
@@ -52,11 +53,13 @@ public record struct ImageFormat(string Type)
 [JsonDerivedType(typeof(ElementClipRectangle), "element")]
 public abstract record ClipRectangle;
 
-public record BoxClipRectangle(double X, double Y, double Width, double Height) : ClipRectangle;
+public sealed record BoxClipRectangle(double X, double Y, double Width, double Height) : ClipRectangle;
 
-public record ElementClipRectangle(Script.ISharedReference Element) : ClipRectangle;
+public sealed record ElementClipRectangle(Script.ISharedReference Element) : ClipRectangle;
 
-public record CaptureScreenshotResult(string Data) : EmptyResult
+public sealed record CaptureScreenshotResult(ReadOnlyMemory<byte> Data) : EmptyResult
 {
-    public byte[] ToByteArray() => System.Convert.FromBase64String(Data);
+    public static implicit operator byte[](CaptureScreenshotResult captureScreenshotResult) => captureScreenshotResult.ToByteArray();
+
+    public byte[] ToByteArray() => Data.ToArray();
 }

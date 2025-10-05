@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-public record UserPromptHandler
+public sealed record UserPromptHandler
 {
     public UserPromptHandlerType? Alert { get; set; }
 

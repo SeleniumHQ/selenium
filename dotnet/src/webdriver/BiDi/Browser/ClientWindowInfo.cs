@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public record ClientWindowInfo(bool Active, ClientWindow ClientWindow, ClientWindowState State, int Height, int Width, int X, int Y);
+public sealed record ClientWindowInfo(bool Active, ClientWindow ClientWindow, ClientWindowState State, int Height, int Width, int X, int Y);
 
 public enum ClientWindowState
 {

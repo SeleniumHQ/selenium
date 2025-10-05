@@ -29,7 +29,7 @@ public abstract record UrlPattern
     public static implicit operator UrlPattern(string value) => new StringUrlPattern(value);
 }
 
-public record PatternUrlPattern : UrlPattern
+public sealed record PatternUrlPattern : UrlPattern
 {
     public string? Protocol { get; set; }
 
@@ -42,4 +42,4 @@ public record PatternUrlPattern : UrlPattern
     public string? Search { get; set; }
 }
 
-public record StringUrlPattern(string Pattern) : UrlPattern;
+public sealed record StringUrlPattern(string Pattern) : UrlPattern;

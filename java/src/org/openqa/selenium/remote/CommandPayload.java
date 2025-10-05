@@ -25,7 +25,6 @@ public class CommandPayload {
   private final Map<String, ?> parameters;
 
   public CommandPayload(String name, Map<String, ?> parameters) {
-
     this.name = name;
     this.parameters = parameters;
   }

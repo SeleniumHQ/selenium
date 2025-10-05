@@ -267,6 +267,26 @@ module Selenium
                                          {'args' => ["--user-data-dir=#{directory}"]})
           end
 
+          it 'processes unhandled_prompt_behavior hash values' do
+            opts = described_class.new(unhandled_prompt_behavior: {
+                                         alert: :accept_and_notify,
+                                         confirm: 'dismiss_and_notify',
+                                         prompt: :ignore,
+                                         before_unload: 'accept',
+                                         default: :dismiss
+                                       })
+
+            expect(opts.as_json).to eq('browserName' => 'chrome',
+                                       'unhandledPromptBehavior' => {
+                                         'alert' => 'accept and notify',
+                                         'confirm' => 'dismiss and notify',
+                                         'prompt' => 'ignore',
+                                         'beforeUnload' => 'accept',
+                                         'default' => 'dismiss'
+                                       },
+                                       'goog:chromeOptions' => {})
+          end
+
           it 'returns a JSON hash' do
             allow(File).to receive(:file?).and_return(true)
             allow_any_instance_of(described_class)

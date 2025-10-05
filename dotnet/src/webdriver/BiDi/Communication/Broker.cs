@@ -75,6 +75,7 @@ public sealed class Broker : IAsyncDisposable
                 new BrowserUserContextConverter(bidi),
                 new BrowserClientWindowConverter(),
                 new NavigationConverter(),
+                new CollectorConverter(_bidi),
                 new InterceptConverter(_bidi),
                 new RequestConverter(),
                 new ChannelConverter(),
@@ -83,9 +84,11 @@ public sealed class Broker : IAsyncDisposable
                 new PreloadScriptConverter(_bidi),
                 new RealmConverter(_bidi),
                 new RealmTypeConverter(),
+                new ScreenOrientationTypeConverter(),
                 new DateTimeOffsetConverter(),
                 new PrintPageRangeConverter(),
                 new InputOriginConverter(),
+                new WebExtensionConverter(_bidi),
                 new SubscriptionConverter(),
                 new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
 
@@ -103,6 +106,7 @@ public sealed class Broker : IAsyncDisposable
                 new Json.Converters.Enumerable.GetUserContextsResultConverter(),
                 new Json.Converters.Enumerable.GetClientWindowsResultConverter(),
                 new Json.Converters.Enumerable.GetRealmsResultConverter(),
+                new Json.Converters.Enumerable.GetTreeResultConverter(),
             }
         };
 
@@ -120,21 +124,33 @@ public sealed class Broker : IAsyncDisposable
 
     private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            try
+            while (!cancellationToken.IsCancellationRequested)
             {
                 var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
 
-                ProcessReceivedMessage(data);
-            }
-            catch (Exception ex)
-            {
-                if (cancellationToken.IsCancellationRequested is not true && _logger.IsEnabled(LogEventLevel.Error))
+                try
                 {
-                    _logger.Error($"Couldn't process received BiDi remote message: {ex}");
+                    ProcessReceivedMessage(data);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occured while processing remote message: {ex}");
+                    }
                 }
             }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Error))
+            {
+                _logger.Error($"Unhandled error occured while receiving remote messages: {ex}");
+            }
+
+            throw;
         }
     }
 
@@ -176,12 +192,6 @@ public sealed class Broker : IAsyncDisposable
                 }
             }
         }
-    }
-
-    public async Task ExecuteCommandAsync<TCommand>(TCommand command, CommandOptions? options)
-        where TCommand : Command
-    {
-        await ExecuteCommandCoreAsync(command, options).ConfigureAwait(false);
     }
 
     public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options)
@@ -279,27 +289,7 @@ public sealed class Broker : IAsyncDisposable
 
         eventHandlers.Remove(eventHandler);
 
-        if (subscription is not null)
-        {
-            await _bidi.SessionModule.UnsubscribeAsync([subscription]).ConfigureAwait(false);
-        }
-        else
-        {
-            if (eventHandler.Contexts is not null)
-            {
-                if (!eventHandlers.Any(h => eventHandler.Contexts.Equals(h.Contexts)) && !eventHandlers.Any(h => h.Contexts is null))
-                {
-                    await _bidi.SessionModule.UnsubscribeAsync([eventHandler.EventName], new() { Contexts = eventHandler.Contexts }).ConfigureAwait(false);
-                }
-            }
-            else
-            {
-                if (!eventHandlers.Any(h => h.Contexts is not null) && !eventHandlers.Any(h => h.Contexts is null))
-                {
-                    await _bidi.SessionModule.UnsubscribeAsync([eventHandler.EventName]).ConfigureAwait(false);
-                }
-            }
-        }
+        await _bidi.SessionModule.UnsubscribeAsync([subscription]).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()

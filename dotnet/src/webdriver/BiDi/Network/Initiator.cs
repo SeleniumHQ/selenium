@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record Initiator(InitiatorType Type)
+public sealed record Initiator(InitiatorType Type)
 {
     public long? ColumnNumber { get; set; }
 

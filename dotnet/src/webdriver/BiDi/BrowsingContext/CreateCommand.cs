@@ -21,12 +21,12 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal class CreateCommand(CreateCommandParameters @params)
-    : Command<CreateCommandParameters, CreateResult>(@params, "browsingContext.create");
+internal sealed class CreateCommand(CreateParameters @params)
+    : Command<CreateParameters, CreateResult>(@params, "browsingContext.create");
 
-internal record CreateCommandParameters(ContextType Type, BrowsingContext? ReferenceContext, bool? Background, Browser.UserContext? UserContext) : CommandParameters;
+internal sealed record CreateParameters(ContextType Type, BrowsingContext? ReferenceContext, bool? Background, Browser.UserContext? UserContext) : Parameters;
 
-public record CreateOptions : CommandOptions
+public sealed class CreateOptions : CommandOptions
 {
     public BrowsingContext? ReferenceContext { get; set; }
 
@@ -41,4 +41,4 @@ public enum ContextType
     Window
 }
 
-public record CreateResult(BrowsingContext Context) : EmptyResult;
+public sealed record CreateResult(BrowsingContext Context) : EmptyResult;

@@ -69,7 +69,7 @@ module Selenium
           end
 
           %w[http_proxy HTTP_PROXY].each do |proxy_var|
-            it "honors the #{proxy_var} environment varable" do
+            it "honors the #{proxy_var} environment variable" do
               with_env(proxy_var => 'http://proxy.org:8080') do
                 http = client.send :http
 

@@ -99,16 +99,6 @@ public class FirefoxOptions : DriverOptions
     public override string? BinaryLocation { get; set; }
 
     /// <summary>
-    /// Gets or sets the path and file name of the Firefox browser executable.
-    /// </summary>
-    [Obsolete("Use BinaryLocation property instead of BrowserExecutableLocation. This one will be removed soon.")]
-    public string? BrowserExecutableLocation
-    {
-        get => this.BinaryLocation;
-        set => this.BinaryLocation = value;
-    }
-
-    /// <summary>
     /// Gets or sets the logging level of the Firefox driver.
     /// </summary>
     public FirefoxDriverLogLevel LogLevel { get; set; } = FirefoxDriverLogLevel.Default;

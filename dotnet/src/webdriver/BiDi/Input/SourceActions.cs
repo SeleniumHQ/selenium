@@ -31,7 +31,7 @@ public abstract record SourceActions
 
 public interface ISourceAction;
 
-public record SourceActions<T> : SourceActions, IEnumerable<ISourceAction> where T : ISourceAction
+public abstract record SourceActions<T> : SourceActions, IEnumerable<ISourceAction> where T : ISourceAction
 {
     public IList<ISourceAction> Actions { get; set; } = [];
 
@@ -48,7 +48,7 @@ public record SourceActions<T> : SourceActions, IEnumerable<ISourceAction> where
 [JsonDerivedType(typeof(UpKey), "keyUp")]
 public interface IKeySourceAction : ISourceAction;
 
-public record KeyActions : SourceActions<IKeySourceAction>
+public sealed record KeyActions : SourceActions<IKeySourceAction>
 {
     public KeyActions Type(string text)
     {
@@ -69,7 +69,7 @@ public record KeyActions : SourceActions<IKeySourceAction>
 [JsonDerivedType(typeof(MovePointer), "pointerMove")]
 public interface IPointerSourceAction : ISourceAction;
 
-public record PointerActions : SourceActions<IPointerSourceAction>
+public sealed record PointerActions : SourceActions<IPointerSourceAction>
 {
     public PointerParameters? Options { get; set; }
 }
@@ -79,23 +79,23 @@ public record PointerActions : SourceActions<IPointerSourceAction>
 [JsonDerivedType(typeof(ScrollWheel), "scroll")]
 public interface IWheelSourceAction : ISourceAction;
 
-public record WheelActions : SourceActions<IWheelSourceAction>;
+public sealed record WheelActions : SourceActions<IWheelSourceAction>;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(Pause), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
-public record NoneActions : SourceActions<None>;
+public sealed record NoneActions : SourceActions<None>;
 
 public abstract record Key : IKeySourceAction;
 
-public record DownKey(char Value) : Key;
+public sealed record DownKey(char Value) : Key;
 
-public record UpKey(char Value) : Key;
+public sealed record UpKey(char Value) : Key;
 
 public abstract record Pointer : IPointerSourceAction;
 
-public record DownPointer(int Button) : Pointer, IPointerCommonProperties
+public sealed record DownPointer(int Button) : Pointer, IPointerCommonProperties
 {
     public int? Width { get; set; }
     public int? Height { get; set; }
@@ -106,9 +106,9 @@ public record DownPointer(int Button) : Pointer, IPointerCommonProperties
     public double? AzimuthAngle { get; set; }
 }
 
-public record UpPointer(int Button) : Pointer;
+public sealed record UpPointer(int Button) : Pointer;
 
-public record MovePointer(int X, int Y) : Pointer, IPointerCommonProperties
+public sealed record MovePointer(int X, int Y) : Pointer, IPointerCommonProperties
 {
     public int? Duration { get; set; }
 
@@ -125,7 +125,7 @@ public record MovePointer(int X, int Y) : Pointer, IPointerCommonProperties
 
 public abstract record Wheel : IWheelSourceAction;
 
-public record ScrollWheel(int X, int Y, int DeltaX, int DeltaY) : Wheel
+public sealed record ScrollWheel(int X, int Y, int DeltaX, int DeltaY) : Wheel
 {
     public int? Duration { get; set; }
 
@@ -134,12 +134,12 @@ public record ScrollWheel(int X, int Y, int DeltaX, int DeltaY) : Wheel
 
 public abstract record None : INoneSourceAction;
 
-public record Pause : ISourceAction, IKeySourceAction, IPointerSourceAction, IWheelSourceAction, INoneSourceAction
+public sealed record Pause : ISourceAction, IKeySourceAction, IPointerSourceAction, IWheelSourceAction, INoneSourceAction
 {
     public long? Duration { get; set; }
 }
 
-public record PointerParameters
+public sealed record PointerParameters
 {
     public PointerType? PointerType { get; set; }
 }

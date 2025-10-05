@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# This script updates the development dependendencies used for the Python bindings.
+# This script updates the development dependencies used for the Python bindings.
 #
 # When you run it, it will:
 # - create and activate a temporary virtual env
@@ -10,8 +10,9 @@
 # - run `bazel run //py:requirements.update` to generate a new `py/requirements_lock.txt` file
 # - deactivate and remove the temporary virtual env
 #
-# After running this script, you should also manually check package dependency versions in
-# `py/pyproject.toml`, `py/tox.ini` and `py/BUILD.bazel`, and update those if needed.
+# After running this script, you should also manually check package dependency
+# versions in `py/pyproject.toml`, `py/tox.ini`, py/BUILD.bazel`,
+# `py/docs/requirements.txt`, and update those if needed.
 #
 # Once all dependencies are updated, create a new Pull Request with the changes.
 
@@ -47,7 +48,7 @@ pip install -r "${REQUIREMENTS_FILE}" > /dev/null
 echo "upgrading outdated dependencies ..."
 echo
 pip list --outdated | while read -r line; do
-    if [[ ! "${line}" =~ "Version Latest" && ! "${line}" =~ "----" ]]; then
+    if [[ ! "${line}" =~ "Version" && ! "${line}" =~ "----" ]]; then
         read -ra fields <<< "${line}"
         package="${fields[0]}"
         echo "upgrading ${package} from ${fields[1]} to ${fields[2]}"

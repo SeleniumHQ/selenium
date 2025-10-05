@@ -262,7 +262,7 @@ public class PointerInputDevice : InputDevice
     /// <param name="xOffset">The horizontal offset from the origin of the move.</param>
     /// <param name="yOffset">The vertical offset from the origin of the move.</param>
     /// <param name="duration">The length of time the move gesture takes to complete.</param>
-    /// <param name="properties">The object containing additional proprties for this pointer move operation.</param>
+    /// <param name="properties">The object containing additional properties for this pointer move operation.</param>
     /// <returns>The action representing the pointer move gesture.</returns>
     /// <exception cref="ArgumentException">Thrown when passing CoordinateOrigin.Element into origin.
     /// Users should use the other CreatePointerMove overload to move to a specific element.</exception>

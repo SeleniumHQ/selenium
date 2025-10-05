@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record Channel(string Id);
+public sealed record Channel(string Id);

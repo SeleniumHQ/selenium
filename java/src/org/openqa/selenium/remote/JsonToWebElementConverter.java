@@ -30,7 +30,7 @@ import org.openqa.selenium.WebElement;
  */
 public class JsonToWebElementConverter implements Function<Object, Object> {
 
-  private final RemoteWebDriver driver;
+  protected final RemoteWebDriver driver;
 
   public JsonToWebElementConverter(RemoteWebDriver driver) {
     this.driver = driver;
@@ -81,7 +81,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     return setOwner(new RemoteWebElement());
   }
 
-  private RemoteWebElement setOwner(RemoteWebElement element) {
+  protected RemoteWebElement setOwner(RemoteWebElement element) {
     if (driver != null) {
       element.setParent(driver);
       element.setFileDetector(driver.getFileDetector());
@@ -89,7 +89,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     return element;
   }
 
-  private String getElementKey(Map<?, ?> resultAsMap) {
+  protected String getElementKey(Map<?, ?> resultAsMap) {
     for (Dialect d : Dialect.values()) {
       String elementKeyForDialect = d.getEncodedElementKey();
       if (resultAsMap.containsKey(elementKeyForDialect)) {
@@ -99,7 +99,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     return null;
   }
 
-  private String getShadowRootKey(Map<?, ?> resultAsMap) {
+  protected String getShadowRootKey(Map<?, ?> resultAsMap) {
     for (Dialect d : Dialect.values()) {
       String shadowRootElementKey = d.getShadowRootElementKey();
       if (resultAsMap.containsKey(shadowRootElementKey)) {

@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public class Intercept : IAsyncDisposable
+public sealed class Intercept : IAsyncDisposable
 {
     private readonly BiDi _bidi;
 
@@ -36,9 +36,9 @@ public class Intercept : IAsyncDisposable
 
     internal string Id { get; }
 
-    protected IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
-    protected IList<Subscription> OnResponseStartedSubscriptions { get; } = [];
-    protected IList<Subscription> OnAuthRequiredSubscriptions { get; } = [];
+    IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
+    IList<Subscription> OnResponseStartedSubscriptions { get; } = [];
+    IList<Subscription> OnAuthRequiredSubscriptions { get; } = [];
 
     public async Task RemoveAsync()
     {

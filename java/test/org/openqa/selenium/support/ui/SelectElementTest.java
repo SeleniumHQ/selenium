@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -176,8 +178,11 @@ class SelectElementTest extends JupiterTestBase {
     WebElement selectElement = driver.findElement(By.id("invisible_multi_select"));
     Select select = new Select(selectElement);
 
-    assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByContainsVisibleText("Apples"));
+    List<String> options = Arrays.asList("Apples", "Pears", "Oranges", "Lemons");
+    options.forEach(
+        option ->
+            assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> select.selectByVisibleText(option)));
   }
 
   @Test
@@ -196,6 +201,18 @@ class SelectElementTest extends JupiterTestBase {
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> select.selectByVisibleText("Disabled"));
+  }
+
+  @Test
+  void shouldThrowExceptionOnSelectByVisibleTextIfOptionHidden() {
+    WebElement selectElement = driver.findElement(By.id("invisible_multi_select"));
+    Select select = new Select(selectElement);
+
+    List<String> options = Arrays.asList("Apples", "Pears", "Oranges", "Lemons");
+    options.forEach(
+        option ->
+            assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> select.selectByVisibleText(option)));
   }
 
   @Test

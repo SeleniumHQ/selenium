@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public record BrowsingContextInfo(BiDi BiDi, IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext)
+public sealed record BrowsingContextInfo(BiDi BiDi, IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext)
     : BrowsingContextEventArgs(BiDi, Context)
 {
     [JsonInclude]

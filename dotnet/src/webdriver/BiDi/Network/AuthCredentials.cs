@@ -21,7 +21,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record AuthCredentials(string Username, string Password)
+public sealed record AuthCredentials(string Username, string Password)
 {
     [JsonInclude]
     internal string Type { get; } = "password";

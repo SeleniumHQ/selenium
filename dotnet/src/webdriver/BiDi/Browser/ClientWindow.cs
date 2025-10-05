@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public record ClientWindow
+public sealed record ClientWindow
 {
     internal ClientWindow(string id)
     {

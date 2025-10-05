@@ -78,7 +78,6 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Session.SubscribeCommand))]
 [JsonSerializable(typeof(Session.SubscribeResult))]
 [JsonSerializable(typeof(Session.UnsubscribeByIdCommand))]
-[JsonSerializable(typeof(Session.UnsubscribeByAttributesCommand))]
 
 [JsonSerializable(typeof(Browser.CloseCommand), TypeInfoPropertyName = "Browser_CloseCommand")]
 [JsonSerializable(typeof(Browser.CreateUserContextCommand))]
@@ -111,19 +110,25 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(BrowsingContext.SetViewportCommand))]
 [JsonSerializable(typeof(BrowsingContext.TraverseHistoryCommand))]
 [JsonSerializable(typeof(BrowsingContext.TraverseHistoryResult))]
-[JsonSerializable(typeof(BrowsingContext.BrowsingContextInfo))]
-[JsonSerializable(typeof(BrowsingContext.NavigationInfo))]
 
+[JsonSerializable(typeof(BrowsingContext.BrowsingContextInfo))]
+[JsonSerializable(typeof(BrowsingContext.HistoryUpdatedEventArgs))]
+[JsonSerializable(typeof(BrowsingContext.NavigationInfo))]
 [JsonSerializable(typeof(BrowsingContext.UserPromptOpenedEventArgs))]
 [JsonSerializable(typeof(BrowsingContext.UserPromptClosedEventArgs))]
 
+[JsonSerializable(typeof(Network.AddDataCollectorCommand))]
+[JsonSerializable(typeof(Network.AddDataCollectorResult))]
 [JsonSerializable(typeof(Network.AddInterceptCommand))]
 [JsonSerializable(typeof(Network.AddInterceptResult))]
 [JsonSerializable(typeof(Network.ContinueRequestCommand))]
 [JsonSerializable(typeof(Network.ContinueResponseCommand))]
 [JsonSerializable(typeof(Network.ContinueWithAuthCommand))]
 [JsonSerializable(typeof(Network.FailRequestCommand))]
+[JsonSerializable(typeof(Network.GetDataCommand))]
+[JsonSerializable(typeof(Network.GetDataResult))]
 [JsonSerializable(typeof(Network.ProvideResponseCommand))]
+[JsonSerializable(typeof(Network.RemoveDataCollectorCommand))]
 [JsonSerializable(typeof(Network.RemoveInterceptCommand))]
 [JsonSerializable(typeof(Network.SetCacheBehaviorCommand))]
 
@@ -163,5 +168,16 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(IEnumerable<Input.IKeySourceAction>))]
 [JsonSerializable(typeof(IEnumerable<Input.INoneSourceAction>))]
 [JsonSerializable(typeof(IEnumerable<Input.IWheelSourceAction>))]
+
+[JsonSerializable(typeof(WebExtension.InstallCommand))]
+[JsonSerializable(typeof(WebExtension.InstallResult))]
+[JsonSerializable(typeof(WebExtension.UninstallCommand))]
+[JsonSerializable(typeof(Emulation.SetTimezoneOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetUserAgentOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetLocaleOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetForcedColorsModeThemeOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetScriptingEnabledCommand))]
+[JsonSerializable(typeof(Emulation.SetScreenOrientationOverrideCommand))]
+[JsonSerializable(typeof(Emulation.SetGeolocationOverrideCommand))]
 
 internal partial class BiDiJsonSerializerContext : JsonSerializerContext;

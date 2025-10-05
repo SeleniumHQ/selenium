@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public class Realm
+public sealed class Realm
 {
     private readonly BiDi _bidi;
 

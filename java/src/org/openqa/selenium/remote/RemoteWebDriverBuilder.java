@@ -57,6 +57,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.WebSocket;
 import org.openqa.selenium.remote.service.DriverService;
 
 /**
@@ -94,12 +95,7 @@ public class RemoteWebDriverBuilder {
   private final List<Capabilities> requestedCapabilities = new ArrayList<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
   private final Map<String, Object> metadata = new TreeMap<>();
-  private Function<ClientConfig, HttpHandler> handlerFactory =
-      config -> {
-        HttpClient.Factory factory = HttpClient.Factory.createDefault();
-        HttpClient client = factory.createClient(config);
-        return client.with(new CloseHttpClientFilter(factory, client));
-      };
+  private HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
   private ClientConfig clientConfig = ClientConfig.defaultConfig();
   private URI remoteHost = null;
   private DriverService driverService;
@@ -285,7 +281,25 @@ public class RemoteWebDriverBuilder {
   /** visible for testing only */
   RemoteWebDriverBuilder connectingWith(Function<ClientConfig, HttpHandler> handlerFactory) {
     Require.nonNull("Handler factory", handlerFactory);
-    this.handlerFactory = handlerFactory;
+    this.clientFactory =
+        new HttpClient.Factory() {
+          @Override
+          public HttpClient createClient(ClientConfig config) {
+            HttpHandler handler = handlerFactory.apply(config);
+
+            return new HttpClient() {
+              @Override
+              public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+                throw new UnsupportedOperationException("sockets are not supported");
+              }
+
+              @Override
+              public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+                return handler.execute(req);
+              }
+            };
+          }
+        };
     return this;
   }
 
@@ -380,26 +394,37 @@ public class RemoteWebDriverBuilder {
       driverClientConfig = driverClientConfig.authenticateAs(credentials);
     }
 
-    HttpHandler client = handlerFactory.apply(driverClientConfig);
+    HttpClient client = clientFactory.createClient(driverClientConfig);
     HttpHandler handler =
         Require.nonNull("Http handler", client)
             .with(
                 new AddWebDriverSpecHeaders()
                     .andThen(new ErrorFilter())
-                    .andThen(new DumpHttpExchangeFilter()));
+                    .andThen(new DumpHttpExchangeFilter())
+                    .andThen(new CloseHttpClientFilter(clientFactory, client)));
 
     Either<SessionNotCreatedException, ProtocolHandshake.Result> result;
     try {
       result = new ProtocolHandshake().createSession(handler, getPayload());
     } catch (IOException e) {
-      throw new SessionNotCreatedException("Unable to create new remote session.", e);
+      try (client) {
+        throw new SessionNotCreatedException("Unable to create new remote session.", e);
+      }
     }
 
     if (result.isRight()) {
-      CommandExecutor executor = result.map(res -> createExecutor(handler, res));
-      return new RemoteWebDriver(executor, new ImmutableCapabilities());
+      try {
+        CommandExecutor executor = result.map(res -> createExecutor(handler, res));
+        return new RemoteWebDriver(executor, new ImmutableCapabilities());
+      } catch (Throwable t) {
+        try (client) {
+          throw t;
+        }
+      }
     } else {
-      throw result.left();
+      try (client) {
+        throw result.left();
+      }
     }
   }
 

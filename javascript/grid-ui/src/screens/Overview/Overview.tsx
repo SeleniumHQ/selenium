@@ -66,7 +66,8 @@ function Overview (): JSX.Element {
 
   const sortProperties = {
     'platformName': (a, b) => compareSlotStereotypes(a, b, 'platformName'),
-    'status': (a, b) => a.status.localeCompare(b.status),
+    'status': (a, b) => (a.status ?? '').localeCompare(b.status ?? ''),
+    'uri': (a, b) => (a.uri ?? '').localeCompare(b.uri ?? ''),
     'browserName': (a, b) => compareSlotStereotypes(a, b, 'browserName'),
     'browserVersion': (a, b) => compareSlotStereotypes(a, b, 'browserVersion'),
     'slotCount': (a, b) => {
@@ -80,6 +81,7 @@ function Overview (): JSX.Element {
   const sortPropertiesLabel = {
     'platformName': 'Platform Name',
     'status': 'Status',
+    'uri': 'URI',
     'browserName': 'Browser Name',
     'browserVersion': 'Browser Version',
     'slotCount': 'Slot Count',
