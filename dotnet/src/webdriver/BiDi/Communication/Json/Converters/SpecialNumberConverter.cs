@@ -36,7 +36,7 @@ internal sealed class SpecialNumberConverter : JsonConverter<double>
             return d;
         }
 
-        var str = reader.GetString() ?? throw new JsonException("Cannot convert from null to remote number value");
+        var str = reader.GetString() ?? throw new JsonException("Cannot convert from null to special number value");
 
         if (str.Equals("-0", StringComparison.Ordinal))
         {
