@@ -31,31 +31,38 @@ internal sealed class SpecialNumberConverter : JsonConverter<double>
 {
     public override double Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TryGetDouble(out double d))
+        switch (reader.TokenType)
         {
-            return d;
-        }
+            case JsonTokenType.Number:
+                return reader.GetDouble();
 
-        var str = reader.GetString() ?? throw new JsonException("Cannot convert from null to special number value");
+            case JsonTokenType.String:
+                var str = reader.GetString()!;
+                if (str.Equals("-0", StringComparison.Ordinal))
+                {
+                    return -0.0;
+                }
 
-        if (str.Equals("-0", StringComparison.Ordinal))
-        {
-            return -0.0;
-        }
-        else if (str.Equals("NaN", StringComparison.Ordinal))
-        {
-            return double.NaN;
-        }
-        else if (str.Equals("Infinity", StringComparison.Ordinal))
-        {
-            return double.PositiveInfinity;
-        }
-        else if (str.Equals("-Infinity", StringComparison.Ordinal))
-        {
-            return double.NegativeInfinity;
-        }
+                if (str.Equals("NaN", StringComparison.Ordinal))
+                {
+                    return double.NaN;
+                }
 
-        throw new JsonException();
+                if (str.Equals("Infinity", StringComparison.Ordinal))
+                {
+                    return double.PositiveInfinity;
+                }
+
+                if (str.Equals("-Infinity", StringComparison.Ordinal))
+                {
+                    return double.NegativeInfinity;
+                }
+
+                throw new JsonException("JSON string could not be parsed to a special number");
+
+            default:
+                throw new JsonException($"JSON type not a number or string: {reader.TokenType}");
+        }
     }
 
     public override void Write(Utf8JsonWriter writer, double value, JsonSerializerOptions options)
