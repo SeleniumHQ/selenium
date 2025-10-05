@@ -26,6 +26,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 class BrowsingContextEventsTest : BiDiTestFixture
 {
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public async Task CanListenDownloadWillBeginEvent()
     {
         await context.NavigateAsync(UrlBuilder.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
@@ -45,6 +46,7 @@ class BrowsingContextEventsTest : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
     public async Task CanListenDownloadEndEvent()
     {
         await context.NavigateAsync(UrlBuilder.WhereIs("downloads/download.html"), new() { Wait = ReadinessState.Complete });
