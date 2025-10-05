@@ -251,4 +251,12 @@ class NetworkTest : BiDiTestFixture
         Assert.That(async () => await bidi.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
         Assert.That(async () => await context.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
     }
+
+    [Test]
+    public async Task CanSetExtraHeaders()
+    {
+        var result = await bidi.Network.SetExtraHeadersAsync([new Header("x-test-header", "test-value")]);
+
+        Assert.That(result, Is.Not.Null);
+    }
 }
