@@ -17,11 +17,13 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -99,7 +101,7 @@ public abstract record RemoteValue
 
 public abstract record PrimitiveProtocolRemoteValue : RemoteValue;
 
-public sealed record NumberRemoteValue(double Value) : PrimitiveProtocolRemoteValue;
+public sealed record NumberRemoteValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolRemoteValue;
 
 public sealed record BooleanRemoteValue(bool Value) : PrimitiveProtocolRemoteValue;
 
@@ -269,6 +271,7 @@ public sealed record WindowProxyRemoteValue(WindowProxyProperties Value) : Remot
     public InternalId? InternalId { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<Mode>))]
 public enum Mode
 {
     Open,

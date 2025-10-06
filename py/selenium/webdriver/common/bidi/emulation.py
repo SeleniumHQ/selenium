@@ -49,21 +49,6 @@ class GeolocationCoordinates:
         ------
             ValueError: If coordinates are out of valid range or if altitude_accuracy is provided without altitude.
         """
-        if not (-90.0 <= latitude <= 90.0):
-            raise ValueError("Latitude must be between -90.0 and 90.0")
-        if not (-180.0 <= longitude <= 180.0):
-            raise ValueError("Longitude must be between -180.0 and 180.0")
-        if accuracy < 0.0:
-            raise ValueError("Accuracy must be >= 0.0")
-        if altitude_accuracy is not None and altitude is None:
-            raise ValueError("altitude_accuracy cannot be set without altitude")
-        if altitude_accuracy is not None and altitude_accuracy < 0.0:
-            raise ValueError("Altitude accuracy must be >= 0.0")
-        if heading is not None and not (0.0 <= heading < 360.0):
-            raise ValueError("Heading must be between 0.0 and 360.0")
-        if speed is not None and speed < 0.0:
-            raise ValueError("Speed must be >= 0.0")
-
         self.latitude = latitude
         self.longitude = longitude
         self.accuracy = accuracy
@@ -71,6 +56,76 @@ class GeolocationCoordinates:
         self.altitude_accuracy = altitude_accuracy
         self.heading = heading
         self.speed = speed
+
+    @property
+    def latitude(self):
+        return self._latitude
+
+    @latitude.setter
+    def latitude(self, value):
+        if not (-90.0 <= value <= 90.0):
+            raise ValueError("latitude must be between -90.0 and 90.0")
+        self._latitude = value
+
+    @property
+    def longitude(self):
+        return self._longitude
+
+    @longitude.setter
+    def longitude(self, value):
+        if not (-180.0 <= value <= 180.0):
+            raise ValueError("longitude must be between -180.0 and 180.0")
+        self._longitude = value
+
+    @property
+    def accuracy(self):
+        return self._accuracy
+
+    @accuracy.setter
+    def accuracy(self, value):
+        if value < 0.0:
+            raise ValueError("accuracy must be >= 0.0")
+        self._accuracy = value
+
+    @property
+    def altitude(self):
+        return self._altitude
+
+    @altitude.setter
+    def altitude(self, value):
+        self._altitude = value
+
+    @property
+    def altitude_accuracy(self):
+        return self._altitude_accuracy
+
+    @altitude_accuracy.setter
+    def altitude_accuracy(self, value):
+        if value is not None and self.altitude is None:
+            raise ValueError("altitude_accuracy cannot be set without altitude")
+        if value is not None and value < 0.0:
+            raise ValueError("altitude_accuracy must be >= 0.0")
+        self._altitude_accuracy = value
+
+    @property
+    def heading(self):
+        return self._heading
+
+    @heading.setter
+    def heading(self, value):
+        if value is not None and not (0.0 <= value < 360.0):
+            raise ValueError("heading must be between 0.0 and 360.0")
+        self._heading = value
+
+    @property
+    def speed(self):
+        return self._speed
+
+    @speed.setter
+    def speed(self, value):
+        if value is not None and value < 0.0:
+            raise ValueError("speed must be >= 0.0")
+        self._speed = value
 
     def to_dict(self) -> dict[str, Union[float, None]]:
         result: dict[str, Union[float, None]] = {

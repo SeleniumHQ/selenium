@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.35.0-nightly202506301117",
+  "version": "4.37.0-nightly202510031147",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -25,8 +25,8 @@
   "dependencies": {
     "@bazel/runfiles": "^6.3.1",
     "jszip": "^3.10.1",
-    "tmp": "^0.2.3",
-    "ws": "^8.18.2"
+    "tmp": "^0.2.5",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

@@ -20,22 +20,23 @@
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Input;
 using System.Collections.Generic;
+using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextInputModule(BrowsingContext context, InputModule inputModule)
 {
-    public Task PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
+    public Task<EmptyResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
         return inputModule.PerformActionsAsync(context, actions, options);
     }
 
-    public Task ReleaseActionsAsync(ReleaseActionsOptions? options = null)
+    public Task<EmptyResult> ReleaseActionsAsync(ReleaseActionsOptions? options = null)
     {
         return inputModule.ReleaseActionsAsync(context, options);
     }
 
-    public Task SetFilesAsync(Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
+    public Task<EmptyResult> SetFilesAsync(Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
         return inputModule.SetFilesAsync(context, element, files, options);
     }

@@ -19,6 +19,7 @@
 
 using OpenQA.Selenium.Internal;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -31,6 +32,11 @@ namespace OpenQA.Selenium.Firefox;
 public sealed class FirefoxDriverService : DriverService
 {
     private const string DefaultFirefoxDriverServiceFileName = "geckodriver";
+
+    /// <summary>
+    /// Process management fields for the log writer.
+    /// </summary>
+    private StreamWriter? logWriter;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FirefoxDriverService"/> class.
@@ -86,6 +92,30 @@ public sealed class FirefoxDriverService : DriverService
     /// when Firefox is launched.
     /// </summary>
     public bool OpenBrowserToolbox { get; set; }
+
+    /// <summary>
+    /// Gets or sets the file path where log output should be written.
+    /// </summary>
+    /// <remarks>
+    /// A <see langword="null"/> or <see cref="string.Empty"/> value indicates no log file to specify.
+    /// This approach takes the process output and redirects it to a file because GeckoDriver does not
+    /// offer a way to specify a log file path directly.
+    /// </remarks>
+    public string? LogPath { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to disable truncation of long log lines in GeckoDriver.
+    /// </summary>
+    /// <remarks>
+    /// A <see langword="null"/> value indicates no log truncation setting to specify.
+    /// Set to <see langword="true"/> to disable truncation, or <see langword="false"/> to enable truncation.
+    /// </remarks>
+    public bool? LogTruncate { get; set; }
+
+    /// <summary>
+    /// Directory in which GeckoDriver creates profiles.
+    /// </summary>
+    public string? ProfileRoot { get; set; }
 
     /// <summary>
     /// Gets or sets the level at which log output is displayed.
@@ -173,7 +203,92 @@ public sealed class FirefoxDriverService : DriverService
                 argsBuilder.Append(" --jsdebugger");
             }
 
+            if (this.LogTruncate is true)
+            {
+                argsBuilder.Append(" --log-no-truncate");
+            }
+
+            if (!string.IsNullOrEmpty(this.ProfileRoot))
+            {
+                if (!Directory.Exists(this.ProfileRoot))
+                {
+                    throw new ArgumentException($"Profile root directory does not exist: {this.ProfileRoot}", nameof(ProfileRoot));
+                }
+
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --profile-root \"{0}\"", this.ProfileRoot);
+            }
+
             return argsBuilder.ToString().Trim();
+        }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether process output redirection is required.
+    /// </summary>
+    protected internal override bool EnableProcessRedirection => LogPath is not null;
+
+    /// <summary>
+    /// Called when the driver process is starting. This method sets up log file writing if a log path is specified.
+    /// </summary>
+    /// <param name="eventArgs">The event arguments containing information about the driver service process.</param>
+    /// <remarks>
+    /// This method initializes a log writer if a log path is specified.
+    /// </remarks>
+    protected override void OnDriverProcessStarting(DriverProcessStartingEventArgs eventArgs)
+    {
+        if (!string.IsNullOrEmpty(this.LogPath))
+        {
+            string? directory = Path.GetDirectoryName(this.LogPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            logWriter = new StreamWriter(this.LogPath, append: true) { AutoFlush = true };
+        }
+
+        base.OnDriverProcessStarting(eventArgs);
+    }
+
+    /// <summary>
+    /// Handles the output and error data received from the driver process and sends it to the log writer if available.
+    /// </summary>
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">The data received event arguments.</param>
+    protected override void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
+    {
+        if (string.IsNullOrEmpty(args.Data))
+            return;
+
+        if (!string.IsNullOrEmpty(this.LogPath))
+        {
+            if (logWriter != null)
+            {
+                logWriter.WriteLine(args.Data);
+            }
+        }
+        else
+        {
+            base.OnDriverProcessDataReceived(sender, args);
+        }
+    }
+
+
+    /// <summary>
+    /// Disposes of the resources used by the <see cref="FirefoxDriverService"/> instance.
+    /// </summary>
+    /// <param name="disposing">A value indicating whether the method is being called from Dispose.</param>
+    /// <remarks>
+    /// If disposing is true, it disposes of the log writer if it exists.
+    /// </remarks>
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+
+        if (logWriter != null && disposing)
+        {
+            logWriter.Dispose();
+            logWriter = null;
         }
     }
 

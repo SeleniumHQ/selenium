@@ -47,10 +47,10 @@ fn browser_latest_download_test(#[case] browser: String) {
 }
 
 #[rstest]
-#[case("chrome", "113")]
-#[case("chrome", "131.0.6725.0")]
+#[case("chrome", "131")]
+#[case("chrome", "131.0.6778.264")]
 #[case("chrome", "beta")]
-#[case("firefox", "116")]
+#[case("firefox", "121")]
 #[case("firefox", "121.0.1")]
 #[case("firefox", "beta")]
 #[case("firefox", "esr")]
@@ -58,7 +58,9 @@ fn browser_latest_download_test(#[case] browser: String) {
 #[case("edge", "beta")]
 fn browser_version_download_test(#[case] browser: String, #[case] browser_version: String) {
     if OS.eq("windows") && browser.eq("edge") {
-        println!("Skipping Edge download test on Windows since the installation requires admin privileges");
+        println!(
+            "Skipping Edge download test on Windows since the installation requires admin privileges"
+        );
     } else {
         let mut cmd = get_selenium_manager();
         cmd.args([

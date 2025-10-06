@@ -1,10 +1,13 @@
 -//dotnet/test/common:NetworkInterceptionTests-chrome
 -//dotnet/test/common:NetworkInterceptionTests-edge
+-//dotnet/test/firefox:FirefoxDriverTest-firefox
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-edge
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-remote
+-//java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
+-//java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest-remote
 -//java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
 -//java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
 -//java/test/org/openqa/selenium/grid/gridui:OverallGridTest
@@ -44,8 +47,8 @@
 -//rb/spec/integration/selenium/webdriver/remote:element-edge-remote
 -//rb/spec/integration/selenium/webdriver/remote:element-firefox-beta-remote
 -//rb/spec/integration/selenium/webdriver/remote:element-firefox-remote
+-//rb/spec/integration/selenium/webdriver:action_builder-firefox-beta-remote
 -//rb/spec/integration/selenium/webdriver:element-chrome
 -//rb/spec/integration/selenium/webdriver:element-chrome-bidi
 -//rb/spec/integration/selenium/webdriver:element-chrome-remote
--//rb/spec/integration/selenium/webdriver:action_builder-firefox-beta-remote
 -//rb:lint
