@@ -106,6 +106,7 @@ jobs:
       cache-key: py-browser-${{ matrix.browser }}
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:common-${{ matrix.browser }}-bidi //py:test-${{ matrix.browser }}
+
   safari-tests:
     name: Browser Tests
     needs: build
