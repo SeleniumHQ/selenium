@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
+[JsonConverter(typeof(InputSourceActionsConverter))]
 public abstract record SourceActions
 {
     public string Id { get; } = Guid.NewGuid().ToString();

@@ -18,12 +18,12 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -55,6 +55,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 //[JsonDerivedType(typeof(HtmlCollectionRemoteValue), "htmlcollection")]
 //[JsonDerivedType(typeof(NodeRemoteValue), "node")]
 //[JsonDerivedType(typeof(WindowProxyRemoteValue), "window")]
+[JsonConverter(typeof(RemoteValueConverter))]
 public abstract record RemoteValue
 {
     public static implicit operator double(RemoteValue remoteValue) => (double)((NumberRemoteValue)remoteValue).Value;

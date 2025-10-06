@@ -17,7 +17,9 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 using System;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -25,6 +27,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 //[JsonPolymorphic(TypeDiscriminatorPropertyName = "status")]
 //[JsonDerivedType(typeof(DownloadCanceledEventArgs), "canceled")]
 //[JsonDerivedType(typeof(DownloadCompleteEventArgs), "complete")]
+[JsonConverter(typeof(DownloadEndEventArgsConverter))]
 public abstract record DownloadEndEventArgs(BiDi BiDi, BrowsingContext Context)
     : BrowsingContextEventArgs(BiDi, Context);
 
