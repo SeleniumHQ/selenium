@@ -18,28 +18,32 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
 public sealed class WebExtensionModule : Module
 {
+    private BiDiJsonSerializerContext _context = null!;
+
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
     {
         var @params = new InstallParameters(extensionData);
 
-        return await Broker.ExecuteCommandAsync<InstallCommand, InstallResult>(new InstallCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<InstallCommand, InstallResult>(new InstallCommand(@params), options, _context).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
     {
         var @params = new UninstallParameters(extension);
 
-        return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options, _context).ConfigureAwait(false);
     }
 
-    protected internal override void Initialize(Broker broker)
+    protected internal override void Initialize(JsonSerializerOptions options)
     {
-        throw new System.NotImplementedException();
+        _context = new BiDiJsonSerializerContext(options);
     }
 }
