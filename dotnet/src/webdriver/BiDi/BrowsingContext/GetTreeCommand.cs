@@ -18,8 +18,10 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -47,6 +49,7 @@ public sealed record BrowsingContextGetTreeOptions
     public long? MaxDepth { get; set; }
 }
 
+[JsonConverter(typeof(GetTreeResultConverter))]
 public sealed record GetTreeResult : EmptyResult, IReadOnlyList<BrowsingContextInfo>
 {
     internal GetTreeResult(IReadOnlyList<BrowsingContextInfo> contexts)
