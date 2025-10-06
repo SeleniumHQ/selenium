@@ -16,7 +16,6 @@
 # under the License.
 
 import json
-import platform
 import sys
 from pathlib import Path
 from unittest import mock
@@ -44,7 +43,7 @@ def test_gets_results(monkeypatch):
 
 
 def test_uses_environment_variable(monkeypatch):
-    sm_path =  r"\path\to\manager" if sys.platform.startswith("win") else "path/to/manager"
+    sm_path = r"\path\to\manager" if sys.platform.startswith("win") else "path/to/manager"
     monkeypatch.setenv("SE_MANAGER_PATH", sm_path)
     monkeypatch.setattr(Path, "is_file", lambda _: True)
 
@@ -59,7 +58,6 @@ def test_uses_windows(monkeypatch):
 
     project_root = Path(selenium.__file__).parent.parent
     assert binary == project_root.joinpath("selenium/webdriver/common/windows/selenium-manager.exe")
-
 
 
 def test_uses_linux(monkeypatch):
@@ -105,7 +103,7 @@ def test_errors_if_invalid_os(monkeypatch):
 
 
 def test_error_if_invalid_env_path(monkeypatch):
-    sm_path =  r"\path\to\manager" if sys.platform.startswith("win") else "path/to/manager"
+    sm_path = r"\path\to\manager" if sys.platform.startswith("win") else "path/to/manager"
     monkeypatch.setenv("SE_MANAGER_PATH", sm_path)
 
     with pytest.raises(WebDriverException) as excinfo:
