@@ -72,6 +72,7 @@ public struct PrintPage
     public double? Width { get; set; }
 }
 
+[JsonConverter(typeof(PrintPageRangeConverter))]
 public readonly record struct PrintPageRange(int? Start, int? End)
 {
     public static implicit operator PrintPageRange(int index) { return new PrintPageRange(index, index); }
