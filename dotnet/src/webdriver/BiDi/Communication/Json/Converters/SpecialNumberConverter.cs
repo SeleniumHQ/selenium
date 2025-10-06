@@ -56,7 +56,7 @@ internal sealed class SpecialNumberConverter : JsonConverter<double>
                     return double.NegativeInfinity;
                 }
 
-                throw new JsonException("JSON string could not be parsed to a special number");
+                throw new JsonException($"JSON '{str}' string could not be parsed to a special number");
 
             default:
                 throw new JsonException($"JSON type not a number or string: {reader.TokenType}");
