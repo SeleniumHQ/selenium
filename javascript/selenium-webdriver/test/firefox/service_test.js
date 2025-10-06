@@ -83,6 +83,19 @@ test.suite(
           // Should be null/undefined when no explicit path and no env var
           assert.ok(!service.getExecutable())
         })
+
+        it('environment variable ignores selenium manager', function () {
+          // This test mimics Java's environmentVariableIgnoresSeleniumManager test
+          const testDriverPath = '/custom/path/to/geckodriver'
+          process.env.SE_GECKODRIVER = testDriverPath
+
+          // Create ServiceBuilder without explicit path (null equivalent)
+          const serviceBuilder = new firefox.ServiceBuilder()
+          const service = serviceBuilder.build()
+
+          // Verify that the environment variable path is used
+          assert.strictEqual(service.getExecutable(), testDriverPath)
+        })
       })
     })
   },
