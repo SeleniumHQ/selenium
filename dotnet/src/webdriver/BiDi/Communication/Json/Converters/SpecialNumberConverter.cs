@@ -23,10 +23,8 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-/// <summary>
-/// Serializes and deserializes <see cref="double"/> into a
-/// <see href="https://w3c.github.io/webdriver-bidi/#type-script-PrimitiveProtocolValue">BiDi spec-compliant number value</see>.
-/// </summary>
+// Serializes and deserializes double into a BiDi spec-compliant number value.
+// See https://w3c.github.io/webdriver-bidi/#type-script-PrimitiveProtocolValue
 internal sealed class SpecialNumberConverter : JsonConverter<double>
 {
     public override double Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
