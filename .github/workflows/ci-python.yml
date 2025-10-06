@@ -54,6 +54,22 @@ jobs:
         env:
           TOXENV: mypy
 
+  unit-tests:
+    name: Unit Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+          - os: macos
+    with:
+      name: Unit Tests (${{ matrix.os }})
+      os: ${{ matrix.os }}
+      cache-key: python-unit-test-${{ matrix.os }}
+      run: bazel test //py:unit
+
   remote-tests:
     name: Remote Tests
     needs: build
@@ -83,6 +99,10 @@ jobs:
             os: ubuntu
           - browser: firefox
             os: ubuntu
+          - browser: chrome
+            os: windows
+          - browser: edge
+            os: windows
     with:
       name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -108,4 +128,5 @@ jobs:
       os: ${{ matrix.os }}
       cache-key: py-browser-${{ matrix.browser }}
       run: |
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:common-${{ matrix.browser }}
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:test-${{ matrix.browser }}

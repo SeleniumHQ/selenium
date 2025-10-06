@@ -60,7 +60,7 @@ impl Lock {
 
     pub fn release(&mut self) {
         fs::remove_file(&self.path).unwrap_or_default();
-        self.file.unlock().unwrap_or_default();
+        FileExt::unlock(&self.file).unwrap_or_default();
         set_lock_path(None);
     }
 
@@ -70,12 +70,10 @@ impl Lock {
 }
 
 pub fn clear_lock_if_required() {
-    let lock_path = get_lock_path();
-    if lock_path.is_some() {
-        let lock = lock_path.unwrap();
-        if lock.exists() {
-            fs::remove_file(lock).unwrap_or_default();
-        }
+    if let Some(lock) = get_lock_path()
+        && lock.exists()
+    {
+        fs::remove_file(lock).unwrap_or_default();
     }
 }
 

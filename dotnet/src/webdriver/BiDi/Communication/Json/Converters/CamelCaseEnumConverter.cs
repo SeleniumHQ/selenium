@@ -1,3 +1,4 @@
+// <copyright file="CamelCaseEnumConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14,16 +15,13 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+// </copyright>
 
-package org.openqa.selenium.devtools.v137;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-@AutoService(CdpInfo.class)
-public class v137CdpInfo extends CdpInfo {
-
-  public v137CdpInfo() {
-    super(137, v137Domains::new);
-  }
-}
+public class CamelCaseEnumConverter<TEnum>() :
+    JsonStringEnumConverter<TEnum>(JsonNamingPolicy.CamelCase) where TEnum : struct, Enum;

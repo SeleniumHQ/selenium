@@ -1,3 +1,27 @@
+v4.36.0
+======
+* Add CDP for Chrome 140 and remove 137
+* [bidi] Simplify type naming of internal command parameters (#16188)
+* [bidi] Support WebExtension module (#15850)
+* [bidi] Propagate BiDiOptions in Connect method
+* [bidi] Pass the bidi options from main entry point
+* Adding flag to enable SafariDriver logging. (#16196)
+* [bidi] Serialize base64 encoded string directly to bytes (#16203)
+* [bidi] Make cookie expiry as TimeSpan (#16204)
+* Update dependency System.Text.Json to 8.0.6 (#16171)
+* Help .NET Framework copy selenium manager to output (#16228)
+* Clean docs for OnDriverProcessDataReceived handler
+* Revert "Update dependency System.Text.Json to 8.0.6 (#16171)"
+* Fix find port for IPv4 only environments (#16216)
+* [bidi] Adjust cookie expiry type according spec (unix seconds) (#16218)
+* Fix links to exception documentation on website (#16305)
+* [bidi] Support network collectors and get response body (#16192)
+* [bidi] Enable WebExtension tests at least for Firefox (#16333)
+* Suppress unwanted messages from browser via redirecting streams (#16265)
+* [bidi] Remove obsolete unsubscribing by attributes (#16205)
+* Conditionally enable driver service process output redirection (#16353)
+* Begin reading of driver service output to fix Firefox disposing
+
 v4.35.0
 ======
 * Add CDP for Chrome 139 and remove 136
