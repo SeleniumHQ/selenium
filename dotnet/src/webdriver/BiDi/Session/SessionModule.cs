@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class SessionModule(Broker broker) : Module(broker)
+internal sealed class SessionModule : Module
 {
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {
@@ -54,5 +54,10 @@ internal sealed class SessionModule(Broker broker) : Module(broker)
     public async Task<EmptyResult> EndAsync(EndOptions? options = null)
     {
         return await Broker.ExecuteCommandAsync<EndCommand, EmptyResult>(new EndCommand(), options).ConfigureAwait(false);
+    }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        throw new System.NotImplementedException();
     }
 }

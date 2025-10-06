@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextModule(Broker broker) : Module(broker)
+public sealed class BrowsingContextModule : Module
 {
     public async Task<BrowsingContext> CreateAsync(ContextType type, CreateOptions? options = null)
     {
@@ -249,5 +249,10 @@ public sealed class BrowsingContextModule(Broker broker) : Module(broker)
     public async Task<Subscription> OnUserPromptClosedAsync(Action<UserPromptClosedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options).ConfigureAwait(false);
+    }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        
     }
 }

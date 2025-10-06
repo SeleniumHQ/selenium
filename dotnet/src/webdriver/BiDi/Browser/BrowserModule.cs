@@ -17,12 +17,14 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed class BrowserModule(Broker broker) : Module(broker)
+public sealed class BrowserModule : Module
 {
     public async Task<EmptyResult> CloseAsync(CloseOptions? options = null)
     {
@@ -73,4 +75,22 @@ public sealed class BrowserModule(Broker broker) : Module(broker)
 
         return await Broker.ExecuteCommandAsync<SetDownloadBehaviorCommand, EmptyResult>(new SetDownloadBehaviorCommand(@params), options).ConfigureAwait(false);
     }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        broker.ConfigureJsonContext(opts => opts.TypeInfoResolverChain.Add(BrowserModuleJsonSerializerContext.Default));
+    }
 }
+
+[JsonSerializable(typeof(CloseCommand))]
+[JsonSerializable(typeof(CreateUserContextCommand))]
+[JsonSerializable(typeof(GetUserContextsCommand))]
+[JsonSerializable(typeof(GetUserContextsResult))]
+[JsonSerializable(typeof(RemoveUserContextCommand))]
+[JsonSerializable(typeof(GetClientWindowsCommand))]
+[JsonSerializable(typeof(GetClientWindowsResult))]
+[JsonSerializable(typeof(SetDownloadBehaviorCommand))]
+[JsonSerializable(typeof(UserContextInfo))]
+[JsonSerializable(typeof(IReadOnlyList<UserContextInfo>))]
+[JsonSerializable(typeof(IReadOnlyList<ClientWindowInfo>))]
+internal partial class BrowserModuleJsonSerializerContext : JsonSerializerContext;

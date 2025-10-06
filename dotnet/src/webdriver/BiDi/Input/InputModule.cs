@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed class InputModule(Broker broker) : Module(broker)
+public sealed class InputModule : Module
 {
     public async Task<EmptyResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
@@ -44,5 +44,10 @@ public sealed class InputModule(Broker broker) : Module(broker)
         var @params = new SetFilesParameters(context, element, files);
 
         return await Broker.ExecuteCommandAsync<SetFilesCommand, EmptyResult>(new SetFilesCommand(@params), options).ConfigureAwait(false);
+    }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        throw new System.NotImplementedException();
     }
 }

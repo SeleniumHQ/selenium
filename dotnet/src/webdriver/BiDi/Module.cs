@@ -21,7 +21,17 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract class Module(Broker broker)
+public abstract class Module
 {
-    protected Broker Broker { get; } = broker;
+    protected Broker Broker { get; private set; }
+
+    protected internal abstract void Initialize(Broker broker);
+
+    public static TModule Create<TModule>(Broker broker) where TModule : Module, new()
+    {
+        TModule module = new();
+        module.Broker = broker;
+        module.Initialize(broker);
+        return module;
+    }
 }

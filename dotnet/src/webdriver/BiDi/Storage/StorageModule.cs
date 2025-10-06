@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-public sealed class StorageModule(Broker broker) : Module(broker)
+public sealed class StorageModule : Module
 {
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
     {
@@ -43,5 +43,10 @@ public sealed class StorageModule(Broker broker) : Module(broker)
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
         return await Broker.ExecuteCommandAsync<SetCookieCommand, SetCookieResult>(new SetCookieCommand(@params), options).ConfigureAwait(false);
+    }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        throw new System.NotImplementedException();
     }
 }

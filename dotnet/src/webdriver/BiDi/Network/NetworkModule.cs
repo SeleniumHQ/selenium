@@ -24,7 +24,7 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed partial class NetworkModule(Broker broker) : Module(broker)
+public sealed partial class NetworkModule : Module
 {
     public async Task<Collector> AddDataCollectorAsync(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, AddDataCollectorOptions? options = null)
     {
@@ -172,5 +172,10 @@ public sealed partial class NetworkModule(Broker broker) : Module(broker)
     public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("network.authRequired", handler, options).ConfigureAwait(false);
+    }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-public sealed class WebExtensionModule(Broker broker) : Module(broker)
+public sealed class WebExtensionModule : Module
 {
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
     {
@@ -36,5 +36,10 @@ public sealed class WebExtensionModule(Broker broker) : Module(broker)
         var @params = new UninstallParameters(extension);
 
         return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options).ConfigureAwait(false);
+    }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        throw new System.NotImplementedException();
     }
 }

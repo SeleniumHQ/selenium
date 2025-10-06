@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed class ScriptModule(Broker broker) : Module(broker)
+public sealed class ScriptModule : Module
 {
     public async Task<EvaluateResult> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
     {
@@ -104,5 +104,10 @@ public sealed class ScriptModule(Broker broker) : Module(broker)
     public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("script.realmDestroyed", handler, options).ConfigureAwait(false);
+    }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        throw new NotImplementedException();
     }
 }

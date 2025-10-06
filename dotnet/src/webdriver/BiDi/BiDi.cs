@@ -55,7 +55,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_sessionModule is not null) return _sessionModule;
             lock (_moduleLock)
             {
-                _sessionModule ??= new Session.SessionModule(_broker);
+                _sessionModule ??= Module.Create<Session.SessionModule>(_broker);
             }
             return _sessionModule;
         }
@@ -68,7 +68,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_browsingContextModule is not null) return _browsingContextModule;
             lock (_moduleLock)
             {
-                _browsingContextModule ??= new BrowsingContext.BrowsingContextModule(_broker);
+                _browsingContextModule ??= Module.Create<BrowsingContext.BrowsingContextModule>(_broker);
             }
             return _browsingContextModule;
         }
@@ -81,7 +81,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_browserModule is not null) return _browserModule;
             lock (_moduleLock)
             {
-                _browserModule ??= new Browser.BrowserModule(_broker);
+                _browserModule ??= Module.Create<Browser.BrowserModule>(_broker);
             }
             return _browserModule;
         }
@@ -94,7 +94,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_networkModule is not null) return _networkModule;
             lock (_moduleLock)
             {
-                _networkModule ??= new Network.NetworkModule(_broker);
+                _networkModule ??= Module.Create<Network.NetworkModule>(_broker);
             }
             return _networkModule;
         }
@@ -107,7 +107,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_inputModule is not null) return _inputModule;
             lock (_moduleLock)
             {
-                _inputModule ??= new Input.InputModule(_broker);
+                _inputModule ??= Module.Create<Input.InputModule>(_broker);
             }
             return _inputModule;
         }
@@ -120,7 +120,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_scriptModule is not null) return _scriptModule;
             lock (_moduleLock)
             {
-                _scriptModule ??= new Script.ScriptModule(_broker);
+                _scriptModule ??= Module.Create<Script.ScriptModule>(_broker);
             }
             return _scriptModule;
         }
@@ -133,7 +133,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_logModule is not null) return _logModule;
             lock (_moduleLock)
             {
-                _logModule ??= new Log.LogModule(_broker);
+                _logModule ??= Module.Create<Log.LogModule>(_broker);
             }
             return _logModule;
         }
@@ -146,7 +146,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_storageModule is not null) return _storageModule;
             lock (_moduleLock)
             {
-                _storageModule ??= new Storage.StorageModule(_broker);
+                _storageModule ??= Module.Create<Storage.StorageModule>(_broker);
             }
             return _storageModule;
         }
@@ -159,7 +159,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_webExtensionModule is not null) return _webExtensionModule;
             lock (_moduleLock)
             {
-                _webExtensionModule ??= new WebExtension.WebExtensionModule(_broker);
+                _webExtensionModule ??= Module.Create<WebExtension.WebExtensionModule>(_broker);
             }
             return _webExtensionModule;
         }
@@ -172,7 +172,7 @@ public sealed class BiDi : IAsyncDisposable
             if (_emulationModule is not null) return _emulationModule;
             lock (_moduleLock)
             {
-                _emulationModule ??= new Emulation.EmulationModule(_broker);
+                _emulationModule ??= Module.Create<Emulation.EmulationModule>(_broker);
             }
             return _emulationModule;
         }

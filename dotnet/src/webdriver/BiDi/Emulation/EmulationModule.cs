@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-public sealed class EmulationModule(Broker broker) : Module(broker)
+public sealed class EmulationModule : Module
 {
     public async Task<EmptyResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null)
     {
@@ -88,5 +88,10 @@ public sealed class EmulationModule(Broker broker) : Module(broker)
         var @params = new SetGeolocationOverridePositionErrorParameters(new GeolocationPositionError(), options?.Contexts, options?.UserContexts);
 
         return await Broker.ExecuteCommandAsync<SetGeolocationOverrideCommand, EmptyResult>(new SetGeolocationOverrideCommand(@params), options).ConfigureAwait(false);
+    }
+
+    protected internal override void Initialize(Broker broker)
+    {
+        throw new NotImplementedException();
     }
 }
