@@ -57,11 +57,6 @@ public sealed class Broker : IAsyncDisposable
     {
         _bidi = bidi;
         _transport = new WebSocketTransport(url);
-
-        //_jsonSerializerOptions = CreateOptions();
-
-        //// Add base BiDi generated context resolver; keep options mutable for module contexts
-        //_jsonSerializerOptions.TypeInfoResolverChain.Add(BiDiJsonSerializerContext.Default);
     }
 
     public JsonSerializerOptions CreateOptions()
