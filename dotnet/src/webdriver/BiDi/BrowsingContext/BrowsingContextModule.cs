@@ -29,7 +29,7 @@ public sealed class BrowsingContextModule : Module
     {
         var @params = new CreateParameters(type, options?.ReferenceContext, options?.Background, options?.UserContext);
 
-        var createResult = await Broker.ExecuteCommandAsync<CreateCommand, CreateResult>(new CreateCommand(@params), options, JsonContext).ConfigureAwait(false);
+        var createResult = await Broker.ExecuteCommandAsync(new CreateCommand(@params), options, JsonContext.CreateCommand, JsonContext.CreateResult).ConfigureAwait(false);
 
         return createResult.Context;
     }
@@ -38,77 +38,77 @@ public sealed class BrowsingContextModule : Module
     {
         var @params = new NavigateParameters(context, url, options?.Wait);
 
-        return await Broker.ExecuteCommandAsync<NavigateCommand, NavigateResult>(new NavigateCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new NavigateCommand(@params), options, JsonContext.NavigateCommand, JsonContext.NavigateResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> ActivateAsync(BrowsingContext context, ActivateOptions? options = null)
     {
         var @params = new ActivateParameters(context);
 
-        return await Broker.ExecuteCommandAsync<ActivateCommand, EmptyResult>(new ActivateCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ActivateCommand(@params), options, JsonContext.ActivateCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<LocateNodesResult> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null)
     {
         var @params = new LocateNodesParameters(context, locator, options?.MaxNodeCount, options?.SerializationOptions, options?.StartNodes);
 
-        return await Broker.ExecuteCommandAsync<LocateNodesCommand, LocateNodesResult>(new LocateNodesCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new LocateNodesCommand(@params), options, JsonContext.LocateNodesCommand, JsonContext.LocateNodesResult).ConfigureAwait(false);
     }
 
     public async Task<CaptureScreenshotResult> CaptureScreenshotAsync(BrowsingContext context, CaptureScreenshotOptions? options = null)
     {
         var @params = new CaptureScreenshotParameters(context, options?.Origin, options?.Format, options?.Clip);
 
-        return await Broker.ExecuteCommandAsync<CaptureScreenshotCommand, CaptureScreenshotResult>(new CaptureScreenshotCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new CaptureScreenshotCommand(@params), options, JsonContext.CaptureScreenshotCommand, JsonContext.CaptureScreenshotResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> CloseAsync(BrowsingContext context, CloseOptions? options = null)
     {
         var @params = new CloseParameters(context, options?.PromptUnload);
 
-        return await Broker.ExecuteCommandAsync<CloseCommand, EmptyResult>(new CloseCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new CloseCommand(@params), options, JsonContext.BrowsingContext_CloseCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<TraverseHistoryResult> TraverseHistoryAsync(BrowsingContext context, int delta, TraverseHistoryOptions? options = null)
     {
         var @params = new TraverseHistoryParameters(context, delta);
 
-        return await Broker.ExecuteCommandAsync<TraverseHistoryCommand, TraverseHistoryResult>(new TraverseHistoryCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new TraverseHistoryCommand(@params), options, JsonContext.TraverseHistoryCommand, JsonContext.TraverseHistoryResult).ConfigureAwait(false);
     }
 
     public async Task<NavigateResult> ReloadAsync(BrowsingContext context, ReloadOptions? options = null)
     {
         var @params = new ReloadParameters(context, options?.IgnoreCache, options?.Wait);
 
-        return await Broker.ExecuteCommandAsync<ReloadCommand, NavigateResult>(new ReloadCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ReloadCommand(@params), options, JsonContext.ReloadCommand, JsonContext.NavigateResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> SetViewportAsync(BrowsingContext context, SetViewportOptions? options = null)
     {
         var @params = new SetViewportParameters(context, options?.Viewport, options?.DevicePixelRatio);
 
-        return await Broker.ExecuteCommandAsync<SetViewportCommand, EmptyResult>(new SetViewportCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetViewportCommand(@params), options, JsonContext.SetViewportCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<GetTreeResult> GetTreeAsync(GetTreeOptions? options = null)
     {
         var @params = new GetTreeParameters(options?.MaxDepth, options?.Root);
 
-        return await Broker.ExecuteCommandAsync<GetTreeCommand, GetTreeResult>(new GetTreeCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new GetTreeCommand(@params), options, JsonContext.GetTreeCommand, JsonContext.GetTreeResult).ConfigureAwait(false);
     }
 
     public async Task<PrintResult> PrintAsync(BrowsingContext context, PrintOptions? options = null)
     {
         var @params = new PrintParameters(context, options?.Background, options?.Margin, options?.Orientation, options?.Page, options?.PageRanges, options?.Scale, options?.ShrinkToFit);
 
-        return await Broker.ExecuteCommandAsync<PrintCommand, PrintResult>(new PrintCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new PrintCommand(@params), options, JsonContext.PrintCommand, JsonContext.PrintResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null)
     {
         var @params = new HandleUserPromptParameters(context, options?.Accept, options?.UserText);
 
-        return await Broker.ExecuteCommandAsync<HandleUserPromptCommand, EmptyResult>(new HandleUserPromptCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new HandleUserPromptCommand(@params), options, JsonContext.HandleUserPromptCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)

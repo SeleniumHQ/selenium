@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -138,17 +139,9 @@ public sealed class Broker : IAsyncDisposable
         }
     }
 
-    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonSerializerContext jsonContext)
+    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo)
         where TCommand : Command
         where TResult : EmptyResult
-    {
-        var result = await ExecuteCommandCoreAsync(command, options, jsonContext).ConfigureAwait(false);
-
-        return (TResult)result;
-    }
-
-    private async Task<EmptyResult> ExecuteCommandCoreAsync<TCommand>(TCommand command, CommandOptions? options, JsonSerializerContext jsonContext)
-        where TCommand : Command
     {
         command.Id = Interlocked.Increment(ref _currentCommandId);
         var tcs = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -157,11 +150,11 @@ public sealed class Broker : IAsyncDisposable
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
         var commandInfo = new CommandInfo(command.Id, command.ResultType, tcs);
         _pendingCommands[command.Id] = commandInfo;
-        var data = JsonSerializer.SerializeToUtf8Bytes(command, typeof(TCommand), jsonContext);
+        var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
 
         await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
         var resultJson = await tcs.Task.ConfigureAwait(false);
-        return (EmptyResult)JsonSerializer.Deserialize(resultJson, commandInfo.ResultType, jsonContext)!;
+        return JsonSerializer.Deserialize(resultJson, jsonResultTypeInfo)!;
     }
 
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonSerializerContext jsonContext)

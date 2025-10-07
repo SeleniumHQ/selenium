@@ -29,20 +29,20 @@ public sealed class InputModule : Module
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await Broker.ExecuteCommandAsync<PerformActionsCommand, EmptyResult>(new PerformActionsCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options, JsonContext.PerformActionsCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await Broker.ExecuteCommandAsync<ReleaseActionsCommand, EmptyResult>(new ReleaseActionsCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, JsonContext.ReleaseActionsCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await Broker.ExecuteCommandAsync<SetFilesCommand, EmptyResult>(new SetFilesCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, JsonContext.SetFilesCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 }

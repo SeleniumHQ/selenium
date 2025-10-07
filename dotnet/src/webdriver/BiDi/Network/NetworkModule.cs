@@ -30,7 +30,7 @@ public sealed partial class NetworkModule : Module
     {
         var @params = new AddDataCollectorParameters(DataTypes, MaxEncodedDataSize, options?.CollectorType, options?.Contexts, options?.UserContexts);
 
-        var result = await Broker.ExecuteCommandAsync<AddDataCollectorCommand, AddDataCollectorResult>(new AddDataCollectorCommand(@params), options, JsonContext).ConfigureAwait(false);
+        var result = await Broker.ExecuteCommandAsync(new AddDataCollectorCommand(@params), options, JsonContext.AddDataCollectorCommand, JsonContext.AddDataCollectorResult).ConfigureAwait(false);
 
         return result.Collector;
     }
@@ -39,7 +39,7 @@ public sealed partial class NetworkModule : Module
     {
         var @params = new AddInterceptParameters(phases, options?.Contexts, options?.UrlPatterns);
 
-        var result = await Broker.ExecuteCommandAsync<AddInterceptCommand, AddInterceptResult>(new AddInterceptCommand(@params), options, JsonContext).ConfigureAwait(false);
+        var result = await Broker.ExecuteCommandAsync(new AddInterceptCommand(@params), options, JsonContext.AddInterceptCommand, JsonContext.AddInterceptResult).ConfigureAwait(false);
 
         return result.Intercept;
     }
@@ -48,56 +48,56 @@ public sealed partial class NetworkModule : Module
     {
         var @params = new RemoveDataCollectorParameters(collector);
 
-        return await Broker.ExecuteCommandAsync<RemoveDataCollectorCommand, EmptyResult>(new RemoveDataCollectorCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new RemoveDataCollectorCommand(@params), options, JsonContext.RemoveDataCollectorCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null)
     {
         var @params = new RemoveInterceptParameters(intercept);
 
-        return await Broker.ExecuteCommandAsync<RemoveInterceptCommand, EmptyResult>(new RemoveInterceptCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new RemoveInterceptCommand(@params), options, JsonContext.RemoveInterceptCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> SetCacheBehaviorAsync(CacheBehavior behavior, SetCacheBehaviorOptions? options = null)
     {
         var @params = new SetCacheBehaviorParameters(behavior, options?.Contexts);
 
-        return await Broker.ExecuteCommandAsync<SetCacheBehaviorCommand, EmptyResult>(new SetCacheBehaviorCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetCacheBehaviorCommand(@params), options, JsonContext.SetCacheBehaviorCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> SetExtraHeadersAsync(IEnumerable<Header> headers, SetExtraHeadersOptions? options = null)
     {
         var @params = new SetExtraHeadersParameters(headers, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync<SetExtraHeadersCommand, EmptyResult>(new SetExtraHeadersCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetExtraHeadersCommand(@params), options, JsonContext.SetExtraHeadersCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> ContinueRequestAsync(Request request, ContinueRequestOptions? options = null)
     {
         var @params = new ContinueRequestParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.Method, options?.Url);
 
-        return await Broker.ExecuteCommandAsync<ContinueRequestCommand, EmptyResult>(new ContinueRequestCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ContinueRequestCommand(@params), options, JsonContext.ContinueRequestCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> ContinueResponseAsync(Request request, ContinueResponseOptions? options = null)
     {
         var @params = new ContinueResponseParameters(request, options?.Cookies, options?.Credentials, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
-        return await Broker.ExecuteCommandAsync<ContinueResponseCommand, EmptyResult>(new ContinueResponseCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ContinueResponseCommand(@params), options, JsonContext.ContinueResponseCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> FailRequestAsync(Request request, FailRequestOptions? options = null)
     {
         var @params = new FailRequestParameters(request);
 
-        return await Broker.ExecuteCommandAsync<FailRequestCommand, EmptyResult>(new FailRequestCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new FailRequestCommand(@params), options, JsonContext.FailRequestCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<BytesValue> GetDataAsync(DataType dataType, Request request, GetDataOptions? options = null)
     {
         var @params = new GetDataParameters(dataType, request, options?.Collector, options?.Disown);
 
-        var result = await Broker.ExecuteCommandAsync<GetDataCommand, GetDataResult>(new GetDataCommand(@params), options, JsonContext).ConfigureAwait(false);
+        var result = await Broker.ExecuteCommandAsync(new GetDataCommand(@params), options, JsonContext.GetDataCommand, JsonContext.GetDataResult).ConfigureAwait(false);
 
         return result.Bytes;
     }
@@ -106,22 +106,22 @@ public sealed partial class NetworkModule : Module
     {
         var @params = new ProvideResponseParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
-        return await Broker.ExecuteCommandAsync<ProvideResponseCommand, EmptyResult>(new ProvideResponseCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ProvideResponseCommand(@params), options, JsonContext.ProvideResponseCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> ContinueWithAuthAsync(Request request, AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync<ContinueWithAuthCommand, EmptyResult>(new ContinueWithAuthCommand(new ContinueWithAuthCredentials(request, credentials)), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCredentials(request, credentials)), options, JsonContext.ContinueWithAuthCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> ContinueWithAuthAsync(Request request, ContinueWithAuthDefaultCredentialsOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync<ContinueWithAuthCommand, EmptyResult>(new ContinueWithAuthCommand(new ContinueWithAuthDefaultCredentials(request)), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthDefaultCredentials(request)), options, JsonContext.ContinueWithAuthCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> ContinueWithAuthAsync(Request request, ContinueWithAuthCancelCredentialsOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync<ContinueWithAuthCommand, EmptyResult>(new ContinueWithAuthCommand(new ContinueWithAuthCancelCredentials(request)), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ContinueWithAuthCommand(new ContinueWithAuthCancelCredentials(request)), options, JsonContext.ContinueWithAuthCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)

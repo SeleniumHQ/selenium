@@ -28,20 +28,20 @@ public sealed class StorageModule : Module
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<GetCookiesCommand, GetCookiesResult>(new GetCookiesCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new GetCookiesCommand(@params), options, JsonContext.GetCookiesCommand, JsonContext.GetCookiesResult).ConfigureAwait(false);
     }
 
     public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null)
     {
         var @params = new DeleteCookiesParameters(options?.Filter, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<DeleteCookiesCommand, DeleteCookiesResult>(new DeleteCookiesCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new DeleteCookiesCommand(@params), options, JsonContext.DeleteCookiesCommand, JsonContext.DeleteCookiesResult).ConfigureAwait(false);
     }
 
     public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null)
     {
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<SetCookieCommand, SetCookieResult>(new SetCookieCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetCookieCommand(@params), options, JsonContext.SetCookieCommand, JsonContext.SetCookieResult).ConfigureAwait(false);
     }
 }
