@@ -27,36 +27,35 @@ from selenium.webdriver.edge.service import Service
 
 
 @pytest.mark.no_driver_after_test
-def test_uses_edgedriver_logging(clean_driver, clean_options, driver_executable) -> None:
+def test_reuses_edgedriver_log(clean_driver, clean_options, driver_executable) -> None:
     log_file = "msedgedriver.log"
-    service_args = ["--append-log"]
 
     service1 = Service(
         log_output=log_file,
-        service_args=service_args,
         executable_path=driver_executable,
     )
 
     service2 = Service(
         log_output=log_file,
-        service_args=service_args,
+        service_args=["--append-log"],
         executable_path=driver_executable,
     )
 
-    driver1 = None
-    driver2 = None
+    driver = None
     try:
-        driver1 = clean_driver(options=clean_options, service=service1)
+        driver = clean_driver(options=clean_options, service=service1)
         with open(log_file) as fp:
             lines = len(fp.readlines())
-        driver2 = clean_driver(options=clean_options, service=service2)
+    finally:
+        if driver:
+            driver.quit()
+    try:
+        driver = clean_driver(options=clean_options, service=service2)
         with open(log_file) as fp:
             assert len(fp.readlines()) >= 2 * lines
     finally:
-        if driver1:
-            driver1.quit()
-        if driver2:
-            driver2.quit()
+        if driver:
+            driver.quit()
         os.remove(log_file)
 
 
