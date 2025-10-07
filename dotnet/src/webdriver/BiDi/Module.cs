@@ -27,7 +27,7 @@ public abstract class Module
 {
     protected Broker Broker { get; private set; }
 
-    internal BiDiJsonSerializerContext JsonContext { get; set; }
+    internal BiDiJsonSerializerContext JsonContext { get; private set; }
 
     protected virtual void Initialize(JsonSerializerOptions options) { }
 
