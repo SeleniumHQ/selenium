@@ -84,7 +84,7 @@ def test_log_output_as_file(clean_driver, clean_options, driver_executable) -> N
         driver = clean_driver(options=clean_options, service=service)
         time.sleep(1)
         with open(log_name) as fp:
-            assert "Starting Microsoft Edge WebDriver" in fp.readline()
+            assert "Starting msedgedriver" in fp.readline()
     finally:
         driver.quit()
         log_file.close()
@@ -97,7 +97,7 @@ def test_log_output_as_stdout(clean_driver, clean_options, capfd, driver_executa
     driver = clean_driver(options=clean_options, service=service)
 
     out, err = capfd.readouterr()
-    assert "Starting Microsoft Edge WebDriver" in out
+    assert "Starting msedgedriver" in out
     driver.quit()
 
 
