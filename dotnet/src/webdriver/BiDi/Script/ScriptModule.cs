@@ -18,10 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
 using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -107,10 +104,5 @@ public sealed class ScriptModule : Module
     public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext).ConfigureAwait(false);
-    }
-
-    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
-    {
-        return new BiDiJsonSerializerContext(options);
     }
 }

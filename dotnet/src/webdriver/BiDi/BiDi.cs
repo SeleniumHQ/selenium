@@ -24,6 +24,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json;
 using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi;
@@ -32,6 +33,7 @@ public sealed class BiDi : IAsyncDisposable
 {
     private readonly Broker _broker;
     private readonly JsonSerializerOptions _jsonOptions;
+    private readonly BiDiJsonSerializerContext _jsonContext;
 
     private readonly ConcurrentDictionary<Type, Module> _modules = [];
 
@@ -63,6 +65,8 @@ public sealed class BiDi : IAsyncDisposable
             }
         };
 
+        _jsonContext = new BiDiJsonSerializerContext(_jsonOptions);
+
         _broker = new Broker(this, uri, _jsonOptions);
     }
 
@@ -88,7 +92,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public TModule AsModule<TModule>() where TModule : Module, new()
     {
-        return (TModule)_modules.GetOrAdd(typeof(TModule), _ => Module.Create<TModule>(this, _broker, _jsonOptions));
+        return (TModule)_modules.GetOrAdd(typeof(TModule), _ => Module.Create<TModule>(this, _broker, _jsonOptions, _jsonContext));
     }
 
     public Task<Session.StatusResult> StatusAsync()

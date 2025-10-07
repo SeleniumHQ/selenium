@@ -18,9 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
@@ -39,10 +36,5 @@ public sealed class WebExtensionModule : Module
         var @params = new UninstallParameters(extension);
 
         return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options, JsonContext).ConfigureAwait(false);
-    }
-
-    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
-    {
-        return new BiDiJsonSerializerContext(options);
     }
 }

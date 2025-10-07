@@ -19,11 +19,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
@@ -175,10 +172,5 @@ public sealed partial class NetworkModule : Module
     public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("network.authRequired", handler, options, JsonContext).ConfigureAwait(false);
-    }
-
-    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
-    {
-        return new BiDiJsonSerializerContext(options);
     }
 }

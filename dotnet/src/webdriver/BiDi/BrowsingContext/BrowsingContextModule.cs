@@ -18,11 +18,8 @@
 // </copyright>
 
 using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -252,10 +249,5 @@ public sealed class BrowsingContextModule : Module
     public async Task<Subscription> OnUserPromptClosedAsync(Action<UserPromptClosedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options, JsonContext).ConfigureAwait(false);
-    }
-
-    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
-    {
-        return new BiDiJsonSerializerContext(options);
     }
 }

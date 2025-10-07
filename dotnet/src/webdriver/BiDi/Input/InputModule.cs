@@ -18,10 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
@@ -47,10 +44,5 @@ public sealed class InputModule : Module
         var @params = new SetFilesParameters(context, element, files);
 
         return await Broker.ExecuteCommandAsync<SetFilesCommand, EmptyResult>(new SetFilesCommand(@params), options, JsonContext).ConfigureAwait(false);
-    }
-
-    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
-    {
-        return new BiDiJsonSerializerContext(options);
     }
 }

@@ -17,12 +17,8 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
@@ -91,10 +87,5 @@ public sealed class EmulationModule : Module
         var @params = new SetGeolocationOverridePositionErrorParameters(new GeolocationPositionError(), options?.Contexts, options?.UserContexts);
 
         return await Broker.ExecuteCommandAsync<SetGeolocationOverrideCommand, EmptyResult>(new SetGeolocationOverrideCommand(@params), options, JsonContext).ConfigureAwait(false);
-    }
-
-    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
-    {
-        return new BiDiJsonSerializerContext(options);
     }
 }
