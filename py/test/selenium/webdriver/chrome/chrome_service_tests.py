@@ -70,8 +70,8 @@ def test_log_output_as_filename(clean_driver, clean_options, driver_executable) 
         driver = clean_driver(options=clean_options, service=service)
         with open(log_file) as fp:
             out = fp.read()
-            assert "Starting" in out
-            assert "started successfully" in out
+        assert "Starting" in out
+        assert "started successfully" in out
     finally:
         driver.quit()
         os.remove(log_file)
@@ -87,8 +87,8 @@ def test_log_output_as_file(clean_driver, clean_options, driver_executable) -> N
         time.sleep(1)
         with open(log_name) as fp:
             out = fp.read()
-            assert "Starting" in out
-            assert "started successfully" in out
+        assert "Starting" in out
+        assert "started successfully" in out
     finally:
         driver.quit()
         log_file.close()
