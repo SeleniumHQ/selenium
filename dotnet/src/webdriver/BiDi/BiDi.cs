@@ -60,7 +60,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public TModule AsModule<TModule>() where TModule : Module, new()
     {
-        return (TModule)_modules.GetOrAdd(typeof(TModule), _ => Module.Create<TModule>(this, _broker));
+        return (TModule)_modules.GetOrAdd(typeof(TModule), _ => Module.Create<TModule>(_broker));
     }
 
     public Task<Session.StatusResult> StatusAsync()

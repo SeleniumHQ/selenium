@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -26,33 +27,22 @@ namespace OpenQA.Selenium.BiDi.WebExtension;
 
 public sealed class WebExtensionModule : Module
 {
-    private WebExtensionModuleJsonSerializerContext _jsonContext = null!;
-
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
     {
         var @params = new InstallParameters(extensionData);
 
-        return await Broker.ExecuteCommandAsync<InstallCommand, InstallResult>(new InstallCommand(@params), options, _jsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<InstallCommand, InstallResult>(new InstallCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
     {
         var @params = new UninstallParameters(extension);
 
-        return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options, _jsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<UninstallCommand, EmptyResult>(new UninstallCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
-    protected internal override void Initialize(JsonSerializerOptions options)
+    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
     {
-        _jsonContext = new(options);
+        return new BiDiJsonSerializerContext(options);
     }
 }
-
-[JsonSerializable(typeof(Command))]
-[JsonSerializable(typeof(EmptyResult))]
-
-[JsonSerializable(typeof(InstallCommand))]
-[JsonSerializable(typeof(InstallResult))]
-[JsonSerializable(typeof(UninstallCommand))]
-
-internal partial class WebExtensionModuleJsonSerializerContext : JsonSerializerContext;

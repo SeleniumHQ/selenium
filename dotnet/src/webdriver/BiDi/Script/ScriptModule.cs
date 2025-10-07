@@ -18,8 +18,8 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json;
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -28,13 +28,11 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed class ScriptModule : Module
 {
-    private ScriptModuleJsonSerializerContext _jsonContext = null!;
-
     public async Task<EvaluateResult> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
     {
         var @params = new EvaluateParameters(expression, target, awaitPromise, options?.ResultOwnership, options?.SerializationOptions, options?.UserActivation);
 
-        return await Broker.ExecuteCommandAsync<EvaluateCommand, EvaluateResult>(new EvaluateCommand(@params), options, _jsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<EvaluateCommand, EvaluateResult>(new EvaluateCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<TResult?> EvaluateAsync<TResult>(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
@@ -48,7 +46,7 @@ public sealed class ScriptModule : Module
     {
         var @params = new CallFunctionParameters(functionDeclaration, awaitPromise, target, options?.Arguments, options?.ResultOwnership, options?.SerializationOptions, options?.This, options?.UserActivation);
 
-        return await Broker.ExecuteCommandAsync<CallFunctionCommand, EvaluateResult>(new CallFunctionCommand(@params), options, _jsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<CallFunctionCommand, EvaluateResult>(new CallFunctionCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<TResult?> CallFunctionAsync<TResult>(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
@@ -62,14 +60,14 @@ public sealed class ScriptModule : Module
     {
         var @params = new GetRealmsParameters(options?.Context, options?.Type);
 
-        return await Broker.ExecuteCommandAsync<GetRealmsCommand, GetRealmsResult>(new GetRealmsCommand(@params), options, _jsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<GetRealmsCommand, GetRealmsResult>(new GetRealmsCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null)
     {
         var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.Sandbox);
 
-        var result = await Broker.ExecuteCommandAsync<AddPreloadScriptCommand, AddPreloadScriptResult>(new AddPreloadScriptCommand(@params), options, _jsonContext).ConfigureAwait(false);
+        var result = await Broker.ExecuteCommandAsync<AddPreloadScriptCommand, AddPreloadScriptResult>(new AddPreloadScriptCommand(@params), options, JsonContext).ConfigureAwait(false);
 
         return result.Script;
     }
@@ -78,100 +76,41 @@ public sealed class ScriptModule : Module
     {
         var @params = new RemovePreloadScriptParameters(script);
 
-        return await Broker.ExecuteCommandAsync<RemovePreloadScriptCommand, EmptyResult>(new RemovePreloadScriptCommand(@params), options, _jsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<RemovePreloadScriptCommand, EmptyResult>(new RemovePreloadScriptCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.message", handler, options, _jsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.message", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.message", handler, options, _jsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.message", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Func<RealmInfo, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmCreated", handler, options, _jsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmCreated", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Action<RealmInfo> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmCreated", handler, options, _jsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmCreated", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext).ConfigureAwait(false);
     }
 
-    protected internal override void Initialize(JsonSerializerOptions options)
+    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
     {
-        _jsonContext = new(options);
+        return new BiDiJsonSerializerContext(options);
     }
 }
-
-#region https://github.com/dotnet/runtime/issues/72604
-[JsonSerializable(typeof(Script.EvaluateResultSuccess))]
-[JsonSerializable(typeof(Script.EvaluateResultException))]
-
-[JsonSerializable(typeof(Script.NumberRemoteValue))]
-[JsonSerializable(typeof(Script.BooleanRemoteValue))]
-[JsonSerializable(typeof(Script.BigIntRemoteValue))]
-[JsonSerializable(typeof(Script.StringRemoteValue))]
-[JsonSerializable(typeof(Script.NullRemoteValue))]
-[JsonSerializable(typeof(Script.UndefinedRemoteValue))]
-[JsonSerializable(typeof(Script.SymbolRemoteValue))]
-[JsonSerializable(typeof(Script.ArrayRemoteValue))]
-[JsonSerializable(typeof(Script.ObjectRemoteValue))]
-[JsonSerializable(typeof(Script.FunctionRemoteValue))]
-[JsonSerializable(typeof(Script.RegExpRemoteValue))]
-[JsonSerializable(typeof(Script.DateRemoteValue))]
-[JsonSerializable(typeof(Script.MapRemoteValue))]
-[JsonSerializable(typeof(Script.SetRemoteValue))]
-[JsonSerializable(typeof(Script.WeakMapRemoteValue))]
-[JsonSerializable(typeof(Script.WeakSetRemoteValue))]
-[JsonSerializable(typeof(Script.GeneratorRemoteValue))]
-[JsonSerializable(typeof(Script.ErrorRemoteValue))]
-[JsonSerializable(typeof(Script.ProxyRemoteValue))]
-[JsonSerializable(typeof(Script.PromiseRemoteValue))]
-[JsonSerializable(typeof(Script.TypedArrayRemoteValue))]
-[JsonSerializable(typeof(Script.ArrayBufferRemoteValue))]
-[JsonSerializable(typeof(Script.NodeListRemoteValue))]
-[JsonSerializable(typeof(Script.HtmlCollectionRemoteValue))]
-[JsonSerializable(typeof(Script.NodeRemoteValue))]
-[JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
-
-[JsonSerializable(typeof(Script.WindowRealmInfo))]
-[JsonSerializable(typeof(Script.DedicatedWorkerRealmInfo))]
-[JsonSerializable(typeof(Script.SharedWorkerRealmInfo))]
-[JsonSerializable(typeof(Script.ServiceWorkerRealmInfo))]
-[JsonSerializable(typeof(Script.WorkerRealmInfo))]
-[JsonSerializable(typeof(Script.PaintWorkletRealmInfo))]
-[JsonSerializable(typeof(Script.AudioWorkletRealmInfo))]
-[JsonSerializable(typeof(Script.WorkletRealmInfo))]
-#endregion
-
-[JsonSerializable(typeof(Command))]
-[JsonSerializable(typeof(EmptyResult))]
-
-[JsonSerializable(typeof(AddPreloadScriptCommand))]
-[JsonSerializable(typeof(AddPreloadScriptResult))]
-[JsonSerializable(typeof(DisownCommand))]
-[JsonSerializable(typeof(CallFunctionCommand))]
-[JsonSerializable(typeof(EvaluateCommand))]
-[JsonSerializable(typeof(EvaluateResult))]
-[JsonSerializable(typeof(GetRealmsCommand))]
-[JsonSerializable(typeof(GetRealmsResult))]
-[JsonSerializable(typeof(RemovePreloadScriptCommand))]
-
-[JsonSerializable(typeof(MessageEventArgs))]
-[JsonSerializable(typeof(RealmDestroyedEventArgs))]
-[JsonSerializable(typeof(IReadOnlyList<RealmInfo>))]
-internal partial class ScriptModuleJsonSerializerContext : JsonSerializerContext;
