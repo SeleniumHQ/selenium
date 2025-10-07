@@ -68,6 +68,7 @@ def test_log_output_as_filename(clean_driver, clean_options, driver_executable) 
     try:
         assert "--log-path=msedgedriver.log" in service.service_args
         driver = clean_driver(options=clean_options, service=service)
+        time.sleep(1)
         with open(log_file) as fp:
             out = fp.read()
         assert "Starting" in out
@@ -99,7 +100,7 @@ def test_log_output_as_file(clean_driver, clean_options, driver_executable) -> N
 def test_log_output_as_stdout(clean_driver, clean_options, capfd, driver_executable) -> None:
     service = Service(log_output=subprocess.STDOUT, executable_path=driver_executable)
     driver = clean_driver(options=clean_options, service=service)
-
+    time.sleep(1)
     out, err = capfd.readouterr()
     assert "Starting" in out
     assert "started successfully" in out
@@ -108,6 +109,7 @@ def test_log_output_as_stdout(clean_driver, clean_options, capfd, driver_executa
 
 @pytest.mark.no_driver_after_test
 def test_log_output_null_default(driver, capfd) -> None:
+    time.sleep(1)
     out, err = capfd.readouterr()
     assert "Starting" not in out
     assert "started successfully" not in out
