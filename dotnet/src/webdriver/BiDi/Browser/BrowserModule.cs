@@ -24,14 +24,14 @@ namespace OpenQA.Selenium.BiDi.Browser;
 
 public sealed class BrowserModule(Broker broker) : Module(broker)
 {
-    public async Task CloseAsync(CloseOptions? options = null)
+    public async Task<EmptyResult> CloseAsync(CloseOptions? options = null)
     {
-        await Broker.ExecuteCommandAsync(new CloseCommand(), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<CloseCommand, EmptyResult>(new CloseCommand(), options).ConfigureAwait(false);
     }
 
     public async Task<UserContextInfo> CreateUserContextAsync(CreateUserContextOptions? options = null)
     {
-        var @params = new CreateUserContextCommandParameters(options?.AcceptInsecureCerts, options?.Proxy);
+        var @params = new CreateUserContextParameters(options?.AcceptInsecureCerts, options?.Proxy, options?.UnhandledPromptBehavior);
 
         return await Broker.ExecuteCommandAsync<CreateUserContextCommand, UserContextInfo>(new CreateUserContextCommand(@params), options).ConfigureAwait(false);
     }
@@ -41,15 +41,36 @@ public sealed class BrowserModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<GetUserContextsCommand, GetUserContextsResult>(new GetUserContextsCommand(), options).ConfigureAwait(false);
     }
 
-    public async Task RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null)
+    public async Task<EmptyResult> RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null)
     {
-        var @params = new RemoveUserContextCommandParameters(userContext);
+        var @params = new RemoveUserContextParameters(userContext);
 
-        await Broker.ExecuteCommandAsync(new RemoveUserContextCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<RemoveUserContextCommand, EmptyResult>(new RemoveUserContextCommand(@params), options).ConfigureAwait(false);
     }
 
     public async Task<GetClientWindowsResult> GetClientWindowsAsync(GetClientWindowsOptions? options = null)
     {
         return await Broker.ExecuteCommandAsync<GetClientWindowsCommand, GetClientWindowsResult>(new(), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null)
+    {
+        var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorAllowed(destinationFolder), options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetDownloadBehaviorCommand, EmptyResult>(new SetDownloadBehaviorCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null)
+    {
+        var @params = new SetDownloadBehaviorParameters(null, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetDownloadBehaviorCommand, EmptyResult>(new SetDownloadBehaviorCommand(@params), options).ConfigureAwait(false);
+    }
+
+    public async Task<EmptyResult> SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null)
+    {
+        var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorDenied(), options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync<SetDownloadBehaviorCommand, EmptyResult>(new SetDownloadBehaviorCommand(@params), options).ConfigureAwait(false);
     }
 }

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.ie;
 
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
@@ -108,20 +109,13 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    * @param options The options required from InternetExplorerDriver.
    */
   public InternetExplorerDriver(
-      InternetExplorerDriverService service,
-      InternetExplorerOptions options,
-      ClientConfig clientConfig) {
-    if (options == null) {
-      options = new InternetExplorerOptions();
-    }
-    if (service == null) {
-      service = InternetExplorerDriverService.createDefaultService();
-    }
+      @Nullable InternetExplorerDriverService service,
+      @Nullable InternetExplorerOptions options,
+      @Nullable ClientConfig clientConfig) {
+    options = options == null ? new InternetExplorerOptions() : options;
+    service = service == null ? InternetExplorerDriverService.createDefaultService() : service;
+    clientConfig = clientConfig == null ? ClientConfig.defaultConfig() : clientConfig;
     service.setExecutable(new DriverFinder(service, options).getDriverPath());
-    if (clientConfig == null) {
-      clientConfig = ClientConfig.defaultConfig();
-    }
-
     run(service, options, clientConfig);
   }
 

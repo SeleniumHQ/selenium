@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,10 +26,10 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-internal sealed class GetCookiesCommand(GetCookiesCommandParameters @params)
-    : Command<GetCookiesCommandParameters, GetCookiesResult>(@params, "storage.getCookies");
+internal sealed class GetCookiesCommand(GetCookiesParameters @params)
+    : Command<GetCookiesParameters, GetCookiesResult>(@params, "storage.getCookies");
 
-internal sealed record GetCookiesCommandParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : CommandParameters;
+internal sealed record GetCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 
 public sealed class GetCookiesOptions : CommandOptions
 {
@@ -37,25 +38,26 @@ public sealed class GetCookiesOptions : CommandOptions
     public PartitionDescriptor? Partition { get; set; }
 }
 
+[JsonConverter(typeof(GetCookiesResultConverter))]
 public sealed record GetCookiesResult : EmptyResult, IReadOnlyList<Network.Cookie>
 {
-    private readonly IReadOnlyList<Network.Cookie> _cookies;
-
     internal GetCookiesResult(IReadOnlyList<Network.Cookie> cookies, PartitionKey partitionKey)
     {
-        _cookies = cookies;
+        Cookies = cookies;
         PartitionKey = partitionKey;
     }
 
+    public IReadOnlyList<Network.Cookie> Cookies { get; }
+
     public PartitionKey PartitionKey { get; init; }
 
-    public Network.Cookie this[int index] => _cookies[index];
+    public Network.Cookie this[int index] => Cookies[index];
 
-    public int Count => _cookies.Count;
+    public int Count => Cookies.Count;
 
-    public IEnumerator<Network.Cookie> GetEnumerator() => _cookies.GetEnumerator();
+    public IEnumerator<Network.Cookie> GetEnumerator() => Cookies.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator() => (_cookies as IEnumerable).GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => (Cookies as IEnumerable).GetEnumerator();
 }
 
 public sealed record CookieFilter

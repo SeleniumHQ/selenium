@@ -15,8 +15,7 @@
   <a href="#developing">Developing</a> •
   <a href="#testing">Testing</a> •
   <a href="#documenting">Documenting</a> •
-  <a href="#releasing">Releasing</a> •
-  <a href="#license">License</a>
+  <a href="#releasing">Releasing</a>
 </p>
 
 <br>
@@ -267,7 +266,7 @@ you can configure it use Bazel artifacts:
 1. Open `rb/` as a main project directory.
 2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:update` from the `selenium` (parent) directory.
 3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
-4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables secified in [Ruby Testing](#ruby-2) section below.
+4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables specified in [Ruby Testing](#ruby-2) section below.
 
 ### Rust
 
@@ -529,8 +528,6 @@ To update API documentation for a specific language: `./go <language>:docs`
 
 To update all documentation: `./go all:docs`
 
-Note that JavaScript generation is [currently broken](https://github.com/SeleniumHQ/selenium/issues/10185).
-
 
 ## Releasing
 
@@ -555,7 +552,3 @@ If you have access to the Selenium EngFlow repository, you can have the assets b
 ```shell
 ./go all:release['--config', 'release']
 ```
-
-## License
-
-Selenium's source code is made available under the [Apache 2.0 license](https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE).

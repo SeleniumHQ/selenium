@@ -30,7 +30,7 @@ public class ConsoleApiCalledEventArgs : EventArgs
     /// <summary>
     /// Initializes a new instance of the <see cref="ConsoleApiCalledEventArgs"/> type.
     /// </summary>
-    /// <param name="timestamp">The time stanp when the browser's console API is called.</param>
+    /// <param name="timestamp">The time stamp when the browser's console API is called.</param>
     /// <param name="type">The type of message when the browser's console API is called.</param>
     /// <param name="arguments">The arguments of the call to the browser's console API.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="arguments"/> is <see langword="null"/>.</exception>
@@ -42,7 +42,7 @@ public class ConsoleApiCalledEventArgs : EventArgs
     }
 
     /// <summary>
-    /// Gets the time stanp when the browser's console API is called.
+    /// Gets the time stamp when the browser's console API is called.
     /// </summary>
     public DateTime Timestamp { get; }
 

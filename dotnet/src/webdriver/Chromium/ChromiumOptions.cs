@@ -383,7 +383,7 @@ public abstract class ChromiumOptions : DriverOptions
     /// </summary>
     /// <param name="deviceName">The name of the device to emulate. The device name must be a
     /// valid device name from the Chrome DevTools Emulation panel.</param>
-    /// <remarks>Specifying an invalid device name will not throw an exeption, but
+    /// <remarks>Specifying an invalid device name will not throw an exception, but
     /// will generate an error in Chrome when the driver starts. To unset mobile
     /// emulation, call this method with <see langword="null"/> as the argument.</remarks>
     public void EnableMobileEmulation(string? deviceName)
@@ -399,7 +399,7 @@ public abstract class ChromiumOptions : DriverOptions
     /// object containing the settings of the device to emulate.</param>
     /// <exception cref="ArgumentException">Thrown if the device settings option does
     /// not have a user agent string set.</exception>
-    /// <remarks>Specifying an invalid device name will not throw an exeption, but
+    /// <remarks>Specifying an invalid device name will not throw an exception, but
     /// will generate an error in Chrome when the driver starts. To unset mobile
     /// emulation, call this method with <see langword="null"/> as the argument.</remarks>
     public void EnableMobileEmulation(ChromiumMobileEmulationDeviceSettings? deviceSettings)

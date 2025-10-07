@@ -17,6 +17,7 @@
 
 import os
 import subprocess
+import sys
 import time
 from unittest.mock import patch
 
@@ -83,7 +84,7 @@ def test_log_output_as_file(clean_driver, clean_options, driver_executable) -> N
         driver = clean_driver(options=clean_options, service=service)
         time.sleep(1)
         with open(log_name) as fp:
-            assert "Starting Microsoft Edge WebDriver" in fp.readline()
+            assert "Starting msedgedriver" in fp.readline()
     finally:
         driver.quit()
         log_file.close()
@@ -96,7 +97,7 @@ def test_log_output_as_stdout(clean_driver, clean_options, capfd, driver_executa
     driver = clean_driver(options=clean_options, service=service)
 
     out, err = capfd.readouterr()
-    assert "Starting Microsoft Edge WebDriver" in out
+    assert "Starting msedgedriver" in out
     driver.quit()
 
 
@@ -107,6 +108,9 @@ def test_log_output_null_default(driver, capfd) -> None:
     driver.quit()
 
 
+@pytest.mark.xfail(
+    sys.platform == "win32", reason="edgedriver doesn't return an error on windows if you use an invalid profile path"
+)
 @pytest.mark.no_driver_after_test
 def test_driver_is_stopped_if_browser_cant_start(clean_driver, clean_options, clean_service, driver_executable) -> None:
     clean_options.add_argument("--user-data-dir=/no/such/location")

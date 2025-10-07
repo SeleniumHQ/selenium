@@ -28,5 +28,6 @@ java_library(
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
+        artifact("com.github.ben-manes.caffeine:caffeine"),
     ],
 )

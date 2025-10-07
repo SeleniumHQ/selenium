@@ -18,30 +18,33 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class GetUserContextsCommand()
-    : Command<CommandParameters, GetUserContextsResult>(CommandParameters.Empty, "browser.getUserContexts");
+    : Command<Parameters, GetUserContextsResult>(Parameters.Empty, "browser.getUserContexts");
 
 public class GetUserContextsOptions : CommandOptions;
 
+[JsonConverter(typeof(GetUserContextsResultConverter))]
 public sealed record GetUserContextsResult : EmptyResult, IReadOnlyList<UserContextInfo>
 {
-    private readonly IReadOnlyList<UserContextInfo> _userContexts;
-
     internal GetUserContextsResult(IReadOnlyList<UserContextInfo> userContexts)
     {
-        _userContexts = userContexts;
+        UserContexts = userContexts;
     }
 
-    public UserContextInfo this[int index] => _userContexts[index];
+    public IReadOnlyList<UserContextInfo> UserContexts { get; }
 
-    public int Count => _userContexts.Count;
+    public UserContextInfo this[int index] => UserContexts[index];
 
-    public IEnumerator<UserContextInfo> GetEnumerator() => _userContexts.GetEnumerator();
+    public int Count => UserContexts.Count;
 
-    IEnumerator IEnumerable.GetEnumerator() => (_userContexts as IEnumerable).GetEnumerator();
+    public IEnumerator<UserContextInfo> GetEnumerator() => UserContexts.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => (UserContexts as IEnumerable).GetEnumerator();
 }

@@ -15,5 +15,5 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .abstract_event_listener import AbstractEventListener  # noqa
-from .event_firing_webdriver import EventFiringWebDriver  # noqa
+from selenium.webdriver.support.abstract_event_listener import AbstractEventListener  # noqa
+from selenium.webdriver.support.event_firing_webdriver import EventFiringWebDriver  # noqa

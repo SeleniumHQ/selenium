@@ -211,7 +211,7 @@ limitations under the License.
   function testTableWithCollapsedRows() {
     expectedFailures.expectFailureFor(
         (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(8)),
-        'IE does not support visibilty:collapsed until IE8');
+        'IE does not support visibility:collapsed until IE8');
     expectedFailures.run(function() {
       assertTextIs(
           goog.dom.getElement('collapsedTable'),

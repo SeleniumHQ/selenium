@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import base64
+import os
 from unittest.mock import patch
 from urllib import parse
 
@@ -63,7 +65,7 @@ def test_get_remote_connection_headers_defaults():
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
     assert headers.get("User-Agent").startswith(f"selenium/{__version__} (python ")
-    assert headers.get("User-Agent").split(" ")[-1] in {"windows)", "mac)", "linux)", "mac", "windows", "linux"}
+    assert headers.get("User-Agent").split(" ")[-1].rstrip(")") in ("win32", "windows", "mac", "linux")
 
 
 def test_get_remote_connection_headers_adds_auth_header_if_pass(recwarn):
@@ -222,7 +224,7 @@ def test_get_connection_manager_for_certs_and_timeout():
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw["timeout"] == 10
     assert conn.connection_pool_kw["cert_reqs"] == "CERT_REQUIRED"
-    assert "certifi/cacert.pem" in conn.connection_pool_kw["ca_certs"]
+    assert f"certifi{os.path.sep}cacert.pem" in conn.connection_pool_kw["ca_certs"]
 
 
 def test_default_socket_timeout_is_correct():
@@ -277,7 +279,7 @@ def test_get_connection_manager_with_auth_https_proxy(mock_proxy_auth_settings):
         "*",
         ".localhost",
         "localhost:80",
-        "locahost",
+        "localhost",
         "LOCALHOST",
         "LOCALHOST:80",
         "http://localhost",
@@ -543,3 +545,58 @@ def test_connection_manager_with_custom_args_via_client_config():
     assert isinstance(conn, PoolManager)
     assert conn.connection_pool_kw["retries"] == retries
     assert conn.connection_pool_kw["timeout"] == timeout
+
+
+def test_proxy_auth_with_special_characters_url_encoded():
+    proxy_url = "http://user:passw%23rd@proxy.example.com:8080"
+    client_config = ClientConfig(
+        remote_server_addr="http://localhost:4444",
+        keep_alive=False,
+        proxy=Proxy({"proxyType": ProxyType.MANUAL, "httpProxy": proxy_url}),
+    )
+    remote_connection = RemoteConnection(client_config=client_config)
+
+    proxy_without_auth, basic_auth = remote_connection._separate_http_proxy_auth()
+
+    assert proxy_without_auth == "http://proxy.example.com:8080"
+    assert basic_auth == "user:passw%23rd"  # Still URL-encoded
+
+    conn = remote_connection._get_connection_manager()
+    assert isinstance(conn, ProxyManager)
+
+    expected_auth = base64.b64encode("user:passw#rd".encode()).decode()  # Decoded password
+    expected_headers = make_headers(proxy_basic_auth="user:passw#rd")  # Unquoted password
+
+    assert conn.proxy_headers == expected_headers
+    assert conn.proxy_headers["proxy-authorization"] == f"Basic {expected_auth}"
+
+
+def test_proxy_auth_with_multiple_special_characters():
+    test_cases = [
+        ("passw%23rd", "passw#rd"),  # # character
+        ("passw%40rd", "passw@rd"),  # @ character
+        ("passw%26rd", "passw&rd"),  # & character
+        ("passw%3Drd", "passw=rd"),  # = character
+        ("passw%2Brd", "passw+rd"),  # + character
+        ("passw%20rd", "passw rd"),  # space character
+        ("passw%21%40%23%24", "passw!@#$"),  # Multiple special chars
+    ]
+
+    for encoded_password, decoded_password in test_cases:
+        proxy_url = f"http://testuser:{encoded_password}@proxy.example.com:8080"
+        client_config = ClientConfig(
+            remote_server_addr="http://localhost:4444",
+            keep_alive=False,
+            proxy=Proxy({"proxyType": ProxyType.MANUAL, "httpProxy": proxy_url}),
+        )
+        remote_connection = RemoteConnection(client_config=client_config)
+
+        proxy_without_auth, basic_auth = remote_connection._separate_http_proxy_auth()
+        assert basic_auth == f"testuser:{encoded_password}"
+
+        conn = remote_connection._get_connection_manager()
+        expected_auth = base64.b64encode(f"testuser:{decoded_password}".encode()).decode()
+        expected_headers = make_headers(proxy_basic_auth=f"testuser:{decoded_password}")
+
+        assert conn.proxy_headers == expected_headers
+        assert conn.proxy_headers["proxy-authorization"] == f"Basic {expected_auth}"
