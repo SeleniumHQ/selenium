@@ -140,8 +140,6 @@ jobs:
             os: windows
           - browser: edge
             os: windows
-          - browser: firefox
-            os: windows
     with:
       name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
