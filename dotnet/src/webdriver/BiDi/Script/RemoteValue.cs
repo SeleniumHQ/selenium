@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -54,6 +55,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 //[JsonDerivedType(typeof(HtmlCollectionRemoteValue), "htmlcollection")]
 //[JsonDerivedType(typeof(NodeRemoteValue), "node")]
 //[JsonDerivedType(typeof(WindowProxyRemoteValue), "window")]
+[JsonConverter(typeof(RemoteValueConverter))]
 public abstract record RemoteValue
 {
     public static implicit operator double(RemoteValue remoteValue) => (double)((NumberRemoteValue)remoteValue).Value;
@@ -100,7 +102,7 @@ public abstract record RemoteValue
 
 public abstract record PrimitiveProtocolRemoteValue : RemoteValue;
 
-public sealed record NumberRemoteValue(double Value) : PrimitiveProtocolRemoteValue;
+public sealed record NumberRemoteValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolRemoteValue;
 
 public sealed record BooleanRemoteValue(bool Value) : PrimitiveProtocolRemoteValue;
 
