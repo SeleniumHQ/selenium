@@ -18,7 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -27,29 +26,42 @@ namespace OpenQA.Selenium.BiDi.Storage;
 
 public sealed class StorageModule : Module
 {
+    private StorageModuleJsonSerializerContext _jsonContext = null!;
+
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<GetCookiesCommand, GetCookiesResult>(new GetCookiesCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<GetCookiesCommand, GetCookiesResult>(new GetCookiesCommand(@params), options, _jsonContext).ConfigureAwait(false);
     }
 
     public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null)
     {
         var @params = new DeleteCookiesParameters(options?.Filter, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<DeleteCookiesCommand, DeleteCookiesResult>(new DeleteCookiesCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<DeleteCookiesCommand, DeleteCookiesResult>(new DeleteCookiesCommand(@params), options, _jsonContext).ConfigureAwait(false);
     }
 
     public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null)
     {
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<SetCookieCommand, SetCookieResult>(new SetCookieCommand(@params), options, JsonContext).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<SetCookieCommand, SetCookieResult>(new SetCookieCommand(@params), options, _jsonContext).ConfigureAwait(false);
     }
 
-    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
+    protected internal override void Initialize(JsonSerializerOptions options)
     {
-        return new BiDiJsonSerializerContext(options);
+        _jsonContext = new(options);
     }
 }
+
+[JsonSerializable(typeof(Command))]
+[JsonSerializable(typeof(EmptyResult))]
+
+[JsonSerializable(typeof(GetCookiesCommand))]
+[JsonSerializable(typeof(GetCookiesResult))]
+[JsonSerializable(typeof(SetCookieCommand))]
+[JsonSerializable(typeof(SetCookieResult))]
+[JsonSerializable(typeof(DeleteCookiesCommand))]
+[JsonSerializable(typeof(DeleteCookiesResult))]
+internal partial class StorageModuleJsonSerializerContext : JsonSerializerContext;

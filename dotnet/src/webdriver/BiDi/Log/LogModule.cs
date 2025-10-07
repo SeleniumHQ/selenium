@@ -21,25 +21,38 @@ using System.Threading.Tasks;
 using System;
 using OpenQA.Selenium.BiDi.Communication;
 using System.Text.Json;
-using OpenQA.Selenium.BiDi.Communication.Json;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
 public sealed class LogModule : Module
 {
+    private LogModuleJsonSerializerContext _jsonContext = null!;
+
     public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("log.entryAdded", handler, options, _jsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnEntryAddedAsync(Action<LogEntry> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("log.entryAdded", handler, options, _jsonContext).ConfigureAwait(false);
     }
 
-    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
+    protected internal override void Initialize(JsonSerializerOptions options)
     {
-        return new BiDiJsonSerializerContext(options);
+        _jsonContext = new(options);
     }
 }
+
+#region https://github.com/dotnet/runtime/issues/72604
+[JsonSerializable(typeof(GenericLogEntry))]
+[JsonSerializable(typeof(ConsoleLogEntry))]
+[JsonSerializable(typeof(JavascriptLogEntry))]
+#endregion
+
+[JsonSerializable(typeof(Command))]
+[JsonSerializable(typeof(EmptyResult))]
+
+[JsonSerializable(typeof(LogEntry))]
+internal partial class LogModuleJsonSerializerContext : JsonSerializerContext;
