@@ -72,40 +72,15 @@ public sealed class Broker : IAsyncDisposable
             Converters =
             {
                 new BrowsingContextConverter(_bidi),
-                new BrowserUserContextConverter(bidi),
-                new BrowserClientWindowConverter(),
-                new NavigationConverter(),
+                new BrowserUserContextConverter(_bidi),
                 new CollectorConverter(_bidi),
                 new InterceptConverter(_bidi),
-                new RequestConverter(),
-                new ChannelConverter(),
                 new HandleConverter(_bidi),
                 new InternalIdConverter(_bidi),
                 new PreloadScriptConverter(_bidi),
                 new RealmConverter(_bidi),
-                new RealmTypeConverter(),
                 new DateTimeOffsetConverter(),
-                new PrintPageRangeConverter(),
-                new InputOriginConverter(),
                 new WebExtensionConverter(_bidi),
-                new SubscriptionConverter(),
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
-
-                // https://github.com/dotnet/runtime/issues/72604
-                new Json.Converters.Polymorphic.EvaluateResultConverter(),
-                new Json.Converters.Polymorphic.RemoteValueConverter(),
-                new Json.Converters.Polymorphic.RealmInfoConverter(),
-                new Json.Converters.Polymorphic.LogEntryConverter(),
-                //
-
-                // Enumerable
-                new Json.Converters.Enumerable.GetCookiesResultConverter(),
-                new Json.Converters.Enumerable.LocateNodesResultConverter(),
-                new Json.Converters.Enumerable.InputSourceActionsConverter(),
-                new Json.Converters.Enumerable.GetUserContextsResultConverter(),
-                new Json.Converters.Enumerable.GetClientWindowsResultConverter(),
-                new Json.Converters.Enumerable.GetRealmsResultConverter(),
-                new Json.Converters.Enumerable.GetTreeResultConverter(),
             }
         };
 

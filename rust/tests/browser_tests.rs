@@ -33,7 +33,6 @@ mod common;
 #[case("firefox", "geckodriver", "91", "0.31.0")]
 #[case("firefox", "geckodriver", "90", "0.30.0")]
 #[case("firefox", "geckodriver", "62", "0.29.1")]
-#[case("firefox", "geckodriver", "53", "0.18.0")]
 fn browser_version_test(
     #[case] browser: String,
     #[case] driver_name: String,

@@ -17,8 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
@@ -38,11 +40,13 @@ public class AddDataCollectorOptions : CommandOptions
 
 public sealed record AddDataCollectorResult(Collector Collector) : EmptyResult;
 
+[JsonConverter(typeof(CamelCaseEnumConverter<DataType>))]
 public enum DataType
 {
     Response
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<CollectorType>))]
 public enum CollectorType
 {
     Blob

@@ -17,7 +17,9 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -31,6 +33,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 //[JsonDerivedType(typeof(PaintWorkletRealmInfo), "paint-worklet")]
 //[JsonDerivedType(typeof(AudioWorkletRealmInfo), "audio-worklet")]
 //[JsonDerivedType(typeof(WorkletRealmInfo), "worklet")]
+[JsonConverter(typeof(RealmInfoConverter))]
 public abstract record RealmInfo(BiDi BiDi, Realm Realm, string Origin) : EventArgs(BiDi);
 
 public sealed record WindowRealmInfo(BiDi BiDi, Realm Realm, string Origin, BrowsingContext.BrowsingContext Context) : RealmInfo(BiDi, Realm, Origin)
