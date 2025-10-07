@@ -19,15 +19,19 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi;
 
 public sealed class BiDi : IAsyncDisposable
 {
     private readonly Broker _broker;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     private readonly ConcurrentDictionary<Type, Module> _modules = [];
 
@@ -35,7 +39,31 @@ public sealed class BiDi : IAsyncDisposable
     {
         var uri = new Uri(url);
 
-        _broker = new Broker(this, uri);
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+
+            // BiDi returns special numbers such as "NaN" as strings
+            // Additionally, -0 is returned as a string "-0"
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
+            Converters =
+            {
+                new BrowsingContextConverter(this),
+                new BrowserUserContextConverter(this),
+                new CollectorConverter(this),
+                new InterceptConverter(this),
+                new HandleConverter(this),
+                new InternalIdConverter(this),
+                new PreloadScriptConverter(this),
+                new RealmConverter(this),
+                new DateTimeOffsetConverter(),
+                new WebExtensionConverter(this),
+            }
+        };
+
+        _broker = new Broker(this, uri, _jsonOptions);
     }
 
     internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
@@ -60,7 +88,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public TModule AsModule<TModule>() where TModule : Module, new()
     {
-        return (TModule)_modules.GetOrAdd(typeof(TModule), _ => Module.Create<TModule>(_broker));
+        return (TModule)_modules.GetOrAdd(typeof(TModule), _ => Module.Create<TModule>(this, _broker, _jsonOptions));
     }
 
     public Task<Session.StatusResult> StatusAsync()

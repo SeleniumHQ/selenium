@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using OpenQA.Selenium.BiDi.Communication.Transport;
 using OpenQA.Selenium.Internal.Logging;
 using System;
@@ -53,37 +51,10 @@ public sealed class Broker : IAsyncDisposable
     private Task? _eventEmitterTask;
     private CancellationTokenSource? _receiveMessagesCancellationTokenSource;
 
-    internal Broker(BiDi bidi, Uri url)
+    internal Broker(BiDi bidi, Uri url, JsonSerializerOptions jsonOptions)
     {
         _bidi = bidi;
         _transport = new WebSocketTransport(url);
-    }
-
-    public JsonSerializerOptions CreateOptions()
-    {
-        return new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-
-            // BiDi returns special numbers such as "NaN" as strings
-            // Additionally, -0 is returned as a string "-0"
-            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
-            Converters =
-            {
-                new BrowsingContextConverter(_bidi),
-                new BrowserUserContextConverter(_bidi),
-                new CollectorConverter(_bidi),
-                new InterceptConverter(_bidi),
-                new HandleConverter(_bidi),
-                new InternalIdConverter(_bidi),
-                new PreloadScriptConverter(_bidi),
-                new RealmConverter(_bidi),
-                new DateTimeOffsetConverter(),
-                new WebExtensionConverter(_bidi),
-            }
-        };
     }
 
     public async Task ConnectAsync(CancellationToken cancellationToken)
