@@ -19,20 +19,23 @@
 
 using OpenQA.Selenium.BiDi.Communication;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
 {
+    protected JsonSerializerContext JsonContext { get; set; }
+
     protected Broker Broker { get; private set; }
 
-    protected internal abstract void Initialize(JsonSerializerOptions options);
+    protected internal abstract JsonSerializerContext ConfigureJson(JsonSerializerOptions options);
 
     public static TModule Create<TModule>(Broker broker) where TModule : Module, new()
     {
         TModule module = new();
         module.Broker = broker;
-        module.Initialize(broker.CreateOptions());
+        module.JsonContext = module.ConfigureJson(broker.CreateOptions());
         return module;
     }
 }

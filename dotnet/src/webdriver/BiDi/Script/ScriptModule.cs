@@ -21,19 +21,18 @@ using OpenQA.Selenium.BiDi.Communication;
 using OpenQA.Selenium.BiDi.Communication.Json;
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed class ScriptModule : Module
 {
-    private BiDiJsonSerializerContext _context = null!;
-
     public async Task<EvaluateResult> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
     {
         var @params = new EvaluateParameters(expression, target, awaitPromise, options?.ResultOwnership, options?.SerializationOptions, options?.UserActivation);
 
-        return await Broker.ExecuteCommandAsync<EvaluateCommand, EvaluateResult>(new EvaluateCommand(@params), options, _context).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<EvaluateCommand, EvaluateResult>(new EvaluateCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<TResult?> EvaluateAsync<TResult>(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
@@ -47,7 +46,7 @@ public sealed class ScriptModule : Module
     {
         var @params = new CallFunctionParameters(functionDeclaration, awaitPromise, target, options?.Arguments, options?.ResultOwnership, options?.SerializationOptions, options?.This, options?.UserActivation);
 
-        return await Broker.ExecuteCommandAsync<CallFunctionCommand, EvaluateResult>(new CallFunctionCommand(@params), options, _context).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<CallFunctionCommand, EvaluateResult>(new CallFunctionCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<TResult?> CallFunctionAsync<TResult>(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
@@ -61,14 +60,14 @@ public sealed class ScriptModule : Module
     {
         var @params = new GetRealmsParameters(options?.Context, options?.Type);
 
-        return await Broker.ExecuteCommandAsync<GetRealmsCommand, GetRealmsResult>(new GetRealmsCommand(@params), options, _context).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<GetRealmsCommand, GetRealmsResult>(new GetRealmsCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null)
     {
         var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.Sandbox);
 
-        var result = await Broker.ExecuteCommandAsync<AddPreloadScriptCommand, AddPreloadScriptResult>(new AddPreloadScriptCommand(@params), options, _context).ConfigureAwait(false);
+        var result = await Broker.ExecuteCommandAsync<AddPreloadScriptCommand, AddPreloadScriptResult>(new AddPreloadScriptCommand(@params), options, JsonContext).ConfigureAwait(false);
 
         return result.Script;
     }
@@ -77,41 +76,41 @@ public sealed class ScriptModule : Module
     {
         var @params = new RemovePreloadScriptParameters(script);
 
-        return await Broker.ExecuteCommandAsync<RemovePreloadScriptCommand, EmptyResult>(new RemovePreloadScriptCommand(@params), options, _context).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<RemovePreloadScriptCommand, EmptyResult>(new RemovePreloadScriptCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.message", handler, options, _context).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.message", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.message", handler, options, _context).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.message", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Func<RealmInfo, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmCreated", handler, options, _context).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmCreated", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Action<RealmInfo> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmCreated", handler, options, _context).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmCreated", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _context).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _context).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext).ConfigureAwait(false);
     }
 
-    protected internal override void Initialize(JsonSerializerOptions options)
+    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
     {
-        _context = new BiDiJsonSerializerContext(options);
+        return new BiDiJsonSerializerContext(options);
     }
 }

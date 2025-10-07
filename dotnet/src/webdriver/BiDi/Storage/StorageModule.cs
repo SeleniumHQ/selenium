@@ -20,37 +20,36 @@
 using OpenQA.Selenium.BiDi.Communication;
 using OpenQA.Selenium.BiDi.Communication.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
 public sealed class StorageModule : Module
 {
-    private BiDiJsonSerializerContext _context = null!;
-
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<GetCookiesCommand, GetCookiesResult>(new GetCookiesCommand(@params), options, _context).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<GetCookiesCommand, GetCookiesResult>(new GetCookiesCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<DeleteCookiesResult> DeleteCookiesAsync(DeleteCookiesOptions? options = null)
     {
         var @params = new DeleteCookiesParameters(options?.Filter, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<DeleteCookiesCommand, DeleteCookiesResult>(new DeleteCookiesCommand(@params), options, _context).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<DeleteCookiesCommand, DeleteCookiesResult>(new DeleteCookiesCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<SetCookieResult> SetCookieAsync(PartialCookie cookie, SetCookieOptions? options = null)
     {
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
-        return await Broker.ExecuteCommandAsync<SetCookieCommand, SetCookieResult>(new SetCookieCommand(@params), options, _context).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync<SetCookieCommand, SetCookieResult>(new SetCookieCommand(@params), options, JsonContext).ConfigureAwait(false);
     }
 
-    protected internal override void Initialize(JsonSerializerOptions options)
+    protected internal override JsonSerializerContext ConfigureJson(JsonSerializerOptions options)
     {
-        _context = new BiDiJsonSerializerContext(options);
+        return new BiDiJsonSerializerContext(options);
     }
 }
