@@ -109,8 +109,8 @@ def test_log_output_as_stdout(clean_driver, clean_options, capfd, driver_executa
 @pytest.mark.no_driver_after_test
 def test_log_output_null_default(driver, capfd) -> None:
     out, err = capfd.readouterr()
-    assert "Starting" in out
-    assert "started successfully" in out
+    assert "Starting" not in out
+    assert "started successfully" not in out
     driver.quit()
 
 
