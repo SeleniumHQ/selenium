@@ -17,8 +17,10 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
@@ -44,6 +46,7 @@ public sealed class SetCacheBehaviorOptions : CommandOptions
 
 public sealed record BrowsingContextSetCacheBehaviorOptions;
 
+[JsonConverter(typeof(CamelCaseEnumConverter<CacheBehavior>))]
 public enum CacheBehavior
 {
     Default,

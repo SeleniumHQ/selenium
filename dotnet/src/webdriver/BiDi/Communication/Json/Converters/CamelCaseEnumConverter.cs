@@ -1,4 +1,4 @@
-// <copyright file="Module.cs" company="Selenium Committers">
+// <copyright file="CamelCaseEnumConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,31 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
+using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-public abstract class Module
-{
-    protected Broker Broker { get; private set; }
-
-    internal BiDiJsonSerializerContext JsonContext { get; private set; }
-
-    protected virtual void Initialize(JsonSerializerOptions options) { }
-
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonOptions, BiDiJsonSerializerContext context)
-        where TModule : Module, new()
-    {
-        TModule module = new()
-        {
-            Broker = broker,
-            JsonContext = context
-        };
-
-        module.Initialize(jsonOptions);
-
-        return module;
-    }
-}
+public class CamelCaseEnumConverter<TEnum>() :
+    JsonStringEnumConverter<TEnum>(JsonNamingPolicy.CamelCase) where TEnum : struct, Enum;

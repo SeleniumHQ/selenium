@@ -18,7 +18,6 @@
 import os
 import subprocess
 import sys
-import time
 from unittest.mock import patch
 
 import pytest
@@ -28,36 +27,35 @@ from selenium.webdriver.chrome.service import Service
 
 
 @pytest.mark.no_driver_after_test
-def test_uses_chromedriver_logging(clean_driver, clean_options, driver_executable) -> None:
+def test_reuses_chromedriver_log(clean_driver, clean_options, driver_executable) -> None:
     log_file = "chromedriver.log"
-    service_args = ["--append-log"]
 
     service1 = Service(
         log_output=log_file,
-        service_args=service_args,
         executable_path=driver_executable,
     )
 
     service2 = Service(
         log_output=log_file,
-        service_args=service_args,
+        service_args=["--append-log"],
         executable_path=driver_executable,
     )
 
-    driver1 = None
-    driver2 = None
+    driver = None
     try:
-        driver1 = clean_driver(options=clean_options, service=service1)
+        driver = clean_driver(options=clean_options, service=service1)
         with open(log_file) as fp:
             lines = len(fp.readlines())
-        driver2 = clean_driver(options=clean_options, service=service2)
+    finally:
+        if driver:
+            driver.quit()
+    try:
+        driver = clean_driver(options=clean_options, service=service2)
         with open(log_file) as fp:
             assert len(fp.readlines()) >= 2 * lines
     finally:
-        if driver1:
-            driver1.quit()
-        if driver2:
-            driver2.quit()
+        if driver:
+            driver.quit()
         os.remove(log_file)
 
 
@@ -69,7 +67,9 @@ def test_log_output_as_filename(clean_driver, clean_options, driver_executable) 
         assert "--log-path=chromedriver.log" in service.service_args
         driver = clean_driver(options=clean_options, service=service)
         with open(log_file) as fp:
-            assert "Starting ChromeDriver" in fp.readline()
+            out = fp.read()
+        assert "Starting" in out
+        assert "started successfully" in out
     finally:
         driver.quit()
         os.remove(log_file)
@@ -82,9 +82,10 @@ def test_log_output_as_file(clean_driver, clean_options, driver_executable) -> N
     service = Service(log_output=log_file, executable_path=driver_executable)
     try:
         driver = clean_driver(options=clean_options, service=service)
-        time.sleep(1)
         with open(log_name) as fp:
-            assert "Starting ChromeDriver" in fp.readline()
+            out = fp.read()
+        assert "Starting" in out
+        assert "started successfully" in out
     finally:
         driver.quit()
         log_file.close()
@@ -95,16 +96,17 @@ def test_log_output_as_file(clean_driver, clean_options, driver_executable) -> N
 def test_log_output_as_stdout(clean_driver, clean_options, capfd, driver_executable) -> None:
     service = Service(log_output=subprocess.STDOUT, executable_path=driver_executable)
     driver = clean_driver(options=clean_options, service=service)
-
     out, err = capfd.readouterr()
-    assert "Starting ChromeDriver" in out
+    assert "Starting" in out
+    assert "started successfully" in out
     driver.quit()
 
 
 @pytest.mark.no_driver_after_test
 def test_log_output_null_default(driver, capfd) -> None:
     out, err = capfd.readouterr()
-    assert "Starting ChromeDriver" not in out
+    assert "Starting" not in out
+    assert "started successfully" not in out
     driver.quit()
 
 

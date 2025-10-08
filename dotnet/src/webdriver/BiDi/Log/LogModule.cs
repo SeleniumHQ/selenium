@@ -23,15 +23,15 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-public sealed class LogModule(Broker broker) : Module(broker)
+public sealed class LogModule : Module
 {
     public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnEntryAddedAsync(Action<LogEntry> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext).ConfigureAwait(false);
     }
 }
