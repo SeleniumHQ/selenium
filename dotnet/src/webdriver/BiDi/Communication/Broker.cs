@@ -38,7 +38,7 @@ public sealed class Broker : IAsyncDisposable
     private readonly ITransport _transport;
 
     private readonly ConcurrentDictionary<long, CommandInfo<EmptyResult>> _pendingCommands = new();
-    private readonly BlockingCollection<MessageEvent> _pendingEvents = [];
+    private readonly BlockingCollection<(string Method, EventArgs Params)> _pendingEvents = [];
     private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
 
     private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
@@ -318,7 +318,7 @@ public sealed class Broker : IAsyncDisposable
                 {
                     var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
 
-                    var messageEvent = new MessageEvent(method, eventArgs);
+                    var messageEvent = (method, eventArgs);
                     _pendingEvents.Add(messageEvent);
                 }
                 else
