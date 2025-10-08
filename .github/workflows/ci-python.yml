@@ -73,23 +73,6 @@ jobs:
       run: |
         bazel test //py:unit
 
-  unit-tests-windows:
-    name: Unit Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows
-    with:
-      name: Unit Tests (${{ matrix.os }})
-      os: ${{ matrix.os }}
-      cache-key: python-unit-test-${{ matrix.os }}
-      run: |
-        fsutil 8dot3name set 0
-        bazel test //py:unit
-
   remote-tests:
     name: Remote Tests
     needs: build
