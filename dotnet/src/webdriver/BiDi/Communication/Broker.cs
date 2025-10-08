@@ -156,7 +156,7 @@ public sealed class Broker : IAsyncDisposable
         return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo jsonTypeInfo)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
         where TEventArgs : EventArgs
     {
         _eventTypesMap[eventName] = jsonTypeInfo;
@@ -185,7 +185,7 @@ public sealed class Broker : IAsyncDisposable
         }
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo jsonTypeInfo)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
         where TEventArgs : EventArgs
     {
         _eventTypesMap[eventName] = jsonTypeInfo;
