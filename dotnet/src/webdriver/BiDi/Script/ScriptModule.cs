@@ -78,31 +78,31 @@ public sealed class ScriptModule : Module
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.message", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.message", handler, options, JsonContext.MessageEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Action<MessageEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.message", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.message", handler, options, JsonContext.MessageEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Func<RealmInfo, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmCreated", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmCreated", handler, options, JsonContext.RealmInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmCreatedAsync(Action<RealmInfo> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmCreated", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmCreated", handler, options, JsonContext.RealmInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Func<RealmDestroyedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
     }
 }

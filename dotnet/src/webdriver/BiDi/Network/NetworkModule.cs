@@ -126,51 +126,51 @@ public sealed partial class NetworkModule : Module
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.beforeRequestSent", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.beforeRequestSent", handler, options, JsonContext.BeforeRequestSentEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.beforeRequestSent", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.beforeRequestSent", handler, options, JsonContext.BeforeRequestSentEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.responseStarted", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.responseStarted", handler, options, JsonContext.ResponseStartedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.responseStarted", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.responseStarted", handler, options, JsonContext.ResponseStartedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.responseCompleted", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.responseCompleted", handler, options, JsonContext.ResponseCompletedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.responseCompleted", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.responseCompleted", handler, options, JsonContext.ResponseCompletedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.fetchError", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.fetchError", handler, options, JsonContext.FetchErrorEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.fetchError", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.fetchError", handler, options, JsonContext.FetchErrorEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.authRequired", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.authRequired", handler, options, JsonContext.AuthRequiredEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("network.authRequired", handler, options, JsonContext).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("network.authRequired", handler, options, JsonContext.AuthRequiredEventArgs).ConfigureAwait(false);
     }
 }
