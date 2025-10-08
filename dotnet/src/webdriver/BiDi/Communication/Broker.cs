@@ -37,7 +37,7 @@ public sealed class Broker : IAsyncDisposable
     private readonly BiDi _bidi;
     private readonly ITransport _transport;
 
-    private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
+    private readonly ConcurrentDictionary<long, CommandInfo<EmptyResult>> _pendingCommands = new();
     private readonly BlockingCollection<MessageEvent> _pendingEvents = [];
     private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
 
@@ -143,17 +143,17 @@ public sealed class Broker : IAsyncDisposable
         where TResult : EmptyResult
     {
         command.Id = Interlocked.Increment(ref _currentCommandId);
-        var tcs = new TaskCompletionSource<JsonElement>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
         using var cts = new CancellationTokenSource(timeout);
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
-        var commandInfo = new CommandInfo(command.Id, command.ResultType, tcs);
+        var commandInfo = new CommandInfo<EmptyResult>(command.Id, tcs, jsonResultTypeInfo);
         _pendingCommands[command.Id] = commandInfo;
         var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
 
         await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
-        var resultJson = await tcs.Task.ConfigureAwait(false);
-        return JsonSerializer.Deserialize(resultJson, jsonResultTypeInfo)!;
+
+        return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo jsonTypeInfo)
@@ -301,7 +301,7 @@ public sealed class Broker : IAsyncDisposable
 
                 if (_pendingCommands.TryGetValue(id.Value, out var successCommand))
                 {
-                    successCommand.TaskCompletionSource.SetResult(JsonElement.ParseValue(ref resultReader));
+                    successCommand.TaskCompletionSource.SetResult((EmptyResult)JsonSerializer.Deserialize(ref resultReader, successCommand.JsonResultTypeInfo)!);
                     _pendingCommands.TryRemove(id.Value, out _);
                 }
                 else
@@ -345,10 +345,13 @@ public sealed class Broker : IAsyncDisposable
         }
     }
 
-    class CommandInfo(long id, Type resultType, TaskCompletionSource<JsonElement> taskCompletionSource)
+    class CommandInfo<TResult>(long id, TaskCompletionSource<TResult> taskCompletionSource, JsonTypeInfo jsonResultTypeInfo)
+        where TResult : EmptyResult
     {
         public long Id { get; } = id;
 
-        public TaskCompletionSource<JsonElement> TaskCompletionSource { get; } = taskCompletionSource;
+        public TaskCompletionSource<TResult> TaskCompletionSource { get; } = taskCompletionSource;
+
+        public JsonTypeInfo JsonResultTypeInfo { get; } = jsonResultTypeInfo;
     };
 }
