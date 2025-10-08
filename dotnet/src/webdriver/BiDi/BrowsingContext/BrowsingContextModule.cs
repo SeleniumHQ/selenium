@@ -23,13 +23,13 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextModule(Broker broker) : Module(broker)
+public sealed class BrowsingContextModule : Module
 {
     public async Task<BrowsingContext> CreateAsync(ContextType type, CreateOptions? options = null)
     {
         var @params = new CreateParameters(type, options?.ReferenceContext, options?.Background, options?.UserContext);
 
-        var createResult = await Broker.ExecuteCommandAsync<CreateCommand, CreateResult>(new CreateCommand(@params), options).ConfigureAwait(false);
+        var createResult = await Broker.ExecuteCommandAsync(new CreateCommand(@params), options, JsonContext.CreateCommand, JsonContext.CreateResult).ConfigureAwait(false);
 
         return createResult.Context;
     }
@@ -38,216 +38,216 @@ public sealed class BrowsingContextModule(Broker broker) : Module(broker)
     {
         var @params = new NavigateParameters(context, url, options?.Wait);
 
-        return await Broker.ExecuteCommandAsync<NavigateCommand, NavigateResult>(new NavigateCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new NavigateCommand(@params), options, JsonContext.NavigateCommand, JsonContext.NavigateResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> ActivateAsync(BrowsingContext context, ActivateOptions? options = null)
     {
         var @params = new ActivateParameters(context);
 
-        return await Broker.ExecuteCommandAsync<ActivateCommand, EmptyResult>(new ActivateCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ActivateCommand(@params), options, JsonContext.ActivateCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<LocateNodesResult> LocateNodesAsync(BrowsingContext context, Locator locator, LocateNodesOptions? options = null)
     {
         var @params = new LocateNodesParameters(context, locator, options?.MaxNodeCount, options?.SerializationOptions, options?.StartNodes);
 
-        return await Broker.ExecuteCommandAsync<LocateNodesCommand, LocateNodesResult>(new LocateNodesCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new LocateNodesCommand(@params), options, JsonContext.LocateNodesCommand, JsonContext.LocateNodesResult).ConfigureAwait(false);
     }
 
     public async Task<CaptureScreenshotResult> CaptureScreenshotAsync(BrowsingContext context, CaptureScreenshotOptions? options = null)
     {
         var @params = new CaptureScreenshotParameters(context, options?.Origin, options?.Format, options?.Clip);
 
-        return await Broker.ExecuteCommandAsync<CaptureScreenshotCommand, CaptureScreenshotResult>(new CaptureScreenshotCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new CaptureScreenshotCommand(@params), options, JsonContext.CaptureScreenshotCommand, JsonContext.CaptureScreenshotResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> CloseAsync(BrowsingContext context, CloseOptions? options = null)
     {
         var @params = new CloseParameters(context, options?.PromptUnload);
 
-        return await Broker.ExecuteCommandAsync<CloseCommand, EmptyResult>(new CloseCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new CloseCommand(@params), options, JsonContext.BrowsingContext_CloseCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<TraverseHistoryResult> TraverseHistoryAsync(BrowsingContext context, int delta, TraverseHistoryOptions? options = null)
     {
         var @params = new TraverseHistoryParameters(context, delta);
 
-        return await Broker.ExecuteCommandAsync<TraverseHistoryCommand, TraverseHistoryResult>(new TraverseHistoryCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new TraverseHistoryCommand(@params), options, JsonContext.TraverseHistoryCommand, JsonContext.TraverseHistoryResult).ConfigureAwait(false);
     }
 
     public async Task<NavigateResult> ReloadAsync(BrowsingContext context, ReloadOptions? options = null)
     {
         var @params = new ReloadParameters(context, options?.IgnoreCache, options?.Wait);
 
-        return await Broker.ExecuteCommandAsync<ReloadCommand, NavigateResult>(new ReloadCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ReloadCommand(@params), options, JsonContext.ReloadCommand, JsonContext.NavigateResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> SetViewportAsync(BrowsingContext context, SetViewportOptions? options = null)
     {
         var @params = new SetViewportParameters(context, options?.Viewport, options?.DevicePixelRatio);
 
-        return await Broker.ExecuteCommandAsync<SetViewportCommand, EmptyResult>(new SetViewportCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetViewportCommand(@params), options, JsonContext.SetViewportCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<GetTreeResult> GetTreeAsync(GetTreeOptions? options = null)
     {
         var @params = new GetTreeParameters(options?.MaxDepth, options?.Root);
 
-        return await Broker.ExecuteCommandAsync<GetTreeCommand, GetTreeResult>(new GetTreeCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new GetTreeCommand(@params), options, JsonContext.GetTreeCommand, JsonContext.GetTreeResult).ConfigureAwait(false);
     }
 
     public async Task<PrintResult> PrintAsync(BrowsingContext context, PrintOptions? options = null)
     {
         var @params = new PrintParameters(context, options?.Background, options?.Margin, options?.Orientation, options?.Page, options?.PageRanges, options?.Scale, options?.ShrinkToFit);
 
-        return await Broker.ExecuteCommandAsync<PrintCommand, PrintResult>(new PrintCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new PrintCommand(@params), options, JsonContext.PrintCommand, JsonContext.PrintResult).ConfigureAwait(false);
     }
 
     public async Task<EmptyResult> HandleUserPromptAsync(BrowsingContext context, HandleUserPromptOptions? options = null)
     {
         var @params = new HandleUserPromptParameters(context, options?.Accept, options?.UserText);
 
-        return await Broker.ExecuteCommandAsync<HandleUserPromptCommand, EmptyResult>(new HandleUserPromptCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new HandleUserPromptCommand(@params), options, JsonContext.HandleUserPromptCommand, JsonContext.EmptyResult).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.navigationStarted", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.navigationStarted", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.navigationStarted", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.navigationStarted", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.fragmentNavigated", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.fragmentNavigated", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.fragmentNavigated", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.fragmentNavigated", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.historyUpdated", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.historyUpdated", handler, options, JsonContext.HistoryUpdatedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.historyUpdated", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.historyUpdated", handler, options, JsonContext.HistoryUpdatedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.domContentLoaded", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.domContentLoaded", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.domContentLoaded", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.domContentLoaded", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.load", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.load", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.load", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.load", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.downloadWillBegin", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.downloadWillBegin", handler, options, JsonContext.DownloadWillBeginEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.downloadWillBegin", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.downloadWillBegin", handler, options, JsonContext.DownloadWillBeginEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.downloadEnd", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.downloadEnd", handler, options, JsonContext.DownloadEndEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.downloadEnd", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.downloadEnd", handler, options, JsonContext.DownloadEndEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.navigationAborted", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.navigationAborted", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.navigationAborted", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.navigationAborted", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.navigationFailed", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.navigationFailed", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.navigationFailed", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.navigationFailed", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationCommittedAsync(Func<NavigationInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.navigationCommitted", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.navigationCommitted", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnNavigationCommittedAsync(Action<NavigationInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.navigationCommitted", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.navigationCommitted", handler, options, JsonContext.NavigationInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnContextCreatedAsync(Func<BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.contextCreated", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.contextCreated", handler, options, JsonContext.BrowsingContextInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnContextCreatedAsync(Action<BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.contextCreated", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.contextCreated", handler, options, JsonContext.BrowsingContextInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnContextDestroyedAsync(Func<BrowsingContextInfo, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.contextDestroyed", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.contextDestroyed", handler, options, JsonContext.BrowsingContextInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnContextDestroyedAsync(Action<BrowsingContextInfo> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.contextDestroyed", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.contextDestroyed", handler, options, JsonContext.BrowsingContextInfo).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnUserPromptOpenedAsync(Func<UserPromptOpenedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.userPromptOpened", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.userPromptOpened", handler, options, JsonContext.UserPromptOpenedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnUserPromptOpenedAsync(Action<UserPromptOpenedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.userPromptOpened", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.userPromptOpened", handler, options, JsonContext.UserPromptOpenedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnUserPromptClosedAsync(Func<UserPromptClosedEventArgs, Task> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options, JsonContext.UserPromptClosedEventArgs).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnUserPromptClosedAsync(Action<UserPromptClosedEventArgs> handler, BrowsingContextsSubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options, JsonContext.UserPromptClosedEventArgs).ConfigureAwait(false);
     }
 }
