@@ -98,14 +98,17 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 
 
 [JsonSerializable(typeof(BrowsingContext.ActivateCommand))]
+[JsonSerializable(typeof(BrowsingContext.ActivateResult))]
 [JsonSerializable(typeof(BrowsingContext.CaptureScreenshotCommand))]
 [JsonSerializable(typeof(BrowsingContext.CaptureScreenshotResult))]
 [JsonSerializable(typeof(BrowsingContext.CloseCommand), TypeInfoPropertyName = "BrowsingContext_CloseCommand")]
+[JsonSerializable(typeof(BrowsingContext.CloseResult), TypeInfoPropertyName = "BrowsingContext_CloseResult")]
 [JsonSerializable(typeof(BrowsingContext.CreateCommand))]
 [JsonSerializable(typeof(BrowsingContext.CreateResult))]
 [JsonSerializable(typeof(BrowsingContext.GetTreeCommand))]
 [JsonSerializable(typeof(BrowsingContext.GetTreeResult))]
 [JsonSerializable(typeof(BrowsingContext.HandleUserPromptCommand))]
+[JsonSerializable(typeof(BrowsingContext.HandleUserPromptResult))]
 [JsonSerializable(typeof(BrowsingContext.LocateNodesCommand))]
 [JsonSerializable(typeof(BrowsingContext.LocateNodesResult))]
 [JsonSerializable(typeof(BrowsingContext.NavigateCommand))]
@@ -113,7 +116,9 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(BrowsingContext.PrintCommand))]
 [JsonSerializable(typeof(BrowsingContext.PrintResult))]
 [JsonSerializable(typeof(BrowsingContext.ReloadCommand))]
+[JsonSerializable(typeof(BrowsingContext.ReloadResult))]
 [JsonSerializable(typeof(BrowsingContext.SetViewportCommand))]
+[JsonSerializable(typeof(BrowsingContext.SetViewportResult))]
 [JsonSerializable(typeof(BrowsingContext.TraverseHistoryCommand))]
 [JsonSerializable(typeof(BrowsingContext.TraverseHistoryResult))]
 
