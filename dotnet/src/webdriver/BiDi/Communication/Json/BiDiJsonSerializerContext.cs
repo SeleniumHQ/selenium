@@ -190,8 +190,11 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Storage.DeleteCookiesResult))]
 
 [JsonSerializable(typeof(Input.PerformActionsCommand))]
+[JsonSerializable(typeof(Input.PerformActionsResult))]
 [JsonSerializable(typeof(Input.ReleaseActionsCommand))]
+[JsonSerializable(typeof(Input.ReleaseActionsResult))]
 [JsonSerializable(typeof(Input.SetFilesCommand))]
+[JsonSerializable(typeof(Input.SetFilesResult))]
 [JsonSerializable(typeof(IEnumerable<Input.IPointerSourceAction>))]
 [JsonSerializable(typeof(IEnumerable<Input.IKeySourceAction>))]
 [JsonSerializable(typeof(IEnumerable<Input.INoneSourceAction>))]
