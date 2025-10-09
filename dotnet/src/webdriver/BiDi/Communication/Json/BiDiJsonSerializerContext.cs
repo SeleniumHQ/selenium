@@ -75,9 +75,11 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Session.NewCommand))]
 [JsonSerializable(typeof(Session.NewResult))]
 [JsonSerializable(typeof(Session.EndCommand))]
+[JsonSerializable(typeof(Session.EndResult))]
 [JsonSerializable(typeof(Session.SubscribeCommand))]
 [JsonSerializable(typeof(Session.SubscribeResult))]
 [JsonSerializable(typeof(Session.UnsubscribeByIdCommand))]
+[JsonSerializable(typeof(Session.UnsubscribeResult))]
 
 [JsonSerializable(typeof(Browser.CloseCommand), TypeInfoPropertyName = "Browser_CloseCommand")]
 [JsonSerializable(typeof(Browser.CreateUserContextCommand))]
