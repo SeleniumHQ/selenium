@@ -68,13 +68,11 @@ public sealed class ScriptModule : Module
         return await Broker.ExecuteCommandAsync(new GetRealmsCommand(@params), options, JsonContext.GetRealmsCommand, JsonContext.GetRealmsResult).ConfigureAwait(false);
     }
 
-    public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null)
+    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null)
     {
         var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.Sandbox);
 
-        var result = await Broker.ExecuteCommandAsync(new AddPreloadScriptCommand(@params), options, JsonContext.AddPreloadScriptCommand, JsonContext.AddPreloadScriptResult).ConfigureAwait(false);
-
-        return result.Script;
+        return await Broker.ExecuteCommandAsync(new AddPreloadScriptCommand(@params), options, JsonContext.AddPreloadScriptCommand, JsonContext.AddPreloadScriptResult).ConfigureAwait(false);
     }
 
     public async Task<RemovePreloadScriptResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)

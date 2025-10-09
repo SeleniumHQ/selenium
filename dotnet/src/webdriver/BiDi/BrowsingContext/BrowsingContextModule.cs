@@ -25,13 +25,11 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextModule : Module
 {
-    public async Task<BrowsingContext> CreateAsync(ContextType type, CreateOptions? options = null)
+    public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null)
     {
         var @params = new CreateParameters(type, options?.ReferenceContext, options?.Background, options?.UserContext);
 
-        var createResult = await Broker.ExecuteCommandAsync(new CreateCommand(@params), options, JsonContext.CreateCommand, JsonContext.CreateResult).ConfigureAwait(false);
-
-        return createResult.Context;
+        return await Broker.ExecuteCommandAsync(new CreateCommand(@params), options, JsonContext.CreateCommand, JsonContext.CreateResult).ConfigureAwait(false);
     }
 
     public async Task<NavigateResult> NavigateAsync(BrowsingContext context, string url, NavigateOptions? options = null)

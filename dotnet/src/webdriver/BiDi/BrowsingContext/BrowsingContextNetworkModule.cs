@@ -20,7 +20,6 @@
 using System.Threading.Tasks;
 using System;
 using OpenQA.Selenium.BiDi.Network;
-using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
