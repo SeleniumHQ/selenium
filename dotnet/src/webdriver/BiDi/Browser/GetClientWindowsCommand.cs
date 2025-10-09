@@ -44,8 +44,6 @@ public sealed record GetClientWindowsResult : EmptyResult, IReadOnlyList<ClientW
 
     public int Count => ClientWindows.Count;
 
-
-
     public IEnumerator<ClientWindowInfo> GetEnumerator() => ClientWindows.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => (ClientWindows as IEnumerable).GetEnumerator();
