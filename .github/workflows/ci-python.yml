@@ -16,7 +16,6 @@ jobs:
 
   docs:
     name: Documentation
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -35,9 +34,8 @@ jobs:
         env:
           TOXENV: docs
 
-  mypy:
-    name: Mypy
-    needs: build
+  typing:
+    name: Type Checker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -55,6 +53,24 @@ jobs:
           tox -c py/tox.ini || true
         env:
           TOXENV: mypy
+
+  verify-dependencies:
+    name: Verify Dependencies Installation
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r py/requirements_lock.txt
 
   unit-tests:
     name: Unit Tests
