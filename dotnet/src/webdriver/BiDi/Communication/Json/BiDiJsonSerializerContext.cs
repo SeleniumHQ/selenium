@@ -203,6 +203,8 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(WebExtension.InstallCommand))]
 [JsonSerializable(typeof(WebExtension.InstallResult))]
 [JsonSerializable(typeof(WebExtension.UninstallCommand))]
+[JsonSerializable(typeof(WebExtension.UninstallResult))]
+
 [JsonSerializable(typeof(Emulation.SetTimezoneOverrideCommand))]
 [JsonSerializable(typeof(Emulation.SetUserAgentOverrideCommand))]
 [JsonSerializable(typeof(Emulation.SetLocaleOverrideCommand))]
