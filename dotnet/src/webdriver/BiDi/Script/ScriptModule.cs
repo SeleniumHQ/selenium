@@ -19,6 +19,7 @@
 
 using OpenQA.Selenium.BiDi.Communication;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -39,11 +40,11 @@ public sealed class ScriptModule : Module
         return result.AsSuccessResult().ConvertTo<TResult>();
     }
 
-    public async Task<EvaluateResult> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
+    public async Task<CallFunctionResult> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
     {
         var @params = new CallFunctionParameters(functionDeclaration, awaitPromise, target, options?.Arguments, options?.ResultOwnership, options?.SerializationOptions, options?.This, options?.UserActivation);
 
-        return await Broker.ExecuteCommandAsync(new CallFunctionCommand(@params), options, JsonContext.CallFunctionCommand, JsonContext.EvaluateResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new CallFunctionCommand(@params), options, JsonContext.CallFunctionCommand, JsonContext.CallFunctionResult).ConfigureAwait(false);
     }
 
     public async Task<TResult?> CallFunctionAsync<TResult>(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
@@ -51,6 +52,13 @@ public sealed class ScriptModule : Module
         var result = await CallFunctionAsync(functionDeclaration, awaitPromise, target, options).ConfigureAwait(false);
 
         return result.AsSuccessResult().ConvertTo<TResult>();
+    }
+
+    public async Task<DisownResult> DisownAsync(IEnumerable<Handle> handles, Target target, DisownOptions? options = null)
+    {
+        var @params = new DisownParameters(handles, target);
+
+        return await Broker.ExecuteCommandAsync(new DisownCommand(@params), options, JsonContext.DisownCommand, JsonContext.DisownResult).ConfigureAwait(false);
     }
 
     public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null)
@@ -69,11 +77,11 @@ public sealed class ScriptModule : Module
         return result.Script;
     }
 
-    public async Task<EmptyResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)
+    public async Task<RemovePreloadScriptResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)
     {
         var @params = new RemovePreloadScriptParameters(script);
 
-        return await Broker.ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options, JsonContext.RemovePreloadScriptCommand, JsonContext.EmptyResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options, JsonContext.RemovePreloadScriptCommand, JsonContext.RemovePreloadScriptResult).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null)
