@@ -24,7 +24,7 @@ using System.Text.Json.Serialization;
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetTimezoneOverrideCommand(SetTimezoneOverrideParameters @params)
-    : Command<SetTimezoneOverrideParameters, EmptyResult>(@params, "emulation.setTimezoneOverride");
+    : Command<SetTimezoneOverrideParameters, SetTimezoneOverrideResult>(@params, "emulation.setTimezoneOverride");
 
 internal sealed record SetTimezoneOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? Timezone, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
@@ -34,3 +34,5 @@ public sealed class SetTimezoneOverrideOptions : CommandOptions
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
+
+public sealed record SetTimezoneOverrideResult : EmptyResult;
