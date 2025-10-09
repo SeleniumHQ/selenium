@@ -56,12 +56,10 @@ jobs:
 
   verify-dependencies:
     name: Verify Dependencies Installation
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        include:
-          - os: ubuntu
-          - os: windows
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
@@ -69,7 +67,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies (${{ matrix.python-version }}, ${{ matrix.os }})
+      - name: Install dependencies (${{ matrix.python-version }})
         run: |
           python -m pip install --upgrade pip
           pip install -r py/requirements_lock.txt
