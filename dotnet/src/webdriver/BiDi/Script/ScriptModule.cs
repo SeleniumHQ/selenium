@@ -40,11 +40,11 @@ public sealed class ScriptModule : Module
         return result.AsSuccessResult().ConvertTo<TResult>();
     }
 
-    public async Task<CallFunctionResult> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
+    public async Task<EvaluateResult> CallFunctionAsync(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)
     {
         var @params = new CallFunctionParameters(functionDeclaration, awaitPromise, target, options?.Arguments, options?.ResultOwnership, options?.SerializationOptions, options?.This, options?.UserActivation);
 
-        return await Broker.ExecuteCommandAsync(new CallFunctionCommand(@params), options, JsonContext.CallFunctionCommand, JsonContext.CallFunctionResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new CallFunctionCommand(@params), options, JsonContext.CallFunctionCommand, JsonContext.EvaluateResult).ConfigureAwait(false);
     }
 
     public async Task<TResult?> CallFunctionAsync<TResult>(string functionDeclaration, bool awaitPromise, Target target, CallFunctionOptions? options = null)

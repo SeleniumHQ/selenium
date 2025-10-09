@@ -23,7 +23,7 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class CallFunctionCommand(CallFunctionParameters @params)
-    : Command<CallFunctionParameters, CallFunctionResult>(@params, "script.callFunction");
+    : Command<CallFunctionParameters, EvaluateResult>(@params, "script.callFunction");
 
 internal sealed record CallFunctionParameters(string FunctionDeclaration, bool AwaitPromise, Target Target, IEnumerable<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : Parameters;
 
@@ -39,5 +39,3 @@ public sealed class CallFunctionOptions : CommandOptions
 
     public bool? UserActivation { get; set; }
 }
-
-public sealed record CallFunctionResult : EvaluateResult;

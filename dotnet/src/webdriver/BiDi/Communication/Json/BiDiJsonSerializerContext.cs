@@ -168,7 +168,7 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Script.DisownCommand))]
 [JsonSerializable(typeof(Script.DisownResult))]
 [JsonSerializable(typeof(Script.CallFunctionCommand))]
-[JsonSerializable(typeof(Script.CallFunctionResult))]
+[JsonSerializable(typeof(Script.EvaluateResult))]
 [JsonSerializable(typeof(Script.EvaluateCommand))]
 [JsonSerializable(typeof(Script.EvaluateResult))]
 [JsonSerializable(typeof(Script.GetRealmsCommand))]
