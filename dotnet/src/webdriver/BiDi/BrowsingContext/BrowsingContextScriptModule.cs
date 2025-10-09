@@ -63,7 +63,7 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
         return result.AsSuccessResult().ConvertTo<TResult>();
     }
 
-    public Task<EvaluateResult> CallFunctionAsync(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public Task<CallFunctionResult> CallFunctionAsync(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
     {
         var contextTarget = new ContextTarget(context);
 

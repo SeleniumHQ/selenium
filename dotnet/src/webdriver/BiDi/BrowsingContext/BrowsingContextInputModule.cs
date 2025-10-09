@@ -26,17 +26,17 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextInputModule(BrowsingContext context, InputModule inputModule)
 {
-    public Task<EmptyResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
+    public Task<PerformActionsResult> PerformActionsAsync(IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
         return inputModule.PerformActionsAsync(context, actions, options);
     }
 
-    public Task<EmptyResult> ReleaseActionsAsync(ReleaseActionsOptions? options = null)
+    public Task<ReleaseActionsResult> ReleaseActionsAsync(ReleaseActionsOptions? options = null)
     {
         return inputModule.ReleaseActionsAsync(context, options);
     }
 
-    public Task<EmptyResult> SetFilesAsync(Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
+    public Task<SetFilesResult> SetFilesAsync(Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
         return inputModule.SetFilesAsync(context, element, files, options);
     }
