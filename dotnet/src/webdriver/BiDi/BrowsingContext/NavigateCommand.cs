@@ -41,4 +41,4 @@ public enum ReadinessState
     Complete
 }
 
-public sealed record NavigateResult(Navigation? Navigation, string Url) : EmptyResult;
+public record NavigateResult(Navigation? Navigation, string Url) : EmptyResult;

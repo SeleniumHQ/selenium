@@ -18,6 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
@@ -38,12 +39,15 @@ class BrowserTest : BiDiTestFixture
         var userContext1 = await bidi.Browser.CreateUserContextAsync();
         var userContext2 = await bidi.Browser.CreateUserContextAsync();
 
-        var userContexts = await bidi.Browser.GetUserContextsAsync();
+        var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 
-        Assert.That(userContexts, Is.Not.Null);
-        Assert.That(userContexts, Has.Count.GreaterThanOrEqualTo(2));
-        Assert.That(userContexts, Does.Contain(userContext1));
-        Assert.That(userContexts, Does.Contain(userContext2));
+        Assert.That(userContextsResult, Is.Not.Null);
+        Assert.That(userContextsResult, Has.Count.GreaterThanOrEqualTo(2));
+
+        var userContexts = userContextsResult.Select(uc => uc.UserContext);
+
+        Assert.That(userContexts, Does.Contain(userContext1.UserContext));
+        Assert.That(userContexts, Does.Contain(userContext2.UserContext));
     }
 
     [Test]
@@ -54,10 +58,10 @@ class BrowserTest : BiDiTestFixture
 
         await userContext2.UserContext.RemoveAsync();
 
-        var userContexts = await bidi.Browser.GetUserContextsAsync();
+        var userContexts = (await bidi.Browser.GetUserContextsAsync()).Select(uc => uc.UserContext);
 
-        Assert.That(userContexts, Does.Contain(userContext1));
-        Assert.That(userContexts, Does.Not.Contain(userContext2));
+        Assert.That(userContexts, Does.Contain(userContext1.UserContext));
+        Assert.That(userContexts, Does.Not.Contain(userContext2.UserContext));
     }
 
     [Test]
