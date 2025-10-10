@@ -1,4 +1,4 @@
-// <copyright file="EndCommand.cs" company="Selenium Committers">
+// <copyright file="KebabCaseEnumConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,13 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi.Session;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-internal sealed class EndCommand()
-    : Command<Parameters, EndResult>(Parameters.Empty, "session.end");
-
-public sealed class EndOptions : CommandOptions;
-
-public sealed record EndResult : EmptyResult;
+public class KebabCaseEnumConverter<TEnum>() :
+    JsonStringEnumConverter<TEnum>(JsonNamingPolicy.KebabCaseLower) where TEnum : struct, Enum;

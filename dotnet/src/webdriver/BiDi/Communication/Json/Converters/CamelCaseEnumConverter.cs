@@ -1,4 +1,4 @@
-// <copyright file="Message.cs" company="Selenium Committers">
+// <copyright file="CamelCaseEnumConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,18 +17,11 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.Communication;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-internal abstract record Message;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
-internal record MessageSuccess(long Id, EmptyResult Result) : Message;
-
-internal record MessageError(long Id) : Message
-{
-    public string? Error { get; set; }
-
-    public string? Message { get; set; }
-}
-
-internal record MessageEvent(string Method, EventArgs Params) : Message;
-
+public class CamelCaseEnumConverter<TEnum>() :
+    JsonStringEnumConverter<TEnum>(JsonNamingPolicy.CamelCase) where TEnum : struct, Enum;

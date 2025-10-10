@@ -23,36 +23,36 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class SessionModule(Broker broker) : Module(broker)
+internal sealed class SessionModule : Module
 {
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync<StatusCommand, StatusResult>(new StatusCommand(), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new StatusCommand(), options, JsonContext.StatusCommand, JsonContext.StatusResult).ConfigureAwait(false);
     }
 
     public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null)
     {
         var @params = new SubscribeParameters(events, options?.Contexts);
 
-        return await Broker.ExecuteCommandAsync<SubscribeCommand, SubscribeResult>(new(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new(@params), options, JsonContext.SubscribeCommand, JsonContext.SubscribeResult).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
+    public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
     {
         var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        return await Broker.ExecuteCommandAsync<UnsubscribeByIdCommand, EmptyResult>(new UnsubscribeByIdCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options, JsonContext.UnsubscribeByIdCommand, JsonContext.UnsubscribeResult).ConfigureAwait(false);
     }
 
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilitiesRequest, NewOptions? options = null)
     {
         var @params = new NewParameters(capabilitiesRequest);
 
-        return await Broker.ExecuteCommandAsync<NewCommand, NewResult>(new NewCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new NewCommand(@params), options, JsonContext.NewCommand, JsonContext.NewResult).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> EndAsync(EndOptions? options = null)
+    public async Task<EndResult> EndAsync(EndOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync<EndCommand, EmptyResult>(new EndCommand(), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new EndCommand(), options, JsonContext.EndCommand, JsonContext.EndResult).ConfigureAwait(false);
     }
 }
