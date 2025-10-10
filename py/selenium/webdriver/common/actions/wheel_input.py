@@ -16,10 +16,9 @@
 # under the License.
 from typing import Union
 
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.input_device import InputDevice
 from selenium.webdriver.remote.webelement import WebElement
-
-from . import interaction
-from .input_device import InputDevice
 
 
 class ScrollOrigin:

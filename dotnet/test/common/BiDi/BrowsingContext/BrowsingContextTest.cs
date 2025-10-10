@@ -139,7 +139,7 @@ class BrowsingContextTest : BiDiTestFixture
     {
         var window = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
 
-        await window.CloseAsync();
+        await window.Context.CloseAsync();
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
@@ -151,7 +151,7 @@ class BrowsingContextTest : BiDiTestFixture
     {
         var tab = await bidi.BrowsingContext.CreateAsync(ContextType.Tab);
 
-        await tab.CloseAsync();
+        await tab.Context.CloseAsync();
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 

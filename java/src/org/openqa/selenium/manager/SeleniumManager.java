@@ -16,6 +16,9 @@
 // under the License.
 package org.openqa.selenium.manager;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Objects.requireNonNull;
+import static java.util.UUID.randomUUID;
 import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
@@ -197,7 +200,8 @@ public class SeleniumManager {
         } else if (current.is(MAC)) {
           folder = "macos";
         } else if (current.is(LINUX)) {
-          if (System.getProperty("os.arch").contains("arm")) {
+          if (System.getProperty("os.arch").contains("arm")
+              || System.getProperty("os.arch").contains("aarch64")) {
             throw new WebDriverException("Linux ARM is not supported by Selenium Manager");
           } else {
             folder = "linux";
@@ -213,11 +217,12 @@ public class SeleniumManager {
         }
 
         binary = getBinaryInCache(SELENIUM_MANAGER + extension);
-        if (!binary.toFile().exists()) {
+        if (!Files.exists(binary)) {
           String binaryPathInJar = String.format("%s/%s%s", folder, SELENIUM_MANAGER, extension);
-          try (InputStream inputStream = this.getClass().getResourceAsStream(binaryPathInJar)) {
+          try (InputStream inputStream =
+              requireNonNull(getClass().getResourceAsStream(binaryPathInJar))) {
             Files.createDirectories(binary.getParent());
-            Files.copy(inputStream, binary);
+            saveToFileSafely(inputStream, binary);
           }
         }
       } catch (Exception e) {
@@ -231,6 +236,22 @@ public class SeleniumManager {
 
     LOG.fine(String.format("Selenium Manager binary found at: %s", binary));
     return binary;
+  }
+
+  /**
+   * Protect from concurrency issue when executed by 2+ processes simultaneously. Every process sees
+   * the file created by another process only when the file is fully completed.
+   */
+  private void saveToFileSafely(InputStream inputStream, Path target) throws IOException {
+    Path temporaryFile = target.resolveSibling(target.getFileName() + "." + randomUUID() + ".tmp");
+    Files.copy(inputStream, temporaryFile);
+    try {
+      if (!Files.exists(target)) {
+        Files.move(temporaryFile, target, REPLACE_EXISTING);
+      }
+    } finally {
+      Files.deleteIfExists(temporaryFile);
+    }
   }
 
   /**

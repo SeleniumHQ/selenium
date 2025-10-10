@@ -18,8 +18,10 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -56,6 +58,7 @@ public struct PrintMargin
     public double? Top { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<PrintOrientation>))]
 public enum PrintOrientation
 {
     Portrait,
@@ -69,6 +72,7 @@ public struct PrintPage
     public double? Width { get; set; }
 }
 
+[JsonConverter(typeof(PrintPageRangeConverter))]
 public readonly record struct PrintPageRange(int? Start, int? End)
 {
     public static implicit operator PrintPageRange(int index) { return new PrintPageRange(index, index); }

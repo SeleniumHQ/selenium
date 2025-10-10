@@ -18,6 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
@@ -68,5 +69,38 @@ class BrowserTest : BiDiTestFixture
         Assert.That(clientWindowsResult, Is.Not.Null);
         Assert.That(clientWindowsResult.ClientWindows, Has.Count.GreaterThanOrEqualTo(1));
         Assert.That(clientWindowsResult.ClientWindows[0].ClientWindow, Is.Not.Null);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public async Task CanSetDownloadBehaviorAllowed()
+    {
+        var result = await bidi.Browser.SetDownloadBehaviorAllowedAsync("/my/path");
+
+        Assert.That(result, Is.Not.Null);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public async Task CanSetDownloadBehaviorAllowedDefault()
+    {
+        var result = await bidi.Browser.SetDownloadBehaviorAllowedAsync();
+
+        Assert.That(result, Is.Not.Null);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public async Task CanSetDownloadBehaviorDenied()
+    {
+        var result = await bidi.Browser.SetDownloadBehaviorDeniedAsync();
+
+        Assert.That(result, Is.Not.Null);
     }
 }

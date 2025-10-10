@@ -18,7 +18,9 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
@@ -37,6 +39,7 @@ public sealed record PartialCookie(string Name, Network.BytesValue Value, string
 
     public Network.SameSite? SameSite { get; set; }
 
+    [JsonConverter(typeof(DateTimeOffsetSecondsConverter))]
     public DateTimeOffset? Expiry { get; set; }
 }
 

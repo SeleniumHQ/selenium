@@ -23,6 +23,10 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class DisownCommand(DisownParameters @params)
-    : Command<DisownParameters, EmptyResult>(@params, "script.disown");
+    : Command<DisownParameters, DisownResult>(@params, "script.disown");
 
 internal sealed record DisownParameters(IEnumerable<Handle> Handles, Target Target) : Parameters;
+
+public sealed class DisownOptions : CommandOptions;
+
+public sealed record DisownResult : EmptyResult;

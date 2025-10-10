@@ -18,12 +18,12 @@
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::shell::run_shell_command_by_os;
 use crate::{
-    default_cache_folder, format_one_arg, path_to_string, Command, ARCH_ARM7L,
-    ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC, UNAME_COMMAND,
+    ARCH_ARM7L, Command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC, UNAME_COMMAND,
+    default_cache_folder, format_one_arg, path_to_string,
 };
 use crate::{ARCH_ARM64, ARCH_X64, ARCH_X86, TTL_SEC};
-use anyhow::anyhow;
 use anyhow::Error;
+use anyhow::anyhow;
 use std::cell::RefCell;
 use std::env;
 use std::env::consts::OS;

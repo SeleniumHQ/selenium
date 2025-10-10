@@ -18,10 +18,9 @@
 from typing import Any, Optional, Union
 
 from selenium.common.exceptions import InvalidArgumentException
+from selenium.webdriver.common.actions.input_device import InputDevice
+from selenium.webdriver.common.actions.interaction import POINTER, POINTER_KINDS
 from selenium.webdriver.remote.webelement import WebElement
-
-from .input_device import InputDevice
-from .interaction import POINTER, POINTER_KINDS
 
 
 class PointerInput(InputDevice):
