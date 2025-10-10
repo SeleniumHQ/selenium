@@ -37,7 +37,7 @@ public sealed class Broker : IAsyncDisposable
     private readonly BiDi _bidi;
     private readonly ITransport _transport;
 
-    private readonly ConcurrentDictionary<long, CommandInfo<EmptyResult>> _pendingCommands = new();
+    private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
     private readonly BlockingCollection<(string Method, EventArgs Params)> _pendingEvents = [];
     private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
 
@@ -147,7 +147,7 @@ public sealed class Broker : IAsyncDisposable
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
         using var cts = new CancellationTokenSource(timeout);
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
-        var commandInfo = new CommandInfo<EmptyResult>(command.Id, tcs, jsonResultTypeInfo);
+        var commandInfo = new CommandInfo(command.Id, tcs, jsonResultTypeInfo);
         _pendingCommands[command.Id] = commandInfo;
         var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
 
@@ -345,12 +345,11 @@ public sealed class Broker : IAsyncDisposable
         }
     }
 
-    class CommandInfo<TResult>(long id, TaskCompletionSource<TResult> taskCompletionSource, JsonTypeInfo jsonResultTypeInfo)
-        where TResult : EmptyResult
+    class CommandInfo(long id, TaskCompletionSource<EmptyResult> taskCompletionSource, JsonTypeInfo jsonResultTypeInfo)
     {
         public long Id { get; } = id;
 
-        public TaskCompletionSource<TResult> TaskCompletionSource { get; } = taskCompletionSource;
+        public TaskCompletionSource<EmptyResult> TaskCompletionSource { get; } = taskCompletionSource;
 
         public JsonTypeInfo JsonResultTypeInfo { get; } = jsonResultTypeInfo;
     };
