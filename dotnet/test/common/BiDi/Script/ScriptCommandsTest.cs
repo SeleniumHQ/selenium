@@ -66,7 +66,7 @@ class ScriptCommandsTest : BiDiTestFixture
 
         var realms = await tab.Context.Script.GetRealmsAsync();
 
-        var tabRealm = realms[0] as WindowRealmInfo;
+        var tabRealm = realms.Realms[0] as WindowRealmInfo;
 
         Assert.That(tabRealm, Is.Not.Null);
         Assert.That(tabRealm.Context, Is.EqualTo(tab.Context));
@@ -79,7 +79,7 @@ class ScriptCommandsTest : BiDiTestFixture
 
         var realms = await tab.Context.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
-        var tabRealm = realms[0] as WindowRealmInfo;
+        var tabRealm = realms.Realms[0] as WindowRealmInfo;
 
         Assert.That(tabRealm, Is.Not.Null);
         Assert.That(tabRealm.Context, Is.EqualTo(tab.Context));

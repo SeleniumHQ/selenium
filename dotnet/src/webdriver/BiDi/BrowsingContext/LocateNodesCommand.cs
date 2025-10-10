@@ -19,7 +19,6 @@
 
 using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
