@@ -23,8 +23,10 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params)
-    : Command<UnsubscribeByIdParameters, EmptyResult>(@params, "session.unsubscribe");
+    : Command<UnsubscribeByIdParameters, UnsubscribeResult>(@params, "session.unsubscribe");
 
 internal sealed record UnsubscribeByIdParameters(IEnumerable<Subscription> Subscriptions) : Parameters;
 
 public sealed class UnsubscribeByIdOptions : CommandOptions;
+
+public sealed record UnsubscribeResult : EmptyResult;

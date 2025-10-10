@@ -62,12 +62,12 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.NavigateAsync(this, url, options);
     }
 
-    public Task<NavigateResult> ReloadAsync(ReloadOptions? options = null)
+    public Task<ReloadResult> ReloadAsync(ReloadOptions? options = null)
     {
         return BiDi.BrowsingContext.ReloadAsync(this, options);
     }
 
-    public Task<EmptyResult> ActivateAsync(ActivateOptions? options = null)
+    public Task<ActivateResult> ActivateAsync(ActivateOptions? options = null)
     {
         return BiDi.BrowsingContext.ActivateAsync(this, options);
     }
@@ -82,7 +82,7 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.CaptureScreenshotAsync(this, options);
     }
 
-    public Task<EmptyResult> CloseAsync(CloseOptions? options = null)
+    public Task<CloseResult> CloseAsync(CloseOptions? options = null)
     {
         return BiDi.BrowsingContext.CloseAsync(this, options);
     }
@@ -92,7 +92,7 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.TraverseHistoryAsync(this, delta, options);
     }
 
-    public Task<EmptyResult> SetViewportAsync(SetViewportOptions? options = null)
+    public Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null)
     {
         return BiDi.BrowsingContext.SetViewportAsync(this, options);
     }
@@ -102,7 +102,7 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.PrintAsync(this, options);
     }
 
-    public Task<EmptyResult> HandleUserPromptAsync(HandleUserPromptOptions? options = null)
+    public Task<HandleUserPromptResult> HandleUserPromptAsync(HandleUserPromptOptions? options = null)
     {
         return BiDi.BrowsingContext.HandleUserPromptAsync(this, options);
     }

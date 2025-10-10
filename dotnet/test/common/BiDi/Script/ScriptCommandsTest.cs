@@ -64,12 +64,12 @@ class ScriptCommandsTest : BiDiTestFixture
     {
         var tab = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
-        var realms = await tab.Script.GetRealmsAsync();
+        var realms = await tab.Context.Script.GetRealmsAsync();
 
         var tabRealm = realms[0] as WindowRealmInfo;
 
         Assert.That(tabRealm, Is.Not.Null);
-        Assert.That(tabRealm.Context, Is.EqualTo(tab));
+        Assert.That(tabRealm.Context, Is.EqualTo(tab.Context));
     }
 
     [Test]
@@ -77,12 +77,12 @@ class ScriptCommandsTest : BiDiTestFixture
     {
         var tab = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
-        var realms = await tab.Script.GetRealmsAsync(new() { Type = RealmType.Window });
+        var realms = await tab.Context.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
         var tabRealm = realms[0] as WindowRealmInfo;
 
         Assert.That(tabRealm, Is.Not.Null);
-        Assert.That(tabRealm.Context, Is.EqualTo(tab));
+        Assert.That(tabRealm.Context, Is.EqualTo(tab.Context));
     }
 
     [Test]
@@ -159,7 +159,7 @@ class ScriptCommandsTest : BiDiTestFixture
 
         Assert.That(bar, Is.EqualTo(2));
 
-        await preloadScript.RemoveAsync();
+        await preloadScript.Script.RemoveAsync();
 
         var resultAfterRemoval = await context.Script.EvaluateAsync("window.bar", true, targetOptions: new() { Sandbox = "sandbox" });
 

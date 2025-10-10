@@ -24,7 +24,7 @@ using OpenQA.Selenium.BiDi.Communication;
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetLocaleOverrideCommand(SetLocaleOverrideParameters @params)
-    : Command<SetLocaleOverrideParameters, EmptyResult>(@params, "emulation.setLocaleOverride");
+    : Command<SetLocaleOverrideParameters, SetLocaleOverrideResult>(@params, "emulation.setLocaleOverride");
 
 internal sealed record SetLocaleOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? Locale, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
@@ -34,3 +34,5 @@ public sealed class SetLocaleOverrideOptions : CommandOptions
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
+
+public sealed record SetLocaleOverrideResult : EmptyResult;

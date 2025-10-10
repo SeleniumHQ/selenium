@@ -31,10 +31,10 @@ public sealed class WebExtensionModule : Module
         return await Broker.ExecuteCommandAsync(new InstallCommand(@params), options, JsonContext.InstallCommand, JsonContext.InstallResult).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
+    public async Task<UninstallResult> UninstallAsync(Extension extension, UninstallOptions? options = null)
     {
         var @params = new UninstallParameters(extension);
 
-        return await Broker.ExecuteCommandAsync(new UninstallCommand(@params), options, JsonContext.UninstallCommand, JsonContext.EmptyResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new UninstallCommand(@params), options, JsonContext.UninstallCommand, JsonContext.UninstallResult).ConfigureAwait(false);
     }
 }

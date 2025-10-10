@@ -19,6 +19,7 @@
 
 using OpenQA.Selenium.BiDi.Communication;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -53,6 +54,13 @@ public sealed class ScriptModule : Module
         return result.AsSuccessResult().ConvertTo<TResult>();
     }
 
+    public async Task<DisownResult> DisownAsync(IEnumerable<Handle> handles, Target target, DisownOptions? options = null)
+    {
+        var @params = new DisownParameters(handles, target);
+
+        return await Broker.ExecuteCommandAsync(new DisownCommand(@params), options, JsonContext.DisownCommand, JsonContext.DisownResult).ConfigureAwait(false);
+    }
+
     public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null)
     {
         var @params = new GetRealmsParameters(options?.Context, options?.Type);
@@ -60,20 +68,18 @@ public sealed class ScriptModule : Module
         return await Broker.ExecuteCommandAsync(new GetRealmsCommand(@params), options, JsonContext.GetRealmsCommand, JsonContext.GetRealmsResult).ConfigureAwait(false);
     }
 
-    public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null)
+    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync(string functionDeclaration, AddPreloadScriptOptions? options = null)
     {
         var @params = new AddPreloadScriptParameters(functionDeclaration, options?.Arguments, options?.Contexts, options?.Sandbox);
 
-        var result = await Broker.ExecuteCommandAsync(new AddPreloadScriptCommand(@params), options, JsonContext.AddPreloadScriptCommand, JsonContext.AddPreloadScriptResult).ConfigureAwait(false);
-
-        return result.Script;
+        return await Broker.ExecuteCommandAsync(new AddPreloadScriptCommand(@params), options, JsonContext.AddPreloadScriptCommand, JsonContext.AddPreloadScriptResult).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)
+    public async Task<RemovePreloadScriptResult> RemovePreloadScriptAsync(PreloadScript script, RemovePreloadScriptOptions? options = null)
     {
         var @params = new RemovePreloadScriptParameters(script);
 
-        return await Broker.ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options, JsonContext.RemovePreloadScriptCommand, JsonContext.EmptyResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new RemovePreloadScriptCommand(@params), options, JsonContext.RemovePreloadScriptCommand, JsonContext.RemovePreloadScriptResult).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnMessageAsync(Func<MessageEventArgs, Task> handler, SubscriptionOptions? options = null)
