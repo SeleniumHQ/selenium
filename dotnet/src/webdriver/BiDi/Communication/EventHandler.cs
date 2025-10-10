@@ -29,7 +29,7 @@ public abstract class EventHandler(string eventName, IEnumerable<BrowsingContext
 
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; } = contexts;
 
-    public abstract ValueTask InvokeAsync(object args);
+    public abstract ValueTask InvokeAsync(EventArgs args);
 }
 
 internal class AsyncEventHandler<TEventArgs>(string eventName, Func<TEventArgs, Task> func, IEnumerable<BrowsingContext.BrowsingContext>? contexts = null)
@@ -37,7 +37,7 @@ internal class AsyncEventHandler<TEventArgs>(string eventName, Func<TEventArgs, 
 {
     private readonly Func<TEventArgs, Task> _func = func;
 
-    public override async ValueTask InvokeAsync(object args)
+    public override async ValueTask InvokeAsync(EventArgs args)
     {
         await _func((TEventArgs)args).ConfigureAwait(false);
     }
@@ -48,7 +48,7 @@ internal class SyncEventHandler<TEventArgs>(string eventName, Action<TEventArgs>
 {
     private readonly Action<TEventArgs> _action = action;
 
-    public override ValueTask InvokeAsync(object args)
+    public override ValueTask InvokeAsync(EventArgs args)
     {
         _action((TEventArgs)args);
 
