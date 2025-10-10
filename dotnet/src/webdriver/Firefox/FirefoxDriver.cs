@@ -252,7 +252,7 @@ public class FirefoxDriver : WebDriver
     }
 
     /// <summary>
-    /// Sets the command context used when issuing commands to <c>geckodriver</c>.
+    /// Gets the command context used when issuing commands to <c>geckodriver</c>.
     /// </summary>
     /// <exception cref="WebDriverException">If response is not recognized</exception>
     /// <returns>The context of commands.</returns>
@@ -263,7 +263,7 @@ public class FirefoxDriver : WebDriver
         if (commandResponse.Value is not string response
             || !Enum.TryParse(response, ignoreCase: true, out FirefoxCommandContext output))
         {
-            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Do not recognize response: {0}; expected Context or Chrome", commandResponse.Value));
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Could not recognize the response: {0}; expected 'Content' or 'Chrome'", commandResponse.Value));
         }
 
         return output;

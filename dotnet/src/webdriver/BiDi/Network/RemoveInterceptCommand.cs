@@ -21,9 +21,11 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class RemoveInterceptCommand(RemoveInterceptCommandParameters @params)
-    : Command<RemoveInterceptCommandParameters, EmptyResult>(@params, "network.removeIntercept");
+internal sealed class RemoveInterceptCommand(RemoveInterceptParameters @params)
+    : Command<RemoveInterceptParameters, RemoveInterceptResult>(@params, "network.removeIntercept");
 
-internal sealed record RemoveInterceptCommandParameters(Intercept Intercept) : CommandParameters;
+internal sealed record RemoveInterceptParameters(Intercept Intercept) : Parameters;
 
 public class RemoveInterceptOptions : CommandOptions;
+
+public sealed record RemoveInterceptResult : EmptyResult;

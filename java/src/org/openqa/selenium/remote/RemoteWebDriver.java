@@ -88,6 +88,7 @@ import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
@@ -241,46 +242,58 @@ public class RemoteWebDriver
     checkNonW3CCapabilities(capabilities);
     checkChromeW3CFalse(capabilities);
 
-    Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
-
-    if (response == null) {
-      throw new SessionNotCreatedException(
-          "The underlying command executor returned a null response.");
-    }
-
-    Object responseValue = response.getValue();
-
-    if (responseValue == null) {
-      throw new SessionNotCreatedException(
-          "The underlying command executor returned a response without payload: " + response);
-    }
-
-    if (!(responseValue instanceof Map)) {
-      throw new SessionNotCreatedException(
-          "The underlying command executor returned a response with a non well formed payload: "
-              + response);
-    }
-
-    @SuppressWarnings("unchecked")
-    Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
-    MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
-    Platform platform;
     try {
-      if (platformString == null || platformString.isEmpty()) {
-        platform = Platform.ANY;
-      } else {
-        platform = Platform.fromString(platformString);
-      }
-    } catch (WebDriverException e) {
-      // The server probably responded with a name matching the os.name
-      // system property. Try to recover and parse this.
-      platform = Platform.extractFromSysProperty(platformString);
-    }
-    returnedCapabilities.setCapability(PLATFORM_NAME, platform);
+      Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
-    this.capabilities = returnedCapabilities;
-    sessionId = new SessionId(response.getSessionId());
+      if (response == null) {
+        throw new SessionNotCreatedException(
+            "The underlying command executor returned a null response.");
+      }
+
+      Object responseValue = response.getValue();
+
+      if (responseValue == null) {
+        throw new SessionNotCreatedException(
+            "The underlying command executor returned a response without payload: " + response);
+      }
+
+      if (!(responseValue instanceof Map)) {
+        throw new SessionNotCreatedException(
+            "The underlying command executor returned a response with a non well formed payload: "
+                + response);
+      }
+
+      @SuppressWarnings("unchecked")
+      Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
+      MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
+      String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
+      Platform platform;
+      try {
+        if (platformString == null || platformString.isEmpty()) {
+          platform = Platform.ANY;
+        } else {
+          platform = Platform.fromString(platformString);
+        }
+      } catch (WebDriverException e) {
+        // The server probably responded with a name matching the os.name
+        // system property. Try to recover and parse this.
+        platform = Platform.extractFromSysProperty(platformString);
+      }
+      returnedCapabilities.setCapability(PLATFORM_NAME, platform);
+
+      this.capabilities = returnedCapabilities;
+      sessionId = new SessionId(response.getSessionId());
+    } catch (Exception e) {
+      // If session creation fails, stop the driver service to prevent zombie processes
+      if (executor instanceof DriverCommandExecutor) {
+        try {
+          ((DriverCommandExecutor) executor).close();
+        } catch (Exception ignored) {
+          // Ignore cleanup exceptions, we'll propagate the original failure
+        }
+      }
+      throw e;
+    }
   }
 
   public ErrorHandler getErrorHandler() {

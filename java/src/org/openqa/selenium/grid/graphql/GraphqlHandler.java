@@ -28,8 +28,9 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Weigher;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -43,10 +44,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.internal.Require;
@@ -61,17 +63,19 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-public class GraphqlHandler implements HttpHandler {
+public class GraphqlHandler implements HttpHandler, AutoCloseable {
 
   public static final String GRID_SCHEMA =
       "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
   public static final Json JSON = new Json();
+  private static final long MAX_QUERY_SIZE_BYTES = 1024 * 1024; // 1MB limit
   private final Tracer tracer;
   private final Distributor distributor;
   private final NewSessionQueue newSessionQueue;
   private final URI publicUri;
   private final String version;
   private final GraphQL graphQl;
+  private final Cache<String, CompletableFuture<PreparsedDocumentEntry>> cache;
 
   public GraphqlHandler(
       Tracer tracer,
@@ -85,31 +89,43 @@ public class GraphqlHandler implements HttpHandler {
     this.version = Require.nonNull("GridVersion", version);
     this.tracer = Require.nonNull("Tracer", tracer);
 
+    // Container-aware cache sizing: 5% of heap memory
+    long maxMemory = Runtime.getRuntime().maxMemory();
+    long cacheWeightLimit = (long) (maxMemory * 0.05);
+
+    // Custom weigher to prevent single entries from exceeding 10% of cache weight
+    Weigher<String, CompletableFuture<PreparsedDocumentEntry>> weigher =
+        new QueryCacheWeigher(cacheWeightLimit);
+
+    this.cache =
+        Caffeine.newBuilder()
+            .maximumWeight(cacheWeightLimit)
+            .weigher(weigher)
+            .expireAfterAccess(Duration.ofMinutes(30)) // Time-based eviction
+            .build();
+
     GraphQLSchema schema =
         new SchemaGenerator()
             .makeExecutableSchema(buildTypeDefinitionRegistry(), buildRuntimeWiring());
-
-    Cache<String, CompletableFuture<PreparsedDocumentEntry>> cache =
-        CacheBuilder.newBuilder().maximumSize(1024).build();
 
     graphQl =
         GraphQL.newGraphQL(schema)
             .preparsedDocumentProvider(
                 (executionInput, computeFunction) -> {
-                  try {
-                    return cache.get(
-                        executionInput.getQuery(),
-                        () ->
-                            CompletableFuture.supplyAsync(
-                                () -> computeFunction.apply(executionInput)));
-                  } catch (ExecutionException e) {
-                    if (e.getCause() instanceof RuntimeException) {
-                      throw (RuntimeException) e.getCause();
-                    } else if (e.getCause() != null) {
-                      throw new RuntimeException(e.getCause());
-                    }
-                    throw new RuntimeException(e);
+                  String query = executionInput.getQuery();
+
+                  // Query size validation with bypass for oversized queries
+                  if (query.getBytes(StandardCharsets.UTF_8).length > MAX_QUERY_SIZE_BYTES) {
+                    // Bypass cache for oversized queries to prevent cache pollution
+                    return CompletableFuture.supplyAsync(
+                        () -> computeFunction.apply(executionInput));
                   }
+
+                  return cache.get(
+                      query,
+                      key ->
+                          CompletableFuture.supplyAsync(
+                              () -> computeFunction.apply(executionInput)));
                 })
             .build();
   }
@@ -189,6 +205,24 @@ public class GraphqlHandler implements HttpHandler {
     }
   }
 
+  @Override
+  public void close() {
+    // Cancel pending CompletableFutures
+    cache
+        .asMap()
+        .values()
+        .forEach(
+            future -> {
+              if (!future.isDone()) {
+                future.cancel(true);
+              }
+            });
+
+    // Invalidate and clean cache
+    cache.invalidateAll();
+    cache.cleanUp();
+  }
+
   private RuntimeWiring buildRuntimeWiring() {
     GridData gridData = new GridData(distributor, newSessionQueue, publicUri, version);
     return RuntimeWiring.newRuntimeWiring()
@@ -210,6 +244,31 @@ public class GraphqlHandler implements HttpHandler {
       return new SchemaParser().parse(stream);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
+    }
+  }
+
+  // Custom weigher class for query cache
+  private static class QueryCacheWeigher
+      implements Weigher<String, CompletableFuture<PreparsedDocumentEntry>> {
+
+    private final long maxSingleEntryWeight;
+
+    public QueryCacheWeigher(long cacheWeightLimit) {
+      this.maxSingleEntryWeight = (long) (cacheWeightLimit * 0.1); // 10% limit
+    }
+
+    @Override
+    public int weigh(String key, CompletableFuture<PreparsedDocumentEntry> value) {
+      // Estimate memory usage including CompletableFuture overhead
+      long keyWeight = key.length() * 2; // UTF-16 encoding
+      long futureOverhead = 200; // Estimated CompletableFuture overhead
+      long documentOverhead = 500; // Estimated PreparsedDocumentEntry overhead
+
+      long totalWeight = keyWeight + futureOverhead + documentOverhead;
+
+      // Bounds checking to prevent single entries from dominating cache and integer overflow
+      long boundedWeight = Math.min(totalWeight, maxSingleEntryWeight);
+      return (int) Math.min(boundedWeight, Integer.MAX_VALUE);
     }
   }
 }

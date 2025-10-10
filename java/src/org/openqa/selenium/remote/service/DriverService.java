@@ -106,11 +106,11 @@ public class DriverService implements Closeable {
    * @throws IOException If an I/O error occurs.
    */
   protected DriverService(
-      File executable,
+      @Nullable File executable,
       int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment)
+      @Nullable Duration timeout,
+      @Nullable List<String> args,
+      @Nullable Map<String, String> environment)
       throws IOException {
     if (executable != null) {
       this.executable = executable.getCanonicalPath();
@@ -151,6 +151,10 @@ public class DriverService implements Closeable {
   }
 
   public @Nullable String getDriverProperty() {
+    return null;
+  }
+
+  public String getDriverEnvironmentVariable() {
     return null;
   }
 

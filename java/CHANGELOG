@@ -1,3 +1,81 @@
+v4.36.0
+======
+* Add CDP for Chrome 140 and remove 137
+* [grid] close the HttpClient after the session is gone
+* extend the scope of the properties of the HttpCommandExecutor class (#16186)
+* [grid] Improve readTimeout in handle session between Router and Node (#16163)
+* Unifying select class (#16220)
+* Add hooks around getScreenshotAs in WebDriverListener #16232 (#16233)
+* [grid] Simplify node status response handling in Router
+* Refactored selectByContainsVisibleText and selectByVisibleText methods to remove code duplication (#16257)
+* [bidi]: add `DownloadInfo` class and test for `onDownloadWillBegin` (#16267)
+* [grid] update to netty 4.2.4 (#16194)
+* Fix links to exception documentation on website (#16305)
+* Fix concurrency issue in Selenium Manager (#16315)
+* Fix falsy Spotbugs warning about not closed resource (#16318)
+* [grid] Fix regression Distributor rejecting requests when nodes have supported caps but no free slots (#16327)
+* Feat 14291/add jspecify annotations to exception classes pt4 (#16028)
+
+v4.35.0
+======
+* Add CDP for Chrome 139 and remove 136
+* Remove deprecated AppCacheStatus enum from the HTML5 package (#15973)
+* Removing deprecated FirefoxBinary.java and Executable.java
+* Removing deprecated `beforeSetScriptTimeout` and `afterSetScriptTimeout`
+* Removing deprecated SessionStorage commands from ChromiumDriver
+* Removing deprecated SessionStorage commands from FirefoxDriver
+* Removing deprecated SessionStorage class AddWebStorage.java
+* Removing deprecated WebStorage related classes.
+* Feat 14291/jspecify nullable annotation edge driver service (#15972)
+* Removing deprecated LocationContext related classes.
+* Fix Unicode value for OPTION key in Keys enum (#15966)
+* Removing old stream collectors required by Java 8 (#15523)
+* Use static Patterns for regex-matching (#15499)
+* Point made as immutable (#15511)
+* Feat 14291/jspecify nullable annotation chrome driver såervice (#15998)
+* Add @Nullable annotations to Firefox and Gecko driver service  (#15999)
+* Add JSpecify nullable annotations to SafariDriverService parameters (#16000)
+* Add @Nullable annotations to InternetExplorerDriverService parameters (#16001)
+* use generics for AbstractFindByBuilder to avoid excessive casting (#15526)
+* JSpecify annotations for By locators (#14372)
+* JSpecify annotations for capabilities (#14397)
+* Fix various typos in comments (#16022)
+* release underlying HttpClient resources #15710
+* CDP generate getters to ArrayType #16050
+* Fix 15634/ensure driver closed java (#16038)
+* [grid] Migrate from Guava's CacheBuilder to Caffeine (#15547)
+* [grid] Fix race condition and improve logging in LocalSessionMap (#15370)
+* [BiDi] implement emulation (#16070)
+* add `default` as a value for SameSite (#16129)
+* Normalising handling of Shadow Dom elements. (#16149)
+* [grid] Restructuring classes have stateful data and improve Node health checks in LocalDistributor (#16151)
+* add `websocket-port` test and `--connect-existing` check (#15462)
+* [grid] Reduce redundant logs of find slots and retry queue requests by the Distributor (#16155)
+
+v4.34.0
+======
+* Add CDP for Chrome 138 and remove 135
+* Removing deprecated BrowsingContext constructor.
+* [grid] Silent fail on invalid log level (#15796)
+* Removing deprecated OsProcess class.
+* Removing deprecated CommandLine class.
+* Removing deprecated ContextAware interface.
+* Fixing `getCredential` for VirtualAuthenticator
+* Caching the size/length in loops to slightly improve performance (#15852)
+* [feature] add method RemoteWebDriver.isDownloadsEnabled() (#15868)
+* [refactor] use constant `CapabilityType.ENABLE_DOWNLOADS` instead of hard-coded value `se:downloadsEnabled` (#15867)
+* [bidi] Add new fields of BrowsingContextInfo
+* [bidi]Add method to get browsing context tree with root
+* [grid] Add GreedySlotSelector as a built-in slot-selector option (#15897)
+* deprecate FtpProxy (#15907)
+* [BiDi] implement browsingContext.historyUpdated (#15901)
+* [refactor] Remove Empty Space in CommandPayload (#15934)
+* [FEAT] Add macOS-specific keys (OPTION, FN) to Keys enum for improved… (#15910)
+* [BiDi] implement web extensions (#15660)
+* Made ``JsonToWebElementConverter`` methods/fields protected (#15885)
+* [grid] Session can be deleted via Grid UI (#15808)
+* Use Environment variable to set driver location (#15653)
+
 v4.33.0
 ======
 * Add CDP for Chrome 137 and remove 134

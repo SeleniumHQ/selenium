@@ -18,30 +18,13 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class GetUserContextsCommand()
-    : Command<CommandParameters, GetUserContextsResult>(CommandParameters.Empty, "browser.getUserContexts");
+    : Command<Parameters, GetUserContextsResult>(Parameters.Empty, "browser.getUserContexts");
 
 public class GetUserContextsOptions : CommandOptions;
 
-public sealed record GetUserContextsResult : EmptyResult, IReadOnlyList<UserContextInfo>
-{
-    private readonly IReadOnlyList<UserContextInfo> _userContexts;
-
-    internal GetUserContextsResult(IReadOnlyList<UserContextInfo> userContexts)
-    {
-        _userContexts = userContexts;
-    }
-
-    public UserContextInfo this[int index] => _userContexts[index];
-
-    public int Count => _userContexts.Count;
-
-    public IEnumerator<UserContextInfo> GetEnumerator() => _userContexts.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (_userContexts as IEnumerable).GetEnumerator();
-}
+public sealed record GetUserContextsResult(IReadOnlyList<UserContextInfo> UserContexts) : EmptyResult;

@@ -73,7 +73,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return intercept;
     }
 
-    public Task SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)
+    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)
     {
         SetCacheBehaviorOptions setCacheBehaviorOptions = new(options)
         {
