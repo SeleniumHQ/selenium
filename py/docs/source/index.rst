@@ -51,11 +51,11 @@ Install or upgrade the Python bindings with `pip <https://pip.pypa.io/>`.
 
 Latest official release::
 
-    pip install selenium
+    pip install -U selenium
 
 Nightly development release::
 
-    pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ selenium
+    pip install -U --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ selenium
 
 Note: you should consider using a
 `virtual environment <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments>`_
