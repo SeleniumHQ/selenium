@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Extensions.Permissions;
 using System;
 using System.Threading.Tasks;
 
@@ -40,5 +41,10 @@ public static class WebDriverExtensions
         var bidi = await BiDi.ConnectAsync(webSocketUrl, options).ConfigureAwait(false);
 
         return bidi;
+    }
+
+    public static PermissionsModule AsPermissionsAsync(this BiDi bidi)
+    {
+        return Module.Create<PermissionsModule>(bidi, bidi.DefaultBiDiOptions());
     }
 }
