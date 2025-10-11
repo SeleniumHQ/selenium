@@ -58,6 +58,19 @@ public class TracedHttpClient implements HttpClient {
   }
 
   @Override
+  public java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<String>> sendAsyncNative(
+      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<String> handler) {
+    return delegate.sendAsyncNative(request, handler);
+  }
+
+  @Override
+  public java.net.http.HttpResponse<String> sendNative(
+      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<String> handler)
+      throws java.io.IOException, InterruptedException {
+    return delegate.sendNative(request, handler);
+  }
+
+  @Override
   public void close() {
     delegate.close();
   }

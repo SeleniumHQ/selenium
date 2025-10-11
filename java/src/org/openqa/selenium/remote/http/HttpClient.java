@@ -39,6 +39,14 @@ public interface HttpClient extends Closeable, HttpHandler {
 
   default void close() {}
 
+  /** Sends an HTTP request using java.net.http.HttpClient and allows specifying the BodyHandler. */
+  CompletableFuture<java.net.http.HttpResponse<String>> sendAsyncNative(
+      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<String> handler);
+
+  java.net.http.HttpResponse<String> sendNative(
+      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<String> handler)
+      throws java.io.IOException, InterruptedException;
+
   interface Factory {
 
     /**
