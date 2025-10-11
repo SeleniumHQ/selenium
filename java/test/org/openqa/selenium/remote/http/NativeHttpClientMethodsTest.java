@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -191,11 +190,11 @@ class NativeHttpClientMethodsTest {
     }
 
     @Override
-    public CompletableFuture<java.net.http.HttpResponse<String>> sendAsyncNative(
-        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<String> handler) {
+    public <T> CompletableFuture<java.net.http.HttpResponse<T>> sendAsyncNative(
+        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler) {
 
       // Create a mock response for testing asynchronous behavior
-      java.net.http.HttpResponse<String> mockResponse =
+      java.net.http.HttpResponse<T> mockResponse =
           new java.net.http.HttpResponse<>() {
             @Override
             public int statusCode() {
@@ -208,7 +207,7 @@ class NativeHttpClientMethodsTest {
             }
 
             @Override
-            public java.util.Optional<java.net.http.HttpResponse<String>> previousResponse() {
+            public java.util.Optional<java.net.http.HttpResponse<T>> previousResponse() {
               return java.util.Optional.empty();
             }
 
@@ -218,8 +217,11 @@ class NativeHttpClientMethodsTest {
             }
 
             @Override
-            public String body() {
-              return "Test response body";
+            public T body() {
+              // This is a simplified mock that returns a string for any type T
+              @SuppressWarnings("unchecked")
+              T result = (T) "Test response body";
+              return result;
             }
 
             @Override
@@ -242,8 +244,8 @@ class NativeHttpClientMethodsTest {
     }
 
     @Override
-    public java.net.http.HttpResponse<String> sendNative(
-        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<String> handler)
+    public <T> java.net.http.HttpResponse<T> sendNative(
+        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler)
         throws IOException, InterruptedException {
 
       // Simulate network failure if configured to do so
@@ -264,7 +266,7 @@ class NativeHttpClientMethodsTest {
         }
 
         @Override
-        public java.util.Optional<java.net.http.HttpResponse<String>> previousResponse() {
+        public java.util.Optional<java.net.http.HttpResponse<T>> previousResponse() {
           return java.util.Optional.empty();
         }
 
@@ -274,8 +276,11 @@ class NativeHttpClientMethodsTest {
         }
 
         @Override
-        public String body() {
-          return "Test response body";
+        public T body() {
+          // This is a simplified mock that returns a string for any type T
+          @SuppressWarnings("unchecked")
+          T result = (T) "Test response body";
+          return result;
         }
 
         @Override

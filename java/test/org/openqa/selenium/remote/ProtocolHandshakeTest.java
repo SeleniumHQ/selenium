@@ -196,16 +196,15 @@ class ProtocolHandshakeTest {
     }
 
     @Override
-    public java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<String>>
-        sendAsyncNative(
-            java.net.http.HttpRequest request,
-            java.net.http.HttpResponse.BodyHandler<String> handler) {
+    public <T>
+        java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<T>> sendAsyncNative(
+            java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler) {
       throw new UnsupportedOperationException("sendAsyncNative");
     }
 
     @Override
-    public java.net.http.HttpResponse<String> sendNative(
-        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<String> handler)
+    public <T> java.net.http.HttpResponse<T> sendNative(
+        java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler)
         throws java.io.IOException, InterruptedException {
       throw new UnsupportedOperationException("sendNative");
     }
