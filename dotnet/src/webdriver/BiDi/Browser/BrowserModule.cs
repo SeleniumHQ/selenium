@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed class BrowserModule : Module
+public sealed class BrowserModule : InternalModule
 {
     public async Task<CloseResult> CloseAsync(CloseOptions? options = null)
     {

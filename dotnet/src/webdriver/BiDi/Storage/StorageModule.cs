@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-public sealed class StorageModule : Module
+public sealed class StorageModule : InternalModule
 {
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
     {

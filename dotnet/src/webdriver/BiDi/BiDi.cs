@@ -30,15 +30,13 @@ namespace OpenQA.Selenium.BiDi;
 
 public sealed class BiDi : IAsyncDisposable
 {
-    private readonly Broker _broker;
-    private readonly JsonSerializerOptions _jsonOptions;
+    internal Broker Broker { get; }
+    internal JsonSerializerOptions JsonOptions { get; }
     private readonly BiDiJsonSerializerContext _jsonContext;
 
-    private BiDi(string url)
+    public JsonSerializerOptions DefaultBiDiOptions()
     {
-        var uri = new Uri(url);
-
-        _jsonOptions = new JsonSerializerOptions
+        return new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -61,20 +59,27 @@ public sealed class BiDi : IAsyncDisposable
                 new WebExtensionConverter(this),
             }
         };
+    }
 
-        _jsonContext = new BiDiJsonSerializerContext(_jsonOptions);
+    private BiDi(string url)
+    {
+        var uri = new Uri(url);
 
-        _broker = new Broker(this, uri, _jsonOptions);
-        SessionModule = Module.Create<Session.SessionModule>(this, _broker, _jsonOptions, _jsonContext);
-        BrowsingContext = Module.Create<BrowsingContext.BrowsingContextModule>(this, _broker, _jsonOptions, _jsonContext);
-        Browser = Module.Create<Browser.BrowserModule>(this, _broker, _jsonOptions, _jsonContext);
-        Network = Module.Create<Network.NetworkModule>(this, _broker, _jsonOptions, _jsonContext);
-        InputModule = Module.Create<Input.InputModule>(this, _broker, _jsonOptions, _jsonContext);
-        Script = Module.Create<Script.ScriptModule>(this, _broker, _jsonOptions, _jsonContext);
-        Log = Module.Create<Log.LogModule>(this, _broker, _jsonOptions, _jsonContext);
-        Storage = Module.Create<Storage.StorageModule>(this, _broker, _jsonOptions, _jsonContext);
-        WebExtension = Module.Create<WebExtension.WebExtensionModule>(this, _broker, _jsonOptions, _jsonContext);
-        Emulation = Module.Create<Emulation.EmulationModule>(this, _broker, _jsonOptions, _jsonContext);
+        JsonOptions = DefaultBiDiOptions();
+
+        _jsonContext = new BiDiJsonSerializerContext(JsonOptions);
+
+        Broker = new Broker(this, uri, JsonOptions);
+        SessionModule = Module.Create<Session.SessionModule>(this, JsonOptions, _jsonContext);
+        BrowsingContext = Module.Create<BrowsingContext.BrowsingContextModule>(this, JsonOptions, _jsonContext);
+        Browser = Module.Create<Browser.BrowserModule>(this, JsonOptions, _jsonContext);
+        Network = Module.Create<Network.NetworkModule>(this, JsonOptions, _jsonContext);
+        InputModule = Module.Create<Input.InputModule>(this, JsonOptions, _jsonContext);
+        Script = Module.Create<Script.ScriptModule>(this, JsonOptions, _jsonContext);
+        Log = Module.Create<Log.LogModule>(this, JsonOptions, _jsonContext);
+        Storage = Module.Create<Storage.StorageModule>(this, JsonOptions, _jsonContext);
+        WebExtension = Module.Create<WebExtension.WebExtensionModule>(this, JsonOptions, _jsonContext);
+        Emulation = Module.Create<Emulation.EmulationModule>(this, JsonOptions, _jsonContext);
     }
 
     internal Session.SessionModule SessionModule { get; }
@@ -106,7 +111,7 @@ public sealed class BiDi : IAsyncDisposable
     {
         var bidi = new BiDi(url);
 
-        await bidi._broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
+        await bidi.Broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
 
         return bidi;
     }
@@ -118,7 +123,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await _broker.DisposeAsync().ConfigureAwait(false);
+        await Broker.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
     }
 }
