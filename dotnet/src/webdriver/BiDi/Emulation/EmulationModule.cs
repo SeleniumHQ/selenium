@@ -22,7 +22,7 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-public sealed class EmulationModule : InternalModule
+public sealed class EmulationModule : CoreModule
 {
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null)
     {

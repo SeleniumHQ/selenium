@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class SessionModule : InternalModule
+internal sealed class SessionModule : CoreModule
 {
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {

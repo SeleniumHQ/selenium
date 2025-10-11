@@ -23,7 +23,7 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContextModule : InternalModule
+public sealed class BrowsingContextModule : CoreModule
 {
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null)
     {

@@ -24,7 +24,7 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed partial class NetworkModule : InternalModule
+public sealed partial class NetworkModule : CoreModule
 {
     public async Task<Collector> AddDataCollectorAsync(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, AddDataCollectorOptions? options = null)
     {

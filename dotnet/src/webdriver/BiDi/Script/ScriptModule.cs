@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public sealed class ScriptModule : InternalModule
+public sealed class ScriptModule : CoreModule
 {
     public async Task<EvaluateResult> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
     {
