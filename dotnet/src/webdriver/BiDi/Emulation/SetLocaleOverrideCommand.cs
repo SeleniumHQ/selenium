@@ -1,4 +1,4 @@
-// <copyright file="GetTreeResultConverter.cs" company="Selenium Committers">
+// <copyright file="SetLocaleOverrideCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,27 +17,22 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.BrowsingContext;
-using OpenQA.Selenium.BiDi.Communication.Json.Internal;
-using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Communication;
 
-namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
+namespace OpenQA.Selenium.BiDi.Emulation;
 
-internal class GetTreeResultConverter : JsonConverter<GetTreeResult>
+internal sealed class SetLocaleOverrideCommand(SetLocaleOverrideParameters @params)
+    : Command<SetLocaleOverrideParameters, SetLocaleOverrideResult>(@params, "emulation.setLocaleOverride");
+
+internal sealed record SetLocaleOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? Locale, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
+
+public sealed class SetLocaleOverrideOptions : CommandOptions
 {
-    public override GetTreeResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var doc = JsonDocument.ParseValue(ref reader);
-        var contexts = doc.RootElement.GetProperty("contexts").Deserialize(options.GetTypeInfo<IReadOnlyList<BrowsingContextInfo>>());
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
 
-        return new GetTreeResult(contexts!);
-    }
-
-    public override void Write(Utf8JsonWriter writer, GetTreeResult value, JsonSerializerOptions options)
-    {
-        throw new NotImplementedException();
-    }
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
+
+public sealed record SetLocaleOverrideResult : EmptyResult;

@@ -1,4 +1,4 @@
-// <copyright file="GetCookiesResultConverter.cs" company="Selenium Committers">
+// <copyright file="DownloadEndEventArgsConverter.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,28 +17,28 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.BrowsingContext;
 using OpenQA.Selenium.BiDi.Communication.Json.Internal;
-using OpenQA.Selenium.BiDi.Storage;
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 
-namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
+namespace OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 
-internal class GetCookiesResultConverter : JsonConverter<GetCookiesResult>
+// https://github.com/dotnet/runtime/issues/72604
+internal class DownloadEndEventArgsConverter : JsonConverter<DownloadEndEventArgs>
 {
-    public override GetCookiesResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override DownloadEndEventArgs? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        using var doc = JsonDocument.ParseValue(ref reader);
-        var cookies = doc.RootElement.GetProperty("cookies").Deserialize(options.GetTypeInfo<IReadOnlyList<Network.Cookie>>());
-        var partitionKey = doc.RootElement.GetProperty("partitionKey").Deserialize((JsonTypeInfo<PartitionKey>)options.GetTypeInfo(typeof(PartitionKey)));
-
-        return new GetCookiesResult(cookies!, partitionKey!);
+        return reader.GetDiscriminator("status") switch
+        {
+            "canceled" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCanceledEventArgs>()),
+            "complete" => JsonSerializer.Deserialize(ref reader, options.GetTypeInfo<DownloadCompleteEventArgs>()),
+            _ => null,
+        };
     }
 
-    public override void Write(Utf8JsonWriter writer, GetCookiesResult value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, DownloadEndEventArgs value, JsonSerializerOptions options)
     {
         throw new NotImplementedException();
     }

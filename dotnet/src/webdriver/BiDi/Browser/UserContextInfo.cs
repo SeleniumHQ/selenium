@@ -21,4 +21,4 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed record UserContextInfo(UserContext UserContext) : EmptyResult;
+public record UserContextInfo(UserContext UserContext) : EmptyResult;
