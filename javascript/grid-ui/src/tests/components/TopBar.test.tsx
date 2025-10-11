@@ -19,14 +19,29 @@ import * as React from 'react'
 import TopBar from '../../components/TopBar/TopBar'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { CustomThemeProvider } from '../../contexts/ThemeContext'
 
 const user = userEvent.setup()
+
+beforeEach(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(() => ({
+      matches: false,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn()
+    }))
+  })
+})
 
 it('renders basic information', () => {
   const subheaderText = 'Hello, world!'
   const handleClick = jest.fn()
-  render(<TopBar subheader={subheaderText} drawerOpen
-                 toggleDrawer={handleClick}/>)
+  render(
+    <CustomThemeProvider>
+      <TopBar subheader={subheaderText} drawerOpen toggleDrawer={handleClick}/>
+    </CustomThemeProvider>
+  )
   expect(screen.getByText('Selenium Grid')).toBeInTheDocument()
   expect(screen.getByRole('img')).toHaveAttribute('alt', 'Selenium Grid Logo')
   expect(screen.getByText(subheaderText)).toBeInTheDocument()
@@ -35,27 +50,40 @@ it('renders basic information', () => {
 it('can toggle drawer if error flag is not set and the drawer is open',
   async () => {
     const handleClick = jest.fn()
-    render(<TopBar subheader="4.0.0" drawerOpen toggleDrawer={handleClick}/>)
-    const button = screen.getByRole('button')
-    expect(button.getAttribute('aria-label')).toBe('close drawer')
-    await user.click(button)
+    render(
+      <CustomThemeProvider>
+        <TopBar subheader="4.0.0" drawerOpen toggleDrawer={handleClick}/>
+      </CustomThemeProvider>
+    )
+    const drawerButton = screen.getByLabelText('close drawer')
+    expect(drawerButton.getAttribute('aria-label')).toBe('close drawer')
+    await user.click(drawerButton)
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 
 it('can toggle drawer if error flag is not set and the drawer is closed',
   async () => {
     const handleClick = jest.fn()
-    render(<TopBar subheader="4.0.0" toggleDrawer={handleClick}/>)
-    const button = screen.getByRole('button')
-    expect(button.getAttribute('aria-label')).toBe('open drawer')
-    await user.click(button)
+    render(
+      <CustomThemeProvider>
+        <TopBar subheader="4.0.0" toggleDrawer={handleClick}/>
+      </CustomThemeProvider>
+    )
+    const drawerButton = screen.getByLabelText('open drawer')
+    expect(drawerButton.getAttribute('aria-label')).toBe('open drawer')
+    await user.click(drawerButton)
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 
 it('should not toggle drawer if error flag is set', async () => {
   const handleClick = jest.fn()
-  render(<TopBar subheader="4.0.0" error toggleDrawer={handleClick}/>)
-  expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  render(
+    <CustomThemeProvider>
+      <TopBar subheader="4.0.0" error toggleDrawer={handleClick}/>
+    </CustomThemeProvider>
+  )
+  expect(screen.queryByLabelText('close drawer')).not.toBeInTheDocument()
+  expect(screen.queryByLabelText('open drawer')).not.toBeInTheDocument()
   const link = screen.getByRole('link')
   expect(link.getAttribute('href')).toBe('#help')
   await user.click(link)

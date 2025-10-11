@@ -71,7 +71,7 @@ class ScriptEventsTest : BiDiTestFixture
         await bidi.Script.OnRealmDestroyedAsync(tcs.SetResult);
 
         var ctx = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
-        await ctx.CloseAsync();
+        await ctx.Context.CloseAsync();
 
         var args = await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
 

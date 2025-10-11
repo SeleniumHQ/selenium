@@ -46,7 +46,7 @@ public class BiDiTestFixture
 
         bidi = await driver.AsBiDiAsync();
 
-        context = (await bidi.BrowsingContext.GetTreeAsync())[0].Context;
+        context = (await bidi.BrowsingContext.GetTreeAsync()).Contexts[0].Context;
     }
 
     [TearDown]
