@@ -1,3 +1,7 @@
+## 4.36.0
+
+- Add CDP for Chrome 140 and remove 137
+
 ## 4.35.0
 
 - Add CDP for Chrome 139 and remove 136
