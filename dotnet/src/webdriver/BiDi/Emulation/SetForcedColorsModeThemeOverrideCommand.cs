@@ -25,7 +25,7 @@ using System.Text.Json.Serialization;
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetForcedColorsModeThemeOverrideCommand(SetForcedColorsModeThemeOverrideParameters @params)
-    : Command<SetForcedColorsModeThemeOverrideParameters, EmptyResult>(@params, "emulation.setForcedColorsModeThemeOverride");
+    : Command<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult>(@params, "emulation.setForcedColorsModeThemeOverride");
 
 internal sealed record SetForcedColorsModeThemeOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ForcedColorsModeTheme? Theme, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
@@ -42,3 +42,5 @@ public enum ForcedColorsModeTheme
     Light,
     Dark
 }
+
+public sealed record SetForcedColorsModeThemeOverrideResult : EmptyResult;

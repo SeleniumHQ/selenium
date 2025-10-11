@@ -22,8 +22,10 @@ using OpenQA.Selenium.BiDi.Communication;
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed class FailRequestCommand(FailRequestParameters @params)
-    : Command<FailRequestParameters, EmptyResult>(@params, "network.failRequest");
+    : Command<FailRequestParameters, FailRequestResult>(@params, "network.failRequest");
 
 internal sealed record FailRequestParameters(Request Request) : Parameters;
 
 public sealed class FailRequestOptions : CommandOptions;
+
+public sealed record FailRequestResult : EmptyResult;

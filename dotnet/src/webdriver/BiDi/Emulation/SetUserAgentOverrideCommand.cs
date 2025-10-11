@@ -24,7 +24,7 @@ using System.Text.Json.Serialization;
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetUserAgentOverrideCommand(SetUserAgentOverrideParameters @params)
-    : Command<SetUserAgentOverrideParameters, EmptyResult>(@params, "emulation.setUserAgentOverride");
+    : Command<SetUserAgentOverrideParameters, SetUserAgentOverrideResult>(@params, "emulation.setUserAgentOverride");
 
 internal sealed record SetUserAgentOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] string? UserAgent, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
@@ -34,3 +34,5 @@ public sealed class SetUserAgentOverrideOptions : CommandOptions
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
+
+public sealed record SetUserAgentOverrideResult : EmptyResult;
