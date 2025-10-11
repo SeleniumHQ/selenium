@@ -17,7 +17,7 @@
 
 from typing import Optional
 
-from .command import Command
+from selenium.webdriver.remote.command import Command
 
 
 class FedCM:

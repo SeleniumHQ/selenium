@@ -153,9 +153,11 @@ class ChromiumOptions(ArgOptions):
         - When enabled, this automatically adds the required Chromium flags:
             - --enable-unsafe-extension-debugging
             - --remote-debugging-pipe
+        - When disabled, this removes BOTH flags listed above, even if they were manually added via add_argument()
+          before enabling webextensions.
         - Enabling --remote-debugging-pipe makes the connection b/w chromedriver
-        and the browser use a pipe instead of a port, disabling many CDP functionalities
-        like devtools
+          and the browser use a pipe instead of a port, disabling many CDP functionalities
+          like devtools
         """
         self._enable_webextensions = value
         if value:

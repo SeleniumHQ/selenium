@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
@@ -96,11 +97,11 @@ public class EdgeDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public EdgeDriverService(
-      File executable,
+      @Nullable File executable,
       int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment)
+      @Nullable Duration timeout,
+      @Nullable List<String> args,
+      @Nullable Map<String, String> environment)
       throws IOException {
     super(executable, port, timeout, List.copyOf(args), Map.copyOf(environment));
   }
@@ -139,13 +140,13 @@ public class EdgeDriverService extends DriverService {
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<EdgeDriverService, Builder> {
 
-    private Boolean disableBuildCheck;
-    private Boolean readableTimestamp;
-    private Boolean appendLog;
-    private Boolean verbose;
-    private Boolean silent;
-    private String allowedListIps;
-    private ChromiumDriverLogLevel logLevel;
+    @Nullable private Boolean disableBuildCheck;
+    @Nullable private Boolean readableTimestamp;
+    @Nullable private Boolean appendLog;
+    @Nullable private Boolean verbose;
+    @Nullable private Boolean silent;
+    @Nullable private String allowedListIps;
+    @Nullable private ChromiumDriverLogLevel logLevel;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -196,7 +197,7 @@ public class EdgeDriverService extends DriverService {
      * @param logLevel {@link ChromiumDriverLogLevel} for desired log level output.
      * @return A self reference.
      */
-    public Builder withLoglevel(ChromiumDriverLogLevel logLevel) {
+    public Builder withLoglevel(@Nullable ChromiumDriverLogLevel logLevel) {
       this.logLevel = logLevel;
       this.silent = false;
       this.verbose = false;
@@ -238,7 +239,7 @@ public class EdgeDriverService extends DriverService {
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
      */
-    public Builder withAllowedListIps(String allowedListIps) {
+    public Builder withAllowedListIps(@Nullable String allowedListIps) {
       this.allowedListIps = allowedListIps;
       return this;
     }
@@ -249,7 +250,7 @@ public class EdgeDriverService extends DriverService {
      * @param readableTimestamp Whether the timestamp of the log is readable.
      * @return A self reference.
      */
-    public Builder withReadableTimestamp(Boolean readableTimestamp) {
+    public Builder withReadableTimestamp(@Nullable Boolean readableTimestamp) {
       this.readableTimestamp = readableTimestamp;
       return this;
     }
@@ -321,7 +322,11 @@ public class EdgeDriverService extends DriverService {
 
     @Override
     protected EdgeDriverService createDriverService(
-        File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
+        @Nullable File exe,
+        int port,
+        @Nullable Duration timeout,
+        @Nullable List<String> args,
+        @Nullable Map<String, String> environment) {
       try {
         return new EdgeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

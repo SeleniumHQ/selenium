@@ -29,7 +29,7 @@ module Selenium
       # @param [Hash] opts Options for this instance
       # @option opts [Numeric] :timeout (5) Seconds to wait before timing out.
       # @option opts [Numeric] :interval (0.2) Seconds to sleep between polls.
-      # @option opts [String] :message Exception mesage if timed out.
+      # @option opts [String] :message Exception message if timed out.
       # @option opts [Array, Exception] :ignore Exceptions to ignore while polling (default: Error::NoSuchElementError)
       #
 

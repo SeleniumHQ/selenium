@@ -369,6 +369,7 @@ public enum Platform {
     }
   };
 
+  private static final Pattern VERSION_PATTERN = Pattern.compile("^(\\d+)\\.(\\d+).*");
   private static @Nullable Platform current;
   private final String[] partOfOsName;
   private int minorVersion = 0;
@@ -389,21 +390,20 @@ public enum Platform {
 
       String version = System.getProperty("os.version", "0.0.0");
       int major = 0;
-      int min = 0;
+      int minor = 0;
 
-      Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+).*");
-      Matcher matcher = pattern.matcher(version);
+      final Matcher matcher = VERSION_PATTERN.matcher(version);
       if (matcher.matches()) {
         try {
           major = Integer.parseInt(matcher.group(1));
-          min = Integer.parseInt(matcher.group(2));
+          minor = Integer.parseInt(matcher.group(2));
         } catch (NumberFormatException e) {
           // These things happen
         }
       }
 
       current.majorVersion = major;
-      current.minorVersion = min;
+      current.minorVersion = minor;
     }
     return current;
   }

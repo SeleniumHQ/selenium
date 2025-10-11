@@ -399,7 +399,7 @@ DriverService.Builder = class {
   /**
    * Defines the environment to start the server under. This setting will be
    * inherited by every browser session started by the server. By default, the
-   * server will inherit the enviroment of the current process.
+   * server will inherit the environment of the current process.
    *
    * @param {(Map<string, string>|Object<string, string>|null)} env The desired
    *     environment to use, or `null` if the server should inherit the
