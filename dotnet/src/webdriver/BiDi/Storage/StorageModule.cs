@@ -18,12 +18,17 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-public sealed class StorageModule : CoreModule
+public sealed class StorageModule : Module
 {
+    internal new BiDiJsonSerializerContext JsonContext => (BiDiJsonSerializerContext)base.JsonContext;
+
     public async Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
     {
         var @params = new GetCookiesParameters(options?.Filter, options?.Partition);
@@ -43,5 +48,9 @@ public sealed class StorageModule : CoreModule
         var @params = new SetCookieParameters(cookie, options?.Partition);
 
         return await Broker.ExecuteCommandAsync(new SetCookieCommand(@params), options, JsonContext.SetCookieCommand, JsonContext.SetCookieResult).ConfigureAwait(false);
+    }
+    protected override JsonSerializerContext Initialize(JsonSerializerOptions options)
+    {
+        return new BiDiJsonSerializerContext(options);
     }
 }

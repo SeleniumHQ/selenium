@@ -17,13 +17,18 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-public sealed class EmulationModule : CoreModule
+public sealed class EmulationModule : Module
 {
+    internal new BiDiJsonSerializerContext JsonContext => (BiDiJsonSerializerContext)base.JsonContext;
+
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null)
     {
         var @params = new SetTimezoneOverrideParameters(timezone, options?.Contexts, options?.UserContexts);
@@ -87,5 +92,9 @@ public sealed class EmulationModule : CoreModule
         var @params = new SetGeolocationOverridePositionErrorParameters(new GeolocationPositionError(), options?.Contexts, options?.UserContexts);
 
         return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, JsonContext.SetGeolocationOverrideCommand, JsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
+    }
+    protected override JsonSerializerContext Initialize(JsonSerializerOptions options)
+    {
+        return new BiDiJsonSerializerContext(options);
     }
 }

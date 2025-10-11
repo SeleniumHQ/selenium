@@ -18,13 +18,18 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class SessionModule : CoreModule
+internal sealed class SessionModule : Module
 {
+    internal new BiDiJsonSerializerContext JsonContext => (BiDiJsonSerializerContext)base.JsonContext;
+
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {
         return await Broker.ExecuteCommandAsync(new StatusCommand(), options, JsonContext.StatusCommand, JsonContext.StatusResult).ConfigureAwait(false);
@@ -54,5 +59,9 @@ internal sealed class SessionModule : CoreModule
     public async Task<EndResult> EndAsync(EndOptions? options = null)
     {
         return await Broker.ExecuteCommandAsync(new EndCommand(), options, JsonContext.EndCommand, JsonContext.EndResult).ConfigureAwait(false);
+    }
+    protected override JsonSerializerContext Initialize(JsonSerializerOptions options)
+    {
+        return new BiDiJsonSerializerContext(options);
     }
 }
