@@ -43,7 +43,7 @@ public static class WebDriverExtensions
         return bidi;
     }
 
-    public static PermissionsModule AsPermissionsAsync(this BiDi bidi)
+    public static PermissionsModule AsPermissions(this BiDi bidi)
     {
         return Module.Create<PermissionsModule>(bidi, bidi.DefaultBiDiOptions());
     }

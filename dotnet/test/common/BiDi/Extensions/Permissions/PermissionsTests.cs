@@ -30,7 +30,7 @@ internal class PermissionsTests : BiDiTestFixture
 
         Assert.That(before.AsSuccessResult(), Is.EqualTo(new StringRemoteValue("prompt")));
 
-        var permissions = bidi.AsPermissionsAsync();
+        var permissions = bidi.AsPermissions();
         await permissions.SetPermissionAsync("geolocation", PermissionState.Denied, newPage, userContext.UserContext);
 
         var after = await window.Script.CallFunctionAsync("""
