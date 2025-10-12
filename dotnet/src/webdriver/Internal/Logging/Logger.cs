@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace OpenQA.Selenium.Internal.Logging;
 
@@ -37,36 +38,43 @@ internal sealed class Logger : ILogger
 
     public Type Issuer { get; internal set; }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Trace(string message)
     {
         LogMessage(LogEventLevel.Trace, message);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Debug(string message)
     {
         LogMessage(LogEventLevel.Debug, message);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Info(string message)
     {
         LogMessage(LogEventLevel.Info, message);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Warn(string message)
     {
         LogMessage(LogEventLevel.Warn, message);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Error(string message)
     {
         LogMessage(LogEventLevel.Error, message);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsEnabled(LogEventLevel level)
     {
         return Log.CurrentContext.IsEnabled(this, level);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void LogMessage(LogEventLevel level, string message)
     {
         Log.CurrentContext.EmitMessage(this, level, message);
