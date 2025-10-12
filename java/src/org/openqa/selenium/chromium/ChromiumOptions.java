@@ -277,7 +277,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
 
     // Handle WebSocket configuration capabilities
     if ("se:webSocketTimeout".equals(capabilityName)) {
-      return webSocketTimeout.toSeconds();
+      return webSocketTimeout.toMillis();
     }
     if ("se:webSocketInterval".equals(capabilityName)) {
       return webSocketInterval.toMillis();

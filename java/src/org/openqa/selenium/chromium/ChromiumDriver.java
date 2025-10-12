@@ -126,7 +126,7 @@ public class ChromiumDriver extends RemoteWebDriver
 
     Object timeoutCapability = originalCapabilities.getCapability("se:webSocketTimeout");
     if (timeoutCapability instanceof Number) {
-      webSocketTimeout = Duration.ofSeconds(((Number) timeoutCapability).longValue());
+      webSocketTimeout = Duration.ofMillis(((Number) timeoutCapability).longValue());
     }
 
     Object intervalCapability = originalCapabilities.getCapability("se:webSocketInterval");
