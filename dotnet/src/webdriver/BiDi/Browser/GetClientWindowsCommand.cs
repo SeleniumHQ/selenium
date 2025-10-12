@@ -18,10 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
@@ -30,21 +27,4 @@ internal sealed class GetClientWindowsCommand()
 
 public sealed class GetClientWindowsOptions : CommandOptions;
 
-[JsonConverter(typeof(GetClientWindowsResultConverter))]
-public sealed record GetClientWindowsResult : EmptyResult, IReadOnlyList<ClientWindowInfo>
-{
-    internal GetClientWindowsResult(IReadOnlyList<ClientWindowInfo> clientWindows)
-    {
-        ClientWindows = clientWindows;
-    }
-
-    public IReadOnlyList<ClientWindowInfo> ClientWindows { get; }
-
-    public ClientWindowInfo this[int index] => ClientWindows[index];
-
-    public int Count => ClientWindows.Count;
-
-    public IEnumerator<ClientWindowInfo> GetEnumerator() => ClientWindows.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (ClientWindows as IEnumerable).GetEnumerator();
-}
+public sealed record GetClientWindowsResult(IReadOnlyList<ClientWindowInfo> ClientWindows) : EmptyResult;

@@ -18,10 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
@@ -30,21 +27,4 @@ internal sealed class GetUserContextsCommand()
 
 public class GetUserContextsOptions : CommandOptions;
 
-[JsonConverter(typeof(GetUserContextsResultConverter))]
-public sealed record GetUserContextsResult : EmptyResult, IReadOnlyList<UserContextInfo>
-{
-    internal GetUserContextsResult(IReadOnlyList<UserContextInfo> userContexts)
-    {
-        UserContexts = userContexts;
-    }
-
-    public IReadOnlyList<UserContextInfo> UserContexts { get; }
-
-    public UserContextInfo this[int index] => UserContexts[index];
-
-    public int Count => UserContexts.Count;
-
-    public IEnumerator<UserContextInfo> GetEnumerator() => UserContexts.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (UserContexts as IEnumerable).GetEnumerator();
-}
+public sealed record GetUserContextsResult(IReadOnlyList<UserContextInfo> UserContexts) : EmptyResult;
