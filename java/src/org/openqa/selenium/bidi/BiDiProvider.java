@@ -17,13 +17,15 @@
 
 package org.openqa.selenium.bidi;
 
+import static org.openqa.selenium.concurrent.Lazy.lazy;
+
 import com.google.auto.service.AutoService;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.function.Predicate;
-
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.concurrent.Lazy;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -46,34 +48,29 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
   @Override
   public HasBiDi getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
     return new HasBiDi() {
-      private volatile BiDi biDi;
-      private final Object lock = new Object();
+      private final Lazy<BiDi> biDi = lazy(() -> establishBiDiConnection(caps));
 
       @Override
       public Optional<BiDi> maybeGetBiDi() {
-        return Optional.ofNullable(biDi);
+        return biDi.getIfInitialized();
       }
 
       @Override
       public BiDi getBiDi() {
-        if (biDi == null) {
-          synchronized (lock) {
-            if (biDi == null) {
-              URI wsUri =
-                getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
-
-              HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-              ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
-              HttpClient wsClient = clientFactory.createClient(wsConfig);
-              Connection connection = new Connection(wsClient, wsUri.toString());
-
-              biDi = new BiDi(connection);
-            }
-          }
-        }
-        return biDi;
+        return biDi.get();
       }
     };
+  }
+
+  private BiDi establishBiDiConnection(Capabilities caps) {
+    URI wsUri = getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
+
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+    HttpClient wsClient = clientFactory.createClient(wsConfig);
+    Connection connection = new Connection(wsClient, wsUri.toString());
+
+    return new BiDi(connection);
   }
 
   private Optional<URI> getBiDiUrl(Capabilities caps) {

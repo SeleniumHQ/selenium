@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.devtools;
 
+import static org.openqa.selenium.concurrent.Lazy.lazy;
+
 import com.google.auto.service.AutoService;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Predicate;
-
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.concurrent.Lazy;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
@@ -43,35 +45,29 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   @Override
   public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
-    return new HasDevTools() {
-      private volatile DevTools devTools;
-      private final Object lock = new Object();
+    final Lazy<DevTools> devTools = lazy(() -> establishDevToolsConnection(caps));
 
+    return new HasDevTools() {
       @Override
       public Optional<DevTools> maybeGetDevTools() {
-        return Optional.ofNullable(devTools);
+        return devTools.getIfInitialized();
       }
 
       @Override
       public DevTools getDevTools() {
-        if (devTools == null) {
-          synchronized (lock) {
-            if (devTools == null) {
-              Object cdpVersion = caps.getCapability("se:cdpVersion");
-              String version =
-                cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
-
-              CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
-              this.devTools =
-                SeleniumCdpConnection.create(caps)
-                  .map(conn -> new DevTools(info::getDomains, conn))
-                  .orElseThrow(() -> new DevToolsException("Unable to create DevTools connection"));
-            }
-          }
-        }
-        return devTools;
+        return devTools.get();
       }
     };
+  }
+
+  private DevTools establishDevToolsConnection(Capabilities caps) {
+    Object cdpVersion = caps.getCapability("se:cdpVersion");
+    String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
+
+    CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
+    return SeleniumCdpConnection.create(caps)
+        .map(conn -> new DevTools(info::getDomains, conn))
+        .orElseThrow(() -> new DevToolsException("Unable to create DevTools connection"));
   }
 
   private String getCdpUrl(Capabilities caps) {
