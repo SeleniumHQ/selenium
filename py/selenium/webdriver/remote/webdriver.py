@@ -1212,7 +1212,9 @@ class WebDriver(BaseWebDriver):
         if self.caps["browserName"].lower() == "firefox":
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
         self._websocket_connection = WebSocketConnection(
-            ws_url, self.client_config.websocket_timeout, self.client_config.websocket_interval
+            ws_url,
+            self.command_executor.client_config.websocket_timeout,
+            self.command_executor.client_config.websocket_interval,
         )
         targets = self._websocket_connection.execute(self._devtools.target.get_targets())
         for target in targets:
@@ -1263,7 +1265,9 @@ class WebDriver(BaseWebDriver):
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
         self._websocket_connection = WebSocketConnection(
-            ws_url, self.client_config.websocket_timeout, self.client_config.websocket_interval
+            ws_url,
+            self.command_executor.client_config.websocket_timeout,
+            self.command_executor.client_config.websocket_interval,
         )
 
     @property
