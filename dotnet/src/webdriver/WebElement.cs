@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Interactions.Internal;
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,6 +25,8 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 

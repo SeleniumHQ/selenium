@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Environment;
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 

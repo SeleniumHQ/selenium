@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Transport;
-using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -27,6 +25,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Communication.Transport;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.BiDi.Communication;
 

@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium.BiDi.BrowsingContext;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 

@@ -17,16 +17,16 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
-using OpenQA.Selenium.DevTools;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Diagnostics.CodeAnalysis;
+using OpenQA.Selenium.DevTools;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Remote;
 

@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Edge;
 using System;
+using OpenQA.Selenium.Edge;
 
 namespace OpenQA.Selenium.Remote;
 

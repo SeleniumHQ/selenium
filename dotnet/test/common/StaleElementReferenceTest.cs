@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
 using System.Drawing;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium;
 

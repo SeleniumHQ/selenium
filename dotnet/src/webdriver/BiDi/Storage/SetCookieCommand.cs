@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 

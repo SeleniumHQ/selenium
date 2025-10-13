@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium;
 

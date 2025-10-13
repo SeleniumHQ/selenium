@@ -93,28 +93,28 @@ public static class Base64UrlEncoder
         switch (lengthmod3)
         {
             case 2:
-                {
-                    byte d0 = inArray[i];
-                    byte d1 = inArray[i + 1];
+            {
+                byte d0 = inArray[i];
+                byte d1 = inArray[i + 1];
 
-                    output[j + 0] = table[d0 >> 2];
-                    output[j + 1] = table[((d0 & 0x03) << 4) | (d1 >> 4)];
-                    output[j + 2] = table[(d1 & 0x0f) << 2];
-                    j += 3;
-                }
-                break;
+                output[j + 0] = table[d0 >> 2];
+                output[j + 1] = table[((d0 & 0x03) << 4) | (d1 >> 4)];
+                output[j + 2] = table[(d1 & 0x0f) << 2];
+                j += 3;
+            }
+            break;
 
             case 1:
-                {
-                    byte d0 = inArray[i];
+            {
+                byte d0 = inArray[i];
 
-                    output[j + 0] = table[d0 >> 2];
-                    output[j + 1] = table[(d0 & 0x03) << 4];
-                    j += 2;
-                }
-                break;
+                output[j + 0] = table[d0 >> 2];
+                output[j + 1] = table[(d0 & 0x03) << 4];
+                j += 2;
+            }
+            break;
 
-                //default or case 0: no further operations are needed.
+            //default or case 0: no further operations are needed.
         }
 
         return new string(output, 0, j);

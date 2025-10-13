@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools;
 
 namespace OpenQA.Selenium;
 

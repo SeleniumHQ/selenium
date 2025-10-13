@@ -75,30 +75,30 @@ internal class ResponseValueJsonConverter : JsonConverter<object>
         switch (reader.TokenType)
         {
             case JsonTokenType.StartObject:
+            {
+                Dictionary<string, object?> dictionaryValue = [];
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
                 {
-                    Dictionary<string, object?> dictionaryValue = [];
-                    while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
-                    {
-                        string elementKey = reader.GetString()!;
-                        reader.Read();
-                        dictionaryValue.Add(elementKey, ProcessReadToken(ref reader, options));
-                    }
-
-                    processedObject = dictionaryValue;
-                    break;
+                    string elementKey = reader.GetString()!;
+                    reader.Read();
+                    dictionaryValue.Add(elementKey, ProcessReadToken(ref reader, options));
                 }
+
+                processedObject = dictionaryValue;
+                break;
+            }
 
             case JsonTokenType.StartArray:
+            {
+                List<object?> arrayValue = [];
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
                 {
-                    List<object?> arrayValue = [];
-                    while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-                    {
-                        arrayValue.Add(ProcessReadToken(ref reader, options));
-                    }
-
-                    processedObject = arrayValue.ToArray();
-                    break;
+                    arrayValue.Add(ProcessReadToken(ref reader, options));
                 }
+
+                processedObject = arrayValue.ToArray();
+                break;
+            }
 
             case JsonTokenType.Null:
                 processedObject = null;
@@ -113,22 +113,22 @@ internal class ResponseValueJsonConverter : JsonConverter<object>
                 processedObject = reader.GetString();
                 break;
             case JsonTokenType.Number:
+            {
+                if (reader.TryGetInt64(out long longValue))
                 {
-                    if (reader.TryGetInt64(out long longValue))
-                    {
-                        processedObject = longValue;
-                    }
-                    else if (reader.TryGetDouble(out double doubleValue))
-                    {
-                        processedObject = doubleValue;
-                    }
-                    else
-                    {
-                        throw new JsonException($"Unrecognized '{JsonElement.ParseValue(ref reader)}' token as a number value.");
-                    }
-
-                    break;
+                    processedObject = longValue;
                 }
+                else if (reader.TryGetDouble(out double doubleValue))
+                {
+                    processedObject = doubleValue;
+                }
+                else
+                {
+                    throw new JsonException($"Unrecognized '{JsonElement.ParseValue(ref reader)}' token as a number value.");
+                }
+
+                break;
+            }
 
             default:
                 throw new JsonException($"Unrecognized '{reader.TokenType}' token type while parsing command response.");

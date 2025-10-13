@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Chromium;
-using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Chromium;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Edge;
 

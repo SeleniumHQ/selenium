@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using OpenQA.Selenium.Internal.Logging;
 
 namespace OpenQA.Selenium.Internal;
 

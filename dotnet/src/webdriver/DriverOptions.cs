@@ -17,12 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium;
 

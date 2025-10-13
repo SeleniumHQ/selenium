@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 

@@ -17,14 +17,14 @@
 // under the License.
 // </copyright>
 
-using Bazel;
-using Newtonsoft.Json;
-using NUnit.Framework;
-using OpenQA.Selenium.Internal;
 using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Bazel;
+using Newtonsoft.Json;
+using NUnit.Framework;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Environment;
 

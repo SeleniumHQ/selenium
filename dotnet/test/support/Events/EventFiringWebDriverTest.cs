@@ -17,12 +17,12 @@
 // under the License.
 // </copyright>
 
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using Moq;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Support.Events;
 

@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.VirtualAuth;
 

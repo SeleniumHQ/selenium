@@ -87,18 +87,18 @@ public abstract record LocalValue
 
             case { } when value.GetType().GetInterfaces()
                 .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISet<>)):
+            {
+                IEnumerable set = (IEnumerable)value;
+
+                List<LocalValue> setValues = [];
+
+                foreach (var obj in set)
                 {
-                    IEnumerable set = (IEnumerable)value;
-
-                    List<LocalValue> setValues = [];
-
-                    foreach (var obj in set)
-                    {
-                        setValues.Add(ConvertFrom(obj));
-                    }
-
-                    return new SetLocalValue(setValues);
+                    setValues.Add(ConvertFrom(obj));
                 }
+
+                return new SetLocalValue(setValues);
+            }
 
             case IDictionary dictionary:
                 return ConvertFrom(dictionary);

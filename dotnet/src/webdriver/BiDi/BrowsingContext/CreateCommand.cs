@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
 using OpenQA.Selenium.BiDi.Communication;
 using OpenQA.Selenium.BiDi.Communication.Json.Converters;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 

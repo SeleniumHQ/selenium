@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium.Environment;
 

@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Log;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
+using OpenQA.Selenium.BiDi.Log;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 

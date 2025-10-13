@@ -17,10 +17,10 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
-using OpenQA.Selenium.Chrome;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using NUnit.Framework;
+using OpenQA.Selenium.Chrome;
 
 namespace OpenQA.Selenium;
 

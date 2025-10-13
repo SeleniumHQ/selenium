@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Interactions;
 using System;
 using System.Collections.Generic;
+using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium;
 

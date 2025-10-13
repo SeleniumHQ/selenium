@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
 using OpenQA.Selenium.BiDi.Communication;
 using OpenQA.Selenium.BiDi.Communication.Json;
-using System.Text.Json;
 
 namespace OpenQA.Selenium.BiDi;
 

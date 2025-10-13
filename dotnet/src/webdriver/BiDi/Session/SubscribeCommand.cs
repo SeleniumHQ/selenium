@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
+using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Session;
 

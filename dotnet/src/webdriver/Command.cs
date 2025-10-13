@@ -17,12 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 

@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Chromium;
 using System;
 using System.Globalization;
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Chrome;
 

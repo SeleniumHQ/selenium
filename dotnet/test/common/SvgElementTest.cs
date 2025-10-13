@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium;
 

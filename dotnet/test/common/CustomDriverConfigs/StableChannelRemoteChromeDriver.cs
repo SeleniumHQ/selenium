@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Chrome;
 using System;
+using OpenQA.Selenium.Chrome;
 
 namespace OpenQA.Selenium.Remote;
 

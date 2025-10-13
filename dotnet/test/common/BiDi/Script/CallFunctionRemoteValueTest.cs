@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using NUnit.Framework;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
