@@ -189,4 +189,17 @@ class WebDriverFixture {
         response.setSessionId(UUID.randomUUID().toString());
         return response;
       };
+
+  public static final Function<Command, Response> validSessionResponder = cmd -> {
+    if (DriverCommand.NEW_SESSION.equals(cmd.getName())) {
+      Response response = new Response();
+      response.setState("success");
+      response.setSessionId("mock-session-id");
+      // Capabilities con browserVersion
+      response.setValue(Map.of("browserVersion", "123.45.67"));
+      return response;
+    }
+    // Para otros comandos, devolver null o como se requiera
+    return null;
+  };
 }

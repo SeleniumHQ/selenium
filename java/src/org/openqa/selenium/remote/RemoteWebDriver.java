@@ -868,6 +868,17 @@ public class RemoteWebDriver
         getClass().getSimpleName(), caps.getBrowserName(), platformName, getSessionId());
   }
 
+  /**
+   * Returns the browser version from the capabilities.
+   * Compatible with Java 11 and Selenium 4.
+   *
+   * @return The browser version as a String, or empty string if not available.
+   */
+  public String getBrowserVersion() {
+    Object version = getCapabilities().getCapability("browserVersion");
+    return version != null ? version.toString() : "";
+  }
+
   public enum When {
     BEFORE,
     AFTER,

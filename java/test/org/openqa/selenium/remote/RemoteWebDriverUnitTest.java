@@ -825,4 +825,22 @@ class RemoteWebDriverUnitTest {
 
     fixture.verifyCommands(new CommandPayload(DriverCommand.GET_DOWNLOADABLE_FILES, emptyMap()));
   }
+
+  /**
+   * Tests that getBrowserVersion() returns the correct version from capabilities.
+   * Ensures compatibility and correct extraction of browser version.
+   */
+  @Test
+  void canGetBrowserVersionFromCapabilities() {
+    // Arrange: create capabilities with browserVersion
+    String expectedVersion = "123.45.67";
+    ImmutableCapabilities capabilities = new ImmutableCapabilities("browserVersion", expectedVersion);
+    WebDriverFixture fixture = new WebDriverFixture(capabilities, WebDriverFixture.validSessionResponder);
+
+    // Act: get browser version
+    String actualVersion = ((RemoteWebDriver) fixture.driver).getBrowserVersion();
+
+    // Assert: verify the version matches
+    assertThat(actualVersion).isEqualTo(expectedVersion);
+  }
 }
