@@ -26,7 +26,6 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.concurrent.Lazy;
 import org.openqa.selenium.remote.AugmenterProvider;
@@ -53,7 +52,10 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
   public HasBiDi getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
     final Lazy<BiDi> biDi = lazy(() -> establishBiDiConnection(caps));
 
-    LOG.log(INFO, "WebDriver augmented with BiDi interface; connection will not be verified until first use.");
+    LOG.log(
+        INFO,
+        "WebDriver augmented with BiDi interface; connection will not be verified until first"
+            + " use.");
 
     return new HasBiDi() {
       @Override

@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 @NullMarked
 package org.openqa.selenium.concurrent;
 
