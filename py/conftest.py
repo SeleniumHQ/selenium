@@ -489,6 +489,10 @@ def firefox_options(request):
     except (AttributeError, TypeError):
         raise Exception("This test requires a --driver to be specified")
 
+    # skip if not Firefox or Remote
+    if driver_class not in ("firefox", "remote"):
+        pytest.skip(f"This test requires Firefox or Remote. Got {driver_class}")
+
     # skip tests in the 'remote' directory if run with a local driver
     if request.node.path.parts[-2] == "remote" and getattr(_supported_drivers, driver_class) != "Remote":
         pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
@@ -506,15 +510,17 @@ def chromium_options(request):
     except (AttributeError, TypeError):
         raise Exception("This test requires a --driver to be specified")
 
-    # Skip if not Chrome or Edge
-    if driver_class not in ("chrome", "edge"):
-        pytest.skip(f"This test requires Chrome or Edge, got {driver_class}")
+    # skip if not Chrome, Edge, or Remote
+    if driver_class not in ("chrome", "edge", "remote"):
+        pytest.skip(f"This test requires Chrome, Edge, or Remote. Got {driver_class}")
 
     # skip tests in the 'remote' directory if run with a local driver
     if request.node.path.parts[-2] == "remote" and getattr(_supported_drivers, driver_class) != "Remote":
         pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
 
-    if driver_class in ("chrome", "edge"):
-        options = Driver.clean_options(driver_class, request)
+    if driver_class in ("chrome", "remote"):
+        options = Driver.clean_options("chrome", request)
+    else:
+        options = Driver.clean_options("edge", request)
 
     return options
