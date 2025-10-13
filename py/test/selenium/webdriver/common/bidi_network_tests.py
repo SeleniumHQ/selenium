@@ -99,6 +99,27 @@ def test_remove_auth_handler(driver):
     assert driver.network.intercepts == [], "Intercept not removed"
 
 
+def test_handler_with_classic_navigation(driver, pages):
+    """Verify request handlers also work with classic navigation."""
+    if driver.caps["browserName"] == "chrome":
+        pytest.skip(reason="Request handlers don't yet work in Chrome when using classic navigation")
+    if driver.caps["browserName"] == "edge":
+        pytest.skip(reason="Request handlers don't yet work in Edge when using classic navigation")
+
+    exceptions = []
+
+    def callback(request: Request):
+        try:
+            request.continue_request()
+        except WebDriverException as e:
+            exceptions.append(e)
+
+    callback_id = driver.network.add_request_handler("before_request", callback)
+    assert callback_id is not None, "Request handler not added"
+    pages.load("formPage.html")
+    assert len(exceptions) == 0, "Exception raised when continuing request in callback"
+
+
 @pytest.mark.xfail_chrome(reason="Data URLs in Network requests are not implemented in Chrome yet")
 @pytest.mark.xfail_edge(reason="Data URLs in Network requests are not implemented in Edge yet")
 @pytest.mark.xfail_firefox(reason="Data URLs in Network requests are not implemented in Firefox yet")
