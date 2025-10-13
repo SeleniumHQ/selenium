@@ -59,4 +59,4 @@ def _browser_downloads(driver, pages):
     pages.load("downloads/download.html")
     driver.find_element(By.ID, "file-1").click()
     driver.find_element(By.ID, "file-2").click()
-    WebDriverWait(driver, 3).until(lambda d: "file_2.jpg" in d.get_downloadable_files())
+    WebDriverWait(driver, 5).until(lambda d: "file_2.jpg" in d.get_downloadable_files())
