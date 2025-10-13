@@ -73,14 +73,20 @@ def test_clear_request_handlers(driver, pages):
 
 
 def test_continue_request(driver, pages):
+    exceptions = []
+
     def callback(request: Request):
-        request.continue_request()
+        try:
+            request.continue_request()
+        except WebDriverException as e:
+            exceptions.append(e)
 
     callback_id = driver.network.add_request_handler("before_request", callback)
     assert callback_id is not None, "Request handler not added"
     url = pages.url("formPage.html")
     driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
     assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
+    assert len(exceptions) == 0, "Exception raised when continuing request in handler callback"
 
 
 def test_continue_with_auth(driver):
@@ -101,10 +107,9 @@ def test_remove_auth_handler(driver):
 
 def test_handler_with_classic_navigation(driver, pages):
     """Verify request handlers also work with classic navigation."""
-    if driver.caps["browserName"] == "chrome":
-        pytest.skip(reason="Request handlers don't yet work in Chrome when using classic navigation")
-    if driver.caps["browserName"] == "edge":
-        pytest.skip(reason="Request handlers don't yet work in Edge when using classic navigation")
+    browser_name = driver.caps["browserName"]
+    if browser_name.lower() in ("chrome", "microsoftedge"):
+        pytest.skip(reason="Request handlers don't yet work in {browser_name} when using classic navigation")
 
     exceptions = []
 
@@ -117,7 +122,7 @@ def test_handler_with_classic_navigation(driver, pages):
     callback_id = driver.network.add_request_handler("before_request", callback)
     assert callback_id is not None, "Request handler not added"
     pages.load("formPage.html")
-    assert len(exceptions) == 0, "Exception raised when continuing request in callback"
+    assert len(exceptions) == 0, "Exception raised in handler callback"
 
 
 @pytest.mark.xfail_chrome(reason="Data URLs in Network requests are not implemented in Chrome yet")
@@ -141,4 +146,4 @@ def test_handler_with_data_url_request(driver, pages):
     time.sleep(1)  # give callback time to complete
     assert driver.find_element(By.ID, "data-url-image").is_displayed()
     assert len(data_requests) > 0, "BiDi event not captured"
-    assert len(exceptions) == 0, "Exception raised when continuing request in callback"
+    assert len(exceptions) == 0, "Exception raised when continuing request in handler callback"
