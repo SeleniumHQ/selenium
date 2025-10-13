@@ -109,7 +109,7 @@ def test_handler_with_classic_navigation(driver, pages):
     """Verify request handlers also work with classic navigation."""
     browser_name = driver.caps["browserName"]
     if browser_name.lower() in ("chrome", "microsoftedge"):
-        pytest.skip(reason="Request handlers don't yet work in {browser_name} when using classic navigation")
+        pytest.skip(reason=f"Request handlers don't yet work in {browser_name} using classic navigation")
 
     exceptions = []
 
