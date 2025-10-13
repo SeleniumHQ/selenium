@@ -11,7 +11,8 @@ jobs:
     with:
       name: Build
       cache-key: py-build
-      run: bazel build //py:selenium-wheel //py:selenium-sdist
+      run: |
+        bazel build //py:selenium-wheel //py:selenium-sdist
 
   docs:
     name: Documentation
@@ -29,7 +30,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox==4.30.2
       - name: Generate docs
-        run: tox -c py/tox.ini
+        run: |
+          tox -c py/tox.ini
         env:
           TOXENV: docs
 
@@ -68,7 +70,8 @@ jobs:
       name: Unit Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
       cache-key: python-unit-test-${{ matrix.os }}
-      run: bazel test //py:unit
+      run: |
+        bazel test //py:unit
 
   remote-tests:
     name: Remote Tests
@@ -83,7 +86,8 @@ jobs:
       name: Integration Tests (remote, ${{ matrix.browser }})
       browser: ${{ matrix.browser }}
       cache-key: py-remote-${{ matrix.browser }}
-      run: bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
+      run: |
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
 
   browser-tests:
     name: Browser Tests
@@ -107,7 +111,28 @@ jobs:
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:common-${{ matrix.browser }}-bidi //py:test-${{ matrix.browser }}
 
-  safari-tests:
+  browser-tests-windows:
+    name: Browser Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: chrome
+            os: windows
+          - browser: edge
+            os: windows
+    with:
+      name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      browser: ${{ matrix.browser }}
+      os: ${{ matrix.os }}
+      cache-key: py-browser-${{ matrix.browser }}
+      run: |
+        fsutil 8dot3name set 0
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 --pin_browsers=true //py:common-${{ matrix.browser }}-bidi //py:test-${{ matrix.browser }}
+
+  browser-tests-macos:
     name: Browser Tests
     needs: build
     uses: ./.github/workflows/bazel.yml
