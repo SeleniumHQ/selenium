@@ -131,7 +131,7 @@ class SupportedOptions(ContainerProtocol):
     edge: str = "EdgeOptions"
     safari: str = "SafariOptions"
     ie: str = "IeOptions"
-    remote: str = "FirefoxOptions"
+    remote: str = "ChromeOptions"
     webkitgtk: str = "WebKitGTKOptions"
     wpewebkit: str = "WPEWebKitOptions"
 
@@ -249,8 +249,8 @@ class Driver:
                 # under Wayland, so we use XWayland instead.
                 os.environ["MOZ_ENABLE_WAYLAND"] = "0"
         elif self.driver_class == self.supported_drivers.remote:
-            self._options = getattr(webdriver, self.supported_options.firefox)()
-            self._options.set_capability("moz:firefoxOptions", {})
+            self._options = getattr(webdriver, self.supported_options.chrome)()
+            self._options.set_capability("goog:chromeOptions", {})
             self._options.enable_downloads = True
         else:
             opts_cls = getattr(self.supported_options, cls_name.lower())
