@@ -45,6 +45,23 @@ def test_raises_exception_if_scale_is_outside_range(print_options):
         print_options.scale = 3
 
 
+def test_set_page_size(print_options):
+    # Example of setting a default (A4)
+    assert print_options.page_width == PrintOptions.A4["width"]
+    assert print_options.page_height == PrintOptions.A4["height"]
+
+    # Example of setting a predefined page size
+    print_options.set_page_size(PrintOptions.LEGAL)
+    assert print_options.page_width == PrintOptions.LEGAL["width"]
+    assert print_options.page_height == PrintOptions.LEGAL["height"]
+
+    # Test custom page size
+    custom_size = {"height": 25.0, "width": 15.0}
+    print_options.set_page_size(custom_size)
+    assert print_options.page_width == custom_size["width"]
+    assert print_options.page_height == custom_size["height"]
+
+
 def test_raises_exception_if_scale_is_not_an_integer(print_options):
     with pytest.raises(ValueError):
         print_options.scale = "1"
@@ -56,7 +73,7 @@ def test_set_background(print_options):
 
 
 def test_unset_value_to_be_none(print_options):
-    assert print_options.page_width is None
+    assert print_options.page_width == PrintOptions.A4["width"]
 
 
 def test_set_width(print_options):

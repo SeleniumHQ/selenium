@@ -21,7 +21,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.io.StringReader;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -37,7 +36,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.BiDiSessionStatus;
-import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
@@ -52,7 +50,6 @@ import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
 class RemoteWebDriverBiDiTest {
@@ -86,12 +83,9 @@ class RemoteWebDriverBiDiTest {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
   void ensureBiDiSessionCreation() {
     try (BiDi biDi = ((HasBiDi) driver).getBiDi()) {
-      BiDiSessionStatus status =
-          biDi.send(
-              new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
+      BiDiSessionStatus status = biDi.getBidiSessionStatus();
       assertThat(status).isNotNull();
       assertThat(status.getMessage()).isNotEmpty();
     }
@@ -100,7 +94,6 @@ class RemoteWebDriverBiDiTest {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
   void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
     driver = new Augmenter().augment(driver);
 
@@ -128,7 +121,6 @@ class RemoteWebDriverBiDiTest {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
   void canNavigateToUrl() {
     BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
 

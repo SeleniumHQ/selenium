@@ -18,8 +18,10 @@
 package org.openqa.selenium.virtualauthenticator;
 
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 
 /** Represents a virtual authenticator. */
+@NullMarked
 public interface VirtualAuthenticator {
 
   /**

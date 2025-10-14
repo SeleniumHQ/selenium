@@ -22,8 +22,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import org.jspecify.annotations.NullMarked;
 
 /** Represents a single log statement. */
+@NullMarked
 public class LogEntry {
 
   private final Level level;

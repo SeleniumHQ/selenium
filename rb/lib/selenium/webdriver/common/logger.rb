@@ -194,7 +194,7 @@ module Selenium
       def discard_or_log(level, message, id)
         id = Array(id)
         return if @ignored.intersect?(id)
-        return if @allowed.any? && (@allowed & id).none?
+        return if @allowed.any? && !@allowed.intersect?(id)
 
         return if ::Logger::Severity.const_get(level.upcase) < @logger.level
 

@@ -24,7 +24,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
@@ -107,8 +106,6 @@ public interface DriverCommand {
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
   String GET_LOCATION = "getLocation";
   String SET_LOCATION = "setLocation";
-  String GET_APP_CACHE = "getAppCache";
-  String CLEAR_APP_CACHE = "clearAppCache";
   String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
   String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
   String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
@@ -136,9 +133,6 @@ public interface DriverCommand {
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
-  // Mobile API
-  String GET_NETWORK_CONNECTION = "getNetworkConnection";
-  String SET_NETWORK_CONNECTION = "setNetworkConnection";
   // Virtual Authenticator API
   // http://w3c.github.io/webauthn#sctn-automation
   String ADD_VIRTUAL_AUTHENTICATOR = "addVirtualAuthenticator";
@@ -344,27 +338,12 @@ public interface DriverCommand {
     return new CommandPayload(PRINT_PAGE, options.toMap());
   }
 
-  @Deprecated
-  static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(long time, TimeUnit unit) {
-    return SET_IMPLICIT_WAIT_TIMEOUT(Duration.ofMillis(unit.toMillis(time)));
-  }
-
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(Duration duration) {
     return new CommandPayload(SET_TIMEOUT, Map.of("implicit", duration.toMillis()));
   }
 
-  @Deprecated
-  static CommandPayload SET_SCRIPT_TIMEOUT(long time, TimeUnit unit) {
-    return SET_SCRIPT_TIMEOUT(Duration.ofMillis(unit.toMillis(time)));
-  }
-
   static CommandPayload SET_SCRIPT_TIMEOUT(Duration duration) {
     return new CommandPayload(SET_TIMEOUT, Map.of("script", duration.toMillis()));
-  }
-
-  @Deprecated
-  static CommandPayload SET_PAGE_LOAD_TIMEOUT(long time, TimeUnit unit) {
-    return SET_PAGE_LOAD_TIMEOUT(Duration.ofMillis(unit.toMillis(time)));
   }
 
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(Duration duration) {
@@ -373,10 +352,6 @@ public interface DriverCommand {
 
   static CommandPayload ACTIONS(Collection<Sequence> actions) {
     return new CommandPayload(ACTIONS, Map.of("actions", actions));
-  }
-
-  static CommandPayload IME_ACTIVATE_ENGINE(String engine) {
-    return new CommandPayload(SET_ALERT_VALUE, Map.of("engine", engine));
   }
 
   static CommandPayload SET_CURRENT_WINDOW_POSITION(Point targetPosition) {

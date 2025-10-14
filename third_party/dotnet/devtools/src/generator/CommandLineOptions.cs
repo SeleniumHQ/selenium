@@ -1,16 +1,9 @@
 using CommandLine;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.DevToolsGenerator
 {
     public class CommandLineOptions
     {
-        public CommandLineOptions()
-        {
-        }
-
         [Option(
             'f',
             "force-download",
@@ -35,35 +28,35 @@ namespace OpenQA.Selenium.DevToolsGenerator
             'o',
             "output-path",
             Default = "./OutputProtocol",
-            HelpText ="Indicates the folder that will contain the generated class library [Default: ./OutputProtocol]")]
-        public string OutputPath { get; set; }
+            HelpText = "Indicates the folder that will contain the generated class library [Default: ./OutputProtocol]")]
+        public string OutputPath { get; set; } = null!;
 
         [Option(
             'b',
             "browser-protocol-path",
             Default = "./browser_protocol.json",
             HelpText = "Indicates the path to the Chromium Debugging Browser Protocol JSON file to use. [Default: browser_protocol.json]")]
-        public string BrowserProtocolPath { get; set; }
+        public string BrowserProtocolPath { get; set; } = null!;
 
         [Option(
             'j',
             "js-protocol-path",
             Default = "./js_protocol.json",
             HelpText = "Indicates the path to the Chromium Debugging JavaScript Protocol JSON file to use. [Default: js_protocol.json]")]
-        public string JavaScriptProtocolPath { get; set; }
+        public string JavaScriptProtocolPath { get; set; } = null!;
 
         [Option(
             't',
             "templates-path",
             Default = "",
             HelpText = "Indicates the path to the code generation templates file.")]
-        public string TemplatesPath { get; set; }
+        public string TemplatesPath { get; set; } = null!;
 
         [Option(
             's',
             "settings",
             Default = "./Templates/settings.json",
             HelpText = "Indicates the path to the code generation settings file. [Default: ./Templates/settings.json]")]
-        public string Settings { get; set; }
+        public string Settings { get; set; } = null!;
     }
 }

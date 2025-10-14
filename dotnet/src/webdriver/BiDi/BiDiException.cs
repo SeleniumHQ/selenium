@@ -19,13 +19,14 @@
 
 using System;
 
-#nullable enable
-
 namespace OpenQA.Selenium.BiDi;
 
 public class BiDiException : Exception
 {
     public BiDiException(string message) : base(message)
+    {
+    }
+    public BiDiException(string? message, Exception? innerException) : base(message, innerException)
     {
     }
 }

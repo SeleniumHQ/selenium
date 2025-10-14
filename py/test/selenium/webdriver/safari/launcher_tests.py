@@ -43,9 +43,9 @@ class TestTechnologyPreview:
     @pytest.fixture
     def driver_kwargs(self):
         path = "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver"
-        assert os.path.exists(
-            path
-        ), "Safari Technology Preview required! Download it from https://developer.apple.com/safari/technology-preview/"
+        assert os.path.exists(path), (
+            "Safari Technology Preview required! Download it from https://developer.apple.com/safari/technology-preview/"
+        )
         return {"executable_path": path}
 
     def test_launch(self, driver):

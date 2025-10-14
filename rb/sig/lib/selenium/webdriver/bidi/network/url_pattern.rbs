@@ -1,0 +1,13 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      module UrlPattern
+        def self?.format_pattern: (Array[String] | String url_patterns, Symbol pattern_type) -> Array[Hash[Symbol, String]]
+
+        def self?.to_url_pattern: (*String url_patterns) -> Array[Hash[Symbol, String]]
+
+        def self?.to_url_string_pattern: (*String url_patterns) -> Array[Hash[Symbol, String]]
+      end
+    end
+  end
+end

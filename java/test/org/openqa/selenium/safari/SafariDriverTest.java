@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -132,5 +133,24 @@ class SafariDriverTest extends JupiterTestBase {
   public void canAttachDebugger() {
     localDriver = new WebDriverBuilder().get(new SafariOptions());
     ((HasDebugger) localDriver).attachDebugger();
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldLaunchSuccessfullyWithArabicDate() {
+    try {
+      Locale arabicLocale = new Locale("ar", "EG");
+      Locale.setDefault(arabicLocale);
+
+      int port = PortProber.findFreePort();
+      SafariDriverService.Builder builder = new SafariDriverService.Builder();
+      builder.usingPort(port);
+      builder.build();
+
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      Locale.setDefault(Locale.US);
+    }
   }
 }

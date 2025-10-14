@@ -47,20 +47,15 @@ public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, Additional
 
   @Override
   public HasCdp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasCdp() {
-      @Override
-      public Map<String, Object> executeCdpCommand(
-          String commandName, Map<String, Object> parameters) {
-        Require.nonNull("Command name", commandName);
-        Require.nonNull("Parameters", parameters);
+    return (commandName, parameters) -> {
+      Require.nonNull("Command name", commandName);
+      Require.nonNull("Parameters", parameters);
 
-        Map<String, Object> toReturn =
-            (Map<String, Object>)
-                executeMethod.execute(
-                    EXECUTE_CDP, Map.of("cmd", commandName, "params", parameters));
+      Map<String, Object> toReturn =
+          (Map<String, Object>)
+              executeMethod.execute(EXECUTE_CDP, Map.of("cmd", commandName, "params", parameters));
 
-        return Map.copyOf(toReturn);
-      }
+      return Map.copyOf(toReturn);
     };
   }
 }

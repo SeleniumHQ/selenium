@@ -5,6 +5,10 @@
     xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
 
   <Match>
+    <Bug code="CT"/>
+  </Match>
+
+  <Match>
     <Bug pattern="SIC_INNER_SHOULD_BE_STATIC,EI_EXPOSE_REP,EI_EXPOSE_REP2,EI_EXPOSE_BUF2"/>
   </Match>
 
@@ -57,16 +61,6 @@
   <Match>
     <Class name="~org.openqa.selenium.firefox.AddHasExtensions.*"/>
     <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
-  </Match>
-
-  <Match>
-    <Class name="org.openqa.selenium.firefox.Executable"/>
-    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
-  </Match>
-
-  <Match>
-    <Class name="org.openqa.selenium.firefox.FirefoxBinary"/>
-    <Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
   </Match>
 
   <Match>
@@ -141,11 +135,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.mobile.NetworkConnection$ConnectionType"/>
-    <Bug pattern="IM_BAD_CHECK_FOR_ODD"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.net.NetworkUtils"/>
     <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
   </Match>
@@ -211,11 +200,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.remote.internal.WebElementToJsonConverter" />
-    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.chrome.AddHasCasting" />
     <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
   </Match>
@@ -243,6 +227,11 @@
   <Match>
     <Class name="org.openqa.selenium.manager.SeleniumManager"/>
     <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.remote.http.jdk.JdkHttpClient"/>
+    <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
   </Match>
 
 </FindBugsFilter>

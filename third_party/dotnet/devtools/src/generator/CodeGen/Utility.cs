@@ -1,15 +1,14 @@
+using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
-    using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
-    using System;
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-    using System.Runtime.InteropServices;
-
     /// <summary>
     /// Contains various utility methods.
     /// </summary>
-    public static class Utility
+    public static partial class Utility
     {
         /// <summary>
         /// Replaces tokens in the target path.
@@ -40,95 +39,117 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
         /// <returns></returns>
         public static string GetTypeMappingForType(TypeDefinition typeDefinition, DomainDefinition domainDefinition, IDictionary<string, TypeInfo> knownTypes, bool isArray = false)
         {
+            if (typeDefinition is null)
+            {
+                throw new ArgumentNullException(nameof(typeDefinition));
+            }
+
             var type = typeDefinition.Type;
 
-            if (String.IsNullOrWhiteSpace(type))
-                type = typeDefinition.TypeReference;
-
-            string mappedType = null;
-            if (type.Contains(".") && knownTypes.ContainsKey(type))
+            if (string.IsNullOrWhiteSpace(type))
             {
-                var typeInfo = knownTypes[type];
+                type = typeDefinition.TypeReference ?? throw new ArgumentException("Type definition has neither Type or TypeReference", nameof(typeDefinition));
+            }
+
+            string mappedType;
+            if (type.Contains(".") && knownTypes.TryGetValue(type, out TypeInfo? typeInfo))
+            {
                 if (typeInfo.IsPrimitive)
                 {
                     var primitiveType = typeInfo.TypeName;
 
-                    if (typeDefinition.Optional && typeInfo.ByRef)
+                    if (typeDefinition.Optional)
+                    {
                         primitiveType += "?";
+                    }
 
                     if (isArray)
+                    {
                         primitiveType += "[]";
+                    }
 
                     return primitiveType;
                 }
+
                 mappedType = $"{typeInfo.Namespace}.{typeInfo.TypeName}";
-                if (typeDefinition.Optional && typeInfo.ByRef)
-                    mappedType += "?";
-            }
-
-            if (mappedType == null)
-            {
-                var fullyQualifiedTypeName = $"{domainDefinition.Name}.{type}";
-
-                if (knownTypes.ContainsKey(fullyQualifiedTypeName))
+                if (typeDefinition.Optional)
                 {
-                    var typeInfo = knownTypes[fullyQualifiedTypeName];
-
-                    mappedType = typeInfo.TypeName;
-                    if (typeInfo.ByRef && typeDefinition.Optional)
-                        mappedType += "?";
+                    mappedType += "?";
                 }
             }
-
-
-            if (mappedType == null)
+            else if (knownTypes.TryGetValue($"{domainDefinition.Name}.{type}", out typeInfo))
+            {
+                mappedType = typeInfo.TypeName;
+                if (typeDefinition.Optional)
+                {
+                    mappedType += "?";
+                }
+            }
+            else
             {
                 switch (type)
                 {
                     case "number":
-                        mappedType = typeDefinition.Optional ? "double?" : "double";
+                        mappedType = "double";
                         break;
+
                     case "integer":
-                        mappedType = typeDefinition.Optional ? "long?" : "long";
+                        mappedType = "long";
                         break;
+
                     case "boolean":
-                        mappedType = typeDefinition.Optional ? "bool?" : "bool";
+                        mappedType = "bool";
                         break;
+
                     case "string":
                         mappedType = "string";
                         break;
+
                     case "object":
                     case "any":
                         mappedType = "object";
                         break;
+
                     case "binary":
                         mappedType = "byte[]";
                         break;
+
                     case "array":
-                        mappedType = GetTypeMappingForType(typeDefinition.Items, domainDefinition, knownTypes, true);
+                        var items = typeDefinition.Items ?? throw new InvalidOperationException("Type definition was type array but has no Items");
+                        mappedType = GetTypeMappingForType(items, domainDefinition, knownTypes, isArray: true);
                         break;
+
                     default:
                         throw new InvalidOperationException($"Unmapped data type: {type}");
+                }
+
+                if (typeDefinition.Optional)
+                {
+                    mappedType += "?";
                 }
             }
 
             if (isArray)
+            {
                 mappedType += "[]";
+            }
 
             return mappedType;
         }
 
-        public static string ReplaceLineEndings(string value, string replacement = null)
+        public static string? ReplaceLineEndings(string? value, string? replacement = null)
         {
-            if (String.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value))
             {
                 return value;
             }
 
-            if (replacement == null)
-                replacement = string.Empty;
+            replacement ??= string.Empty;
 
-            return Regex.Replace(value, @"\r\n?|\n|\u2028|\u2029", replacement, RegexOptions.Compiled);
+            return WhitespaceRegex().Replace(value, replacement);
         }
+
+        [GeneratedRegex(@"\r\n?|\n|\u2028|\u2029", RegexOptions.Compiled)]
+        private static partial Regex WhitespaceRegex();
     }
 }

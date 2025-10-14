@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using OpenQA.Selenium.BiDi.Communication.Transport;
 using OpenQA.Selenium.Internal.Logging;
 using System;
@@ -25,27 +24,26 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 
-#nullable enable
-
 namespace OpenQA.Selenium.BiDi.Communication;
 
-public class Broker : IAsyncDisposable
+public sealed class Broker : IAsyncDisposable
 {
-    private readonly ILogger _logger = Log.GetLogger<Broker>();
+    private readonly ILogger _logger = Internal.Logging.Log.GetLogger<Broker>();
 
     private readonly BiDi _bidi;
     private readonly ITransport _transport;
 
-    private readonly ConcurrentDictionary<int, TaskCompletionSource<object>> _pendingCommands = new();
-    private readonly BlockingCollection<MessageEvent> _pendingEvents = [];
+    private readonly ConcurrentDictionary<long, CommandInfo> _pendingCommands = new();
+    private readonly BlockingCollection<(string Method, EventArgs Params)> _pendingEvents = [];
+    private readonly Dictionary<string, JsonTypeInfo> _eventTypesMap = [];
 
     private readonly ConcurrentDictionary<string, List<EventHandler>> _eventHandlers = new();
 
-    private int _currentCommandId;
+    private long _currentCommandId;
 
     private static readonly TaskFactory _myTaskFactory = new(CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskContinuationOptions.None, TaskScheduler.Default);
 
@@ -53,52 +51,10 @@ public class Broker : IAsyncDisposable
     private Task? _eventEmitterTask;
     private CancellationTokenSource? _receiveMessagesCancellationTokenSource;
 
-    private readonly JsonSerializerOptions _jsonSerializerOptions;
-
-    internal Broker(BiDi bidi, ITransport transport)
+    internal Broker(BiDi bidi, Uri url, JsonSerializerOptions jsonOptions)
     {
         _bidi = bidi;
-        _transport = transport;
-
-        _jsonSerializerOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            Converters =
-            {
-                new BrowsingContextConverter(_bidi),
-                new BrowserUserContextConverter(bidi),
-                new NavigationConverter(),
-                new InterceptConverter(_bidi),
-                new RequestConverter(_bidi),
-                new ChannelConverter(),
-                new HandleConverter(_bidi),
-                new InternalIdConverter(_bidi),
-                new PreloadScriptConverter(_bidi),
-                new RealmConverter(_bidi),
-                new RealmTypeConverter(),
-                new DateTimeOffsetConverter(),
-                new PrintPageRangeConverter(),
-                new InputOriginConverter(),
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
-
-                // https://github.com/dotnet/runtime/issues/72604
-                new Json.Converters.Polymorphic.MessageConverter(),
-                new Json.Converters.Polymorphic.EvaluateResultConverter(),
-                new Json.Converters.Polymorphic.RemoteValueConverter(),
-                new Json.Converters.Polymorphic.RealmInfoConverter(),
-                new Json.Converters.Polymorphic.LogEntryConverter(),
-                //
-
-                // Enumerable
-                new Json.Converters.Enumerable.GetCookiesResultConverter(),
-                new Json.Converters.Enumerable.LocateNodesResultConverter(),
-                new Json.Converters.Enumerable.InputSourceActionsConverter(),
-                new Json.Converters.Enumerable.GetUserContextsResultConverter(),
-                new Json.Converters.Enumerable.GetRealmsResultConverter(),
-            }
-        };
+        _transport = new WebSocketTransport(url);
     }
 
     public async Task ConnectAsync(CancellationToken cancellationToken)
@@ -106,30 +62,39 @@ public class Broker : IAsyncDisposable
         await _transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token), TaskCreationOptions.LongRunning).Unwrap();
-        _eventEmitterTask = _myTaskFactory.StartNew(async () => await ProcessEventsAwaiterAsync(), TaskCreationOptions.LongRunning).Unwrap();
+        _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token)).Unwrap();
+        _eventEmitterTask = _myTaskFactory.StartNew(ProcessEventsAwaiterAsync).Unwrap();
     }
 
     private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            var message = await _transport.ReceiveAsJsonAsync<Message>(_jsonSerializerOptions, cancellationToken);
-
-            switch (message)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                case MessageSuccess messageSuccess:
-                    _pendingCommands[messageSuccess.Id].SetResult(messageSuccess.Result);
-                    _pendingCommands.TryRemove(messageSuccess.Id, out _);
-                    break;
-                case MessageEvent messageEvent:
-                    _pendingEvents.Add(messageEvent);
-                    break;
-                case MessageError mesageError:
-                    _pendingCommands[mesageError.Id].SetException(new BiDiException($"{mesageError.Error}: {mesageError.Message}"));
-                    _pendingCommands.TryRemove(mesageError.Id, out _);
-                    break;
+                var data = await _transport.ReceiveAsync(cancellationToken).ConfigureAwait(false);
+
+                try
+                {
+                    ProcessReceivedMessage(data);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger.IsEnabled(LogEventLevel.Error))
+                    {
+                        _logger.Error($"Unhandled error occured while processing remote message: {ex}");
+                    }
+                }
             }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            if (_logger.IsEnabled(LogEventLevel.Error))
+            {
+                _logger.Error($"Unhandled error occured while receiving remote messages: {ex}");
+            }
+
+            throw;
         }
     }
 
@@ -145,7 +110,7 @@ public class Broker : IAsyncDisposable
                     {
                         foreach (var handler in eventHandlers.ToArray()) // copy handlers avoiding modified collection while iterating
                         {
-                            var args = (EventArgs)result.Params.Deserialize(handler.EventArgsType, _jsonSerializerOptions)!;
+                            var args = result.Params;
 
                             args.BiDi = _bidi;
 
@@ -167,117 +132,95 @@ public class Broker : IAsyncDisposable
             {
                 if (_logger.IsEnabled(LogEventLevel.Error))
                 {
-                    _logger.Error($"Unhandled error processing BiDi event: {ex}");
+                    _logger.Error($"Unhandled error processing BiDi event handler: {ex}");
                 }
             }
         }
     }
 
-    public async Task<TResult> ExecuteCommandAsync<TResult>(Command command, CommandOptions? options)
-    {
-        var result = await ExecuteCommandCoreAsync(command, options).ConfigureAwait(false);
-
-        return (TResult)((JsonElement)result).Deserialize(typeof(TResult), _jsonSerializerOptions)!;
-    }
-
-    public async Task ExecuteCommandAsync(Command command, CommandOptions? options)
-    {
-        await ExecuteCommandCoreAsync(command, options).ConfigureAwait(false);
-    }
-
-    private async Task<object> ExecuteCommandCoreAsync(Command command, CommandOptions? options)
+    public async Task<TResult> ExecuteCommandAsync<TCommand, TResult>(TCommand command, CommandOptions? options, JsonTypeInfo<TCommand> jsonCommandTypeInfo, JsonTypeInfo<TResult> jsonResultTypeInfo)
+        where TCommand : Command
+        where TResult : EmptyResult
     {
         command.Id = Interlocked.Increment(ref _currentCommandId);
-
-        var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
-
+        var tcs = new TaskCompletionSource<EmptyResult>(TaskCreationOptions.RunContinuationsAsynchronously);
         var timeout = options?.Timeout ?? TimeSpan.FromSeconds(30);
-
         using var cts = new CancellationTokenSource(timeout);
-
         cts.Token.Register(() => tcs.TrySetCanceled(cts.Token));
+        var commandInfo = new CommandInfo(command.Id, tcs, jsonResultTypeInfo);
+        _pendingCommands[command.Id] = commandInfo;
+        var data = JsonSerializer.SerializeToUtf8Bytes(command, jsonCommandTypeInfo);
 
-        _pendingCommands[command.Id] = tcs;
+        await _transport.SendAsync(data, cts.Token).ConfigureAwait(false);
 
-        await _transport.SendAsJsonAsync(command, _jsonSerializerOptions, cts.Token).ConfigureAwait(false);
-
-        return await tcs.Task.ConfigureAwait(false);
+        return (TResult)await tcs.Task.ConfigureAwait(false);
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options = null)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Action<TEventArgs> action, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
         where TEventArgs : EventArgs
     {
+        _eventTypesMap[eventName] = jsonTypeInfo;
+
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
         if (options is BrowsingContextsSubscriptionOptions browsingContextsOptions)
         {
-            await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = browsingContextsOptions.Contexts }).ConfigureAwait(false);
+            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = browsingContextsOptions.Contexts }).ConfigureAwait(false);
 
             var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action, browsingContextsOptions?.Contexts);
 
             handlers.Add(eventHandler);
 
-            return new Subscription(this, eventHandler);
+            return new Subscription(subscribeResult.Subscription, this, eventHandler);
         }
         else
         {
-            await _bidi.SessionModule.SubscribeAsync([eventName]).ConfigureAwait(false);
+            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName]).ConfigureAwait(false);
 
             var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
 
             handlers.Add(eventHandler);
 
-            return new Subscription(this, eventHandler);
+            return new Subscription(subscribeResult.Subscription, this, eventHandler);
         }
     }
 
-    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options = null)
+    public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
         where TEventArgs : EventArgs
     {
+        _eventTypesMap[eventName] = jsonTypeInfo;
+
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
         if (options is BrowsingContextsSubscriptionOptions browsingContextsOptions)
         {
-            await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = browsingContextsOptions.Contexts }).ConfigureAwait(false);
+            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = browsingContextsOptions.Contexts }).ConfigureAwait(false);
 
             var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func, browsingContextsOptions.Contexts);
 
             handlers.Add(eventHandler);
 
-            return new Subscription(this, eventHandler);
+            return new Subscription(subscribeResult.Subscription, this, eventHandler);
         }
         else
         {
-            await _bidi.SessionModule.SubscribeAsync([eventName]).ConfigureAwait(false);
+            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName]).ConfigureAwait(false);
 
             var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
 
             handlers.Add(eventHandler);
 
-            return new Subscription(this, eventHandler);
+            return new Subscription(subscribeResult.Subscription, this, eventHandler);
         }
     }
 
-    public async Task UnsubscribeAsync(EventHandler eventHandler)
+    public async Task UnsubscribeAsync(Session.Subscription subscription, EventHandler eventHandler)
     {
         var eventHandlers = _eventHandlers[eventHandler.EventName];
 
         eventHandlers.Remove(eventHandler);
 
-        if (eventHandler.Contexts is not null)
-        {
-            if (!eventHandlers.Any(h => eventHandler.Contexts.Equals(h.Contexts)) && !eventHandlers.Any(h => h.Contexts is null))
-            {
-                await _bidi.SessionModule.UnsubscribeAsync([eventHandler.EventName], new() { Contexts = eventHandler.Contexts }).ConfigureAwait(false);
-            }
-        }
-        else
-        {
-            if (!eventHandlers.Any(h => h.Contexts is not null) && !eventHandlers.Any(h => h.Contexts is null))
-            {
-                await _bidi.SessionModule.UnsubscribeAsync([eventHandler.EventName]).ConfigureAwait(false);
-            }
-        }
+        await _bidi.SessionModule.UnsubscribeAsync([subscription]).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()
@@ -290,5 +233,124 @@ public class Broker : IAsyncDisposable
         {
             await _eventEmitterTask.ConfigureAwait(false);
         }
+
+        _transport.Dispose();
+
+        GC.SuppressFinalize(this);
     }
+
+    private void ProcessReceivedMessage(byte[]? data)
+    {
+        long? id = default;
+        string? type = default;
+        string? method = default;
+        string? error = default;
+        string? message = default;
+        Utf8JsonReader resultReader = default;
+        Utf8JsonReader paramsReader = default;
+
+        Utf8JsonReader reader = new(new ReadOnlySpan<byte>(data));
+        reader.Read();
+
+        reader.Read(); // "{"
+
+        while (reader.TokenType == JsonTokenType.PropertyName)
+        {
+            string? propertyName = reader.GetString();
+            reader.Read();
+
+            switch (propertyName)
+            {
+                case "id":
+                    id = reader.GetInt64();
+                    break;
+
+                case "type":
+                    type = reader.GetString();
+                    break;
+
+                case "method":
+                    method = reader.GetString();
+                    break;
+
+                case "result":
+                    resultReader = reader; // snapshot
+                    break;
+
+                case "params":
+                    paramsReader = reader; // snapshot
+                    break;
+
+                case "error":
+                    error = reader.GetString();
+                    break;
+
+                case "message":
+                    message = reader.GetString();
+                    break;
+            }
+
+            reader.Skip();
+            reader.Read();
+        }
+
+        switch (type)
+        {
+            case "success":
+                if (id is null) throw new JsonException("The remote end responded with 'success' message type, but missed required 'id' property.");
+
+                if (_pendingCommands.TryGetValue(id.Value, out var successCommand))
+                {
+                    successCommand.TaskCompletionSource.SetResult((EmptyResult)JsonSerializer.Deserialize(ref resultReader, successCommand.JsonResultTypeInfo)!);
+                    _pendingCommands.TryRemove(id.Value, out _);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'success' message type, but no pending command with id {id} was found.");
+                }
+
+                break;
+
+            case "event":
+                if (method is null) throw new JsonException("The remote end responded with 'event' message type, but missed required 'method' property.");
+
+                if (_eventTypesMap.TryGetValue(method, out var eventInfo))
+                {
+                    var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
+
+                    var messageEvent = (method, eventArgs);
+                    _pendingEvents.Add(messageEvent);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'event' message type, but no event type mapping for method '{method}' was found.");
+                }
+
+                break;
+
+            case "error":
+                if (id is null) throw new JsonException("The remote end responded with 'error' message type, but missed required 'id' property.");
+
+                if (_pendingCommands.TryGetValue(id.Value, out var errorCommand))
+                {
+                    errorCommand.TaskCompletionSource.SetException(new BiDiException($"{error}: {message}"));
+                    _pendingCommands.TryRemove(id.Value, out _);
+                }
+                else
+                {
+                    throw new BiDiException($"The remote end responded with 'error' message type, but no pending command with id {id} was found.");
+                }
+
+                break;
+        }
+    }
+
+    class CommandInfo(long id, TaskCompletionSource<EmptyResult> taskCompletionSource, JsonTypeInfo jsonResultTypeInfo)
+    {
+        public long Id { get; } = id;
+
+        public TaskCompletionSource<EmptyResult> TaskCompletionSource { get; } = taskCompletionSource;
+
+        public JsonTypeInfo JsonResultTypeInfo { get; } = jsonResultTypeInfo;
+    };
 }

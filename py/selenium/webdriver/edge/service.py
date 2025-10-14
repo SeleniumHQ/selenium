@@ -15,8 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List
-from typing import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Optional
 
 from selenium.types import SubprocessStdAlias
@@ -30,22 +29,22 @@ class Service(service.ChromiumService):
     :param executable_path: install path of the msedgedriver executable, defaults to `msedgedriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
+    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
         self,
-        executable_path: str = None,
+        executable_path: Optional[str] = None,
         port: int = 0,
-        log_output: SubprocessStdAlias = None,
-        service_args: Optional[List[str]] = None,
+        log_output: Optional[SubprocessStdAlias] = None,
+        service_args: Optional[Sequence[str]] = None,
         env: Optional[Mapping[str, str]] = None,
-        driver_path_env_key: str = None,
+        driver_path_env_key: Optional[str] = None,
         **kwargs,
     ) -> None:
-        self.service_args = service_args or []
+        self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_EDGEDRIVER"
 
         super().__init__(
@@ -57,3 +56,13 @@ class Service(service.ChromiumService):
             driver_path_env_key=driver_path_env_key,
             **kwargs,
         )
+
+    @property
+    def service_args(self) -> Sequence[str]:
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, value: Sequence[str]):
+        if isinstance(value, str) or not isinstance(value, Sequence):
+            raise TypeError("service_args must be a sequence")
+        self._service_args = list(value)

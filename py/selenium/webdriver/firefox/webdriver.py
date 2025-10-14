@@ -20,13 +20,13 @@ import warnings
 import zipfile
 from contextlib import contextmanager
 from io import BytesIO
+from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
-from .options import Options
-from .remote_connection import FirefoxRemoteConnection
-from .service import Service
 
 
 class WebDriver(RemoteWebDriver):
@@ -37,8 +37,8 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        options: Options = None,
-        service: Service = None,
+        options: Optional[Options] = None,
+        service: Optional[Service] = None,
         keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the Firefox driver. Starts the service and
@@ -122,7 +122,7 @@ class WebDriver(RemoteWebDriver):
         :Usage:
             ::
 
-                driver.install_addon('/path/to/firebug.xpi')
+                driver.install_addon("/path/to/firebug.xpi")
         """
 
         if os.path.isdir(path):
@@ -131,7 +131,7 @@ class WebDriver(RemoteWebDriver):
             path = os.path.normpath(path)
             # account for trailing slash that will be added by os.walk()
             path_root = len(path) + 1
-            with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
+            with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as zipped:
                 for base, _, files in os.walk(path):
                     for fyle in files:
                         filename = os.path.join(base, fyle)
@@ -150,7 +150,7 @@ class WebDriver(RemoteWebDriver):
         :Usage:
             ::
 
-                driver.uninstall_addon('addon@foo.com')
+                driver.uninstall_addon("addon@foo.com")
         """
         self.execute("UNINSTALL_ADDON", {"id": identifier})
 
@@ -166,7 +166,7 @@ class WebDriver(RemoteWebDriver):
         :Usage:
             ::
 
-                driver.get_full_page_screenshot_as_file('/Screenshots/foo.png')
+                driver.get_full_page_screenshot_as_file("/Screenshots/foo.png")
         """
         if not filename.lower().endswith(".png"):
             warnings.warn(
@@ -195,7 +195,7 @@ class WebDriver(RemoteWebDriver):
         :Usage:
             ::
 
-                driver.save_full_page_screenshot('/Screenshots/foo.png')
+                driver.save_full_page_screenshot("/Screenshots/foo.png")
         """
         return self.get_full_page_screenshot_as_file(filename)
 
@@ -220,3 +220,12 @@ class WebDriver(RemoteWebDriver):
                 driver.get_full_page_screenshot_as_base64()
         """
         return self.execute("FULL_PAGE_SCREENSHOT")["value"]
+
+    def download_file(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def get_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def delete_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError

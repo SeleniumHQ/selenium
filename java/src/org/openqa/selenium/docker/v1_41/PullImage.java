@@ -51,7 +51,8 @@ class PullImage {
     HttpRequest req =
         new HttpRequest(POST, String.format("/v%s/images/create", DOCKER_API_VERSION))
             .addHeader("Content-Type", JSON_UTF_8)
-            .addQueryParameter("fromImage", image);
+            .addQueryParameter("fromImage", image)
+            .addQueryParameter("platform", ref.getPlatform());
 
     if (ref.getDigest() != null) {
       req.addQueryParameter("tag", ref.getDigest());

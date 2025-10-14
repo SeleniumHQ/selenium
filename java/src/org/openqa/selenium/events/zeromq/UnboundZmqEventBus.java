@@ -59,7 +59,7 @@ import org.zeromq.ZMQ;
 class UnboundZmqEventBus implements EventBus {
 
   static final EventName REJECTED_EVENT = new EventName("selenium-rejected-event");
-  private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
+  private static final Logger LOG = Logger.getLogger(UnboundZmqEventBus.class.getName());
   private static final Json JSON = new Json();
   private final AtomicBoolean pollingStarted = new AtomicBoolean(false);
   private final PollingRunnable socketPolling;

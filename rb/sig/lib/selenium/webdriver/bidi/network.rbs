@@ -10,15 +10,27 @@ module Selenium
 
         def initialize: (BiDi bidi) -> void
 
-        def add_intercept: (?phases: Array[String], ?contexts: BrowsingContext?, ?url_patterns: untyped?) -> Hash[String, String]
+        def add_intercept: (?phases: Array[String], ?contexts: BrowsingContext?, ?url_patterns: String | Array[String]?) -> Hash[String, String]
 
-        def continue_with_request: -> untyped
+        def cancel_auth: -> Hash[nil, nil]
 
-        def remove_intercept: (String intercept) -> untyped
+        def continue_request: -> Hash[nil, nil]
 
-        def continue_with_auth: (String request_id, String username, String password) -> untyped
+        def continue_response: -> Hash[nil, nil]
 
-        def on: (Symbol event) { (?) -> untyped } -> untyped
+        def continue_without_auth: -> Hash[nil, nil]
+
+        def fail_request: -> Hash[nil, nil]
+
+        def remove_intercept: (String intercept) -> Hash[nil, nil]
+
+        def continue_with_auth: (String request_id, String username, String password) -> Hash[nil, nil]
+
+        def provide_response: -> Hash[nil, nil]
+
+        def set_cache_behavior: (String behavior, Array[BrowsingContext]) -> Hash[nil, nil]
+
+        def on: (Symbol event) { (?) -> untyped } -> Hash[nil, nil]
       end
     end
   end

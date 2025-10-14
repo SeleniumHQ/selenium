@@ -24,6 +24,7 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HO
 
 import java.awt.*;
 import java.time.Duration;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -33,6 +34,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -141,6 +143,25 @@ class InternetExplorerDriverTest extends JupiterTestBase {
     wait.until(d -> item.getText().isEmpty());
 
     assertThat(item.getText()).isEmpty();
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldLaunchSuccessfullyWithArabicDate() {
+    try {
+      Locale arabicLocale = new Locale("ar", "EG");
+      Locale.setDefault(arabicLocale);
+
+      int port = PortProber.findFreePort();
+      InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
+      builder.usingPort(port);
+      builder.build();
+
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      Locale.setDefault(Locale.US);
+    }
   }
 
   private WebDriver newIeDriver() {

@@ -19,21 +19,53 @@ package org.openqa.selenium.print;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class PageSizeTest {
 
-  // Defaults assertion
-  private static final double HEIGHT = 27.94;
-  private static final double WIDTH = 21.59;
+  private PrintOptions printOptions;
+
+  @BeforeEach
+  void setUp() {
+    printOptions = new PrintOptions();
+  }
 
   @Test
   void setsDefaultHeightWidth() {
     PageSize pageSize = new PageSize();
+    assertThat(pageSize.getHeight()).isEqualTo(29.7);
+    assertThat(pageSize.getWidth()).isEqualTo(21.0);
+  }
 
-    assertThat(pageSize.getHeight()).isEqualTo(HEIGHT);
-    assertThat(pageSize.getWidth()).isEqualTo(WIDTH);
+  @Test
+  void verifiesPageSizeA4() {
+
+    printOptions.setPageSize(PageSize.ISO_A4);
+    assertThat(printOptions.getPageSize().getHeight()).isEqualTo(29.7);
+    assertThat(printOptions.getPageSize().getWidth()).isEqualTo(21.0);
+  }
+
+  @Test
+  void verifiesPageSizeLegal() {
+    printOptions.setPageSize(PageSize.US_LEGAL);
+    assertThat(printOptions.getPageSize().getHeight()).isEqualTo(35.56);
+    assertThat(printOptions.getPageSize().getWidth()).isEqualTo(21.59);
+  }
+
+  @Test
+  void verifiesPageSizeLetter() {
+    printOptions.setPageSize(PageSize.US_LETTER);
+    assertThat(printOptions.getPageSize().getHeight()).isEqualTo(27.94);
+    assertThat(printOptions.getPageSize().getWidth()).isEqualTo(21.59);
+  }
+
+  @Test
+  void verifiesPageSizeTabloid() {
+    printOptions.setPageSize(PageSize.ANSI_TABLOID);
+    assertThat(printOptions.getPageSize().getHeight()).isEqualTo(43.18);
+    assertThat(printOptions.getPageSize().getWidth()).isEqualTo(27.94);
   }
 }

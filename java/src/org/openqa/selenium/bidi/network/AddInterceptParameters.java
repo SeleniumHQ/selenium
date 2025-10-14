@@ -62,6 +62,6 @@ public class AddInterceptParameters {
     if (!urlPatterns.isEmpty()) {
       map.put("urlPatterns", urlPatterns);
     }
-    return map;
+    return Map.copyOf(map);
   }
 }

@@ -23,6 +23,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.Beta;
 
 /**
@@ -30,6 +31,7 @@ import org.openqa.selenium.Beta;
  * levels.
  */
 @Beta
+@NullMarked
 public class LogEntries implements Iterable<LogEntry> {
 
   private final List<LogEntry> entries;

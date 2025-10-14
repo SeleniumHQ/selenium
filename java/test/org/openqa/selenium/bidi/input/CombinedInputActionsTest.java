@@ -235,8 +235,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
 

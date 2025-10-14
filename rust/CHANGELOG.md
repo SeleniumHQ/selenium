@@ -1,3 +1,51 @@
+0.4.36
+======
+* Use DEBUG level for WARN traces in offline mode (#15836)
+
+0.4.35
+======
+* Normalize architecture strings sent to Plausible (#15970)
+* Update base URL for Edge web driver (#16056)
+
+0.4.34
+======
+* Electron support in Selenium-Manager (#13954) (#15752)
+* Bug-fix: avoid to download safaridriver and clear lock parent folder (#15775)
+
+0.4.33
+======
+* Replace WMIC commands (deprecated) by WinAPI in Windows (#15363)
+* Minor clippy fixes
+
+0.4.32
+======
+*no changes*
+
+0.4.31
+======
+*no changes*
+
+0.4.30
+======
+* Remove check for old metadata file
+* Check lock folder at the end of SM execution and clear it if required
+* Store reference to lock file to clear folder when necessary
+* Read PROCESSOR_ARCHITECTURE env in Windows to determine architecture
+* Selenium Manager support nightly Grid (#13384) (#15366)
+* Support snap packages (Firefox, Chromium) in Selenium Manager
+
+0.4.29
+======
+
+
+0.4.28
+======
+
+* [rust] xz uncompressor for Firefox Linux nightlies (#14832)
+* [rust] Fix Edge updates API deserialization (#14851)
+* [rust] Use file lock to protect concurrent accesses to cache (fix #13511 and #13686)
+* [rust] Use tax.xz for Firefox package starting in version 135
+
 0.4.27
 ======
 * Use endpoint for stable versions first to manage Firefox (#14536) (#14613)

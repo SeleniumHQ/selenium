@@ -1,92 +1,53 @@
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
-    using Newtonsoft.Json;
-
     /// <summary>
     /// Represents settings around Definition templates.
     /// </summary>
     public class CodeGenerationDefinitionTemplateSettings
     {
-        public CodeGenerationDefinitionTemplateSettings()
+        [JsonPropertyName("domainTemplate")]
+        public CodeGenerationTemplateSettings DomainTemplate { get; set; } = new CodeGenerationTemplateSettings
         {
-            //Set Defaults;
-            DomainTemplate = new CodeGenerationTemplateSettings
-            {
-                TemplatePath = "domain.hbs",
-                OutputPath = "{{domainName}}\\{{className}}Adapter.cs",
-            };
+            TemplatePath = "domain.hbs",
+            OutputPath = "{{domainName}}\\{{className}}Adapter.cs",
+        };
 
-            CommandTemplate = new CodeGenerationTemplateSettings {
-                TemplatePath = "command.hbs",
-                OutputPath = "{{domainName}}\\{{className}}Command.cs",
-            };
-
-            EventTemplate = new CodeGenerationTemplateSettings
-            {
-                TemplatePath = "event.hbs",
-                OutputPath = "{{domainName}}\\{{className}}EventArgs.cs",
-            };
-
-            TypeObjectTemplate = new CodeGenerationTemplateSettings
-            {
-                TemplatePath = "type-object.hbs",
-                OutputPath = "{{domainName}}\\{{className}}.cs",
-            };
-
-            TypeHashTemplate = new CodeGenerationTemplateSettings
-            {
-                TemplatePath = "type-hash.hbs",
-                OutputPath = "{{domainName}}\\{{className}}.cs",
-            };
-
-            TypeEnumTemplate = new CodeGenerationTemplateSettings
-            {
-                TemplatePath = "type-enum.hbs",
-                OutputPath = "{{domainName}}{{separator}}{{className}}.cs",
-            };
-        }
-
-        [JsonProperty("domainTemplate")]
-        public CodeGenerationTemplateSettings DomainTemplate
+        [JsonPropertyName("commandTemplate")]
+        public CodeGenerationTemplateSettings CommandTemplate { get; set; } = new CodeGenerationTemplateSettings
         {
-            get;
-            set;
-        }
+            TemplatePath = "command.hbs",
+            OutputPath = "{{domainName}}\\{{className}}Command.cs",
+        };
 
-        [JsonProperty("commandTemplate")]
-        public CodeGenerationTemplateSettings CommandTemplate
+        [JsonPropertyName("eventTemplate")]
+        public CodeGenerationTemplateSettings EventTemplate { get; set; } = new CodeGenerationTemplateSettings
         {
-            get;
-            set;
-        }
+            TemplatePath = "event.hbs",
+            OutputPath = "{{domainName}}\\{{className}}EventArgs.cs",
+        };
 
-        [JsonProperty("eventTemplate")]
-        public CodeGenerationTemplateSettings EventTemplate
+        [JsonPropertyName("typeObjectTemplate")]
+        public CodeGenerationTemplateSettings TypeObjectTemplate { get; set; } = new CodeGenerationTemplateSettings
         {
-            get;
-            set;
-        }
+            TemplatePath = "type-object.hbs",
+            OutputPath = "{{domainName}}\\{{className}}.cs",
+        };
 
-        [JsonProperty("typeObjectTemplate")]
-        public CodeGenerationTemplateSettings TypeObjectTemplate
+
+        [JsonPropertyName("typeHashTemplate")]
+        public CodeGenerationTemplateSettings TypeHashTemplate { get; set; } = new CodeGenerationTemplateSettings
         {
-            get;
-            set;
-        }
+            TemplatePath = "type-hash.hbs",
+            OutputPath = "{{domainName}}\\{{className}}.cs",
+        };
 
-        [JsonProperty("typeHashTemplate")]
-        public CodeGenerationTemplateSettings TypeHashTemplate
+        [JsonPropertyName("typeEnumTemplate")]
+        public CodeGenerationTemplateSettings TypeEnumTemplate { get; set; } = new CodeGenerationTemplateSettings
         {
-            get;
-            set;
-        }
-
-        [JsonProperty("typeEnumTemplate")]
-        public CodeGenerationTemplateSettings TypeEnumTemplate
-        {
-            get;
-            set;
-        }
-
+            TemplatePath = "type-enum.hbs",
+            OutputPath = "{{domainName}}{{separator}}{{className}}.cs",
+        };
     }
 }

@@ -15,13 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Optional
+
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.ie.options import Options
+from selenium.webdriver.ie.service import Service
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
-from .options import Options
-from .service import Service
 
 
 class WebDriver(RemoteWebDriver):
@@ -30,8 +31,8 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        options: Options = None,
-        service: Service = None,
+        options: Optional[Options] = None,
+        service: Optional[Service] = None,
         keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the Ie driver.
@@ -73,3 +74,12 @@ class WebDriver(RemoteWebDriver):
             pass
         finally:
             self.service.stop()
+
+    def download_file(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def get_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def delete_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError

@@ -19,22 +19,20 @@
 
 using System;
 
-namespace OpenQA.Selenium
-{
-    /// <summary>
-    /// Provides data for the AttributeValueChanged event
-    /// </summary>
-    public class DomMutatedEventArgs : EventArgs
-    {
-        private DomMutationData attributeData;
+namespace OpenQA.Selenium;
 
-        /// <summary>
-        /// Gets the data about the attribute being changed.
-        /// </summary>
-        public DomMutationData AttributeData
-        {
-            get { return this.attributeData; }
-            internal set { this.attributeData = value; }
-        }
+/// <summary>
+/// Provides data for the AttributeValueChanged event
+/// </summary>
+public class DomMutatedEventArgs : EventArgs
+{
+    internal DomMutatedEventArgs(DomMutationData attributeData)
+    {
+        AttributeData = attributeData;
     }
+
+    /// <summary>
+    /// Gets the data about the attribute being changed.
+    /// </summary>
+    public DomMutationData AttributeData { get; }
 }

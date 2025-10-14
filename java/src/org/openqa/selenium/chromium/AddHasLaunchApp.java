@@ -57,13 +57,9 @@ public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, Additio
 
   @Override
   public HasLaunchApp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasLaunchApp() {
-      @Override
-      public void launchApp(String id) {
-        Require.nonNull("id of Chromium App", id);
-
-        executeMethod.execute(LAUNCH_APP, Map.of("id", id));
-      }
+    return id -> {
+      Require.nonNull("id of Chromium App", id);
+      executeMethod.execute(LAUNCH_APP, Map.of("id", id));
     };
   }
 }

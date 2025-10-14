@@ -1,0 +1,26 @@
+{
+  "labels": [
+    "B-dependencies"
+  ],
+  "docker": {
+    "enabled": false
+  },
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "enabled": false
+    },
+    {
+      "matchPackagePatterns": [
+        "^docker:",
+        "^gcr.io/",
+        "^registry.k8s.io/",
+        "^quay.io/",
+        "^ghcr.io/"
+      ],
+      "enabled": false
+    }
+  ]
+}

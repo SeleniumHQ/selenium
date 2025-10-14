@@ -62,7 +62,7 @@ class SlowLoadableComponentTest {
   private static class DetonatingSlowLoader extends SlowLoadableComponent<DetonatingSlowLoader> {
 
     public DetonatingSlowLoader() {
-      super(Clock.systemDefaultZone(), 1);
+      super(Clock.systemDefaultZone(), Duration.ofSeconds(1));
     }
 
     @Override
@@ -82,7 +82,7 @@ class SlowLoadableComponentTest {
     private long loopCount;
 
     public SlowLoading(Clock clock, int timeOutInSeconds, int counts) {
-      super(clock, timeOutInSeconds);
+      super(clock, Duration.ofSeconds(timeOutInSeconds));
       this.counts = counts;
     }
 
@@ -127,7 +127,7 @@ class SlowLoadableComponentTest {
     private final TickingClock clock;
 
     public BasicSlowLoader(TickingClock clock, int timeOutInSeconds) {
-      super(clock, timeOutInSeconds);
+      super(clock, Duration.ofSeconds(timeOutInSeconds));
       this.clock = clock;
     }
 
@@ -148,7 +148,7 @@ class SlowLoadableComponentTest {
   private static class HasError extends SlowLoadableComponent<HasError> {
 
     public HasError() {
-      super(new TickingClock(), 1000);
+      super(new TickingClock(), Duration.ofSeconds(1000));
     }
 
     @Override

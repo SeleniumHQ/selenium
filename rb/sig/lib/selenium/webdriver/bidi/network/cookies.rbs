@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class Cookies
+        def initialize: (Hash[Symbol, String | Integer | bool] cookies) -> void
+
+        def as_json: () -> Array[Hash[Symbol, untyped]]
+      end
+    end
+  end
+end

@@ -1,0 +1,58 @@
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("//common:defs.bzl", "copy_file")
+
+js_binary(
+    name = "make_atoms_module",
+    data = ["make-atoms-module.js"],
+    entry_point = ":make-atoms-module.js",
+)
+
+js_run_binary(
+    name = "is_displayed",
+    srcs = ["//javascript/atoms/fragments:is-displayed.js"],
+    outs = ["is-displayed.js"],
+    args = [
+        "$(rootpath //javascript/atoms/fragments:is-displayed.js)",
+        "$(rootpath :is-displayed.js)",
+    ],
+    tool = ":make_atoms_module",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
+js_run_binary(
+    name = "get_attribute",
+    srcs = ["//javascript/webdriver/atoms:get-attribute.js"],
+    outs = ["get-attribute.js"],
+    args = [
+        "$(rootpath //javascript/webdriver/atoms:get-attribute.js)",
+        "$(rootpath :get-attribute.js)",
+    ],
+    tool = ":make_atoms_module",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
+js_run_binary(
+    name = "find-elements",
+    srcs = ["//javascript/atoms/fragments:find-elements.js"],
+    outs = ["find-elements.js"],
+    args = [
+        "$(rootpath //javascript/atoms/fragments:find-elements.js)",
+        "$(rootpath :find-elements.js)",
+    ],
+    tool = ":make_atoms_module",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
+copy_file(
+    name = "mutation-listener",
+    src = "//javascript/cdp-support:mutation-listener.js",
+    out = "mutation-listener.js",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)
+
+copy_file(
+    name = "bidi-mutation-listener",
+    src = "//javascript/bidi-support:bidi-mutation-listener.js",
+    out = "bidi-mutation-listener.js",
+    visibility = ["//javascript/selenium-webdriver:__pkg__"],
+)

@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 public class DistributorOptions {
 
   public static final int DEFAULT_HEALTHCHECK_INTERVAL = 120;
+  public static final int DEFAULT_PURGE_NODES_INTERVAL = 30;
   public static final String DISTRIBUTOR_SECTION = "distributor";
   static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
       "org.openqa.selenium.grid.distributor.local.LocalDistributor";
@@ -94,6 +95,17 @@ public class DistributorOptions {
                 .getInt(DISTRIBUTOR_SECTION, "healthcheck-interval")
                 .orElse(DEFAULT_HEALTHCHECK_INTERVAL),
             10);
+    return Duration.ofSeconds(seconds);
+  }
+
+  public Duration getPurgeNodesInterval() {
+    // If the user sets 0s or less, we default to 0s and disable the purge dead nodes service.
+    int seconds =
+        Math.max(
+            config
+                .getInt(DISTRIBUTOR_SECTION, "purge-nodes-interval")
+                .orElse(DEFAULT_PURGE_NODES_INTERVAL),
+            0);
     return Duration.ofSeconds(seconds);
   }
 

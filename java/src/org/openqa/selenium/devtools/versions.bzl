@@ -1,8 +1,7 @@
 CDP_VERSIONS = [
-    "v85",  # Required by Firefox
-    "v131",
-    "v129",
-    "v130",
+    "v140",
+    "v138",
+    "v139",
 ]
 
 CDP_DEPS = ["//java/src/org/openqa/selenium/devtools/%s" % v for v in CDP_VERSIONS]

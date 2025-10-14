@@ -17,23 +17,22 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Provides extension methods for command responses.
+/// </summary>
+public static class ICommandResponseExtensions
 {
     /// <summary>
-    /// Provides extension methods for command responses.
+    /// Returns the strongly-typed response for an object implementing the <see cref="ICommandResponse"/> interface.
     /// </summary>
-    public static class ICommandResponseExtensions
+    /// <typeparam name="TCommandResponse">The concrete implementation type of command response expected.</typeparam>
+    /// <param name="response">The <see cref="ICommandResponse"/> object to convert to the implementation type</param>
+    /// <returns>The concrete implementation of the command response, or <see langword="null"/> if <paramref name="response"/> is not the right type.</returns>
+    public static TCommandResponse? GetResponse<TCommandResponse>(this ICommandResponse response)
+        where TCommandResponse : class, ICommandResponse
     {
-        /// <summary>
-        /// Returns the strongly-typed response for an object impelementing the <see cref="ICommandResponse"/> interface.
-        /// </summary>
-        /// <typeparam name="TCommandResponse">The concrete implementation type of command response expected.</typeparam>
-        /// <param name="response">The <see cref="ICommandResponse"/> object to convert to the implementation type</param>
-        /// <returns>The concrete implementation of the command response.</returns>
-        public static TCommandResponse GetResponse<TCommandResponse>(this ICommandResponse response)
-            where TCommandResponse : class, ICommandResponse
-        {
-            return response as TCommandResponse;
-        }
+        return response as TCommandResponse;
     }
 }

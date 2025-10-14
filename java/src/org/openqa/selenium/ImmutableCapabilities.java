@@ -22,8 +22,11 @@ import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
+@NullMarked
 public class ImmutableCapabilities implements Capabilities {
 
   private final Map<String, Object> delegate;
@@ -145,10 +148,9 @@ public class ImmutableCapabilities implements Capabilities {
     capabilities.forEach(
         (key, value) -> {
           Require.argument("Capability key", key).instanceOf(String.class);
-          Object v = capabilities.get(key);
           Require.nonNull("Capability value", value);
 
-          setCapability(delegate, (String) key, v);
+          setCapability(delegate, (String) key, value);
         });
 
     this.delegate = Collections.unmodifiableMap(delegate);
@@ -156,7 +158,7 @@ public class ImmutableCapabilities implements Capabilities {
   }
 
   @Override
-  public Object getCapability(String capabilityName) {
+  public @Nullable Object getCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
     return delegate.get(capabilityName);
   }
@@ -172,7 +174,7 @@ public class ImmutableCapabilities implements Capabilities {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (!(o instanceof Capabilities)) {
       return false;
     }

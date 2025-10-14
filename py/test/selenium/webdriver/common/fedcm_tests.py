@@ -62,16 +62,19 @@ class TestFedCM:
         driver.execute_script("triggerFedCm();")
         dialog = driver.fedcm_dialog()
         assert dialog.title == "Sign in to localhost with localhost"
+        dialog.dismiss()
 
     def test_trigger_and_verify_dialog_subtitle(self, driver):
         driver.execute_script("triggerFedCm();")
         dialog = driver.fedcm_dialog()
         assert dialog.subtitle is None
+        dialog.dismiss()
 
     def test_trigger_and_verify_dialog_type(self, driver):
         driver.execute_script("triggerFedCm();")
         dialog = driver.fedcm_dialog()
         assert dialog.type == "AccountChooser"
+        dialog.dismiss()
 
     def test_trigger_and_verify_account_list(self, driver):
         driver.execute_script("triggerFedCm();")
@@ -79,6 +82,7 @@ class TestFedCM:
         accounts = dialog.get_accounts()
         assert len(accounts) > 0
         assert accounts[0].name == "John Doe"
+        dialog.dismiss()
 
     def test_select_account(self, driver):
         driver.execute_script("triggerFedCm();")
@@ -86,6 +90,7 @@ class TestFedCM:
         dialog.select_account(1)
         driver.fedcm_dialog()  # Wait for dialog to become interactable
         # dialog.click_continue()
+        dialog.dismiss()
 
     def test_dialog_cancel(self, driver):
         driver.execute_script("triggerFedCm();")
@@ -136,3 +141,4 @@ class TestFedCM:
         driver.execute_script("triggerFedCm();")
         dialog = driver.fedcm_dialog()
         assert dialog.type == "AccountChooser"
+        dialog.dismiss()

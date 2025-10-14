@@ -17,19 +17,23 @@
 
 package org.openqa.selenium;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+@NullMarked
 public class NotFoundException extends WebDriverException {
 
   public NotFoundException() {}
 
-  public NotFoundException(String message) {
+  public NotFoundException(@Nullable String message) {
     super(message);
   }
 
-  public NotFoundException(String message, Throwable cause) {
+  public NotFoundException(@Nullable String message, @Nullable Throwable cause) {
     super(message, cause);
   }
 
-  public NotFoundException(Throwable cause) {
+  public NotFoundException(@Nullable Throwable cause) {
     super(cause);
   }
 }

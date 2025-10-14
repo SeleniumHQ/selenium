@@ -15,14 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { CssBaseline } from '@mui/material'
-import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
+import { StyledEngineProvider } from '@mui/material/styles'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { HashRouter as Router } from 'react-router-dom'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-import theme from './theme/theme'
+import { CustomThemeProvider } from './contexts/ThemeContext'
 import './index.css'
 
 const root = ReactDOM.createRoot(
@@ -32,12 +31,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <CssBaseline/>
+      <CustomThemeProvider>
         <Router>
           <App/>
         </Router>
-      </ThemeProvider>
+      </CustomThemeProvider>
     </StyledEngineProvider>
   </React.StrictMode>
 )

@@ -21,62 +21,61 @@ using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Collections.ObjectModel;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class ElementEqualityTest : DriverTestFixture
 {
-    [TestFixture]
-    public class ElementEqualityTest : DriverTestFixture
+    [Test]
+    public void SameElementLookedUpDifferentWaysShouldBeEqual()
     {
-        [Test]
-        public void SameElementLookedUpDifferentWaysShouldBeEqual()
-        {
-            driver.Url = (simpleTestPage);
+        driver.Url = (simpleTestPage);
 
-            IWebElement body = driver.FindElement(By.TagName("body"));
-            IWebElement xbody = driver.FindElement(By.XPath("//body"));
+        IWebElement body = driver.FindElement(By.TagName("body"));
+        IWebElement xbody = driver.FindElement(By.XPath("//body"));
 
-            Assert.That(xbody, Is.EqualTo(body));
-        }
+        Assert.That(xbody, Is.EqualTo(body));
+    }
 
-        [Test]
-        public void DifferentElementsShouldNotBeEqual()
-        {
-            driver.Url = (simpleTestPage);
+    [Test]
+    public void DifferentElementsShouldNotBeEqual()
+    {
+        driver.Url = (simpleTestPage);
 
-            ReadOnlyCollection<IWebElement> ps = driver.FindElements(By.TagName("p"));
+        ReadOnlyCollection<IWebElement> ps = driver.FindElements(By.TagName("p"));
 
-            Assert.That(ps[1], Is.Not.EqualTo(ps[0]));
-        }
+        Assert.That(ps[1], Is.Not.EqualTo(ps[0]));
+    }
 
-        [Test]
-        public void SameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode()
-        {
-            driver.Url = (simpleTestPage);
-            IWebElement body = driver.FindElement(By.TagName("body"));
-            IWebElement xbody = driver.FindElement(By.XPath("//body"));
+    [Test]
+    public void SameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode()
+    {
+        driver.Url = (simpleTestPage);
+        IWebElement body = driver.FindElement(By.TagName("body"));
+        IWebElement xbody = driver.FindElement(By.XPath("//body"));
 
-            Assert.That(xbody.GetHashCode(), Is.EqualTo(body.GetHashCode()));
-        }
+        Assert.That(xbody.GetHashCode(), Is.EqualTo(body.GetHashCode()));
+    }
 
-        public void SameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode()
-        {
-            driver.Url = (simpleTestPage);
-            ReadOnlyCollection<IWebElement> body = driver.FindElements(By.TagName("body"));
-            ReadOnlyCollection<IWebElement> xbody = driver.FindElements(By.XPath("//body"));
+    public void SameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode()
+    {
+        driver.Url = (simpleTestPage);
+        ReadOnlyCollection<IWebElement> body = driver.FindElements(By.TagName("body"));
+        ReadOnlyCollection<IWebElement> xbody = driver.FindElements(By.XPath("//body"));
 
-            Assert.That(xbody[0].GetHashCode(), Is.EqualTo(body[0].GetHashCode()));
-        }
+        Assert.That(xbody[0].GetHashCode(), Is.EqualTo(body[0].GetHashCode()));
+    }
 
-        [Test]
-        public void AnElementFoundInViaJsShouldHaveSameId()
-        {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
+    [Test]
+    public void AnElementFoundInViaJsShouldHaveSameId()
+    {
+        driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
 
-            driver.SwitchTo().Frame("inner");
-            IWebElement first = driver.FindElement(By.Id("oneline"));
+        driver.SwitchTo().Frame("inner");
+        IWebElement first = driver.FindElement(By.Id("oneline"));
 
-            IWebElement element = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.getElementById('oneline');");
+        IWebElement element = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.getElementById('oneline');");
 
-            Assert.That(element, Is.EqualTo(first));
-        }
+        Assert.That(element, Is.EqualTo(first));
     }
 }

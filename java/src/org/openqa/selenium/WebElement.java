@@ -165,10 +165,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    *
    * @param name The name of the attribute.
    * @return The attribute/property's current value or null if the value is not set.
-   * @deprecated This method is deprecated. Use {@link #getDomProperty(String)} or {@link
-   *     #getDomAttribute(String)} for more precise attribute retrieval.
    */
-  @Deprecated
   @Nullable String getAttribute(String name);
 
   /**

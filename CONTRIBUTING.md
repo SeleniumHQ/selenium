@@ -14,12 +14,10 @@ the defect. If the issue can't be reproduced it will be closed.
 Please provide [concise reproducible test cases](http://sscce.org/)
 and describe what results you are seeing and what results you expect.
 
-Issues shouldn't be used for support. Please address questions to the
-[`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
+Issues shouldn't be used for support. To raise a bug, please go to the
+[Issue tracker](https://github.com/SeleniumHQ/selenium/issues).
 Discussion of high level project ideas or non-technical topics should
-move to the
-[`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers)
-instead.
+move to the Selenium [Slack channel](https://inviter.co/seleniumhq).
 
 We also need help with triaging
 [issues that needs investigation](https://github.com/SeleniumHQ/selenium/labels/I-needs%20investigation).
@@ -33,7 +31,6 @@ If you find that Selenium is missing something, feel free to open an issue
 with details describing what feature(s) you'd like added or changed.
 
 If you'd like a hand at trying to implement the feature yourself, please refer to the [Code Contributions](#code-contributions) section of the document.
-
 
 ## Documentation
 
@@ -57,16 +54,16 @@ significant and valuable contributions over time are made _Committers_
 and given commit-access to the project.
 
 If you're looking for easy bugs, have a look at
-[issues labelled E-easy](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen+is%3Aissue+label%3AE-easy)
+[issues labelled: `good first issue`](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22)
 on Github.
 
 This document will guide you through the contribution process.
 
-### Step 1: Fork
+### Step 1: Fork & Clone
 
 Fork the project [on Github](https://github.com/seleniumhq/selenium)
-and check out your copy locally. Use `--depth 1` for a quick check out.
-The repository is ~2GB and checking the whole history takes a while.
+and clone the repository locally. Use `--depth 1` for a quick clone.
+The repository is over 2GB and cloning the whole history takes a while.
 
 ```shell
 % git clone git@github.com:username/selenium.git --depth 1
@@ -76,7 +73,7 @@ The repository is ~2GB and checking the whole history takes a while.
 
 #### Dependencies
 
-We bundle dependencies in the _third-party/_ directory that is not
+We bundle dependencies in the _third-party/_ directory that are not
 part of the proper project. Any changes to files in this directory or
 its subdirectories should be sent upstream to the respective projects.
 Please don't send your patch to us as we cannot accept it.
@@ -109,7 +106,7 @@ installed on your local machine, or by executing:
 
 ```shell
 # Example of adding a dep to the JS webdriver bindings 
-cd javascript/node/selenium-webdriver
+cd javascript/selenium-webdriver
 bazel run javascript:pnpm -- install my-amazing-dep --dir $PWD
 ```
 
@@ -255,12 +252,12 @@ Build your code for the latest changes and run tests locally.
 
   Node Tests
   ```shell
-  % bazel test //javascript/node/selenium-webdriver:tests
+  % bazel test //javascript/selenium-webdriver:all
   ```
 
   Firefox Atom Tests
   ```shell
-  % bazel test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...
+  % bazel test --test_tag_filters=firefox //javascript/atoms/... //javascript/webdriver/...
   ```
 
   Grid UI Unit Tests
@@ -350,7 +347,7 @@ Issues are labelled to make them easier to categorise and find by:
 ## Communication
 
 Selenium contributors frequent the `#selenium` channel on
-[`irc.freenode.org`](https://webchat.freenode.net/). You can also join
+[`libera.chat`](https://web.libera.chat/). You can also join
 the [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
 Check https://selenium.dev/support/ for a complete list of options to communicate.
 
@@ -358,8 +355,8 @@ Check https://selenium.dev/support/ for a complete list of options to communicat
 
 To access the EngFlow RBE, a developer needs to be granted access to our project
 container repository. Once that has been done, then any bazel command can be run
-remotely by using `--config=remote`. For example: `bazel build --config=remote
-grid` or `bazel test --config=remote java/test/...`
+remotely by using `--config=rbe`. For example: `bazel build --config=rbe
+grid` or `bazel test --config=rbe java/test/...`
 
 When you run a remote build, one of the first lines of output from Bazel will 
 include a link to the EngFlow UI so you can track the progress of the build and

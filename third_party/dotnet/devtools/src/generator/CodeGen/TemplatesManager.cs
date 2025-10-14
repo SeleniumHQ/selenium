@@ -1,33 +1,29 @@
+using HandlebarsDotNet;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Humanizer;
+using System.Linq;
+using System.Text;
+using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
+
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
-    using HandlebarsDotNet;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using Humanizer;
-    using System.Linq;
-    using System.Text;
-    using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
-
     /// <summary>
     /// Represents a class that manages templates and their associated generators.
     /// </summary>
     public sealed class TemplatesManager
     {
-        private readonly IDictionary<string, Func<object, string>> m_templateGenerators = new Dictionary<string, Func<object, string>>(StringComparer.OrdinalIgnoreCase);
-        private readonly CodeGenerationSettings m_settings;
+        private readonly Dictionary<string, Func<object, string>> m_templateGenerators = new Dictionary<string, Func<object, string>>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets the code generation settings associated with the protocol generator
         /// </summary>
-        public CodeGenerationSettings Settings
-        {
-            get { return m_settings; }
-        }
+        public CodeGenerationSettings Settings { get; }
 
         public TemplatesManager(CodeGenerationSettings settings)
         {
-            m_settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         /// <summary>
@@ -38,15 +34,21 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
         public Func<object, string> GetGeneratorForTemplate(CodeGenerationTemplateSettings templateSettings)
         {
             var templatePath = templateSettings.TemplatePath;
-            if (m_templateGenerators.ContainsKey(templatePath))
-                return m_templateGenerators[templatePath];
+            if (m_templateGenerators.TryGetValue(templatePath, out Func<object, string>? value))
+            {
+                return value;
+            }
 
             var targetTemplate = templatePath;
             if (!Path.IsPathRooted(targetTemplate))
+            {
                 targetTemplate = Path.Combine(Settings.TemplatesPath, targetTemplate);
+            }
 
             if (!File.Exists(targetTemplate))
-                throw new FileNotFoundException($"Unable to locate a template at {targetTemplate} - please ensure that a template file exists at this location.");
+            {
+                throw new FileNotFoundException($"Unable to locate a template at {targetTemplate} - please ensure that a template file exists at this location.", targetTemplate);
+            }
 
             var templateContents = File.ReadAllText(targetTemplate);
 
@@ -57,7 +59,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                     throw new HandlebarsException("{{humanize}} helper must have exactly one argument");
                 }
 
-                var str = arguments[0].ToString();
+                var str = arguments[0].ToString()!;
 
                 //Some overrides for values that start with '-' -- this fixes two instances in Runtime.UnserializableValue
                 if (str.StartsWith("-"))
@@ -81,7 +83,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 
                 var str = arguments[0] == null ? "" : arguments[0].ToString();
 
-                if (String.IsNullOrWhiteSpace(str))
+                if (string.IsNullOrWhiteSpace(str))
                 {
                     switch (context)
                     {
@@ -100,7 +102,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                 {
                     int.TryParse(frontPaddingObj.ToString(), out frontPadding);
                 }
-                    
+
                 str = Utility.ReplaceLineEndings(str, Environment.NewLine + new StringBuilder(4 * frontPadding).Insert(0, "    ", frontPadding) + "/// ");
 
                 writer.WriteSafeString(str);
@@ -108,8 +110,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 
             Handlebars.RegisterHelper("typemap", (writer, context, arguments) =>
             {
-                var typeDefinition = context as TypeDefinition;
-                if (typeDefinition == null)
+                if (context is not TypeDefinition typeDefinition)
                 {
                     throw new HandlebarsException("{{typemap}} helper expects to be in the context of a TypeDefinition.");
                 }
@@ -119,9 +120,10 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                     throw new HandlebarsException("{{typemap}} helper expects exactly one argument - the CodeGeneratorContext.");
                 }
 
-                var codeGenContext = arguments[0] as CodeGeneratorContext;
-                if (codeGenContext == null)
+                if (arguments[0] is not CodeGeneratorContext codeGenContext)
+                {
                     throw new InvalidOperationException("Expected context argument to be non-null.");
+                }
 
                 var mappedType = Utility.GetTypeMappingForType(typeDefinition, codeGenContext.Domain, codeGenContext.KnownTypes);
                 writer.WriteSafeString(mappedType);

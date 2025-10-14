@@ -69,7 +69,8 @@ class DistributorTest extends DistributorTestBase {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher());
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
     Either<SessionNotCreatedException, CreateSessionResponse> result =
         local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
@@ -109,7 +110,8 @@ class DistributorTest extends DistributorTestBase {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher());
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
     local.add(node);
     waitToHaveCapacity(local);
 
@@ -160,7 +162,8 @@ class DistributorTest extends DistributorTestBase {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher());
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
     local.add(node);
     waitToHaveCapacity(local);
 
@@ -223,7 +226,8 @@ class DistributorTest extends DistributorTestBase {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher());
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -273,7 +277,8 @@ class DistributorTest extends DistributorTestBase {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher());
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
     local.add(node);
     waitToHaveCapacity(local);
 
@@ -320,7 +325,8 @@ class DistributorTest extends DistributorTestBase {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher());
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
 
     local.add(firstNode);
     local.add(secondNode);
@@ -368,7 +374,8 @@ class DistributorTest extends DistributorTestBase {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher());
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
     local.add(brokenNode);
     local.add(node);
     waitForAllNodesToHaveCapacity(local, 2);

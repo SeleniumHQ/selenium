@@ -54,8 +54,7 @@ public class EvaluateParametersTest extends JupiterTestBase {
     try (Script script = new Script(id, driver)) {
 
       script.evaluateFunction(
-          new EvaluateParameters(new ContextTarget(id), "window.open();", true)
-              .userActivation(true));
+          new EvaluateParameters(new ContextTarget(id), "window.open();", false));
 
       EvaluateResult result =
           script.evaluateFunction(

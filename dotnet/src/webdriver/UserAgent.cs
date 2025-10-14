@@ -17,26 +17,34 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Represents a user agent string.
+/// </summary>
+public class UserAgent
 {
     /// <summary>
-    /// Represents a user agent string.
+    /// Initializes a new instance of the <see cref="UserAgent"/> type.
     /// </summary>
-    public class UserAgent
+    /// <param name="userAgentString">The user agent string.</param>
+    public UserAgent(string userAgentString)
     {
-        /// <summary>
-        /// Gets or sets the user agent string.
-        /// </summary>
-        public string UserAgentString { get; set; }
-
-        /// <summary>
-        /// Gets or sets the language to accept in headers.
-        /// </summary>
-        public string AcceptLanguage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value of the platform.
-        /// </summary>
-        public string Platform { get; set; }
+        UserAgentString = userAgentString;
     }
+
+    /// <summary>
+    /// Gets or sets the user agent string.
+    /// </summary>
+    public string UserAgentString { get; set; }
+
+    /// <summary>
+    /// Gets or sets the language to accept in headers.
+    /// </summary>
+    public string? AcceptLanguage { get; set; }
+
+    /// <summary>
+    /// Gets or sets the value of the platform.
+    /// </summary>
+    public string? Platform { get; set; }
 }

@@ -16,6 +16,7 @@
 # under the License.
 
 import os
+from unittest.mock import patch
 
 import pytest
 
@@ -41,11 +42,9 @@ class TestSafariDriverService:
         assert "safaridriver" in service.path
 
     def test_updates_path_after_setting_env_variable(self, service):
-        new_path = "/foo/bar"
-        os.environ["SE_SAFARIDRIVER"] = new_path
         service.executable_path = self.service_path  # Simulating the update
-
-        assert "safaridriver" in service.executable_path
+        with patch.dict("os.environ", {"SE_SAFARIDRIVER": "/foo/bar"}):
+            assert "safaridriver" in service.executable_path
 
 
 def test_enable_logging():

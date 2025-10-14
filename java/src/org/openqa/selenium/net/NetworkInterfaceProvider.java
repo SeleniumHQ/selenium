@@ -17,16 +17,20 @@
 
 package org.openqa.selenium.net;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 /**
  * Provides information about the local network interfaces.
  *
  * <p>Basically an abstraction created to allow stubbing of java.net.NetworkInterface, also soothes
  * some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
  */
+@NullMarked
 public interface NetworkInterfaceProvider {
   Iterable<NetworkInterface> getNetworkInterfaces();
 
   // TODO: Remove this whole method
   // This method should only return an interface if it's named exactly "lo"
-  NetworkInterface getLoInterface();
+  @Nullable NetworkInterface getLoInterface();
 }

@@ -20,22 +20,21 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class CommandTests
 {
-    [TestFixture]
-    public class CommandTests
+    [Test]
+    public void CommandSerializesAnonymousType()
     {
-        [Test]
-        public void CommandSerializesAnonymousType()
+        var parameters = new Dictionary<string, object>
         {
-            var parameters = new Dictionary<string, object>
-            {
-                ["arg"] = new { param1 = true, param2 = false },
-            };
+            ["arg"] = new { param1 = true, param2 = false },
+        };
 
-            var command = new Command(new SessionId("session"), "test command", parameters);
+        var command = new Command(new SessionId("session"), "test command", parameters);
 
-            Assert.That(command.ParametersAsJsonString, Is.EqualTo("""{"arg":{"param1":true,"param2":false}}"""));
-        }
+        Assert.That(command.ParametersAsJsonString, Is.EqualTo("""{"arg":{"param1":true,"param2":false}}"""));
     }
 }

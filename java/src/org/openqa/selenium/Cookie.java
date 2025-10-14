@@ -24,18 +24,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.TreeMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class Cookie implements Serializable {
   private static final long serialVersionUID = 4115876353625612383L;
 
   private final String name;
   private final String value;
   private final String path;
-  private final String domain;
-  private final Date expiry;
+  private final @Nullable String domain;
+  private final @Nullable Date expiry;
   private final boolean isSecure;
   private final boolean isHttpOnly;
-  private final String sameSite;
+  private final @Nullable String sameSite;
 
   /**
    * Creates an insecure non-httpOnly cookie with no domain specified.
@@ -47,7 +50,7 @@ public class Cookie implements Serializable {
    * @param expiry The cookie's expiration date; may be null.
    * @see #Cookie(String, String, String, String, Date)
    */
-  public Cookie(String name, String value, String path, Date expiry) {
+  public Cookie(String name, String value, @Nullable String path, @Nullable Date expiry) {
     this(name, value, null, path, expiry);
   }
 
@@ -62,7 +65,12 @@ public class Cookie implements Serializable {
    * @param expiry The cookie's expiration date; may be null.
    * @see #Cookie(String, String, String, String, Date, boolean)
    */
-  public Cookie(String name, String value, String domain, String path, Date expiry) {
+  public Cookie(
+      String name,
+      String value,
+      @Nullable String domain,
+      @Nullable String path,
+      @Nullable Date expiry) {
     this(name, value, domain, path, expiry, false);
   }
 
@@ -78,7 +86,12 @@ public class Cookie implements Serializable {
    * @param isSecure Whether this cookie requires a secure connection.
    */
   public Cookie(
-      String name, String value, String domain, String path, Date expiry, boolean isSecure) {
+      String name,
+      String value,
+      @Nullable String domain,
+      @Nullable String path,
+      @Nullable Date expiry,
+      boolean isSecure) {
     this(name, value, domain, path, expiry, isSecure, false);
   }
 
@@ -97,9 +110,9 @@ public class Cookie implements Serializable {
   public Cookie(
       String name,
       String value,
-      String domain,
-      String path,
-      Date expiry,
+      @Nullable String domain,
+      @Nullable String path,
+      @Nullable Date expiry,
       boolean isSecure,
       boolean isHttpOnly) {
     this(name, value, domain, path, expiry, isSecure, isHttpOnly, null);
@@ -121,12 +134,12 @@ public class Cookie implements Serializable {
   public Cookie(
       String name,
       String value,
-      String domain,
-      String path,
-      Date expiry,
+      @Nullable String domain,
+      @Nullable String path,
+      @Nullable Date expiry,
       boolean isSecure,
       boolean isHttpOnly,
-      String sameSite) {
+      @Nullable String sameSite) {
     this.name = name;
     this.value = value;
     this.path = path == null || path.isEmpty() ? "/" : path;
@@ -174,7 +187,7 @@ public class Cookie implements Serializable {
     return value;
   }
 
-  public String getDomain() {
+  public @Nullable String getDomain() {
     return domain;
   }
 
@@ -190,15 +203,15 @@ public class Cookie implements Serializable {
     return isHttpOnly;
   }
 
-  public Date getExpiry() {
+  public @Nullable Date getExpiry() {
     return expiry == null ? null : new Date(expiry.getTime());
   }
 
-  public String getSameSite() {
+  public @Nullable String getSameSite() {
     return sameSite;
   }
 
-  private static String stripPort(String domain) {
+  private static @Nullable String stripPort(@Nullable String domain) {
     return (domain == null) ? null : domain.split(":")[0];
   }
 
@@ -270,7 +283,7 @@ public class Cookie implements Serializable {
 
   /** Two cookies are equal if the name and value match */
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }
@@ -295,29 +308,29 @@ public class Cookie implements Serializable {
 
     private final String name;
     private final String value;
-    private String path;
-    private String domain;
-    private Date expiry;
+    private @Nullable String path;
+    private @Nullable String domain;
+    private @Nullable Date expiry;
     private boolean secure;
     private boolean httpOnly;
-    private String sameSite;
+    private @Nullable String sameSite;
 
     public Builder(String name, String value) {
       this.name = name;
       this.value = value;
     }
 
-    public Builder domain(String host) {
+    public Builder domain(@Nullable String host) {
       this.domain = stripPort(host);
       return this;
     }
 
-    public Builder path(String path) {
+    public Builder path(@Nullable String path) {
       this.path = path;
       return this;
     }
 
-    public Builder expiresOn(Date expiry) {
+    public Builder expiresOn(@Nullable Date expiry) {
       this.expiry = expiry == null ? null : new Date(expiry.getTime());
       return this;
     }
@@ -332,7 +345,7 @@ public class Cookie implements Serializable {
       return this;
     }
 
-    public Builder sameSite(String sameSite) {
+    public Builder sameSite(@Nullable String sameSite) {
       this.sameSite = sameSite;
       return this;
     }

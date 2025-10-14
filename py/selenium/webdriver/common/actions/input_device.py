@@ -16,9 +16,7 @@
 # under the License.
 
 import uuid
-from typing import Any
-from typing import List
-from typing import Optional
+from typing import Any, Optional
 
 
 class InputDevice:
@@ -26,7 +24,7 @@ class InputDevice:
 
     def __init__(self, name: Optional[str] = None):
         self.name = name or uuid.uuid4()
-        self.actions: List[Any] = []
+        self.actions: list[Any] = []
 
     def add_action(self, action: Any) -> None:
         """"""

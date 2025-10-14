@@ -40,7 +40,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.internal.Require;
 
-public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions>
+public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions<DO>>
     extends MutableCapabilities {
   public DO setBrowserVersion(String browserVersion) {
     setCapability(BROWSER_VERSION, Require.nonNull("Browser version", browserVersion));

@@ -82,6 +82,22 @@ class ReferenceTest {
                 new Reference("localhost:5000", "gouda/brie/cheddar/img", null, sha256),
                 String.format("localhost:5000/gouda/brie/cheddar/img@%s", sha256)
               },
+              {
+                "localhost:5000/gouda/brie/cheddar/img:4.30.0-20250101@linux/amd64",
+                new Reference(
+                    "localhost:5000",
+                    "gouda/brie/cheddar/img",
+                    "4.30.0-20250101",
+                    null,
+                    "linux/amd64"),
+                "localhost:5000/gouda/brie/cheddar/img:4.30.0-20250101"
+              },
+              {
+                "localhost:5000/gouda/brie/cheddar/img@linux/amd64",
+                new Reference(
+                    "localhost:5000", "gouda/brie/cheddar/img", "latest", null, "linux/amd64"),
+                "localhost:5000/gouda/brie/cheddar/img:latest"
+              },
             })
         .stream()
         .map(Arguments::of);

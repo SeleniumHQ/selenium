@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -124,8 +125,8 @@ class NodeTest {
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
     if (isDownloadsTestCase) {
-      stereotype = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
-      caps = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
+      stereotype = new ImmutableCapabilities("browserName", "chrome", ENABLE_DOWNLOADS, true);
+      caps = new ImmutableCapabilities("browserName", "chrome", ENABLE_DOWNLOADS, true);
     }
 
     uri = new URI("http://localhost:1234");
@@ -640,8 +641,8 @@ class NodeTest {
       String decodedContents = String.join("", Files.readAllLines(path));
       assertThat(decodedContents).isEqualTo(hello);
     } finally {
-      UUID downloadsId = local.getDownloadsIdForSession(session.getId());
-      File someDir = getTemporaryFilesystemBaseDir(local.getDownloadsFilesystem(downloadsId));
+      TemporaryFilesystem downloadsTfs = local.getDownloadsFilesystem(session.getId());
+      File someDir = getTemporaryFilesystemBaseDir(downloadsTfs);
       node.stop(session.getId());
       assertThat(someDir).doesNotExist();
     }
@@ -947,8 +948,8 @@ class NodeTest {
 
   private String simulateFileDownload(SessionId id, String text) throws IOException {
     File zip = createTmpFile(text);
-    UUID downloadsId = local.getDownloadsIdForSession(id);
-    File someDir = getTemporaryFilesystemBaseDir(local.getDownloadsFilesystem(downloadsId));
+    TemporaryFilesystem downloadsTfs = local.getDownloadsFilesystem(id);
+    File someDir = getTemporaryFilesystemBaseDir(downloadsTfs);
     File downloadsDirectory = Optional.ofNullable(someDir.listFiles()).orElse(new File[] {})[0];
     File target = new File(downloadsDirectory, zip.getName());
     boolean renamed = zip.renameTo(target);

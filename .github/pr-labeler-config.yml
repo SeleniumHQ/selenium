@@ -1,0 +1,74 @@
+C-java:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'java/**'
+
+C-py:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'py/**'
+
+C-dotnet:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'dotnet/**'
+
+C-rb:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'rb/**'
+
+C-nodejs:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'javascript/selenium-webdriver/**'
+
+C-cpp:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'cpp/**'
+
+C-rust:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'rust/**'
+
+B-atoms:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'javascript/atoms/**'
+
+B-grid:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'java/src/org/openqa/selenium/grid/**'
+      - 'javascript/grid-ui/**'
+
+B-manager:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'rust/**'
+
+B-devtools:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'common/devtools/**'
+      - '**/devtools/**'
+      - '**/bidi/**'
+
+B-build:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**'
+      - 'scripts/**'
+      - 'rake_tasks/**'
+      - 'Rakefile'
+      - 'BUILD.bazel'
+      - '**/*.bazel'
+      - '**/*.bzl'
+      - '.bazel*'
+
+B-support:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/support/**'

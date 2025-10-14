@@ -190,7 +190,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
         caps = readPrefixedCaps(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
-        final HttpClient fClient = client;
         return Either.right(
             new DefaultActiveSession(
                 tracer,
@@ -204,9 +203,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
                 Instant.now()) {
               @Override
               public void stop() {
-                try (fClient) {
-                  service.stop();
-                }
+                super.stop();
+                service.stop();
               }
             });
       } catch (Exception e) {
@@ -264,13 +262,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
             CdpEndpointFinder.getReportedUri("ms:edgeOptions", c)
                 .map(uri -> new DevToolsInfo(uri, c.getBrowserVersion()));
 
-    Function<Capabilities, Optional<DevToolsInfo>> firefox =
-        c ->
-            CdpEndpointFinder.getReportedUri("moz:debuggerAddress", c)
-                .map(uri -> new DevToolsInfo(uri, "85.0"));
-
     Optional<DevToolsInfo> maybeInfo =
-        Stream.of(chrome, edge, firefox)
+        Stream.of(chrome, edge)
             .map(finder -> finder.apply(caps))
             .filter(Optional::isPresent)
             .map(Optional::get)

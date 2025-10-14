@@ -1,28 +1,29 @@
+using Humanizer;
+using Microsoft.Extensions.DependencyInjection;
+using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
-    using Humanizer;
-    using Microsoft.Extensions.DependencyInjection;
-    using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-
     /// <summary>
     /// Represents an object that generates a protocol definition.
     /// </summary>
-    public sealed class ProtocolGenerator : CodeGeneratorBase<ProtocolDefinition>
+    public sealed class ProtocolGenerator : CodeGeneratorBase<ProtocolDefinition.ProtocolDefinition>
     {
         public ProtocolGenerator(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
         }
 
-        public override IDictionary<string, string> GenerateCode(ProtocolDefinition protocolDefinition, CodeGeneratorContext context)
+        public override IDictionary<string, string> GenerateCode(ProtocolDefinition.ProtocolDefinition protocolDefinition, CodeGeneratorContext context)
         {
-            if (String.IsNullOrWhiteSpace(Settings.TemplatesPath))
+            if (string.IsNullOrWhiteSpace(Settings.TemplatesPath))
             {
-                Settings.TemplatesPath = Path.GetDirectoryName(Settings.TemplatesPath);
+                Settings.TemplatesPath = Path.GetDirectoryName(Settings.TemplatesPath)!;
             }
 
             ICollection<DomainDefinition> domains = protocolDefinition.Domains;
@@ -44,26 +45,26 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                 foreach (var command in domain.Commands)
                 {
                     commands.Add(new CommandInfo
-                    {
-                        CommandName = $"{domain.Name}.{command.Name}",
-                        FullTypeName = $"{domain.Name.Dehumanize()}.{command.Name.Dehumanize()}CommandSettings",
-                        FullResponseTypeName = $"{domain.Name.Dehumanize()}.{command.Name.Dehumanize()}CommandResponse"
-                    });
+                    (
+                        commandName: $"{domain.Name}.{command.Name}",
+                        fullTypeName: $"{domain.Name.Dehumanize()}.{command.Name.Dehumanize()}CommandSettings",
+                        fullResponseTypeName: $"{domain.Name.Dehumanize()}.{command.Name.Dehumanize()}CommandResponse"
+                    ));
                 }
             }
 
             //Get eventinfos as an array
             ICollection<EventInfo> events = new List<EventInfo>();
 
-            foreach(var domain in domains)
+            foreach (var domain in domains)
             {
-                foreach(var @event in domain.Events)
+                foreach (var @event in domain.Events)
                 {
                     events.Add(new EventInfo
-                    {
-                        EventName = $"{domain.Name}.{@event.Name}",
-                        FullTypeName = $"{domain.Name.Dehumanize()}.{@event.Name.Dehumanize()}EventArgs"
-                    });
+                    (
+                        eventName: $"{domain.Name}.{@event.Name}",
+                        fullTypeName: $"{domain.Name.Dehumanize()}.{@event.Name.Dehumanize()}EventArgs")
+                    );
                 }
             }
 
@@ -71,14 +72,15 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             var types = GetTypesInDomain(domains);
 
             //Create an object that contains information that include templates can use.
-            var includeData = new {
+            var includeData = new
+            {
                 chromeVersion = protocolDefinition.BrowserVersion,
                 runtimeVersion = Settings.RuntimeVersion,
                 rootNamespace = Settings.RootNamespace,
                 domains = domains,
                 commands = commands,
                 events = events,
-                types = types.Select(kvp => kvp.Value).ToList()
+                types = types.Values.ToList()
             };
 
             var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -92,14 +94,16 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             }
 
             //Generate code for each domain, type, command, event from their respective templates.
-            GenerateCode(domains, types)
-                .ToList()
-                .ForEach(x => result.Add(x.Key, x.Value));
+
+            foreach (KeyValuePair<string, string> x in GenerateCode(domains, types))
+            {
+                result.Add(x.Key, x.Value);
+            }
 
             return result;
         }
 
-        private Dictionary<string, TypeInfo> GetTypesInDomain(ICollection<DomainDefinition> domains)
+        private static Dictionary<string, TypeInfo> GetTypesInDomain(ICollection<DomainDefinition> domains)
         {
             var knownTypes = new Dictionary<string, TypeInfo>(StringComparer.OrdinalIgnoreCase);
 
@@ -113,9 +117,9 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                     {
                         if (propertyType.Type == "string" && type.Enum != null && propertyType.Enum.Count > 0)
                         {
-                            TypeDefinition propertyTypeDefinition = new TypeDefinition()
+                            string id = $"{type.Id.Dehumanize()}{propertyType.Name.Dehumanize()}Values";
+                            TypeDefinition propertyTypeDefinition = new TypeDefinition(id)
                             {
-                                Id = type.Id.Dehumanize() + propertyType.Name.Dehumanize() + "Values",
                                 Type = propertyType.Type,
                                 Description = $"Enumerated values for {domain.Name}.{type.Id}.{propertyType.Name}"
                             };
@@ -133,30 +137,33 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                     switch (type.Type)
                     {
                         case "object":
-                            typeInfo = new TypeInfo
-                            {
-                                IsPrimitive = false,
-                                TypeName = type.Id.Dehumanize(),
-                            };
+                            typeInfo = new TypeInfo(typeName: type.Id.Dehumanize(), isPrimitive: false);
                             break;
+
                         case "string":
-                            if (type.Enum != null && type.Enum.Count() > 0)
-                                typeInfo = new TypeInfo
+                            if (type.Enum != null && type.Enum.Count > 0)
+                            {
+                                typeInfo = new TypeInfo(typeName: type.Id.Dehumanize(), isPrimitive: false)
                                 {
                                     ByRef = true,
-                                    IsPrimitive = false,
-                                    TypeName = type.Id.Dehumanize(),
                                 };
+                            }
                             else
-                                typeInfo = new TypeInfo
-                                {
-                                    IsPrimitive = true,
-                                    TypeName = "string"
-                                };
+                            {
+                                typeInfo = new TypeInfo("string", isPrimitive: true);
+                            }
+
                             break;
+
                         case "array":
-                            if ((type.Items == null || String.IsNullOrWhiteSpace(type.Items.Type)) &&
-                                type.Items.TypeReference != "StringIndex" && type.Items.TypeReference != "FilterEntry")
+                            if (type.Items is null)
+                            {
+                                throw new InvalidOperationException("Type definition's Type was array but Items is missing");
+                            }
+
+                            if (string.IsNullOrWhiteSpace(type.Items.Type) &&
+                                type.Items.TypeReference != "StringIndex" &&
+                                type.Items.TypeReference != "FilterEntry")
                             {
                                 throw new NotImplementedException("Did not expect a top-level domain array type to specify a TypeReference");
                             }
@@ -171,8 +178,10 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                                     itemType = "double";
                                     break;
                                 case null:
-                                    if (String.IsNullOrWhiteSpace(type.Items.TypeReference))
+                                    if (string.IsNullOrWhiteSpace(type.Items.TypeReference))
+                                    {
                                         throw new NotImplementedException($"Did not expect a top-level domain array type to have a null type and a null or whitespace type reference.");
+                                    }
 
                                     switch (type.Items.TypeReference)
                                     {
@@ -189,28 +198,23 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                                 default:
                                     throw new NotImplementedException($"Did not expect a top-level domain array type to specify items of type {type.Items.Type}");
                             }
-                            typeInfo = new TypeInfo
-                            {
-                                IsPrimitive = true,
-                                TypeName = $"{itemType}[]"
-                            };
+                            typeInfo = new TypeInfo(typeName: $"{itemType}[]", isPrimitive: true);
                             break;
+
                         case "number":
-                            typeInfo = new TypeInfo
+                            typeInfo = new TypeInfo("double", isPrimitive: true)
                             {
                                 ByRef = true,
-                                IsPrimitive = true,
-                                TypeName = "double"
                             };
                             break;
+
                         case "integer":
-                            typeInfo = new TypeInfo
+                            typeInfo = new TypeInfo("long", isPrimitive: true)
                             {
                                 ByRef = true,
-                                IsPrimitive = true,
-                                TypeName = "long"
                             };
                             break;
+
                         default:
                             throw new InvalidOperationException($"Unknown Type Definition Type: {type.Id}");
                     }
@@ -222,11 +226,9 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 
                 foreach (var embeddedEnumType in embeddedTypes)
                 {
-                    TypeInfo propertyTypeInfo = new TypeInfo
+                    TypeInfo propertyTypeInfo = new TypeInfo(typeName: embeddedEnumType.Id, isPrimitive: false)
                     {
-                        TypeName = embeddedEnumType.Id,
                         ByRef = true,
-                        IsPrimitive = false,
                         Namespace = domain.Name.Dehumanize(),
                         SourcePath = $"{domain.Name}.{embeddedEnumType.Id}"
                     };
@@ -238,7 +240,7 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             return knownTypes;
         }
 
-        private IDictionary<string, string> GenerateCode(ICollection<DomainDefinition> domains, Dictionary<string, TypeInfo> knownTypes)
+        private Dictionary<string, string> GenerateCode(ICollection<DomainDefinition> domains, Dictionary<string, TypeInfo> knownTypes)
         {
             var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
@@ -247,9 +249,11 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             //Generate types/events/commands for all domains.
             foreach (var domain in domains)
             {
-                domainGenerator.GenerateCode(domain, new CodeGeneratorContext { Domain = domain, KnownTypes = knownTypes })
-                    .ToList()
-                    .ForEach(x => result.Add(x.Key, x.Value));
+                var context = new CodeGeneratorContext(domain, knownTypes);
+                foreach (KeyValuePair<string, string> x in domainGenerator.GenerateCode(domain, context))
+                {
+                    result.Add(x.Key, x.Value);
+                }
             }
 
             return result;

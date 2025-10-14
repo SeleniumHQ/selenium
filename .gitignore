@@ -19,11 +19,11 @@ dotnet/packages/
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
 javascript/deps.js
-javascript/node/selenium-webdriver/node_modules/
-javascript/node/selenium-webdriver/lib/atoms/find-elements.js
-javascript/node/selenium-webdriver/lib/atoms/get-attribute.js
-javascript/node/selenium-webdriver/lib/atoms/is-displayed.js
-javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js
+javascript/selenium-webdriver/node_modules/
+javascript/selenium-webdriver/lib/atoms/find-elements.js
+javascript/selenium-webdriver/lib/atoms/get-attribute.js
+javascript/selenium-webdriver/lib/atoms/is-displayed.js
+javascript/selenium-webdriver/lib/atoms/mutation-listener.js
 javascript/safari-driver/node_modules/
 javascript/webdriver/devtools/types/
 .idea/vcs.xml
@@ -75,8 +75,9 @@ py/selenium/webdriver/remote/getAttribute.js
 py/selenium/webdriver/remote/isDisplayed.js
 py/docs/build/
 py/docs/source/**/*
+!py/docs/source/conf.py
+!py/docs/source/*.rst
 py/build/
-py/LICENSE
 py/pytestdebug.log
 py/python.iml
 selenium.egg-info/
@@ -137,7 +138,7 @@ MODULE.bazel.lock
 # Engflow
 *.crt
 *.key
-javascript/node/selenium-webdriver/.vscode/settings.json
+javascript/selenium-webdriver/.vscode/settings.json
 
 dotnet-bin
 .metadata/

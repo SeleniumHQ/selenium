@@ -143,7 +143,8 @@ class AddingNodesTest {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher());
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30));
 
     distributor =
         new RemoteDistributor(
@@ -183,7 +184,8 @@ class AddingNodesTest {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher())) {
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30))) {
 
       distributor =
           new RemoteDistributor(
@@ -223,7 +225,8 @@ class AddingNodesTest {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher())) {
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30))) {
 
       distributor =
           new RemoteDistributor(
@@ -272,7 +275,8 @@ class AddingNodesTest {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher())) {
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30))) {
 
       distributor =
           new RemoteDistributor(
@@ -314,7 +318,8 @@ class AddingNodesTest {
             false,
             Duration.ofSeconds(5),
             newSessionThreadPoolSize,
-            new DefaultSlotMatcher())) {
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(30))) {
 
       distributor =
           new RemoteDistributor(

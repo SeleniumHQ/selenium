@@ -15,27 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::config::ManagerConfig;
 use crate::config::ARCH::{ARM64, X32};
+use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{BrowserPath, compose_driver_path_in_cache};
 use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_three_args, SeleniumManager, BETA, DASH_DASH_VERSION, DEV, NIGHTLY,
-    OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
-    UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
+    BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
+    SeleniumManager, UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG, create_http_client,
+    format_three_args,
 };
-use anyhow::anyhow;
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::option::Option;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
@@ -50,6 +50,8 @@ const CFT_MACOS_APP_NAME: &str =
     "Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing";
 const MIN_CHROME_VERSION_CFT: i32 = 113;
 const MIN_CHROMEDRIVER_VERSION_CFT: i32 = 115;
+const CHROMIUM_SNAP_LINK: &str = "/snap/bin/chromium";
+const CHROMIUM_SNAP_BINARY: &str = "/snap/chromium/current/usr/lib/chromium-browser/chrome";
 
 pub struct ChromeManager {
     pub browser_name: &'static str,
@@ -435,11 +437,7 @@ impl SeleniumManager for ChromeManager {
         let os = self.get_os();
         let arch = self.get_arch();
         if WINDOWS.is(os) {
-            if X32.is(arch) {
-                "win32"
-            } else {
-                "win64"
-            }
+            if X32.is(arch) { "win32" } else { "win64" }
         } else if MACOS.is(os) {
             if ARM64.is(arch) {
                 "mac-arm64"
@@ -586,6 +584,15 @@ impl SeleniumManager for ChromeManager {
 
     fn set_download_browser(&mut self, download_browser: bool) {
         self.download_browser = download_browser;
+    }
+
+    fn is_snap(&self, browser_path: &str) -> bool {
+        LINUX.is(self.get_os())
+            && (browser_path.eq(CHROMIUM_SNAP_LINK) || browser_path.eq(CHROMIUM_SNAP_BINARY))
+    }
+
+    fn get_snap_path(&self) -> Option<PathBuf> {
+        Some(Path::new(CHROMIUM_SNAP_BINARY).to_path_buf())
     }
 }
 

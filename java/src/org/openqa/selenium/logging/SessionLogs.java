@@ -24,10 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.internal.Require;
 
 /** Contains the logs for a session divided by supported log types. */
 @Beta
+@NullMarked
 public class SessionLogs {
   private final Map<String, LogEntries> logTypeToEntriesMap;
 
@@ -66,7 +69,7 @@ public class SessionLogs {
         logEntries.add(
             new LogEntry(
                 LogLevelMapping.toLevel(String.valueOf(rawEntry.get("level"))),
-                ((Number) rawEntry.get("timestamp")).longValue(),
+                Require.nonNull("timestamp", (Number) rawEntry.get("timestamp")).longValue(),
                 String.valueOf(rawEntry.get("message"))));
       }
       sessionLogs.addLog(logType, new LogEntries(logEntries));

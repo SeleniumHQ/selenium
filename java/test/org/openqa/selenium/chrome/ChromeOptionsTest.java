@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.OFF;
 import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
 import java.io.File;
@@ -98,7 +99,7 @@ class ChromeOptionsTest {
     assertThat(mappedOptions.get("acceptInsecureCerts")).isEqualTo(true);
     assertThat(mappedOptions.get("pageLoadStrategy")).hasToString("eager");
     assertThat(mappedOptions.get("strictFileInteractability")).isEqualTo(true);
-    assertThat(mappedOptions.get("se:downloadsEnabled")).isEqualTo(true);
+    assertThat(mappedOptions.get(ENABLE_DOWNLOADS)).isEqualTo(true);
 
     Map<String, Long> expectedTimeouts = new HashMap<>();
     expectedTimeouts.put("implicit", 1000L);
@@ -239,7 +240,8 @@ class ChromeOptionsTest {
 
     MutableCapabilities one = new MutableCapabilities();
 
-    ChromeOptions options = new ChromeOptions();
+    org.openqa.selenium.chrome.ChromeOptions options =
+        new org.openqa.selenium.chrome.ChromeOptions();
     options.addArguments("verbose");
     options.addArguments("silent");
     options.setExperimentalOption("opt1", "val1");

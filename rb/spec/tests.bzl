@@ -2,6 +2,7 @@ load("@rules_ruby//ruby:defs.bzl", "rb_library", "rb_test")
 load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
+    "chrome_beta_data",
     "chrome_data",
     "edge_data",
     "firefox_beta_data",
@@ -25,6 +26,30 @@ BROWSERS = {
             "@selenium//common:use_pinned_macos_chrome": {
                 "CHROME_BINARY": "$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
                 "CHROMEDRIVER_BINARY": "$(location @mac_chromedriver//:chromedriver)",
+            },
+            "//conditions:default": {},
+        }) | select({
+            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
+            "//conditions:default": {},
+        }),
+    },
+    "chrome-beta": {
+        "data": chrome_beta_data,
+        "deps": ["//rb/lib/selenium/webdriver:chrome"],
+        "tags": [],
+        "target_compatible_with": [],
+        "env": {
+            "WD_REMOTE_BROWSER": "chrome",
+            "WD_SPEC_DRIVER": "chrome",
+            "WD_BROWSER_VERSION": "beta",
+        } | select({
+            "@selenium//common:use_pinned_linux_chrome": {
+                "CHROME_BINARY": "$(location @linux_beta_chrome//:chrome-linux64/chrome)",
+                "CHROMEDRIVER_BINARY": "$(location @linux_beta_chromedriver//:chromedriver)",
+            },
+            "@selenium//common:use_pinned_macos_chrome": {
+                "CHROME_BINARY": "$(location @mac_beta_chrome//:Chrome.app)/Contents/MacOS/Chrome",
+                "CHROMEDRIVER_BINARY": "$(location @mac_beta_chromedriver//:chromedriver)",
             },
             "//conditions:default": {},
         }) | select({
@@ -86,6 +111,7 @@ BROWSERS = {
         "env": {
             "WD_REMOTE_BROWSER": "firefox",
             "WD_SPEC_DRIVER": "firefox",
+            "WD_BROWSER_VERSION": "beta",
         } | select({
             "@selenium//common:use_pinned_linux_firefox": {
                 "FIREFOX_BINARY": "$(location @linux_beta_firefox//:firefox/firefox)",
@@ -105,7 +131,7 @@ BROWSERS = {
         "data": [],
         "deps": ["//rb/lib/selenium/webdriver:ie"],
         "tags": [
-            "skip-remote",  # RBE is Linux-only.
+            "skip-rbe",  # RBE is Linux-only.
         ],
         "target_compatible_with": ["@platforms//os:windows"],
         "env": {
@@ -118,7 +144,7 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:safari"],
         "tags": [
             "exclusive-if-local",  # Safari cannot run in parallel.
-            "skip-remote",  # RBE is Linux-only.
+            "skip-rbe",  # RBE is Linux-only.
         ],
         "target_compatible_with": ["@platforms//os:macos"],
         "env": {
@@ -131,7 +157,7 @@ BROWSERS = {
         "deps": ["//rb/lib/selenium/webdriver:safari"],
         "tags": [
             "exclusive-if-local",  # Safari cannot run in parallel.
-            "skip-remote",  # RBE is Linux-only.
+            "skip-rbe",  # RBE is Linux-only.
         ],
         "target_compatible_with": ["@platforms//os:macos"],
         "env": {

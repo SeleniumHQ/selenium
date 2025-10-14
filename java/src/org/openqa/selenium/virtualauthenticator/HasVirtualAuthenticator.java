@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import org.jspecify.annotations.NullMarked;
+
 /** Interface implemented by each driver that allows access to the virtual authenticator API. */
+@NullMarked
 public interface HasVirtualAuthenticator {
   /**
    * Adds a virtual authenticator with the given options.

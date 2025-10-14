@@ -1,10 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
+using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
+using System;
+
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
-    using Microsoft.Extensions.DependencyInjection;
-    using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
-    using System;
-    using System.Runtime.InteropServices.ComTypes;
-
     /// <summary>
     /// Contains extensions for IServiceProvider.
     /// </summary>
@@ -19,12 +18,14 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
         public static IServiceCollection AddCodeGenerationServices(this IServiceCollection serviceCollection, CodeGenerationSettings settings)
         {
             if (settings == null)
+            {
                 throw new ArgumentNullException(nameof(settings));
+            }
 
             return serviceCollection
                 .AddSingleton(settings)
                 .AddSingleton<TemplatesManager>()
-                .AddSingleton<ICodeGenerator<ProtocolDefinition>>((sp) => new ProtocolGenerator(sp))
+                .AddSingleton<ICodeGenerator<ProtocolDefinition.ProtocolDefinition>>((sp) => new ProtocolGenerator(sp))
                 .AddSingleton<ICodeGenerator<DomainDefinition>>((sp) => new DomainGenerator(sp))
                 .AddSingleton<ICodeGenerator<TypeDefinition>>((sp) => new TypeGenerator(sp))
                 .AddSingleton<ICodeGenerator<CommandDefinition>>((sp) => new CommandGenerator(sp))

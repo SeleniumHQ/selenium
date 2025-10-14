@@ -15,19 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 """The ActionChains implementation."""
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-from typing import Union
+from typing import TYPE_CHECKING, Union
 
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.actions.key_input import KeyInput
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+from selenium.webdriver.common.actions.wheel_input import ScrollOrigin, WheelInput
+from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.webelement import WebElement
-
-from .actions.action_builder import ActionBuilder
-from .actions.key_input import KeyInput
-from .actions.pointer_input import PointerInput
-from .actions.wheel_input import ScrollOrigin
-from .actions.wheel_input import WheelInput
-from .utils import keys_to_typing
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
@@ -200,7 +198,7 @@ class ActionChains:
 
         Example, pressing ctrl+c::
 
-            ActionChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
+            ActionChains(driver).key_down(Keys.CONTROL).send_keys("c").key_up(Keys.CONTROL).perform()
         """
         if element:
             self.click(element)
@@ -220,7 +218,7 @@ class ActionChains:
 
         Example, pressing ctrl+c::
 
-            ActionChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
+            ActionChains(driver).key_down(Keys.CONTROL).send_keys("c").key_up(Keys.CONTROL).perform()
         """
         if element:
             self.click(element)
@@ -274,7 +272,7 @@ class ActionChains:
         """Pause all inputs for the specified duration in seconds."""
 
         self.w3c_actions.pointer_action.pause(seconds)
-        self.w3c_actions.key_action.pause(seconds)
+        self.w3c_actions.key_action.pause(int(seconds))
 
         return self
 

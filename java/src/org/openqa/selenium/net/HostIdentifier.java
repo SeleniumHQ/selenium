@@ -27,13 +27,16 @@ import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
 
+@NullMarked
 public class HostIdentifier {
   private static final Logger LOG = Logger.getLogger(HostIdentifier.class.getName());
 
-  private static volatile String hostName;
-  private static volatile String hostAddress;
+  private static volatile @Nullable String hostName;
+  private static volatile @Nullable String hostAddress;
 
   private static String resolveHostName() {
     // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows

@@ -25,6 +25,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.browser.ClientWindowInfo;
 import org.openqa.selenium.json.JsonInput;
 
 public class Browser {
@@ -52,6 +53,24 @@ public class Browser {
         return userContexts;
       };
 
+  private final Function<JsonInput, List<ClientWindowInfo>> clientWindowsInfoMapper =
+      jsonInput -> {
+        Map<String, Object> response = jsonInput.read(Map.class);
+        List<Map<String, Object>> clientWindowsResponse =
+            (List<Map<String, Object>>) response.get("clientWindows");
+
+        List<ClientWindowInfo> clientWindows = new ArrayList<>();
+        clientWindowsResponse.forEach(map -> clientWindows.add(ClientWindowInfo.fromJson(map)));
+
+        return clientWindows;
+      };
+
+  private final Function<JsonInput, ClientWindowInfo> clientWindowInfoMapper =
+      jsonInput -> {
+        Map<String, Object> response = jsonInput.read(Map.class);
+        return ClientWindowInfo.fromJson(response);
+      };
+
   public Browser(WebDriver driver) {
     this.bidi = ((HasBiDi) driver).getBiDi();
   }
@@ -66,5 +85,9 @@ public class Browser {
 
   public void removeUserContext(String userContext) {
     bidi.send(new Command<>("browser.removeUserContext", Map.of("userContext", userContext)));
+  }
+
+  public List<ClientWindowInfo> getClientWindows() {
+    return bidi.send(new Command<>("browser.getClientWindows", Map.of(), clientWindowsInfoMapper));
   }
 }

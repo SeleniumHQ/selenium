@@ -59,7 +59,7 @@ module Selenium
         # @yieldparam [Proc] continue block which proceeds with the request and optionally yields response
         #
 
-        def intercept(&)
+        def intercept(&block)
           if browser == :firefox
             WebDriver.logger.deprecate(
               'Driver#intercept on Firefox',
@@ -68,7 +68,7 @@ module Selenium
             )
           end
           @interceptor ||= DevTools::NetworkInterceptor.new(devtools)
-          @interceptor.intercept(&)
+          @interceptor.intercept(&block)
         end
       end # HasNetworkInterception
     end # DriverExtensions

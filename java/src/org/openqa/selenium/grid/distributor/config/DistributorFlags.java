@@ -21,6 +21,7 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_NEWSESSION_THREADPOOL_SIZE;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_PURGE_NODES_INTERVAL;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_REJECT_UNSUPPORTED_CAPS;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
@@ -114,6 +115,14 @@ public class DistributorFlags implements HasRoles {
               + " an expensive operation. ")
   @ConfigValue(section = DISTRIBUTOR_SECTION, name = "newsession-threadpool-size", example = "4")
   public int newSessionThreadPoolSize = DEFAULT_NEWSESSION_THREADPOOL_SIZE;
+
+  @Parameter(
+      names = {"--purge-nodes-interval"},
+      description =
+          "How often, in seconds, will the Distributor purge Nodes that have been down for a while."
+              + " This is calculated based on the heartbeat received from a particular node. ")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "purge-nodes-interval", example = "30")
+  public int purgeNodesInterval = DEFAULT_PURGE_NODES_INTERVAL;
 
   @Override
   public Set<Role> getRoles() {

@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node.config;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_CONNECTION_LIMIT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DELETE_SESSION_ON_UI;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_ENABLE_BIDI;
@@ -199,6 +200,15 @@ public class NodeFlags implements HasRoles {
   public int registerPeriod = DEFAULT_REGISTER_PERIOD;
 
   @Parameter(
+      names = "--register-shutdown-on-failure",
+      description =
+          "If this flag is enabled, the Node will shut down after the register period is completed."
+              + " This is useful for container environments to restart and register again. If"
+              + " restarted multiple times, the Node container status will be CrashLoopBackOff.")
+  @ConfigValue(section = NODE_SECTION, name = "register-shutdown-on-failure", example = "false")
+  public boolean registerShutdownOnFailure = false;
+
+  @Parameter(
       names = "--heartbeat-period",
       description =
           "How often, in seconds, will the Node send heartbeat events to the Distributor "
@@ -231,6 +241,13 @@ public class NodeFlags implements HasRoles {
               + "environments like Kubernetes. A value higher than zero enables this feature.")
   @ConfigValue(section = NODE_SECTION, name = "drain-after-session-count", example = "1")
   public int drainAfterSessionCount = DEFAULT_DRAIN_AFTER_SESSION_COUNT;
+
+  @Parameter(
+      names = {"--delete-session-on-ui"},
+      arity = 1,
+      description = "Enable capability to support deleting session on Grid UI. False by default")
+  @ConfigValue(section = NODE_SECTION, name = "delete-session-on-ui", example = "true")
+  public Boolean deleteSessionOnUi = DEFAULT_DELETE_SESSION_ON_UI;
 
   @Parameter(
       names = {"--enable-cdp"},

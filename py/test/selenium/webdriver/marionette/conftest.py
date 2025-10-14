@@ -24,6 +24,7 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 @pytest.fixture
 def options():
     options = FirefoxOptions()
+    options.add_argument("-remote-allow-system-access")
     return options
 
 

@@ -2,7 +2,7 @@ load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "framework")
 
 SMALL_TESTS = [
     "DefaultWaitTest.cs",
-    "FakeClock.cs",
+    "HandCrankClock.cs",
     "LoadableComponentTests.cs",
     "SelectTests.cs",
     "SlowLoadableComponentTest.cs",

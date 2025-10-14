@@ -11,7 +11,6 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
 
 jobs:
   github-release:
@@ -19,18 +18,23 @@ jobs:
       (github.event.pull_request.merged == true &&
       github.repository_owner == 'seleniumhq' &&
       startsWith(github.event.pull_request.head.ref, 'release-preparation-')) ||
-      (github.event_name == 'workflow_dispatch' && 
-      github.event.inputs.version != '' && 
+      (github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.version != '' &&
       github.repository_owner == 'seleniumhq')
     runs-on: ubuntu-latest
     permissions: write-all
+    outputs:
+      version: ${{ env.VERSION }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Extract version from branch name
         if: github.event.pull_request.merged == true
         run: |
-          VERSION=$(echo $BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          TEMP_BRANCH_NAME=${{ github.event.pull_request.head.ref }}
+          VERSION=$(echo $TEMP_BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Extract version from workflow input
         if: github.event_name == 'workflow_dispatch'
@@ -41,10 +45,6 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-      #      - name: Tag Release
-      #        run: |
-      #          git tag selenium-${{ env.VERSION }} || echo "Tag already exists"
-      #          git push origin selenium-${{ env.VERSION }} || echo "Tag already exists remotely"
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -52,6 +52,14 @@ jobs:
           distribution: 'temurin'
       - name: Setup curl for Ubuntu
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      - name: Delete nightly tag
+        run: |
+          if git rev-parse --verify refs/tags/nightly >/dev/null 2>&1; then
+            echo "Deleting nightly tag"
+            git push origin --delete refs/tags/nightly
+          else
+            echo "No nightly tag found - nothing to delete"
+          fi
       - name: Build and Stage Packages
         run: ./go all:package[--config=release]
       - name: Generate Draft Release
@@ -71,4 +79,7 @@ jobs:
     needs: github-release
     uses: ./.github/workflows/update-documentation.yml
     with:
-      tag: selenium-${{ needs.github-release.outputs.version }}
+      version: ${{ needs.github-release.outputs.version }}
+      sha: ${{ github.sha }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}

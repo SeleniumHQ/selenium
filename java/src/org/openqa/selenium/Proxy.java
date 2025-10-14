@@ -26,6 +26,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Configuration parameters for using proxies in WebDriver. Generally you should pass an object of
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
  * configuration. That is, it is an error to set an <code>httpProxy</code> manually and then turn on
  * proxy autodetect.
  */
+@NullMarked
 public class Proxy {
 
   public enum ProxyType {
@@ -64,7 +67,7 @@ public class Proxy {
   }
 
   private static final String PROXY_TYPE = "proxyType";
-  private static final String FTP_PROXY = "ftpProxy";
+  @Deprecated private static final String FTP_PROXY = "ftpProxy";
   private static final String HTTP_PROXY = "httpProxy";
   private static final String NO_PROXY = "noProxy";
   private static final String SSL_PROXY = "sslProxy";
@@ -77,15 +80,15 @@ public class Proxy {
 
   private ProxyType proxyType = ProxyType.UNSPECIFIED;
   private boolean autodetect = false;
-  private String ftpProxy;
-  private String httpProxy;
-  private String noProxy;
-  private String sslProxy;
-  private String socksProxy;
-  private Integer socksVersion;
-  private String socksUsername;
-  private String socksPassword;
-  private String proxyAutoconfigUrl;
+  @Deprecated private @Nullable String ftpProxy;
+  private @Nullable String httpProxy;
+  private @Nullable String noProxy;
+  private @Nullable String sslProxy;
+  private @Nullable String socksProxy;
+  private @Nullable Integer socksVersion;
+  private @Nullable String socksUsername;
+  private @Nullable String socksPassword;
+  private @Nullable String proxyAutoconfigUrl;
 
   public Proxy() {
     // Empty default constructor
@@ -120,7 +123,7 @@ public class Proxy {
     setters.put(AUTODETECT, value -> setAutodetect((Boolean) value));
     raw.forEach(
         (key, value) -> {
-          if (key != null && value != null) {
+          if (key != null && value != null && setters.containsKey(key)) {
             setters.get(key).accept(value);
           }
         });
@@ -222,8 +225,10 @@ public class Proxy {
    * Gets the FTP proxy.
    *
    * @return the FTP proxy hostname if present, or null if not set
+   * @deprecated getFtpProxy is deprecated and will be removed in a future release.
    */
-  public String getFtpProxy() {
+  @Deprecated
+  public @Nullable String getFtpProxy() {
     return ftpProxy;
   }
 
@@ -232,7 +237,9 @@ public class Proxy {
    *
    * @param ftpProxy the proxy host, expected format is <code>hostname.com:1234</code>
    * @return reference to self
+   * @deprecated setFtpProxy is deprecated and will be removed in a future release.
    */
+  @Deprecated
   public Proxy setFtpProxy(String ftpProxy) {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
@@ -245,7 +252,7 @@ public class Proxy {
    *
    * @return the HTTP proxy hostname if present, or null if not set
    */
-  public String getHttpProxy() {
+  public @Nullable String getHttpProxy() {
     return httpProxy;
   }
 
@@ -267,7 +274,7 @@ public class Proxy {
    *
    * @return The proxy bypass (noproxy) addresses
    */
-  public String getNoProxy() {
+  public @Nullable String getNoProxy() {
     return noProxy;
   }
 
@@ -289,7 +296,7 @@ public class Proxy {
    *
    * @return the SSL tunnel proxy hostname if present, null otherwise
    */
-  public String getSslProxy() {
+  public @Nullable String getSslProxy() {
     return sslProxy;
   }
 
@@ -311,7 +318,7 @@ public class Proxy {
    *
    * @return the SOCKS proxy if present, null otherwise
    */
-  public String getSocksProxy() {
+  public @Nullable String getSocksProxy() {
     return socksProxy;
   }
 
@@ -333,7 +340,7 @@ public class Proxy {
    *
    * @return the SOCKS version if present, null otherwise
    */
-  public Integer getSocksVersion() {
+  public @Nullable Integer getSocksVersion() {
     return socksVersion;
   }
 
@@ -355,7 +362,7 @@ public class Proxy {
    *
    * @return the SOCKS proxy's username
    */
-  public String getSocksUsername() {
+  public @Nullable String getSocksUsername() {
     return socksUsername;
   }
 
@@ -377,7 +384,7 @@ public class Proxy {
    *
    * @return the SOCKS proxy's password
    */
-  public String getSocksPassword() {
+  public @Nullable String getSocksPassword() {
     return socksPassword;
   }
 
@@ -399,7 +406,7 @@ public class Proxy {
    *
    * @return the proxy auto-configuration URL
    */
-  public String getProxyAutoconfigUrl() {
+  public @Nullable String getProxyAutoconfigUrl() {
     return proxyAutoconfigUrl;
   }
 
@@ -428,7 +435,7 @@ public class Proxy {
   }
 
   @SuppressWarnings({"unchecked"})
-  public static Proxy extractFrom(Capabilities capabilities) {
+  public static @Nullable Proxy extractFrom(Capabilities capabilities) {
     Object rawProxy = capabilities.getCapability("proxy");
     Proxy proxy = null;
     if (rawProxy != null) {
@@ -472,7 +479,7 @@ public class Proxy {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }

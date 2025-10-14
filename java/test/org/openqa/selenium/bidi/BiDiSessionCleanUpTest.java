@@ -20,7 +20,6 @@ package org.openqa.selenium.bidi;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
-import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
@@ -42,8 +41,7 @@ class BiDiSessionCleanUpTest {
 
     BiDi biDi = driver.getBiDi();
 
-    BiDiSessionStatus status =
-        biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
+    BiDiSessionStatus status = biDi.getBidiSessionStatus();
     assertThat(status).isNotNull();
     assertThat(status.getMessage()).isEqualTo("Session already started");
 
@@ -53,8 +51,7 @@ class BiDiSessionCleanUpTest {
 
     driver.close();
 
-    BiDiSessionStatus statusAfterClosing =
-        biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
+    BiDiSessionStatus statusAfterClosing = biDi.getBidiSessionStatus();
     assertThat(statusAfterClosing).isNotNull();
     assertThat(status.getMessage()).isEqualTo("Session already started");
     driver.quit();
@@ -70,8 +67,7 @@ class BiDiSessionCleanUpTest {
 
     BiDi biDi = driver.getBiDi();
 
-    BiDiSessionStatus status =
-        biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
+    BiDiSessionStatus status = biDi.getBidiSessionStatus();
     assertThat(status).isNotNull();
     assertThat(status.getMessage()).isEqualTo("Session already started");
 
@@ -79,10 +75,6 @@ class BiDiSessionCleanUpTest {
 
     // Closing the last top-level browsing context, closes the WebDriver and BiDi session
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(
-            () ->
-                biDi.send(
-                    new Command<>(
-                        "session.status", Collections.emptyMap(), BiDiSessionStatus.class)));
+        .isThrownBy(() -> biDi.getBidiSessionStatus());
   }
 }

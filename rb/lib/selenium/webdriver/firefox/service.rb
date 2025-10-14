@@ -25,6 +25,15 @@ module Selenium
         EXECUTABLE = 'geckodriver'
         SHUTDOWN_SUPPORTED = false
         DRIVER_PATH_ENV_KEY = 'SE_GECKODRIVER'
+
+        def initialize(path: nil, port: nil, log: nil, args: nil)
+          args ||= []
+          unless args.any? { |arg| arg.include?('--connect-existing') || arg.include?('--websocket-port') }
+            args << '--websocket-port'
+            args << '0'
+          end
+          super
+        end
       end # Service
     end # Firefox
   end # WebDriver

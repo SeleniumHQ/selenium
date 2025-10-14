@@ -1,4 +1,4 @@
-load("@npm//javascript/node/selenium-webdriver:mocha/package_json.bzl", mocha_bin = "bin")
+load("@npm//javascript/selenium-webdriver:mocha/package_json.bzl", mocha_bin = "bin")
 
 _TIMEOUTS = {
     "small": "60000",

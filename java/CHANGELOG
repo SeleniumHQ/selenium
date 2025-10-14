@@ -1,3 +1,201 @@
+v4.36.0
+======
+* Add CDP for Chrome 140 and remove 137
+* [grid] close the HttpClient after the session is gone
+* extend the scope of the properties of the HttpCommandExecutor class (#16186)
+* [grid] Improve readTimeout in handle session between Router and Node (#16163)
+* Unifying select class (#16220)
+* Add hooks around getScreenshotAs in WebDriverListener #16232 (#16233)
+* [grid] Simplify node status response handling in Router
+* Refactored selectByContainsVisibleText and selectByVisibleText methods to remove code duplication (#16257)
+* [bidi]: add `DownloadInfo` class and test for `onDownloadWillBegin` (#16267)
+* [grid] update to netty 4.2.4 (#16194)
+* Fix links to exception documentation on website (#16305)
+* Fix concurrency issue in Selenium Manager (#16315)
+* Fix falsy Spotbugs warning about not closed resource (#16318)
+* [grid] Fix regression Distributor rejecting requests when nodes have supported caps but no free slots (#16327)
+* Feat 14291/add jspecify annotations to exception classes pt4 (#16028)
+
+v4.35.0
+======
+* Add CDP for Chrome 139 and remove 136
+* Remove deprecated AppCacheStatus enum from the HTML5 package (#15973)
+* Removing deprecated FirefoxBinary.java and Executable.java
+* Removing deprecated `beforeSetScriptTimeout` and `afterSetScriptTimeout`
+* Removing deprecated SessionStorage commands from ChromiumDriver
+* Removing deprecated SessionStorage commands from FirefoxDriver
+* Removing deprecated SessionStorage class AddWebStorage.java
+* Removing deprecated WebStorage related classes.
+* Feat 14291/jspecify nullable annotation edge driver service (#15972)
+* Removing deprecated LocationContext related classes.
+* Fix Unicode value for OPTION key in Keys enum (#15966)
+* Removing old stream collectors required by Java 8 (#15523)
+* Use static Patterns for regex-matching (#15499)
+* Point made as immutable (#15511)
+* Feat 14291/jspecify nullable annotation chrome driver såervice (#15998)
+* Add @Nullable annotations to Firefox and Gecko driver service  (#15999)
+* Add JSpecify nullable annotations to SafariDriverService parameters (#16000)
+* Add @Nullable annotations to InternetExplorerDriverService parameters (#16001)
+* use generics for AbstractFindByBuilder to avoid excessive casting (#15526)
+* JSpecify annotations for By locators (#14372)
+* JSpecify annotations for capabilities (#14397)
+* Fix various typos in comments (#16022)
+* release underlying HttpClient resources #15710
+* CDP generate getters to ArrayType #16050
+* Fix 15634/ensure driver closed java (#16038)
+* [grid] Migrate from Guava's CacheBuilder to Caffeine (#15547)
+* [grid] Fix race condition and improve logging in LocalSessionMap (#15370)
+* [BiDi] implement emulation (#16070)
+* add `default` as a value for SameSite (#16129)
+* Normalising handling of Shadow Dom elements. (#16149)
+* [grid] Restructuring classes have stateful data and improve Node health checks in LocalDistributor (#16151)
+* add `websocket-port` test and `--connect-existing` check (#15462)
+* [grid] Reduce redundant logs of find slots and retry queue requests by the Distributor (#16155)
+
+v4.34.0
+======
+* Add CDP for Chrome 138 and remove 135
+* Removing deprecated BrowsingContext constructor.
+* [grid] Silent fail on invalid log level (#15796)
+* Removing deprecated OsProcess class.
+* Removing deprecated CommandLine class.
+* Removing deprecated ContextAware interface.
+* Fixing `getCredential` for VirtualAuthenticator
+* Caching the size/length in loops to slightly improve performance (#15852)
+* [feature] add method RemoteWebDriver.isDownloadsEnabled() (#15868)
+* [refactor] use constant `CapabilityType.ENABLE_DOWNLOADS` instead of hard-coded value `se:downloadsEnabled` (#15867)
+* [bidi] Add new fields of BrowsingContextInfo
+* [bidi]Add method to get browsing context tree with root
+* [grid] Add GreedySlotSelector as a built-in slot-selector option (#15897)
+* deprecate FtpProxy (#15907)
+* [BiDi] implement browsingContext.historyUpdated (#15901)
+* [refactor] Remove Empty Space in CommandPayload (#15934)
+* [FEAT] Add macOS-specific keys (OPTION, FN) to Keys enum for improved… (#15910)
+* [BiDi] implement web extensions (#15660)
+* Made ``JsonToWebElementConverter`` methods/fields protected (#15885)
+* [grid] Session can be deleted via Grid UI (#15808)
+* Use Environment variable to set driver location (#15653)
+
+v4.33.0
+======
+* Add CDP for Chrome 137 and remove 134
+* Removing deprecated items in Require.java (#15711)
+* Removing RemoteStatus as it was deprecated. (#15712)
+* Fix spotbugs issues
+* fix autoclose casting
+* Use immutable values for return values
+* Deprecating methods that use FirefoxBinary as well.
+* Removing deprecated NATIVE_EVENTS field
+* Removing deprecated SlowLoadableComponent constructor
+* Removing deprecated implicitlyWait timeout
+* Removing unused IME_ACTIVATE_ENGINE.
+* Removing deprecated `setScriptTimeout` and `pageLoadTimeout`. (#15764)
+* Reverting deprecation notice for `getAttribute`.
+* [grid] UI Sessions capability fields to display as additional columns (#15759)
+* [grid] UI Overview is able to see live preview per Node (#15777)
+
+v4.32.0
+======
+* Add CDP for Chrome 136 and remove 133
+* [grid] Dynamic Grid can enforce platform for node browser images
+* [grid] Ignored options when they are prefixed, safari specif as well (#15574)
+* [grid] Remove `browserName` capability from stereotype and SlotMatcher when using Relay Node to test a mobile application (#15537)
+* [bidi]: add browsingContext event `onNavigationCommitted` (#15560)
+* Set remote active protocol to BiDi for Firefox (#15224)
+* Add header while creating websocket (#15655)
+
+v4.31.0
+======
+* Add CDP for Chrome 135 and remove 132
+* handle `getNamedCookie` and `deleteNamedCookie` for empty strings (#15092)
+* [bidi] Prefer returning immutable versions of values when serialising to JSON
+* [grid] remove more firefox devtools leftovers SeleniumHQ (#15323)
+* Add nullness for AppCacheStatus, Credential, and Either (#15119)
+* Add nullness for interactions (#15118)
+* [grid] Expose register status via Node status response (#15448)
+
+v4.30.0
+======
+* Add CDP for Chrome 134 and remove 131
+* [grid] remove firefox devtools leftovers #15323
+* [grid] remove indirection in cache structures
+* [grid] remove not reachable code
+* [grid] Add traces for event stop session in Node (#15348)
+* [grid] Allow longer startup time through docker (#15345)
+* remove usage of deprecated SemanticAttributes class #15384
+* [cdp] add support for 134 and remove 131
+* [cdp] remove support for v85 since no longer required by Firefox
+* [bidi] Add Permissions Module commands (#15294)
+
+v4.29.0
+======
+* Add CDP for Chrome 133 and remove 130
+* [java] Ensure purging dead nodes service interval is configurable (#15175)
+* [java] Ensure Selenium logging options are respected if java logging properties are not set (#15197)
+* [java] Do not enable CDP deprecation warning if BiDi enabled (#15170)
+* [java] Remove Firefox CDP (#15200)
+* [java] Close the HttpClient if possible
+* [java] Avoid augmenting CDP for Firefox (#15271)
+* [java] Remove deprecated non-w3c compliant NetworkConnection interface (#15270)
+* [java] Avoid downloading not needed browsers #15261
+* [java] Fix return type and docstring for `getDownloadableFiles` (#15293)
+* [java] Refine logger initialization with correct class literal (#15289)
+* [java][bidi] Implement getClientWindows method (#14869)
+* [grid] Add default sessionTimeout to NodeStatus to increase backward compatibility (#15229)
+* [grid] Node flag `register-shutdown-on-failure` (#15297)
+
+v4.28.1
+======
+* [java]: Add Locale.ROOT to avoid port formatting issues for all drivers (#15121)
+* [java][bidi]: implement bidi setCacheBehavior (#15130)
+* [java] Enhance PageSize class to support for predefined and custom Paper Sizes (#15052)
+* [grid]: Grid UI could not open session live view (#15132)
+
+v4.28.0
+======
+* Add CDP for Chrome 132 and remove 129
+* [java]: encapsulate `additionalCommands` with getter method (#14816)
+* [java] read complete output of selenium manager #14820
+* [java] Enhance Null Check in Exception Handling (#14810)
+* [java]Replace lambdas with method references (#14857)
+* [java] include the exit code to the error message of a failed driver startup
+* [grid] decrement the connection per session counter on close #14842 (#14854)
+* [java]: Improved span name for `TracedCommandExecutor` (#14902)
+* [java] use Local.ENGLISH for lower / upper case transformations #14916
+* [java] setter for flag JsonInput.readPerformed (#14921)
+* [grid] Distributor listen and handle the NodeRestartedEvent (#14938)
+* [grid] delay the newsessionqueue response (#14764)
+* [java] Fix FedCM command definition and tests (#14070)
+* [grid] Improve SlotMatcher and SlotSelector on request browserVersion (#14914)
+* [grid] Using the correct variable in throw
+* [java] for loop enhance and using of standard java 11 method writeString for tests (#14889)
+* [java] reuse the classes created by the WebDriverDecorator #14789 (#14793)
+* [java] Added a check for intentionally existing loggers (#14754)
+* [grid] use a single event listener for the event-bus health check
+* [java] JSpecify annotations for immutable models and enums (#14395)
+* [java] JSpecify annotations for wrappers (#14396)
+* [grid] rework the retry of http requests #14917 (#14924)
+* [grid] added missing locks related to health checks
+* [grid] removed a misleading lock from the grid model
+* [grid] ensure the current session count is correct
+* [grid] ensure --drain-after-session-count is respected with a lot of sessions in the queue (#14987)
+* [grid] retry if no node does support the Capabilities (#14986)
+* [grid] stop the health check of a restarted node
+* [grid]: platformName is empty should be considered as enum ANY instead of WINDOWS (#15036)
+* [java] rawtypes javac warning fix for AbstractDriverOptions (#15048)
+* [java]: allow setting custom timeout for DevTools (#14931)
+* [grid] Dynamic Grid is able to trigger video record in browser node (#15047)
+* [java] Nullness annotations for Cookie and Platform (#15062)
+* [java] Replace anonymous types with lambdas (#15043)
+* Allow sending DevTools command with custom timeout. (#15059)
+* [java] Add nullness for Require (#15084)
+* [java] Add nullness for net (#15083)
+* [java] Add nullness for virtualauthenticator (#15082)
+* [java] Add nullness for exceptions (#15081)
+* [java] Add nullness for interactions (#15095)
+* [java][js][py] Add straight relative-by locators (#14482)
+* [java] Add nullness for Proxy and print (#15094)
+
 v4.27.0
 ======
 * Add CDP for Chrome 131 and remove 128

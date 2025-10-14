@@ -17,7 +17,11 @@
 
 package org.openqa.selenium;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 /** Represents the type of new browser window that may be created. */
+@NullMarked
 public enum WindowType {
   WINDOW("window"),
   TAB("tab"),
@@ -34,7 +38,7 @@ public enum WindowType {
     return String.valueOf(text);
   }
 
-  public static WindowType fromString(String text) {
+  public static @Nullable WindowType fromString(@Nullable String text) {
     if (text != null) {
       for (WindowType b : WindowType.values()) {
         if (text.equalsIgnoreCase(b.text)) {

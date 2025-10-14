@@ -38,14 +38,15 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'sends keys to element' do
+        it 'sends keys to element', only: {browser: %i[chrome edge firefox]} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
+          driver.execute_script('arguments[0].scrollIntoView({block: "center", inline: "nearest"});', input)
 
           driver.action.send_keys(input, 'abcd').perform
-          wait.until { input.attribute(:value).length == 4 }
-          expect(input.attribute(:value)).to eq('abcd')
+          wait.until { input.property(:value).length == 4 }
+          expect(input.property(:value)).to eq('abcd')
         end
 
         it 'sends keys with multiple arguments' do
@@ -55,8 +56,8 @@ module Selenium
           input.click
 
           driver.action.send_keys('abcd', 'dcba').perform
-          wait.until { input.attribute(:value).length == 8 }
-          expect(input.attribute(:value)).to eq('abcddcba')
+          wait.until { input.property(:value).length == 8 }
+          expect(input.property(:value)).to eq('abcddcba')
         end
 
         it 'sends non-ASCII keys' do
@@ -66,8 +67,8 @@ module Selenium
           input.click
 
           driver.action.send_keys('abcd', :left, 'a').perform
-          wait.until { input.attribute(:value).length == 5 }
-          expect(input.attribute(:value)).to eq('abcad')
+          wait.until { input.property(:value).length == 5 }
+          expect(input.property(:value)).to eq('abcad')
         end
       end
 
@@ -81,9 +82,9 @@ module Selenium
           event_input.click
 
           driver.action.key_down(:shift).send_keys('ab').key_up(:shift).perform
-          wait.until { event_input.attribute(:value).length == 2 }
+          wait.until { event_input.property(:value).length == 2 }
 
-          expect(event_input.attribute(:value)).to eq('AB')
+          expect(event_input.property(:value)).to eq('AB')
           expected = keylogger.text.strip
           expect(expected).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
         end
@@ -131,10 +132,10 @@ module Selenium
           event_input = driver.find_element(id: 'clickField')
 
           driver.action.click_and_hold(event_input).perform
-          expect(event_input.attribute(:value)).to eq('Hello')
+          expect(event_input.property(:value)).to eq('Hello')
 
           driver.action.release_actions
-          expect(event_input.attribute(:value)).to eq('Clicked')
+          expect(event_input.property(:value)).to eq('Clicked')
         end
       end
 
@@ -143,24 +144,27 @@ module Selenium
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
           driver.action.click(element).perform
-          expect(element.attribute(:value)).to eq('Clicked')
+          expect(element.property(:value)).to eq('Clicked')
         end
 
         it 'executes with equivalent pointer methods' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
           driver.action.move_to(element).pointer_down(:left).pointer_up(:left).perform
-          expect(element.attribute(:value)).to eq('Clicked')
+          expect(element.property(:value)).to eq('Clicked')
         end
       end
 
       describe '#double_click' do
+        # https://issues.chromium.org/issues/400087471
+        before { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
+
         it 'presses pointer twice', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
           driver.action.double_click(element).perform
-          expect(element.attribute(:value)).to eq('DoubleClicked')
+          expect(element.property(:value)).to eq('DoubleClicked')
         end
 
         it 'executes with equivalent pointer methods', except: {browser: %i[safari safari_preview]} do
@@ -171,7 +175,7 @@ module Selenium
                 .pointer_down(:left).pointer_up(:left)
                 .pointer_down(:left).pointer_up(:left)
                 .perform
-          expect(element.attribute(:value)).to eq('DoubleClicked')
+          expect(element.property(:value)).to eq('DoubleClicked')
         end
       end
 
@@ -181,7 +185,7 @@ module Selenium
           element = driver.find_element(id: 'doubleClickField')
 
           driver.action.context_click(element).perform
-          expect(element.attribute(:value)).to eq('ContextClicked')
+          expect(element.property(:value)).to eq('ContextClicked')
         end
 
         it 'executes with equivalent pointer methods' do
@@ -189,7 +193,7 @@ module Selenium
           element = driver.find_element(id: 'doubleClickField')
 
           driver.action.move_to(element).pointer_down(:right).pointer_up(:right).perform
-          expect(element.attribute(:value)).to eq('ContextClicked')
+          expect(element.property(:value)).to eq('ContextClicked')
         end
       end
 
@@ -199,7 +203,7 @@ module Selenium
           element = driver.find_element(id: 'clickField')
           driver.action.move_to(element).click.perform
 
-          expect(element.attribute(:value)).to eq('Clicked')
+          expect(element.property(:value)).to eq('Clicked')
         end
 
         it 'moves to element with offset' do
@@ -212,7 +216,7 @@ module Selenium
           y_offset = (destination_rect.y - origin_rect.y).ceil
 
           driver.action.move_to(origin, x_offset, y_offset).click.perform
-          expect(destination.attribute(:value)).to eq('Clicked')
+          expect(destination.property(:value)).to eq('Clicked')
         end
       end
 
@@ -256,7 +260,7 @@ module Selenium
           rect = element.rect
           driver.action.move_to_location(rect.x.ceil, rect.y.ceil).click.perform
 
-          expect(element.attribute(:value)).to eq('Clicked')
+          expect(element.property(:value)).to eq('Clicked')
         end
       end
 
@@ -302,9 +306,9 @@ module Selenium
         end
       end
 
-      describe '#scroll_to', only: {browser: %i[chrome edge firefox]} do
+      describe '#scroll_to' do
         it 'scrolls to element',
-           except: {browser: :firefox, reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
 
@@ -317,9 +321,8 @@ module Selenium
       end
 
       describe '#scroll_by' do
-        it 'scrolls by given amount', except: {browser: :firefox,
-                                               platform: :macosx,
-                                               reason: 'scrolls insufficient number of pixels'} do
+        it 'scrolls by given amount',
+           exclusive: {browser: %i[chrome edge], reason: 'inconsistent behavior between versions'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           delta_y = footer.rect.y.round
@@ -333,7 +336,7 @@ module Selenium
 
       describe '#scroll_from' do
         it 'scrolls from element by given amount',
-           except: {browser: %i[firefox safari], reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError in Firefox'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
           scroll_origin = WheelActions::ScrollOrigin.element(iframe)
@@ -347,7 +350,7 @@ module Selenium
         end
 
         it 'scrolls from element by given amount with offset',
-           except: {browser: %i[firefox safari], reason: 'incorrect MoveTargetOutOfBoundsError'} do
+           exclusive: {browser: %i[chrome edge], reason: 'incorrect MoveTargetOutOfBoundsError in Firefox'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           scroll_origin = WheelActions::ScrollOrigin.element(footer, 0, -50)

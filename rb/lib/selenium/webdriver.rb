@@ -21,7 +21,6 @@ require 'tmpdir'
 require 'fileutils'
 require 'date'
 require 'json'
-require 'set'
 require 'uri'
 require 'net/http'
 
@@ -85,8 +84,8 @@ module Selenium
     # @see Selenium::WebDriver::Support::AbstractEventListener
     #
 
-    def self.for(*args)
-      WebDriver::Driver.for(*args)
+    def self.for(*)
+      WebDriver::Driver.for(*)
     end
 
     #
@@ -95,9 +94,9 @@ module Selenium
     # @return [Logger]
     #
 
-    def self.logger(**opts)
+    def self.logger(**)
       level = $DEBUG || ENV.key?('DEBUG') ? :debug : :info
-      @logger ||= WebDriver::Logger.new('Selenium', default_level: level, **opts)
+      @logger ||= WebDriver::Logger.new('Selenium', default_level: level, **)
     end
   end # WebDriver
 end # Selenium

@@ -22,7 +22,9 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Service, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :chrome}] do
+      describe Service,
+               {exclude: {driver: :remote},
+                exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :chrome}]} do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 

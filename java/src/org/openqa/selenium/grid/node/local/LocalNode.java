@@ -23,6 +23,7 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -30,12 +31,11 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
+import com.github.benmanes.caffeine.cache.Ticker;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Ticker;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
@@ -55,7 +55,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -139,8 +138,7 @@ public class LocalNode extends Node implements Closeable {
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> uploadsTempFileSystem;
-  private final Cache<UUID, TemporaryFilesystem> downloadsTempFileSystem;
-  private final Cache<SessionId, UUID> sessionToDownloadsDir;
+  private final Cache<SessionId, TemporaryFilesystem> downloadsTempFileSystem;
   private final AtomicInteger pendingSessions = new AtomicInteger();
   private final AtomicInteger sessionCount = new AtomicInteger();
   private final Runnable shutdown;
@@ -198,63 +196,37 @@ public class LocalNode extends Node implements Closeable {
             : healthCheck;
 
     // Do not clear this cache automatically using a timer.
-    // It will be explicitly cleaned up, as and when "sessionToDownloadsDir" is auto cleaned.
+    // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.uploadsTempFileSystem =
-        CacheBuilder.newBuilder()
+        Caffeine.newBuilder()
             .removalListener(
-                (RemovalListener<SessionId, TemporaryFilesystem>)
-                    notification ->
-                        Optional.ofNullable(notification.getValue())
-                            .ifPresent(
-                                tempFS -> {
-                                  tempFS.deleteTemporaryFiles();
-                                  tempFS.deleteBaseDir();
-                                }))
-            .build();
-
-    // Do not clear this cache automatically using a timer.
-    // It will be explicitly cleaned up, as and when "sessionToDownloadsDir" is auto cleaned.
-    this.downloadsTempFileSystem =
-        CacheBuilder.newBuilder()
-            .removalListener(
-                (RemovalListener<UUID, TemporaryFilesystem>)
-                    notification ->
-                        Optional.ofNullable(notification.getValue())
-                            .ifPresent(
-                                fs -> {
-                                  fs.deleteTemporaryFiles();
-                                  fs.deleteBaseDir();
-                                }))
+                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+                  Optional.ofNullable(tempFS)
+                      .ifPresent(
+                          fs -> {
+                            fs.deleteTemporaryFiles();
+                            fs.deleteBaseDir();
+                          });
+                })
             .build();
 
     // Do not clear this cache automatically using a timer.
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
-    this.sessionToDownloadsDir =
-        CacheBuilder.newBuilder()
+    this.downloadsTempFileSystem =
+        Caffeine.newBuilder()
             .removalListener(
-                (RemovalListener<SessionId, UUID>)
-                    notification -> {
-                      Optional.ofNullable(notification.getValue())
-                          .ifPresent(
-                              value -> {
-                                downloadsTempFileSystem.invalidate(value);
-                                LOG.fine(
-                                    "Removing Downloads folder associated with "
-                                        + notification.getKey());
-                              });
-                      Optional.ofNullable(notification.getKey())
-                          .ifPresent(
-                              value -> {
-                                uploadsTempFileSystem.invalidate(value);
-                                LOG.fine(
-                                    "Removing Uploads folder associated with "
-                                        + notification.getKey());
-                              });
-                    })
+                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+                  Optional.ofNullable(tempFS)
+                      .ifPresent(
+                          fs -> {
+                            fs.deleteTemporaryFiles();
+                            fs.deleteBaseDir();
+                          });
+                })
             .build();
 
     this.currentSessions =
-        CacheBuilder.newBuilder()
+        Caffeine.newBuilder()
             .expireAfterAccess(sessionTimeout)
             .ticker(ticker)
             .removalListener(this::stopTimedOutSession)
@@ -339,31 +311,54 @@ public class LocalNode extends Node implements Closeable {
     shutdown.run();
   }
 
-  private void stopTimedOutSession(RemovalNotification<SessionId, SessionSlot> notification) {
-    if (notification.getKey() != null && notification.getValue() != null) {
-      SessionSlot slot = notification.getValue();
-      SessionId id = notification.getKey();
-      if (notification.wasEvicted()) {
-        // Session is timing out, stopping it by sending a DELETE
-        LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
-        try {
-          slot.execute(new HttpRequest(DELETE, "/session/" + id));
-        } catch (Exception e) {
-          LOG.log(Level.WARNING, String.format("Exception while trying to stop session %s", id), e);
+  private void stopTimedOutSession(SessionId id, SessionSlot slot, RemovalCause cause) {
+    try (Span span = tracer.getCurrentContext().createSpan("node.stop_session")) {
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
+      if (id != null && slot != null) {
+        attributeMap.put("node.id", getId().toString());
+        attributeMap.put("session.slotId", slot.getId().toString());
+        attributeMap.put("session.id", id.toString());
+        attributeMap.put("session.timeout_in_seconds", getSessionTimeout().toSeconds());
+        attributeMap.put("session.remove.cause", cause.name());
+        if (cause == RemovalCause.EXPIRED) {
+          // Session is timing out, stopping it by sending a DELETE
+          LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
+          span.setStatus(Status.CANCELLED);
+          span.addEvent(String.format("Stopping the the timed session %s", id), attributeMap);
+        } else {
+          LOG.log(Level.INFO, () -> String.format("Session id %s is stopping on demand...", id));
+          span.addEvent(String.format("Stopping the session %s on demand", id), attributeMap);
         }
-      }
-      // Attempt to stop the session
-      slot.stop();
-      // Decrement pending sessions if Node is draining
-      if (this.isDraining()) {
-        int done = pendingSessions.decrementAndGet();
-        if (done <= 0) {
-          LOG.info("Node draining complete!");
-          bus.fire(new NodeDrainComplete(this.getId()));
+        if (cause == RemovalCause.EXPIRED) {
+          try {
+            slot.execute(new HttpRequest(DELETE, "/session/" + id));
+          } catch (Exception e) {
+            LOG.log(
+                Level.WARNING, String.format("Exception while trying to stop session %s", id), e);
+            span.setStatus(Status.INTERNAL);
+            span.addEvent(
+                String.format("Exception while trying to stop session %s", id), attributeMap);
+          }
         }
+        // Attempt to stop the session
+        slot.stop();
+        // Decrement pending sessions if Node is draining
+        if (this.isDraining()) {
+          int done = pendingSessions.decrementAndGet();
+          attributeMap.put("current.session.count", done);
+          attributeMap.put("node.drain_after_session_count", this.configuredSessionCount);
+          if (done <= 0) {
+            LOG.info("Node draining complete!");
+            bus.fire(new NodeDrainComplete(this.getId()));
+            span.addEvent("Node draining complete!", attributeMap);
+          }
+        }
+      } else {
+        LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
+        span.setStatus(Status.INVALID_ARGUMENT);
+        span.addEvent("Received stop session notification with null values", attributeMap);
       }
-    } else {
-      LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
     }
   }
 
@@ -384,15 +379,6 @@ public class LocalNode extends Node implements Closeable {
     long n = currentSessions.asMap().values().stream().count();
     // It seems wildly unlikely we'll overflow an int
     return Math.toIntExact(n);
-  }
-
-  @VisibleForTesting
-  public UUID getDownloadsIdForSession(SessionId id) {
-    UUID uuid = sessionToDownloadsDir.getIfPresent(id);
-    if (uuid == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
-    return uuid;
   }
 
   @ManagedAttribute(name = "MaxSessions")
@@ -508,21 +494,32 @@ public class LocalNode extends Node implements Closeable {
         return Either.left(new RetrySessionRequestException("Drain after session count reached."));
       }
 
-      UUID uuidForSessionDownloads = UUID.randomUUID();
       Capabilities desiredCapabilities = sessionRequest.getDesiredCapabilities();
+      TemporaryFilesystem downloadsTfs;
       if (managedDownloadsRequested(desiredCapabilities)) {
-        Capabilities enhanced = setDownloadsDirectory(uuidForSessionDownloads, desiredCapabilities);
+        UUID uuidForSessionDownloads = UUID.randomUUID();
+
+        downloadsTfs =
+            TemporaryFilesystem.getTmpFsBasedOn(
+                TemporaryFilesystem.getDefaultTmpFS()
+                    .createTempDir("uuid", uuidForSessionDownloads.toString()));
+
+        Capabilities enhanced = setDownloadsDirectory(downloadsTfs, desiredCapabilities);
         enhanced = desiredCapabilities.merge(enhanced);
         sessionRequest =
             new CreateSessionRequest(
                 sessionRequest.getDownstreamDialects(), enhanced, sessionRequest.getMetadata());
+      } else {
+        downloadsTfs = null;
       }
 
       Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
 
       if (possibleSession.isRight()) {
         ActiveSession session = possibleSession.right();
-        sessionToDownloadsDir.put(session.getId(), uuidForSessionDownloads);
+        if (downloadsTfs != null) {
+          downloadsTempFileSystem.put(session.getId(), downloadsTfs);
+        }
         currentSessions.put(session.getId(), slotToUse);
 
         SessionId sessionId = session.getId();
@@ -558,6 +555,10 @@ public class LocalNode extends Node implements Closeable {
                 getEncoder(session.getDownstreamDialect()).apply(externalSession)));
       } else {
         slotToUse.release();
+        if (downloadsTfs != null) {
+          downloadsTfs.deleteTemporaryFiles();
+          downloadsTfs.deleteBaseDir();
+        }
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.ABORTED);
         span.addEvent("Unable to create session with the driver", attributeMap);
@@ -570,21 +571,14 @@ public class LocalNode extends Node implements Closeable {
   }
 
   private boolean managedDownloadsRequested(Capabilities capabilities) {
-    Object downloadsEnabled = capabilities.getCapability("se:downloadsEnabled");
+    Object downloadsEnabled = capabilities.getCapability(ENABLE_DOWNLOADS);
     return managedDownloadsEnabled
         && downloadsEnabled != null
         && Boolean.parseBoolean(downloadsEnabled.toString());
   }
 
-  private Capabilities setDownloadsDirectory(UUID uuid, Capabilities caps) {
-    File tempDir;
-    try {
-      TemporaryFilesystem tempFS = getDownloadsFilesystem(uuid);
-      //      tempDir = tempFS.createTempDir("download", "file");
-      tempDir = tempFS.createTempDir("download", "");
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+  private Capabilities setDownloadsDirectory(TemporaryFilesystem downloadsTfs, Capabilities caps) {
+    File tempDir = downloadsTfs.createTempDir("download", "");
     if (Browser.CHROME.is(caps) || Browser.EDGE.is(caps)) {
       ImmutableMap<String, Serializable> map =
           ImmutableMap.of(
@@ -688,28 +682,16 @@ public class LocalNode extends Node implements Closeable {
 
   @Override
   public TemporaryFilesystem getUploadsFilesystem(SessionId id) throws IOException {
-    try {
-      return uploadsTempFileSystem.get(
-          id,
-          () ->
-              TemporaryFilesystem.getTmpFsBasedOn(
-                  TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
-    } catch (ExecutionException e) {
-      throw new IOException(e);
-    }
+    return uploadsTempFileSystem.get(
+        id,
+        key ->
+            TemporaryFilesystem.getTmpFsBasedOn(
+                TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
   }
 
   @Override
-  public TemporaryFilesystem getDownloadsFilesystem(UUID uuid) throws IOException {
-    try {
-      return downloadsTempFileSystem.get(
-          uuid,
-          () ->
-              TemporaryFilesystem.getTmpFsBasedOn(
-                  TemporaryFilesystem.getDefaultTmpFS().createTempDir("uuid", uuid.toString())));
-    } catch (ExecutionException e) {
-      throw new IOException(e);
-    }
+  public TemporaryFilesystem getDownloadsFilesystem(SessionId sessionId) throws IOException {
+    return downloadsTempFileSystem.getIfPresent(sessionId);
   }
 
   @Override
@@ -746,11 +728,7 @@ public class LocalNode extends Node implements Closeable {
               + "[--enable-managed-downloads] and restart the node";
       throw new WebDriverException(msg);
     }
-    UUID uuid = sessionToDownloadsDir.getIfPresent(id);
-    if (uuid == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
-    TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(uuid);
+    TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(id);
     if (tempFS == null) {
       String msg =
           "Cannot find downloads file system for session id: "
@@ -860,8 +838,11 @@ public class LocalNode extends Node implements Closeable {
   public void stop(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
 
-    if (sessionToDownloadsDir.getIfPresent(id) != null) {
-      sessionToDownloadsDir.invalidate(id);
+    if (downloadsTempFileSystem.getIfPresent(id) != null) {
+      downloadsTempFileSystem.invalidate(id);
+    }
+    if (uploadsTempFileSystem.getIfPresent(id) != null) {
+      uploadsTempFileSystem.invalidate(id);
     }
 
     SessionSlot slot = currentSessions.getIfPresent(id);
@@ -873,10 +854,8 @@ public class LocalNode extends Node implements Closeable {
   }
 
   private void stopAllSessions() {
-    if (currentSessions.size() > 0) {
-      LOG.info("Trying to stop all running sessions before shutting down...");
-      currentSessions.invalidateAll();
-    }
+    LOG.info("Trying to stop all running sessions before shutting down...");
+    currentSessions.invalidateAll();
   }
 
   private Session createExternalSession(
@@ -1022,17 +1001,27 @@ public class LocalNode extends Node implements Closeable {
 
   @Override
   public void drain() {
-    bus.fire(new NodeDrainStarted(getId()));
-    draining = true;
-    // Ensure the pendingSessions counter will not be decremented by timed out sessions not included
-    // in the currentSessionCount and the NodeDrainComplete will be raised to early.
-    currentSessions.cleanUp();
-    int currentSessionCount = getCurrentSessionCount();
-    if (currentSessionCount == 0) {
-      LOG.info("Firing node drain complete message");
-      bus.fire(new NodeDrainComplete(getId()));
-    } else {
-      pendingSessions.set(currentSessionCount);
+    try (Span span = tracer.getCurrentContext().createSpan("node.drain")) {
+      AttributeMap attributeMap = tracer.createAttributeMap();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
+      bus.fire(new NodeDrainStarted(getId()));
+      draining.set(true);
+      // Ensure the pendingSessions counter will not be decremented by timed out sessions not
+      // included
+      // in the currentSessionCount and the NodeDrainComplete will be raised to early.
+      currentSessions.cleanUp();
+      int currentSessionCount = getCurrentSessionCount();
+      attributeMap.put("current.session.count", currentSessionCount);
+      attributeMap.put("node.id", getId().toString());
+      attributeMap.put("node.drain_after_session_count", this.configuredSessionCount);
+      if (currentSessionCount == 0) {
+        LOG.info("Firing node drain complete message");
+        bus.fire(new NodeDrainComplete(getId()));
+        span.addEvent("Node drain complete", attributeMap);
+      } else {
+        pendingSessions.set(currentSessionCount);
+        span.addEvent(String.format("%s session(s) pending before draining Node", attributeMap));
+      }
     }
   }
 

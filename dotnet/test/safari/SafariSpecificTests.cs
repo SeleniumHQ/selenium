@@ -19,10 +19,9 @@
 
 using NUnit.Framework;
 
-namespace OpenQA.Selenium.Safari
+namespace OpenQA.Selenium.Safari;
+
+[TestFixture]
+public class SafariSpecificTests : DriverTestFixture
 {
-    [TestFixture]
-    public class SafariSpecificTests : DriverTestFixture
-    {
-    }
 }

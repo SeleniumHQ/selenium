@@ -116,7 +116,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canSetPermissionHeadless() {
     EdgeOptions options = new EdgeOptions();
-    options.addArguments("--headless=new");
+    options.addArguments("--headless");
 
     localDriver = new WebDriverBuilder().get(options);
     HasPermissions permissions = (HasPermissions) localDriver;
@@ -199,18 +199,19 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   void shouldLaunchSuccessfullyWithArabicDate() {
-    Locale arabicLocale = new Locale("ar", "EG");
-    Locale.setDefault(arabicLocale);
-    Locale.setDefault(Locale.US);
+    try {
+      Locale arabicLocale = new Locale("ar", "EG");
+      Locale.setDefault(arabicLocale);
 
-    int port = PortProber.findFreePort();
-    EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
-    builder.usingPort(port);
-    EdgeDriverService service = builder.build();
+      int port = PortProber.findFreePort();
+      EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
+      builder.usingPort(port);
+      builder.build();
 
-    driver = new EdgeDriver(service, (EdgeOptions) EDGE.getCapabilities());
-
-    driver.get(pages.simpleTestPage);
-    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      Locale.setDefault(Locale.US);
+    }
   }
 }

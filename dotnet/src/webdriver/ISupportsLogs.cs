@@ -17,13 +17,12 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Marker interface indicating that an object implementing
+/// the interface supports the legacy log retrieval methods.
+/// </summary>
+public interface ISupportsLogs
 {
-    /// <summary>
-    /// Marker interface indicating that an object implementing
-    /// the interface supports the legacy log retrieval methods.
-    /// </summary>
-    public interface ISupportsLogs
-    {
-    }
 }

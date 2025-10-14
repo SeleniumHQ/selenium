@@ -2,7 +2,7 @@ require 'fileutils'
 require "open-uri"
 require "rake"
 
-version = "9.4.5.0"
+version = "9.4.12.0"
 gems = {
   "inifile" => "3.0.0",
   "net-telnet" => "0.2.0",

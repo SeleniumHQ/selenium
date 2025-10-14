@@ -2,7 +2,7 @@ load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
 
 exports_files([
     "AssemblyInfo.cs.template",
-    "WebDriver.snk",
+    "Selenium.snk",
 ])
 
 pkg_zip(

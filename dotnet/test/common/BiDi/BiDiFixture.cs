@@ -29,7 +29,7 @@ public class BiDiTestFixture
 {
     protected IWebDriver driver;
     protected BiDi bidi;
-    protected Modules.BrowsingContext.BrowsingContext context;
+    protected BrowsingContext.BrowsingContext context;
 
     protected UrlBuilder UrlBuilder { get; } = EnvironmentManager.Instance.UrlBuilder;
 
@@ -44,8 +44,9 @@ public class BiDiTestFixture
 
         driver = EnvironmentManager.Instance.CreateDriverInstance(options);
 
-        context = await driver.AsBiDiContextAsync();
-        bidi = context.BiDi;
+        bidi = await driver.AsBiDiAsync();
+
+        context = (await bidi.BrowsingContext.GetTreeAsync()).Contexts[0].Context;
     }
 
     [TearDown]

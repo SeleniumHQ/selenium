@@ -15,33 +15,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::config::ManagerConfig;
 use crate::config::ARCH::{ARM64, X32};
+use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_content_from_link, read_redirect_from_link};
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{BrowserPath, compose_driver_path_in_cache};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_three_args, format_two_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, ESR, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_CURRENT_VERSION_ARG, STABLE,
+    BETA, DASH_VERSION, DEV, ESR, LATEST_RELEASE, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    REG_CURRENT_VERSION_ARG, STABLE, SeleniumManager, create_http_client, format_three_args,
+    format_two_args,
 };
-use anyhow::anyhow;
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 
 pub const FIREFOX_NAME: &str = "firefox";
 pub const GECKODRIVER_NAME: &str = "geckodriver";
 const DRIVER_URL: &str = "https://github.com/mozilla/geckodriver/releases/";
-const LATEST_RELEASE: &str = "latest";
 const DRIVER_VERSIONS_URL: &str = "https://raw.githubusercontent.com/SeleniumHQ/selenium/trunk/common/geckodriver/geckodriver-support.json";
 const BROWSER_URL: &str = "https://ftp.mozilla.org/pub/firefox/releases/";
 const FIREFOX_DEFAULT_LANG: &str = "en-US";
@@ -66,6 +66,8 @@ const MIN_DOWNLOADABLE_FIREFOX_VERSION_MAC: i32 = 4;
 const MIN_DOWNLOADABLE_FIREFOX_VERSION_LINUX: i32 = 4;
 const UNAVAILABLE_DOWNLOAD_ERROR_MESSAGE: &str =
     "{} {} not available for downloading (minimum version: {})";
+const FIREFOX_SNAP_LINK: &str = "/snap/bin/firefox";
+const FIREFOX_SNAP_BINARY: &str = "/snap/firefox/current/usr/lib/firefox/firefox";
 
 pub struct FirefoxManager {
     pub browser_name: &'static str,
@@ -396,11 +398,7 @@ impl SeleniumManager for FirefoxManager {
                 "win64"
             }
         } else if MACOS.is(os) {
-            if ARM64.is(arch) {
-                "mac-arm64"
-            } else {
-                "mac64"
-            }
+            if ARM64.is(arch) { "mac-arm64" } else { "mac64" }
         } else if X32.is(arch) {
             "linux32"
         } else if ARM64.is(arch) && minor_driver_version > 31 {
@@ -572,7 +570,11 @@ impl SeleniumManager for FirefoxManager {
         } else {
             // Linux
             artifact_name = "firefox-";
-            artifact_extension = "tar.bz2";
+            if major_browser_version < 135 {
+                artifact_extension = "tar.bz2";
+            } else {
+                artifact_extension = "tar.xz";
+            }
             if X32.is(arch) {
                 platform_label = "linux-i686";
             } else if self.is_nightly(browser_version) {
@@ -625,6 +627,15 @@ impl SeleniumManager for FirefoxManager {
     fn set_download_browser(&mut self, download_browser: bool) {
         self.download_browser = download_browser;
     }
+
+    fn is_snap(&self, browser_path: &str) -> bool {
+        LINUX.is(self.get_os())
+            && (browser_path.eq(FIREFOX_SNAP_LINK) || browser_path.eq(FIREFOX_SNAP_BINARY))
+    }
+
+    fn get_snap_path(&self) -> Option<PathBuf> {
+        Some(Path::new(FIREFOX_SNAP_BINARY).to_path_buf())
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -651,26 +662,116 @@ mod unit_tests {
     fn test_driver_url() {
         let mut firefox_manager = FirefoxManager::new().unwrap();
 
-        let data = vec!(
-            vec!("0.32.0", "linux", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux32.tar.gz"),
-            vec!("0.32.0", "linux", "x86_64", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz"),
-            vec!("0.32.0", "linux", "aarch64", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux-aarch64.tar.gz"),
-            vec!("0.32.0", "windows", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-win32.zip"),
-            vec!("0.32.0", "windows", "x86_64", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-win64.zip"),
-            vec!("0.32.0", "windows", "aarch64", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-win-aarch64.zip"),
-            vec!("0.32.0", "macos", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-macos.tar.gz"),
-            vec!("0.32.0", "macos", "x86_64", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-macos.tar.gz"),
-            vec!("0.32.0", "macos", "aarch64", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-macos-aarch64.tar.gz"),
-            vec!("0.31.0", "linux", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux32.tar.gz"),
-            vec!("0.31.0", "linux", "x86_64", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz"),
-            vec!("0.31.0", "linux", "aarch64", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz"),
-            vec!("0.31.0", "windows", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win32.zip"),
-            vec!("0.31.0", "windows", "x86_64", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win64.zip"),
-            vec!("0.31.0", "windows", "aarch64", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win64.zip"),
-            vec!("0.31.0", "macos", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-macos.tar.gz"),
-            vec!("0.31.0", "macos", "x86_64", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-macos.tar.gz"),
-            vec!("0.31.0", "macos", "aarch64", "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-macos-aarch64.tar.gz"),
-        );
+        let data = vec![
+            vec![
+                "0.32.0",
+                "linux",
+                "x86",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux32.tar.gz",
+            ],
+            vec![
+                "0.32.0",
+                "linux",
+                "x86_64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz",
+            ],
+            vec![
+                "0.32.0",
+                "linux",
+                "aarch64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux-aarch64.tar.gz",
+            ],
+            vec![
+                "0.32.0",
+                "windows",
+                "x86",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-win32.zip",
+            ],
+            vec![
+                "0.32.0",
+                "windows",
+                "x86_64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-win64.zip",
+            ],
+            vec![
+                "0.32.0",
+                "windows",
+                "aarch64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-win-aarch64.zip",
+            ],
+            vec![
+                "0.32.0",
+                "macos",
+                "x86",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-macos.tar.gz",
+            ],
+            vec![
+                "0.32.0",
+                "macos",
+                "x86_64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-macos.tar.gz",
+            ],
+            vec![
+                "0.32.0",
+                "macos",
+                "aarch64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-macos-aarch64.tar.gz",
+            ],
+            vec![
+                "0.31.0",
+                "linux",
+                "x86",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux32.tar.gz",
+            ],
+            vec![
+                "0.31.0",
+                "linux",
+                "x86_64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz",
+            ],
+            vec![
+                "0.31.0",
+                "linux",
+                "aarch64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-linux64.tar.gz",
+            ],
+            vec![
+                "0.31.0",
+                "windows",
+                "x86",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win32.zip",
+            ],
+            vec![
+                "0.31.0",
+                "windows",
+                "x86_64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win64.zip",
+            ],
+            vec![
+                "0.31.0",
+                "windows",
+                "aarch64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win64.zip",
+            ],
+            vec![
+                "0.31.0",
+                "macos",
+                "x86",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-macos.tar.gz",
+            ],
+            vec![
+                "0.31.0",
+                "macos",
+                "x86_64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-macos.tar.gz",
+            ],
+            vec![
+                "0.31.0",
+                "macos",
+                "aarch64",
+                "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-macos-aarch64.tar.gz",
+            ],
+        ];
 
         data.iter().for_each(|d| {
             firefox_manager.set_driver_version(d.first().unwrap().to_string());

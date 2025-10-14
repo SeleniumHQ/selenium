@@ -295,7 +295,7 @@ public class RemoteNode extends Node implements Closeable {
     HttpResponse res = client.with(addSecret).execute(req);
 
     if (res.getStatus() == HTTP_OK) {
-      draining = true;
+      draining.set(true);
     }
   }
 

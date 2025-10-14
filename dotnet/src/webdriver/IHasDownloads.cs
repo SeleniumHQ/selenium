@@ -19,29 +19,28 @@
 
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Interface indicating the driver can handle downloading remote files.
+/// </summary>
+public interface IHasDownloads
 {
     /// <summary>
-    /// Interface indicating the driver can handle downloading remote files.
+    /// Retrieves the downloadable files.
     /// </summary>
-    public interface IHasDownloads
-    {
-        /// <summary>
-        /// Retrieves the downloadable files.
-        /// </summary>
-        /// <returns>A read-only list of file names available for download.</returns>
-        IReadOnlyList<string> GetDownloadableFiles();
+    /// <returns>A read-only list of file names available for download.</returns>
+    IReadOnlyList<string> GetDownloadableFiles();
 
-        /// <summary>
-        /// Downloads a file with the specified file name and returns a dictionary containing the downloaded file's data.
-        /// </summary>
-        /// <param name="fileName">The name of the file to be downloaded.</param>
-        /// <param name="targetDirectory">The location to save the downloaded file.</param>
-        void DownloadFile(string fileName, string targetDirectory);
+    /// <summary>
+    /// Downloads a file with the specified file name and returns a dictionary containing the downloaded file's data.
+    /// </summary>
+    /// <param name="fileName">The name of the file to be downloaded.</param>
+    /// <param name="targetDirectory">The location to save the downloaded file.</param>
+    void DownloadFile(string fileName, string targetDirectory);
 
-        /// <summary>
-        /// Deletes the downloadable files.
-        /// </summary>
-        void DeleteDownloadableFiles();
-    }
+    /// <summary>
+    /// Deletes the downloadable files.
+    /// </summary>
+    void DeleteDownloadableFiles();
 }

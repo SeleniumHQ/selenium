@@ -1,10 +1,10 @@
+using Humanizer;
+using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
+using System;
+using System.Collections.Generic;
+
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
-    using Humanizer;
-    using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// Generates code for Type Definitions
     /// </summary>
@@ -20,14 +20,20 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
             var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             if (context.KnownTypes == null)
+            {
                 throw new InvalidOperationException("Expected knowntypes to be specified in context");
+            }
 
             if (context.Domain == null)
+            {
                 throw new InvalidOperationException("Expected domain to be specified in context");
+            }
 
             var typeInfo = context.KnownTypes[$"{context.Domain.Name}.{typeDefinition.Id}"];
             if (typeInfo.IsPrimitive)
+            {
                 return result;
+            }
 
             //Base the code generation template on the specified type definition type.
             CodeGenerationTemplateSettings templateSettings;
@@ -50,8 +56,10 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
                 templateSettings = Settings.DefinitionTemplates.TypeHashTemplate;
             }
 
-            if (String.IsNullOrWhiteSpace(templateSettings.TemplatePath))
+            if (string.IsNullOrWhiteSpace(templateSettings.TemplatePath))
+            {
                 return result;
+            }
 
             var typeGenerator = TemplatesManager.GetGeneratorForTemplate(templateSettings);
 

@@ -19,59 +19,63 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.DevTools.Json
+namespace OpenQA.Selenium.DevTools.Json;
+
+internal sealed class JsonEnumMemberConverter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum> : JsonConverter<TEnum>
+    where TEnum : struct, Enum
 {
-    internal class JsonEnumMemberConverter<TEnum> : JsonConverter<TEnum> where TEnum : Enum
+    private readonly Dictionary<TEnum, string> _enumToString = new Dictionary<TEnum, string>();
+    private readonly Dictionary<string, TEnum> _stringToEnum = new Dictionary<string, TEnum>();
+
+    public JsonEnumMemberConverter()
     {
-        private readonly Dictionary<TEnum, string> _enumToString = new Dictionary<TEnum, string>();
-        private readonly Dictionary<string, TEnum> _stringToEnum = new Dictionary<string, TEnum>();
-
-        public JsonEnumMemberConverter()
+        var type = typeof(TEnum);
+#if NET8_0_OR_GREATER
+        TEnum[] values = Enum.GetValues<TEnum>();
+#else
+        Array values = Enum.GetValues(type);
+#endif
+        foreach (var value in values)
         {
-            var type = typeof(TEnum);
-            var values = Enum.GetValues(type);
+            var enumMember = type.GetField(value.ToString())!;
+            var attr = enumMember.GetCustomAttributes(typeof(EnumMemberAttribute), false)
+              .Cast<EnumMemberAttribute>()
+              .FirstOrDefault();
 
-            foreach (var value in values)
+            _stringToEnum.Add(value.ToString(), (TEnum)value);
+
+            if (attr?.Value != null)
             {
-                var enumMember = type.GetMember(value.ToString())[0];
-                var attr = enumMember.GetCustomAttributes(typeof(EnumMemberAttribute), false)
-                  .Cast<EnumMemberAttribute>()
-                  .FirstOrDefault();
-
-                _stringToEnum.Add(value.ToString(), (TEnum)value);
-
-                if (attr?.Value != null)
-                {
-                    _enumToString[(TEnum)value] = attr.Value;
-                    _stringToEnum[attr.Value] = (TEnum)value;
-                }
-                else
-                {
-                    _enumToString.Add((TEnum)value, value.ToString());
-                }
+                _enumToString[(TEnum)value] = attr.Value;
+                _stringToEnum[attr.Value] = (TEnum)value;
+            }
+            else
+            {
+                _enumToString.Add((TEnum)value, value.ToString());
             }
         }
+    }
 
-        public override TEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override TEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var stringValue = reader.GetString() ?? throw new JsonException("Could not read an enum string from \"null\"");
+
+        if (_stringToEnum.TryGetValue(stringValue, out var enumValue))
         {
-            var stringValue = reader.GetString();
-
-            if (_stringToEnum.TryGetValue(stringValue, out var enumValue))
-            {
-                return enumValue;
-            }
-
-            return default;
+            return enumValue;
         }
 
-        public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(_enumToString[value]);
-        }
+        return default;
+    }
+
+    public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(_enumToString[value]);
     }
 }

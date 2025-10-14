@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -106,10 +105,10 @@ class BrowsingContextTest : BiDiTestFixture
 
         var tree = await context.GetTreeAsync();
 
-        Assert.That(tree, Has.Count.EqualTo(1));
-        Assert.That(tree[0].Context, Is.EqualTo(context));
-        Assert.That(tree[0].Children, Has.Count.EqualTo(1));
-        Assert.That(tree[0].Children[0].Url, Does.Contain("formPage.html"));
+        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
+        Assert.That(tree.Contexts[0].Children, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts[0].Children[0].Url, Does.Contain("formPage.html"));
     }
 
     [Test]
@@ -119,9 +118,9 @@ class BrowsingContextTest : BiDiTestFixture
 
         var tree = await context.GetTreeAsync(new() { MaxDepth = 0 });
 
-        Assert.That(tree, Has.Count.EqualTo(1));
-        Assert.That(tree[0].Context, Is.EqualTo(context));
-        Assert.That(tree[0].Children, Is.Null);
+        Assert.That(tree.Contexts, Has.Count.EqualTo(1));
+        Assert.That(tree.Contexts[0].Context, Is.EqualTo(context));
+        Assert.That(tree.Contexts[0].Children, Is.Null);
     }
 
     [Test]
@@ -132,7 +131,7 @@ class BrowsingContextTest : BiDiTestFixture
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree, Has.Count.GreaterThanOrEqualTo(2));
+        Assert.That(tree.Contexts, Has.Count.GreaterThanOrEqualTo(2));
     }
 
     [Test]
@@ -140,11 +139,11 @@ class BrowsingContextTest : BiDiTestFixture
     {
         var window = await bidi.BrowsingContext.CreateAsync(ContextType.Window);
 
-        await window.CloseAsync();
+        await window.Context.CloseAsync();
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Select(i => i.Context), Does.Not.Contain(window));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(window));
     }
 
     [Test]
@@ -152,11 +151,11 @@ class BrowsingContextTest : BiDiTestFixture
     {
         var tab = await bidi.BrowsingContext.CreateAsync(ContextType.Tab);
 
-        await tab.CloseAsync();
+        await tab.Context.CloseAsync();
 
         var tree = await bidi.BrowsingContext.GetTreeAsync();
 
-        Assert.That(tree.Select(i => i.Context), Does.Not.Contain(tab));
+        Assert.That(tree.Contexts.Select(i => i.Context), Does.Not.Contain(tab));
     }
 
     [Test]
@@ -251,7 +250,7 @@ class BrowsingContextTest : BiDiTestFixture
         var screenshot = await context.CaptureScreenshotAsync();
 
         Assert.That(screenshot, Is.Not.Null);
-        Assert.That(screenshot.Data, Is.Not.Empty);
+        Assert.That(screenshot.Data.Length, Is.Not.Zero);
     }
 
     [Test]
@@ -259,12 +258,12 @@ class BrowsingContextTest : BiDiTestFixture
     {
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Origin = Origin.Document,
-            Clip = new ClipRectangle.Box(5, 5, 10, 10)
+            Origin = ScreenshotOrigin.Document,
+            Clip = new BoxClipRectangle(5, 5, 10, 10)
         });
 
         Assert.That(screenshot, Is.Not.Null);
-        Assert.That(screenshot.Data, Is.Not.Empty);
+        Assert.That(screenshot.Data.Length, Is.Not.Zero);
     }
 
     [Test]
@@ -272,12 +271,12 @@ class BrowsingContextTest : BiDiTestFixture
     {
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Origin = Origin.Viewport,
-            Clip = new ClipRectangle.Box(5, 5, 10, 10)
+            Origin = ScreenshotOrigin.Viewport,
+            Clip = new BoxClipRectangle(5, 5, 10, 10)
         });
 
         Assert.That(screenshot, Is.Not.Null);
-        Assert.That(screenshot.Data, Is.Not.Empty);
+        Assert.That(screenshot.Data.Length, Is.Not.Zero);
     }
 
     [Test]
@@ -285,15 +284,15 @@ class BrowsingContextTest : BiDiTestFixture
     {
         await context.NavigateAsync(UrlBuilder.WhereIs("formPage.html"), new() { Wait = ReadinessState.Complete });
 
-        var nodes = await context.LocateNodesAsync(new Locator.Css("#checky"));
+        var nodesResult = await context.LocateNodesAsync(new CssLocator("#checky"));
 
         var screenshot = await context.CaptureScreenshotAsync(new()
         {
-            Clip = new ClipRectangle.Element(nodes[0])
+            Clip = new ElementClipRectangle(nodesResult.Nodes[0])
         });
 
         Assert.That(screenshot, Is.Not.Null);
-        Assert.That(screenshot.Data, Is.Not.Empty);
+        Assert.That(screenshot.Data.Length, Is.Not.Zero);
     }
 
     [Test]
@@ -314,6 +313,6 @@ class BrowsingContextTest : BiDiTestFixture
         var pdf = await context.PrintAsync();
 
         Assert.That(pdf, Is.Not.Null);
-        Assert.That(pdf.Data, Is.Not.Empty);
+        Assert.That(pdf.Data.Length, Is.Not.Zero);
     }
 }

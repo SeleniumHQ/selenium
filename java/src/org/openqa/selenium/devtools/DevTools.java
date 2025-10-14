@@ -42,7 +42,7 @@ public class DevTools implements Closeable {
   private static final Logger LOG = Logger.getLogger(DevTools.class.getName());
 
   private final Domains protocol;
-  private final Duration timeout = Duration.ofSeconds(10);
+  private final Duration timeout = Duration.ofSeconds(30);
   private final Connection connection;
   private SessionID cdpSession = null;
 
@@ -86,6 +86,10 @@ public class DevTools implements Closeable {
   }
 
   public <X> X send(Command<X> command) {
+    return send(command, this.timeout);
+  }
+
+  public <X> X send(Command<X> command, Duration timeout) {
     Require.nonNull("Command to send", command);
     return connection.sendAndWait(cdpSession, command, timeout);
   }

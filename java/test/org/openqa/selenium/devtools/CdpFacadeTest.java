@@ -35,8 +35,6 @@ import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.drivers.Browser;
 
 class CdpFacadeTest extends DevToolsTestBase {
 
@@ -61,7 +59,6 @@ class CdpFacadeTest extends DevToolsTestBase {
   }
 
   @Test
-  @NotYetImplemented(value = Browser.FIREFOX, reason = "Network interception not yet supported")
   public void networkInterceptorAndAuthHandlersDoNotFight() {
     assumeThat(driver).isInstanceOf(HasAuthentication.class);
 
@@ -95,7 +92,6 @@ class CdpFacadeTest extends DevToolsTestBase {
   }
 
   @Test
-  @NotYetImplemented(value = Browser.FIREFOX, reason = "Network interception not yet supported")
   public void canAuthenticate() {
     assumeThat(driver).isInstanceOf(HasAuthentication.class);
 

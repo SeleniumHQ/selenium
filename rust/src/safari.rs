@@ -18,9 +18,9 @@
 use crate::config::ManagerConfig;
 use crate::config::OS::MACOS;
 use crate::files::BrowserPath;
-use crate::{create_http_client, Logger, SeleniumManager, STABLE};
-use anyhow::anyhow;
+use crate::{Logger, STABLE, SeleniumManager, create_http_client};
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -184,5 +184,13 @@ impl SeleniumManager for SafariManager {
 
     fn set_download_browser(&mut self, download_browser: bool) {
         self.download_browser = download_browser;
+    }
+
+    fn is_snap(&self, _browser_path: &str) -> bool {
+        false
+    }
+
+    fn get_snap_path(&self) -> Option<PathBuf> {
+        None
     }
 }

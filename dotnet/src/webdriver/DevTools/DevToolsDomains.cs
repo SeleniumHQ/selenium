@@ -19,115 +19,117 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Interface providing version-independent implementations of operations available using the DevTools Protocol.
+/// </summary>
+public abstract class DevToolsDomains
 {
-    /// <summary>
-    /// Interface providing version-independent implementations of operations available using the DevTools Protocol.
-    /// </summary>
-    public abstract class DevToolsDomains
+    // By default, we will look for a supported version within this
+    // number of versions, as that will most likely still work.
+    private const int DefaultVersionRange = 5;
+
+    // This is the list of known supported DevTools version implementation.
+    // When new versions are implemented for support, new types must be
+    // added to this array and to the method below.
+    private static int[] SupportedDevToolsVersions =>
+    [
+        139,
+        138,
+        140,
+    ];
+
+    private static DevToolsDomains? CreateDevToolsDomain(int protocolVersion, DevToolsSession session) => protocolVersion switch
     {
-        // By default, we will look for a supported version within this
-        // number of versions, as that will most likely still work.
-        private static readonly int DefaultVersionRange = 5;
+        139 => new V139.V139Domains(session),
+        138 => new V138.V138Domains(session),
+        140 => new V140.V140Domains(session),
+        _ => null
+    };
 
-        // This is the list of known supported DevTools version implementation.
-        // When new versions are implemented for support, new types must be
-        // added to this dictionary.
-        private static readonly Dictionary<int, Type> SupportedDevToolsVersions = new Dictionary<int, Type>()
+    /// <summary>
+    /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
+    /// </summary>
+    public abstract DevToolsSessionDomains VersionSpecificDomains { get; }
+
+    /// <summary>
+    /// Gets the object used for manipulating network information in the browser.
+    /// </summary>
+    public abstract Network Network { get; }
+
+    /// <summary>
+    /// Gets the object used for manipulating the browser's JavaScript execution.
+    /// </summary>
+    public abstract JavaScript JavaScript { get; }
+
+    /// <summary>
+    /// Gets the object used for manipulating DevTools Protocol targets.
+    /// </summary>
+    public abstract Target Target { get; }
+
+    /// <summary>
+    /// Gets the object used for manipulating the browser's logs.
+    /// </summary>
+    public abstract Log Log { get; }
+
+    /// <summary>
+    /// Initializes the supplied DevTools session's domains for the specified browser version.
+    /// </summary>
+    /// <param name="protocolVersion">The version of the DevTools Protocol to use.</param>
+    /// <param name="session">The <see cref="DevToolsSession"/> for which to initialize the domains.</param>
+    /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
+    /// <exception cref="ArgumentException">If <paramref name="protocolVersion"/> is negative.</exception>
+    /// <exception cref="WebDriverException">If the desired protocol version is not supported.</exception>
+    public static DevToolsDomains InitializeDomains(int protocolVersion, DevToolsSession session)
+    {
+        return InitializeDomains(protocolVersion, session, DefaultVersionRange);
+    }
+
+    /// <summary>
+    /// Initializes the supplied DevTools session's domains for the specified browser version within the specified number of versions.
+    /// </summary>
+    /// <param name="protocolVersion">The version of the DevTools Protocol to use.</param>
+    /// <param name="session">The <see cref="DevToolsSession"/> for which to initialize the domains.</param>
+    /// <param name="versionRange">The range of versions within which to match the provided version number. Defaults to 5 versions.</param>
+    /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
+    /// <exception cref="ArgumentException">If <paramref name="protocolVersion"/> is negative.</exception>
+    /// <exception cref="WebDriverException">If the desired protocol version is not in the supported range.</exception>
+    public static DevToolsDomains InitializeDomains(int protocolVersion, DevToolsSession session, int versionRange)
+    {
+        if (versionRange < 0)
         {
-            { 130, typeof(V130.V130Domains) },
-            { 129, typeof(V129.V129Domains) },
-            { 131, typeof(V131.V131Domains) },
-            { 85, typeof(V85.V85Domains) }
-        };
-
-        /// <summary>
-        /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
-        /// </summary>
-        public abstract DevToolsSessionDomains VersionSpecificDomains { get; }
-
-        /// <summary>
-        /// Gets the object used for manipulating network information in the browser.
-        /// </summary>
-        public abstract Network Network { get; }
-
-        /// <summary>
-        /// Gets the object used for manipulating the browser's JavaScript execution.
-        /// </summary>
-        public abstract JavaScript JavaScript { get; }
-
-        /// <summary>
-        /// Gets the object used for manipulating DevTools Protocol targets.
-        /// </summary>
-        public abstract Target Target { get; }
-
-        /// <summary>
-        /// Gets the object used for manipulating the browser's logs.
-        /// </summary>
-        public abstract Log Log { get; }
-
-        /// <summary>
-        /// Initializes the supplied DevTools session's domains for the specified browser version.
-        /// </summary>
-        /// <param name="protocolVersion">The version of the DevTools Protocol to use.</param>
-        /// <param name="session">The <see cref="DevToolsSession"/> for which to initialiize the domains.</param>
-        /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
-        public static DevToolsDomains InitializeDomains(int protocolVersion, DevToolsSession session)
-        {
-            return InitializeDomains(protocolVersion, session, DefaultVersionRange);
+            throw new ArgumentException("Version range must be positive", nameof(versionRange));
         }
 
-        /// <summary>
-        /// Initializes the supplied DevTools session's domains for the specified browser version within the specified number of versions.
-        /// </summary>
-        /// <param name="protocolVersion">The version of the DevTools Protocol to use.</param>
-        /// <param name="session">The <see cref="DevToolsSession"/> for which to initialiize the domains.</param>
-        /// <param name="versionRange">The range of versions within which to match the provided version number. Defaults to 5 versions.</param>
-        /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
-        public static DevToolsDomains InitializeDomains(int protocolVersion, DevToolsSession session, int versionRange)
+        // Return fast on an exact match
+        DevToolsDomains? domains = CreateDevToolsDomain(protocolVersion, session);
+        if (domains is not null)
         {
-            if (versionRange < 0)
-            {
-                throw new ArgumentException("Version range must be positive", nameof(versionRange));
-            }
-
-            DevToolsDomains domains = null;
-            Type domainType = MatchDomainsVersion(protocolVersion, versionRange);
-            ConstructorInfo constructor = domainType.GetConstructor(new Type[] { typeof(DevToolsSession) });
-            if (constructor != null)
-            {
-                domains = constructor.Invoke(new object[] { session }) as DevToolsDomains;
-            }
-
             return domains;
         }
 
-        private static Type MatchDomainsVersion(int desiredVersion, int versionRange)
+        return CreateFallbackDomain(protocolVersion, session, versionRange);
+    }
+
+    private static DevToolsDomains CreateFallbackDomain(int desiredVersion, DevToolsSession session, int versionRange)
+    {
+        // Get the list of supported versions and sort descending
+        List<int> supportedVersions = new List<int>(SupportedDevToolsVersions);
+        supportedVersions.Sort((first, second) => second.CompareTo(first));
+
+        foreach (int supportedVersion in supportedVersions)
         {
-            // Return fast on an exact match
-            if (SupportedDevToolsVersions.ContainsKey(desiredVersion))
+            // Match the version with the desired version within the
+            // version range, using "The Price Is Right" style matching
+            // (that is, closest without going over).
+            if (desiredVersion >= supportedVersion && desiredVersion - supportedVersion < versionRange)
             {
-                return SupportedDevToolsVersions[desiredVersion];
+                return CreateDevToolsDomain(supportedVersion, session)!;
             }
-
-            // Get the list of supported versions and sort descending
-            List<int> supportedVersions = new List<int>(SupportedDevToolsVersions.Keys);
-            supportedVersions.Sort((first, second) => second.CompareTo(first));
-
-            foreach (int supportedVersion in supportedVersions)
-            {
-                // Match the version with the desired version within the
-                // version range, using "The Price Is Right" style matching
-                // (that is, closest without going over).
-                if (desiredVersion >= supportedVersion && desiredVersion - supportedVersion < versionRange)
-                {
-                    return SupportedDevToolsVersions[supportedVersion];
-                }
-            }
-
-            throw new WebDriverException($"DevTools version is not in the supported range. Desired version={desiredVersion}, range={versionRange}. Supported versions: {string.Join(", ", supportedVersions)}");
         }
+
+        throw new WebDriverException($"DevTools version is not in the supported range. Desired version={desiredVersion}, range={versionRange}. Supported versions: {string.Join(", ", supportedVersions)}");
     }
 }

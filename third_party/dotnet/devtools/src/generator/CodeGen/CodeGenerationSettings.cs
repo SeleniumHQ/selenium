@@ -1,100 +1,56 @@
-﻿namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
-{
-    using Newtonsoft.Json;
-    using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
+namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
+{
     /// <summary>
     /// Settings to be passed to a ICodeGenerator
     /// </summary>
     public sealed class CodeGenerationSettings
     {
-        public CodeGenerationSettings()
-        {
-            //Set defaults
-            Include = new List<CodeGenerationTemplateSettings>();
-            IncludeDeprecatedDomains = true;
-            IncludeExperimentalDomains = true;
-            RootNamespace = "BaristaLabs.ChromeDevTools";
-            DefinitionTemplates = new CodeGenerationDefinitionTemplateSettings();
-            TemplatesPath = "Templates";
-            UsingStatements = new List<string>()
-            {
-                "System"
-            };
-        }
-
         /// <summary>
         /// Collection of templates that will be parsed and output in the target folder.
         /// </summary>
-        [JsonProperty("include")]
-        public ICollection<CodeGenerationTemplateSettings> Include
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("include")]
+        public ICollection<CodeGenerationTemplateSettings> Include { get; set; } = new List<CodeGenerationTemplateSettings>();
 
         /// <summary>
         /// Indicates whether or not domains marked as depreciated will be generated. (Default: true)
         /// </summary>
-        [JsonProperty("includeDeprecatedDomains")]
-        public bool IncludeDeprecatedDomains
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("includeDeprecatedDomains")]
+        public bool IncludeDeprecatedDomains { get; set; } = true;
 
         /// <summary>
         /// Indicates whether or not domains marked as depreciated will be generated. (Default: true)
         /// </summary>
-        [JsonProperty("includeExperimentalDomains")]
-        public bool IncludeExperimentalDomains
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("includeExperimentalDomains")]
+        public bool IncludeExperimentalDomains { get; set; } = true;
 
         /// <summary>
         /// Gets or sets the root namespace of generated classes.
         /// </summary>
-        [JsonProperty("rootNamespace")]
-        public string RootNamespace
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("rootNamespace")]
+        public string RootNamespace { get; set; } = "BaristaLabs.ChromeDevTools";
 
         /// <summary>
         /// Gets the version number of the runtime.
         /// </summary>
-        [JsonProperty("runtimeVersion")]
-        public string RuntimeVersion
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("runtimeVersion")]
+        public string? RuntimeVersion { get; set; }
 
-        [JsonProperty("definitionTemplates")]
-        public CodeGenerationDefinitionTemplateSettings DefinitionTemplates
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("definitionTemplates")]
+        public CodeGenerationDefinitionTemplateSettings DefinitionTemplates { get; set; } = new CodeGenerationDefinitionTemplateSettings();
 
-        [JsonProperty("templatesPath")]
-        public string TemplatesPath
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("templatesPath")]
+        public string TemplatesPath { get; set; } = "Templates";
 
         /// <summary>
         /// The using statements that will be included on each generated file.
         /// </summary>
-        [JsonProperty("usingStatements")]
-        public ICollection<string> UsingStatements
+        [JsonPropertyName("usingStatements")]
+        public ICollection<string> UsingStatements { get; set; } = new List<string>()
         {
-            get;
-            set;
-        }
+            "System"
+        };
     }
 }

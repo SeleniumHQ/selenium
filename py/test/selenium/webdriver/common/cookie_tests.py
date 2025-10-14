@@ -152,3 +152,31 @@ def test_should_not_delete_cookies_with_asimilar_name(cookie, driver, webserver)
     cookies = driver.get_cookies()
     assert cookie["name"] != cookies[0]["name"]
     assert cookie2["name"] == cookies[0]["name"]
+
+
+def test_get_cookie_raises_value_error_for_empty_name(cookie, driver):
+    driver.add_cookie(cookie)
+    with pytest.raises(ValueError, match="Cookie name cannot be empty"):
+        driver.get_cookie("")
+    with pytest.raises(ValueError, match="Cookie name cannot be empty"):
+        driver.get_cookie("   ")
+    with pytest.raises(ValueError, match="Cookie name cannot be empty"):
+        driver.get_cookie(None)
+
+
+def test_delete_cookie_raises_value_error_for_empty_name(cookie, driver):
+    cookie2 = cookie.copy()
+    cookie2["name"] = "{}x".format(cookie["name"])
+    driver.add_cookie(cookie)
+    driver.add_cookie(cookie2)
+
+    with pytest.raises(ValueError, match="Cookie name cannot be empty"):
+        driver.delete_cookie("")
+    with pytest.raises(ValueError, match="Cookie name cannot be empty"):
+        driver.get_cookie("   ")
+    with pytest.raises(ValueError, match="Cookie name cannot be empty"):
+        driver.get_cookie(None)
+
+    cookies = driver.get_cookies()
+
+    assert len(cookies) == 2

@@ -1,21 +1,12 @@
-﻿namespace OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition
-{
-    using Newtonsoft.Json;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
+namespace OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition
+{
     public sealed class EventDefinition : ProtocolDefinitionItem
     {
-        public EventDefinition()
-        {
-            Parameters = new Collection<TypeDefinition>();
-        }
-
-        [JsonProperty(PropertyName = "parameters")]
-        public ICollection<TypeDefinition> Parameters
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("parameters")]
+        public ICollection<TypeDefinition> Parameters { get; set; } = new Collection<TypeDefinition>();
     }
 }

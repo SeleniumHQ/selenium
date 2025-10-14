@@ -20,126 +20,125 @@
 using NUnit.Framework;
 using System;
 
-namespace OpenQA.Selenium.Support.UI
+namespace OpenQA.Selenium.Support.UI;
+
+[TestFixture]
+public class LoadableComponentTests
 {
-    [TestFixture]
-    public class LoadableComponentTests
+    [Test]
+    public void ShouldDoNothingIfComponentIsAlreadyLoaded()
     {
-        [Test]
-        public void ShouldDoNothingIfComponentIsAlreadyLoaded()
+        try
         {
-            try
-            {
-                new DetonatingComponent().Load();
-            }
-            catch (NotImplementedException)
-            {
-                Assert.Fail("Should not have called the load method");
-            }
+            new DetonatingComponent().Load();
+        }
+        catch (NotImplementedException)
+        {
+            Assert.Fail("Should not have called the load method");
+        }
+    }
+
+    [Test]
+    public void ShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded()
+    {
+        LoadsOk ok = new LoadsOk(true);
+
+        ok.Load();
+
+        Assert.That(ok.WasLoadCalled(), Is.True);
+    }
+
+    [Test]
+    public void ShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoad()
+    {
+        LoadsOk ok = new LoadsOk(false);
+
+        Assert.That(
+            () => ok.Load(),
+            Throws.InstanceOf<LoadableComponentException>().With.Message.EqualTo("Expected failure"));
+    }
+
+    [Test]
+    public void ShouldCallHandleLoadErrorWhenWebDriverExceptionOccursDuringExecuteLoad()
+    {
+        ExecuteLoadThrows loadThrows = new ExecuteLoadThrows();
+
+        Assert.That(
+            () => loadThrows.Load(),
+            Throws.Exception
+            .With.Message.EqualTo("HandleLoadError called")
+            .And.InnerException.Message.EqualTo("Excpected failure in ExecuteLoad"));
+
+    }
+
+    private class DetonatingComponent : LoadableComponent<DetonatingComponent>
+    {
+
+        protected override void ExecuteLoad()
+        {
+            throw new NotImplementedException("I should never be called");
         }
 
-        [Test]
-        public void ShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded()
+        protected override bool EvaluateLoadedStatus()
         {
-            LoadsOk ok = new LoadsOk(true);
+            return true;
+        }
+    }
 
-            ok.Load();
+    private class LoadsOk : LoadableComponent<LoadsOk>
+    {
+        private readonly bool secondLoadCallPasses;
+        private bool callOfLoadMethodForced;
+        private bool loadCalled;
 
-            Assert.That(ok.WasLoadCalled(), Is.True);
+        public LoadsOk(bool secondLoadCallPasses)
+        {
+            this.secondLoadCallPasses = secondLoadCallPasses;
         }
 
-        [Test]
-        public void ShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoad()
+        protected override void ExecuteLoad()
         {
-            LoadsOk ok = new LoadsOk(false);
-
-            Assert.That(
-                () => ok.Load(),
-                Throws.InstanceOf<LoadableComponentException>().With.Message.EqualTo("Expected failure"));
+            loadCalled = true;
         }
 
-        [Test]
-        public void ShouldCallHandleLoadErrorWhenWebDriverExceptionOccursDuringExecuteLoad()
+        protected override bool EvaluateLoadedStatus()
         {
-            ExecuteLoadThrows loadThrows = new ExecuteLoadThrows();
-
-            Assert.That(
-                () => loadThrows.Load(),
-                Throws.Exception
-                .With.Message.EqualTo("HandleLoadError called")
-                .And.InnerException.Message.EqualTo("Excpected failure in ExecuteLoad"));
-
-        }
-
-        private class DetonatingComponent : LoadableComponent<DetonatingComponent>
-        {
-
-            protected override void ExecuteLoad()
+            if (!callOfLoadMethodForced)
             {
-                throw new NotImplementedException("I should never be called");
-            }
-
-            protected override bool EvaluateLoadedStatus()
-            {
-                return true;
-            }
-        }
-
-        private class LoadsOk : LoadableComponent<LoadsOk>
-        {
-            private readonly bool secondLoadCallPasses;
-            private bool callOfLoadMethodForced;
-            private bool loadCalled;
-
-            public LoadsOk(bool secondLoadCallPasses)
-            {
-                this.secondLoadCallPasses = secondLoadCallPasses;
-            }
-
-            protected override void ExecuteLoad()
-            {
-                loadCalled = true;
-            }
-
-            protected override bool EvaluateLoadedStatus()
-            {
-                if (!callOfLoadMethodForced)
-                {
-                    callOfLoadMethodForced = true;
-                    UnableToLoadMessage = "Should never be seen, ExecuteLoad() will be called and this will return true the second time unless testing for expected failure on the second pass.";
-                    return false;
-                }
-
-                if (!secondLoadCallPasses)
-                {
-                    UnableToLoadMessage = "Expected failure";
-                    return false;
-                }
-                return true;
-            }
-
-            public bool WasLoadCalled()
-            {
-                return loadCalled;
-            }
-        }
-
-        private class ExecuteLoadThrows : LoadableComponent<ExecuteLoadThrows>
-        {
-            protected override void ExecuteLoad()
-            {
-                throw new WebDriverException("Excpected failure in ExecuteLoad");
-            }
-
-            protected override bool EvaluateLoadedStatus()
-            {
+                callOfLoadMethodForced = true;
+                UnableToLoadMessage = "Should never be seen, ExecuteLoad() will be called and this will return true the second time unless testing for expected failure on the second pass.";
                 return false;
             }
 
-            protected override void HandleLoadError(WebDriverException ex)
+            if (!secondLoadCallPasses)
             {
-                throw new Exception("HandleLoadError called", ex);
+                UnableToLoadMessage = "Expected failure";
+                return false;
             }
+            return true;
+        }
+
+        public bool WasLoadCalled()
+        {
+            return loadCalled;
+        }
+    }
+
+    private class ExecuteLoadThrows : LoadableComponent<ExecuteLoadThrows>
+    {
+        protected override void ExecuteLoad()
+        {
+            throw new WebDriverException("Excpected failure in ExecuteLoad");
+        }
+
+        protected override bool EvaluateLoadedStatus()
+        {
+            return false;
+        }
+
+        protected override void HandleLoadError(WebDriverException ex)
+        {
+            throw new Exception("HandleLoadError called", ex);
         }
     }
 }

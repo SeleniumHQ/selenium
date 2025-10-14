@@ -22,89 +22,73 @@ using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using OpenQA.Selenium.Environment;
 using System;
-using System.Collections.Generic;
 
+#nullable enable
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
+public class IgnoreTargetAttribute : NUnitAttribute, IApplyToTest
 {
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
-    public class IgnoreTargetAttribute : NUnitAttribute, IApplyToTest
+    public IgnoreTargetAttribute(string target)
     {
-        private readonly String target;
-        private readonly string ignoreReason = string.Empty;
+        this.Value = target.ToLower();
+    }
 
-        public IgnoreTargetAttribute(string target)
+    public IgnoreTargetAttribute(string target, string reason)
+        : this(target)
+    {
+        this.Reason = reason;
+    }
+
+    public string Value { get; }
+
+    public string Reason { get; } = string.Empty;
+
+    public void ApplyToTest(Test test)
+    {
+        if (test.RunState is RunState.NotRunnable)
         {
-            this.target = target.ToLower();
+            return;
+        }
+        IgnoreTargetAttribute[] ignoreAttributes;
+        if (test.IsSuite)
+        {
+            ignoreAttributes = test.TypeInfo!.GetCustomAttributes<IgnoreTargetAttribute>(true);
+        }
+        else
+        {
+            ignoreAttributes = test.Method!.GetCustomAttributes<IgnoreTargetAttribute>(true);
         }
 
-        public IgnoreTargetAttribute(string target, string reason)
-            : this(target)
+        foreach (IgnoreTargetAttribute platformToIgnoreAttr in ignoreAttributes)
         {
-            this.ignoreReason = reason;
-        }
-
-        public string Value
-        {
-            get { return target; }
-        }
-
-        public string Reason
-        {
-            get { return ignoreReason; }
-        }
-
-        public void ApplyToTest(Test test)
-        {
-            if (test.RunState != RunState.NotRunnable)
+            if (IgnoreTestForPlatform(platformToIgnoreAttr.Value))
             {
-                List<Attribute> ignoreAttributes = new List<Attribute>();
-                if (test.IsSuite)
+                string ignoreReason = $"Ignoring target {EnvironmentManager.Instance.Browser}";
+                if (!string.IsNullOrEmpty(platformToIgnoreAttr.Reason))
                 {
-                    Attribute[] ignoreClassAttributes =
-                        test.TypeInfo.GetCustomAttributes<IgnoreTargetAttribute>(true);
-                    if (ignoreClassAttributes.Length > 0)
-                    {
-                        ignoreAttributes.AddRange(ignoreClassAttributes);
-                    }
-                }
-                else
-                {
-                    IgnoreTargetAttribute[] ignoreMethodAttributes =
-                        test.Method.GetCustomAttributes<IgnoreTargetAttribute>(true);
-                    if (ignoreMethodAttributes.Length > 0)
-                    {
-                        ignoreAttributes.AddRange(ignoreMethodAttributes);
-                    }
+                    ignoreReason = ignoreReason + ": " + platformToIgnoreAttr.Reason;
                 }
 
-                foreach (Attribute attr in ignoreAttributes)
-                {
-                    IgnoreTargetAttribute platformToIgnoreAttr = attr as IgnoreTargetAttribute;
-                    if (platformToIgnoreAttr != null && IgnoreTestForPlatform(platformToIgnoreAttr.Value))
-                    {
-                        string ignoreReason =
-                            "Ignoring target " + EnvironmentManager.Instance.Browser.ToString() + ".";
-                        if (!string.IsNullOrEmpty(platformToIgnoreAttr.Reason))
-                        {
-                            ignoreReason = ignoreReason + " " + platformToIgnoreAttr.Reason;
-                        }
+                test.RunState = RunState.Ignored;
+                test.Properties.Set(PropertyNames.SkipReason, ignoreReason);
 
-                        test.RunState = RunState.Ignored;
-                        test.Properties.Set(PropertyNames.SkipReason, platformToIgnoreAttr.Reason);
-                    }
-                }
             }
         }
+    }
 
-        private bool IgnoreTestForPlatform(string platformToIgnore)
-        {
-            return CurrentPlatform() != null && platformToIgnore.Equals(CurrentPlatform());
-        }
+    private static bool IgnoreTestForPlatform(string platformToIgnore)
+    {
+        return CurrentPlatform().Equals(platformToIgnore, StringComparison.OrdinalIgnoreCase);
+    }
 
-        private string CurrentPlatform()
-        {
-            return "net6";
-        }
+    private static string CurrentPlatform()
+    {
+#if NET8_0
+        return "net8";
+#else
+#error Update IgnoreTargetAttribute.CurrentPlatform to the current TFM
+#endif
     }
 }

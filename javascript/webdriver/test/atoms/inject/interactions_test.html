@@ -78,7 +78,7 @@ function testSendKeysToActiveElement() {
   focusElement(input);
   doType(['bar', webdriver.Key.SHIFT, 'baz'], state);
 
-  // IE<10 does not preserve cursor position after chaning focus.
+  // IE<10 does not preserve cursor position after changing focus.
   if (bot.userAgent.IE_DOC_PRE10) {
     assertEquals('BARbazfoo', input.value);
   } else {

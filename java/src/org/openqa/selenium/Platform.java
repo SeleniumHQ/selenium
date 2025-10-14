@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents the known and supported Platforms that WebDriver runs on. This is pretty close to the
@@ -29,12 +31,13 @@ import java.util.regex.Pattern;
  */
 // Useful URLs:
 // http://hg.openjdk.java.net/jdk7/modules/jdk/file/a37326fa7f95/src/windows/native/java/lang/java_props_md.c
+@NullMarked
 public enum Platform {
 
   /** Never returned, but can be used to request a browser running on any version of Windows. */
   WINDOWS("windows") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return null;
     }
 
@@ -50,7 +53,7 @@ public enum Platform {
    */
   XP("Windows Server 2003", "xp", "windows", "winnt", "windows_nt", "windows nt") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return WINDOWS;
     }
 
@@ -63,7 +66,7 @@ public enum Platform {
   /** For versions of Windows that "feel like" Windows Vista. */
   VISTA("windows vista", "Windows Server 2008") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return WINDOWS;
     }
 
@@ -75,7 +78,7 @@ public enum Platform {
 
   WIN7("windows 7", "win7") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return WINDOWS;
     }
 
@@ -88,7 +91,7 @@ public enum Platform {
   /** For versions of Windows that "feel like" Windows 8. */
   WIN8("Windows Server 2012", "windows 8", "win8") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return WINDOWS;
     }
 
@@ -100,7 +103,7 @@ public enum Platform {
 
   WIN8_1("windows 8.1", "win8.1") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return WINDOWS;
     }
 
@@ -112,7 +115,7 @@ public enum Platform {
 
   WIN10("windows 10", "win10") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return WINDOWS;
     }
 
@@ -124,7 +127,7 @@ public enum Platform {
 
   WIN11("windows 11", "win11") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return WINDOWS;
     }
 
@@ -136,7 +139,7 @@ public enum Platform {
 
   MAC("mac", "darwin", "macOS", "mac os x", "os x") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return null;
     }
 
@@ -148,7 +151,7 @@ public enum Platform {
 
   SNOW_LEOPARD("snow leopard", "os x 10.6", "macos 10.6") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -160,7 +163,7 @@ public enum Platform {
 
   MOUNTAIN_LION("mountain lion", "os x 10.8", "macos 10.8") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -172,7 +175,7 @@ public enum Platform {
 
   MAVERICKS("mavericks", "os x 10.9", "macos 10.9") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -184,7 +187,7 @@ public enum Platform {
 
   YOSEMITE("yosemite", "os x 10.10", "macos 10.10") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -196,7 +199,7 @@ public enum Platform {
 
   EL_CAPITAN("el capitan", "os x 10.11", "macos 10.11") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -208,7 +211,7 @@ public enum Platform {
 
   SIERRA("sierra", "os x 10.12", "macos 10.12") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -220,7 +223,7 @@ public enum Platform {
 
   HIGH_SIERRA("high sierra", "os x 10.13", "macos 10.13") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -232,7 +235,7 @@ public enum Platform {
 
   MOJAVE("mojave", "os x 10.14", "macos 10.14") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -244,7 +247,7 @@ public enum Platform {
 
   CATALINA("catalina", "os x 10.15", "macos 10.15") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -256,7 +259,7 @@ public enum Platform {
 
   BIG_SUR("big sur", "os x 11.0", "macos 11.0") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -268,7 +271,7 @@ public enum Platform {
 
   MONTEREY("monterey", "os x 12.0", "macos 12.0") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -280,7 +283,7 @@ public enum Platform {
 
   VENTURA("ventura", "os x 13.0", "macos 13.0") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -292,7 +295,7 @@ public enum Platform {
 
   SONOMA("sonoma", "os x 14.0", "macos 14.0") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -304,7 +307,7 @@ public enum Platform {
 
   SEQUOIA("sequoia", "os x 15.0", "macos 15.0") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return MAC;
     }
 
@@ -317,14 +320,14 @@ public enum Platform {
   /** Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD. */
   UNIX("solaris", "bsd") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return null;
     }
   },
 
   LINUX("linux") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return UNIX;
     }
 
@@ -336,14 +339,14 @@ public enum Platform {
 
   ANDROID("android", "dalvik") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return null;
     }
   },
 
   IOS("iOS") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return null;
     }
   },
@@ -351,7 +354,7 @@ public enum Platform {
   /** Never returned, but can be used to request a browser running on any operating system. */
   ANY("") {
     @Override
-    public Platform family() {
+    public @Nullable Platform family() {
       return ANY;
     }
 
@@ -366,7 +369,8 @@ public enum Platform {
     }
   };
 
-  private static Platform current;
+  private static final Pattern VERSION_PATTERN = Pattern.compile("^(\\d+)\\.(\\d+).*");
+  private static @Nullable Platform current;
   private final String[] partOfOsName;
   private int minorVersion = 0;
   private int majorVersion = 0;
@@ -386,21 +390,20 @@ public enum Platform {
 
       String version = System.getProperty("os.version", "0.0.0");
       int major = 0;
-      int min = 0;
+      int minor = 0;
 
-      Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+).*");
-      Matcher matcher = pattern.matcher(version);
+      final Matcher matcher = VERSION_PATTERN.matcher(version);
       if (matcher.matches()) {
         try {
           major = Integer.parseInt(matcher.group(1));
-          min = Integer.parseInt(matcher.group(2));
+          minor = Integer.parseInt(matcher.group(2));
         } catch (NumberFormatException e) {
           // These things happen
         }
       }
 
       current.majorVersion = major;
-      current.minorVersion = min;
+      current.minorVersion = minor;
     }
     return current;
   }
@@ -493,7 +496,7 @@ public enum Platform {
    * @param matcher the newer match
    * @return true if newer match is better, false otherwise
    */
-  private static boolean isBetterMatch(String previous, String matcher) {
+  private static boolean isBetterMatch(@Nullable String previous, String matcher) {
     return previous == null || matcher.length() >= previous.length();
   }
 
@@ -528,7 +531,7 @@ public enum Platform {
    * @return the family platform for the current one, or {@code null} if this {@code Platform}
    *     represents a platform family (such as Windows, or MacOS)
    */
-  public abstract Platform family();
+  public abstract @Nullable Platform family();
 
   private boolean isCurrentPlatform(String osName, String matchAgainst) {
     return osName.contains(matchAgainst);

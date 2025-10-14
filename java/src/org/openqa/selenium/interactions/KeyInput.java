@@ -21,15 +21,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Models a <a href="https://www.w3.org/TR/webdriver/#dfn-key-input-source">key input source</a>.
  */
+@NullMarked
 public class KeyInput implements InputSource, Encodable {
 
   private final String name;
 
-  public KeyInput(String name) {
+  public KeyInput(@Nullable String name) {
     this.name = Optional.ofNullable(name).orElse(UUID.randomUUID().toString());
   }
 

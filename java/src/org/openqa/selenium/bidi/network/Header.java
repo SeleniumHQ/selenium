@@ -66,6 +66,6 @@ public class Header {
     map.put("name", this.name);
     map.put("value", this.value.toMap());
 
-    return map;
+    return Map.copyOf(map);
   }
 }

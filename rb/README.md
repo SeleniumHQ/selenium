@@ -1,6 +1,6 @@
 # selenium-webdriver
 
-This gem provides Ruby bindings for Selenium and supports MRI >= 3.1.
+This gem provides Ruby bindings for Selenium and supports MRI >= 3.2.
 
 ## Install
 

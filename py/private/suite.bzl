@@ -13,6 +13,7 @@ def py_test_suite(name, srcs, size = None, deps = None, python_version = None, i
         srcs = srcs,
         deps = deps,
         imports = imports,
+        precompile = "disabled",
     )
 
     tests = []
@@ -28,6 +29,7 @@ def py_test_suite(name, srcs, size = None, deps = None, python_version = None, i
                 srcs = [src],
                 deps = [library_name],
                 python_version = python_version,
+                precompile = "disabled",
                 **kwargs
             )
     native.test_suite(

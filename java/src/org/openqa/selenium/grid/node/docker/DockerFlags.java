@@ -55,6 +55,17 @@ public class DockerFlags implements HasRoles {
   private Integer dockerPort;
 
   @Parameter(
+      names = {"--docker-server-start-timeout"},
+      description =
+          "Max time (in seconds) to wait for the server to successfully start up, before cancelling"
+              + " the process.")
+  @ConfigValue(
+      section = DockerOptions.DOCKER_SECTION,
+      name = "server-start-timeout",
+      example = "55")
+  private Integer serverStartTimeout;
+
+  @Parameter(
       names = {"--docker", "-D"},
       description =
           "Docker configs which map image name to stereotype capabilities (example: "

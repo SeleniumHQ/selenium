@@ -490,13 +490,13 @@ class RemoteWebDriverBuilderTest {
                             SESSION_ID,
                             "capabilities",
                             new ImmutableCapabilities(
-                                "firefox", "caps",
-                                "browserName", "firefox",
-                                "moz:debuggerAddress", uri.toString())))));
+                                "chrome", "caps",
+                                "browserName", "chrome",
+                                "goog:chromeOptions", uri.toString())))));
 
     WebDriver driver =
         RemoteWebDriver.builder()
-            .oneOf(new FirefoxOptions())
+            .oneOf(new ChromeOptions())
             .withDriverService(service)
             .augmentUsing(new Augmenter())
             .connectingWith(config -> req -> response)

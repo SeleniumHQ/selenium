@@ -64,6 +64,6 @@ public class SetCookieHeader {
   }
 
   public Map<String, Object> toMap() {
-    return map;
+    return Map.copyOf(map);
   }
 }

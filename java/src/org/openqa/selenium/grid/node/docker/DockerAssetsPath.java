@@ -30,6 +30,10 @@ public class DockerAssetsPath {
     this.containerPath = containerPath;
   }
 
+  public String getHostPath() {
+    return this.hostPath;
+  }
+
   public String getHostPath(SessionId id) {
     return this.hostPath + File.separator + id;
   }

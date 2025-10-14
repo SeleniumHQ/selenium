@@ -29,6 +29,8 @@ import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Event;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContextInfo;
+import org.openqa.selenium.bidi.browsingcontext.DownloadInfo;
+import org.openqa.selenium.bidi.browsingcontext.HistoryUpdated;
 import org.openqa.selenium.bidi.browsingcontext.NavigationInfo;
 import org.openqa.selenium.bidi.browsingcontext.UserPromptClosed;
 import org.openqa.selenium.bidi.browsingcontext.UserPromptOpened;
@@ -60,6 +62,14 @@ public class BrowsingContextInspector implements AutoCloseable {
         }
       };
 
+  private final Function<Map<String, Object>, DownloadInfo> downloadWillBeginMapper =
+      params -> {
+        try (StringReader reader = new StringReader(JSON.toJson(params));
+            JsonInput input = JSON.newInput(reader)) {
+          return input.read(DownloadInfo.class);
+        }
+      };
+
   private final Event<BrowsingContextInfo> browsingContextCreated =
       new Event<>("browsingContext.contextCreated", browsingContextInfoMapper);
 
@@ -78,6 +88,9 @@ public class BrowsingContextInspector implements AutoCloseable {
 
   private final Set<Event<NavigationInfo>> navigationEventSet = new HashSet<>();
 
+  private final Event<DownloadInfo> downloadWillBeginEvent =
+      new Event<>("browsingContext.downloadWillBegin", downloadWillBeginMapper);
+
   private final Event<UserPromptOpened> userPromptOpened =
       new Event<>(
           "browsingContext.userPromptOpened",
@@ -85,6 +98,16 @@ public class BrowsingContextInspector implements AutoCloseable {
             try (StringReader reader = new StringReader(JSON.toJson(params));
                 JsonInput input = JSON.newInput(reader)) {
               return input.read(UserPromptOpened.class);
+            }
+          });
+
+  private final Event<HistoryUpdated> historyUpdated =
+      new Event<>(
+          "browsingContext.historyUpdated",
+          params -> {
+            try (StringReader reader = new StringReader(JSON.toJson(params));
+                JsonInput input = JSON.newInput(reader)) {
+              return input.read(HistoryUpdated.class);
             }
           });
 
@@ -140,16 +163,24 @@ public class BrowsingContextInspector implements AutoCloseable {
     addNavigationEventListener("browsingContext.load", consumer);
   }
 
-  private void onDownloadWillBegin(Consumer<NavigationInfo> consumer) {
-    addNavigationEventListener("browsingContext.downloadWillBegin", consumer);
+  public void onDownloadWillBegin(Consumer<DownloadInfo> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(downloadWillBeginEvent, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, downloadWillBeginEvent, consumer);
+    }
   }
 
-  private void onNavigationAborted(Consumer<NavigationInfo> consumer) {
+  public void onNavigationAborted(Consumer<NavigationInfo> consumer) {
     addNavigationEventListener("browsingContext.navigationAborted", consumer);
   }
 
-  private void onNavigationFailed(Consumer<NavigationInfo> consumer) {
+  public void onNavigationFailed(Consumer<NavigationInfo> consumer) {
     addNavigationEventListener("browsingContext.navigationFailed", consumer);
+  }
+
+  public void onNavigationCommitted(Consumer<NavigationInfo> consumer) {
+    addNavigationEventListener("browsingContext.navigationCommitted", consumer);
   }
 
   public void onUserPromptClosed(Consumer<UserPromptClosed> consumer) {
@@ -165,6 +196,14 @@ public class BrowsingContextInspector implements AutoCloseable {
       this.bidi.addListener(userPromptOpened, consumer);
     } else {
       this.bidi.addListener(browsingContextIds, userPromptOpened, consumer);
+    }
+  }
+
+  public void onHistoryUpdated(Consumer<HistoryUpdated> consumer) {
+    if (browsingContextIds.isEmpty()) {
+      this.bidi.addListener(historyUpdated, consumer);
+    } else {
+      this.bidi.addListener(browsingContextIds, historyUpdated, consumer);
     }
   }
 
@@ -186,6 +225,8 @@ public class BrowsingContextInspector implements AutoCloseable {
     this.bidi.clearListener(browsingContextDestroyed);
     this.bidi.clearListener(userPromptOpened);
     this.bidi.clearListener(userPromptClosed);
+    this.bidi.clearListener(historyUpdated);
+    this.bidi.clearListener(downloadWillBeginEvent);
 
     navigationEventSet.forEach(this.bidi::clearListener);
   }

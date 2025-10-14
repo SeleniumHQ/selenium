@@ -33,11 +33,21 @@ public interface HasDownloads {
    * @throws WebDriverException if capability to enable downloads is not set
    */
   default void requireDownloadsEnabled(Capabilities capabilities) {
-    boolean downloadsEnabled = capabilities.is("se:downloadsEnabled");
-    if (!downloadsEnabled) {
+    if (!isDownloadsEnabled(capabilities)) {
       throw new WebDriverException(
           "You must enable downloads in order to work with downloadable files.");
     }
+  }
+
+  /**
+   * Checks if downloads are enabled
+   *
+   * @return true if this webdriver has capability "se:downloadsEnabled" = true
+   */
+  boolean isDownloadsEnabled();
+
+  static boolean isDownloadsEnabled(Capabilities capabilities) {
+    return capabilities.is("se:downloadsEnabled");
   }
 
   /**

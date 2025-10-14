@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
 import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
@@ -806,5 +807,22 @@ class RemoteWebDriverUnitTest {
   void noArgConstructorEmptyCapabilitiesTest() {
     RemoteWebDriver driver = new RemoteWebDriver() {}; // anonymous subclass
     assertThat(driver.getCapabilities()).isEqualTo(new ImmutableCapabilities());
+  }
+
+  @Test
+  void getDownloadableFilesReturnsType() {
+    List<String> expectedFiles = Arrays.asList("file1.txt", "file2.pdf");
+
+    WebDriverFixture fixture =
+        new WebDriverFixture(
+            new ImmutableCapabilities(ENABLE_DOWNLOADS, true),
+            echoCapabilities,
+            valueResponder(ImmutableMap.of("names", expectedFiles)));
+
+    List<String> result = fixture.driver.getDownloadableFiles();
+
+    assertThat(result).isInstanceOf(List.class).isEqualTo(expectedFiles);
+
+    fixture.verifyCommands(new CommandPayload(DriverCommand.GET_DOWNLOADABLE_FILES, emptyMap()));
   }
 }

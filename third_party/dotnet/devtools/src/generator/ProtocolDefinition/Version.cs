@@ -1,40 +1,32 @@
-﻿namespace OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition
-{
-    using Newtonsoft.Json;
-    using System;
+using System.Text.Json.Serialization;
+using System;
 
+namespace OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition
+{
     /// <summary>
     /// Indicates the version of the Protocol Definition.
     /// </summary>
     public sealed class Version : IComparable<Version>
     {
-        [JsonProperty(PropertyName = "major")]
-        public string Major
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("major")]
+        public string? Major { get; set; }
 
-        [JsonProperty(PropertyName = "minor")]
-        public string Minor
-        {
-            get;
-            set;
-        }
+        [JsonPropertyName("minor")]
+        public string? Minor { get; set; }
 
-        public int CompareTo(Version other)
+        public int CompareTo(Version? other)
         {
             if (other == null)
+            {
                 return -1;
+            }
 
             return ToString().CompareTo(other.ToString());
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            var other = obj as Version;
-
-            if (other == null)
+            if (obj is not Version other)
             {
                 return false;
             }

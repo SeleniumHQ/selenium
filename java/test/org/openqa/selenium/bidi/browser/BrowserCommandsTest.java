@@ -75,4 +75,20 @@ class BrowserCommandsTest extends JupiterTestBase {
 
     browser.removeUserContext(userContext1);
   }
+
+  @Test
+  @NeedsFreshDriver
+  void canGetClientWindows() {
+    List<ClientWindowInfo> clientWindows = browser.getClientWindows();
+
+    assertThat(clientWindows).isNotNull();
+    assertThat(clientWindows.size()).isGreaterThan(0);
+
+    ClientWindowInfo windowInfo = clientWindows.get(0);
+    assertThat(windowInfo.getClientWindow()).isNotNull();
+    assertThat(windowInfo.getState()).isInstanceOf(ClientWindowState.class);
+    assertThat(windowInfo.getWidth()).isGreaterThan(0);
+    assertThat(windowInfo.getHeight()).isGreaterThan(0);
+    assertThat(windowInfo.isActive()).isIn(true, false);
+  }
 }

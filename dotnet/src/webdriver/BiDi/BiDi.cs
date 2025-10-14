@@ -18,69 +18,100 @@
 // </copyright>
 
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Transport;
-
-#nullable enable
+using OpenQA.Selenium.BiDi.Communication.Json;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi;
 
-public class BiDi : IAsyncDisposable
+public sealed class BiDi : IAsyncDisposable
 {
-    private readonly ITransport _transport;
     private readonly Broker _broker;
+    private readonly JsonSerializerOptions _jsonOptions;
+    private readonly BiDiJsonSerializerContext _jsonContext;
 
-    private readonly Lazy<Modules.Session.SessionModule> _sessionModule;
-    private readonly Lazy<Modules.BrowsingContext.BrowsingContextModule> _browsingContextModule;
-    private readonly Lazy<Modules.Browser.BrowserModule> _browserModule;
-    private readonly Lazy<Modules.Network.NetworkModule> _networkModule;
-    private readonly Lazy<Modules.Input.InputModule> _inputModule;
-    private readonly Lazy<Modules.Script.ScriptModule> _scriptModule;
-    private readonly Lazy<Modules.Log.LogModule> _logModule;
-    private readonly Lazy<Modules.Storage.StorageModule> _storageModule;
-
-    internal BiDi(string url)
+    private BiDi(string url)
     {
         var uri = new Uri(url);
 
-        _transport = new WebSocketTransport(new Uri(url));
-        _broker = new Broker(this, _transport);
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 
-        _sessionModule = new Lazy<Modules.Session.SessionModule>(() => new Modules.Session.SessionModule(_broker));
-        _browsingContextModule = new Lazy<Modules.BrowsingContext.BrowsingContextModule>(() => new Modules.BrowsingContext.BrowsingContextModule(_broker));
-        _browserModule = new Lazy<Modules.Browser.BrowserModule>(() => new Modules.Browser.BrowserModule(_broker));
-        _networkModule = new Lazy<Modules.Network.NetworkModule>(() => new Modules.Network.NetworkModule(_broker));
-        _inputModule = new Lazy<Modules.Input.InputModule>(() => new Modules.Input.InputModule(_broker));
-        _scriptModule = new Lazy<Modules.Script.ScriptModule>(() => new Modules.Script.ScriptModule(_broker));
-        _logModule = new Lazy<Modules.Log.LogModule>(() => new Modules.Log.LogModule(_broker));
-        _storageModule = new Lazy<Modules.Storage.StorageModule>(() => new Modules.Storage.StorageModule(_broker));
+            // BiDi returns special numbers such as "NaN" as strings
+            // Additionally, -0 is returned as a string "-0"
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
+            Converters =
+            {
+                new BrowsingContextConverter(this),
+                new BrowserUserContextConverter(this),
+                new CollectorConverter(this),
+                new InterceptConverter(this),
+                new HandleConverter(this),
+                new InternalIdConverter(this),
+                new PreloadScriptConverter(this),
+                new RealmConverter(this),
+                new DateTimeOffsetConverter(),
+                new WebExtensionConverter(this),
+            }
+        };
+
+        _jsonContext = new BiDiJsonSerializerContext(_jsonOptions);
+
+        _broker = new Broker(this, uri, _jsonOptions);
+        SessionModule = Module.Create<Session.SessionModule>(this, _broker, _jsonOptions, _jsonContext);
+        BrowsingContext = Module.Create<BrowsingContext.BrowsingContextModule>(this, _broker, _jsonOptions, _jsonContext);
+        Browser = Module.Create<Browser.BrowserModule>(this, _broker, _jsonOptions, _jsonContext);
+        Network = Module.Create<Network.NetworkModule>(this, _broker, _jsonOptions, _jsonContext);
+        InputModule = Module.Create<Input.InputModule>(this, _broker, _jsonOptions, _jsonContext);
+        Script = Module.Create<Script.ScriptModule>(this, _broker, _jsonOptions, _jsonContext);
+        Log = Module.Create<Log.LogModule>(this, _broker, _jsonOptions, _jsonContext);
+        Storage = Module.Create<Storage.StorageModule>(this, _broker, _jsonOptions, _jsonContext);
+        WebExtension = Module.Create<WebExtension.WebExtensionModule>(this, _broker, _jsonOptions, _jsonContext);
+        Emulation = Module.Create<Emulation.EmulationModule>(this, _broker, _jsonOptions, _jsonContext);
     }
 
-    internal Modules.Session.SessionModule SessionModule => _sessionModule.Value;
-    public Modules.BrowsingContext.BrowsingContextModule BrowsingContext => _browsingContextModule.Value;
-    public Modules.Browser.BrowserModule Browser => _browserModule.Value;
-    public Modules.Network.NetworkModule Network => _networkModule.Value;
-    internal Modules.Input.InputModule InputModule => _inputModule.Value;
-    public Modules.Script.ScriptModule Script => _scriptModule.Value;
-    public Modules.Log.LogModule Log => _logModule.Value;
-    public Modules.Storage.StorageModule Storage => _storageModule.Value;
+    internal Session.SessionModule SessionModule { get; }
 
-    public Task<Modules.Session.StatusResult> StatusAsync()
+    public BrowsingContext.BrowsingContextModule BrowsingContext { get; }
+
+    public Browser.BrowserModule Browser { get; }
+
+    public Network.NetworkModule Network { get; }
+
+    internal Input.InputModule InputModule { get; }
+
+    public Script.ScriptModule Script { get; }
+
+    public Log.LogModule Log { get; }
+
+    public Storage.StorageModule Storage { get; }
+
+    public WebExtension.WebExtensionModule WebExtension { get; }
+
+    public Emulation.EmulationModule Emulation { get; }
+
+    public Task<Session.StatusResult> StatusAsync()
     {
         return SessionModule.StatusAsync();
     }
 
-    public static async Task<BiDi> ConnectAsync(string url)
+    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
     {
         var bidi = new BiDi(url);
 
-        await bidi._broker.ConnectAsync(default).ConfigureAwait(false);
+        await bidi._broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
 
         return bidi;
     }
 
-    public Task EndAsync(Modules.Session.EndOptions? options = null)
+    public Task EndAsync(Session.EndOptions? options = null)
     {
         return SessionModule.EndAsync(options);
     }
@@ -88,7 +119,6 @@ public class BiDi : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await _broker.DisposeAsync().ConfigureAwait(false);
-
-        _transport?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

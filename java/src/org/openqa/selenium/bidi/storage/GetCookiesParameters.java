@@ -42,6 +42,6 @@ public class GetCookiesParameters {
     cookieFilter.ifPresent(filter -> map.put("filter", filter));
     partitionDescriptor.ifPresent(descriptor -> map.put("partition", descriptor));
 
-    return map;
+    return Map.copyOf(map);
   }
 }

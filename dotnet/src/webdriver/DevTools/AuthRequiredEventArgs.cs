@@ -19,21 +19,31 @@
 
 using System;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Event arguments present when the AuthRequired event is raised.
+/// </summary>
+public class AuthRequiredEventArgs : EventArgs
 {
     /// <summary>
-    /// Event arguments present when the AuthRequired event is raised.
+    /// Initializes a new instance of the <see cref="AuthRequiredEventArgs"/> type.
     /// </summary>
-    public class AuthRequiredEventArgs : EventArgs
+    /// <param name="requestId">The request ID of the request raised the event.</param>
+    /// <param name="uri">The URI for which the event is raised.</param>
+    public AuthRequiredEventArgs(string requestId, string uri)
     {
-        /// <summary>
-        /// Gets the URI for which the event is raised.
-        /// </summary>
-        public string Uri { get; internal set; }
-
-        /// <summary>
-        /// Gets the request ID of the request raising the event.
-        /// </summary>
-        public string RequestId { get; internal set; }
+        Uri = uri;
+        RequestId = requestId;
     }
+
+    /// <summary>
+    /// Gets the URI for which the event is raised.
+    /// </summary>
+    public string Uri { get; }
+
+    /// <summary>
+    /// Gets the request ID of the request raising the event.
+    /// </summary>
+    public string RequestId { get; }
 }

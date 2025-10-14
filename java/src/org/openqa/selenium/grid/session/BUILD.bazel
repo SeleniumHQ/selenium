@@ -5,7 +5,6 @@ java_library(
     name = "session",
     srcs = glob([
         "*.java",
-        "remote/*.java",
     ]),
     visibility = [
         "//java/src/org/openqa/selenium/grid:__subpackages__",

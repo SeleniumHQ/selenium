@@ -70,10 +70,8 @@ bot.locators.relative.proximity_ = function (selector, proximity) {
 bot.locators.relative.above_ = function (selector) {
   return bot.locators.relative.proximity_(
     selector,
-    function (rect1, rect2) {
-      // "rect1" is the element we're comparing against. "rect2" is the variable element
-      var top = rect2.top + rect2.height;
-      return top < rect1.top;
+    function (expected, toFind) {
+      return toFind.top + toFind.height <= expected.top;
     });
 };
 
@@ -90,9 +88,8 @@ bot.locators.relative.above_ = function (selector) {
 bot.locators.relative.below_ = function (selector) {
   return bot.locators.relative.proximity_(
     selector,
-    function (rect1, rect2) {
-      var bottom = rect1.top + rect1.height;
-      return bottom < rect2.top;
+    function (expected, toFind) {
+      return toFind.top >= expected.top + expected.height;
     });
 };
 
@@ -107,9 +104,82 @@ bot.locators.relative.below_ = function (selector) {
 bot.locators.relative.leftOf_ = function (selector) {
   return bot.locators.relative.proximity_(
     selector,
-    function (rect1, rect2) {
-      var left = rect2.left + rect2.width;
-      return left < rect1.left;
+    function (expected, toFind) {
+      return toFind.left + toFind.width <= expected.left;
+    });
+};
+
+
+/**
+* Relative locator to find elements that are to the left of the expected one.
+*
+* @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
+* @return {!Filter} A function that determines whether the selector is right of the given element.
+* @private
+*/
+bot.locators.relative.rightOf_ = function (selector) {
+  return bot.locators.relative.proximity_(
+    selector,
+    function (expected, toFind) {
+      return toFind.left >= expected.left + expected.width;
+    });
+};
+
+
+/**
+ * Relative locator to find elements that are above the expected one. "Above"
+ * is defined as where the bottom of the element found by `selector` is above
+ * the top of an element we're comparing to.
+ *
+ * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
+ * @return {!Filter} A function that determines whether the selector is above the given element.
+ * @private
+ */
+bot.locators.relative.straightAbove_ = function (selector) {
+  return bot.locators.relative.proximity_(
+    selector,
+    function (expected, toFind) {
+      return toFind.left < expected.left + expected.width
+             && toFind.left + toFind.width > expected.left
+             && toFind.top + toFind.height <= expected.top;
+    });
+};
+
+
+/**
+ * Relative locator to find elements that are below the expected one. "Below"
+ * is defined as where the top of the element found by `selector` is below the
+ * bottom of an element we're comparing to.
+ *
+ * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
+ * @return {!Filter} A function that determines whether the selector is below the given element.
+ * @private
+ */
+bot.locators.relative.straightBelow_ = function (selector) {
+  return bot.locators.relative.proximity_(
+    selector,
+    function (expected, toFind) {
+      return toFind.left < expected.left + expected.width
+             && toFind.left + toFind.width > expected.left
+             && toFind.top >= expected.top + expected.height;
+    });
+};
+
+
+/**
+ * Relative locator to find elements that are to the left of the expected one.
+ *
+ * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
+ * @return {!Filter} A function that determines whether the selector is left of the given element.
+ * @private
+ */
+bot.locators.relative.straightLeftOf_ = function (selector) {
+  return bot.locators.relative.proximity_(
+    selector,
+    function (expected, toFind) {
+      return toFind.top < expected.top + expected.height
+             && toFind.top + toFind.height > expected.top
+             && toFind.left + toFind.width <= expected.left;
     });
 };
 
@@ -121,12 +191,13 @@ bot.locators.relative.leftOf_ = function (selector) {
  * @return {!Filter} A function that determines whether the selector is right of the given element.
  * @private
  */
-bot.locators.relative.rightOf_ = function (selector) {
+bot.locators.relative.straightRightOf_ = function (selector) {
   return bot.locators.relative.proximity_(
     selector,
-    function (rect1, rect2) {
-      var right = rect1.left + rect1.width;
-      return right < rect2.left;
+    function (expected, toFind) {
+      return toFind.top < expected.top + expected.height
+        && toFind.top + toFind.height > expected.top
+        && toFind.left >= expected.left + expected.width;
     });
 };
 
@@ -167,7 +238,12 @@ bot.locators.relative.near_ = function (selector, opt_distance) {
     var rect1 = bot.dom.getClientRect(element);
     var rect2 = bot.dom.getClientRect(compareTo);
 
-    var rect1_bigger = new goog.math.Rect(rect1.left-distance,rect1.top-distance,rect1.width+distance*2,rect1.height+distance*2);
+    var rect1_bigger = new goog.math.Rect(
+      rect1.left-distance,
+      rect1.top-distance,
+      rect1.width+distance*2,
+      rect1.height+distance*2
+    );
 
     return rect1_bigger.intersects(rect2);
   };
@@ -213,19 +289,27 @@ bot.locators.relative.resolve_ = function (selector) {
  * @const
  */
 bot.locators.relative.STRATEGIES_ = {
-  'left': bot.locators.relative.leftOf_,
-  'right': bot.locators.relative.rightOf_,
   'above': bot.locators.relative.above_,
   'below': bot.locators.relative.below_,
+  'left': bot.locators.relative.leftOf_,
   'near': bot.locators.relative.near_,
+  'right': bot.locators.relative.rightOf_,
+  'straightAbove': bot.locators.relative.straightAbove_,
+  'straightBelow': bot.locators.relative.straightBelow_,
+  'straightLeft': bot.locators.relative.straightLeftOf_,
+  'straightRight': bot.locators.relative.straightRightOf_,
 };
 
 bot.locators.relative.RESOLVERS_ = {
-  'left': bot.locators.relative.resolve_,
-  'right': bot.locators.relative.resolve_,
   'above': bot.locators.relative.resolve_,
   'below': bot.locators.relative.resolve_,
+  'left': bot.locators.relative.resolve_,
   'near': bot.locators.relative.resolve_,
+  'right': bot.locators.relative.resolve_,
+  'straightAbove': bot.locators.relative.resolve_,
+  'straightBelow': bot.locators.relative.resolve_,
+  'straightLeft': bot.locators.relative.resolve_,
+  'straightRight': bot.locators.relative.resolve_,
 };
 
 /**

@@ -7,7 +7,6 @@ java_selenium_test_suite(
     srcs = glob(["*Test.java"]),
     browsers = [
         "chrome",
-        "firefox",
         "edge",
     ],
     tags = [

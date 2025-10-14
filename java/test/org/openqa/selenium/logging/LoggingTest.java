@@ -40,6 +40,7 @@ class LoggingTest {
     assertThat(toLevel("WARNING")).isEqualTo(WARNING);
     assertThat(toLevel("SEVERE")).isEqualTo(SEVERE);
     assertThat(toLevel("OFF")).isEqualTo(OFF);
+    assertThat(toLevel(null)).isEqualTo(INFO);
   }
 
   @Test

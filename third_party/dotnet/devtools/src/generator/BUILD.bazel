@@ -3,8 +3,9 @@ load("//dotnet:defs.bzl", "csharp_binary", "framework")
 csharp_binary(
     name = "generator",
     srcs = glob(["**/*.cs"]),
+    nullable = "enable",
     # Used as a tool in our build, so just target one framework
-    target_frameworks = ["net7.0"],
+    target_frameworks = ["net8.0"],
     visibility = [
         "//dotnet:__subpackages__",
     ],
@@ -14,6 +15,5 @@ csharp_binary(
         framework("nuget", "Humanizer.Core"),
         framework("nuget", "Microsoft.Extensions.DependencyInjection"),
         framework("nuget", "Microsoft.Extensions.DependencyInjection.Abstractions"),
-        framework("nuget", "Newtonsoft.Json"),
     ],
 )

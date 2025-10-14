@@ -18,8 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
-using OpenQA.Selenium.BiDi.Modules.Input;
+using OpenQA.Selenium.BiDi.BrowsingContext;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
@@ -34,23 +33,23 @@ class CombinedInputActionsTest : BiDiTestFixture
         await Task.Delay(3000);
 
         await context.Input.PerformActionsAsync([new PointerActions {
-            new Pointer.Move(300, 300),
-            new Pointer.Down(0),
-            new Pointer.Move(400, 400) { Duration = 2000, Width = 1, Twist = 1 },
-            new Pointer.Up(0),
+            new MovePointer(300, 300),
+            new DownPointer(0),
+            new MovePointer(400, 400) { Duration = 2000, Width = 1, Twist = 1 },
+            new UpPointer(0),
         }]);
 
         await context.Input.PerformActionsAsync([new KeyActions {
-            new Key.Down('U'),
-            new Key.Up('U'),
+            new DownKey('U'),
+            new UpKey('U'),
             new Pause { Duration = 3000 }
         }]);
 
         await context.Input.PerformActionsAsync([new PointerActions {
-            new Pointer.Move(300, 300),
-            new Pointer.Down(0),
-            new Pointer.Move(400, 400) { Duration = 2000 },
-            new Pointer.Up(0),
+            new MovePointer(300, 300),
+            new DownPointer(0),
+            new MovePointer(400, 400) { Duration = 2000 },
+            new UpPointer(0),
         }]);
 
         await Task.Delay(3000);
@@ -61,13 +60,13 @@ class CombinedInputActionsTest : BiDiTestFixture
     {
         driver.Url = UrlBuilder.WhereIs("formSelectionPage.html");
 
-        var options = await context.LocateNodesAsync(new Locator.Css("option"));
+        var options = await context.LocateNodesAsync(new CssLocator("option"));
 
         await context.Input.PerformActionsAsync([
             new PointerActions
             {
-                new Pointer.Down(1),
-                new Pointer.Up(1),
+                new DownPointer(1),
+                new UpPointer(1),
             }
             ]);
     }

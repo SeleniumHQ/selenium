@@ -1,0 +1,78 @@
+# Used by qodo-merge-pro bot
+
+[config]
+enable_labeler = true
+enable_custom_labels=true
+labels_mode = "custom_only"
+
+[custom_labels."B-atoms"]
+description = "Related to one or more of the JavaScript atoms Selenium compiles and uses"
+
+[custom_labels."B-build"]
+description = "Related to any build script execution, bazel implementation or CI integrations"
+
+[custom_labels."B-devtools"]
+description = "Related to anything BiDi or Chrome DevTools"
+
+[custom_labels."B-docs"]
+description = "Related to API documentation such as Javadoc or code-level docs. Not for website updates, examples, or general comments."
+
+[custom_labels."B-grid"]
+description = "Everything grid, server related, possibly including remote webdriver execution"
+
+[custom_labels."B-manager"]
+description = "Focused on something related to Selenium Manager and Driver Finding, whether in Rust or in the bindings"
+
+[custom_labels."D-chrome"]
+description = "Specific to Chrome"
+
+[custom_labels."D-firefox"]
+description = "Specific to Firefox"
+
+[custom_labels."D-safari"]
+description = "Specific to Safari"
+
+[custom_labels."D-IE"]
+description = "Specific to Internet Explorer"
+
+[custom_labels."D-edge"]
+description = "Specific to Microsoft Edge"
+
+[custom_labels."E-easy"]
+description = "An easy PR to review"
+
+[custom_labels."E-less easy"]
+description = "A somewhat difficult PR to review"
+
+[custom_labels."E-hard"]
+description = "A hard or complex PR to review"
+
+[custom_labels."I-cleanup"]
+description = "Internal tidy-up only, not user-facing. Applies to typo fixes, syntax tweaks, comment formatting, or dead code removal. Should not be used for bug fixes or behavior changes."
+
+[custom_labels."I-regression"]
+description = "Fixes something that used to work and no longer does"
+
+[custom_labels."I-performance"]
+description = "Improves performance"
+
+[custom_labels."I-security"]
+description = "Addresses a security vulnerability"
+
+[custom_labels."OS-linux"]
+description = "Specific to Linux"
+
+[custom_labels."OS-mac"]
+description = "Specific to macOS"
+
+[custom_labels."OS-windows"]
+description = "Specific to Windows"
+
+[custom_labels."P-bug fix"]
+description = "Addresses a known issue in a backwards compatible way"
+
+[custom_labels."P-enhancement"]
+description = "Creates a new feature in a backwards compatible way"
+
+[custom_labels."P-breaking change"]
+description = "Introduces a non-backwards compatible change (a fix or feature that would cause existing functionality to change)"

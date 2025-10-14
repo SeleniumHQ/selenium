@@ -17,7 +17,7 @@ add an entry for version `<N>` to the `SupportedDevToolsVersions` dictionary ini
 6. In [`//dotnet/src/webdriver:WebDriver.csproj.prebuild.cmd`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriver.csproj.prebuild.cmd),
 add the following block (substituting the proper value for `<N>`):
 
-```
+```bash
 if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v<N>\DevToolsSessionDomains.cs" (
   echo Generating CDP code for version <N>
   pushd "%1..\..\.."
@@ -29,7 +29,7 @@ if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v<N>\DevToolsSessio
 7. In [`//dotnet/src/webdriver:WebDriver.csproj.prebuild.sh`](https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebDriver.csproj.prebuild.sh),
 add the following block (substituting the proper value for `<N>`):
 
-```
+```bash
 if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v<N>/DevToolsSessionDomains.cs" ]]
 then
   echo "Generating CDP code for version <N>"

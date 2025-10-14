@@ -17,16 +17,15 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Defines the interface through which the user can discover if there is an underlying element to be used.
+/// </summary>
+public interface IWrapsElement
 {
     /// <summary>
-    /// Defines the interface through which the user can discover if there is an underlying element to be used.
+    /// Gets the <see cref="IWebElement"/> wrapped by this object.
     /// </summary>
-    public interface IWrapsElement
-    {
-        /// <summary>
-        /// Gets the <see cref="IWebElement"/> wrapped by this object.
-        /// </summary>
-        IWebElement WrappedElement { get; }
-    }
+    IWebElement WrappedElement { get; }
 }

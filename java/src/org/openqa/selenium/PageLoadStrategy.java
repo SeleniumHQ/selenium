@@ -17,6 +17,10 @@
 
 package org.openqa.selenium;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+@NullMarked
 public enum PageLoadStrategy {
   NONE("none"),
   EAGER("eager"),
@@ -33,7 +37,7 @@ public enum PageLoadStrategy {
     return String.valueOf(text);
   }
 
-  public static PageLoadStrategy fromString(String text) {
+  public static @Nullable PageLoadStrategy fromString(@Nullable String text) {
     if (text != null) {
       for (PageLoadStrategy b : PageLoadStrategy.values()) {
         if (text.equalsIgnoreCase(b.text)) {

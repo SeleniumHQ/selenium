@@ -22,10 +22,7 @@ dotnet_nunit_test_suite(
     name = "LargeTests",
     size = "large",
     srcs = glob(
-        [
-            "**/*Test.cs",
-            "**/*Tests.cs",
-        ],
+        ["*Test.cs"],
         exclude = SMALL_TESTS,
     ) + [
         "//dotnet/test/common:assembly-fixtures",

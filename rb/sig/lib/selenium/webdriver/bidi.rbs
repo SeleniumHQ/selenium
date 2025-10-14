@@ -7,7 +7,7 @@ module Selenium
 
       def initialize: (url: String) -> void
 
-      def add_callback: (String event) { () -> void } -> Integer
+      def add_callback: (String | Symbol event) { () -> void } -> Integer
 
       def close: () -> nil
 

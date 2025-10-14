@@ -1,10 +1,10 @@
+using Humanizer;
+using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
+using System;
+using System.Collections.Generic;
+
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
-    using Humanizer;
-    using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// Generates code for Event Definitions
     /// </summary>
@@ -19,8 +19,10 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
         {
             var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            if (String.IsNullOrWhiteSpace(Settings.DefinitionTemplates.EventTemplate.TemplatePath))
+            if (string.IsNullOrWhiteSpace(Settings.DefinitionTemplates.EventTemplate.TemplatePath))
+            {
                 return result;
+            }
 
             var eventGenerator = TemplatesManager.GetGeneratorForTemplate(Settings.DefinitionTemplates.EventTemplate);
 

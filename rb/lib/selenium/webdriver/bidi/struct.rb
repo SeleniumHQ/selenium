@@ -23,7 +23,7 @@ module Selenium
       class Struct < ::Struct
         class << self
           def new(*args, &block)
-            super(*args) do
+            super do
               define_method(:initialize) do |**kwargs|
                 converted_kwargs = kwargs.transform_keys { |key| self.class.camel_to_snake(key.to_s).to_sym }
                 super(*converted_kwargs.values_at(*self.class.members))

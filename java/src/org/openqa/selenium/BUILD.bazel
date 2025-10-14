@@ -13,11 +13,9 @@ java_export(
     srcs = glob([
         "*.java",
         "federatedcredentialmanagement/*.java",
-        "html5/*.java",
         "internal/*.java",
         "interactions/**/*.java",
         "logging/**/*.java",
-        "mobile/*.java",
         "net/*.java",
         "virtualauthenticator/*.java",
         "print/*.java",

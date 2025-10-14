@@ -71,6 +71,6 @@ public class LocateNodeParameters {
           map.put("startNodes", startNodesJson);
         });
 
-    return map;
+    return Map.copyOf(map);
   }
 }

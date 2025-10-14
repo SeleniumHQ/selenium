@@ -14,6 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+import pytest
+
+from selenium import webdriver
 from selenium.webdriver.remote.locator_converter import LocatorConverter
 
 
@@ -25,16 +29,25 @@ class CustomLocatorConverter(LocatorConverter):
         return super().convert(by, value)
 
 
-def test_find_element_with_custom_locator(driver):
-    driver.get("data:text/html,<div custom-attr='example'>Test</div>")
-    element = driver.find_element("custom", "example")
+@pytest.fixture()
+def custom_locator_driver(firefox_options):
+    driver = webdriver.Remote(options=firefox_options, locator_converter=CustomLocatorConverter())
+    yield driver
+    driver.quit()
+
+
+def test_find_element_with_custom_locator(custom_locator_driver):
+    custom_locator_driver.get("data:text/html,<div custom-attr='example'>Test</div>")
+    element = custom_locator_driver.find_element("custom", "example")
     assert element is not None
     assert element.text == "Test"
 
 
-def test_find_elements_with_custom_locator(driver):
-    driver.get("data:text/html,<div custom-attr='example'>Test1</div><div custom-attr='example'>Test2</div>")
-    elements = driver.find_elements("custom", "example")
+def test_find_elements_with_custom_locator(custom_locator_driver):
+    custom_locator_driver.get(
+        "data:text/html,<div custom-attr='example'>Test1</div><div custom-attr='example'>Test2</div>"
+    )
+    elements = custom_locator_driver.find_elements("custom", "example")
     assert len(elements) == 2
     assert elements[0].text == "Test1"
     assert elements[1].text == "Test2"

@@ -17,8 +17,9 @@
 
 from hashlib import md5 as md5_hash
 
-from ..common.by import By
-from .command import Command
+from selenium.common.exceptions import InvalidSelectorException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.command import Command
 
 
 class ShadowRoot:
@@ -39,12 +40,16 @@ class ShadowRoot:
             type(self), self.session.session_id, self._id
         )
 
+    @property
+    def id(self) -> str:
+        return self._id
+
     def find_element(self, by: str = By.ID, value: str = None):
         """Find an element inside a shadow root given a By strategy and
         locator.
 
         Parameters:
-        ----------
+        -----------
         by : selenium.webdriver.common.by.By
             The locating strategy to use. Default is `By.ID`. Supported values include:
             - By.ID: Locate by element ID.
@@ -70,6 +75,8 @@ class ShadowRoot:
             by = By.CSS_SELECTOR
             value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
+            if value and any(char.isspace() for char in value.strip()):
+                raise InvalidSelectorException("Compound class names are not allowed.")
             by = By.CSS_SELECTOR
             value = f".{value}"
         elif by == By.NAME:
@@ -82,7 +89,7 @@ class ShadowRoot:
         """Find elements inside a shadow root given a By strategy and locator.
 
         Parameters:
-        ----------
+        -----------
         by : selenium.webdriver.common.by.By
             The locating strategy to use. Default is `By.ID`. Supported values include:
             - By.ID: Locate by element ID.
@@ -97,17 +104,19 @@ class ShadowRoot:
 
         Example:
         --------
-        element = driver.find_element(By.ID, 'foo')
+        element = driver.find_elements(By.ID, 'foo')
 
         Returns:
         -------
-        WebElement
+        List[WebElement]
             list of `WebElements` matching locator strategy found on the page.
         """
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
+            if value and any(char.isspace() for char in value.strip()):
+                raise InvalidSelectorException("Compound class names are not allowed.")
             by = By.CSS_SELECTOR
             value = f".{value}"
         elif by == By.NAME:

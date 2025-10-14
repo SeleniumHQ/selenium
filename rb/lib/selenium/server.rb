@@ -122,15 +122,15 @@ module Selenium
         end
       end
 
-      def net_http_start(address, &)
+      def net_http_start(address, &block)
         http_proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
         if http_proxy
           http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
           uri = URI.parse(http_proxy)
 
-          Net::HTTP.start(address, nil, uri.host, uri.port, &)
+          Net::HTTP.start(address, nil, uri.host, uri.port, &block)
         else
-          Net::HTTP.start(address, use_ssl: true, &)
+          Net::HTTP.start(address, use_ssl: true, &block)
         end
       end
 
@@ -183,7 +183,7 @@ module Selenium
     def initialize(jar, opts = {})
       raise Errno::ENOENT, jar unless File.exist?(jar)
 
-      @java = opts.fetch(:java, 'java')
+      @java = opts.fetch(:java, 'java') || 'java'
       @jar = jar
       @host = '127.0.0.1'
       @role = opts.fetch(:role, 'standalone')

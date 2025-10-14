@@ -27,12 +27,12 @@ js_library(
 
 SRCS = glob(
     [
-        "public/**/*",
         "src/**/*",
     ],
     exclude = [
         "src/simple.ts",
         "src/**/*.test.tsx",
+        "src/tests/**/*",
     ],
 )
 

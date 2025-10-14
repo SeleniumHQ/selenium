@@ -7,15 +7,25 @@ module Selenium
 
       attr_reader callbacks: Hash[String, String]
 
+      attr_reader network: BiDi::Network
+
+      alias bidi network
+
       def initialize: (Remote::Bridge bridge) -> void
 
-      def add_authentication_handler: (String username, String password) -> String
+      def remove_handler: (Numeric id) -> untyped
 
-      def add_request_handler: -> Integer
+      def clear_handlers: () -> untyped
 
-      def clear_handlers: -> Hash[nil, nil]
+      def add_authentication_handler: (?String? username, ?String? password, *String filter, ?pattern_type: Symbol?) { (?) -> untyped } -> untyped
 
-      def remove_handler: (Integer id) -> nil
+      def add_request_handler: (*String filter, ?pattern_type: Symbol?) -> Hash[String, String]
+
+      def add_response_handler: (*String filter, ?pattern_type: Symbol?) -> Hash[String, String]
+
+      private
+
+      def add_handler: (Symbol event_type, String phase, BiDi::InterceptedRequest | BiDi::InterceptedAuth | BiDi::InterceptedResponse intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> untyped
     end
   end
 end

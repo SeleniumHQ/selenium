@@ -24,9 +24,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
+@NullMarked
 public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider {
   // Cache the list of interfaces between instances. This is mostly used
   // to get the loopback interface, so it's ok even though interfaces may go
@@ -104,7 +107,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
   }
 
   @Override
-  public NetworkInterface getLoInterface() {
+  public @Nullable NetworkInterface getLoInterface() {
     final String localIF = getLocalInterfaceName();
     try {
       final java.net.NetworkInterface byName = java.net.NetworkInterface.getByName(localIF);

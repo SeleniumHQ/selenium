@@ -19,6 +19,7 @@ package org.openqa.selenium.support.pagefactory;
 
 import java.lang.reflect.Field;
 import java.time.Clock;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.NoSuchElementException;
@@ -137,7 +138,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
     private WebElement element;
 
     public SlowLoadingElement(Clock clock, int timeOutInSeconds) {
-      super(clock, timeOutInSeconds);
+      super(clock, Duration.ofSeconds(timeOutInSeconds));
     }
 
     @Override
@@ -178,7 +179,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
     private List<WebElement> elements;
 
     public SlowLoadingElementList(Clock clock, int timeOutInSeconds) {
-      super(clock, timeOutInSeconds);
+      super(clock, Duration.ofSeconds(timeOutInSeconds));
     }
 
     @Override

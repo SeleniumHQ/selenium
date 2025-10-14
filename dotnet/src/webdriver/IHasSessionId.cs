@@ -17,16 +17,15 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Interface indicating the driver has a Session ID.
+/// </summary>
+public interface IHasSessionId
 {
     /// <summary>
-    /// Interface indicating the driver has a Session ID.
+    /// Gets the session ID of the current session.
     /// </summary>
-    public interface IHasSessionId
-    {
-        /// <summary>
-        /// Gets the session ID of the current session.
-        /// </summary>
-        SessionId SessionId { get; }
-    }
+    SessionId SessionId { get; }
 }

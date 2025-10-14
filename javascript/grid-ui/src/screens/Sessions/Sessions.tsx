@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import RunningSessions from '../../components/RunningSessions/RunningSessions'
 import { useQuery } from '@apollo/client'
 import { loader } from 'graphql.macro'
@@ -26,12 +26,25 @@ import Loading from '../../components/Loading/Loading'
 import Error from '../../components/Error/Error'
 import { GridConfig } from '../../config'
 import {GRID_SESSIONS_QUERY} from "../../graphql/sessions";
+import { useNavigate, useParams } from 'react-router-dom'
 
 function Sessions (): JSX.Element {
   const { loading, error, data } = useQuery(GRID_SESSIONS_QUERY, {
     pollInterval: GridConfig.status.xhrPollingIntervalMillis,
     fetchPolicy: 'network-only'
   })
+  const navigate = useNavigate()
+
+  const { sessionId } = useParams<{ sessionId: string }>()
+
+  useEffect(() => {
+    if (data === undefined || data.sessionsInfo === undefined || data.sessionsInfo.sessions === undefined) {
+      return
+    }
+    if (sessionId && data.sessionsInfo.sessions.length === 0) {
+      navigate("/sessions")
+    }
+  }, [data, sessionId])
 
   if (error !== undefined) {
     const message = 'There has been an error while loading running and ' +
@@ -67,6 +80,7 @@ function Sessions (): JSX.Element {
       <RunningSessions
         sessions={data.sessionsInfo.sessions}
         origin={window.location.origin}
+        sessionId={sessionId}
       />
       <QueuedSessions
         sessionQueueRequests={data.sessionsInfo.sessionQueueRequests}

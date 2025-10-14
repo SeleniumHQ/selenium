@@ -57,15 +57,11 @@ public class AddHasPermissions
 
   @Override
   public HasPermissions getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasPermissions() {
-      @Override
-      public void setPermission(String name, String value) {
-        Require.nonNull("Permission name", name);
-        Require.nonNull("Permission value", value);
-
-        executeMethod.execute(
-            SET_PERMISSION, Map.of("descriptor", Map.of("name", name), "state", value));
-      }
+    return (name, value) -> {
+      Require.nonNull("Permission name", name);
+      Require.nonNull("Permission value", value);
+      executeMethod.execute(
+          SET_PERMISSION, Map.of("descriptor", Map.of("name", name), "state", value));
     };
   }
 }

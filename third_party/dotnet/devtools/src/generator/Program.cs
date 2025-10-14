@@ -3,10 +3,11 @@ using System.IO;
 using System.Text;
 using CommandLine;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 using OpenQA.Selenium.DevToolsGenerator.CodeGen;
 using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace OpenQA.Selenium.DevToolsGenerator
 {
@@ -24,14 +25,16 @@ namespace OpenQA.Selenium.DevToolsGenerator
             }
 
             var settingsJson = File.ReadAllText(cliArguments.Settings);
-            var settings = JsonConvert.DeserializeObject<CodeGenerationSettings>(settingsJson);
+            var settings = JsonSerializer.Deserialize<CodeGenerationSettings>(settingsJson)
+                ?? throw new JsonException("CodeGenerationSettings JSON returned null");
+
             if (!string.IsNullOrEmpty(cliArguments.TemplatesPath))
             {
                 settings.TemplatesPath = cliArguments.TemplatesPath;
                 if (File.Exists(cliArguments.TemplatesPath))
                 {
                     FileInfo info = new FileInfo(cliArguments.TemplatesPath);
-                    settings.TemplatesPath = info.DirectoryName;
+                    settings.TemplatesPath = info.DirectoryName!;
                 }
             }
 
@@ -48,7 +51,8 @@ namespace OpenQA.Selenium.DevToolsGenerator
 
             var protocolDefinitionData = GetProtocolDefinitionData(cliArguments);
 
-            var protocolDefinition = protocolDefinitionData.ToObject<ProtocolDefinition.ProtocolDefinition>(new JsonSerializer() { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
+            var protocolDefinition = protocolDefinitionData.Deserialize<ProtocolDefinition.ProtocolDefinition>(new JsonSerializerOptions() { ReferenceHandler = ReferenceHandler.IgnoreCycles })
+                ?? throw new JsonException("Protocol definition JSON returned null");
 
             //Begin the code generation process.
             if (!cliArguments.Quiet)
@@ -57,7 +61,7 @@ namespace OpenQA.Selenium.DevToolsGenerator
             }
 
             var protocolGenerator = serviceProvider.GetRequiredService<ICodeGenerator<ProtocolDefinition.ProtocolDefinition>>();
-            var codeFiles = protocolGenerator.GenerateCode(protocolDefinition, null);
+            var codeFiles = protocolGenerator.GenerateCode(protocolDefinition, null!);
 
             //Delete the output folder if force is specified and it exists...
             if (!cliArguments.Quiet)
@@ -82,13 +86,13 @@ namespace OpenQA.Selenium.DevToolsGenerator
             foreach (var codeFile in codeFiles)
             {
                 var targetFilePath = Path.GetFullPath(Path.Combine(cliArguments.OutputPath, codeFile.Key));
-                Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
+                Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath)!);
                 //Only update the file if the SHA1 hashes don't match
                 if (File.Exists(targetFilePath))
                 {
                     var targetFileHash = sha1.ComputeHash(File.ReadAllBytes(targetFilePath));
                     var codeFileHash = sha1.ComputeHash(Encoding.UTF8.GetBytes(codeFile.Value));
-                    if (String.Compare(Convert.ToBase64String(targetFileHash), Convert.ToBase64String(codeFileHash)) != 0)
+                    if (string.Compare(Convert.ToBase64String(targetFileHash), Convert.ToBase64String(codeFileHash)) != 0)
                     {
                         File.WriteAllText(targetFilePath, codeFile.Value);
                     }
@@ -113,9 +117,9 @@ namespace OpenQA.Selenium.DevToolsGenerator
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static JObject GetProtocolDefinitionData(CommandLineOptions args)
+        public static JsonObject GetProtocolDefinitionData(CommandLineOptions args)
         {
-            JObject protocolData;
+            JsonObject protocolData;
             string browserProtocolPath = args.BrowserProtocolPath;
             if (!File.Exists(browserProtocolPath))
             {
@@ -134,15 +138,15 @@ namespace OpenQA.Selenium.DevToolsGenerator
                 }
             }
 
-            JObject browserProtocol = JObject.Parse(File.ReadAllText(browserProtocolPath));
-            JObject jsProtocol = JObject.Parse(File.ReadAllText(jsProtocolPath));
+            JsonObject? browserProtocol = JsonNode.Parse(File.ReadAllText(browserProtocolPath))?.AsObject();
+            JsonObject? jsProtocol = JsonNode.Parse(File.ReadAllText(jsProtocolPath))?.AsObject();
 
             ProtocolVersionDefinition currentVersion = new ProtocolVersionDefinition();
             currentVersion.ProtocolVersion = "1.3";
             currentVersion.Browser = "Chrome/86.0";
 
             protocolData = MergeJavaScriptProtocolDefinitions(browserProtocol, jsProtocol);
-            protocolData["browserVersion"] = JToken.FromObject(currentVersion);
+            protocolData["browserVersion"] = JsonSerializer.SerializeToNode(currentVersion);
 
             return protocolData;
         }
@@ -153,20 +157,20 @@ namespace OpenQA.Selenium.DevToolsGenerator
         /// <param name="browserProtocol"></param>
         /// <param name="jsProtocol"></param>
         /// <returns></returns>
-        public static JObject MergeJavaScriptProtocolDefinitions(JObject browserProtocol, JObject jsProtocol)
+        public static JsonObject MergeJavaScriptProtocolDefinitions(JsonObject? browserProtocol, JsonObject? jsProtocol)
         {
             //Merge the 2 protocols together.
-            if (jsProtocol["version"]["majorVersion"] != browserProtocol["version"]["majorVersion"] ||
-                jsProtocol["version"]["minorVersion"] != browserProtocol["version"]["minorVersion"])
+            if (jsProtocol!["version"]!["majorVersion"] != browserProtocol!["version"]!["majorVersion"] ||
+                jsProtocol!["version"]!["minorVersion"] != browserProtocol!["version"]!["minorVersion"])
             {
                 throw new InvalidOperationException("Protocol mismatch -- The WebKit and V8 protocol versions should match.");
             }
 
-            var result = browserProtocol.DeepClone() as JObject;
-            foreach (var domain in jsProtocol["domains"])
+            var result = browserProtocol.DeepClone().AsObject();
+            foreach (var domain in jsProtocol["domains"]!.AsArray())
             {
-                JArray jDomains = (JArray)result["domains"];
-                jDomains.Add(domain);
+                JsonArray jDomains = result["domains"]!.AsArray();
+                jDomains.Add(domain!.DeepClone());
             }
 
             return result;

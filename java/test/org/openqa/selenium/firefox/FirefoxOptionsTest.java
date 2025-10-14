@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
-import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -28,7 +26,6 @@ import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.DEBUG;
 import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.ERROR;
@@ -40,11 +37,7 @@ import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +49,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.testing.TestUtilities;
@@ -92,43 +84,6 @@ class FirefoxOptionsTest {
   }
 
   @Test
-  void shouldKeepRelativePathToBinaryAsIs() {
-    String path = String.join(File.separator, "some", "path");
-    FirefoxOptions options = new FirefoxOptions().setBinary(path);
-    assertThat(options.getBinary())
-        .extracting(FirefoxBinary::getFile)
-        .extracting(String::valueOf)
-        .isEqualTo(path);
-  }
-
-  @Test
-  void shouldKeepWindowsDriveLetterInPathToBinary() {
-    FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    assertThat(options.getBinary())
-        .extracting(FirefoxBinary::getFile)
-        .extracting(String::valueOf)
-        .isEqualTo("F:\\some\\path");
-  }
-
-  @Test
-  void shouldKeepWindowsNetworkFileSystemRootInPathToBinary() {
-    FirefoxOptions options = new FirefoxOptions().setBinary("\\\\server\\share\\some\\path");
-    assertThat(options.getBinary())
-        .extracting(FirefoxBinary::getFile)
-        .extracting(String::valueOf)
-        .isEqualTo("\\\\server\\share\\some\\path");
-  }
-
-  @Test
-  void shouldKeepAFirefoxBinaryAsABinaryIfSetAsOne() throws IOException {
-    File fakeExecutable = Files.createTempFile("firefox", ".exe").toFile();
-    fakeExecutable.deleteOnExit();
-    FirefoxBinary binary = new FirefoxBinary(fakeExecutable);
-    FirefoxOptions options = new FirefoxOptions().setBinary(binary);
-    assertThat(options.getBinary().getFile()).isEqualTo(binary.getFile());
-  }
-
-  @Test
   void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, Object> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
@@ -145,28 +100,6 @@ class FirefoxOptionsTest {
     assertThat(json.get(FIREFOX_OPTIONS))
         .asInstanceOf(InstanceOfAssertFactories.MAP)
         .containsEntry("binary", path);
-  }
-
-  @Test
-  void shouldPickUpBinaryFromSystemPropertyIfSet() throws IOException {
-    JreSystemProperty property = new JreSystemProperty(BROWSER_BINARY);
-
-    Path binary = Files.createTempFile("firefox", ".exe");
-    try (OutputStream ignored = Files.newOutputStream(binary, DELETE_ON_CLOSE)) {
-      Files.write(binary, "".getBytes());
-      if (!TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
-        Files.setPosixFilePermissions(binary, singleton(PosixFilePermission.OWNER_EXECUTE));
-      }
-      property.set(binary.toString());
-      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
-
-      FirefoxBinary firefoxBinary =
-          options.getBinaryOrNull().orElseThrow(() -> new AssertionError("No binary"));
-
-      assertThat(firefoxBinary.getPath()).isEqualTo(binary.toString());
-    } finally {
-      property.reset();
-    }
   }
 
   @Test
@@ -299,21 +232,6 @@ class FirefoxOptionsTest {
         .containsEntry("string.pref", "some value")
         .containsEntry("int.pref", 42)
         .containsEntry("boolean.pref", true);
-  }
-
-  @Test
-  void canConvertOptionsWithBinaryToCapabilitiesAndRestoreBack() throws IOException {
-    // Don't assume Firefox is actually installed and available
-    Path tempFile = Files.createTempFile("firefoxoptions", "test");
-
-    FirefoxOptions options =
-        new FirefoxOptions(
-            new MutableCapabilities(
-                new FirefoxOptions().setBinary(new FirefoxBinary(tempFile.toFile()))));
-    Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2)
-        .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("binary", tempFile.toFile().getPath());
   }
 
   @Test

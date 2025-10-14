@@ -15,32 +15,125 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Optional
 
-def session_subscribe(*events, browsing_contexts=None):
-    cmd_dict = {
-        "method": "session.subscribe",
-        "params": {
+from selenium.webdriver.common.bidi.common import command_builder
+
+
+class UserPromptHandlerType:
+    """Represents the behavior of the user prompt handler."""
+
+    ACCEPT = "accept"
+    DISMISS = "dismiss"
+    IGNORE = "ignore"
+
+    VALID_TYPES = {ACCEPT, DISMISS, IGNORE}
+
+
+class UserPromptHandler:
+    """Represents the configuration of the user prompt handler."""
+
+    def __init__(
+        self,
+        alert: Optional[str] = None,
+        before_unload: Optional[str] = None,
+        confirm: Optional[str] = None,
+        default: Optional[str] = None,
+        file: Optional[str] = None,
+        prompt: Optional[str] = None,
+    ):
+        """Initialize UserPromptHandler.
+
+        Parameters:
+        -----------
+            alert: Handler type for alert prompts
+            before_unload: Handler type for beforeUnload prompts
+            confirm: Handler type for confirm prompts
+            default: Default handler type for all prompts
+            file: Handler type for file picker prompts
+            prompt: Handler type for prompt dialogs
+
+        Raises:
+        ------
+            ValueError: If any handler type is not valid
+        """
+        for field_name, value in [
+            ("alert", alert),
+            ("before_unload", before_unload),
+            ("confirm", confirm),
+            ("default", default),
+            ("file", file),
+            ("prompt", prompt),
+        ]:
+            if value is not None and value not in UserPromptHandlerType.VALID_TYPES:
+                raise ValueError(
+                    f"Invalid {field_name} handler type: {value}. Must be one of {UserPromptHandlerType.VALID_TYPES}"
+                )
+
+        self.alert = alert
+        self.before_unload = before_unload
+        self.confirm = confirm
+        self.default = default
+        self.file = file
+        self.prompt = prompt
+
+    def to_dict(self) -> dict[str, str]:
+        """Convert the UserPromptHandler to a dictionary for BiDi protocol.
+
+        Returns:
+        -------
+            Dict[str, str]: Dictionary representation suitable for BiDi protocol
+        """
+        field_mapping = {
+            "alert": "alert",
+            "before_unload": "beforeUnload",
+            "confirm": "confirm",
+            "default": "default",
+            "file": "file",
+            "prompt": "prompt",
+        }
+
+        result = {}
+        for attr_name, dict_key in field_mapping.items():
+            value = getattr(self, attr_name)
+            if value is not None:
+                result[dict_key] = value
+        return result
+
+
+class Session:
+    def __init__(self, conn):
+        self.conn = conn
+
+    def subscribe(self, *events, browsing_contexts=None):
+        params = {
             "events": events,
-        },
-    }
-    if browsing_contexts is None:
-        browsing_contexts = []
-    if browsing_contexts:
-        cmd_dict["params"]["browsingContexts"] = browsing_contexts
-    _ = yield cmd_dict
-    return None
+        }
+        if browsing_contexts is None:
+            browsing_contexts = []
+        if browsing_contexts:
+            params["browsingContexts"] = browsing_contexts
+        return command_builder("session.subscribe", params)
 
-
-def session_unsubscribe(*events, browsing_contexts=None):
-    cmd_dict = {
-        "method": "session.unsubscribe",
-        "params": {
+    def unsubscribe(self, *events, browsing_contexts=None):
+        params = {
             "events": events,
-        },
-    }
-    if browsing_contexts is None:
-        browsing_contexts = []
-    if browsing_contexts:
-        cmd_dict["params"]["browsingContexts"] = browsing_contexts
-    _ = yield cmd_dict
-    return None
+        }
+        if browsing_contexts is None:
+            browsing_contexts = []
+        if browsing_contexts:
+            params["browsingContexts"] = browsing_contexts
+        return command_builder("session.unsubscribe", params)
+
+    def status(self):
+        """
+        The session.status command returns information about the remote end's readiness
+        to create new sessions and may include implementation-specific metadata.
+
+        Returns
+        -------
+        dict
+            Dictionary containing the ready state (bool), message (str) and metadata
+        """
+        cmd = command_builder("session.status", {})
+        return self.conn.execute(cmd)

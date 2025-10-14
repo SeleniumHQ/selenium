@@ -10,7 +10,7 @@ module Selenium
 
         def status: () -> untyped
 
-        def subscribe: (untyped events, ?untyped? browsing_contexts) -> untyped
+        def subscribe: (untyped events, ?untyped? browsing_contexts) -> Hash[nil, nil]
 
         def unsubscribe: (untyped events, ?untyped? browsing_contexts) -> untyped
       end

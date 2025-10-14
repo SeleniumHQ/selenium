@@ -1,3 +1,91 @@
+4.36.0 (2025-09-18)
+=========================
+* Add CDP for Chrome 140 and remove 137
+* [BiDi] Create browser module, added user context related methods (#15371)
+* BiDi get client windows (#16211)
+* Fix links to exception documentation on website (#16305)
+* Update `unhandled_prompt_behavior` capability to support hash syntax (#16289)
+
+4.35.0 (2025-08-12)
+=========================
+* Add CDP for Chrome 139 and remove 136
+* Fix typos in javascript & rb (#16019)
+* Allow to use `rubyzip` v3 (#16108)
+
+4.34.0 (2025-06-29)
+=========================
+* Add CDP for Chrome 138 and remove 135
+* Fix child process terminate method when a process is already terminated (#15789)
+* Deprecate ftp proxy (#15926)
+* Add macOS key mappings for Options and Function keys (#15959)
+
+4.33.0 (2025-05-23)
+=========================
+* Add CDP for Chrome 137 and remove 134
+* Let firefox choose the bidi port by default (#15727)
+* Upgrade to Ruby 3.2
+
+4.32.0 (2025-05-02)
+=========================
+* Add CDP for Chrome 136 and remove 133
+* log at info level with names and values when Guards#add_condition used
+* Add PrintOptions Implementation for Ruby WebDriver (#15158)
+* [ruby] fix lint for print_options.rb (#15608)
+* add enable_downloads to attr_accessor for all options classes
+* make logging of test guards debug level not info
+* Set remote active protocol in Firefox to BiDi only
+* handle issue with selenium manager exit status being nil (#15676)
+* Add websocket-port parameter to firefox service (#15458)
+
+4.31.0 (2025-04-04)
+=========================
+* Add support for 135 and remove 132
+* Remove the pre-compiled atoms from trunk
+* Allow symbols again to be passed on delete_cookie (#15519)
+
+4.30.1 (2025-03-22)
+=========================
+* put back the driver#script method that was inadvertently deleted
+
+4.30.0 (2025-03-20)
+=========================
+Ruby:
+* Raise error when trying to delete a cookie without a name  (#15386)
+* Remove deprecated html 5 web storage features
+* Remove deprecated script alias for execute_script
+* Add debug message for location of screenshot
+
+BiDi:
+* Add set viewport for browsing context (#15290)
+* Add support for handling user prompt (#15291)
+* Add Browser context activate command (#15365)
+
+DevTools:
+* Add support for 134 and remove 131
+* Remove support for v85 since no longer required by Firefox
+* Add support for additional target types (#15416)
+
+4.29.1 (2025-02-22)
+=========================
+* [rb] Fix "no anonymous block parameter" in ruby 3.1 (#15315)
+
+4.29.0 (2025-02-17)
+=========================
+* Add CDP for Chrome 133 and remove 130
+* [rb] Add Bidi Network Response Handler (#14900)
+* [rb] Remove Firefox CDP (#15200)
+* [rb][BiDi] Add support for provide response command (#15080)
+* [rb][BiDi] Add set cache behaviour (#15114)
+
+4.28.0 (2025-01-16)
+=========================
+* Add CDP for Chrome 132 and remove 129
+* [ci] Bumping versions for nightly
+* [rb] Add tests for the cookie named, and updates type (#14843)
+* [rb] Update note for return value of Hash (#14845)
+* [rb] BiDi Network: add_request_handler, remove_request_handler, clear_request_handlers (#14751)
+* Update supported versions for Chrome DevTools
+
 4.27.0 (2024-11-21)
 =========================
 * Add CDP for Chrome 131 and remove 128
@@ -1781,7 +1869,7 @@ Safari:
   * Replace 'libwebsocket' with 'websocket' gem. This should ensure
     support with recent Safari.
 Other:
-  * Fix Cygwin issue in PortProber/Firefox::Bianry (#4963)
+  * Fix Cygwin issue in PortProber/Firefox::Binary (#4963)
 
 2.27.2 (2012-12-11)
 ===================
@@ -1871,7 +1959,7 @@ IE:
 * Fix conflict with ActiveSupport's Object#load (#3819)
 * IE:
   * Default to standalone server executable, fall back to bundled DLLs.
-  * The 'nativeEvents' capabilitiy is exposed as :native_events in the Ruby client (mode still experimental).
+  * The 'nativeEvents' capability is exposed as :native_events in the Ruby client (mode still experimental).
 * Firefox:
   * Native events for Firefox 12.
   * Native events retained for Firefox 3.x, 10 and 11.
@@ -2011,7 +2099,7 @@ IE:
 ===================
 
 * Firefox:
-  * Now supports up to Firefox 11 (for syntesized events)
+  * Now supports up to Firefox 11 (for synthesized events)
   * Implicit waits now change how long we wait for alerts. This
     functionality will change in 2.16
   * Fix scrolling issue (#2700)
@@ -2205,7 +2293,7 @@ IE:
 2.1.0 (2011-07-18)
 ==================
 
-* Various improvments to the IE driver (#2049, #1870)
+* Various improvements to the IE driver (#2049, #1870)
 * Atoms fixes (#1776, #1972).
 * Synthetic mouse clicks do not propagate errors in onmouseover.
 
@@ -2355,7 +2443,7 @@ IE:
 * Cookie expiration dates are now handled correctly (#730)
 * Make Driver#bridge private, since this seems to be a common cause of confusion.
 * Add {Element,Remote::Capabilities}#as_json for Rails 3 (http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/)
-* User can configure path to exectuables with {Firefox,Chrome}.path = "/some/path"
+* User can configure path to executables with {Firefox,Chrome}.path = "/some/path"
 * Added "chromium" as a possible name for the Chrome binary (#769)
 * Correctly set the HTTP client timeout (#768)
 * switch_to.window with block now handles exceptions and non-local returns.

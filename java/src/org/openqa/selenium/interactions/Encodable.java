@@ -18,12 +18,14 @@
 package org.openqa.selenium.interactions;
 
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * This interface allows a custom {@link Interaction} to be JSON encoded for the W3C wire format. It
  * should not normally be exposed or used by user-facing APIs. Instead, these should traffic in the
  * {@link Interaction} interface.
  */
+@NullMarked
 public interface Encodable {
   Map<String, Object> encode();
 }

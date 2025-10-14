@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
@@ -44,6 +46,7 @@ import org.openqa.selenium.internal.Require;
  *
  * <p>Call {@link #perform()} at the end of the method chain to actually perform the actions.
  */
+@NullMarked
 public class Actions {
 
   private final WebDriver driver;
@@ -51,9 +54,9 @@ public class Actions {
   // W3C
   private final Map<InputSource, Sequence> sequences = new HashMap<>();
 
-  private PointerInput activePointer;
-  private KeyInput activeKeyboard;
-  private WheelInput activeWheel;
+  private @Nullable PointerInput activePointer;
+  private @Nullable KeyInput activeKeyboard;
+  private @Nullable WheelInput activeWheel;
   private Duration actionDuration;
 
   public Actions(WebDriver driver) {
@@ -537,21 +540,21 @@ public class Actions {
     if (this.activeKeyboard == null) {
       setActiveKeyboard("default keyboard");
     }
-    return this.activeKeyboard;
+    return Require.nonNull("ActiveKeyboard", this.activeKeyboard);
   }
 
   public PointerInput getActivePointer() {
     if (this.activePointer == null) {
       setActivePointer(PointerInput.Kind.MOUSE, "default mouse");
     }
-    return this.activePointer;
+    return Require.nonNull("ActivePointer", this.activePointer);
   }
 
   public WheelInput getActiveWheel() {
     if (this.activeWheel == null) {
       setActiveWheel("default wheel");
     }
-    return this.activeWheel;
+    return Require.nonNull("ActiveWheel", this.activeWheel);
   }
 
   public Duration getActionDuration() {

@@ -23,7 +23,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,6 @@ import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NotWorkingInRemoteBazelBuilds;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 class JavascriptEnabledDriverTest extends JupiterTestBase {
@@ -73,7 +71,6 @@ class JavascriptEnabledDriverTest extends JupiterTestBase {
   }
 
   @Test
-  @NotWorkingInRemoteBazelBuilds(value = CHROME)
   void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 

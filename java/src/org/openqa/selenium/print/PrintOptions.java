@@ -20,8 +20,11 @@ package org.openqa.selenium.print;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
+@NullMarked
 public class PrintOptions {
 
   public enum Orientation {
@@ -46,7 +49,7 @@ public class PrintOptions {
   private boolean shrinkToFit = true;
   private PageSize pageSize = new PageSize();
   private PageMargin pageMargin = new PageMargin();
-  private String[] pageRanges;
+  private String @Nullable [] pageRanges;
 
   public Orientation getOrientation() {
     return this.orientation;
@@ -56,7 +59,7 @@ public class PrintOptions {
     this.orientation = Require.nonNull("orientation", orientation);
   }
 
-  public String[] getPageRanges() {
+  public String @Nullable [] getPageRanges() {
     return this.pageRanges;
   }
 

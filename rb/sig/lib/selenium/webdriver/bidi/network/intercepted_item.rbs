@@ -1,0 +1,21 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class InterceptedItem
+        @network: Network
+
+        @request: untyped
+
+        @id: Integer
+
+        attr_reader network: Network
+
+        attr_reader request: untyped
+
+        def initialize: (Network network, Hash[untyped, untyped] request) -> void
+
+        def id: () -> Integer
+      end
+    end
+  end
+end

@@ -43,6 +43,6 @@ public class DeleteCookiesParameters {
     cookieFilter.ifPresent(filter -> map.put("filter", cookieFilter));
     partitionDescriptor.ifPresent(descriptor -> map.put("partition", partitionDescriptor));
 
-    return map;
+    return Map.copyOf(map);
   }
 }

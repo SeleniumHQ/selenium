@@ -28,10 +28,10 @@ module Selenium
       autoload :Request, 'selenium/webdriver/devtools/request'
       autoload :Response, 'selenium/webdriver/devtools/response'
 
-      def initialize(url:)
+      def initialize(url:, target_type:)
         @ws = WebSocketConnection.new(url: url)
         @session_id = nil
-        start_session
+        start_session(target_type: target_type)
       end
 
       def close
@@ -81,10 +81,12 @@ module Selenium
 
       private
 
-      def start_session
+      def start_session(target_type:)
         targets = target.get_targets.dig('result', 'targetInfos')
-        page_target = targets.find { |target| target['type'] == 'page' }
-        session = target.attach_to_target(target_id: page_target['targetId'], flatten: true)
+        found_target = targets.find { |target| target['type'] == target_type }
+        raise Error::WebDriverError, "Target type '#{target_type}' not found" unless found_target
+
+        session = target.attach_to_target(target_id: found_target['targetId'], flatten: true)
         @session_id = session.dig('result', 'sessionId')
       end
 

@@ -18,11 +18,13 @@ _copyright = """/*
  */
 """
 
+
 def get_atom_name(name):
     # We had a todo here to convert camelCase and snake_case to BIG_SNAKE_CASE, but this code
     # will be removed when BiDi is the default, so we're not going to bother with that.
     name = os.path.basename(name)
     return name.upper()
+
 
 def write_atom_literal(out, name, contents, lang, utf8):
     # Escape the contents of the file so it can be stored as a literal.
@@ -34,19 +36,18 @@ def write_atom_literal(out, name, contents, lang, utf8):
     contents = contents.replace('"', '\\"')
 
     if "cc" == lang or "hh" == lang:
-      if utf8:
-        line_format = "    \"{}\",\n"
-      else:
-        line_format = "    L\"{}\",\n"
+        if utf8:
+            line_format = '    "{}",\n'
+        else:
+            line_format = '    L"{}",\n'
     elif "java" == lang:
-        line_format = "      .append\(\"{}\")\n"
+        line_format = '      .append\("{}")\n'
     else:
         raise RuntimeError("Unknown language: %s " % lang)
 
     name = get_atom_name(name)
 
     if "cc" == lang or "hh" == lang:
-        string_type = "std::string" if utf8 else "std::wstring"
         char_type = "char" if utf8 else "wchar_t"
         out.write("const %s* const %s[] = {\n" % (char_type, name))
     elif "java" == lang:
@@ -59,8 +60,8 @@ def write_atom_literal(out, name, contents, lang, utf8):
     # of an escape sequence.
     while len(contents) > 70:
         diff = 70
-        while contents[diff-1] == "\\":
-            diff = diff -1
+        while contents[diff - 1] == "\\":
+            diff = diff - 1
         line = contents[0:diff]
         contents = contents[diff:]
 
@@ -73,10 +74,14 @@ def write_atom_literal(out, name, contents, lang, utf8):
     elif "java" == lang:
         out.write("      .toString()),\n")
 
+
 def generate_header(file_name, out, js_map, just_declare, utf8):
-    define_guard = "WEBDRIVER_%s" % os.path.basename(file_name.upper()).replace(".", "_")
+    define_guard = "WEBDRIVER_%s" % os.path.basename(file_name.upper()).replace(
+        ".", "_"
+    )
     include_stddef = "" if utf8 else "\n#include <stddef.h>  // For wchar_t."
-    out.write("""%s
+    out.write(
+        """%s
 
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
 #ifndef %s
@@ -87,19 +92,22 @@ def generate_header(file_name, out, js_map, just_declare, utf8):
 namespace webdriver {
 namespace atoms {
 
-""" % (_copyright, define_guard, define_guard, include_stddef))
+"""
+        % (_copyright, define_guard, define_guard, include_stddef)
+    )
 
     string_type = "std::string" if utf8 else "std::wstring"
     char_type = "char" if utf8 else "wchar_t"
 
-    for (name, file) in js_map.items():
+    for name, file in js_map.items():
         if just_declare:
             out.write("extern const %s* const %s[];\n" % (char_type, name.upper()))
         else:
             contents = open(file, "r").read()
             write_atom_literal(out, name, contents, "hh", utf8)
 
-    out.write("""
+    out.write(
+        """
 static inline %s asString(const %s* const atom[]) {
   %s source;
   for (int i = 0; atom[i] != NULL; i++) {
@@ -112,10 +120,14 @@ static inline %s asString(const %s* const atom[]) {
 }  // namespace webdriver
 
 #endif  // %s
-""" % (string_type, char_type, string_type, define_guard))
+"""
+        % (string_type, char_type, string_type, define_guard)
+    )
+
 
 def generate_cc_source(out, js_map, utf8):
-    out.write("""%s
+    out.write(
+        """%s
 
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
 
@@ -125,9 +137,11 @@ def generate_cc_source(out, js_map, utf8):
 namespace webdriver {
 namespace atoms {
 
-""" % _copyright)
+"""
+        % _copyright
+    )
 
-    for (name, file) in js_map.items():
+    for name, file in js_map.items():
         contents = open(file, "r").read()
         write_atom_literal(out, name, contents, "cc", utf8)
 
@@ -136,6 +150,7 @@ namespace atoms {
 }  // namespace webdriver
 
 """)
+
 
 def generate_java_source(file_name, out, preamble, js_map):
     if not file_name.endswith(".java"):
@@ -146,17 +161,21 @@ def generate_java_source(file_name, out, preamble, js_map):
     out.write("\n")
     out.write(preamble)
     out.write("")
-    out.write("""
+    out.write(
+        """
 public enum %s {
 
     // AUTO GENERATED - DO NOT EDIT BY HAND
-""" % class_name)
+"""
+        % class_name
+    )
 
-    for (name, file) in js_map.items():
+    for name, file in js_map.items():
         contents = open(file, "r").read()
         write_atom_literal(out, name, contents, "java", True)
 
-    out.write("""
+    out.write(
+        """
   ;
   private final String value;
 
@@ -172,14 +191,16 @@ public enum %s {
     this.value = value;
   }
 }
-""" % class_name)
+"""
+        % class_name
+    )
 
 
 def main(argv=[]):
     lang = argv[1]
     file_name = argv[2]
     preamble = argv[3]
-    utf8 = (argv[4] == "true")
+    utf8 = argv[4] == "true"
 
     js_map = {}
     for i in range(5, len(argv), 2):
@@ -196,6 +217,7 @@ def main(argv=[]):
             generate_java_source(file_name, out, preamble, js_map)
         else:
             raise RuntimeError("Unknown lang: %s" % lang)
+
 
 if __name__ == "__main__":
     main(sys.argv)

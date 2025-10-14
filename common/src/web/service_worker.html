@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Service Worker Test Page</title>
+  <script>
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
+        .then(() => navigator.serviceWorker.ready)
+        .then(() => console.debug("[Companion]", "Service worker registered!"));
+    }
+  </script>
+</head>
+<body>
+  <h1>This page loads a service worker</h1>
+</body>
+</html>

@@ -19,50 +19,42 @@
 
 using System;
 
-namespace OpenQA.Selenium.Support.Events
+namespace OpenQA.Selenium.Support.Events;
+
+/// <summary>
+/// Provides data for events relating to navigation.
+/// </summary>
+public class WebDriverNavigationEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for events relating to navigation.
+    /// Initializes a new instance of the <see cref="WebDriverNavigationEventArgs"/> class.
     /// </summary>
-    public class WebDriverNavigationEventArgs : EventArgs
+    /// <param name="driver">The WebDriver instance used in navigation.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
+    public WebDriverNavigationEventArgs(IWebDriver driver)
+        : this(driver, null)
     {
-        private string url;
-        private IWebDriver driver;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebDriverNavigationEventArgs"/> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used in navigation.</param>
-        public WebDriverNavigationEventArgs(IWebDriver driver)
-            : this(driver, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebDriverNavigationEventArgs"/> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used in navigation.</param>
-        /// <param name="url">The URL navigated to by the driver.</param>
-        public WebDriverNavigationEventArgs(IWebDriver driver, string url)
-        {
-            this.url = url;
-            this.driver = driver;
-        }
-
-        /// <summary>
-        /// Gets the URL navigated to by the driver.
-        /// </summary>
-        public string Url
-        {
-            get { return this.url; }
-        }
-
-        /// <summary>
-        /// Gets the WebDriver instance used in navigation.
-        /// </summary>
-        public IWebDriver Driver
-        {
-            get { return this.driver; }
-        }
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebDriverNavigationEventArgs"/> class.
+    /// </summary>
+    /// <param name="driver">The WebDriver instance used in navigation.</param>
+    /// <param name="url">The URL navigated to by the driver, or <see langword="null"/> if none exists.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is <see langword="null"/>.</exception>
+    public WebDriverNavigationEventArgs(IWebDriver driver, string? url)
+    {
+        this.Url = url;
+        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
+    }
+
+    /// <summary>
+    /// Gets the URL navigated to by the driver, or <see langword="null"/> if no URL could be determined.
+    /// </summary>
+    public string? Url { get; }
+
+    /// <summary>
+    /// Gets the WebDriver instance used in navigation.
+    /// </summary>
+    public IWebDriver Driver { get; }
 }

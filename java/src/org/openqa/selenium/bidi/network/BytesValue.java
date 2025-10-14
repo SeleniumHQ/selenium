@@ -85,6 +85,6 @@ public class BytesValue {
     map.put("type", type.toString());
     map.put("value", value);
 
-    return map;
+    return Map.copyOf(map);
   }
 }

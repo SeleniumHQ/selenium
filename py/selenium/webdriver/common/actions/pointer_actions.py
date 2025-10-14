@@ -16,12 +16,11 @@
 # under the License.
 from typing import Optional
 
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.interaction import Interaction
+from selenium.webdriver.common.actions.mouse_button import MouseButton
+from selenium.webdriver.common.actions.pointer_input import PointerInput
 from selenium.webdriver.remote.webelement import WebElement
-
-from . import interaction
-from .interaction import Interaction
-from .mouse_button import MouseButton
-from .pointer_input import PointerInput
 
 
 class PointerActions(Interaction):
@@ -31,7 +30,7 @@ class PointerActions(Interaction):
         - source: PointerInput instance
         - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in source
         """
-        if not source:
+        if source is None:
             source = PointerInput(interaction.POINTER_MOUSE, "mouse")
         self.source = source
         self._duration = duration

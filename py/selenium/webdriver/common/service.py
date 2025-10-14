@@ -14,23 +14,18 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import errno
 import logging
 import os
 import subprocess
-from abc import ABC
-from abc import abstractmethod
+import sys
+from abc import ABC, abstractmethod
+from collections.abc import Mapping
 from io import IOBase
-from platform import system
 from subprocess import PIPE
 from time import sleep
-from typing import IO
-from typing import Any
-from typing import List
-from typing import Mapping
-from typing import Optional
-from typing import Union
-from typing import cast
+from typing import IO, Any, Optional, Union, cast
 from urllib import request
 from urllib.error import URLError
 
@@ -55,21 +50,22 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable_path: str = None,
+        executable_path: Optional[str] = None,
         port: int = 0,
-        log_output: SubprocessStdAlias = None,
+        log_output: Optional[SubprocessStdAlias] = None,
         env: Optional[Mapping[Any, Any]] = None,
-        driver_path_env_key: str = None,
+        driver_path_env_key: Optional[str] = None,
         **kwargs,
     ) -> None:
+        self.log_output: Optional[Union[int, IOBase]]
         if isinstance(log_output, str):
             self.log_output = cast(IOBase, open(log_output, "a+", encoding="utf-8"))
         elif log_output == subprocess.STDOUT:
-            self.log_output = cast(Optional[Union[int, IOBase]], None)
+            self.log_output = None
         elif log_output is None or log_output == subprocess.DEVNULL:
-            self.log_output = cast(Optional[Union[int, IOBase]], subprocess.DEVNULL)
+            self.log_output = subprocess.DEVNULL
         else:
-            self.log_output = log_output
+            self.log_output = cast(Union[int, IOBase], log_output)
 
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
@@ -85,7 +81,7 @@ class Service(ABC):
         return f"http://{utils.join_host_port('localhost', self.port)}"
 
     @abstractmethod
-    def command_line_args(self) -> List[str]:
+    def command_line_args(self) -> list[str]:
         """A List of program arguments (excluding the executable)."""
         raise NotImplementedError("This method needs to be implemented in a sub class")
 
@@ -152,12 +148,13 @@ class Service(ABC):
             elif isinstance(self.log_output, int):
                 os.close(self.log_output)
 
-        if self.process is not None:
+        if self.process is not None and self.process.poll() is None:
             try:
                 self.send_remote_shutdown_command()
             except TypeError:
                 pass
-            self._terminate_process()
+            finally:
+                self._terminate_process()
 
     def _terminate_process(self) -> None:
         """Terminate the child process.
@@ -208,13 +205,13 @@ class Service(ABC):
         """
         cmd = [path]
         cmd.extend(self.command_line_args())
-        close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
+        close_file_descriptors = self.popen_kw.pop("close_fds", sys.platform != "win32")
         try:
             start_info = None
-            if system() == "Windows":
-                start_info = subprocess.STARTUPINFO()  # type: ignore[attr-defined]
-                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW  # type: ignore[attr-defined]
-                start_info.wShowWindow = subprocess.SW_HIDE  # type: ignore[attr-defined]
+            if sys.platform == "win32":
+                start_info = subprocess.STARTUPINFO()
+                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+                start_info.wShowWindow = subprocess.SW_HIDE
 
             self.process = subprocess.Popen(
                 cmd,

@@ -18,8 +18,7 @@
 /**
  * @fileoverview Defines the core DOM querying library for the atoms, with a
  * minimal set of dependencies. Notably, this file should never have a
- * dependency on CSS or XPath polyfill libraries (sizzle and wgxpath,
- * respectively).
+ * dependency on CSS libraries such as sizzle.
  */
 
 goog.provide('bot.dom.core');

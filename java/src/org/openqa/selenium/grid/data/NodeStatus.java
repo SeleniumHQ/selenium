@@ -76,7 +76,7 @@ public class NodeStatus {
     Set<Slot> slots = null;
     Availability availability = null;
     Duration heartbeatPeriod = null;
-    Duration sessionTimeout = null;
+    Duration sessionTimeout = Duration.ofSeconds(300);
     String version = null;
     Map<String, String> osInfo = null;
 

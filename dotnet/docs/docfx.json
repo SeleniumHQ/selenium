@@ -11,7 +11,7 @@
       ],
       "dest": "webdriver",
       "namespaceLayout": "nested",
-      "outputFormat": "apiPage"
+      //"outputFormat": "apiPage" // "apiPage" generation with errors
     },
     {
       "src": [
@@ -24,9 +24,8 @@
       ],
       "dest": "support",
       "namespaceLayout": "nested",
-      "outputFormat": "apiPage"
+      //"outputFormat": "apiPage" // "apiPage" generation with errors
     }
-
   ],
   "build": {
     "content": [

@@ -25,11 +25,15 @@ module Selenium
       before { @original_window = driver.window_handle }
 
       after do
-        handles = driver.window_handles
-        driver.switch_to.window(@original_window) if handles.include?(@original_window)
+        if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome
+          reset_driver!
+        else
+          handles = driver.window_handles
+          driver.switch_to.window(@original_window) if handles.include?(@original_window)
 
-        (handles - [driver.window_handle]).each do |handle|
-          driver.switch_to.window(handle) { driver.close }
+          (handles - [driver.window_handle]).each do |handle|
+            driver.switch_to.window(handle) { driver.close }
+          end
         end
       end
 
@@ -325,8 +329,6 @@ module Selenium
         end
 
         describe 'unhandled alert error' do
-          after { |example| reset_driver!(example: example) }
-
           it 'raises an UnexpectedAlertOpenError if an alert has not been dealt with' do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click

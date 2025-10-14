@@ -1,10 +1,10 @@
+using Humanizer;
+using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
+using System;
+using System.Collections.Generic;
+
 namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
 {
-    using Humanizer;
-    using OpenQA.Selenium.DevToolsGenerator.ProtocolDefinition;
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// Generates code for Command Definitions
     /// </summary>
@@ -19,8 +19,10 @@ namespace OpenQA.Selenium.DevToolsGenerator.CodeGen
         {
             var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            if (String.IsNullOrWhiteSpace(Settings.DefinitionTemplates.CommandTemplate.TemplatePath))
+            if (string.IsNullOrWhiteSpace(Settings.DefinitionTemplates.CommandTemplate.TemplatePath))
+            {
                 return result;
+            }
 
             var commandGenerator = TemplatesManager.GetGeneratorForTemplate(Settings.DefinitionTemplates.CommandTemplate);
 

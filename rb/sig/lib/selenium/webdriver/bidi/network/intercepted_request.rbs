@@ -1,0 +1,35 @@
+module Selenium
+  module WebDriver
+    class BiDi
+      class InterceptedRequest < InterceptedItem
+        @method: String
+
+        @url: String
+
+        @body: Hash[untyped, untyped]
+
+        @headers: Hash[untyped, untyped]
+
+        @cookies: Hash[untyped, untyped]
+
+        attr_accessor method: String
+
+        attr_accessor url: String
+
+        attr_reader body: Hash[untyped, untyped]
+
+        def initialize: (Network network, Hash[untyped, untyped] request) -> void
+
+        def continue: () -> Hash[nil, nil]
+
+        def fail: () -> Hash[nil, nil]
+
+        def body=: (Hash[untyped, untyped] value) -> Hash[untyped, untyped]
+
+        def headers: () -> Hash[untyped, untyped]
+
+        def cookies: () -> Hash[untyped, untyped]
+      end
+    end
+  end
+end
