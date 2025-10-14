@@ -80,7 +80,7 @@ class Credential:
         self,
         credential_id: bytes,
         is_resident_credential: bool,
-        rp_id: str,
+        rp_id: Optional[str],
         user_handle: Optional[bytes],
         private_key: bytes,
         sign_count: int,
