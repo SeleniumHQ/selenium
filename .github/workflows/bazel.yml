@@ -51,6 +51,11 @@ on:
         required: false
         type: string
         default: ''
+      python-version:
+        description: Custom Python version to use
+        required: false
+        type: string
+        default: ''
       ruby-version:
         description: Custom Ruby version to use
         required: false
@@ -101,6 +106,9 @@ jobs:
         if: inputs.os != 'windows'
         run: |
           sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
+      - name: Set Python version
+        if: inputs.python-version != ''
+        run: echo '${{ inputs.python-version }}' > py/.python-version
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version

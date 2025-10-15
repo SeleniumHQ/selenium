@@ -16,40 +16,38 @@ jobs:
 
   docs:
     name: Documentation
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
-      - name: Set up Python 3.9
+      - name: Set up Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: 3.9
+          python-version: '3.10'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tox==4.30.2
+          pip install tox
       - name: Generate docs
         run: |
           tox -c py/tox.ini
         env:
           TOXENV: docs
 
-  mypy:
-    name: Mypy
-    needs: build
+  typing:
+    name: Type Checker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
-      - name: Set up Python 3.9
+      - name: Set up Python 3.10
         uses: actions/setup-python@v6
         with:
-          python-version: 3.9
+          python-version: '3.10'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tox==4.30.2
+          pip install tox
       - name: Run type checking
         run: |
           tox -c py/tox.ini || true
@@ -64,12 +62,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu
-          - os: macos
+          - python-version: '3.10'
+            os: ubuntu
+          - python-version: '3.10'
+            os: macos
+          - python-version: '3.14'
+            os: ubuntu
+          - python-version: '3.14'
+            os: macos
     with:
-      name: Unit Tests (${{ matrix.os }})
+      name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
-      cache-key: python-unit-test-${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+      cache-key: python-unit-test-${{ matrix.python-version }}
       run: |
         bazel test //py:unit
 
