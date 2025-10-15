@@ -64,6 +64,23 @@ def old_chrome(chrome_milestone):
     return str(int(new_chrome(chrome_milestone)) - 3)
 
 
+def flatten_browser_pdl(file_path, chrome_version):
+    """Fetches all included domain .pdl files and concatenates them."""
+    with open(file_path, "r") as file:
+        content = file.read()
+    # Find all include lines
+    includes = re.findall(r"include domains/([A-Za-z0-9_]+\.pdl)", content)
+    base_url = f"https://raw.githubusercontent.com/chromium/chromium/{chrome_version}/third_party/blink/public/devtools_protocol/domains/"
+    concatenated = ""
+    for domain_file in includes:
+        url = base_url + domain_file
+        response = http.request("GET", url)
+        concatenated += response.data.decode("utf-8") + "\n"
+    # Overwrite the file with concatenated domains
+    with open(file_path, "w") as file:
+        file.write(concatenated)
+
+
 def add_pdls(chrome_milestone):
     source_dir = (
         root_dir / f"common/devtools/chromium/v{previous_chrome(chrome_milestone)}"
@@ -82,6 +99,10 @@ def add_pdls(chrome_milestone):
         fetch_and_save(
             f"https://raw.githubusercontent.com/chromium/chromium/{chrome_milestone['version']}/third_party/blink/public/devtools_protocol/browser_protocol.pdl",
             f"{target_dir}/browser_protocol.pdl",
+        )
+
+        flatten_browser_pdl(
+            f"{target_dir}/browser_protocol.pdl", chrome_milestone["version"]
         )
 
         deps_content = http.request(
