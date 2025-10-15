@@ -18,21 +18,25 @@
 import os
 import tempfile
 
+import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+@pytest.mark.no_driver_after_test
 def test_get_downloadable_files(driver, pages):
     _browser_downloads(driver, pages)
     file_names = driver.get_downloadable_files()
     # TODO: why is Chrome downloading files as .html???
     # assert "file_1.txt" in file_names
     # assert "file_2.jpg" in file_names
-    assert any(f in file_names for f in ("file_1.txt", "file_1.html"))
-    assert any(f in file_names for f in ("file_2.jpg", "file_2.html"))
+    assert any(f in file_names for f in ("file_1.txt", "file_1.htm", "file_1.html"))
+    assert any(f in file_names for f in ("file_2.jpg", "file_2.htm", "file_2.html"))
     assert type(file_names) is list
 
 
+@pytest.mark.no_driver_after_test
 def test_download_file(driver, pages):
     _browser_downloads(driver, pages)
 
@@ -40,7 +44,9 @@ def test_download_file(driver, pages):
     downloadable_files = driver.get_downloadable_files()
     # TODO: why is Chrome downloading files as .html???
     # text_file_name = next((file for file in downloadable_files if file.endswith(".txt")), None)
-    text_file_name = next((file for file in downloadable_files if file.endswith((".txt", ".html"))), None)
+    text_file_name = next(
+        (f for f in downloadable_files if all((f.endswith((".txt", ".htm", ".html")), f.startswith("file_1")))), None
+    )
     assert text_file_name is not None, "Could not find file in downloadable files"
 
     with tempfile.TemporaryDirectory() as target_directory:
@@ -51,6 +57,7 @@ def test_download_file(driver, pages):
             assert "Hello, World!" in file.read()
 
 
+@pytest.mark.no_driver_after_test
 def test_delete_downloadable_files(driver, pages):
     _browser_downloads(driver, pages)
 
@@ -65,5 +72,5 @@ def _browser_downloads(driver, pages):
     # TODO: why is Chrome downloading files as .html???
     # WebDriverWait(driver, 5).until(lambda d: "file_2.jpg" in d.get_downloadable_files())
     WebDriverWait(driver, 5).until(
-        lambda d: any(f in d.get_downloadable_files() for f in ("file_2.jpg", "file_2.html"))
+        lambda d: any(f in d.get_downloadable_files() for f in ("file_2.jpg", "file_2.htm", "file_2.html"))
     )
