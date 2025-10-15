@@ -31,8 +31,8 @@ class ChromiumDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        browser_name: str,
-        vendor_prefix: str,
+        browser_name: Optional[str] = None,
+        vendor_prefix: Optional[str] = None,
         options: Optional[ChromiumOptions] = None,
         service: Optional[ChromiumService] = None,
         keep_alive: bool = True,
@@ -229,4 +229,7 @@ class ChromiumDriver(RemoteWebDriver):
         raise NotImplementedError
 
     def get_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def delete_downloadable_files(self, *args, **kwargs):
         raise NotImplementedError

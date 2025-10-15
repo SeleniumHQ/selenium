@@ -17,11 +17,16 @@
 
 package org.openqa.selenium.devtools;
 
+import static java.util.logging.Level.INFO;
+import static org.openqa.selenium.concurrent.Lazy.lazy;
+
 import com.google.auto.service.AutoService;
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.concurrent.Lazy;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
@@ -29,6 +34,7 @@ import org.openqa.selenium.remote.ExecuteMethod;
 @SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService(AugmenterProvider.class)
 public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
+  private static final Logger LOG = Logger.getLogger(DevToolsProvider.class.getName());
 
   @Override
   public Predicate<Capabilities> isApplicable() {
@@ -42,14 +48,34 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   @Override
   public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
+    final Lazy<DevTools> devTools = lazy(() -> establishDevToolsConnection(caps));
+
+    LOG.log(
+        INFO,
+        "WebDriver augmented with DevTools interface; connection will not be verified until first"
+            + " use.");
+
+    return new HasDevTools() {
+      @Override
+      public Optional<DevTools> maybeGetDevTools() {
+        return devTools.getIfInitialized();
+      }
+
+      @Override
+      public DevTools getDevTools() {
+        return devTools.get();
+      }
+    };
+  }
+
+  private DevTools establishDevToolsConnection(Capabilities caps) {
     Object cdpVersion = caps.getCapability("se:cdpVersion");
     String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
 
     CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
-    Optional<DevTools> devTools =
-        SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
-
-    return () -> devTools;
+    return SeleniumCdpConnection.create(caps)
+        .map(conn -> new DevTools(info::getDomains, conn))
+        .orElseThrow(() -> new DevToolsException("Unable to create DevTools connection"));
   }
 
   private String getCdpUrl(Capabilities caps) {

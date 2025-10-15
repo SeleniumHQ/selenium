@@ -221,8 +221,6 @@ class CallFunctionLocalValueTest : BiDiTestFixture
     }
 
     [Test]
-    [IgnoreBrowser(Selenium.Browser.Edge, "Chromium can't handle -0 argument as a number: https://github.com/w3c/webdriver-bidi/issues/887")]
-    [IgnoreBrowser(Selenium.Browser.Chrome, "Chromium can't handle -0 argument as a number: https://github.com/w3c/webdriver-bidi/issues/887")]
     public async Task CanCallFunctionWithArgumentNumberNegativeZero()
     {
         var arg = new NumberLocalValue(double.NegativeZero);
