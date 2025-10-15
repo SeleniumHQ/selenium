@@ -27,6 +27,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -76,7 +77,11 @@ class UnboundZmqEventBus implements EventBus {
   private ZMQ.Socket sub;
 
   UnboundZmqEventBus(
-      ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+      ZContext context,
+      String publishConnection,
+      String subscribeConnection,
+      Secret secret,
+      Duration heartbeatPeriod) {
     Require.nonNull("Secret", secret);
     StringBuilder builder = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(builder)) {
@@ -136,11 +141,13 @@ class UnboundZmqEventBus implements EventBus {
             () -> {
               sub = context.createSocket(SocketType.SUB);
               sub.setIPv6(isSubAddressIPv6(publishConnection));
+              configureHeartbeat(sub, heartbeatPeriod, "SUB");
               sub.connect(publishConnection);
               sub.subscribe(new byte[0]);
 
               pub = context.createSocket(SocketType.PUB);
               pub.setIPv6(isSubAddressIPv6(subscribeConnection));
+              configureHeartbeat(pub, heartbeatPeriod, "PUB");
               pub.connect(subscribeConnection);
             });
     // Connections are already established
@@ -170,6 +177,21 @@ class UnboundZmqEventBus implements EventBus {
   @Override
   public boolean isReady() {
     return !socketPollingExecutor.isShutdown();
+  }
+
+  private void configureHeartbeat(ZMQ.Socket socket, Duration heartbeatPeriod, String socketType) {
+    if (heartbeatPeriod != null && !heartbeatPeriod.isZero() && !heartbeatPeriod.isNegative()) {
+      int heartbeatIvl = (int) heartbeatPeriod.toMillis();
+      socket.setHeartbeatIvl(heartbeatIvl);
+      // Set heartbeat timeout to 3x the interval
+      socket.setHeartbeatTimeout(heartbeatIvl * 3);
+      // Set heartbeat TTL to 6x the interval
+      socket.setHeartbeatTtl(heartbeatIvl * 6);
+      LOG.info(
+          String.format(
+              "Event bus %s socket heartbeat configured: interval=%dms, timeout=%dms, ttl=%dms",
+              socketType, heartbeatIvl, heartbeatIvl * 3, heartbeatIvl * 6));
+    }
   }
 
   private boolean isSubAddressIPv6(String connection) {

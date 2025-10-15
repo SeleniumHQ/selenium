@@ -21,6 +21,7 @@ import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVEN
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.function.Consumer;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
@@ -45,10 +46,20 @@ public class ZeroMqEventBus {
 
   public static EventBus create(
       ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
+    return create(context, publish, subscribe, bind, secret, Duration.ofSeconds(60));
+  }
+
+  public static EventBus create(
+      ZContext context,
+      String publish,
+      String subscribe,
+      boolean bind,
+      Secret secret,
+      Duration heartbeatPeriod) {
     if (bind) {
-      return new BoundZmqEventBus(context, publish, subscribe, secret);
+      return new BoundZmqEventBus(context, publish, subscribe, secret, heartbeatPeriod);
     }
-    return new UnboundZmqEventBus(context, publish, subscribe, secret);
+    return new UnboundZmqEventBus(context, publish, subscribe, secret, heartbeatPeriod);
   }
 
   public static EventBus create(Config config) {
@@ -85,10 +96,19 @@ public class ZeroMqEventBus {
                 });
 
     boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
+    int heartbeatPeriodSeconds =
+        config.getInt(EVENTS_SECTION, "eventbus-heartbeat-period").orElse(60);
+    Duration heartbeatPeriod = Duration.ofSeconds(heartbeatPeriodSeconds);
 
     SecretOptions secretOptions = new SecretOptions(config);
 
-    return create(new ZContext(), publish, subscribe, bind, secretOptions.getRegistrationSecret());
+    return create(
+        new ZContext(),
+        publish,
+        subscribe,
+        bind,
+        secretOptions.getRegistrationSecret(),
+        heartbeatPeriod);
   }
 
   private static String mungeUri(URI base, String scheme, int port) {
