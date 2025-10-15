@@ -363,7 +363,6 @@ py_library(
         "test/selenium/webdriver/common/network.py",
         "test/selenium/webdriver/common/webserver.py",
         "test/selenium/webdriver/firefox/__init__.py",
-        "test/selenium/webdriver/firefox/conftest.py",
         "test/selenium/webdriver/marionette/__init__.py",
         "test/selenium/webdriver/marionette/conftest.py",
         "test/selenium/webdriver/safari/conftest.py",

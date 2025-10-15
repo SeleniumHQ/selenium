@@ -464,6 +464,7 @@ def clean_driver(request):
         pytest.xfail(**marker.kwargs)
 
     yield driver_reference
+
     if request.node.get_closest_marker("no_driver_after_test"):
         driver_reference = None
 
