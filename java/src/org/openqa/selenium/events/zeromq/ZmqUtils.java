@@ -18,20 +18,27 @@
 package org.openqa.selenium.events.zeromq;
 
 import java.time.Duration;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.zeromq.ZMQ;
 
-/** Utility methods for ZeroMQ socket configuration. */
 class ZmqUtils {
 
   private static final Logger LOG = Logger.getLogger(ZmqUtils.class.getName());
 
-  private ZmqUtils() {
-    // Utility class
-  }
+  // Minimum heartbeat interval: 1 second
+  private static final long MIN_HEARTBEAT_MS = 1_000L;
+  // Maximum heartbeat interval: ~24 days (to prevent overflow when multiplied by 6)
+  private static final long MAX_HEARTBEAT_MS = Integer.MAX_VALUE / 6;
+
+  private ZmqUtils() {}
 
   /**
    * Configures ZeroMQ heartbeat settings on a socket to prevent stale connections.
+   *
+   * <p>The heartbeat interval is clamped between 1 second and ~24 days to prevent integer overflow
+   * and ensure reasonable values. If the provided duration is outside this range, it will be
+   * adjusted and a warning will be logged.
    *
    * @param socket The ZMQ socket to configure
    * @param heartbeatPeriod The heartbeat interval duration
@@ -39,14 +46,58 @@ class ZmqUtils {
    */
   static void configureHeartbeat(ZMQ.Socket socket, Duration heartbeatPeriod, String socketType) {
     if (heartbeatPeriod != null && !heartbeatPeriod.isZero() && !heartbeatPeriod.isNegative()) {
-      int heartbeatIvl = (int) heartbeatPeriod.toMillis();
+      long heartbeatMs = heartbeatPeriod.toMillis();
+      long clampedHeartbeatMs = clampHeartbeatInterval(heartbeatMs, socketType);
+
+      // Safe to cast to int now
+      int heartbeatIvl = (int) clampedHeartbeatMs;
+      int heartbeatTimeout = heartbeatIvl * 3;
+      int heartbeatTtl = heartbeatIvl * 6;
+
       socket.setHeartbeatIvl(heartbeatIvl);
-      socket.setHeartbeatTimeout(heartbeatIvl * 3);
-      socket.setHeartbeatTtl(heartbeatIvl * 6);
+      socket.setHeartbeatTimeout(heartbeatTimeout);
+      socket.setHeartbeatTtl(heartbeatTtl);
+
       LOG.info(
           String.format(
-              "ZMQ %s socket heartbeat configured: interval=%dms, timeout=%dms, ttl=%dms",
-              socketType, heartbeatIvl, heartbeatIvl * 3, heartbeatIvl * 6));
+              "ZMQ %s socket heartbeat configured: interval=%ds, timeout=%ds, ttl=%ds",
+              socketType, heartbeatIvl / 1000, heartbeatTimeout / 1000, heartbeatTtl / 1000));
     }
+  }
+
+  /**
+   * Clamps the heartbeat interval to safe bounds and logs warnings if adjustments are made.
+   *
+   * @param heartbeatMs The heartbeat interval in milliseconds
+   * @param socketType The socket type for logging
+   * @return The clamped heartbeat interval
+   */
+  private static long clampHeartbeatInterval(long heartbeatMs, String socketType) {
+    if (heartbeatMs < MIN_HEARTBEAT_MS) {
+      logHeartbeatClampWarning(socketType, heartbeatMs, MIN_HEARTBEAT_MS, "below minimum");
+      return MIN_HEARTBEAT_MS;
+    }
+    if (heartbeatMs > MAX_HEARTBEAT_MS) {
+      logHeartbeatClampWarning(socketType, heartbeatMs, MAX_HEARTBEAT_MS, "exceeds maximum");
+      return MAX_HEARTBEAT_MS;
+    }
+    return heartbeatMs;
+  }
+
+  /**
+   * Logs a warning when the heartbeat interval is clamped.
+   *
+   * @param socketType The socket type
+   * @param originalMs The original interval value in milliseconds
+   * @param clampedMs The clamped interval value in milliseconds
+   * @param reason The reason for clamping
+   */
+  private static void logHeartbeatClampWarning(
+      String socketType, long originalMs, long clampedMs, String reason) {
+    LOG.log(
+        Level.WARNING,
+        String.format(
+            "ZMQ %s socket heartbeat interval %ds %s %ds, clamping to %ds",
+            socketType, originalMs / 1000, reason, clampedMs / 1000, clampedMs / 1000));
   }
 }
