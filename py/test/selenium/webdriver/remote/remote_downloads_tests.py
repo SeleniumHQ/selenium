@@ -64,5 +64,6 @@ def _browser_downloads(driver, pages):
     driver.find_element(By.ID, "file-2").click()
     # TODO: why is Chrome downloading files as .html???
     # WebDriverWait(driver, 5).until(lambda d: "file_2.jpg" in d.get_downloadable_files())
-    WebDriverWait(driver, 5).until(lambda d: any(f in d.get_downloadable_files() for f in ("file_2.jpg", "file_2.html")))
-
+    WebDriverWait(driver, 5).until(
+        lambda d: any(f in d.get_downloadable_files() for f in ("file_2.jpg", "file_2.html"))
+    )
