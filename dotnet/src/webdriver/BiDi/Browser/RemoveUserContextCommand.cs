@@ -22,8 +22,10 @@ using OpenQA.Selenium.BiDi.Communication;
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class RemoveUserContextCommand(RemoveUserContextParameters @params)
-    : Command<RemoveUserContextParameters, EmptyResult>(@params, "browser.removeUserContext");
+    : Command<RemoveUserContextParameters, RemoveUserContextResult>(@params, "browser.removeUserContext");
 
 internal sealed record RemoveUserContextParameters(UserContext UserContext) : Parameters;
 
 public sealed class RemoveUserContextOptions : CommandOptions;
+
+public sealed record RemoveUserContextResult : EmptyResult;

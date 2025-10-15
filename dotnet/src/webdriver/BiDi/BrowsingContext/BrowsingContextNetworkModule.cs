@@ -20,7 +20,6 @@
 using System.Threading.Tasks;
 using System;
 using OpenQA.Selenium.BiDi.Network;
-using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -74,7 +73,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return intercept;
     }
 
-    public Task<EmptyResult> SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)
+    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)
     {
         SetCacheBehaviorOptions setCacheBehaviorOptions = new(options)
         {

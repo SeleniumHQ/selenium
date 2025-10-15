@@ -18,10 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -37,21 +34,4 @@ public sealed class GetRealmsOptions : CommandOptions
     public RealmType? Type { get; set; }
 }
 
-[JsonConverter(typeof(GetRealmsResultConverter))]
-public sealed record GetRealmsResult : EmptyResult, IReadOnlyList<RealmInfo>
-{
-    private readonly IReadOnlyList<RealmInfo> _realms;
-
-    internal GetRealmsResult(IReadOnlyList<RealmInfo> realms)
-    {
-        _realms = realms;
-    }
-
-    public RealmInfo this[int index] => _realms[index];
-
-    public int Count => _realms.Count;
-
-    public IEnumerator<RealmInfo> GetEnumerator() => _realms.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (_realms as IEnumerable).GetEnumerator();
-}
+public sealed record GetRealmsResult(IReadOnlyList<RealmInfo> Realms) : EmptyResult;

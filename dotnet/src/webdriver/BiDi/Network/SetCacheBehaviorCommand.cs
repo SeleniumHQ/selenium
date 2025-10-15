@@ -25,7 +25,7 @@ using System.Text.Json.Serialization;
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed class SetCacheBehaviorCommand(SetCacheBehaviorParameters @params)
-    : Command<SetCacheBehaviorParameters, EmptyResult>(@params, "network.setCacheBehavior");
+    : Command<SetCacheBehaviorParameters, SetCacheBehaviorResult>(@params, "network.setCacheBehavior");
 
 internal sealed record SetCacheBehaviorParameters(CacheBehavior CacheBehavior, IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
 
@@ -52,3 +52,5 @@ public enum CacheBehavior
     Default,
     Bypass
 }
+
+public sealed record SetCacheBehaviorResult : EmptyResult;

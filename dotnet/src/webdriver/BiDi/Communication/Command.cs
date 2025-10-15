@@ -53,4 +53,4 @@ internal record Parameters
     public static Parameters Empty { get; } = new Parameters();
 }
 
-public record EmptyResult;
+public abstract record EmptyResult;

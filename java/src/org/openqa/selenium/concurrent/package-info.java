@@ -1,4 +1,3 @@
-// <copyright file="Message.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,20 +14,8 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-namespace OpenQA.Selenium.BiDi.Communication;
+@NullMarked
+package org.openqa.selenium.concurrent;
 
-internal abstract record Message;
-
-internal record MessageSuccess(long Id, EmptyResult Result) : Message;
-
-internal record MessageError(long Id) : Message
-{
-    public string? Error { get; set; }
-
-    public string? Message { get; set; }
-}
-
-internal record MessageEvent(string Method, EventArgs Params) : Message;
-
+import org.jspecify.annotations.NullMarked;

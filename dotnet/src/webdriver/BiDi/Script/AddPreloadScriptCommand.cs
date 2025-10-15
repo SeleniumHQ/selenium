@@ -51,4 +51,4 @@ public sealed record BrowsingContextAddPreloadScriptOptions
     public string? Sandbox { get; set; }
 }
 
-internal sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;
+public sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;
