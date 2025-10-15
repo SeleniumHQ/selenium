@@ -350,7 +350,7 @@ def driver(request):
     yield selenium_driver.driver
 
     if selenium_driver is not None:
-        if "se:downloadsEnabled" in selenium_driver.driver.capabilities:
+        if selenium_driver.driver_class == "Remote" and "se:downloadsEnabled" in selenium_driver.driver.capabilities:
             selenium_driver.driver.delete_downloadable_files()
 
     if request.node.get_closest_marker("no_driver_after_test"):
