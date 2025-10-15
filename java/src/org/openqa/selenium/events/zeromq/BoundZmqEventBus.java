@@ -58,13 +58,13 @@ class BoundZmqEventBus implements EventBus {
     xpub = context.createSocket(SocketType.XPUB);
     xpub.setIPv6(xpubAddr.isIPv6);
     xpub.setImmediate(true);
-    configureHeartbeat(xpub, heartbeatPeriod, "XPUB");
+    ZmqUtils.configureHeartbeat(xpub, heartbeatPeriod, "XPUB");
     xpub.bind(xpubAddr.bindTo);
 
     xsub = context.createSocket(SocketType.XSUB);
     xsub.setIPv6(xsubAddr.isIPv6);
     xsub.setImmediate(true);
-    configureHeartbeat(xsub, heartbeatPeriod, "XSUB");
+    ZmqUtils.configureHeartbeat(xsub, heartbeatPeriod, "XSUB");
     xsub.bind(xsubAddr.bindTo);
 
     executor =
@@ -75,25 +75,9 @@ class BoundZmqEventBus implements EventBus {
               return thread;
             });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
-
     delegate =
         new UnboundZmqEventBus(
             context, xpubAddr.advertise, xsubAddr.advertise, secret, heartbeatPeriod);
-  }
-
-  private void configureHeartbeat(ZMQ.Socket socket, Duration heartbeatPeriod, String socketType) {
-    if (heartbeatPeriod != null && !heartbeatPeriod.isZero() && !heartbeatPeriod.isNegative()) {
-      int heartbeatIvl = (int) heartbeatPeriod.toMillis();
-      socket.setHeartbeatIvl(heartbeatIvl);
-      // Set heartbeat timeout to 3x the interval
-      socket.setHeartbeatTimeout(heartbeatIvl * 3);
-      // Set heartbeat TTL to 6x the interval
-      socket.setHeartbeatTtl(heartbeatIvl * 6);
-      LOG.info(
-          String.format(
-              "Event bus %s socket heartbeat configured: interval=%dms, timeout=%dms, ttl=%dms",
-              socketType, heartbeatIvl, heartbeatIvl * 3, heartbeatIvl * 6));
-    }
   }
 
   @Override

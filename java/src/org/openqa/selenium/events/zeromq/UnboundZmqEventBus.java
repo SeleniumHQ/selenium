@@ -141,13 +141,13 @@ class UnboundZmqEventBus implements EventBus {
             () -> {
               sub = context.createSocket(SocketType.SUB);
               sub.setIPv6(isSubAddressIPv6(publishConnection));
-              configureHeartbeat(sub, heartbeatPeriod, "SUB");
+              ZmqUtils.configureHeartbeat(sub, heartbeatPeriod, "SUB");
               sub.connect(publishConnection);
               sub.subscribe(new byte[0]);
 
               pub = context.createSocket(SocketType.PUB);
               pub.setIPv6(isSubAddressIPv6(subscribeConnection));
-              configureHeartbeat(pub, heartbeatPeriod, "PUB");
+              ZmqUtils.configureHeartbeat(pub, heartbeatPeriod, "PUB");
               pub.connect(subscribeConnection);
             });
     // Connections are already established
@@ -176,22 +176,7 @@ class UnboundZmqEventBus implements EventBus {
 
   @Override
   public boolean isReady() {
-    return !socketPollingExecutor.isShutdown();
-  }
-
-  private void configureHeartbeat(ZMQ.Socket socket, Duration heartbeatPeriod, String socketType) {
-    if (heartbeatPeriod != null && !heartbeatPeriod.isZero() && !heartbeatPeriod.isNegative()) {
-      int heartbeatIvl = (int) heartbeatPeriod.toMillis();
-      socket.setHeartbeatIvl(heartbeatIvl);
-      // Set heartbeat timeout to 3x the interval
-      socket.setHeartbeatTimeout(heartbeatIvl * 3);
-      // Set heartbeat TTL to 6x the interval
-      socket.setHeartbeatTtl(heartbeatIvl * 6);
-      LOG.info(
-          String.format(
-              "Event bus %s socket heartbeat configured: interval=%dms, timeout=%dms, ttl=%dms",
-              socketType, heartbeatIvl, heartbeatIvl * 3, heartbeatIvl * 6));
-    }
+    return !socketPollingExecutor.isShutdown() && pollingStarted.get();
   }
 
   private boolean isSubAddressIPv6(String connection) {

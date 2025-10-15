@@ -39,6 +39,7 @@ import org.zeromq.ZContext;
 public class ZeroMqEventBus {
 
   private static final String EVENTS_SECTION = "events";
+  private static final int DEFAULT_HEARTBEAT_PERIOD_SECONDS = 60;
 
   private ZeroMqEventBus() {
     // Use the create method.
@@ -46,7 +47,13 @@ public class ZeroMqEventBus {
 
   public static EventBus create(
       ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
-    return create(context, publish, subscribe, bind, secret, Duration.ofSeconds(60));
+    return create(
+        context,
+        publish,
+        subscribe,
+        bind,
+        secret,
+        Duration.ofSeconds(DEFAULT_HEARTBEAT_PERIOD_SECONDS));
   }
 
   public static EventBus create(
@@ -96,9 +103,7 @@ public class ZeroMqEventBus {
                 });
 
     boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
-    int heartbeatPeriodSeconds =
-        config.getInt(EVENTS_SECTION, "eventbus-heartbeat-period").orElse(60);
-    Duration heartbeatPeriod = Duration.ofSeconds(heartbeatPeriodSeconds);
+    Duration heartbeatPeriod = getHeartbeatPeriod(config);
 
     SecretOptions secretOptions = new SecretOptions(config);
 
@@ -109,6 +114,14 @@ public class ZeroMqEventBus {
         bind,
         secretOptions.getRegistrationSecret(),
         heartbeatPeriod);
+  }
+
+  private static Duration getHeartbeatPeriod(Config config) {
+    int periodSeconds =
+        config
+            .getInt(EVENTS_SECTION, "eventbus-heartbeat-period")
+            .orElse(DEFAULT_HEARTBEAT_PERIOD_SECONDS);
+    return Duration.ofSeconds(periodSeconds);
   }
 
   private static String mungeUri(URI base, String scheme, int port) {
