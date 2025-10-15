@@ -16,6 +16,7 @@
 # under the License.
 
 import base64
+import time
 
 import filetype
 import pytest
@@ -40,8 +41,8 @@ def test_remote_webdriver_with_http_timeout(firefox_options, webserver):
     set less than the implicit wait timeout, and verifies the http timeout
     is triggered first when waiting for an element.
     """
-    http_timeout = 6
-    wait_timeout = 8
+    http_timeout = 4
+    wait_timeout = 6
     server_addr = f"http://{webserver.host}:{webserver.port}"
     client_config = ClientConfig(remote_server_addr=server_addr, timeout=http_timeout)
     assert client_config.timeout == http_timeout
@@ -50,3 +51,28 @@ def test_remote_webdriver_with_http_timeout(firefox_options, webserver):
         driver.implicitly_wait(wait_timeout)
         with pytest.raises(ReadTimeoutError):
             driver.find_element(By.ID, "no_element_to_be_found")
+
+
+def test_remote_webdriver_with_websocket_timeout(firefox_options, webserver):
+    """This test starts a remote webdriver that uses websockets, and has a websocket
+    client timeout less than the default. It verifies the websocket times out according
+    to this value.
+    """
+    websocket_timeout = 2.0
+    websocket_interval = 1.0
+
+    server_addr = f"http://{webserver.host}:{webserver.port}"
+    client_config = ClientConfig(
+        remote_server_addr=server_addr, websocket_timeout=websocket_timeout, websocket_interval=websocket_interval
+    )
+    assert client_config.websocket_timeout == websocket_timeout
+    firefox_options.enable_bidi = True
+    with webdriver.Remote(options=firefox_options, client_config=client_config) as driver:
+        driver._start_bidi()
+        assert driver._websocket_connection.response_wait_timeout == websocket_timeout
+        assert driver._websocket_connection.response_wait_interval == websocket_interval
+        start = time.time()
+        driver._websocket_connection.close()
+        elapsed = time.time() - start
+        assert elapsed >= websocket_timeout
+        assert elapsed < websocket_timeout + 10
