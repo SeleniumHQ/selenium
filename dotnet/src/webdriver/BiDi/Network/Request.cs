@@ -17,8 +17,12 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
+[JsonConverter(typeof(RequestConverter))]
 public sealed class Request
 {
     internal Request(string id)

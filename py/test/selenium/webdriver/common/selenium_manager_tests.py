@@ -43,12 +43,13 @@ def test_gets_results(monkeypatch):
 
 
 def test_uses_environment_variable(monkeypatch):
-    monkeypatch.setenv("SE_MANAGER_PATH", "/path/to/manager")
+    sm_path = r"\path\to\manager" if sys.platform.startswith("win") else "path/to/manager"
+    monkeypatch.setenv("SE_MANAGER_PATH", sm_path)
     monkeypatch.setattr(Path, "is_file", lambda _: True)
 
     binary = SeleniumManager()._get_binary()
 
-    assert str(binary) == "/path/to/manager"
+    assert str(binary) == sm_path
 
 
 def test_uses_windows(monkeypatch):
@@ -113,11 +114,12 @@ def test_errors_if_invalid_os(monkeypatch):
 
 
 def test_error_if_invalid_env_path(monkeypatch):
-    monkeypatch.setenv("SE_MANAGER_PATH", "/path/to/manager")
+    sm_path = r"\path\to\manager" if sys.platform.startswith("win") else "path/to/manager"
+    monkeypatch.setenv("SE_MANAGER_PATH", sm_path)
 
     with pytest.raises(WebDriverException) as excinfo:
         SeleniumManager()._get_binary()
-    assert "Unable to obtain working Selenium Manager binary; /path/to/manager" in str(excinfo.value)
+    assert f"Unable to obtain working Selenium Manager binary; {sm_path}" in str(excinfo.value)
 
 
 def test_run_successful():

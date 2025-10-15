@@ -27,11 +27,17 @@ class Service(service.ChromiumService):
     """A Service class that is responsible for the starting and stopping of
     `chromedriver`.
 
-    :param executable_path: install path of the chromedriver executable, defaults to `chromedriver`.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    Args:
+        executable_path: Install path of the chromedriver executable, defaults
+            to `chromedriver`.
+        port: Port for the service to run on, defaults to 0 where the operating
+            system will decide.
+        service_args: (Optional) Sequence of args to be passed to the subprocess
+            when launching the executable.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO
+            instance or String path to file.
+        env: (Optional) Mapping of environment variables for the new process,
+            defaults to `os.environ`.
     """
 
     def __init__(
@@ -53,6 +59,9 @@ class Service(service.ChromiumService):
             env=env,
             **kwargs,
         )
+
+    def command_line_args(self) -> list[str]:
+        return ["--enable-chrome-logs", f"--port={self.port}"] + self._service_args
 
     @property
     def service_args(self) -> Sequence[str]:
