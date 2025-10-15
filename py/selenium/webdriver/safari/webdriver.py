@@ -113,3 +113,6 @@ class WebDriver(RemoteWebDriver):
 
     def get_downloadable_files(self, *args, **kwargs):
         raise NotImplementedError
+
+    def delete_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError
