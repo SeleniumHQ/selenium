@@ -256,6 +256,9 @@ class Driver:
             opts_cls = getattr(self.supported_options, cls_name.lower())
             self._options = getattr(webdriver, opts_cls)()
 
+        if cls_name.lower() in ("chrome", "edge"):
+            self._options.add_argument("--disable-dev-shm-usage")
+
         if self.browser_path or self.browser_args:
             if self.driver_class == self.supported_drivers.webkitgtk:
                 self._options.overlay_scrollbars_enabled = False
