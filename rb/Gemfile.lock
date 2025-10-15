@@ -7,7 +7,6 @@ PATH
       base64 (~> 0.2)
       json (<= 2.13.2)
       logger (~> 1.4)
-      prism (~> 1.0, < 1.5)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
@@ -85,7 +84,7 @@ GEM
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.4.0)
+    prism (1.5.2)
     psych (5.2.6)
       date
       stringio
