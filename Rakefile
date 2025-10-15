@@ -685,7 +685,7 @@ namespace :py do
       end
     end
 
-    desc 'Python Remote tests with Firefox'
+    desc 'Python Remote tests with Chrome'
     task :remote do
       Rake::Task['py:clean'].invoke
       Bazel.execute('test', [], '//py:test-remote')

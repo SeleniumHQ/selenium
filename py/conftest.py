@@ -131,7 +131,7 @@ class SupportedOptions(ContainerProtocol):
     edge: str = "EdgeOptions"
     safari: str = "SafariOptions"
     ie: str = "IeOptions"
-    remote: str = "FirefoxOptions"
+    remote: str = "ChromeOptions"
     webkitgtk: str = "WebKitGTKOptions"
     wpewebkit: str = "WPEWebKitOptions"
 
@@ -327,7 +327,18 @@ def driver(request):
             pytest.skip(f"{driver_class} does not support BiDi")
 
     # conditionally mark tests as expected to fail based on driver
-    marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
+    # For Remote, respect both Chrome and Remote specific markers
+    if driver_class == "remote":
+        marker_names = ["xfail_chrome", "xfail_remote"]
+    else:
+        marker_names = [f"xfail_{driver_class.lower()}"]
+
+    marker = None
+    for name in marker_names:
+        found = request.node.get_closest_marker(name)
+        if found is not None:
+            marker = found
+            break
     if marker is not None:
         if "run" in marker.kwargs:
             if marker.kwargs["run"] is False:
