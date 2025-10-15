@@ -44,10 +44,10 @@ class WebDriver(RemoteWebDriver):
         """Creates a new instance of the Firefox driver. Starts the service and
         then creates new instance of Firefox driver.
 
-        :Args:
-         - options - Instance of ``options.Options``.
-         - service - (Optional) service instance for managing the starting and stopping of the driver.
-         - keep_alive - Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
+        Args:
+            options: Instance of ``options.Options``.
+            service: (Optional) service instance for managing the starting and stopping of the driver.
+            keep_alive: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
         """
 
         self.service = service if service else Service()
@@ -159,11 +159,11 @@ class WebDriver(RemoteWebDriver):
         image file. Returns False if there is any IOError, else returns True.
         Use full paths in your filename.
 
-        :Args:
-         - filename: The full path you wish to save your screenshot to. This
-           should end with a `.png` extension.
+        Args:
+            filename: The full path you wish to save your screenshot to. This
+                should end with a `.png` extension.
 
-        :Usage:
+        Usage:
             ::
 
                 driver.get_full_page_screenshot_as_file("/Screenshots/foo.png")
@@ -188,11 +188,11 @@ class WebDriver(RemoteWebDriver):
         image file. Returns False if there is any IOError, else returns True.
         Use full paths in your filename.
 
-        :Args:
-         - filename: The full path you wish to save your screenshot to. This
-           should end with a `.png` extension.
+        Args:
+            filename: The full path you wish to save your screenshot to. This
+                should end with a `.png` extension.
 
-        :Usage:
+        Usage:
             ::
 
                 driver.save_full_page_screenshot("/Screenshots/foo.png")
