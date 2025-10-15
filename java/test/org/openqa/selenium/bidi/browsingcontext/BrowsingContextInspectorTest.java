@@ -235,7 +235,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(FIREFOX)
   void canListenToDownloadWillBeginEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
