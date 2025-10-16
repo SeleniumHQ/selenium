@@ -1,4 +1,3 @@
-// <copyright file="GetUserContextsCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,16 +14,8 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Collections.Generic;
+@NullMarked
+package org.openqa.selenium.concurrent;
 
-namespace OpenQA.Selenium.BiDi.Browser;
-
-internal sealed class GetUserContextsCommand()
-    : Command<Parameters, GetUserContextsResult>(Parameters.Empty, "browser.getUserContexts");
-
-public class GetUserContextsOptions : CommandOptions;
-
-public sealed record GetUserContextsResult(IReadOnlyList<UserContextInfo> UserContexts) : EmptyResult;
+import org.jspecify.annotations.NullMarked;
