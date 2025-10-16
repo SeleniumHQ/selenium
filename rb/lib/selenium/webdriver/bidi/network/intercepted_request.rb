@@ -25,21 +25,23 @@ module Selenium
     class BiDi
       class InterceptedRequest < InterceptedItem
         attr_accessor :method, :url
-        attr_reader :body
+        attr_reader :body, :headers, :cookies
 
         def initialize(network, request)
           super
           @method = nil
           @url = nil
           @body = nil
+          @headers = nil
+          @cookies = nil
         end
 
         def continue
           network.continue_request(
             id: id,
             body: body,
-            cookies: cookies.as_json,
-            headers: headers.as_json,
+            cookies: cookies&.as_json,
+            headers: headers&.as_json,
             method: method,
             url: url
           )
@@ -56,12 +58,12 @@ module Selenium
           }
         end
 
-        def headers
-          @headers ||= Headers.new
+        def headers=(headers = {})
+          @headers = Headers.new(headers)
         end
 
-        def cookies(cookies = {})
-          @cookies ||= Cookies.new(cookies)
+        def cookies=(cookies = {})
+          @cookies = Cookies.new(cookies)
         end
       end
     end # BiDi
