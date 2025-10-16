@@ -323,6 +323,7 @@ def test_response_handler_with_url_patterns(driver, pages):
     all_responses = []
 
     def matched_callback(response: Response):
+        response.continue_response()
         matched_responses.append(response)
 
     def all_callback(response: Response):
@@ -330,20 +331,32 @@ def test_response_handler_with_url_patterns(driver, pages):
 
     # Add handler with URL pattern - only matches formPage.html
     driver.network.add_response_handler(
-        "response_completed", matched_callback, url_patterns=[{"type": "string", "pattern": "*/formPage.html"}]
+        "response_started",
+        matched_callback,
+        url_patterns=[{"type": "pattern", "pathname": "/formPage.html"}],
+        intercept=True,
     )
 
     # Add handler without pattern - matches all
-    driver.network.add_response_handler("response_completed", all_callback)
+    driver.network.add_response_handler("response_started", all_callback)
 
+    driver.browsing_context.navigate(
+        context=driver.current_window_handle, url="https://example.com/", wait=ReadinessState.COMPLETE
+    )
+    time.sleep(1)
+
+    # initial assertions, there should be 0 matched responses
+    assert len(matched_responses) == 0
+    initial_all_responses = len(all_responses)
+    assert initial_all_responses > 0
+
+    # now load formPage.html
     url = pages.url("formPage.html")
     driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
 
-    # Wait for events
     time.sleep(1)
 
-    assert len(matched_responses) <= len(all_responses)
-
-    assert len(all_responses) > 0, "No responses captured"
+    assert len(matched_responses) > 0
+    assert len(all_responses) > initial_all_responses
 
     driver.network.clear_response_handlers()
