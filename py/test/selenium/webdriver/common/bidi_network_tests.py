@@ -223,7 +223,8 @@ def test_response_handler_captures_response_data(driver, pages):
 
     assert len(responses) > 0
 
-    response = responses[0]
+    response = next(r for r in responses if "formPage.html" in r.url)
+
     assert response.request_id is not None
     assert "formPage.html" in response.url
     assert response.status_code is not None
