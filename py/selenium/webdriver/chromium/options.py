@@ -38,8 +38,9 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """Returns:
-        The location of the binary, otherwise an empty string.
+        """
+        Returns:
+            The location of the binary, otherwise an empty string.
         """
         return self._binary_location
 
@@ -56,8 +57,9 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def debugger_address(self) -> Optional[str]:
-        """Returns:
-        The address of the remote devtools instance.
+        """
+        Returns:
+            The address of the remote devtools instance.
         """
         return self._debugger_address
 
@@ -75,8 +77,9 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def extensions(self) -> list[str]:
-        """Returns:
-        A list of encoded extensions that will be loaded.
+        """
+        Returns:
+            A list of encoded extensions that will be loaded.
         """
 
         def _decode(file_data: BinaryIO) -> str:
@@ -122,8 +125,9 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def experimental_options(self) -> dict:
-        """Returns:
-        A dictionary of experimental options for chromium.
+        """
+        Returns:
+            A dictionary of experimental options for chromium.
         """
         return self._experimental_options
 
@@ -138,9 +142,10 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def enable_webextensions(self) -> bool:
-        """Returns:
-        Whether webextension support is enabled for Chromium-based browsers.
-        True if webextension support is enabled, False otherwise.
+        """
+        Returns:
+            Whether webextension support is enabled for Chromium-based browsers.
+            True if webextension support is enabled, False otherwise.
         """
         return self._enable_webextensions
 

@@ -29,8 +29,9 @@ class Options(ChromiumOptions):
 
     @property
     def use_webview(self) -> bool:
-        """Returns:
-        Whether WebView2 is enabled for Edge browser.
+        """
+        Returns:
+            Whether WebView2 is enabled for Edge browser.
         """
         return self._use_webview
 
@@ -57,7 +58,8 @@ class Options(ChromiumOptions):
 
     @property
     def default_capabilities(self) -> dict:
-        """Returns:
-        The default capabilities for Edge browser.
+        """
+        Returns:
+            The default capabilities for Edge browser.
         """
         return DesiredCapabilities.EDGE.copy()
