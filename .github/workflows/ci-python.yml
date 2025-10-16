@@ -86,7 +86,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - browser: firefox
+          - browser: chrome
     with:
       name: Integration Tests (remote, ${{ matrix.browser }})
       browser: ${{ matrix.browser }}

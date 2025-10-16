@@ -27,16 +27,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.client_config import ClientConfig
 
 
-def test_browser_specific_method(driver, pages):
+def test_browser_specific_method(firefox_options, webserver):
     """This only works on Firefox"""
-    pages.load("simpleTest.html")
-    screenshot = driver.execute("FULL_PAGE_SCREENSHOT")["value"]
-    result = base64.b64decode(screenshot)
-    kind = filetype.guess(result)
-    assert kind is not None and kind.mime == "image/png"
+    server_addr = f"http://{webserver.host}:{webserver.port}"
+    with webdriver.Remote(options=firefox_options) as driver:
+        driver.get(f"{server_addr}/simpleTest.html")
+        screenshot = driver.execute("FULL_PAGE_SCREENSHOT")["value"]
+        result = base64.b64decode(screenshot)
+        kind = filetype.guess(result)
+        assert kind is not None and kind.mime == "image/png"
 
 
-def test_remote_webdriver_with_http_timeout(firefox_options, webserver):
+def test_remote_webdriver_with_http_timeout(chromium_options, webserver):
     """This test starts a remote webdriver with an http client timeout
     set less than the implicit wait timeout, and verifies the http timeout
     is triggered first when waiting for an element.
@@ -46,14 +48,14 @@ def test_remote_webdriver_with_http_timeout(firefox_options, webserver):
     server_addr = f"http://{webserver.host}:{webserver.port}"
     client_config = ClientConfig(remote_server_addr=server_addr, timeout=http_timeout)
     assert client_config.timeout == http_timeout
-    with webdriver.Remote(options=firefox_options, client_config=client_config) as driver:
+    with webdriver.Remote(options=chromium_options, client_config=client_config) as driver:
         driver.get(f"{server_addr}/simpleTest.html")
         driver.implicitly_wait(wait_timeout)
         with pytest.raises(ReadTimeoutError):
             driver.find_element(By.ID, "no_element_to_be_found")
 
 
-def test_remote_webdriver_with_websocket_timeout(firefox_options, webserver):
+def test_remote_webdriver_with_websocket_timeout(chromium_options, webserver):
     """This test starts a remote webdriver that uses websockets, and has a websocket
     client timeout less than the default. It verifies the websocket times out according
     to this value.
@@ -66,8 +68,8 @@ def test_remote_webdriver_with_websocket_timeout(firefox_options, webserver):
         remote_server_addr=server_addr, websocket_timeout=websocket_timeout, websocket_interval=websocket_interval
     )
     assert client_config.websocket_timeout == websocket_timeout
-    firefox_options.enable_bidi = True
-    with webdriver.Remote(options=firefox_options, client_config=client_config) as driver:
+    chromium_options.enable_bidi = True
+    with webdriver.Remote(options=chromium_options, client_config=client_config) as driver:
         driver._start_bidi()
         assert driver._websocket_connection.response_wait_timeout == websocket_timeout
         assert driver._websocket_connection.response_wait_interval == websocket_interval
