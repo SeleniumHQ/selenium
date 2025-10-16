@@ -176,7 +176,7 @@ class UnboundZmqEventBus implements EventBus {
 
   @Override
   public boolean isReady() {
-    return !socketPollingExecutor.isShutdown() && pollingStarted.get();
+    return !socketPollingExecutor.isShutdown();
   }
 
   private boolean isSubAddressIPv6(String connection) {

@@ -97,7 +97,7 @@ class ZmqUtils {
     LOG.log(
         Level.WARNING,
         String.format(
-            "ZMQ %s socket heartbeat interval %ds %s %ds, clamping to %ds",
-            socketType, originalMs / 1000, reason, clampedMs / 1000, clampedMs / 1000));
+            "ZMQ %s socket heartbeat interval %ds is %s, clamping to %ds",
+            socketType, originalMs / 1000, reason, clampedMs / 1000));
   }
 }
