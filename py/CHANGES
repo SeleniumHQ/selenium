@@ -1,3 +1,17 @@
+Selenium 4.37.0
+* Re-add defaults for Chromium kwargs (#16372)
+* Splitting stress tests (#16374)
+    > * Splitting stress tests
+    > * Bumping to nightly version
+* Configure WebSocket timeout and wait interval via ClientConfig (#16248)
+* Raise NotImplementedError when deleting downloads in driver subclass (#16423)
+    > * Raise NotImplementedError when deleting downloads in driver subclasses
+    > * Add to Firefox driver too
+* Fix default rpId in virtual authenticator (#16428)
+* Update docstrings style (#16427)
+* Update docstrings style according to google guideline (#16445)
+* bump versions in preparation for release
+
 Selenium 4.36.0
 * Add CDP for Chrome 140 and remove 137
 * close ipv6 port in case of error (#16165)

@@ -1,3 +1,11 @@
+4.37.0 (2025-10-16)
+=========================
+* Splitting stress tests (#16374)
+    > * Splitting stress tests
+    > * Bumping to nightly version
+* update devtools versions
+* bump versions in preparation for release
+
 4.36.0 (2025-09-18)
 =========================
 * Add CDP for Chrome 140 and remove 137
