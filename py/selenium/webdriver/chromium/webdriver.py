@@ -146,12 +146,17 @@ class ChromiumDriver(RemoteWebDriver):
         return super().execute_cdp_cmd(cmd, cmd_args)
 
     def get_sinks(self) -> list:
-        """Returns: A list of sinks available for Cast."""
+        """
+        Returns:
+            A list of sinks available for Cast.
+        """
         return self.execute("getSinks")["value"]
 
     def get_issue_message(self):
-        """Returns: An error message when there is any issue in a Cast
-        session."""
+        """
+        Returns:
+            An error message when there is any issue in a Cast session.
+        """
         return self.execute("getIssueMessage")["value"]
 
     @property
