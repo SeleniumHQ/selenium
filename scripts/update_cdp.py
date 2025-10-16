@@ -234,11 +234,11 @@ def update_js(chrome_milestone):
 if __name__ == "__main__":
     chrome_milestone = get_chrome_milestone()
     add_pdls(chrome_milestone)
-#     update_java(chrome_milestone)
-#     update_dotnet(chrome_milestone)
-#     update_ruby(chrome_milestone)
+    update_java(chrome_milestone)
+    update_dotnet(chrome_milestone)
+    update_ruby(chrome_milestone)
     update_python(chrome_milestone)
-#     update_js(chrome_milestone)
+    update_js(chrome_milestone)
 
     print(
         f"adding CDP {new_chrome(chrome_milestone)} and removing {old_chrome(chrome_milestone)}"
