@@ -50,7 +50,6 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'base64', ['~> 0.2']
-  s.add_dependency 'json', ['<= 2.13.2']
   s.add_dependency 'logger', ['~> 1.4']
   s.add_dependency 'rexml', ['~> 3.2', '>= 3.2.5']
   s.add_dependency 'rubyzip', ['>= 1.2.2', '< 4.0']
