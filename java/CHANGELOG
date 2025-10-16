@@ -1,3 +1,83 @@
+v4.37.0
+======
+* Linux ARM "os.arch" system property is "aarch64" (#16381)
+* Rescuing the remote cause for session creation errors (#16418)
+    > * Rescuing the remote cause for session creation errors
+    > Fixes #16388
+    > * Code improvement, thanks to @valfirst
+* feat: Add native Java 11 HTTP client methods to HttpClient interface (#16412)
+    > * feat: Add native Java 11 HTTP client methods to HttpClient interface
+    > Add sendAsyncNative() and sendNative() methods to leverage java.net.http.HttpClient
+    > capabilities while maintaining backward compatibility with existing executeAsync().
+    > ## New Methods Added:
+    > - sendAsyncNative(): Asynchronous HTTP requests using CompletableFuture
+    > - sendNative(): Synchronous HTTP requests with native error handling
+    > ## Benefits:
+    > - HTTP/2 support with automatic protocol negotiation and multiplexing
+    > - Efficient streaming for large files without memory overhead
+    > - Native async operations with CompletableFuture integration
+    > - Flexible response handling via BodyHandler (String, File, Stream, Lines)
+    > - Better error handling with specific HTTP exceptions (IOException, InterruptedException)
+    > - Improved performance for concurrent requests
+    > ## Implementation Details:
+    > - Added method signatures to HttpClient interface
+    > - Implemented native delegation in JdkHttpClient using underlying java.net.http.HttpClient
+    > - Added pass-through implementations in TracedHttpClient
+    > - Added UnsupportedOperationException stubs in test classes and utility clients
+    > - Maintained full backward compatibility with existing methods
+    > ## Testing:
+    > - Created comprehensive unit tests (NativeHttpClientMethodsTest)
+    > - Tests cover both synchronous and asynchronous operations
+    > - Exception handling validation for IOException and InterruptedException
+    > - Request parameter validation for different HTTP methods (GET, POST)
+    > - BodyHandler variations testing (String, Void, Stream)
+    > - Mock implementations for reliable testing without external dependencies
+    > The new methods provide a migration path towards modern Java 11 HTTP APIs
+    > without breaking current implementations, enabling developers to leverage
+    > native HTTP/2 features, better async handling, and improved performance
+    > when using Selenium's HTTP client infrastructure.
+    > * feat: Add generic native Java 11 HTTP client methods to HttpClient interface
+    > Add sendAsyncNative() and sendNative() generic methods to leverage java.net.http.HttpClient
+    > capabilities with full BodyHandler flexibility while maintaining backward compatibility.
+    > ## New Methods Added:
+    > - <T> sendAsyncNative(): Generic asynchronous HTTP requests using CompletableFuture
+    > - <T> sendNative(): Generic synchronous HTTP requests with native error handling
+    > ## Key Features:
+    > - **Full BodyHandler Support**: String, File, Stream, Lines, ByteArray, Void (discarding)
+    > - **HTTP/2 Support**: Automatic protocol negotiation and multiplexing
+    > - **Efficient Streaming**: Large files without memory overhead via BodyHandlers.ofFile()
+    > - **Native Async Operations**: CompletableFuture integration with proper type safety
+    > - **Flexible Response Handling**: Type-safe responses based on BodyHandler type
+    > - **Better Error Handling**: Specific HTTP exceptions (IOException, InterruptedException)
+    > - **Improved Performance**: Concurrent requests and HTTP/2 optimizations
+    > ## Implementation Details:
+    > - Added generic method signatures to HttpClient interface with proper JavaDoc
+    > - Implemented native delegation in JdkHttpClient using underlying java.net.http.HttpClient
+    > - Added pass-through generic implementations in TracedHttpClient
+    > - Added UnsupportedOperationException stubs in test classes and utility clients
+    > - Maintained full backward compatibility with existing executeAsync() method
+    > - Enhanced type safety with proper generic constraints
+* refactor(remote/command): Merge overload's business logic (#14469)
+    > * refactor(remote/command): Merge overload's business logic
+    > * fix: language level
+    > * fix: require non-null assertion for npe when use singleton collection
+    > * revert: java language level to 11
+* make augmentation of HasBiDi/HasDevTools lazy-loaded (#16338)
+    > * make augmentation of HasBiDi/HasDevTools lazy-loaded
+    > Otherwise, command `new Augmenter().augment(remoteWebDriver)` fails immediately (even if I don't want to use CDP or BiDi).
+    > * Augmenter should only augment (create instance of interfaces).
+    > * Augmenter should not perform any other actions (establish CDP connection, establish BiDi connection etc.)
+    > * avoid establishing CDP connection in `maybeGet*()` method
+    > 1. method `getBiDi`/`getDevTools` should establish a connection, BUT
+    > 1. method `maybeGet*()` returns connection only if the connection is already established, but should NOT establish a new connection.
+    > It's because method `maybeGet*()` is used from `WebDriver.close()` and `WebDriver.quite()`. At this moment, we don't want a new connection, we only want to close the existing connection.
+    > * extract reusable code to Lazy.java
+    > Now we have a convenient factory method `lazy` for declaring lazy-initialized values like BiDi or DevTools.
+    > This simplifies BiDiProvider and DevToolsProvider code.
+    > * add log informing user that CDP/BiDi connection is not established immediately anymore
+    > * reformat the code
+* update devtools versions
+
 v4.36.0
 ======
 * Add CDP for Chrome 140 and remove 137
