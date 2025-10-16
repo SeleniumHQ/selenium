@@ -16,90 +16,80 @@
 # under the License.
 
 import base64
+from enum import Enum
+from typing import Union
 
 from selenium.webdriver.common.bidi.common import command_builder
 
 
-class StringValue:
-    """Represents a network.StringValue for valid UTF-8 data."""
-
-    def __init__(self, value: str):
-        self.type = "string"
-        self.value = value
-
-    def to_dict(self):
-        return {"type": self.type, "value": self.value}
-
-    @classmethod
-    def from_dict(cls, data: dict):
-        return cls(data["value"])
-
-    def to_bytes(self) -> bytes:
-        """Convert to bytes using UTF-8 encoding."""
-        return self.value.encode("utf-8")
-
-
-class Base64Value:
-    """Represents a network.Base64Value for binary data."""
-
-    def __init__(self, value: str):
-        self.type = "base64"
-        self.value = value
-
-    def to_dict(self):
-        return {"type": self.type, "value": self.value}
-
-    @classmethod
-    def from_dict(cls, data: dict):
-        return cls(data["value"])
-
-    def to_bytes(self) -> bytes:
-        """Convert to bytes by decoding base64."""
-        return base64.b64decode(self.value)
-
-    @classmethod
-    def from_bytes(cls, data: bytes):
-        """Create Base64Value from bytes."""
-        encoded = base64.b64encode(data).decode("ascii")
-        return cls(encoded)
+class BytesValueType(str, Enum):
+    STRING = "string"
+    BASE64 = "base64"
 
 
 class BytesValue:
-    """Represents network.BytesValue that can be either StringValue or Base64Value."""
+    """Represents network.BytesValue that can be either string (UTF-8) or base64-encoded binary data."""
 
-    def __init__(self, value):
-        if isinstance(value, (StringValue, Base64Value)):
+    def __init__(self, value: Union[str, bytes]):
+        if isinstance(value, str):
+            self._type = BytesValueType.STRING
             self._value = value
-        elif isinstance(value, str):
-            self._value = StringValue(value)
         elif isinstance(value, bytes):
-            self._value = Base64Value.from_bytes(value)
+            self._type = BytesValueType.BASE64
+            self._value = base64.b64encode(value).decode("ascii")
         else:
-            raise ValueError("Value must be StringValue, Base64Value, str, or bytes")
+            raise ValueError("Value must be str or bytes")
 
     @property
-    def type(self):
-        return self._value.type
+    def type(self) -> str:
+        return self._type.value
 
     @property
-    def value(self):
-        return self._value.value
+    def value(self) -> str:
+        return self._value
 
-    def to_dict(self):
-        return self._value.to_dict()
+    def to_dict(self) -> dict:
+        return {"type": self._type.value, "value": self._value}
 
     @classmethod
-    def from_dict(cls, data: dict):
-        if data["type"] == "string":
-            return cls(StringValue.from_dict(data))
-        elif data["type"] == "base64":
-            return cls(Base64Value.from_dict(data))
+    def from_dict(cls, data: dict) -> "BytesValue":
+        value_type = data.get("type")
+        value = data.get("value")
+
+        if value_type == BytesValueType.STRING.value:
+            return cls.from_string(value)
+        elif value_type == BytesValueType.BASE64.value:
+            return cls.from_base64(value)
         else:
-            raise ValueError(f"Unknown BytesValue type: {data['type']}")
+            raise ValueError(f"Unknown BytesValue type: {value_type}")
+
+    @classmethod
+    def from_string(cls, value: str) -> "BytesValue":
+        instance = cls.__new__(cls)
+        instance._type = BytesValueType.STRING
+        instance._value = value
+        return instance
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> "BytesValue":
+        instance = cls.__new__(cls)
+        instance._type = BytesValueType.BASE64
+        instance._value = base64.b64encode(data).decode("ascii")
+        return instance
+
+    @classmethod
+    def from_base64(cls, encoded: str) -> "BytesValue":
+        instance = cls.__new__(cls)
+        instance._type = BytesValueType.BASE64
+        instance._value = encoded
+        return instance
 
     def to_bytes(self) -> bytes:
         """Deserialize protocol bytes to byte sequence."""
-        return self._value.to_bytes()
+        if self._type == BytesValueType.STRING:
+            return self._value.encode("utf-8")
+        else:
+            return base64.b64decode(self._value)
 
 
 class NetworkEvent:
