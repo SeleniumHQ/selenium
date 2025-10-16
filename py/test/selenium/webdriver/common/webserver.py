@@ -20,6 +20,7 @@ It serves the testing html pages that are needed by the webdriver unit tests."""
 
 import contextlib
 import logging
+import mimetypes
 import os
 import re
 import threading
@@ -89,7 +90,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 self._send_response("text/html")
                 self.wfile.write(html)
             elif os.path.isfile(file_path):
-                content_type = "application/json" if file_path.endswith(".json") else "text/html"
+                content_type, _ = mimetypes.guess_type(file_path)
                 content = self._serve_file(file_path)
                 self._send_response(content_type)
                 self.wfile.write(content)
