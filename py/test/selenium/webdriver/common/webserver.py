@@ -71,8 +71,20 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
     def _serve_file(self, file_path):
         """Serve a file from the HTML root directory."""
-        with open(file_path, encoding="latin-1") as f:
-            return f.read().encode("utf-8")
+        content_type, _ = mimetypes.guess_type(file_path)
+
+        if content_type and (
+            content_type.startswith("image/")
+            or content_type.startswith("application/")
+            or content_type.startswith("video/")
+            or content_type.startswith("audio/")
+        ):
+            with open(file_path, "rb") as f:
+                return f.read()
+        else:
+            # text files
+            with open(file_path, encoding="latin-1") as f:
+                return f.read().encode("utf-8")
 
     def _send_response(self, content_type="text/html"):
         """Send a response."""
