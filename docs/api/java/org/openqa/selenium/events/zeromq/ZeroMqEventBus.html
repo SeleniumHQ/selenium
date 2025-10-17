@@ -133,9 +133,17 @@ loadScripts(document, 'script');</script>
  boolean&nbsp;bind,
  <a href="../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;secret)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../EventListener.html" title="class in org.openqa.selenium.events">EventListener</a><wbr>&lt;<a href="ZeroMqEventBus.RejectedEvent.html" title="class in org.openqa.selenium.events.zeromq">ZeroMqEventBus.RejectedEvent</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#onRejectedEvent(java.util.function.Consumer)" class="member-name-link">onRejectedEvent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="ZeroMqEventBus.RejectedEvent.html" title="class in org.openqa.selenium.events.zeromq">ZeroMqEventBus.RejectedEvent</a>&gt;&nbsp;handler)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#create(org.zeromq.ZContext,java.lang.String,java.lang.String,boolean,org.openqa.selenium.grid.security.Secret,java.time.Duration)" class="member-name-link">create</a><wbr>(org.zeromq.ZContext&nbsp;context,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;publish,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;subscribe,
+ boolean&nbsp;bind,
+ <a href="../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;secret,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;heartbeatPeriod)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../EventListener.html" title="class in org.openqa.selenium.events">EventListener</a><wbr>&lt;<a href="ZeroMqEventBus.RejectedEvent.html" title="class in org.openqa.selenium.events.zeromq">ZeroMqEventBus.RejectedEvent</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#onRejectedEvent(java.util.function.Consumer)" class="member-name-link">onRejectedEvent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="ZeroMqEventBus.RejectedEvent.html" title="class in org.openqa.selenium.events.zeromq">ZeroMqEventBus.RejectedEvent</a>&gt;&nbsp;handler)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -161,6 +169,17 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;subscribe,
  boolean&nbsp;bind,
  <a href="../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;secret)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="create(org.zeromq.ZContext,java.lang.String,java.lang.String,boolean,org.openqa.selenium.grid.security.Secret,java.time.Duration)">
+<h3>create</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a></span>&nbsp;<span class="element-name">create</span><wbr><span class="parameters">(org.zeromq.ZContext&nbsp;context,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;publish,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;subscribe,
+ boolean&nbsp;bind,
+ <a href="../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;secret,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;heartbeatPeriod)</span></div>
 </section>
 </li>
 <li>

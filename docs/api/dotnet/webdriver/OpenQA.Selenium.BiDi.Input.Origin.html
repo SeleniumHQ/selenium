@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Input_Origin" data-uid="OpenQA.Selenium.BiDi.Input.Origin" class="text-break">
-Class Origin  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/Origin.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class Origin  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/Origin.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,8 @@ Class Origin  <a class="header-action link-secondary" title="View source" href="
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract record Origin : IEquatable&lt;Origin&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(InputOriginConverter))]
+public abstract record Origin : IEquatable&lt;Origin&gt;</code></pre>
   </div>
 
 
@@ -166,7 +167,7 @@ Class Origin  <a class="header-action link-secondary" title="View source" href="
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/Origin.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/Origin.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

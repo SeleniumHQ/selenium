@@ -90,7 +90,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_ReadinessState" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.ReadinessState" class="text-break">
-Enum ReadinessState  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigateCommand.cs/#L34"><i class="bi bi-code-slash"></i></a>
+Enum ReadinessState  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigateCommand.cs/#L36"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,7 +102,8 @@ Enum ReadinessState  <a class="header-action link-secondary" title="View source"
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public enum ReadinessState</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(CamelCaseEnumConverter&lt;ReadinessState&gt;))]
+public enum ReadinessState</code></pre>
   </div>
 
 
@@ -129,7 +130,7 @@ Enum ReadinessState  <a class="header-action link-secondary" title="View source"
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigateCommand.cs/#L34" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/NavigateCommand.cs/#L36" class="edit-link">Edit this page</a>
         </div>
 
 

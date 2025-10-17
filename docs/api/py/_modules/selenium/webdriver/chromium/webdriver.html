@@ -45,11 +45,11 @@
   
   
   
-    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 4.36.0 documentation</title>
+    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 4.37.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=48fdbe4b"></script>
-    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.36.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.36.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.chromium.webdriver </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.36.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.36.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.36.0 documentation">Selenium 4.36.0 documentation</a>
+       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
   </label>
   
 
@@ -227,8 +227,8 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">browser_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">vendor_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">browser_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">vendor_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChromiumOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ChromiumService</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -236,12 +236,12 @@
 <span class="w">        </span><span class="sd">"""Creates a new WebDriver instance of the ChromiumDriver. Starts the</span>
 <span class="sd">        service and then creates new WebDriver instance of ChromiumDriver.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - browser_name - Browser name used when matching capabilities.</span>
-<span class="sd">         - vendor_prefix - Company prefix to apply to vendor-specific WebDriver extension commands.</span>
-<span class="sd">         - options - this takes an instance of ChromiumOptions</span>
-<span class="sd">         - service - Service object for handling the browser driver if you need to pass extra details</span>
-<span class="sd">         - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            browser_name: Browser name used when matching capabilities.</span>
+<span class="sd">            vendor_prefix: Company prefix to apply to vendor-specific WebDriver extension commands.</span>
+<span class="sd">            options: This takes an instance of ChromiumOptions.</span>
+<span class="sd">            service: Service object for handling the browser driver if you need to pass extra details.</span>
+<span class="sd">            keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.</span>
 <span class="sd">        """</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">ChromiumService</span><span class="p">()</span>
@@ -274,7 +274,11 @@
 <div class="viewcode-block" id="ChromiumDriver.launch_app">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.launch_app">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">launch_app</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Launches Chromium app specified by id."""</span>
+<span class="w">        </span><span class="sd">"""Launches Chromium app specified by id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            id: The id of the Chromium app to launch.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"launchApp"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="nb">id</span><span class="p">})</span></div>
 
 
@@ -283,9 +287,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">get_network_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Gets Chromium network emulation settings.</span>
 
-<span class="sd">        :Returns:</span>
-<span class="sd">            A dict.</span>
-<span class="sd">            For example:     {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2, 'offline': False}</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A dict. For example: {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2}</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"getNetworkConditions"</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
@@ -295,18 +298,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">set_network_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">network_conditions</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sets Chromium network emulation settings.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - network_conditions: A dict with conditions specification.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            **network_conditions: A dict with conditions specification.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
-<span class="sd">                driver.set_network_conditions(</span>
-<span class="sd">                    offline=False,</span>
-<span class="sd">                    latency=5,  # additional latency (ms)</span>
-<span class="sd">                    download_throughput=500 * 1024,  # maximal throughput</span>
-<span class="sd">                    upload_throughput=500 * 1024,</span>
-<span class="sd">                )  # maximal throughput</span>
+<span class="sd">        Example:</span>
+<span class="sd">            driver.set_network_conditions(</span>
+<span class="sd">                offline=False,</span>
+<span class="sd">                latency=5,  # additional latency (ms)</span>
+<span class="sd">                download_throughput=500 * 1024,  # maximal throughput</span>
+<span class="sd">                upload_throughput=500 * 1024,</span>
+<span class="sd">            )  # maximal throughput</span>
 
 <span class="sd">            Note: 'throughput' can be used to set both (for download and upload).</span>
 <span class="sd">        """</span>
@@ -325,14 +326,12 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">set_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sets Applicable Permission.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - name: The item to set the permission on.</span>
-<span class="sd">         - value: The value to set on the item</span>
+<span class="sd">        Args:</span>
+<span class="sd">            name: The item to set the permission on.</span>
+<span class="sd">            value: The value to set on the item</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
-<span class="sd">                driver.set_permissions("clipboard-read", "denied")</span>
+<span class="sd">        Example:</span>
+<span class="sd">            driver.set_permissions("clipboard-read", "denied")</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"setPermissions"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"descriptor"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span> <span class="s2">"state"</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span></div>
 
@@ -345,14 +344,14 @@
 <span class="sd">        domains/commands, refer to link</span>
 <span class="sd">        https://chromedevtools.github.io/devtools-protocol/</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - cmd: A str, command name</span>
-<span class="sd">         - cmd_args: A dict, command args. empty dict {} if there is no command args</span>
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
+<span class="sd">        Args:</span>
+<span class="sd">            cmd: A str, command name</span>
+<span class="sd">            cmd_args: A dict, command args. empty dict {} if there is no command args</span>
 
-<span class="sd">                driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})</span>
-<span class="sd">        :Returns:</span>
+<span class="sd">        Example:</span>
+<span class="sd">            driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})</span>
+
+<span class="sd">        Returns:</span>
 <span class="sd">            A dict, empty dict {} if there is no result to return.</span>
 <span class="sd">            For example to getResponseBody:</span>
 <span class="sd">            {'base64Encoded': False, 'body': 'response body string'}</span>
@@ -363,15 +362,20 @@
 <div class="viewcode-block" id="ChromiumDriver.get_sinks">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_sinks">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_sinks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">""":Returns: A list of sinks available for Cast."""</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of sinks available for Cast.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"getSinks"</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ChromiumDriver.get_issue_message">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_issue_message">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_issue_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">""":Returns: An error message when there is any issue in a Cast</span>
-<span class="sd">        session."""</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            An error message when there is any issue in a Cast session.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"getIssueMessage"</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
 
@@ -390,17 +394,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Gets the log for a given log type.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        log_type : str</span>
-<span class="sd">            - Type of log that which will be returned</span>
+<span class="sd">        Args:</span>
+<span class="sd">            log_type: Type of log that which will be returned</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_log("browser")</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_log("driver")</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_log("client")</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_log("server")</span>
+<span class="sd">            &gt;&gt;&gt; driver.get_log("browser")</span>
+<span class="sd">            &gt;&gt;&gt; driver.get_log("driver")</span>
+<span class="sd">            &gt;&gt;&gt; driver.get_log("client")</span>
+<span class="sd">            &gt;&gt;&gt; driver.get_log("server")</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_LOG</span><span class="p">,</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="n">log_type</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
@@ -411,8 +412,8 @@
 <span class="w">        </span><span class="sd">"""Sets a specific sink, using its name, as a Cast session receiver</span>
 <span class="sd">        target.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - sink_name: Name of the sink to use as the target.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sink_name: Name of the sink to use as the target.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"setSinkToUse"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"sinkName"</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
@@ -422,8 +423,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">start_desktop_mirroring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Starts a desktop mirroring session on a specific receiver target.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - sink_name: Name of the sink to use as the target.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sink_name: Name of the sink to use as the target.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"startDesktopMirroring"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"sinkName"</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
@@ -433,8 +434,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">start_tab_mirroring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Starts a tab mirroring session on a specific receiver target.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - sink_name: Name of the sink to use as the target.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sink_name: Name of the sink to use as the target.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"startTabMirroring"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"sinkName"</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
@@ -444,8 +445,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">stop_casting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Stops the existing Cast session on a specific receiver target.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - sink_name: Name of the sink to stop the Cast session.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            sink_name: Name of the sink to stop the Cast session.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"stopCasting"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"sinkName"</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
@@ -466,12 +467,21 @@
 <div class="viewcode-block" id="ChromiumDriver.download_file">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.download_file">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Download file functionality is not implemented for Chromium driver."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="ChromiumDriver.get_downloadable_files">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_downloadable_files">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get downloadable files functionality is not implemented for Chromium driver."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ChromiumDriver.delete_downloadable_files">
+<a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_downloadable_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Delete downloadable files functionality is not implemented for Chromium driver."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
 

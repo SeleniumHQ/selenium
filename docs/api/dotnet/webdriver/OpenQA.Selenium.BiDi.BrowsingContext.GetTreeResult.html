@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult" class="text-break">
-Class GetTreeResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
+Class GetTreeResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class GetTreeResult  <a class="header-action link-secondary" title="View source"
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record GetTreeResult : EmptyResult, IEquatable&lt;EmptyResult&gt;, IReadOnlyList&lt;BrowsingContextInfo&gt;, IReadOnlyCollection&lt;BrowsingContextInfo&gt;, IEnumerable&lt;BrowsingContextInfo&gt;, IEnumerable, IEquatable&lt;GetTreeResult&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record GetTreeResult : EmptyResult, IEquatable&lt;EmptyResult&gt;, IEquatable&lt;GetTreeResult&gt;</code></pre>
   </div>
 
 
@@ -120,10 +120,6 @@ Class GetTreeResult  <a class="header-action link-secondary" title="View source"
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.html">GetTreeResult</a>&gt;</div>
     </dd>
   </dl>
@@ -157,6 +153,41 @@ Class GetTreeResult  <a class="header-action link-secondary" title="View source"
 
 
 
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult__ctor_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextInfo__" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.#ctor(System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo})">
+  GetTreeResult(IReadOnlyList&lt;BrowsingContextInfo&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GetTreeResult(IReadOnlyList&lt;BrowsingContextInfo&gt; Contexts)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Contexts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
   <h2 class="section" id="properties">Properties
 </h2>
 
@@ -165,14 +196,14 @@ Class GetTreeResult  <a class="header-action link-secondary" title="View source"
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult_Contexts" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.Contexts">
   Contexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L49"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;BrowsingContextInfo&gt; Contexts { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;BrowsingContextInfo&gt; Contexts { get; init; }</code></pre>
   </div>
 
 
@@ -192,113 +223,11 @@ Class GetTreeResult  <a class="header-action link-secondary" title="View source"
 
 
 
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult_Count_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.Count*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult_Count" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.Count">
-  Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L61"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult_Item_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.Item*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult_Item_System_Int32_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.Item(System.Int32)">
-  this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L59"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BrowsingContextInfo this[int index] { get; }</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <h2 class="section" id="methods">Methods
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult_GetEnumerator_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.GetEnumerator*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_GetTreeResult_GetEnumerator" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.GetEnumerator">
-  GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L63"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerator&lt;BrowsingContextInfo&gt; GetEnumerator()</code></pre>
-  </div>
-
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L50" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/GetTreeCommand.cs/#L49" class="edit-link">Edit this page</a>
         </div>
 
 

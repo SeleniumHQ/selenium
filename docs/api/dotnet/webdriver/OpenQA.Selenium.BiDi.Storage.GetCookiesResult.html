@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult" class="text-break">
-Class GetCookiesResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
+Class GetCookiesResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class GetCookiesResult  <a class="header-action link-secondary" title="View sour
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record GetCookiesResult : EmptyResult, IEquatable&lt;EmptyResult&gt;, IReadOnlyList&lt;Cookie&gt;, IReadOnlyCollection&lt;Cookie&gt;, IEnumerable&lt;Cookie&gt;, IEnumerable, IEquatable&lt;GetCookiesResult&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record GetCookiesResult : EmptyResult, IEquatable&lt;EmptyResult&gt;, IEquatable&lt;GetCookiesResult&gt;</code></pre>
   </div>
 
 
@@ -120,10 +120,6 @@ Class GetCookiesResult  <a class="header-action link-secondary" title="View sour
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Cookie.html">Cookie</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Cookie.html">Cookie</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Cookie.html">Cookie</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.html">GetCookiesResult</a>&gt;</div>
     </dd>
   </dl>
@@ -157,6 +153,43 @@ Class GetCookiesResult  <a class="header-action link-secondary" title="View sour
 
 
 
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult__ctor_" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult__ctor_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Network_Cookie__OpenQA_Selenium_BiDi_Storage_PartitionKey_" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.#ctor(System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Network.Cookie},OpenQA.Selenium.BiDi.Storage.PartitionKey)">
+  GetCookiesResult(IReadOnlyList&lt;Cookie&gt;, PartitionKey)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GetCookiesResult(IReadOnlyList&lt;Cookie&gt; Cookies, PartitionKey PartitionKey)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Cookies</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Cookie.html">Cookie</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>PartitionKey</code> <a class="xref" href="OpenQA.Selenium.BiDi.Storage.PartitionKey.html">PartitionKey</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
   <h2 class="section" id="properties">Properties
 </h2>
 
@@ -165,14 +198,14 @@ Class GetCookiesResult  <a class="header-action link-secondary" title="View sour
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_Cookies" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.Cookies">
   Cookies
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Cookie&gt; Cookies { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Cookie&gt; Cookies { get; init; }</code></pre>
   </div>
 
 
@@ -192,78 +225,11 @@ Class GetCookiesResult  <a class="header-action link-secondary" title="View sour
 
 
 
-  <a id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_Count_" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.Count*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_Count" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.Count">
-  Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L54"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_Item_" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.Item*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_Item_System_Int32_" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.Item(System.Int32)">
-  this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L52"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Cookie this[int index] { get; }</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Network.Cookie.html">Cookie</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
   <a id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_PartitionKey_" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.PartitionKey*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_PartitionKey" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.PartitionKey">
   PartitionKey
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L50"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L39"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -290,46 +256,11 @@ Class GetCookiesResult  <a class="header-action link-secondary" title="View sour
 
 
 
-  <h2 class="section" id="methods">Methods
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_GetEnumerator_" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.GetEnumerator*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Storage_GetCookiesResult_GetEnumerator" data-uid="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.GetEnumerator">
-  GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L56"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerator&lt;Cookie&gt; GetEnumerator()</code></pre>
-  </div>
-
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Cookie.html">Cookie</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L40" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Storage/GetCookiesCommand.cs/#L39" class="edit-link">Edit this page</a>
         </div>
 
 

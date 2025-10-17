@@ -344,7 +344,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EmptyResult&gt; ActivateAsync(ActivateOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;ActivateResult&gt; ActivateAsync(ActivateOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -355,7 +355,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ActivateResult.html">ActivateResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -416,7 +416,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EmptyResult&gt; CloseAsync(CloseOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;CloseResult&gt; CloseAsync(CloseOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -427,7 +427,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CloseResult.html">CloseResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -445,7 +445,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_Equals_System_Object_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L210"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L220"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -481,7 +481,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_GetHashCode" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L217"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L227"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -555,7 +555,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EmptyResult&gt; HandleUserPromptAsync(HandleUserPromptOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;HandleUserPromptResult&gt; HandleUserPromptAsync(HandleUserPromptOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -566,7 +566,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.HandleUserPromptResult.html">HandleUserPromptResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -732,23 +732,61 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
 
 
-  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadWillBeginAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadWillBeginAsync*"></a>
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadEndAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadEndAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadWillBeginAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadWillBeginAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo},OpenQA.Selenium.BiDi.SubscriptionOptions)">
-  OnDownloadWillBeginAsync(Action&lt;NavigationInfo&gt;, SubscriptionOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadEndAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadEndAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnDownloadEndAsync(Action&lt;DownloadEndEventArgs&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L180"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnDownloadWillBeginAsync(Action&lt;NavigationInfo&gt; handler, SubscriptionOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnDownloadEndAsync(Action&lt;DownloadEndEventArgs&gt; handler, SubscriptionOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.html">NavigationInfo</a>&gt;</dt>
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadEndAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadEndAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadEndAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadEndAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnDownloadEndAsync(Func&lt;DownloadEndEventArgs, Task&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnDownloadEndAsync(Func&lt;DownloadEndEventArgs, Task&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
     <dd></dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
     <dd></dd>
@@ -772,8 +810,46 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadWillBeginAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadWillBeginAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadWillBeginAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadWillBeginAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
-  OnDownloadWillBeginAsync(Func&lt;NavigationInfo, Task&gt;, SubscriptionOptions?)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadWillBeginAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadWillBeginAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnDownloadWillBeginAsync(Action&lt;DownloadWillBeginEventArgs&gt;, SubscriptionOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L170"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnDownloadWillBeginAsync(Action&lt;DownloadWillBeginEventArgs&gt; handler, SubscriptionOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.action-1">Action</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.html">DownloadWillBeginEventArgs</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Subscription.html">Subscription</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadWillBeginAsync_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadWillBeginAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnDownloadWillBeginAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnDownloadWillBeginAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
+  OnDownloadWillBeginAsync(Func&lt;DownloadWillBeginEventArgs, Task&gt;, SubscriptionOptions?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L175"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -781,12 +857,12 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnDownloadWillBeginAsync(Func&lt;NavigationInfo, Task&gt; handler, SubscriptionOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;Subscription&gt; OnDownloadWillBeginAsync(Func&lt;DownloadWillBeginEventArgs, Task&gt; handler, SubscriptionOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.html">NavigationInfo</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
+    <dt><code>handler</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.func-2">Func</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.html">DownloadWillBeginEventArgs</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a>&gt;</dt>
     <dd></dd>
     <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.SubscriptionOptions.html">SubscriptionOptions</a></dt>
     <dd></dd>
@@ -1040,7 +1116,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnNavigationAbortedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnNavigationAbortedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo},OpenQA.Selenium.BiDi.SubscriptionOptions)">
   OnNavigationAbortedAsync(Action&lt;NavigationInfo&gt;, SubscriptionOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L180"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L190"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1078,7 +1154,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnNavigationAbortedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnNavigationAbortedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
   OnNavigationAbortedAsync(Func&lt;NavigationInfo, Task&gt;, SubscriptionOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L185"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L195"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1116,7 +1192,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnNavigationCommittedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnNavigationCommittedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo},OpenQA.Selenium.BiDi.SubscriptionOptions)">
   OnNavigationCommittedAsync(Action&lt;NavigationInfo&gt;, SubscriptionOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L200"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L210"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1154,7 +1230,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnNavigationCommittedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnNavigationCommittedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
   OnNavigationCommittedAsync(Func&lt;NavigationInfo, Task&gt;, SubscriptionOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L205"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L215"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1192,7 +1268,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnNavigationFailedAsync_System_Action_OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnNavigationFailedAsync(System.Action{OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo},OpenQA.Selenium.BiDi.SubscriptionOptions)">
   OnNavigationFailedAsync(Action&lt;NavigationInfo&gt;, SubscriptionOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L190"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L200"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1230,7 +1306,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OnNavigationFailedAsync_System_Func_OpenQA_Selenium_BiDi_BrowsingContext_NavigationInfo_System_Threading_Tasks_Task__OpenQA_Selenium_BiDi_SubscriptionOptions_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.OnNavigationFailedAsync(System.Func{OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo,System.Threading.Tasks.Task},OpenQA.Selenium.BiDi.SubscriptionOptions)">
   OnNavigationFailedAsync(Func&lt;NavigationInfo, Task&gt;, SubscriptionOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L195"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContext.cs/#L205"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -1387,7 +1463,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;NavigateResult&gt; ReloadAsync(ReloadOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;ReloadResult&gt; ReloadAsync(ReloadOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -1398,7 +1474,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigateResult.html">NavigateResult</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ReloadResult.html">ReloadResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -1423,7 +1499,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EmptyResult&gt; SetViewportAsync(SetViewportOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;SetViewportResult&gt; SetViewportAsync(SetViewportOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -1434,7 +1510,7 @@ Class BrowsingContext  <a class="header-action link-secondary" title="View sourc
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.SetViewportResult.html">SetViewportResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 

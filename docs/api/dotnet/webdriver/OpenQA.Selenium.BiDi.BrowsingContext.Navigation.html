@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_Navigation" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.Navigation" class="text-break">
-Class Navigation  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/Navigation.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class Navigation  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/Navigation.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,8 @@ Class Navigation  <a class="header-action link-secondary" title="View source" hr
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record Navigation : IEquatable&lt;Navigation&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(NavigationConverter))]
+public sealed record Navigation : IEquatable&lt;Navigation&gt;</code></pre>
   </div>
 
 
@@ -159,7 +160,7 @@ Class Navigation  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_Navigation__ctor_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.Navigation.#ctor(System.String)">
   Navigation(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/Navigation.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/Navigation.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -194,7 +195,7 @@ Class Navigation  <a class="header-action link-secondary" title="View source" hr
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_Navigation_Id" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.Navigation.Id">
   Id
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/Navigation.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/Navigation.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -225,7 +226,7 @@ Class Navigation  <a class="header-action link-secondary" title="View source" hr
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/Navigation.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/Navigation.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 
