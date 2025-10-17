@@ -148,19 +148,16 @@ module Selenium
           network.add_request_handler do |request|
             request.method = 'GET'
             request.url = url_for('formPage.html')
-            request.headers['foo'] = 'bar'
-            request.headers['baz'] = 'qux'
-            request.cookies({
-                              name: 'test',
-                              value: 'value4',
-                              domain: 'example.com',
-                              path: '/path',
-                              size: 1234,
-                              httpOnly: true,
-                              secure: true,
-                              sameSite: 'Strict',
-                              expiry: 1234
-                            })
+            request.headers = {foo: 'bar', baz: 'qux'}
+            request.cookies = {name: 'test',
+                               value: 'value4',
+                               domain: 'example.com',
+                               path: '/path',
+                               size: 1234,
+                               httpOnly: true,
+                               secure: true,
+                               sameSite: 'Strict',
+                               expiry: 1234}
             request.body = ({test: 'example'})
             request.continue
           end
@@ -242,19 +239,17 @@ module Selenium
           network = described_class.new(driver)
           network.add_response_handler do |response|
             response.reason = 'OK'
-            response.headers['foo'] = 'bar'
+            response.headers = {foo: 'bar'}
             response.credentials.username = 'foo'
             response.credentials.password = 'bar'
-            response.cookies({
-                               name: 'foo',
-                               domain: 'localhost',
-                               httpOnly: true,
-                               expiry: '1_000_000',
-                               maxAge: 1_000,
-                               path: '/',
-                               sameSite: 'none',
-                               secure: false
-                             })
+            response.cookies = {name: 'foo',
+                                domain: 'localhost',
+                                httpOnly: true,
+                                expiry: '1_000_000',
+                                maxAge: 1_000,
+                                path: '/',
+                                sameSite: 'none',
+                                secure: false}
             response.continue
           end
           driver.navigate.to url_for('formPage.html')
@@ -270,7 +265,7 @@ module Selenium
           network = described_class.new(driver)
           network.add_response_handler do |response|
             response.status = 200
-            response.headers['foo'] = 'bar'
+            response.headers = {foo: 'bar'}
             response.body = '<html><head><title>Hello World!</title></head><body/></html>'
             response.provide_response
           end
