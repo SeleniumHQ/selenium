@@ -1,13 +1,6 @@
 ## 4.37.0
 
-- Splitting stress tests (#16374)
-  > - Splitting stress tests
-  > - Bumping to nightly version
-- Removing FF guard for canListenToDownloadWillBeginEvent (#16439)
-  > - This test is now passing in Firefox.
-  > - Fixing JS test
-- update devtools versions
-- bump versions in preparation for release
+- Add CDP for Chrome 141 and remove 138
 
 ## 4.36.0
 

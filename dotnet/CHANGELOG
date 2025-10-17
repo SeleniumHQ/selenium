@@ -1,18 +1,12 @@
 v4.37.0
 ======
+* Add CDP for Chrome 141 and remove 138
 * [bidi] Emulation module (#16380)
 * [bidi] Implement browsing context download events (#16382)
 * [bidi] Support browser SetDownloadBehaviour command (#16383)
 * [bidi] Support network SetExtraHeaders command (#16384)
 * [bidi] AOT safe enums serialization (#16386)
 * Handle negative zero BiDi response (#15898)
-    > * Handle negative zero BiDi response
-    > * Rename `BiDiDoubleConverter` to `SpecialNumberConverter`
-    > * Fix merge
-    > * alter null check message
-    > * Fix special handling
-    > * Work around AI limitations
-    > * Update dotnet/src/webdriver/BiDi/Communication/Json/Converters/SpecialNumberConverter.cs
 * Move JSON converter attributes from centralized options into their respective types (#16393)
 * [bidi] Modules as extensions (#16392)
 * [bidi] Provide type info immediately when serializing (#16397)
@@ -23,7 +17,6 @@ v4.37.0
 * [bidi] Deserialize message fast instead of defer it (#16403)
 * [bidi] Remove IEnumerable of command results (#16219)
 * Remove obsoleted FtpProxy (#16411)
-* update devtools versions
 
 v4.36.0
 ======
