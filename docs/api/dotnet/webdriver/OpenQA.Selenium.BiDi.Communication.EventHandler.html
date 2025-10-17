@@ -154,8 +154,8 @@ Class EventHandler  <a class="header-action link-secondary" title="View source" 
 
   <a id="OpenQA_Selenium_BiDi_Communication_EventHandler__ctor_" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Communication_EventHandler__ctor_System_String_System_Type_System_Collections_Generic_IEnumerable_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext__" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.#ctor(System.String,System.Type,System.Collections.Generic.IEnumerable{OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext})">
-  EventHandler(string, Type, IEnumerable&lt;BrowsingContext&gt;?)
+  <h3 id="OpenQA_Selenium_BiDi_Communication_EventHandler__ctor_System_String_System_Collections_Generic_IEnumerable_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext__" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.#ctor(System.String,System.Collections.Generic.IEnumerable{OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext})">
+  EventHandler(string, IEnumerable&lt;BrowsingContext&gt;?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Communication/EventHandler.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -163,14 +163,12 @@ Class EventHandler  <a class="header-action link-secondary" title="View source" 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected EventHandler(string eventName, Type eventArgsType, IEnumerable&lt;BrowsingContext&gt;? contexts = null)</code></pre>
+    <pre><code class="lang-csharp hljs">protected EventHandler(string eventName, IEnumerable&lt;BrowsingContext&gt;? contexts = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>eventName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd></dd>
-    <dt><code>eventArgsType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></dt>
     <dd></dd>
     <dt><code>contexts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a>&gt;</dt>
     <dd></dd>
@@ -222,37 +220,6 @@ Class EventHandler  <a class="header-action link-secondary" title="View source" 
 
 
 
-  <a id="OpenQA_Selenium_BiDi_Communication_EventHandler_EventArgsType_" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.EventArgsType*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Communication_EventHandler_EventArgsType" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.EventArgsType">
-  EventArgsType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Communication/EventHandler.cs/#L29"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Type EventArgsType { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.type">Type</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
   <a id="OpenQA_Selenium_BiDi_Communication_EventHandler_EventName_" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.EventName*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_Communication_EventHandler_EventName" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.EventName">
@@ -290,8 +257,8 @@ Class EventHandler  <a class="header-action link-secondary" title="View source" 
 
   <a id="OpenQA_Selenium_BiDi_Communication_EventHandler_InvokeAsync_" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.InvokeAsync*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Communication_EventHandler_InvokeAsync_System_Object_" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.InvokeAsync(System.Object)">
-  InvokeAsync(object)
+  <h3 id="OpenQA_Selenium_BiDi_Communication_EventHandler_InvokeAsync_OpenQA_Selenium_BiDi_EventArgs_" data-uid="OpenQA.Selenium.BiDi.Communication.EventHandler.InvokeAsync(OpenQA.Selenium.BiDi.EventArgs)">
+  InvokeAsync(EventArgs)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Communication/EventHandler.cs/#L32"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -299,12 +266,12 @@ Class EventHandler  <a class="header-action link-secondary" title="View source" 
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract ValueTask InvokeAsync(object args)</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract ValueTask InvokeAsync(EventArgs args)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>args</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dt><code>args</code> <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></dt>
     <dd></dd>
   </dl>
 

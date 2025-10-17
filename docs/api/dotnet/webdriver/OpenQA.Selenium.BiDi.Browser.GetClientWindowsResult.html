@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult" class="text-break">
-Class GetClientWindowsResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
+Class GetClientWindowsResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class GetClientWindowsResult  <a class="header-action link-secondary" title="Vie
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record GetClientWindowsResult : EmptyResult, IEquatable&lt;EmptyResult&gt;, IReadOnlyList&lt;ClientWindowInfo&gt;, IReadOnlyCollection&lt;ClientWindowInfo&gt;, IEnumerable&lt;ClientWindowInfo&gt;, IEnumerable, IEquatable&lt;GetClientWindowsResult&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record GetClientWindowsResult : EmptyResult, IEquatable&lt;EmptyResult&gt;, IEquatable&lt;GetClientWindowsResult&gt;</code></pre>
   </div>
 
 
@@ -120,10 +120,6 @@ Class GetClientWindowsResult  <a class="header-action link-secondary" title="Vie
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.ClientWindowInfo.html">ClientWindowInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.ClientWindowInfo.html">ClientWindowInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.ClientWindowInfo.html">ClientWindowInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.html">GetClientWindowsResult</a>&gt;</div>
     </dd>
   </dl>
@@ -157,6 +153,41 @@ Class GetClientWindowsResult  <a class="header-action link-secondary" title="Vie
 
 
 
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult__ctor_" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult__ctor_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Browser_ClientWindowInfo__" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.#ctor(System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Browser.ClientWindowInfo})">
+  GetClientWindowsResult(IReadOnlyList&lt;ClientWindowInfo&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GetClientWindowsResult(IReadOnlyList&lt;ClientWindowInfo&gt; ClientWindows)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>ClientWindows</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.ClientWindowInfo.html">ClientWindowInfo</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
   <h2 class="section" id="properties">Properties
 </h2>
 
@@ -165,14 +196,14 @@ Class GetClientWindowsResult  <a class="header-action link-secondary" title="Vie
 
   <h3 id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult_ClientWindows" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.ClientWindows">
   ClientWindows
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ClientWindowInfo&gt; ClientWindows { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ClientWindowInfo&gt; ClientWindows { get; init; }</code></pre>
   </div>
 
 
@@ -192,113 +223,11 @@ Class GetClientWindowsResult  <a class="header-action link-secondary" title="Vie
 
 
 
-  <a id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult_Count_" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.Count*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult_Count" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.Count">
-  Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult_Item_" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.Item*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult_Item_System_Int32_" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.Item(System.Int32)">
-  this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ClientWindowInfo this[int index] { get; }</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.ClientWindowInfo.html">ClientWindowInfo</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <h2 class="section" id="methods">Methods
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult_GetEnumerator_" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.GetEnumerator*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Browser_GetClientWindowsResult_GetEnumerator" data-uid="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.GetEnumerator">
-  GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L46"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerator&lt;ClientWindowInfo&gt; GetEnumerator()</code></pre>
-  </div>
-
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.ClientWindowInfo.html">ClientWindowInfo</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L31" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetClientWindowsCommand.cs/#L30" class="edit-link">Edit this page</a>
         </div>
 
 

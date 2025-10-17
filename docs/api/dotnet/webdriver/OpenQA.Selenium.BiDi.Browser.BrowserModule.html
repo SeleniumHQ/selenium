@@ -146,41 +146,6 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
 
 
-  <h2 class="section" id="constructors">Constructors
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule__ctor_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.#ctor*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule__ctor_OpenQA_Selenium_BiDi_Communication_Broker_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.#ctor(OpenQA.Selenium.BiDi.Communication.Broker)">
-  BrowserModule(Broker)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BrowserModule(Broker broker)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>broker</code> <a class="xref" href="OpenQA.Selenium.BiDi.Communication.Broker.html">Broker</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -196,7 +161,7 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EmptyResult&gt; CloseAsync(CloseOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;CloseResult&gt; CloseAsync(CloseOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -207,7 +172,7 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.CloseResult.html">CloseResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -232,7 +197,7 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;UserContextInfo&gt; CreateUserContextAsync(CreateUserContextOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;CreateUserContextResult&gt; CreateUserContextAsync(CreateUserContextOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -243,7 +208,7 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContextInfo.html">UserContextInfo</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.CreateUserContextResult.html">CreateUserContextResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -340,7 +305,7 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EmptyResult&gt; RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;RemoveUserContextResult&gt; RemoveUserContextAsync(UserContext userContext, RemoveUserContextOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -353,7 +318,117 @@ Class BrowserModule  <a class="header-action link-secondary" title="View source"
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.RemoveUserContextResult.html">RemoveUserContextResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync(OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions)">
+  SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorAllowedAsync(SetDownloadBehaviorOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions.html">SetDownloadBehaviorOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorResult.html">SetDownloadBehaviorResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorAllowedAsync_System_String_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorAllowedAsync(System.String,OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions)">
+  SetDownloadBehaviorAllowedAsync(string, SetDownloadBehaviorOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorAllowedAsync(string destinationFolder, SetDownloadBehaviorOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destinationFolder</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions.html">SetDownloadBehaviorOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorResult.html">SetDownloadBehaviorResult</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorDeniedAsync_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorDeniedAsync*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Browser_BrowserModule_SetDownloadBehaviorDeniedAsync_OpenQA_Selenium_BiDi_Browser_SetDownloadBehaviorOptions_" data-uid="OpenQA.Selenium.BiDi.Browser.BrowserModule.SetDownloadBehaviorDeniedAsync(OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions)">
+  SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/BrowserModule.cs/#L71"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SetDownloadBehaviorResult&gt; SetDownloadBehaviorDeniedAsync(SetDownloadBehaviorOptions? options = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorOptions.html">SetDownloadBehaviorOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorResult.html">SetDownloadBehaviorResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 

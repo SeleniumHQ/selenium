@@ -146,41 +146,6 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
 
 
 
-  <h2 class="section" id="constructors">Constructors
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule__ctor_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.#ctor*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_WebExtension_WebExtensionModule__ctor_OpenQA_Selenium_BiDi_Communication_Broker_" data-uid="OpenQA.Selenium.BiDi.WebExtension.WebExtensionModule.#ctor(OpenQA.Selenium.BiDi.Communication.Broker)">
-  WebExtensionModule(Broker)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/WebExtensionModule.cs/#L25"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public WebExtensionModule(Broker broker)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>broker</code> <a class="xref" href="OpenQA.Selenium.BiDi.Communication.Broker.html">Broker</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
-
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -234,7 +199,7 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;EmptyResult&gt; UninstallAsync(Extension extension, UninstallOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;UninstallResult&gt; UninstallAsync(Extension extension, UninstallOptions? options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -247,7 +212,7 @@ Class WebExtensionModule  <a class="header-action link-secondary" title="View so
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.UninstallResult.html">UninstallResult</a>&gt;</dt>
     <dd></dd>
   </dl>
 

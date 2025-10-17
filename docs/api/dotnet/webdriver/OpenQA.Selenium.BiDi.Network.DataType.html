@@ -90,7 +90,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_DataType" data-uid="OpenQA.Selenium.BiDi.Network.DataType" class="text-break">
-Enum DataType  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L41"><i class="bi bi-code-slash"></i></a>
+Enum DataType  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L43"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -102,7 +102,8 @@ Enum DataType  <a class="header-action link-secondary" title="View source" href=
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public enum DataType</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(CamelCaseEnumConverter&lt;DataType&gt;))]
+public enum DataType</code></pre>
   </div>
 
 
@@ -116,7 +117,9 @@ Enum DataType  <a class="header-action link-secondary" title="View source" href=
   <h2 id="fields">Fields
 </h2>
   <dl class="parameters">
-    <dt id="OpenQA_Selenium_BiDi_Network_DataType_Response"><code>Response = 0</code></dt>
+    <dt id="OpenQA_Selenium_BiDi_Network_DataType_Request"><code>Request = 0</code></dt>
+    <dd></dd>
+    <dt id="OpenQA_Selenium_BiDi_Network_DataType_Response"><code>Response = 1</code></dt>
     <dd></dd>
   </dl>
 
@@ -125,7 +128,7 @@ Enum DataType  <a class="header-action link-secondary" title="View source" href=
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L41" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AddDataCollectorCommand.cs/#L43" class="edit-link">Edit this page</a>
         </div>
 
 

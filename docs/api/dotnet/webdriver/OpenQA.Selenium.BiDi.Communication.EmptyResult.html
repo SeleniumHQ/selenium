@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Communication_EmptyResult" data-uid="OpenQA.Selenium.BiDi.Communication.EmptyResult" class="text-break">
-Class EmptyResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Communication/Command.cs/#L56"><i class="bi bi-code-slash"></i></a>
+Class EmptyResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Communication/Command.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class EmptyResult  <a class="header-action link-secondary" title="View source" h
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public record EmptyResult : IEquatable&lt;EmptyResult&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract record EmptyResult : IEquatable&lt;EmptyResult&gt;</code></pre>
   </div>
 
 
@@ -125,27 +125,59 @@ Class EmptyResult  <a class="header-action link-secondary" title="View source" h
   <dl class="typelist derived">
     <dt>Derived</dt>
     <dd>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Browser.CloseResult.html">CloseResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Browser.GetClientWindowsResult.html">GetClientWindowsResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.html">GetUserContextsResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Browser.RemoveUserContextResult.html">RemoveUserContextResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Browser.SetDownloadBehaviorResult.html">SetDownloadBehaviorResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContextInfo.html">UserContextInfo</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.ActivateResult.html">ActivateResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CaptureScreenshotResult.html">CaptureScreenshotResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CloseResult.html">CloseResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.CreateResult.html">CreateResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.GetTreeResult.html">GetTreeResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.HandleUserPromptResult.html">HandleUserPromptResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.LocateNodesResult.html">LocateNodesResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigateResult.html">NavigateResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.PrintResult.html">PrintResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.SetViewportResult.html">SetViewportResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.TraverseHistoryResult.html">TraverseHistoryResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetForcedColorsModeThemeOverrideResult.html">SetForcedColorsModeThemeOverrideResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetGeolocationOverrideResult.html">SetGeolocationOverrideResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetLocaleOverrideResult.html">SetLocaleOverrideResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetScreenOrientationOverrideResult.html">SetScreenOrientationOverrideResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetScriptingEnabledResult.html">SetScriptingEnabledResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetTimezoneOverrideResult.html">SetTimezoneOverrideResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Emulation.SetUserAgentOverrideResult.html">SetUserAgentOverrideResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.PerformActionsResult.html">PerformActionsResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.ReleaseActionsResult.html">ReleaseActionsResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.SetFilesResult.html">SetFilesResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.AddDataCollectorResult.html">AddDataCollectorResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.AddInterceptResult.html">AddInterceptResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueRequestResult.html">ContinueRequestResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueResponseResult.html">ContinueResponseResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ContinueWithAuthResult.html">ContinueWithAuthResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.FailRequestResult.html">FailRequestResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.GetDataResult.html">GetDataResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.ProvideResponseResult.html">ProvideResponseResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.RemoveDataCollectorResult.html">RemoveDataCollectorResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.RemoveInterceptResult.html">RemoveInterceptResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.SetCacheBehaviorResult.html">SetCacheBehaviorResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.SetExtraHeadersResult.html">SetExtraHeadersResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.AddPreloadScriptResult.html">AddPreloadScriptResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.DisownResult.html">DisownResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.EvaluateResult.html">EvaluateResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.GetRealmsResult.html">GetRealmsResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.RemovePreloadScriptResult.html">RemovePreloadScriptResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.EndResult.html">EndResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.NewResult.html">NewResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.StatusResult.html">StatusResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Session.UnsubscribeResult.html">UnsubscribeResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.DeleteCookiesResult.html">DeleteCookiesResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.GetCookiesResult.html">GetCookiesResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Storage.SetCookieResult.html">SetCookieResult</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.InstallResult.html">InstallResult</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.UninstallResult.html">UninstallResult</a></div>
     </dd>
   </dl>
 
@@ -184,7 +216,7 @@ Class EmptyResult  <a class="header-action link-secondary" title="View source" h
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Communication/Command.cs/#L56" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Communication/Command.cs/#L52" class="edit-link">Edit this page</a>
         </div>
 
 

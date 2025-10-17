@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Script_Channel" data-uid="OpenQA.Selenium.BiDi.Script.Channel" class="text-break">
-Class Channel  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Channel.cs/#L22"><i class="bi bi-code-slash"></i></a>
+Class Channel  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Channel.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,8 @@ Class Channel  <a class="header-action link-secondary" title="View source" href=
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record Channel : IEquatable&lt;Channel&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ChannelConverter))]
+public sealed record Channel : IEquatable&lt;Channel&gt;</code></pre>
   </div>
 
 
@@ -159,7 +160,7 @@ Class Channel  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_BiDi_Script_Channel__ctor_System_String_" data-uid="OpenQA.Selenium.BiDi.Script.Channel.#ctor(System.String)">
   Channel(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Channel.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Channel.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -194,7 +195,7 @@ Class Channel  <a class="header-action link-secondary" title="View source" href=
 
   <h3 id="OpenQA_Selenium_BiDi_Script_Channel_Id" data-uid="OpenQA.Selenium.BiDi.Script.Channel.Id">
   Id
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Channel.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Channel.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -225,7 +226,7 @@ Class Channel  <a class="header-action link-secondary" title="View source" href=
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Channel.cs/#L22" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/Channel.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

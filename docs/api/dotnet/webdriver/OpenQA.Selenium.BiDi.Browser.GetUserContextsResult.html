@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult" class="text-break">
-Class GetUserContextsResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L31"><i class="bi bi-code-slash"></i></a>
+Class GetUserContextsResult  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class GetUserContextsResult  <a class="header-action link-secondary" title="View
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record GetUserContextsResult : EmptyResult, IEquatable&lt;EmptyResult&gt;, IReadOnlyList&lt;UserContextInfo&gt;, IReadOnlyCollection&lt;UserContextInfo&gt;, IEnumerable&lt;UserContextInfo&gt;, IEnumerable, IEquatable&lt;GetUserContextsResult&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record GetUserContextsResult : EmptyResult, IEquatable&lt;EmptyResult&gt;, IEquatable&lt;GetUserContextsResult&gt;</code></pre>
   </div>
 
 
@@ -120,10 +120,6 @@ Class GetUserContextsResult  <a class="header-action link-secondary" title="View
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Communication.EmptyResult.html">EmptyResult</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContextInfo.html">UserContextInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlycollection-1">IReadOnlyCollection</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContextInfo.html">UserContextInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContextInfo.html">UserContextInfo</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.html">GetUserContextsResult</a>&gt;</div>
     </dd>
   </dl>
@@ -157,67 +153,27 @@ Class GetUserContextsResult  <a class="header-action link-secondary" title="View
 
 
 
-  <h2 class="section" id="properties">Properties
+  <h2 class="section" id="constructors">Constructors
 </h2>
 
 
-  <a id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult_Count_" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.Count*"></a>
+  <a id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult__ctor_" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult_Count" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.Count">
-  Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult__ctor_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Browser_UserContextInfo__" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.#ctor(System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Browser.UserContextInfo})">
+  GetUserContextsResult(IReadOnlyList&lt;UserContextInfo&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <a id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult_Item_" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.Item*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult_Item_System_Int32_" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.Item(System.Int32)">
-  this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L40"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserContextInfo this[int index] { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public GetUserContextsResult(IReadOnlyList&lt;UserContextInfo&gt; UserContexts)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>index</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContextInfo.html">UserContextInfo</a></dt>
+    <dt><code>UserContexts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContextInfo.html">UserContextInfo</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -226,20 +182,28 @@ Class GetUserContextsResult  <a class="header-action link-secondary" title="View
 
 
 
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
 
 
   <a id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult_UserContexts_" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.UserContexts*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult_UserContexts" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.UserContexts">
   UserContexts
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;UserContextInfo&gt; UserContexts { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;UserContextInfo&gt; UserContexts { get; init; }</code></pre>
   </div>
 
 
@@ -259,46 +223,11 @@ Class GetUserContextsResult  <a class="header-action link-secondary" title="View
 
 
 
-  <h2 class="section" id="methods">Methods
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult_GetEnumerator_" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.GetEnumerator*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_Browser_GetUserContextsResult_GetEnumerator" data-uid="OpenQA.Selenium.BiDi.Browser.GetUserContextsResult.GetEnumerator">
-  GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L44"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IEnumerator&lt;UserContextInfo&gt; GetEnumerator()</code></pre>
-  </div>
-
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerator-1">IEnumerator</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContextInfo.html">UserContextInfo</a>&gt;</dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-
-
-
-
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L31" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Browser/GetUserContextsCommand.cs/#L30" class="edit-link">Edit this page</a>
         </div>
 
 

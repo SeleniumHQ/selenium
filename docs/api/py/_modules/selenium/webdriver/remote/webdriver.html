@@ -45,11 +45,11 @@
   
   
   
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.36.0 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.37.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=48fdbe4b"></script>
-    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.36.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.36.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.webdriver </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.36.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.36.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.36.0 documentation">Selenium 4.36.0 documentation</a>
+       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
   </label>
   
 
@@ -1547,7 +1547,11 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devtools</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="p">[</span><span class="s2">"browserName"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"firefox"</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"CDP support for Firefox has been removed. Please switch to WebDriver BiDi."</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="n">WebSocketConnection</span><span class="p">(</span><span class="n">ws_url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="n">WebSocketConnection</span><span class="p">(</span>
+            <span class="n">ws_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_timeout</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_interval</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_devtools</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">get_targets</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">target_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_window_handle</span><span class="p">:</span>
@@ -1600,7 +1604,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"Unable to find url to connect to from capabilities"</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="n">WebSocketConnection</span><span class="p">(</span><span class="n">ws_url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="n">WebSocketConnection</span><span class="p">(</span>
+            <span class="n">ws_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_timeout</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">client_config</span><span class="o">.</span><span class="n">websocket_interval</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1984,7 +1992,7 @@
 
 
 <div class="viewcode-block" id="WebDriver.delete_downloadable_files">
-<a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.delete_downloadable_files">[docs]</a>
+<a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.delete_downloadable_files">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">delete_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Deletes all downloadable files.</span>
 

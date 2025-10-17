@@ -46,11 +46,11 @@
   
   
   
-    <title>selenium.webdriver.common.options &#8212; Selenium 4.36.0 documentation</title>
+    <title>selenium.webdriver.common.options &#8212; Selenium 4.37.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=48fdbe4b"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.36.0 documentation"
+        <a href="../index.html" title="Selenium 4.37.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.36.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.options </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.36.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.36.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.36.0 documentation">Selenium 4.36.0 documentation</a>
+       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
   </label>
   
 
@@ -464,33 +464,40 @@ replaced.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.split">
 <span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsplit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.split" title="Link to this definition">¶</a></dt>
-<dd><p>Return a list of the words in the string, using sep as the delimiter string.</p>
-<dl class="simple">
-<dt>sep</dt><dd><p>The delimiter according which to split the string.
-None (the default value) means split according to any whitespace,
-and discard empty strings from the result.</p>
-</dd>
-<dt>maxsplit</dt><dd><p>Maximum number of splits to do.
--1 (the default value) means no limit.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.rsplit">
-<span class="sig-name descname"><span class="pre">rsplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsplit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.rsplit" title="Link to this definition">¶</a></dt>
-<dd><p>Return a list of the words in the string, using sep as the delimiter string.</p>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
 <blockquote>
-<div><dl class="simple">
-<dt>sep</dt><dd><p>The delimiter according which to split the string.
-None (the default value) means split according to any whitespace,
-and discard empty strings from the result.</p>
+<div><dl>
+<dt>sep</dt><dd><p>The separator used to split the string.</p>
+<p>When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
 </dd>
-<dt>maxsplit</dt><dd><p>Maximum number of splits to do.
+<dt>maxsplit</dt><dd><p>Maximum number of splits (starting from the left).
 -1 (the default value) means no limit.</p>
 </dd>
 </dl>
 </div></blockquote>
-<p>Splits are done starting at the end of the string and working to the front.</p>
+<p>Note, str.split() is mainly useful for data that has been intentionally
+delimited.  With natural text that includes punctuation, consider using
+the regular expression module.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.rsplit">
+<span class="sig-name descname"><span class="pre">rsplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsplit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.options.PageLoadStrategy.rsplit" title="Link to this definition">¶</a></dt>
+<dd><p>Return a list of the substrings in the string, using sep as the separator string.</p>
+<blockquote>
+<div><dl>
+<dt>sep</dt><dd><p>The separator used to split the string.</p>
+<p>When set to None (the default value), will split on any whitespace
+character (including \n \r \t \f and spaces) and will discard
+empty strings from the result.</p>
+</dd>
+<dt>maxsplit</dt><dd><p>Maximum number of splits (starting from the left).
+-1 (the default value) means no limit.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Splitting starts at the end of the string and works to the front.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.options.PageLoadStrategy.join">

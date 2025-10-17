@@ -102,7 +102,8 @@ Enum SameSite  <a class="header-action link-secondary" title="View source" href=
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public enum SameSite</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(CamelCaseEnumConverter&lt;SameSite&gt;))]
+public enum SameSite</code></pre>
   </div>
 
 
