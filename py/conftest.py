@@ -131,7 +131,7 @@ class SupportedOptions(ContainerProtocol):
     edge: str = "EdgeOptions"
     safari: str = "SafariOptions"
     ie: str = "IeOptions"
-    remote: str = "FirefoxOptions"
+    remote: str = "ChromeOptions"
     webkitgtk: str = "WebKitGTKOptions"
     wpewebkit: str = "WPEWebKitOptions"
 
@@ -249,12 +249,15 @@ class Driver:
                 # under Wayland, so we use XWayland instead.
                 os.environ["MOZ_ENABLE_WAYLAND"] = "0"
         elif self.driver_class == self.supported_drivers.remote:
-            self._options = getattr(webdriver, self.supported_options.firefox)()
-            self._options.set_capability("moz:firefoxOptions", {})
+            self._options = getattr(webdriver, self.supported_options.chrome)()
+            self._options.set_capability("goog:chromeOptions", {})
             self._options.enable_downloads = True
         else:
             opts_cls = getattr(self.supported_options, cls_name.lower())
             self._options = getattr(webdriver, opts_cls)()
+
+        if cls_name.lower() in ("chrome", "edge"):
+            self._options.add_argument("--disable-dev-shm-usage")
 
         if self.browser_path or self.browser_args:
             if self.driver_class == self.supported_drivers.webkitgtk:
@@ -464,6 +467,7 @@ def clean_driver(request):
         pytest.xfail(**marker.kwargs)
 
     yield driver_reference
+
     if request.node.get_closest_marker("no_driver_after_test"):
         driver_reference = None
 
