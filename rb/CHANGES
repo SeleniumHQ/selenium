@@ -1,3 +1,10 @@
+4.37.0 (2025-10-16)
+=========================
+* Add CDP for Chrome 141 and remove 138
+* Update Chrome/Edge args for test environment (#16376)
+* Remove `prism` dependency (#16437)
+* Remove `json` version constraint (#16436)
+
 4.36.0 (2025-09-18)
 =========================
 * Add CDP for Chrome 140 and remove 137
