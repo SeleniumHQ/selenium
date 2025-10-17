@@ -4,7 +4,7 @@ Selenium 4.37.0
 * Configure WebSocket timeout and wait interval via ClientConfig (#16248)
 * Raise NotImplementedError when deleting downloads in driver subclass (#16423)
 * Fix default rpId in virtual authenticator (#16428)
-* Update docstrings style (#16427)
+* Support Python 3.14 and drop Python 3.9 (#16342)
 * Update docstrings style according to google guideline (#16445)
 
 Selenium 4.36.0
