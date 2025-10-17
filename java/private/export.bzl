@@ -1,4 +1,3 @@
-load("@contrib_rules_jvm//java:defs.bzl", "java_library")
 load(
     "@rules_jvm_external//:defs.bzl",
     "javadoc",
@@ -8,6 +7,7 @@ load("@rules_jvm_external//private/rules:maven_bom_fragment.bzl", "maven_bom_fra
 load("@rules_jvm_external//private/rules:maven_project_jar.bzl", "maven_project_jar")
 load("@rules_jvm_external//private/rules:maven_publish.bzl", "maven_publish")
 load("//java/private:module.bzl", "java_module")
+load(":java_library.bzl", "java_library")
 
 def java_export(
         name,

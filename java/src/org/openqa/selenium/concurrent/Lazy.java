@@ -15,36 +15,39 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi.permissions;
+package org.openqa.selenium.concurrent;
 
-import org.jspecify.annotations.NullMarked;
+import static java.util.Objects.requireNonNull;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
-public enum PermissionState {
-  GRANTED("granted"),
-  DENIED("denied"),
-  PROMPT("prompt");
+public class Lazy<T> {
 
-  private final String state;
+  @Nullable private volatile T value;
+  private final Supplier<T> supplier;
 
-  PermissionState(String state) {
-    this.state = state;
+  private Lazy(Supplier<T> supplier) {
+    this.supplier = supplier;
   }
 
-  @Override
-  public String toString() {
-    return state;
+  public Optional<T> getIfInitialized() {
+    return Optional.ofNullable(value);
   }
 
-  public static @Nullable PermissionState findByName(String name) {
-    PermissionState result = null;
-    for (PermissionState state : values()) {
-      if (state.toString().equalsIgnoreCase(name)) {
-        result = state;
-        break;
+  public T get() {
+    if (value == null) {
+      synchronized (this) {
+        if (value == null) {
+          value = supplier.get();
+        }
       }
     }
-    return result;
+    return requireNonNull(value);
+  }
+
+  public static <T> Lazy<T> lazy(Supplier<T> supplier) {
+    return new Lazy<>(supplier);
   }
 }

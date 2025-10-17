@@ -15,36 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.bidi.permissions;
+@NullMarked
+package org.openqa.selenium.concurrent;
 
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-
-@NullMarked
-public enum PermissionState {
-  GRANTED("granted"),
-  DENIED("denied"),
-  PROMPT("prompt");
-
-  private final String state;
-
-  PermissionState(String state) {
-    this.state = state;
-  }
-
-  @Override
-  public String toString() {
-    return state;
-  }
-
-  public static @Nullable PermissionState findByName(String name) {
-    PermissionState result = null;
-    for (PermissionState state : values()) {
-      if (state.toString().equalsIgnoreCase(name)) {
-        result = state;
-        break;
-      }
-    }
-    return result;
-  }
-}
