@@ -17,6 +17,7 @@ v4.37.0
 * [bidi] Deserialize message fast instead of defer it (#16403)
 * [bidi] Remove IEnumerable of command results (#16219)
 * Remove obsoleted FtpProxy (#16411)
+* [bidi] Add Request data type in Network module (#16453)
 
 v4.36.0
 ======
