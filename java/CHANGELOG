@@ -27,6 +27,7 @@ v4.36.0
 * Fix falsy Spotbugs warning about not closed resource (#16318)
 * [grid] Fix regression Distributor rejecting requests when nodes have supported caps but no free slots (#16327)
 * Feat 14291/add jspecify annotations to exception classes pt4 (#16028)
+* [grid] UI Light/Dark Mode Toggle (#16364)
 
 v4.35.0
 ======
