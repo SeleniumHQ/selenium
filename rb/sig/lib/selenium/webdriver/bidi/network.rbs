@@ -10,7 +10,7 @@ module Selenium
 
         def initialize: (BiDi bidi) -> void
 
-        def add_intercept: (?phases: Array[String], ?contexts: BrowsingContext?, ?url_patterns: String | Array[String]?) -> Hash[String, String]
+        def add_intercept: (?phases: Array[String], ?contexts: BrowsingContext?, ?filters: Array[String | Hash[Symbol, String]]?) -> Hash[String, String]
 
         def cancel_auth: -> Hash[nil, nil]
 
@@ -22,7 +22,7 @@ module Selenium
 
         def fail_request: -> Hash[nil, nil]
 
-        def remove_intercept: (String intercept) -> Hash[nil, nil]
+        def remove_intercept: (String? intercept) -> Hash[nil, nil]
 
         def continue_with_auth: (Integer request_id, String username, String password) -> Hash[nil, nil]
 

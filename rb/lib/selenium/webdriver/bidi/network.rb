@@ -40,12 +40,11 @@ module Selenium
           @bidi = bidi
         end
 
-        def add_intercept(phases: [], contexts: nil, url_patterns: nil, pattern_type: :string)
-          url_patterns = url_patterns && pattern_type ? UrlPattern.format_pattern(url_patterns, pattern_type) : nil
+        def add_intercept(phases: [], contexts: nil, filters: nil)
           @bidi.send_cmd('network.addIntercept',
                          phases: phases,
                          contexts: contexts,
-                         urlPatterns: url_patterns)
+                         urlPatterns: UrlPattern.format_pattern(filters))
         end
 
         def remove_intercept(intercept)

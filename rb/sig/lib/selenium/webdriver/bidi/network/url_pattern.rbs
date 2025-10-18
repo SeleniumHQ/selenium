@@ -2,11 +2,13 @@ module Selenium
   module WebDriver
     class BiDi
       module UrlPattern
-        def self?.format_pattern: (Array[String] | String url_patterns, Symbol pattern_type) -> Array[Hash[Symbol, String]]
+        ALLOWED_KEYS: Array[Symbol]
 
-        def self?.to_url_pattern: (*String url_patterns) -> Array[Hash[Symbol, String]]
+        WEB: Array[Hash[Symbol, String]]
 
-        def self?.to_url_string_pattern: (*String url_patterns) -> Array[Hash[Symbol, String]]
+        def self?.format_pattern: (nil | Array[String] | Array[URI] | Array[Hash[Symbol, String]]) -> Array[Hash[Symbol, String]]
+
+        def self?.to_url_pattern: (Hash[Symbol, String]) -> Hash[Symbol, String]
       end
     end
   end

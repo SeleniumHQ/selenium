@@ -25,39 +25,39 @@ module Selenium
       module UrlPattern
         module_function
 
-        def format_pattern(url_patterns, pattern_type)
-          case pattern_type
-          when :string
-            to_url_string_pattern(url_patterns)
-          when :url
-            to_url_pattern(url_patterns)
-          else
-            raise ArgumentError, "Unknown pattern type: #{pattern_type}"
+        ALLOWED_KEYS = %i[protocol hostname port pathname search].freeze
+        WEB = [{ type: 'pattern', protocol: 'https' }.freeze, { type: 'pattern', protocol: 'http' }.freeze].freeze
+
+        def format_pattern(filters)
+          patterns = Array(filters).flatten.compact
+          return WEB.dup if patterns.empty?
+
+          patterns.each_with_object([]) do |pattern, array|
+            case pattern
+            when String, ::URI::Generic
+              array << { type: 'string', pattern: pattern.to_s }
+            when Hash
+              url_pattern = to_url_pattern(pattern)
+              if url_pattern.key?(:protocol)
+                array << url_pattern
+              else
+                array << url_pattern.merge(protocol: 'http')
+                array << url_pattern.merge(protocol: 'https')
+              end
+            else
+              raise TypeError, "pattern must be a String, URI or a Hash of keys: #{ALLOWED_KEYS.join(", ")}"
+            end
           end
+
         end
 
-        def to_url_pattern(*url_patterns)
-          url_patterns.flatten.map do |url_pattern|
-            uri = URI.parse(url_pattern)
+        private
 
-            {
-              type: 'pattern',
-              protocol: uri.scheme || '',
-              hostname: uri.host || '',
-              port: uri.port.to_s,
-              pathname: uri.path || '',
-              search: uri.query || ''
-            }
-          end
-        end
+        def to_url_pattern(pattern)
+          unknown = pattern.keys - ALLOWED_KEYS
+          raise ArgumentError, "Unknown keys in pattern hash: #{unknown.inspect}" unless unknown.empty?
 
-        def to_url_string_pattern(*url_patterns)
-          url_patterns.flatten.map do |url_pattern|
-            {
-              type: 'string',
-              pattern: url_pattern
-            }
-          end
+          pattern.slice(*ALLOWED_KEYS).merge(type: 'pattern')
         end
       end
     end # BiDi

@@ -60,7 +60,7 @@ module Selenium
       it 'adds an auth handler with a pattern type' do
         reset_driver!(web_socket_url: true) do |driver|
           network = described_class.new(driver)
-          network.add_authentication_handler(username, password, url_for('basicAuth'), pattern_type: :url)
+          network.add_authentication_handler(username, password, url_for('basicAuth'))
           driver.navigate.to url_for('basicAuth')
           expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
           expect(network.callbacks.count).to be 1
@@ -135,7 +135,7 @@ module Selenium
       it 'adds a request handler with a pattern type' do
         reset_driver!(web_socket_url: true) do |driver|
           network = described_class.new(driver)
-          network.add_request_handler(url_for('formPage.html'), pattern_type: :url, &:continue)
+          network.add_request_handler(url_for('formPage.html'), &:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
           expect(network.callbacks.count).to be 1
@@ -230,7 +230,7 @@ module Selenium
       it 'adds a response handler with a pattern type' do
         reset_driver!(web_socket_url: true) do |driver|
           network = described_class.new(driver)
-          network.add_response_handler(url_for('formPage.html'), pattern_type: :url, &:continue)
+          network.add_response_handler(url_for('formPage.html'), &:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
           expect(network.callbacks.count).to be 1

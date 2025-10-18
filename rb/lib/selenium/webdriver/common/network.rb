@@ -44,7 +44,7 @@ module Selenium
         callbacks.each_key { |id| remove_handler(id) }
       end
 
-      def add_authentication_handler(username = nil, password = nil, *filter, pattern_type: nil, &block)
+      def add_authentication_handler(username = nil, password = nil, *filters, &block)
         selected_block =
           if username && password
             proc { |auth| auth.authenticate(username, password) }
@@ -56,38 +56,35 @@ module Selenium
           :auth_required,
           BiDi::Network::PHASES[:auth_required],
           BiDi::InterceptedAuth,
-          filter,
-          pattern_type: pattern_type,
+          Array(filters).flatten,
           &selected_block
         )
       end
 
-      def add_request_handler(*filter, pattern_type: nil, &block)
+      def add_request_handler(*filters, &block)
         add_handler(
           :before_request,
           BiDi::Network::PHASES[:before_request],
           BiDi::InterceptedRequest,
-          filter,
-          pattern_type: pattern_type,
+          Array(filters).flatten,
           &block
         )
       end
 
-      def add_response_handler(*filter, pattern_type: nil, &block)
+      def add_response_handler(*filters, &block)
         add_handler(
           :response_started,
           BiDi::Network::PHASES[:response_started],
           BiDi::InterceptedResponse,
-          filter,
-          pattern_type: pattern_type,
+          Array(filters).flatten,
           &block
         )
       end
 
       private
 
-      def add_handler(event_type, phase, intercept_type, filter, pattern_type: nil)
-        intercept = network.add_intercept(phases: [phase], url_patterns: [filter].flatten, pattern_type: pattern_type)
+      def add_handler(event_type, phase, intercept_type, filters)
+        intercept = network.add_intercept(phases: [phase], filters: filters)
         callback_id = network.on(event_type) do |event|
           request = event['request']
           intercepted_item = intercept_type.new(network, request)

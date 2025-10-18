@@ -11,21 +11,21 @@ module Selenium
 
       alias bidi network
 
-      def initialize: (Remote::Bridge bridge) -> void
+      def initialize: (Remote::BiDiBridge bridge) -> void
 
       def remove_handler: (Numeric id) -> untyped
 
       def clear_handlers: () -> untyped
 
-      def add_authentication_handler: (?String? username, ?String? password, *String filter, ?pattern_type: Symbol?) { (?) -> untyped } -> untyped
+      def add_authentication_handler: (?String? username, ?String? password, *(String | Hash[Symbol, String])?) { (BiDi::InterceptedAuth) -> void } -> Hash[String, String]
 
-      def add_request_handler: (*String filter, ?pattern_type: Symbol?) -> Hash[String, String]
+      def add_request_handler: (*(String | Hash[Symbol, String])?)  { (BiDi::InterceptedRequest) -> void } -> Hash[String, String]
 
-      def add_response_handler: (*String filter, ?pattern_type: Symbol?) -> Hash[String, String]
+      def add_response_handler: (*(String | Hash[Symbol, String])?)  { (BiDi::InterceptedResponse) -> void } -> Hash[String, String]
 
       private
 
-      def add_handler: (Symbol event_type, String phase, BiDi::InterceptedRequest | BiDi::InterceptedAuth | BiDi::InterceptedResponse intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> untyped
+      def add_handler: (Symbol event_type, String phase, Class intercept_type, Array[String | Hash[Symbol, String]] filters) { (untyped) -> untyped } -> untyped
     end
   end
 end
