@@ -1,4 +1,4 @@
-// <copyright file="V138Target.cs" company="Selenium Committers">
+// <copyright file="V141Target.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,27 +17,27 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V138.Target;
+using OpenQA.Selenium.DevTools.V141.Target;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools.V138;
+namespace OpenQA.Selenium.DevTools.V141;
 
 /// <summary>
-/// Class providing functionality for manipulating targets for version 138 of the DevTools Protocol
+/// Class providing functionality for manipulating targets for version 141 of the DevTools Protocol
 /// </summary>
-public class V138Target : DevTools.Target
+public class V141Target : DevTools.Target
 {
     private readonly TargetAdapter adapter;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="V138Target"/> class.
+    /// Initializes a new instance of the <see cref="V141Target"/> class.
     /// </summary>
     /// <param name="adapter">The adapter for the Target domain.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="adapter"/> is <see langword="null"/>.</exception>
-    public V138Target(TargetAdapter adapter)
+    public V141Target(TargetAdapter adapter)
     {
         this.adapter = adapter ?? throw new ArgumentNullException(nameof(adapter));
         adapter.DetachedFromTarget += OnDetachedFromTarget;
