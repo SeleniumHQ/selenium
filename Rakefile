@@ -747,9 +747,35 @@ namespace :rb do
 
   desc 'Update generated Ruby files for local development'
   task :local_dev do
+    puts 'installing ruby, this may take a minute'
     Bazel.execute('build', [], '@bundle//:bundle')
     Rake::Task['rb:build'].invoke
     Rake::Task['grid'].invoke
+    Bazel.execute('build', [], '@bundle//bin:rubocop')
+    manage_selenium_ruby!
+  end
+
+  def manage_selenium_ruby!
+    label = 'selenium-ruby'
+
+    rbenv_path = `command -v rbenv`.strip
+    rbenv_root = `#{rbenv_path} root`.strip
+    dest = File.join(rbenv_root, 'versions', label)
+    return if File.symlink?(dest)
+
+    rb_dir = File.join(Dir.pwd, 'rb')
+    bazel_bin  = File.expand_path('../bazel-selenium/external/rules_ruby++ruby+ruby/dist/bin', rb_dir)
+    bazel_dist = File.dirname(bazel_bin)
+    FileUtils.ln_s(bazel_dist, dest)
+    system(rbenv_path, 'rehash')
+
+    Dir.chdir(rb_dir) do
+      system('direnv allow')
+      system('direnv reload')
+      system({ "RBENV_VERSION" => label }, 'bundle', 'install')
+    end
+  rescue StandardError => e
+    puts "Unable to set Bazel Selenium as Default: #{e.message}"
   end
 
   desc 'Push Ruby gems to rubygems'
