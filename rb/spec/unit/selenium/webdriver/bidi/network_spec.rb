@@ -35,9 +35,9 @@ module Selenium
           it 'sends only the mandatory request ID when all optional args are nil' do
             expected_payload = {request: request_id}
 
-            expect(mock_bidi).to have_received(:send_cmd).with('network.continueRequest', expected_payload)
-
             network.continue_request(id: request_id)
+
+            expect(mock_bidi).to have_received(:send_cmd).with('network.continueRequest', expected_payload)
           end
 
           it 'sends only provided optional args' do
@@ -47,8 +47,6 @@ module Selenium
               method: 'POST'
             }
 
-            expect(mock_bidi).to have_received(:send_cmd).with('network.continueRequest', expected_payload)
-
             network.continue_request(
               id: request_id,
               body: {type: 'string', value: 'new body'},
@@ -56,6 +54,8 @@ module Selenium
               headers: nil,
               method: 'POST'
             )
+
+            expect(mock_bidi).to have_received(:send_cmd).with('network.continueRequest', expected_payload)
           end
         end
 
@@ -63,9 +63,9 @@ module Selenium
           it 'sends only the mandatory request ID when all optional args are nil' do
             expected_payload = {request: request_id}
 
-            expect(mock_bidi).to have_received(:send_cmd).with('network.continueResponse', expected_payload)
-
             network.continue_response(id: request_id)
+
+            expect(mock_bidi).to have_received(:send_cmd).with('network.continueResponse', expected_payload)
           end
 
           it 'sends only provided optional args' do
@@ -76,8 +76,6 @@ module Selenium
               statusCode: 202
             }
 
-            expect(mock_bidi).to have_received(:send_cmd).with('network.continueResponse', expected_payload)
-
             network.continue_response(
               id: request_id,
               cookies: nil,
@@ -86,6 +84,8 @@ module Selenium
               reason: nil,
               status: 202
             )
+
+            expect(mock_bidi).to have_received(:send_cmd).with('network.continueResponse', expected_payload)
           end
         end
 
@@ -93,9 +93,9 @@ module Selenium
           it 'sends only the mandatory request ID when all optional args are nil' do
             expected_payload = {request: request_id}
 
-            expect(mock_bidi).to have_received(:send_cmd).with('network.provideResponse', expected_payload)
-
             network.provide_response(id: request_id)
+
+            expect(mock_bidi).to have_received(:send_cmd).with('network.provideResponse', expected_payload)
           end
 
           it 'sends only provided optional args' do
@@ -105,8 +105,6 @@ module Selenium
               reasonPhrase: 'OK-Custom'
             }
 
-            expect(mock_bidi).to have_received(:send_cmd).with('network.provideResponse', expected_payload)
-
             network.provide_response(
               id: request_id,
               body: {type: 'string', value: 'Hello'},
@@ -115,6 +113,8 @@ module Selenium
               reason: 'OK-Custom',
               status: nil
             )
+
+            expect(mock_bidi).to have_received(:send_cmd).with('network.provideResponse', expected_payload)
           end
         end
       end

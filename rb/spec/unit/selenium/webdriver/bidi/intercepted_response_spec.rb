@@ -39,12 +39,12 @@ module Selenium
         end
 
         describe 'Initialization and Default State' do
-          it 'has nil headers by default' do
-            expect(intercepted_response.headers).to be_nil
+          it 'has an empty hash as headers by default' do
+            expect(intercepted_response.headers).to be_empty
           end
 
-          it 'has nil cookies by default' do
-            expect(intercepted_response.cookies).to be_nil
+          it 'has an empty hash as cookies by default' do
+            expect(intercepted_response.cookies).to be_empty
           end
         end
 
@@ -116,7 +116,7 @@ module Selenium
             expect(mock_network).to have_received(:provide_response).with(expected_payload)
           end
 
-          it 'sends body payload and uses default nil cookies/headers' do
+          it 'sends body payload and uses default [] cookies/headers' do
             intercepted_response.body = mock_body_string
             reason = 'Provided Success'
             status = 200
