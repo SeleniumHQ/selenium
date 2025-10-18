@@ -65,6 +65,12 @@ public class EventBusFlags implements HasRoles {
       example = "\"org.openqa.selenium.events.zeromq.ZeroMqEventBus\"")
   private String implementation;
 
+  @Parameter(
+      names = {"--eventbus-heartbeat-period"},
+      description = "How often, in seconds, will the EventBus socket send heartbeats")
+  @ConfigValue(section = EVENTS_SECTION, name = "eventbus-heartbeat-period", example = "30")
+  private int eventbusHeartbeatPeriod;
+
   @Override
   public Set<Role> getRoles() {
     return ImmutableSet.of(EVENT_BUS_ROLE);

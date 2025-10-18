@@ -18,13 +18,15 @@
 import os
 import tempfile
 
+import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+@pytest.mark.no_driver_after_test
 def test_get_downloadable_files(driver, pages):
     _browser_downloads(driver, pages)
-
     file_names = driver.get_downloadable_files()
 
     assert "file_1.txt" in file_names
@@ -32,6 +34,7 @@ def test_get_downloadable_files(driver, pages):
     assert type(file_names) is list
 
 
+@pytest.mark.no_driver_after_test
 def test_download_file(driver, pages):
     _browser_downloads(driver, pages)
 
@@ -48,6 +51,7 @@ def test_download_file(driver, pages):
             assert "Hello, World!" in file.read()
 
 
+@pytest.mark.no_driver_after_test
 def test_delete_downloadable_files(driver, pages):
     _browser_downloads(driver, pages)
 

@@ -27,6 +27,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -76,7 +77,11 @@ class UnboundZmqEventBus implements EventBus {
   private ZMQ.Socket sub;
 
   UnboundZmqEventBus(
-      ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+      ZContext context,
+      String publishConnection,
+      String subscribeConnection,
+      Secret secret,
+      Duration heartbeatPeriod) {
     Require.nonNull("Secret", secret);
     StringBuilder builder = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(builder)) {
@@ -136,11 +141,13 @@ class UnboundZmqEventBus implements EventBus {
             () -> {
               sub = context.createSocket(SocketType.SUB);
               sub.setIPv6(isSubAddressIPv6(publishConnection));
+              ZmqUtils.configureHeartbeat(sub, heartbeatPeriod, "SUB");
               sub.connect(publishConnection);
               sub.subscribe(new byte[0]);
 
               pub = context.createSocket(SocketType.PUB);
               pub.setIPv6(isSubAddressIPv6(subscribeConnection));
+              ZmqUtils.configureHeartbeat(pub, heartbeatPeriod, "PUB");
               pub.connect(subscribeConnection);
             });
     // Connections are already established
