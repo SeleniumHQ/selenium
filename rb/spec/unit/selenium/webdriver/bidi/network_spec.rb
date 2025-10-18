@@ -17,105 +17,281 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../spec_helper', __dir__)
-# Adjust the require path as necessary for your project structure
-require File.expand_path('../../../../../lib/selenium/webdriver/bidi/network', __dir__)
+require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    class BiDi
-      describe Network do
-        let(:mock_bidi) { instance_double(BiDi, 'Bidi') }
-        let(:network) { described_class.new(mock_bidi) }
-        let(:request_id) { '12345-request-id' }
+    describe Network, exclude: {version: 'beta'},
+                      exclusive: {bidi: true, reason: 'only executed when bidi is enabled'},
+                      only: {browser: %i[chrome edge firefox]} do
+      let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
+      let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
-        before { allow(mock_bidi).to receive(:send_cmd).and_return({}) }
-
-        describe '#continue_request' do
-          it 'sends only the mandatory request ID when all optional args are nil' do
-            expected_payload = {request: request_id}
-
-            expect(mock_bidi).to have_received(:send_cmd).with('network.continueRequest', expected_payload)
-
-            network.continue_request(id: request_id)
-          end
-
-          it 'sends only provided optional args' do
-            expected_payload = {
-              request: request_id,
-              body: {type: 'string', value: 'new body'},
-              method: 'POST'
-            }
-
-            expect(mock_bidi).to have_received(:send_cmd).with('network.continueRequest', expected_payload)
-
-            network.continue_request(
-              id: request_id,
-              body: {type: 'string', value: 'new body'},
-              cookies: nil,
-              headers: nil,
-              method: 'POST'
-            )
-          end
+      it 'adds an auth handler' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_authentication_handler(username, password)
+          driver.navigate.to url_for('basicAuth')
+          expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+          expect(network.callbacks.count).to be 1
         end
+      end
 
-        describe '#continue_response' do
-          it 'sends only the mandatory request ID when all optional args are nil' do
-            expected_payload = {request: request_id}
-
-            expect(mock_bidi).to have_received(:send_cmd).with('network.continueResponse', expected_payload)
-
-            network.continue_response(id: request_id)
-          end
-
-          it 'sends only provided optional args' do
-            expected_headers = [{name: 'Auth', value: {type: 'string', value: 'Token'}}]
-            expected_payload = {
-              request: request_id,
-              headers: expected_headers,
-              statusCode: 202
-            }
-
-            expect(mock_bidi).to have_received(:send_cmd).with('network.continueResponse', expected_payload)
-
-            network.continue_response(
-              id: request_id,
-              cookies: nil,
-              credentials: nil,
-              headers: expected_headers,
-              reason: nil,
-              status: 202
-            )
-          end
+      it 'adds an auth handler with a filter' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_authentication_handler(username, password, url_for('basicAuth'))
+          driver.navigate.to url_for('basicAuth')
+          expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+          expect(network.callbacks.count).to be 1
         end
+      end
 
-        describe '#provide_response' do
-          it 'sends only the mandatory request ID when all optional args are nil' do
-            expected_payload = {request: request_id}
+      it 'adds an auth handler with multiple filters' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_authentication_handler(username, password, url_for('basicAuth'), url_for('formPage.html'))
+          driver.navigate.to url_for('basicAuth')
+          expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+          expect(network.callbacks.count).to be 1
+        end
+      end
 
-            expect(mock_bidi).to have_received(:send_cmd).with('network.provideResponse', expected_payload)
+      it 'adds an auth handler with a pattern type' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_authentication_handler(username, password, url_for('basicAuth'), pattern_type: :url)
+          driver.navigate.to url_for('basicAuth')
+          expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+          expect(network.callbacks.count).to be 1
+        end
+      end
 
-            network.provide_response(id: request_id)
+      it 'removes an auth handler' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          id = network.add_authentication_handler(username, password)
+          network.remove_handler(id)
+          expect(network.callbacks.count).to be 0
+        end
+      end
+
+      it 'clears all auth handlers' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          2.times { network.add_authentication_handler(username, password) }
+          network.clear_handlers
+          expect(network.callbacks.count).to be 0
+        end
+      end
+
+      it 'continues without auth' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_authentication_handler(&:skip)
+          expect { driver.navigate.to url_for('basicAuth') }.to raise_error(Error::WebDriverError)
+        end
+      end
+
+      it 'cancels auth' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_authentication_handler(&:cancel)
+          driver.navigate.to url_for('basicAuth')
+          expect(driver.find_element(tag_name: 'pre').text).to eq('Login please')
+        end
+      end
+
+      it 'adds a request handler' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_request_handler(&:continue)
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.current_url).to eq(url_for('formPage.html'))
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a request handler with a filter' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_request_handler(url_for('formPage.html'), &:continue)
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.current_url).to eq(url_for('formPage.html'))
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a request handler with multiple filters' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_request_handler(url_for('formPage.html'), url_for('basicAuth'), &:continue)
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.current_url).to eq(url_for('formPage.html'))
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a request handler with a pattern type' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_request_handler(url_for('formPage.html'), pattern_type: :url, &:continue)
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.current_url).to eq(url_for('formPage.html'))
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a request handler with attributes' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_request_handler do |request|
+            request.method = 'GET'
+            request.url = url_for('formPage.html')
+            request.headers = {foo: 'bar', baz: 'qux'}
+            request.cookies = {name: 'test',
+                               value: 'value4',
+                               domain: 'example.com',
+                               path: '/path',
+                               size: 1234,
+                               httpOnly: true,
+                               secure: true,
+                               sameSite: 'Strict',
+                               expiry: 1234}
+            request.body = ({test: 'example'})
+            request.continue
           end
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.current_url).to eq(url_for('formPage.html'))
+          expect(network.callbacks.count).to be 1
+        end
+      end
 
-          it 'sends only provided optional args' do
-            expected_payload = {
-              request: request_id,
-              body: {type: 'string', value: 'Hello'},
-              reasonPhrase: 'OK-Custom'
-            }
+      it 'fails a request' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_request_handler(&:fail)
+          expect(network.callbacks.count).to be 1
+          expect { driver.navigate.to url_for('formPage.html') }.to raise_error(Error::WebDriverError)
+        end
+      end
 
-            expect(mock_bidi).to have_received(:send_cmd).with('network.provideResponse', expected_payload)
+      it 'removes a request handler' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          id = network.add_request_handler(&:continue)
+          network.remove_handler(id)
+          expect(network.callbacks.count).to be 0
+        end
+      end
 
-            network.provide_response(
-              id: request_id,
-              body: {type: 'string', value: 'Hello'},
-              cookies: nil,
-              headers: nil,
-              reason: 'OK-Custom',
-              status: nil
-            )
+      it 'clears all request handlers' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          2.times { network.add_request_handler(&:continue) }
+          network.clear_handlers
+          expect(network.callbacks.count).to be 0
+        end
+      end
+
+      it 'adds a response handler' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_response_handler(&:continue)
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.current_url).to eq(url_for('formPage.html'))
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a response handler with a filter' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_response_handler(url_for('formPage.html'), &:continue)
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.find_element(name: 'login')).to be_displayed
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a response handler with multiple filters' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_response_handler(url_for('formPage.html'), url_for('basicAuth'), &:continue)
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.find_element(name: 'login')).to be_displayed
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a response handler with a pattern type' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_response_handler(url_for('formPage.html'), pattern_type: :url, &:continue)
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.current_url).to eq(url_for('formPage.html'))
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a response handler with attributes' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_response_handler do |response|
+            response.reason = 'OK'
+            response.headers = {foo: 'bar'}
+            response.credentials.username = 'foo'
+            response.credentials.password = 'bar'
+            response.cookies = {name: 'foo',
+                                domain: 'localhost',
+                                httpOnly: true,
+                                expiry: '1_000_000',
+                                maxAge: 1_000,
+                                path: '/',
+                                sameSite: 'none',
+                                secure: false}
+            response.continue
           end
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.current_url).to eq(url_for('formPage.html'))
+          expect(network.callbacks.count).to be 1
+        end
+      end
+
+      it 'adds a response handler that provides a response',
+         except: {browser: :firefox,
+                  reason: 'https://github.com/w3c/webdriver-bidi/issues/747'} do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          network.add_response_handler do |response|
+            response.status = 200
+            response.headers = {foo: 'bar'}
+            response.body = '<html><head><title>Hello World!</title></head><body/></html>'
+            response.provide_response
+          end
+          driver.navigate.to url_for('formPage.html')
+          source = driver.page_source
+          expect(source).not_to include('There should be a form here:')
+          expect(source).to include('Hello World!')
+        end
+      end
+
+      it 'removes a response handler' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          id = network.add_response_handler(&:continue)
+          network.remove_handler(id)
+          network.clear_handlers
+          expect(network.callbacks.count).to be 0
+        end
+      end
+
+      it 'clears all response handlers' do
+        reset_driver!(web_socket_url: true) do |driver|
+          network = described_class.new(driver)
+          2.times { network.add_response_handler(&:continue) }
+          network.clear_handlers
+          expect(network.callbacks.count).to be 0
         end
       end
     end
