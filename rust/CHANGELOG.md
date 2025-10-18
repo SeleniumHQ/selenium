@@ -1,3 +1,9 @@
+0.4.37
+======
+
+* Honor full browser version even if major version is installed (#15517)
+* Log browser path also in offline mode (#16215)
+
 0.4.36
 ======
 * Use DEBUG level for WARN traces in offline mode (#15836)

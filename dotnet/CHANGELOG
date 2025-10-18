@@ -1,3 +1,24 @@
+v4.37.0
+======
+* Add CDP for Chrome 141 and remove 138
+* [bidi] Emulation module (#16380)
+* [bidi] Implement browsing context download events (#16382)
+* [bidi] Support browser SetDownloadBehaviour command (#16383)
+* [bidi] Support network SetExtraHeaders command (#16384)
+* [bidi] AOT safe enums serialization (#16386)
+* Handle negative zero BiDi response (#15898)
+* Move JSON converter attributes from centralized options into their respective types (#16393)
+* [bidi] Modules as extensions (#16392)
+* [bidi] Provide type info immediately when serializing (#16397)
+* [bidi] Use events JsonTypeInfo for deserialization (#16402)
+* Replace lazy caching mechanism in BiDi's constructor with simple initialization (#16399)
+* Help more .NETFramework projects to copy SM binaries to output (#16406)
+* [bidi] Specific result type for any command (#16405)
+* [bidi] Deserialize message fast instead of defer it (#16403)
+* [bidi] Remove IEnumerable of command results (#16219)
+* Remove obsoleted FtpProxy (#16411)
+* [bidi] Add Request data type in Network module (#16453)
+
 v4.36.0
 ======
 * Add CDP for Chrome 140 and remove 137
