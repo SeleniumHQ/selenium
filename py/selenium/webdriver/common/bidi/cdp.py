@@ -325,7 +325,7 @@ class CdpSession(CdpBase):
     """Contains the state for a CDP session.
 
     Generally you should not instantiate this object yourself; you should call
-    CdpConnection.open_session().
+    :meth:`CdpConnection.open_session`.
     """
 
     def __init__(self, ws, session_id, target_id):
