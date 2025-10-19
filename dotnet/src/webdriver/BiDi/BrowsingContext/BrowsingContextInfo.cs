@@ -18,13 +18,8 @@
 // </copyright>
 
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record BrowsingContextInfo(BiDi BiDi, IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext)
-    : BrowsingContextEventArgs(BiDi, Context)
-{
-    [JsonInclude]
-    public BrowsingContext? Parent { get; internal set; }
-}
+public sealed record BrowsingContextInfo(BiDi BiDi, IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext, BrowsingContext? Parent)
+    : BrowsingContextEventArgs(BiDi, Context);

@@ -83,7 +83,7 @@ GEM
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.4.0)
+    prism (1.6.0)
     psych (5.2.6)
       date
       stringio
@@ -201,7 +201,6 @@ DEPENDENCIES
   curb (~> 1.0.5)
   debug (~> 1.7)
   git (~> 1.19)
-  prism (~> 1.0, < 1.5)
   rack (~> 2.0)
   rake (~> 13.0)
   rspec (~> 3.0)
