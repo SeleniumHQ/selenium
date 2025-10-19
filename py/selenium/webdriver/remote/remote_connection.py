@@ -473,7 +473,7 @@ class RemoteConnection:
         if hasattr(self, "_conn"):
             self._conn.clear()
 
-    def _trim_large_entries(self, input_dict, max_length=100)-> dict:
+    def _trim_large_entries(self, input_dict, max_length=100) -> dict:
         """Truncate string values in a dictionary if they exceed max_length.
 
         Args:
