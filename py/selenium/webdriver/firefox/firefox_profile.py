@@ -46,12 +46,12 @@ class FirefoxProfile:
     def __init__(self, profile_directory=None):
         """Initialises a new instance of a Firefox Profile.
 
-        :args:
-         - profile_directory: Directory of profile that you want to use. If a
-           directory is passed in it will be cloned and the cloned directory
-           will be used by the driver when instantiated.
-           This defaults to None and will create a new
-           directory when object is created.
+        Args:
+            profile_directory: Directory of profile that you want to use. If a
+                directory is passed in it will be cloned and the cloned directory
+                will be used by the driver when instantiated.
+                This defaults to None and will create a new
+                directory when object is created.
         """
         self._desired_preferences = {}
         if profile_directory:
@@ -179,8 +179,9 @@ class FirefoxProfile:
         """Installs addon from a filepath, url or directory of addons in the
         profile.
 
-        - path: url, absolute path to .xpi, or directory of addons
-        - unpack: whether to unpack unless specified otherwise in the install.rdf
+        Args:
+            addon: url, absolute path to .xpi, or directory of addons
+            unpack: whether to unpack unless specified otherwise in the install.rdf
         """
         tmpdir = None
         xpifile = None
@@ -225,9 +226,11 @@ class FirefoxProfile:
     def _addon_details(self, addon_path):
         """Returns a dictionary of details about the addon.
 
-        :param addon_path: path to the add-on directory or XPI
+        Args:
+            addon_path: path to the add-on directory or XPI
 
-        Returns::
+        Returns:
+            A dictionary containing:
 
             {
                 "id": "rainbow@colors.org",  # id of the addon
