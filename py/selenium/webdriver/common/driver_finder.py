@@ -29,8 +29,9 @@ class DriverFinder:
     """A Driver finding class responsible for obtaining the correct driver and
     associated browser.
 
-    :param service: instance of the driver service class.
-    :param options: instance of the browser options class.
+    Args:
+        service: instance of the driver service class.
+        options: instance of the browser options class.
     """
 
     def __init__(self, service: Service, options: BaseOptions) -> None:
