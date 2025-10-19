@@ -17,13 +17,7 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record UserPromptClosedEventArgs(BiDi BiDi, BrowsingContext Context, bool Accepted)
-    : BrowsingContextEventArgs(BiDi, Context)
-{
-    [JsonInclude]
-    public string? UserText { get; internal set; }
-}
+public sealed record UserPromptClosedEventArgs(BiDi BiDi, BrowsingContext Context, bool Accepted, string? UserText)
+    : BrowsingContextEventArgs(BiDi, Context);

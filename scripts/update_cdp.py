@@ -65,9 +65,12 @@ def old_chrome(chrome_milestone):
 
 
 def flatten_browser_pdl(file_path, chrome_version):
-    """Fetches all included domain .pdl files and concatenates them."""
+    """Preserves the version block and concatenates all included domain .pdl files."""
     with open(file_path, "r") as file:
         content = file.read()
+    # Extract version block
+    version_match = re.search(r"(version\s+major\s+\d+\s+minor\s+\d+)", content)
+    version_block = version_match.group(1) + "\n\n" if version_match else ""
     # Find all include lines
     includes = re.findall(r"include domains/([A-Za-z0-9_]+\.pdl)", content)
     base_url = f"https://raw.githubusercontent.com/chromium/chromium/{chrome_version}/third_party/blink/public/devtools_protocol/domains/"
@@ -76,9 +79,9 @@ def flatten_browser_pdl(file_path, chrome_version):
         url = base_url + domain_file
         response = http.request("GET", url)
         concatenated += response.data.decode("utf-8") + "\n"
-    # Overwrite the file with concatenated domains
+    # Overwrite the file with version block + concatenated domains
     with open(file_path, "w") as file:
-        file.write(concatenated)
+        file.write(version_block + concatenated)
 
 
 def add_pdls(chrome_milestone):

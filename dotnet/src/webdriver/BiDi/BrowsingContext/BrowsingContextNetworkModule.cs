@@ -35,7 +35,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         var intercept = await networkModule.AddInterceptAsync([InterceptPhase.BeforeRequestSent], addInterceptOptions).ConfigureAwait(false);
 
         await intercept.OnBeforeRequestSentAsync(
-            async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator)),
+            async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator, req.Intercepts)),
             new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
 
         return intercept;
@@ -51,7 +51,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         var intercept = await networkModule.AddInterceptAsync([InterceptPhase.ResponseStarted], addInterceptOptions).ConfigureAwait(false);
 
         await intercept.OnResponseStartedAsync(
-            async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response)),
+            async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response, res.Intercepts)),
             new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
 
         return intercept;
@@ -67,7 +67,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         var intercept = await networkModule.AddInterceptAsync([InterceptPhase.AuthRequired], addInterceptOptions).ConfigureAwait(false);
 
         await intercept.OnAuthRequiredAsync(
-            async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response)),
+            async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response, auth.Intercepts)),
             new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
 
         return intercept;
