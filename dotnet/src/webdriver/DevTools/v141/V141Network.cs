@@ -1,4 +1,4 @@
-// <copyright file="V138Network.cs" company="Selenium Committers">
+// <copyright file="V141Network.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,30 +17,30 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V138.Fetch;
-using OpenQA.Selenium.DevTools.V138.Network;
+using OpenQA.Selenium.DevTools.V141.Fetch;
+using OpenQA.Selenium.DevTools.V141.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools.V138;
+namespace OpenQA.Selenium.DevTools.V141;
 
 /// <summary>
-/// Class providing functionality for manipulating network calls using version 138 of the DevTools Protocol
+/// Class providing functionality for manipulating network calls using version 141 of the DevTools Protocol
 /// </summary>
-public class V138Network : DevTools.Network
+public class V141Network : DevTools.Network
 {
     private FetchAdapter fetch;
     private NetworkAdapter network;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="V138Network"/> class.
+    /// Initializes a new instance of the <see cref="V141Network"/> class.
     /// </summary>
     /// <param name="network">The adapter for the Network domain.</param>
     /// <param name="fetch">The adapter for the Fetch domain.</param>
     /// <exception cref="ArgumentNullException">If <paramref name="network"/> or <paramref name="fetch"/> are <see langword="null"/>.</exception>
-    public V138Network(NetworkAdapter network, FetchAdapter fetch)
+    public V141Network(NetworkAdapter network, FetchAdapter fetch)
     {
         this.network = network ?? throw new ArgumentNullException(nameof(network));
         this.fetch = fetch ?? throw new ArgumentNullException(nameof(fetch));
@@ -247,9 +247,9 @@ public class V138Network : DevTools.Network
         await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
         {
             RequestId = requestId,
-            AuthChallengeResponse = new V138.Fetch.AuthChallengeResponse()
+            AuthChallengeResponse = new V141.Fetch.AuthChallengeResponse()
             {
-                Response = V138.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
+                Response = V141.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
                 Username = userName,
                 Password = password
             }
@@ -266,9 +266,9 @@ public class V138Network : DevTools.Network
         await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
         {
             RequestId = requestId,
-            AuthChallengeResponse = new OpenQA.Selenium.DevTools.V138.Fetch.AuthChallengeResponse()
+            AuthChallengeResponse = new OpenQA.Selenium.DevTools.V141.Fetch.AuthChallengeResponse()
             {
-                Response = V138.Fetch.AuthChallengeResponseResponseValues.CancelAuth
+                Response = V141.Fetch.AuthChallengeResponseResponseValues.CancelAuth
             }
         }).ConfigureAwait(false);
     }
