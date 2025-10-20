@@ -51,7 +51,7 @@ module Selenium
       end
 
       def ci
-        elsif ENV['JENKINS']
+        if ENV['JENKINS']
           :jenkins
         elsif ENV['APPVEYOR']
           :appveyor
