@@ -22,20 +22,21 @@ module Selenium
   module WebDriver
     module Remote
       module Http
-        # @api private
         class Default < Common
           attr_writer :proxy
 
-          attr_accessor :open_timeout, :read_timeout
+          attr_accessor :open_timeout, :read_timeout, :socket_timeout, :socket_interval
 
           # Initializes object.
           # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
           # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
           # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
           # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
-          def initialize(open_timeout: nil, read_timeout: nil)
+          def initialize(open_timeout: nil, read_timeout: nil, socket_timeout: 30, socket_interval: 0.1)
             @open_timeout = open_timeout
             @read_timeout = read_timeout
+            @socket_timeout = socket_timeout
+            @socket_interval = socket_interval
             super()
           end
 

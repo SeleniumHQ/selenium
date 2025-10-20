@@ -18,6 +18,10 @@ module Selenium
 
           attr_accessor read_timeout: untyped
 
+          attr_accessor socket_timeout: int
+
+          attr_accessor socket_interval: float
+
           def initialize: (?open_timeout: untyped?, ?read_timeout: untyped?) -> void
 
           def close: () -> untyped

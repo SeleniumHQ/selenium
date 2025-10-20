@@ -26,7 +26,7 @@ module Selenium
         def create_session(capabilities)
           super
           socket_url = @capabilities[:web_socket_url]
-          @bidi = Selenium::WebDriver::BiDi.new(url: socket_url)
+          @bidi = Selenium::WebDriver::BiDi.new(url: socket_url, http: @http)
         end
 
         def get(url)

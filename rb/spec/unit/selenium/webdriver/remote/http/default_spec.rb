@@ -36,17 +36,21 @@ module Selenium
 
             expect(http.open_timeout).to eq 60
             expect(http.read_timeout).to eq 60
+            expect(http.socket_timeout).to eq 30
+            expect(http.socket_interval).to eq 0.1
           end
 
           describe '#initialize' do
-            let(:client) { described_class.new(read_timeout: 22, open_timeout: 23) }
-
-            it 'accepts read timeout options' do
+            it 'constructs values' do
+              client = described_class.new(read_timeout: 22,
+                                           open_timeout: 23,
+                                           socket_timeout: 4,
+                                           socket_interval: 0.5)
               expect(client.open_timeout).to eq 23
-            end
-
-            it 'accepts open timeout options' do
               expect(client.read_timeout).to eq 22
+              expect(client.socket_timeout).to eq 4
+              expect(client.socket_interval).to eq 0.5
+
             end
           end
 

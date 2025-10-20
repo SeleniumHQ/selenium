@@ -31,6 +31,7 @@ module Selenium
           WebDriver.logger.ignore(:logger_info)
           SeleniumManager.bin_path = root.join('bazel-bin/rb/bin').to_s if File.exist?(root.join('bazel-bin/rb/bin'))
 
+          ENV['WEBDRIVER_BIDI'] = 'true'
           @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
           @remote_server = nil
@@ -168,14 +169,17 @@ module Selenium
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
-        def create_driver!(listener: nil, **, &block)
+        def create_driver!(listener: nil, **opts, &block)
           check_for_previous_error
+
+          socket_timeout = opts.delete(:socket_timeout)
+          http_client = WebDriver::Remote::Http::Default.new(socket_timeout: socket_timeout) if socket_timeout
 
           method = :"#{driver}_driver"
           instance = if private_methods.include?(method)
-                       send(method, listener: listener, options: build_options(**))
+                       send(method, listener: listener, http_client: http_client, options: build_options(**opts))
                      else
-                       WebDriver::Driver.for(driver, listener: listener, options: build_options(**))
+                       WebDriver::Driver.for(driver, listener: listener, options: build_options(**opts))
                      end
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block

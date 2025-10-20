@@ -7,6 +7,10 @@ module Selenium
 
       @session_id: untyped
 
+      @socket_interval: float
+
+      @socket_timeout: int
+
       @url: untyped
 
       @socket_thread: untyped

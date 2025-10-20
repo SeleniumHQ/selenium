@@ -21,19 +21,23 @@ require 'websocket'
 
 module Selenium
   module WebDriver
+    #
+    # WebSocketConnection manages lifecycle of sockets for Devtools and BiDi implementations.
+    # @api private
+    #
+
     class WebSocketConnection
       CONNECTION_ERRORS = [
         Errno::ECONNRESET, # connection is aborted (browser process was killed)
         Errno::EPIPE # broken pipe (browser process was killed)
       ].freeze
 
-      RESPONSE_WAIT_TIMEOUT = 30
-      RESPONSE_WAIT_INTERVAL = 0.1
-
       MAX_LOG_MESSAGE_SIZE = 9999
 
-      def initialize(url:)
+      def initialize(url:, http: nil)
         @callback_threads = ThreadGroup.new
+        @socket_timeout = http&.socket_timeout || 30
+        @socket_interval = http&.socket_interval || 0.1
 
         @session_id = nil
         @url = url
@@ -147,7 +151,7 @@ module Selenium
       end
 
       def wait
-        @wait ||= Wait.new(timeout: RESPONSE_WAIT_TIMEOUT, interval: RESPONSE_WAIT_INTERVAL)
+        @wait ||= Wait.new(timeout: @socket_timeout, interval: @socket_interval)
       end
 
       def socket
