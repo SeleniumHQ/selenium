@@ -1,6 +1,5 @@
 using OpenQA.Selenium.BiDi.Browser;
 using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using OpenQA.Selenium.BiDi.Permissions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
