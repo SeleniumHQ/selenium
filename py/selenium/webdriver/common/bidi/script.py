@@ -60,12 +60,10 @@ class RealmInfo:
     def from_json(cls, json: dict[str, Any]) -> "RealmInfo":
         """Creates a RealmInfo instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the realm information.
 
         Returns:
-        -------
             RealmInfo: A new instance of RealmInfo.
         """
         if "realm" not in json:
@@ -95,12 +93,10 @@ class Source:
     def from_json(cls, json: dict[str, Any]) -> "Source":
         """Creates a Source instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the source information.
 
         Returns:
-        -------
             Source: A new instance of Source.
         """
         if "realm" not in json:
@@ -125,12 +121,10 @@ class EvaluateResult:
     def from_json(cls, json: dict[str, Any]) -> "EvaluateResult":
         """Creates an EvaluateResult instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the evaluation result.
 
         Returns:
-        -------
             EvaluateResult: A new instance of EvaluateResult.
         """
         if "realm" not in json:
@@ -160,12 +154,10 @@ class ScriptMessage:
     def from_json(cls, json: dict[str, Any]) -> "ScriptMessage":
         """Creates a ScriptMessage instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the script message.
 
         Returns:
-        -------
             ScriptMessage: A new instance of ScriptMessage.
         """
         if "channel" not in json:
@@ -194,12 +186,10 @@ class RealmCreated:
     def from_json(cls, json: dict[str, Any]) -> "RealmCreated":
         """Creates a RealmCreated instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the realm created event.
 
         Returns:
-        -------
             RealmCreated: A new instance of RealmCreated.
         """
         return cls(realm_info=RealmInfo.from_json(json))
@@ -217,12 +207,10 @@ class RealmDestroyed:
     def from_json(cls, json: dict[str, Any]) -> "RealmDestroyed":
         """Creates a RealmDestroyed instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the realm destroyed event.
 
         Returns:
-        -------
             RealmDestroyed: A new instance of RealmDestroyed.
         """
         if "realm" not in json:
@@ -266,12 +254,10 @@ class Script:
     def pin(self, script: str) -> str:
         """Pins a script to the current browsing context.
 
-        Parameters:
-        -----------
+        Args:
             script: The script to pin.
 
         Returns:
-        -------
             str: The ID of the pinned script.
         """
         return self._add_preload_script(script)
@@ -279,8 +265,7 @@ class Script:
     def unpin(self, script_id: str) -> None:
         """Unpins a script from the current browsing context.
 
-        Parameters:
-        -----------
+        Args:
             script_id: The ID of the pinned script to unpin.
         """
         self._remove_preload_script(script_id)
@@ -288,17 +273,14 @@ class Script:
     def execute(self, script: str, *args) -> dict:
         """Executes a script in the current browsing context.
 
-        Parameters:
-        -----------
+        Args:
             script: The script function to execute.
             *args: Arguments to pass to the script function.
 
         Returns:
-        -------
             dict: The result value from the script execution.
 
         Raises:
-        ------
             WebDriverException: If the script execution fails.
         """
 
@@ -390,8 +372,7 @@ class Script:
     ) -> str:
         """Adds a preload script.
 
-        Parameters:
-        -----------
+        Args:
             function_declaration: The function declaration to preload.
             arguments: The arguments to pass to the function.
             contexts: The browsing context IDs to apply the script to.
@@ -399,11 +380,9 @@ class Script:
             sandbox: The sandbox name to apply the script to.
 
         Returns:
-        -------
             str: The preload script ID.
 
         Raises:
-        ------
             ValueError: If both contexts and user_contexts are provided.
         """
         if contexts is not None and user_contexts is not None:
@@ -426,8 +405,7 @@ class Script:
     def _remove_preload_script(self, script_id: str) -> None:
         """Removes a preload script.
 
-        Parameters:
-        -----------
+        Args:
             script_id: The preload script ID to remove.
         """
         params = {"script": script_id}
@@ -436,8 +414,7 @@ class Script:
     def _disown(self, handles: list[str], target: dict) -> None:
         """Disowns the given handles.
 
-        Parameters:
-        -----------
+        Args:
             handles: The handles to disown.
             target: The target realm or context.
         """
@@ -460,8 +437,7 @@ class Script:
     ) -> EvaluateResult:
         """Calls a provided function with given arguments in a given realm.
 
-        Parameters:
-        -----------
+        Args:
             function_declaration: The function declaration to call.
             await_promise: Whether to await promise resolution.
             target: The target realm or context.
@@ -472,7 +448,6 @@ class Script:
             user_activation: Whether to trigger user activation.
 
         Returns:
-        -------
             EvaluateResult: The result of the function call.
         """
         params = {
@@ -505,8 +480,7 @@ class Script:
     ) -> EvaluateResult:
         """Evaluates a provided script in a given realm.
 
-        Parameters:
-        -----------
+        Args:
             expression: The script expression to evaluate.
             target: The target realm or context.
             await_promise: Whether to await promise resolution.
@@ -515,7 +489,6 @@ class Script:
             user_activation: Whether to trigger user activation.
 
         Returns:
-        -------
             EvaluateResult: The result of the script evaluation.
         """
         params = {
@@ -540,13 +513,11 @@ class Script:
     ) -> list[RealmInfo]:
         """Returns a list of all realms, optionally filtered.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID to filter by.
             type: The realm type to filter by.
 
         Returns:
-        -------
             List[RealmInfo]: A list of realm information.
         """
         params = {}

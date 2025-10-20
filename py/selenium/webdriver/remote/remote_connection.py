@@ -169,10 +169,11 @@ class RemoteConnection:
 
     @classmethod
     def get_timeout(cls):
-        """:Returns:
+        """Returns timeout value in seconds for all http requests made to the Remote Connection.
 
-        Timeout value in seconds for all http requests made to the
-        Remote Connection
+        Returns:
+            Timeout value in seconds for all http requests made to the
+            Remote Connection
         """
         warnings.warn(
             "get_timeout() in RemoteConnection is deprecated, get timeout from client_config instead",
@@ -185,8 +186,8 @@ class RemoteConnection:
     def set_timeout(cls, timeout):
         """Override the default timeout.
 
-        :Args:
-            - timeout - timeout value for http requests in seconds
+        Args:
+            timeout: timeout value for http requests in seconds
         """
         warnings.warn(
             "set_timeout() in RemoteConnection is deprecated, set timeout in client_config instead",
@@ -207,11 +208,12 @@ class RemoteConnection:
 
     @classmethod
     def get_certificate_bundle_path(cls):
-        """:Returns:
+        """Returns paths of the .pem encoded certificate to verify connection to command executor.
 
-        Paths of the .pem encoded certificate to verify connection to
-        command executor. Defaults to certifi.where() or
-        REQUESTS_CA_BUNDLE env variable if set.
+        Returns:
+            Paths of the .pem encoded certificate to verify connection to
+            command executor. Defaults to certifi.where() or
+            REQUESTS_CA_BUNDLE env variable if set.
         """
         warnings.warn(
             "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from client_config instead",
@@ -226,8 +228,8 @@ class RemoteConnection:
         command executor. Can also be set to None to disable certificate
         validation.
 
-        :Args:
-            - path - path of a .pem encoded certificate chain.
+        Args:
+            path: path of a .pem encoded certificate chain.
         """
         warnings.warn(
             "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs in client_config instead",
@@ -240,9 +242,9 @@ class RemoteConnection:
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
         """Get headers for remote request.
 
-        :Args:
-         - parsed_url - The parsed url
-         - keep_alive (Boolean) - Is this a keep-alive connection (default: False)
+        Args:
+            parsed_url: The parsed url
+            keep_alive: Is this a keep-alive connection (default: False)
         """
 
         headers = {
@@ -385,10 +387,10 @@ class RemoteConnection:
         Any path substitutions required for the URL mapped to the command should be
         included in the command parameters.
 
-        :Args:
-         - command - A string specifying the command to execute.
-         - params - A dictionary of named parameters to send with the command as
-           its JSON payload.
+        Args:
+            command: A string specifying the command to execute.
+            params: A dictionary of named parameters to send with the command as
+                its JSON payload.
         """
         command_info = self._commands.get(command) or self.extra_commands.get(command)
         assert command_info is not None, f"Unrecognised command {command}"
@@ -404,16 +406,16 @@ class RemoteConnection:
         LOGGER.debug("%s %s %s", command_info[0], url, str(trimmed))
         return self._request(command_info[0], url, body=data)
 
-    def _request(self, method, url, body=None):
+    def _request(self, method, url, body=None) -> dict:
         """Send an HTTP request to the remote server.
 
-        :Args:
-         - method - A string for the HTTP method to send the request with.
-         - url - A string for the URL to send the request to.
-         - body - A string for request body. Ignored unless method is POST or PUT.
+        Args:
+            method: A string for the HTTP method to send the request with.
+            url: A string for the URL to send the request to.
+            body: A string for request body. Ignored unless method is POST or PUT.
 
-        :Returns:
-          A dictionary with the server's parsed JSON response.
+        Returns:
+            A dictionary with the server's parsed JSON response.
         """
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self._client_config.keep_alive)
@@ -471,12 +473,15 @@ class RemoteConnection:
         if hasattr(self, "_conn"):
             self._conn.clear()
 
-    def _trim_large_entries(self, input_dict, max_length=100):
+    def _trim_large_entries(self, input_dict, max_length=100) -> dict:
         """Truncate string values in a dictionary if they exceed max_length.
 
-        :param dict: Dictionary with potentially large values
-        :param max_length: Maximum allowed length of string values
-        :return: Dictionary with truncated string values
+        Args:
+            input_dict: Dictionary with potentially large values
+            max_length: Maximum allowed length of string values
+
+        Returns:
+            Dictionary with truncated string values
         """
         output_dictionary = {}
         for key, value in input_dict.items():

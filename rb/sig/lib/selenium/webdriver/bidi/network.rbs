@@ -24,7 +24,7 @@ module Selenium
 
         def remove_intercept: (String intercept) -> Hash[nil, nil]
 
-        def continue_with_auth: (String request_id, String username, String password) -> Hash[nil, nil]
+        def continue_with_auth: (Integer request_id, String username, String password) -> Hash[nil, nil]
 
         def provide_response: -> Hash[nil, nil]
 

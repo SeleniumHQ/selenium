@@ -41,11 +41,12 @@ class Service(ABC):
     launch a child program in a new process as an interim process to
     communicate with a browser.
 
-    :param executable: install path of the executable.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+    Args:
+        executable: install path of the executable.
+        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
@@ -96,9 +97,9 @@ class Service(ABC):
     def start(self) -> None:
         """Starts the Service.
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
+        Raises:
+            WebDriverException: Raised either when it can't start the service
+                or when it can't connect to the service
         """
         if self._path is None:
             raise WebDriverException("Service path cannot be None.")
@@ -201,7 +202,8 @@ class Service(ABC):
     def _start_process(self, path: str) -> None:
         """Creates a subprocess by executing the command provided.
 
-        :param cmd: full command to execute
+        Args:
+            path: full command to execute
         """
         cmd = [path]
         cmd.extend(self.command_line_args())
