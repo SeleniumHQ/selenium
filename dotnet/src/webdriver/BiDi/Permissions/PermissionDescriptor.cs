@@ -17,6 +17,6 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.BiDi.Extensions.Permissions;
+namespace OpenQA.Selenium.BiDi.Permissions;
 
 internal record PermissionDescriptor(string Name);

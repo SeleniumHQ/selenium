@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi.Extensions.Permissions;
+namespace OpenQA.Selenium.BiDi.Permissions;
 
 internal class SetPermissionCommand(SetPermissionCommandParameters @params)
     : Command<SetPermissionCommandParameters, SetPermissionResult>(@params, "permissions.setPermission");

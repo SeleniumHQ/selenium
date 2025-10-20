@@ -20,7 +20,7 @@
 using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi.Extensions.Permissions;
+namespace OpenQA.Selenium.BiDi.Permissions;
 
 [JsonConverter(typeof(CamelCaseEnumConverter<PermissionState>))]
 public enum PermissionState

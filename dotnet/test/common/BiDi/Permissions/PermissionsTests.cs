@@ -4,7 +4,7 @@ using OpenQA.Selenium.BiDi.Script;
 using OpenQA.Selenium.Environment;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.BiDi.Extensions.Permissions;
+namespace OpenQA.Selenium.BiDi.Permissions;
 
 internal class PermissionsTests : BiDiTestFixture
 {
