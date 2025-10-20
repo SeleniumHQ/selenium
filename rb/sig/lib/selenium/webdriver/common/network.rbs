@@ -1,31 +1,34 @@
 module Selenium
   module WebDriver
     class Network
+
+      Registration: untyped
+
       @network: BiDi::Network
 
-      @callbacks: Hash[String, String]
+      @registrations: Array[Struct[untyped]]
 
-      attr_reader callbacks: Hash[String, String]
+      attr_reader registrations: Array[Struct[untyped]]
 
       attr_reader network: BiDi::Network
 
       alias bidi network
 
-      def initialize: (Remote::Bridge bridge) -> void
+      def initialize: (Remote::BiDiBridge bridge) -> void
 
-      def remove_handler: (Numeric id) -> untyped
+      def remove_handler: (Struct[untyped] registration) -> untyped
 
       def clear_handlers: () -> untyped
 
-      def add_authentication_handler: (?String? username, ?String? password, *String filter, ?pattern_type: Symbol?) { (?) -> untyped } -> untyped
+      def add_authentication_handler: (?String? username, ?String? password, *String filter, ?pattern_type: Symbol?) ?{ (?) -> untyped } -> Struct[untyped]
 
-      def add_request_handler: (*String filter, ?pattern_type: Symbol?) -> Hash[String, String]
+      def add_request_handler: (*String filter, ?pattern_type: Symbol?) -> Struct[untyped]
 
-      def add_response_handler: (*String filter, ?pattern_type: Symbol?) -> Hash[String, String]
+      def add_response_handler: (*String filter, ?pattern_type: Symbol?) -> Struct[untyped]
 
       private
 
-      def add_handler: (Symbol event_type, String phase, BiDi::InterceptedRequest | BiDi::InterceptedAuth | BiDi::InterceptedResponse intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> untyped
+      def add_handler: [T < BiDi::InterceptedItem] (Symbol event_type, String phase, T intercept_type, Array[String] filter, ?pattern_type: Symbol?) { (untyped) -> untyped } -> Struct[untyped]
     end
   end
 end

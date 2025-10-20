@@ -8,6 +8,8 @@ module Selenium
 
         LOG_LEVEL: Hash[Symbol, String]
 
+        @browsing_context_ids: Array[String]?
+
         def initialize: (untyped driver, ?untyped? browsing_context_ids) -> void
 
         def on_console_entry: (?untyped? filter_by) { () -> untyped } -> untyped

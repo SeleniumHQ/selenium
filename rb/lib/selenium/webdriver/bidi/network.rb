@@ -45,11 +45,17 @@ module Selenium
           @bidi.send_cmd('network.addIntercept',
                          phases: phases,
                          contexts: contexts,
-                         urlPatterns: url_patterns)
+                         urlPatterns: url_patterns)['intercept']
         end
 
         def remove_intercept(intercept)
           @bidi.send_cmd('network.removeIntercept', intercept: intercept)
+        end
+
+        def unsubscribe(event, id)
+          event = EVENTS[event] if event.is_a?(Symbol)
+          @bidi.session.unsubscribe(ids: id)
+          @bidi.remove_callback(event.to_s, id)
         end
 
         def continue_with_auth(request_id, username, password)
@@ -133,8 +139,9 @@ module Selenium
 
         def on(event, &block)
           event = EVENTS[event] if event.is_a?(Symbol)
-          @bidi.add_callback(event, &block)
-          @bidi.session.subscribe(event)
+          id = @bidi.session.subscribe(event)
+          @bidi.add_callback(event, id, &block)
+          id
         end
       end # Network
     end # BiDi

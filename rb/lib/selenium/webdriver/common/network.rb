@@ -24,24 +24,26 @@ module Selenium
     class Network
       extend Forwardable
 
-      attr_reader :callbacks, :network
+      Registration = Struct.new(:subscription, :interception, :event)
+
+      attr_reader :registrations, :network
       alias bidi network
 
       def_delegators :network, :continue_with_auth, :continue_with_request, :continue_with_response
 
       def initialize(bridge)
         @network = BiDi::Network.new(bridge.bidi)
-        @callbacks = {}
+        @registrations = []
       end
 
-      def remove_handler(id)
-        intercept = callbacks[id]
-        network.remove_intercept(intercept['intercept'])
-        callbacks.delete(id)
+      def remove_handler(registration)
+        network.remove_intercept(registration.interception)
+        network.unsubscribe(registration.event, registration.subscription)
+        registrations.delete(registration)
       end
 
       def clear_handlers
-        callbacks.each_key { |id| remove_handler(id) }
+        registrations.dup.each { |registration| remove_handler(registration) }
       end
 
       def add_authentication_handler(username = nil, password = nil, *filter, pattern_type: nil, &block)
@@ -87,15 +89,17 @@ module Selenium
       private
 
       def add_handler(event_type, phase, intercept_type, filter, pattern_type: nil)
-        intercept = network.add_intercept(phases: [phase], url_patterns: [filter].flatten, pattern_type: pattern_type)
-        callback_id = network.on(event_type) do |event|
+        interception = network.add_intercept(phases: [phase], url_patterns: [filter].flatten,
+                                             pattern_type: pattern_type)
+        subscription = network.on(event_type) do |event|
           request = event['request']
           intercepted_item = intercept_type.new(network, request)
           yield(intercepted_item)
         end
 
-        callbacks[callback_id] = intercept
-        callback_id
+        registration = Registration.new(event: event_type, subscription: subscription, interception: interception)
+        @registrations << registration
+        registration
       end
     end # Network
   end # WebDriver

@@ -51,7 +51,7 @@ module Selenium
           end
 
           @bidi = driver.bidi
-          @bidi.session.subscribe('log.entryAdded', browsing_context_ids)
+          @browsing_context_ids = browsing_context_ids
         end
 
         def on_console_entry(filter_by = nil, &block)
@@ -96,7 +96,8 @@ module Selenium
 
         def on(event, &block)
           event = EVENTS[event] if event.is_a?(Symbol)
-          @bidi.add_callback("log.#{event}", &block)
+          id = @bidi.session.subscribe('log.entryAdded', @browsing_context_ids)
+          @bidi.add_callback("log.#{event}", id, &block)
         end
 
         def check_valid_filter(filter_by)

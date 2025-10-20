@@ -26,19 +26,19 @@ module Selenium
 
         def initialize(bidi)
           @bidi = bidi
-          @log_entry_subscribed = false
         end
 
         # @return [int] id of the handler
         # steep:ignore:start
         def add_message_handler(type)
-          subscribe_log_entry unless @log_entry_subscribed
-          @bidi.add_callback('log.entryAdded') do |params|
+          id = subscribe_log_entry
+          @bidi.add_callback('log.entryAdded', id) do |params|
             if params['type'] == type
               log_entry_klass = type == 'console' ? ConsoleLogEntry : JavaScriptLogEntry
               yield(log_entry_klass.new(**params))
             end
           end
+          id
         end
         # steep:ignore:end
 
@@ -52,12 +52,10 @@ module Selenium
 
         def subscribe_log_entry
           @bidi.session.subscribe('log.entryAdded')
-          @log_entry_subscribed = true
         end
 
         def unsubscribe_log_entry
-          @bidi.session.unsubscribe('log.entryAdded')
-          @log_entry_subscribed = false
+          @bidi.session.unsubscribe(events: 'log.entryAdded')
         end
       end # LogHandler
     end # Bidi

@@ -36,13 +36,13 @@ module Selenium
           opts = {events: Array(events)}
           opts[:browsing_contexts] = Array(browsing_contexts) if browsing_contexts
 
-          @bidi.send_cmd('session.subscribe', **opts)
+          @bidi.send_cmd('session.subscribe', **opts)['subscription']
         end
 
-        def unsubscribe(events, browsing_contexts = nil)
-          opts = {events: Array(events)}
-          opts[:browsing_contexts] = Array(browsing_contexts) if browsing_contexts
+        def unsubscribe(events: nil, ids: nil)
+          raise ArgumentError('unsubscribe by event or by id, not both') if events && ids
 
+          opts = events ? {events: Array(events)} : {subscriptions: Array(ids)}
           @bidi.send_cmd('session.unsubscribe', **opts)
         end
       end # Session

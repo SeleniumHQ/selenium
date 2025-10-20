@@ -51,7 +51,7 @@ module Selenium
         it 'removes an intercept' do
           network = described_class.new(driver.bidi)
           intercept = network.add_intercept(phases: [described_class::PHASES[:before_request]])
-          expect(network.remove_intercept(intercept['intercept'])).to be_empty
+          expect(network.remove_intercept(intercept)).to be_empty
         end
 
         it 'continues with auth' do

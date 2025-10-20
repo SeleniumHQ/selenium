@@ -33,7 +33,7 @@ module Selenium
           network.add_authentication_handler(username, password)
           driver.navigate.to url_for('basicAuth')
           expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -43,7 +43,7 @@ module Selenium
           network.add_authentication_handler(username, password, url_for('basicAuth'))
           driver.navigate.to url_for('basicAuth')
           expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -53,7 +53,7 @@ module Selenium
           network.add_authentication_handler(username, password, url_for('basicAuth'), url_for('formPage.html'))
           driver.navigate.to url_for('basicAuth')
           expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -63,7 +63,7 @@ module Selenium
           network.add_authentication_handler(username, password, url_for('basicAuth'), pattern_type: :url)
           driver.navigate.to url_for('basicAuth')
           expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -72,7 +72,7 @@ module Selenium
           network = described_class.new(driver)
           id = network.add_authentication_handler(username, password)
           network.remove_handler(id)
-          expect(network.callbacks.count).to be 0
+          expect(network.registrations.count).to be 0
         end
       end
 
@@ -81,7 +81,7 @@ module Selenium
           network = described_class.new(driver)
           2.times { network.add_authentication_handler(username, password) }
           network.clear_handlers
-          expect(network.callbacks.count).to be 0
+          expect(network.registrations.count).to be 0
         end
       end
 
@@ -108,7 +108,7 @@ module Selenium
           network.add_request_handler(&:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -118,7 +118,7 @@ module Selenium
           network.add_request_handler(url_for('formPage.html'), &:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -128,7 +128,7 @@ module Selenium
           network.add_request_handler(url_for('formPage.html'), url_for('basicAuth'), &:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -138,7 +138,7 @@ module Selenium
           network.add_request_handler(url_for('formPage.html'), pattern_type: :url, &:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -166,7 +166,7 @@ module Selenium
           end
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -174,7 +174,7 @@ module Selenium
         reset_driver!(web_socket_url: true) do |driver|
           network = described_class.new(driver)
           network.add_request_handler(&:fail)
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
           expect { driver.navigate.to url_for('formPage.html') }.to raise_error(Error::WebDriverError)
         end
       end
@@ -184,7 +184,7 @@ module Selenium
           network = described_class.new(driver)
           id = network.add_request_handler(&:continue)
           network.remove_handler(id)
-          expect(network.callbacks.count).to be 0
+          expect(network.registrations.count).to be 0
         end
       end
 
@@ -193,7 +193,7 @@ module Selenium
           network = described_class.new(driver)
           2.times { network.add_request_handler(&:continue) }
           network.clear_handlers
-          expect(network.callbacks.count).to be 0
+          expect(network.registrations.count).to be 0
         end
       end
 
@@ -203,7 +203,7 @@ module Selenium
           network.add_response_handler(&:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -213,7 +213,7 @@ module Selenium
           network.add_response_handler(url_for('formPage.html'), &:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.find_element(name: 'login')).to be_displayed
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -223,7 +223,7 @@ module Selenium
           network.add_response_handler(url_for('formPage.html'), url_for('basicAuth'), &:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.find_element(name: 'login')).to be_displayed
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -233,7 +233,7 @@ module Selenium
           network.add_response_handler(url_for('formPage.html'), pattern_type: :url, &:continue)
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -259,7 +259,7 @@ module Selenium
           end
           driver.navigate.to url_for('formPage.html')
           expect(driver.current_url).to eq(url_for('formPage.html'))
-          expect(network.callbacks.count).to be 1
+          expect(network.registrations.count).to be 1
         end
       end
 
@@ -287,7 +287,7 @@ module Selenium
           id = network.add_response_handler(&:continue)
           network.remove_handler(id)
           network.clear_handlers
-          expect(network.callbacks.count).to be 0
+          expect(network.registrations.count).to be 0
         end
       end
 
@@ -296,7 +296,7 @@ module Selenium
           network = described_class.new(driver)
           2.times { network.add_response_handler(&:continue) }
           network.clear_handlers
-          expect(network.callbacks.count).to be 0
+          expect(network.registrations.count).to be 0
         end
       end
     end

@@ -49,19 +49,23 @@ module Selenium
       end
 
       def callbacks
-        @callbacks ||= Hash.new { |callbacks, event| callbacks[event] = [] }
+        @callbacks ||= Hash.new { |callbacks, event| callbacks[event] = {} }
       end
 
-      def add_callback(event, &block)
-        callbacks[event] << block
-        block.object_id
+      def add_callback(event, id, &block)
+        callbacks[event][id] = block
       end
 
       def remove_callback(event, id)
-        return if callbacks[event].reject! { |callback| callback.object_id == id }
+        if callbacks.dig(event, id).nil?
+          raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}"
+        end
 
-        ids = callbacks[event]&.map(&:object_id)
-        raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}: #{ids}"
+        callbacks[event].delete(id)
+      end
+
+      def clear_callbacks
+        @callbacks = Hash.new { |callbacks, event| callbacks[event] = {} }
       end
 
       def send_cmd(**payload)
@@ -78,7 +82,7 @@ module Selenium
       private
 
       # We should be thread-safe to use the hash without synchronization
-      # because its keys are WebSocket message identifiers and they should be
+      # because its keys are WebSocket message identifiers, and they should be
       # unique within a devtools session.
       def messages
         @messages ||= {}
@@ -102,7 +106,7 @@ module Selenium
               next unless message['method']
 
               params = message['params']
-              callbacks[message['method']].each do |callback|
+              callbacks[message['method']].each_value do |callback|
                 @callback_threads.add(callback_thread(params, &callback))
               end
             end
