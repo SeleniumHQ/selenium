@@ -116,7 +116,7 @@ public sealed class ScriptModule : Module
     {
         return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, JsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
     }
-    protected override JsonSerializerContext Initialize(JsonSerializerOptions options)
+    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
     {
         return new BiDiJsonSerializerContext(options);
     }

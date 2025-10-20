@@ -178,7 +178,7 @@ public sealed partial class NetworkModule : Module
     {
         return await Broker.SubscribeAsync("network.authRequired", handler, options, JsonContext.AuthRequiredEventArgs).ConfigureAwait(false);
     }
-    protected override JsonSerializerContext Initialize(JsonSerializerOptions options)
+    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
     {
         return new BiDiJsonSerializerContext(options);
     }

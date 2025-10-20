@@ -29,7 +29,7 @@ public abstract class Module
 
     internal JsonSerializerContext JsonContext { get; private set; }
 
-    protected abstract JsonSerializerContext Initialize(JsonSerializerOptions options);
+    protected abstract JsonSerializerContext CreateJsonContext(JsonSerializerOptions options);
 
     public static TModule Create<TModule>(BiDi bidi, JsonSerializerOptions jsonOptions, JsonSerializerContext? cachedContext = null)
         where TModule : Module, new()
@@ -39,7 +39,7 @@ public abstract class Module
             Broker = bidi.Broker,
         };
 
-        module.JsonContext = cachedContext ?? module.Initialize(jsonOptions);
+        module.JsonContext = cachedContext ?? module.CreateJsonContext(jsonOptions);
 
         return module;
     }

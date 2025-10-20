@@ -50,7 +50,7 @@ public sealed class InputModule : Module
 
         return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, JsonContext.SetFilesCommand, JsonContext.SetFilesResult).ConfigureAwait(false);
     }
-    protected override JsonSerializerContext Initialize(JsonSerializerOptions options)
+    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
     {
         return new BiDiJsonSerializerContext(options);
     }

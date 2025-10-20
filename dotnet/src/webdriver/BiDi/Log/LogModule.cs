@@ -39,7 +39,7 @@ public sealed class LogModule : Module
     {
         return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext.LogEntry).ConfigureAwait(false);
     }
-    protected override JsonSerializerContext Initialize(JsonSerializerOptions options)
+    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
     {
         return new BiDiJsonSerializerContext(options);
     }

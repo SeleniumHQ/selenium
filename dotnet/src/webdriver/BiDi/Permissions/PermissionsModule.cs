@@ -18,7 +18,7 @@ public class PermissionsModule : Module
         await Broker.ExecuteCommandAsync(new SetPermissionCommand(@params), options, JsonContext.Permissions_SetPermissionCommand, JsonContext.Permissions_SetPermissionResult).ConfigureAwait(false);
     }
 
-    protected override JsonSerializerContext Initialize(JsonSerializerOptions options)
+    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
     {
         return new PermissionsJsonSerializerContext(options);
     }
