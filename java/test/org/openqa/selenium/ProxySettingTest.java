@@ -110,7 +110,6 @@ class ProxySettingTest extends JupiterTestBase {
   @Ignore(SAFARI)
   @NoDriverBeforeTest
   @NoDriverAfterTest
-  @Ignore(value = FIREFOX, travis = true)
   @Ignore(value = CHROME, reason = "Flaky")
   @Ignore(value = EDGE, reason = "Flaky")
   public void canUsePACThatOnlyProxiesCertainHosts()
