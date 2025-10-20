@@ -32,11 +32,11 @@ module Selenium
           # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
           # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
           # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
-          def initialize(open_timeout: nil, read_timeout: nil, socket_timeout: 30, socket_interval: 0.1)
+          def initialize(open_timeout: nil, read_timeout: nil, socket_timeout: nil, socket_interval: nil)
             @open_timeout = open_timeout
             @read_timeout = read_timeout
-            @socket_timeout = socket_timeout
-            @socket_interval = socket_interval
+            @socket_timeout = socket_timeout || 30
+            @socket_interval = socket_interval || 0.1
             super()
           end
 

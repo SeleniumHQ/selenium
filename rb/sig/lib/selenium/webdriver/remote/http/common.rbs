@@ -17,7 +17,7 @@ module Selenium
 
           def self.user_agent: -> String
 
-          attr_writer server_url: String
+          attr_writer server_url: URI::Generic
 
           def quit_errors: () -> Array[untyped]
 

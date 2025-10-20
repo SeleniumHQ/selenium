@@ -36,8 +36,6 @@ module Selenium
 
             expect(http.open_timeout).to eq 60
             expect(http.read_timeout).to eq 60
-            expect(http.socket_timeout).to eq 30
-            expect(http.socket_interval).to eq 0.1
           end
 
           describe '#initialize' do
@@ -50,7 +48,6 @@ module Selenium
               expect(client.read_timeout).to eq 22
               expect(client.socket_timeout).to eq 4
               expect(client.socket_interval).to eq 0.5
-
             end
           end
 

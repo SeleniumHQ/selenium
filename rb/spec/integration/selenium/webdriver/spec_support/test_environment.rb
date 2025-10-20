@@ -169,17 +169,14 @@ module Selenium
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
-        def create_driver!(listener: nil, **opts, &block)
+        def create_driver!(listener: nil, **, &block)
           check_for_previous_error
-
-          socket_timeout = opts.delete(:socket_timeout)
-          http_client = WebDriver::Remote::Http::Default.new(socket_timeout: socket_timeout) if socket_timeout
 
           method = :"#{driver}_driver"
           instance = if private_methods.include?(method)
-                       send(method, listener: listener, http_client: http_client, options: build_options(**opts))
+                       send(method, listener: listener, options: build_options(**))
                      else
-                       WebDriver::Driver.for(driver, listener: listener, options: build_options(**opts))
+                       WebDriver::Driver.for(driver, listener: listener, options: build_options(**))
                      end
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
