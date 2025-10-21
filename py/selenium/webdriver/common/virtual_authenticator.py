@@ -80,7 +80,7 @@ class Credential:
         self,
         credential_id: bytes,
         is_resident_credential: bool,
-        rp_id: str,
+        rp_id: Optional[str],
         user_handle: Optional[bytes],
         private_key: bytes,
         sign_count: int,
@@ -180,7 +180,7 @@ class Credential:
     def from_dict(cls, data: dict[str, Any]) -> "Credential":
         _id = urlsafe_b64decode(f"{data['credentialId']}==")
         is_resident_credential = bool(data["isResidentCredential"])
-        rp_id = data["rpId"]
+        rp_id = data.get("rpId", None)
         private_key = urlsafe_b64decode(f"{data['privateKey']}==")
         sign_count = int(data["signCount"])
         user_handle = urlsafe_b64decode(f"{data['userHandle']}==") if data.get("userHandle", None) else None

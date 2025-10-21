@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::assert::AssertResult;
 use assert_cmd::Command;
+use assert_cmd::assert::AssertResult;
 use is_executable::is_executable;
 use selenium_manager::files::path_to_string;
 use selenium_manager::logger::JsonOutput;
@@ -112,10 +112,12 @@ pub fn assert_output(
             .iter()
             .for_each(|o| assert!(output.contains(o)));
     } else {
-        assert!(assert_result
-            .err()
-            .unwrap()
-            .to_string()
-            .contains(&error_code.to_string()));
+        assert!(
+            assert_result
+                .err()
+                .unwrap()
+                .to_string()
+                .contains(&error_code.to_string())
+        );
     }
 }

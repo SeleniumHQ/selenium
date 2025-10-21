@@ -17,11 +17,10 @@
 
 from typing import Optional
 
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-from .options import Options
-from .service import Service
 
 
 class WebDriver(ChromiumDriver):
@@ -33,13 +32,14 @@ class WebDriver(ChromiumDriver):
         service: Optional[Service] = None,
         keep_alive: bool = True,
     ) -> None:
-        """Creates a new instance of the chrome driver. Starts the service and
-        then creates new instance of chrome driver.
+        """Creates a new instance of the chrome driver.
 
-        :Args:
-         - options - this takes an instance of ChromeOptions
-         - service - Service object for handling the browser driver if you need to pass extra details
-         - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
+        Starts the service and then creates new instance of chrome driver.
+
+        Args:
+            options: This takes an instance of ChromeOptions.
+            service: Service object for handling the browser driver if you need to pass extra details.
+            keep_alive: Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
         service = service if service else Service()
         options = options if options else Options()

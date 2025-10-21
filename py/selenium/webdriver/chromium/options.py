@@ -27,6 +27,7 @@ class ChromiumOptions(ArgOptions):
     KEY = "goog:chromeOptions"
 
     def __init__(self) -> None:
+        """Initialize ChromiumOptions with default settings."""
         super().__init__()
         self._binary_location: str = ""
         self._extension_files: list[str] = []
@@ -37,16 +38,18 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """:Returns: The location of the binary, otherwise an empty string."""
+        """
+        Returns:
+            The location of the binary, otherwise an empty string.
+        """
         return self._binary_location
 
     @binary_location.setter
     def binary_location(self, value: str) -> None:
         """Allows you to set where the chromium binary lives.
 
-        Parameters:
-        ----------
-            value: path to the Chromium binary
+        Args:
+            value: Path to the Chromium binary.
         """
         if not isinstance(value, str):
             raise TypeError(self.BINARY_LOCATION_ERROR)
@@ -54,7 +57,10 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def debugger_address(self) -> Optional[str]:
-        """:Returns: The address of the remote devtools instance."""
+        """
+        Returns:
+            The address of the remote devtools instance.
+        """
         return self._debugger_address
 
     @debugger_address.setter
@@ -62,9 +68,8 @@ class ChromiumOptions(ArgOptions):
         """Allows you to set the address of the remote devtools instance that
         the ChromeDriver instance will try to connect to during an active wait.
 
-        Parameters:
-        ----------
-            value: address of remote devtools instance if any (hostname[:port])
+        Args:
+            value: Address of remote devtools instance if any (hostname[:port]).
         """
         if not isinstance(value, str):
             raise TypeError("Debugger Address must be a string")
@@ -72,7 +77,10 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def extensions(self) -> list[str]:
-        """:Returns: A list of encoded extensions that will be loaded."""
+        """
+        Returns:
+            A list of encoded extensions that will be loaded.
+        """
 
         def _decode(file_data: BinaryIO) -> str:
             # Should not use base64.encodestring() which inserts newlines every
@@ -91,9 +99,8 @@ class ChromiumOptions(ArgOptions):
         """Adds the path to the extension to a list that will be used to
         extract it to the ChromeDriver.
 
-        Parameters:
-        ----------
-            extension: path to the \\*.crx file
+        Args:
+            extension: Path to the \\*.crx file.
         """
         if extension:
             extension_to_add = os.path.abspath(os.path.expanduser(extension))
@@ -108,9 +115,8 @@ class ChromiumOptions(ArgOptions):
         """Adds Base64 encoded string with extension data to a list that will
         be used to extract it to the ChromeDriver.
 
-        Parameters:
-        ----------
-            extension: Base64 encoded string with extension data
+        Args:
+            extension: Base64 encoded string with extension data.
         """
         if extension:
             self._extensions.append(extension)
@@ -119,23 +125,27 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def experimental_options(self) -> dict:
-        """:Returns: A dictionary of experimental options for chromium."""
+        """
+        Returns:
+            A dictionary of experimental options for chromium.
+        """
         return self._experimental_options
 
     def add_experimental_option(self, name: str, value: Union[str, int, dict, list[str]]) -> None:
         """Adds an experimental option which is passed to chromium.
 
-        Parameters:
-        ----------
-          name: The experimental option name.
-          value: The option value.
+        Args:
+            name: The experimental option name.
+            value: The option value.
         """
         self._experimental_options[name] = value
 
     @property
     def enable_webextensions(self) -> bool:
-        """:Returns: Whether webextension support is enabled for Chromium-based browsers.
-        True if webextension support is enabled, False otherwise.
+        """
+        Returns:
+            Whether webextension support is enabled for Chromium-based browsers.
+            True if webextension support is enabled, False otherwise.
         """
         return self._enable_webextensions
 
@@ -143,21 +153,18 @@ class ChromiumOptions(ArgOptions):
     def enable_webextensions(self, value: bool) -> None:
         """Enables or disables webextension support for Chromium-based browsers.
 
-        Parameters:
-        ----------
-            value : bool
-                True to enable webextension support, False to disable.
+        Args:
+            value: True to enable webextension support, False to disable.
 
         Notes:
-        -----
-        - When enabled, this automatically adds the required Chromium flags:
-            - --enable-unsafe-extension-debugging
-            - --remote-debugging-pipe
-        - When disabled, this removes BOTH flags listed above, even if they were manually added via add_argument()
-          before enabling webextensions.
-        - Enabling --remote-debugging-pipe makes the connection b/w chromedriver
-          and the browser use a pipe instead of a port, disabling many CDP functionalities
-          like devtools
+            - When enabled, this automatically adds the required Chromium flags:
+                - --enable-unsafe-extension-debugging
+                - --remote-debugging-pipe
+            - When disabled, this removes BOTH flags listed above, even if they were manually added via add_argument()
+              before enabling webextensions.
+            - Enabling --remote-debugging-pipe makes the connection b/w chromedriver
+              and the browser use a pipe instead of a port, disabling many CDP functionalities
+              like devtools
         """
         self._enable_webextensions = value
         if value:
@@ -174,11 +181,10 @@ class ChromiumOptions(ArgOptions):
                     self._arguments.remove(flag)
 
     def to_capabilities(self) -> dict:
-        """Creates a capabilities with all the options that have been set
+        """Creates a capabilities with all the options that have been set.
 
         Returns:
-        -------
-            dict : a dictionary with all set options
+            A dictionary with all set options.
         """
         caps = self._caps
         chrome_options = self.experimental_options.copy()

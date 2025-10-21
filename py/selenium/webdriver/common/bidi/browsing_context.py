@@ -20,8 +20,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Optional, Union
 
 from selenium.webdriver.common.bidi.common import command_builder
-
-from .session import Session
+from selenium.webdriver.common.bidi.session import Session
 
 
 class ReadinessState:
