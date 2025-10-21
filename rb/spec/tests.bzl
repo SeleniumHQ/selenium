@@ -215,6 +215,9 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
         )
 
         # Generate a test target for bidi browser execution.
+        if "bidi" not in tags:
+            return  # don't create -bidi targets for non-BiDi tests
+
         rb_test(
             name = "{}-{}-bidi".format(name, browser),
             size = "large",

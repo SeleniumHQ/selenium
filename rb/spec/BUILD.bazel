@@ -17,7 +17,6 @@ rb_library(
     deps = [
         "//rb/spec:rspec_matchers",
         "//rb/spec/integration/selenium/webdriver:action_builder",
-        "//rb/spec/integration/selenium/webdriver:bidi",
         "//rb/spec/integration/selenium/webdriver:devtools",
         "//rb/spec/integration/selenium/webdriver:driver",
         "//rb/spec/integration/selenium/webdriver:element",
