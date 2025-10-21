@@ -45,12 +45,13 @@ module Selenium
       end
 
       def add_authentication_handler(username = nil, password = nil, *filter, pattern_type: nil, &block)
-        selected_block =
-          if username && password
-            proc { |auth| auth.authenticate(username, password) }
-          else
-            block
-          end
+        selected_block = if block_given?
+                           block
+                         elsif !(username && password)
+                           raise ArgumentError, 'Need to provide either a block or both username and password'
+                         else
+                           proc { |auth| auth.authenticate(username, password) }
+                         end
 
         add_handler(
           :auth_required,
