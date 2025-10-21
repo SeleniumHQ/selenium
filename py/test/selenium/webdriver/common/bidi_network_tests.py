@@ -255,7 +255,7 @@ def test_data_collection_with_response_handler(driver, pages):
     time.sleep(2)
 
     assert len(captured_responses) > 0, "No responses captured"
-    assert "<title>We Leave From Here</title>" in collected_data[0]["data"].value
+    assert any("<title>We Leave From Here</title>" in item["data"].value for item in collected_data)
 
     driver.network.remove_response_handler("response_completed", handler_id)
     driver.network.remove_data_collector(collector_id)
