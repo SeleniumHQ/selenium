@@ -52,19 +52,27 @@ class Service(service.Service):
 
         log_file: Optional[IO[bytes]] = None
 
-        if log_path is not None:
-            warnings.warn("log_path is deprecated, use log_output instead", DeprecationWarning, stacklevel=2)
-            log_file = open(log_path, "wb")
-        elif log_output is not None:
-            log_file = open(log_output, "wb")
+        try:
+            if log_output is not None:
+                log_file = open(log_output, "wb")
+            elif log_path is not None:
+                warnings.warn("log_path is deprecated, use log_output instead", DeprecationWarning, stacklevel=2)
+                log_file = open(log_path, "wb")
 
-        super().__init__(
-            executable_path=executable_path,
-            port=port,
-            log_output=log_file,
-            env=env,
-            **kwargs,
-        )
+            super().__init__(
+                executable_path=executable_path,
+                port=port,
+                log_output=log_file,
+                env=env,
+                **kwargs,
+            )
+        except Exception:
+            if log_file is not None:
+                try:
+                    log_file.close()
+                except Exception:
+                    pass
+            raise
 
     def command_line_args(self) -> list[str]:
         return ["-p", f"{self.port}"] + self._service_args
