@@ -46,7 +46,7 @@ module Selenium
         driver.navigate.refresh
 
         expect { button.click }.to raise_exception(Error::StaleElementReferenceError,
-                                                   /errors#stale-element-reference-exception/)
+                                                   /errors#staleelementreferenceexception/)
 
         reset_driver!(time: 1) if %i[safari safari_preview].include? GlobalTestEnv.browser
       end

@@ -17,8 +17,9 @@
 
 from hashlib import md5 as md5_hash
 
-from ..common.by import By
-from .command import Command
+from selenium.common.exceptions import InvalidSelectorException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.command import Command
 
 
 class ShadowRoot:
@@ -74,6 +75,8 @@ class ShadowRoot:
             by = By.CSS_SELECTOR
             value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
+            if value and any(char.isspace() for char in value.strip()):
+                raise InvalidSelectorException("Compound class names are not allowed.")
             by = By.CSS_SELECTOR
             value = f".{value}"
         elif by == By.NAME:
@@ -112,6 +115,8 @@ class ShadowRoot:
             by = By.CSS_SELECTOR
             value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
+            if value and any(char.isspace() for char in value.strip()):
+                raise InvalidSelectorException("Compound class names are not allowed.")
             by = By.CSS_SELECTOR
             value = f".{value}"
         elif by == By.NAME:

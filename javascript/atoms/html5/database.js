@@ -109,7 +109,7 @@ bot.storage.database.executeSql = function(databaseName, query, args,
 bot.storage.database.ResultSet = function(sqlResultSet) {
 
   /**
-   * The database rows retuned from the SQL query.
+   * The database rows returned from the SQL query.
    * @type {!Array.<*>}
    */
   this.rows = [];

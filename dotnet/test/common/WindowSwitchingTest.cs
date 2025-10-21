@@ -261,7 +261,7 @@ public class WindowSwitchingTest : DriverTestFixture
         Assert.That(
             () => driver.SwitchTo().Window("i will never exist"),
             Throws.TypeOf<NoSuchWindowException>(),
-            "Should not be able to change to a non-existant window");
+            "Should not be able to change to a non-existent window");
 
         String newHandle = driver.CurrentWindowHandle;
 

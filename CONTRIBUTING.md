@@ -14,12 +14,10 @@ the defect. If the issue can't be reproduced it will be closed.
 Please provide [concise reproducible test cases](http://sscce.org/)
 and describe what results you are seeing and what results you expect.
 
-Issues shouldn't be used for support. Please address questions to the
-[`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
+Issues shouldn't be used for support. To raise a bug, please go to the
+[Issue tracker](https://github.com/SeleniumHQ/selenium/issues).
 Discussion of high level project ideas or non-technical topics should
-move to the
-[`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers)
-instead.
+move to the Selenium [Slack channel](https://inviter.co/seleniumhq).
 
 We also need help with triaging
 [issues that needs investigation](https://github.com/SeleniumHQ/selenium/labels/I-needs%20investigation).
@@ -33,7 +31,6 @@ If you find that Selenium is missing something, feel free to open an issue
 with details describing what feature(s) you'd like added or changed.
 
 If you'd like a hand at trying to implement the feature yourself, please refer to the [Code Contributions](#code-contributions) section of the document.
-
 
 ## Documentation
 
@@ -57,7 +54,7 @@ significant and valuable contributions over time are made _Committers_
 and given commit-access to the project.
 
 If you're looking for easy bugs, have a look at
-[issues labelled E-easy](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen+is%3Aissue+label%3AE-easy)
+[issues labelled: `good first issue`](https://github.com/SeleniumHQ/selenium/issues?q=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22)
 on Github.
 
 This document will guide you through the contribution process.

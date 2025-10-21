@@ -96,9 +96,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v137:v137.publish
-  //java/src/org/openqa/selenium/devtools/v138:v138.publish
-  //java/src/org/openqa/selenium/devtools/v136:v136.publish
+  //java/src/org/openqa/selenium/devtools/v140:v140.publish
+  //java/src/org/openqa/selenium/devtools/v141:v141.publish
+  //java/src/org/openqa/selenium/devtools/v139:v139.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
@@ -685,7 +685,7 @@ namespace :py do
       end
     end
 
-    desc 'Python Remote tests with Firefox'
+    desc 'Python Remote tests with Chrome'
     task :remote do
       Rake::Task['py:clean'].invoke
       Bazel.execute('test', [], '//py:test-remote')
@@ -1118,12 +1118,13 @@ namespace :all do
   end
 
   desc 'Update all API Documentation'
-  task :docs do
-    Rake::Task['java:docs'].invoke('skip_update')
-    Rake::Task['py:docs'].invoke('skip_update')
-    Rake::Task['rb:docs'].invoke('skip_update')
-    Rake::Task['dotnet:docs'].invoke('skip_update')
-    Rake::Task['node:docs'].invoke('skip_update')
+  task :docs do |_task, arguments|
+    args = arguments.to_a
+    Rake::Task['java:docs'].invoke(*(args + ['skip_update']))
+    Rake::Task['py:docs'].invoke(*(args + ['skip_update']))
+    Rake::Task['rb:docs'].invoke(*(args + ['skip_update']))
+    Rake::Task['dotnet:docs'].invoke(*(args + ['skip_update']))
+    Rake::Task['node:docs'].invoke(*(args + ['skip_update']))
 
     update_gh_pages
   end

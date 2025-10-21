@@ -18,15 +18,14 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal sealed class GetRealmsCommand(GetRealmsCommandParameters @params)
-    : Command<GetRealmsCommandParameters, GetRealmsResult>(@params, "script.getRealms");
+internal sealed class GetRealmsCommand(GetRealmsParameters @params)
+    : Command<GetRealmsParameters, GetRealmsResult>(@params, "script.getRealms");
 
-internal sealed record GetRealmsCommandParameters(BrowsingContext.BrowsingContext? Context, RealmType? Type) : CommandParameters;
+internal sealed record GetRealmsParameters(BrowsingContext.BrowsingContext? Context, RealmType? Type) : Parameters;
 
 public sealed class GetRealmsOptions : CommandOptions
 {
@@ -35,20 +34,4 @@ public sealed class GetRealmsOptions : CommandOptions
     public RealmType? Type { get; set; }
 }
 
-public sealed record GetRealmsResult : EmptyResult, IReadOnlyList<RealmInfo>
-{
-    private readonly IReadOnlyList<RealmInfo> _realms;
-
-    internal GetRealmsResult(IReadOnlyList<RealmInfo> realms)
-    {
-        _realms = realms;
-    }
-
-    public RealmInfo this[int index] => _realms[index];
-
-    public int Count => _realms.Count;
-
-    public IEnumerator<RealmInfo> GetEnumerator() => _realms.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (_realms as IEnumerable).GetEnumerator();
-}
+public sealed record GetRealmsResult(IReadOnlyList<RealmInfo> Realms) : EmptyResult;

@@ -41,7 +41,7 @@ class Options {
     this.env
 
     /**
-     * IO conifguration for the spawned server child process. If unspecified,
+     * IO configuration for the spawned server child process. If unspecified,
      * the child process' IO output will be ignored.
      *
      * @type {(string|!Array<string|number|!stream.Stream|null|undefined>|

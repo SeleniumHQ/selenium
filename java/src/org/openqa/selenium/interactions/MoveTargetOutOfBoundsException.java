@@ -17,22 +17,25 @@
 
 package org.openqa.selenium.interactions;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
 /**
  * Indicates that the target provided to the actions move() method is invalid - outside of the size
  * of the window.
  */
+@NullMarked
 public class MoveTargetOutOfBoundsException extends WebDriverException {
-  public MoveTargetOutOfBoundsException(String message) {
+  public MoveTargetOutOfBoundsException(@Nullable String message) {
     super(message);
   }
 
-  public MoveTargetOutOfBoundsException(Throwable cause) {
+  public MoveTargetOutOfBoundsException(@Nullable Throwable cause) {
     super(cause);
   }
 
-  public MoveTargetOutOfBoundsException(String message, Throwable cause) {
+  public MoveTargetOutOfBoundsException(@Nullable String message, @Nullable Throwable cause) {
     super(message, cause);
   }
 }

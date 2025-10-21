@@ -1,6 +1,7 @@
 load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
+    "chrome_beta_data",
     "chrome_data",
     "edge_data",
     "firefox_data",
@@ -23,6 +24,20 @@ chrome_args = select({
     "@selenium//common:use_pinned_macos_chrome": [
         "--driver-binary=$(location @mac_chromedriver//:chromedriver)",
         "--browser-binary=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
+    ],
+    "//conditions:default": [],
+}) + headless_args
+
+chrome_beta_args = select({
+    "@selenium//common:use_pinned_linux_chrome": [
+        "--driver-binary=$(location @linux_beta_chromedriver//:chromedriver)",
+        "--browser-binary=$(location @linux_beta_chrome//:chrome-linux64/chrome)",
+        "--browser-args=--disable-dev-shm-usage",
+        "--browser-args=--no-sandbox",
+    ],
+    "@selenium//common:use_pinned_macos_chrome": [
+        "--driver-binary=$(location @mac_beta_chromedriver//:chromedriver)",
+        "--browser-binary=$(location @mac_beta_chrome//:Chrome.app)/Contents/MacOS/Chrome",
     ],
     "//conditions:default": [],
 }) + headless_args
@@ -57,6 +72,11 @@ BROWSERS = {
     "chrome": {
         "args": ["--driver=chrome"] + chrome_args,
         "data": chrome_data,
+        "tags": COMMON_TAGS + ["chrome"],
+    },
+    "chrome-beta": {
+        "args": ["--driver=chrome"] + chrome_beta_args,
+        "data": chrome_beta_data,
         "tags": COMMON_TAGS + ["chrome"],
     },
     "edge": {

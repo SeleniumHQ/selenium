@@ -5,7 +5,7 @@ module Selenium
         @body: untyped
         @cookies: Hash[Symbol, String | Integer]?
 
-        @reason: String
+        @reason: String?
 
         @credentials: untyped
 
@@ -24,9 +24,13 @@ module Selenium
 
         def cookies:(?Hash[Symbol, String | Integer]? set_cookie_headers) -> untyped
 
+        def cookies=: -> Hash[Symbol, String | Integer]
+
         def credentials: (?username: untyped?, ?password: untyped?) -> untyped
 
         def headers: () -> untyped
+
+        def headers=: -> Hash[untyped, untyped]
 
         def provide_response: -> untyped
 

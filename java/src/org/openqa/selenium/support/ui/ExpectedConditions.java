@@ -1352,7 +1352,7 @@ public class ExpectedConditions {
    * An expectation for checking the element to be invisible
    *
    * @param element used to check its invisibility
-   * @return Boolean true when elements is not visible anymore
+   * @return Boolean true when element is not visible anymore
    */
   public static ExpectedCondition<Boolean> invisibilityOf(final WebElement element) {
     return new ExpectedCondition<Boolean>() {

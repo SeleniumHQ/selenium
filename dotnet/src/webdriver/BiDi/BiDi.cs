@@ -18,187 +18,95 @@
 // </copyright>
 
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi;
 
-public class BiDi : IAsyncDisposable
+public sealed class BiDi : IAsyncDisposable
 {
     private readonly Broker _broker;
+    private readonly JsonSerializerOptions _jsonOptions;
+    private readonly BiDiJsonSerializerContext _jsonContext;
 
-    private Session.SessionModule? _sessionModule;
-    private BrowsingContext.BrowsingContextModule? _browsingContextModule;
-    private Browser.BrowserModule? _browserModule;
-    private Network.NetworkModule? _networkModule;
-    private Input.InputModule? _inputModule;
-    private Script.ScriptModule? _scriptModule;
-    private Log.LogModule? _logModule;
-    private Storage.StorageModule? _storageModule;
-
-    private readonly object _moduleLock = new();
-
-    internal BiDi(string url)
+    private BiDi(string url)
     {
         var uri = new Uri(url);
 
-        _broker = new Broker(this, uri);
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+
+            // BiDi returns special numbers such as "NaN" as strings
+            // Additionally, -0 is returned as a string "-0"
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
+            Converters =
+            {
+                new BrowsingContextConverter(this),
+                new BrowserUserContextConverter(this),
+                new CollectorConverter(this),
+                new InterceptConverter(this),
+                new HandleConverter(this),
+                new InternalIdConverter(this),
+                new PreloadScriptConverter(this),
+                new RealmConverter(this),
+                new DateTimeOffsetConverter(),
+                new WebExtensionConverter(this),
+            }
+        };
+
+        _jsonContext = new BiDiJsonSerializerContext(_jsonOptions);
+
+        _broker = new Broker(this, uri, _jsonOptions);
+        SessionModule = Module.Create<Session.SessionModule>(this, _broker, _jsonOptions, _jsonContext);
+        BrowsingContext = Module.Create<BrowsingContext.BrowsingContextModule>(this, _broker, _jsonOptions, _jsonContext);
+        Browser = Module.Create<Browser.BrowserModule>(this, _broker, _jsonOptions, _jsonContext);
+        Network = Module.Create<Network.NetworkModule>(this, _broker, _jsonOptions, _jsonContext);
+        InputModule = Module.Create<Input.InputModule>(this, _broker, _jsonOptions, _jsonContext);
+        Script = Module.Create<Script.ScriptModule>(this, _broker, _jsonOptions, _jsonContext);
+        Log = Module.Create<Log.LogModule>(this, _broker, _jsonOptions, _jsonContext);
+        Storage = Module.Create<Storage.StorageModule>(this, _broker, _jsonOptions, _jsonContext);
+        WebExtension = Module.Create<WebExtension.WebExtensionModule>(this, _broker, _jsonOptions, _jsonContext);
+        Emulation = Module.Create<Emulation.EmulationModule>(this, _broker, _jsonOptions, _jsonContext);
     }
 
-    internal Session.SessionModule SessionModule
-    {
-        get
-        {
-            if (_sessionModule is null)
-            {
-                lock (_moduleLock)
-                {
-                    if (_sessionModule is null)
-                    {
-                        _sessionModule = new Session.SessionModule(_broker);
-                    }
-                }
-            }
-            return _sessionModule;
-        }
-    }
+    internal Session.SessionModule SessionModule { get; }
 
-    public BrowsingContext.BrowsingContextModule BrowsingContext
-    {
-        get
-        {
-            if (_browsingContextModule is null)
-            {
-                lock (_moduleLock)
-                {
-                    if (_browsingContextModule is null)
-                    {
-                        _browsingContextModule = new BrowsingContext.BrowsingContextModule(_broker);
-                    }
-                }
-            }
-            return _browsingContextModule;
-        }
-    }
+    public BrowsingContext.BrowsingContextModule BrowsingContext { get; }
 
-    public Browser.BrowserModule Browser
-    {
-        get
-        {
-            if (_browserModule is null)
-            {
-                lock (_moduleLock)
-                {
-                    if (_browserModule is null)
-                    {
-                        _browserModule = new Browser.BrowserModule(_broker);
-                    }
-                }
-            }
-            return _browserModule;
-        }
-    }
+    public Browser.BrowserModule Browser { get; }
 
-    public Network.NetworkModule Network
-    {
-        get
-        {
-            if (_networkModule is null)
-            {
-                lock (_moduleLock)
-                {
-                    if (_networkModule is null)
-                    {
-                        _networkModule = new Network.NetworkModule(_broker);
-                    }
-                }
-            }
-            return _networkModule;
-        }
-    }
+    public Network.NetworkModule Network { get; }
 
-    internal Input.InputModule InputModule
-    {
-        get
-        {
-            if (_inputModule is null)
-            {
-                lock (_moduleLock)
-                {
-                    if (_inputModule is null)
-                    {
-                        _inputModule = new Input.InputModule(_broker);
-                    }
-                }
-            }
-            return _inputModule;
-        }
-    }
+    internal Input.InputModule InputModule { get; }
 
-    public Script.ScriptModule Script
-    {
-        get
-        {
-            if (_scriptModule is null)
-            {
-                lock (_moduleLock)
-                {
-                    if (_scriptModule is null)
-                    {
-                        _scriptModule = new Script.ScriptModule(_broker);
-                    }
-                }
-            }
-            return _scriptModule;
-        }
-    }
+    public Script.ScriptModule Script { get; }
 
-    public Log.LogModule Log
-    {
-        get
-        {
-            if (_logModule is null)
-            {
-                lock (_moduleLock)
-                {
-                    if (_logModule is null)
-                    {
-                        _logModule = new Log.LogModule(_broker);
-                    }
-                }
-            }
-            return _logModule;
-        }
-    }
+    public Log.LogModule Log { get; }
 
-    public Storage.StorageModule Storage
-    {
-        get
-        {
-            if (_storageModule is null)
-            {
-                lock (_moduleLock)
-                {
-                    if (_storageModule is null)
-                    {
-                        _storageModule = new Storage.StorageModule(_broker);
-                    }
-                }
-            }
-            return _storageModule;
-        }
-    }
+    public Storage.StorageModule Storage { get; }
+
+    public WebExtension.WebExtensionModule WebExtension { get; }
+
+    public Emulation.EmulationModule Emulation { get; }
 
     public Task<Session.StatusResult> StatusAsync()
     {
         return SessionModule.StatusAsync();
     }
 
-    public static async Task<BiDi> ConnectAsync(string url)
+    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
     {
         var bidi = new BiDi(url);
 
-        await bidi._broker.ConnectAsync(default).ConfigureAwait(false);
+        await bidi._broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
 
         return bidi;
     }
@@ -210,12 +118,7 @@ public class BiDi : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await DisposeAsyncCore();
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual async ValueTask DisposeAsyncCore()
-    {
         await _broker.DisposeAsync().ConfigureAwait(false);
+        GC.SuppressFinalize(this);
     }
 }

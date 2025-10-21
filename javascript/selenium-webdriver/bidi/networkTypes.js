@@ -26,6 +26,7 @@ const SameSite = {
   STRICT: 'strict',
   LAX: 'lax',
   NONE: 'none',
+  DEFAULT: 'default',
 
   findByName(name) {
     return (
@@ -211,7 +212,7 @@ class Cookie {
   }
 }
 
-// No tests written for FetchTimingInfo. Must be updated after browsers implment it and corresponding WPT test are written.
+// No tests written for FetchTimingInfo. Must be updated after browsers implement it and corresponding WPT test are written.
 /**
  * Represents the time of each part of the request.
  * Described in https://w3c.github.io/webdriver-bidi/#type-network-FetchTimingInfo.

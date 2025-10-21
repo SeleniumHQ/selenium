@@ -38,7 +38,7 @@ public class RetryRequest implements Filter {
   @Override
   public HttpHandler apply(HttpHandler next) {
     return req -> {
-      // start to preform the request in a loop, to allow retries
+      // start to perform the request in a loop, to allow retries
       for (int i = 0; i < NEEDED_ATTEMPTS; i++) {
         HttpResponse response;
 

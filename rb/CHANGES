@@ -1,3 +1,24 @@
+4.37.0 (2025-10-16)
+=========================
+* Add CDP for Chrome 141 and remove 138
+* Update Chrome/Edge args for test environment (#16376)
+* Remove `prism` dependency (#16437)
+* Remove `json` version constraint (#16436)
+
+4.36.0 (2025-09-18)
+=========================
+* Add CDP for Chrome 140 and remove 137
+* [BiDi] Create browser module, added user context related methods (#15371)
+* BiDi get client windows (#16211)
+* Fix links to exception documentation on website (#16305)
+* Update `unhandled_prompt_behavior` capability to support hash syntax (#16289)
+
+4.35.0 (2025-08-12)
+=========================
+* Add CDP for Chrome 139 and remove 136
+* Fix typos in javascript & rb (#16019)
+* Allow to use `rubyzip` v3 (#16108)
+
 4.34.0 (2025-06-29)
 =========================
 * Add CDP for Chrome 138 and remove 135
@@ -1855,7 +1876,7 @@ Safari:
   * Replace 'libwebsocket' with 'websocket' gem. This should ensure
     support with recent Safari.
 Other:
-  * Fix Cygwin issue in PortProber/Firefox::Bianry (#4963)
+  * Fix Cygwin issue in PortProber/Firefox::Binary (#4963)
 
 2.27.2 (2012-12-11)
 ===================
@@ -1945,7 +1966,7 @@ IE:
 * Fix conflict with ActiveSupport's Object#load (#3819)
 * IE:
   * Default to standalone server executable, fall back to bundled DLLs.
-  * The 'nativeEvents' capabilitiy is exposed as :native_events in the Ruby client (mode still experimental).
+  * The 'nativeEvents' capability is exposed as :native_events in the Ruby client (mode still experimental).
 * Firefox:
   * Native events for Firefox 12.
   * Native events retained for Firefox 3.x, 10 and 11.
@@ -2085,7 +2106,7 @@ IE:
 ===================
 
 * Firefox:
-  * Now supports up to Firefox 11 (for syntesized events)
+  * Now supports up to Firefox 11 (for synthesized events)
   * Implicit waits now change how long we wait for alerts. This
     functionality will change in 2.16
   * Fix scrolling issue (#2700)
@@ -2279,7 +2300,7 @@ IE:
 2.1.0 (2011-07-18)
 ==================
 
-* Various improvments to the IE driver (#2049, #1870)
+* Various improvements to the IE driver (#2049, #1870)
 * Atoms fixes (#1776, #1972).
 * Synthetic mouse clicks do not propagate errors in onmouseover.
 
@@ -2429,7 +2450,7 @@ IE:
 * Cookie expiration dates are now handled correctly (#730)
 * Make Driver#bridge private, since this seems to be a common cause of confusion.
 * Add {Element,Remote::Capabilities}#as_json for Rails 3 (http://jonathanjulian.com/2010/04/rails-to_json-or-as_json/)
-* User can configure path to exectuables with {Firefox,Chrome}.path = "/some/path"
+* User can configure path to executables with {Firefox,Chrome}.path = "/some/path"
 * Added "chromium" as a possible name for the Chrome binary (#769)
 * Correctly set the HTTP client timeout (#768)
 * switch_to.window with block now handles exceptions and non-local returns.

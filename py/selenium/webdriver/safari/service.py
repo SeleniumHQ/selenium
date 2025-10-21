@@ -25,13 +25,14 @@ class Service(service.Service):
     """A Service class that is responsible for the starting and stopping of
     `safaridriver`  This is only supported on MAC OSX.
 
-    :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param enable_logging: (Optional) Enable logging of the service. Logs can be located at
-        `~/Library/Logs/com.apple.WebDriver/`
-    :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+    Args:
+        executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
+        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+        enable_logging: (Optional) Enable logging of the service. Logs can be located at
+            `~/Library/Logs/com.apple.WebDriver/`
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
