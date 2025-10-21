@@ -34,7 +34,10 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class MBean implements DynamicMBean {
 
   private static final Logger LOG = Logger.getLogger(MBean.class.getName());
@@ -47,17 +50,18 @@ public class MBean implements DynamicMBean {
   private static class AttributeInfo {
     final String name;
     final String description;
-    final Method getter;
-    final Method setter;
+    final @Nullable Method getter;
+    final @Nullable Method setter;
 
-    AttributeInfo(String name, String description, Method getter, Method setter) {
+    AttributeInfo(
+        String name, String description, @Nullable Method getter, @Nullable Method setter) {
       this.name = name;
       this.description = description;
       this.getter = getter;
       this.setter = setter;
     }
 
-    MBeanAttributeInfo getMBeanAttributeInfo() {
+    @Nullable MBeanAttributeInfo getMBeanAttributeInfo() {
       try {
         return new MBeanAttributeInfo(name, description, getter, setter);
       } catch (IntrospectionException e) {
@@ -116,7 +120,7 @@ public class MBean implements DynamicMBean {
         .forEach(ai -> attributeMap.put(ai.name, ai));
   }
 
-  private AttributeInfo getAttributeInfo(Method m) {
+  private @Nullable AttributeInfo getAttributeInfo(Method m) {
     ManagedAttribute ma = m.getAnnotation(ManagedAttribute.class);
     if (ma == null) {
       return null;
@@ -130,7 +134,7 @@ public class MBean implements DynamicMBean {
     }
   }
 
-  private Method findGetter(Method annotatedMethod) {
+  private @Nullable Method findGetter(Method annotatedMethod) {
     ManagedAttribute ma = annotatedMethod.getAnnotation(ManagedAttribute.class);
     try {
       if (!"".equals(ma.getter())) {
@@ -151,7 +155,7 @@ public class MBean implements DynamicMBean {
     }
   }
 
-  private Method findSetter(Method annotatedMethod) {
+  private @Nullable Method findSetter(Method annotatedMethod) {
     ManagedAttribute ma = annotatedMethod.getAnnotation(ManagedAttribute.class);
     if (!"".equals(ma.setter())) {
       return findMethod(annotatedMethod.getDeclaringClass(), ma.setter());
@@ -170,7 +174,7 @@ public class MBean implements DynamicMBean {
     return null;
   }
 
-  private Method findMethod(Class<?> cls, String name) {
+  private @Nullable Method findMethod(Class<?> cls, String name) {
     return Stream.of(cls.getMethods())
         .filter(m -> m.getName().equals(name))
         .findFirst()
@@ -184,7 +188,7 @@ public class MBean implements DynamicMBean {
         .forEach(oi -> operationMap.put(oi.name, oi));
   }
 
-  private OperationInfo getOperationInfo(Method m) {
+  private @Nullable OperationInfo getOperationInfo(Method m) {
     ManagedOperation mo = m.getAnnotation(ManagedOperation.class);
     if (mo == null) {
       return null;
@@ -214,9 +218,13 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public Object getAttribute(String attribute) {
+  public @Nullable Object getAttribute(String attribute) {
     try {
-      Object res = attributeMap.get(attribute).getter.invoke(bean);
+      AttributeInfo attributeInfo = attributeMap.get(attribute);
+      if (attributeInfo == null || attributeInfo.getter == null) {
+        return null;
+      }
+      Object res = attributeInfo.getter.invoke(bean);
       if (res instanceof Map<?, ?>) {
         return ((Map<?, ?>) res)
             .entrySet().stream()
@@ -235,7 +243,11 @@ public class MBean implements DynamicMBean {
   @Override
   public void setAttribute(Attribute attribute) {
     try {
-      attributeMap.get(attribute.getName()).setter.invoke(bean, attribute.getValue());
+      AttributeInfo attributeInfo = attributeMap.get(attribute.getName());
+      if (attributeInfo == null || attributeInfo.setter == null) {
+        return;
+      }
+      attributeInfo.setter.invoke(bean, attribute.getValue());
     } catch (IllegalAccessException | InvocationTargetException e) {
       LOG.severe("Error during execution: " + e.getMessage());
     }
@@ -257,14 +269,18 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public AttributeList setAttributes(AttributeList attributes) {
+  public @Nullable AttributeList setAttributes(AttributeList attributes) {
     return null;
   }
 
   @Override
-  public Object invoke(String actionName, Object[] params, String[] signature) {
+  public @Nullable Object invoke(String actionName, Object[] params, String[] signature) {
     try {
-      return operationMap.get(actionName).method.invoke(bean, params);
+      OperationInfo operationInfo = operationMap.get(actionName);
+      if (operationInfo == null) {
+        return null;
+      }
+      return operationInfo.method.invoke(bean, params);
     } catch (IllegalAccessException | InvocationTargetException e) {
       LOG.severe("Error during execution: " + e.getMessage());
       return null;
