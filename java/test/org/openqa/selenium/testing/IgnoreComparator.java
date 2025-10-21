@@ -52,8 +52,7 @@ class IgnoreComparator {
     return ignoreList.anyMatch(
         driver ->
             (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
-                && ((!driver.travis() || TestUtilities.isOnTravis())
-                    || (!driver.gitHubActions() || TestUtilities.isOnGitHubActions()))
+                && (!driver.gitHubActions() || TestUtilities.isOnGitHubActions())
                 && isOpen(driver.issue()));
   }
 
