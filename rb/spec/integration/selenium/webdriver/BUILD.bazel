@@ -42,6 +42,7 @@ rb_library(
             "driver_spec.rb",
             "devtools_spec.rb",
             "element_spec.rb",
+            "navigation_spec.rb",
             "network_spec.rb",
         ],
     )
@@ -55,7 +56,7 @@ _BIDI_FILES = [
 
 [
     rb_integration_test(
-        name = f[:-7],
+        name = f[:-8],
         srcs = [f],
         tags = ["bidi"],
     )
