@@ -36,7 +36,7 @@ module Selenium
 
         def on(event, &block)
           event = EVENTS[event] if event.is_a?(Symbol)
-          @devtools.callbacks["<%= domain[:domain] %>.#{event}"] << block
+          @devtools.callbacks["<%= domain[:domain] %>.#{event}"][SecureRandom.uuid] = block
         end
 
         <% domain[:commands].each do |command| %>
