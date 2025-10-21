@@ -106,8 +106,6 @@ public interface DriverCommand {
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
   String GET_LOCATION = "getLocation";
   String SET_LOCATION = "setLocation";
-  String GET_APP_CACHE = "getAppCache";
-  String CLEAR_APP_CACHE = "clearAppCache";
   String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
   String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
   String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
@@ -160,7 +158,7 @@ public interface DriverCommand {
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
-    return new CommandPayload(NEW_SESSION, Map.of("capabilities", singleton(capabilities)));
+    return NEW_SESSION(singleton(capabilities));
   }
 
   static CommandPayload NEW_SESSION(Collection<Capabilities> capabilities) {

@@ -64,16 +64,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.firefox.Executable"/>
-    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
-  </Match>
-
-  <Match>
-    <Class name="org.openqa.selenium.firefox.FirefoxBinary"/>
-    <Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.firefox.FirefoxDriver"/>
     <Bug pattern="NP_BOOLEAN_RETURN_NULL,UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
   </Match>
@@ -207,11 +197,6 @@
   <Match>
     <Class name="org.openqa.selenium.remote.WebElementToJsonConverter" />
     <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE" />
-  </Match>
-
-  <Match>
-    <Class name="org.openqa.selenium.remote.internal.WebElementToJsonConverter" />
-    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
   </Match>
 
   <Match>

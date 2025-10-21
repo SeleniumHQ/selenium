@@ -18,28 +18,15 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using System;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal class UnsubscribeByIdCommand(UnsubscribeByIdCommandParameters @params)
-    : Command<UnsubscribeByIdCommandParameters, EmptyResult>(@params, "session.unsubscribe");
+internal sealed class UnsubscribeByIdCommand(UnsubscribeByIdParameters @params)
+    : Command<UnsubscribeByIdParameters, UnsubscribeResult>(@params, "session.unsubscribe");
 
-internal class UnsubscribeByAttributesCommand(UnsubscribeByAttributesCommandParameters @params)
-    : Command<UnsubscribeByAttributesCommandParameters, EmptyResult>(@params, "session.unsubscribe");
+internal sealed record UnsubscribeByIdParameters(IEnumerable<Subscription> Subscriptions) : Parameters;
 
-internal record UnsubscribeByIdCommandParameters(IEnumerable<Subscription> Subscriptions) : CommandParameters;
+public sealed class UnsubscribeByIdOptions : CommandOptions;
 
-public record UnsubscribeByIdOptions : CommandOptions;
-
-internal record UnsubscribeByAttributesCommandParameters(
-    IEnumerable<string> Events,
-    [property: Obsolete("Contexts param is deprecated and will be removed in the future versions")]
-    // https://w3c.github.io/webdriver-bidi/#type-session-UnsubscribeByAttributesRequest
-    IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : CommandParameters;
-
-public record UnsubscribeByAttributesOptions : CommandOptions
-{
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
-}
+public sealed record UnsubscribeResult : EmptyResult;

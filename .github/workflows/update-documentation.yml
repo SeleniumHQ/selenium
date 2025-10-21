@@ -19,6 +19,11 @@ on:
           - dotnet
           - node
           - all
+      force:
+        description: Force generation even if version is nightly, type "force" to enable
+        required: false
+        type: string
+        default: ""
 
   workflow_call:
     inputs:
@@ -32,6 +37,9 @@ on:
         required: false
         type: string
         default: "all"
+    secrets:
+      SELENIUM_CI_TOKEN:
+        required: true
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,11 +66,11 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-      - name: Set up Python 3.9
+      - name: Set up Python 3.10
         if: ${{ inputs.language == 'py' || inputs.language == 'all' }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.9
+          python-version: '3.10'
       - name: Install dependencies
         if: ${{ inputs.language == 'py' || inputs.language == 'all' }}
         run: |
@@ -74,7 +82,7 @@ jobs:
           npm install
           npm install --prefix javascript/selenium-webdriver
       - name: Generate Documentation for selected langauges
-        run: ./go ${{ inputs.language }}:docs
+        run: ./go ${{ inputs.language }}:docs ${{ inputs.force }}
       - name: Documentation Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v6

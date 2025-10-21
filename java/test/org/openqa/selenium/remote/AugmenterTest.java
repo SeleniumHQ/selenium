@@ -40,7 +40,6 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.support.decorators.Decorated;
 import org.openqa.selenium.support.decorators.WebDriverDecorator;
@@ -80,18 +79,6 @@ class AugmenterTest {
 
     assertThat(returned).isSameAs(driver);
     assertThat(returned).isNotInstanceOf(HasMagicNumbers.class);
-  }
-
-  @Test
-  void shouldNotUseNonMatchingInterfaces() {
-    Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
-
-    WebDriver returned =
-        getAugmenter()
-            .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
-            .augment(driver);
-    assertThat(returned).isNotInstanceOf(WebStorage.class);
   }
 
   @Test

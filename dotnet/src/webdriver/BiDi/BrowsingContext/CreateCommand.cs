@@ -18,15 +18,17 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal class CreateCommand(CreateCommandParameters @params)
-    : Command<CreateCommandParameters, CreateResult>(@params, "browsingContext.create");
+internal sealed class CreateCommand(CreateParameters @params)
+    : Command<CreateParameters, CreateResult>(@params, "browsingContext.create");
 
-internal record CreateCommandParameters(ContextType Type, BrowsingContext? ReferenceContext, bool? Background, Browser.UserContext? UserContext) : CommandParameters;
+internal sealed record CreateParameters(ContextType Type, BrowsingContext? ReferenceContext, bool? Background, Browser.UserContext? UserContext) : Parameters;
 
-public record CreateOptions : CommandOptions
+public sealed class CreateOptions : CommandOptions
 {
     public BrowsingContext? ReferenceContext { get; set; }
 
@@ -35,10 +37,11 @@ public record CreateOptions : CommandOptions
     public Browser.UserContext? UserContext { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<ContextType>))]
 public enum ContextType
 {
     Tab,
     Window
 }
 
-public record CreateResult(BrowsingContext Context) : EmptyResult;
+public sealed record CreateResult(BrowsingContext Context) : EmptyResult;

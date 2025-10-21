@@ -132,10 +132,12 @@ class TestChromiumWebExtension:
 
         if driver_option == "chrome":
             browser_class = webdriver.Chrome
+            browser_service = webdriver.ChromeService
         elif driver_option == "edge":
             browser_class = webdriver.Edge
+            browser_service = webdriver.EdgeService
 
-        temp_dir = tempfile.mkdtemp(prefix="chrome-profile-")
+        temp_dir = tempfile.mkdtemp(prefix="chromium-profile-")
 
         chromium_options.enable_bidi = True
         chromium_options.enable_webextensions = True
@@ -143,7 +145,17 @@ class TestChromiumWebExtension:
         chromium_options.add_argument("--no-sandbox")
         chromium_options.add_argument("--disable-dev-shm-usage")
 
-        chromium_driver = browser_class(options=chromium_options)
+        binary = request.config.option.binary
+        if binary:
+            chromium_options.binary_location = binary
+
+        executable = request.config.option.executable
+        if executable:
+            service = browser_service(executable_path=executable)
+        else:
+            service = browser_service()
+
+        chromium_driver = browser_class(options=chromium_options, service=service)
 
         yield chromium_driver
         chromium_driver.quit()

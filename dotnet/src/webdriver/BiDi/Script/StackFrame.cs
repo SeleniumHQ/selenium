@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record StackFrame(long LineNumber, long ColumnNumber, string Url, string FunctionName);
+public sealed record StackFrame(long LineNumber, long ColumnNumber, string Url, string FunctionName);

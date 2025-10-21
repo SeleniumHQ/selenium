@@ -18,16 +18,16 @@
 use crate::config::OS;
 use crate::config::OS::WINDOWS;
 use crate::{
-    format_one_arg, format_three_args, run_shell_command_by_os, Command, Logger, CP_VOLUME_COMMAND,
-    HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, MACOS, MSIEXEC_INSTALL_COMMAND,
+    CP_VOLUME_COMMAND, Command, HDIUTIL_ATTACH_COMMAND, HDIUTIL_DETACH_COMMAND, Logger, MACOS,
+    MSIEXEC_INSTALL_COMMAND, format_one_arg, format_three_args, run_shell_command_by_os,
 };
-use anyhow::anyhow;
 use anyhow::Error;
+use anyhow::anyhow;
 use apple_flat_package::PkgReader;
 use bzip2::read::BzDecoder;
 use directories::BaseDirs;
 use flate2::read::GzDecoder;
-use fs_extra::dir::{move_dir, CopyOptions};
+use fs_extra::dir::{CopyOptions, move_dir};
 use regex::Regex;
 #[cfg(windows)]
 use std::ffi::OsStr;
@@ -524,11 +524,7 @@ pub fn get_driver_filename(driver_name: &str, os: &str) -> String {
 }
 
 pub fn get_binary_extension(os: &str) -> &str {
-    if WINDOWS.is(os) {
-        ".exe"
-    } else {
-        ""
-    }
+    if WINDOWS.is(os) { ".exe" } else { "" }
 }
 
 pub fn parse_version(version_text: String, log: &Logger) -> Result<String, Error> {

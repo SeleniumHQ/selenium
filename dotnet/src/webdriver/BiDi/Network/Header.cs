@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record Header(string Name, BytesValue Value);
+public sealed record Header(string Name, BytesValue Value);

@@ -94,7 +94,7 @@ class Credential:
             - rp_id (str): Relying party identifier.
             - user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string. Can be None.
             - private_key (bytes): Base64 encoded PKCS#8 private key.
-            - sign_count (int): intital value for a signature counter.
+            - sign_count (int): initial value for a signature counter.
         """
         self._id = credential_id
         self._is_resident_credential = is_resident_credential
@@ -137,7 +137,7 @@ class Credential:
           - id (bytes): Unique base64 encoded string.
           - rp_id (str): Relying party identifier.
           - private_key (bytes): Base64 encoded PKCS
-          - sign_count (int): intital value for a signature counter.
+          - sign_count (int): initial value for a signature counter.
 
         :Returns:
           - Credential: A non-resident credential.
@@ -155,7 +155,7 @@ class Credential:
           - rp_id (str): Relying party identifier.
           - user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.
           - private_key (bytes): Base64 encoded PKCS
-          - sign_count (int): intital value for a signature counter.
+          - sign_count (int): initial value for a signature counter.
 
         :returns:
           - Credential: A resident credential.

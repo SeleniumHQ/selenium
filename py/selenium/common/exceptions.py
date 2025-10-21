@@ -17,7 +17,7 @@
 """Exceptions that may happen in all the webdriver code."""
 
 from collections.abc import Sequence
-from typing import Optional
+from typing import Any, Optional
 
 SUPPORT_MSG = "For documentation on this error, please visit:"
 ERROR_URL = "https://www.selenium.dev/documentation/webdriver/troubleshooting/errors"
@@ -27,7 +27,7 @@ class WebDriverException(Exception):
     """Base webdriver exception."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
     ) -> None:
         super().__init__()
         self.msg = msg
@@ -73,7 +73,7 @@ class NoSuchElementException(WebDriverException):
     """
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#nosuchelementexception"
 
@@ -112,7 +112,7 @@ class StaleElementReferenceException(WebDriverException):
     """
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#staleelementreferenceexception"
 
@@ -137,7 +137,7 @@ class UnexpectedAlertPresentException(WebDriverException):
 
     def __init__(
         self,
-        msg: Optional[str] = None,
+        msg: Optional[Any] = None,
         screen: Optional[str] = None,
         stacktrace: Optional[Sequence[str]] = None,
         alert_text: Optional[str] = None,
@@ -165,10 +165,24 @@ class ElementNotVisibleException(InvalidElementStateException):
     element that is hidden from view.
     """
 
+    def __init__(
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementnotvisibleexception"
+
+        super().__init__(with_support, screen, stacktrace)
+
 
 class ElementNotInteractableException(InvalidElementStateException):
     """Thrown when an element is present in the DOM but interactions with that
     element will hit another element due to paint order."""
+
+    def __init__(
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementnotinteractableexception"
+
+        super().__init__(with_support, screen, stacktrace)
 
 
 class ElementNotSelectableException(InvalidElementStateException):
@@ -211,7 +225,7 @@ class InvalidSelectorException(WebDriverException):
     """
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#invalidselectorexception"
 
@@ -252,6 +266,13 @@ class ElementClickInterceptedException(WebDriverException):
     receiving the events is obscuring the element that was requested to be
     clicked."""
 
+    def __init__(
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#elementclickinterceptedexception"
+
+        super().__init__(with_support, screen, stacktrace)
+
 
 class InsecureCertificateException(WebDriverException):
     """Navigation caused the user agent to hit a certificate warning, which is
@@ -266,9 +287,23 @@ class InvalidSessionIdException(WebDriverException):
     """Occurs if the given session id is not in the list of active sessions,
     meaning the session either does not exist or that it's not active."""
 
+    def __init__(
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#invalidsessionidexception"
+
+        super().__init__(with_support, screen, stacktrace)
+
 
 class SessionNotCreatedException(WebDriverException):
     """A new session could not be created."""
+
+    def __init__(
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}#sessionnotcreatedexception"
+
+        super().__init__(with_support, screen, stacktrace)
 
 
 class UnknownMethodException(WebDriverException):
@@ -280,7 +315,7 @@ class NoSuchDriverException(WebDriverException):
     """Raised when driver is not specified and cannot be located."""
 
     def __init__(
-        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+        self, msg: Optional[Any] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
     ) -> None:
         with_support = f"{msg}; {SUPPORT_MSG} {ERROR_URL}/driver_location"
 

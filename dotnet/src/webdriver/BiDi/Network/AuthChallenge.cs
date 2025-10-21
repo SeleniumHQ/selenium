@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record AuthChallenge(string Scheme, string Realm);
+public sealed record AuthChallenge(string Scheme, string Realm);

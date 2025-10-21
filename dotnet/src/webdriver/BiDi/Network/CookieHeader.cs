@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record CookieHeader(string Name, BytesValue Value);
+public sealed record CookieHeader(string Name, BytesValue Value);

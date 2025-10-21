@@ -1,3 +1,23 @@
+0.4.37
+======
+
+* Honor full browser version even if major version is installed (#15517)
+* Log browser path also in offline mode (#16215)
+
+0.4.36
+======
+* Use DEBUG level for WARN traces in offline mode (#15836)
+
+0.4.35
+======
+* Normalize architecture strings sent to Plausible (#15970)
+* Update base URL for Edge web driver (#16056)
+
+0.4.34
+======
+* Electron support in Selenium-Manager (#13954) (#15752)
+* Bug-fix: avoid to download safaridriver and clear lock parent folder (#15775)
+
 0.4.33
 ======
 * Replace WMIC commands (deprecated) by WinAPI in Windows (#15363)

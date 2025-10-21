@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 """The WebDriver implementation."""
 
 import base64
@@ -29,7 +30,7 @@ from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
-from typing import Any, Dict, Optional, Type, Union, cast
+from typing import Any, Optional, Union, cast
 
 from selenium.common.exceptions import (
     InvalidArgumentException,
@@ -40,6 +41,8 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.bidi.browser import Browser
 from selenium.webdriver.common.bidi.browsing_context import BrowsingContext
+from selenium.webdriver.common.bidi.emulation import Emulation
+from selenium.webdriver.common.bidi.input import Input
 from selenium.webdriver.common.bidi.network import Network
 from selenium.webdriver.common.bidi.permissions import Permissions
 from selenium.webdriver.common.bidi.script import Script
@@ -47,6 +50,7 @@ from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.fedcm.dialog import Dialog
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
@@ -55,23 +59,21 @@ from selenium.webdriver.common.virtual_authenticator import (
     VirtualAuthenticatorOptions,
     required_virtual_authenticator,
 )
+from selenium.webdriver.remote.bidi_connection import BidiConnection
+from selenium.webdriver.remote.client_config import ClientConfig
+from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.errorhandler import ErrorHandler
+from selenium.webdriver.remote.fedcm import FedCM
+from selenium.webdriver.remote.file_detector import FileDetector, LocalFileDetector
+from selenium.webdriver.remote.locator_converter import LocatorConverter
+from selenium.webdriver.remote.mobile import Mobile
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.script_key import ScriptKey
+from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.switch_to import SwitchTo
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 from selenium.webdriver.support.relative_locator import RelativeBy
-
-from ..common.fedcm.dialog import Dialog
-from .bidi_connection import BidiConnection
-from .client_config import ClientConfig
-from .command import Command
-from .errorhandler import ErrorHandler
-from .fedcm import FedCM
-from .file_detector import FileDetector, LocalFileDetector
-from .locator_converter import LocatorConverter
-from .mobile import Mobile
-from .remote_connection import RemoteConnection
-from .script_key import ScriptKey
-from .shadowroot import ShadowRoot
-from .switch_to import SwitchTo
-from .webelement import WebElement
-from .websocket_connection import WebSocketConnection
 
 cdp = None
 
@@ -136,7 +138,7 @@ def get_remote_connection(
 
 
 def create_matches(options: list[BaseOptions]) -> dict:
-    capabilities: Dict[str, Any] = {"capabilities": {}}
+    capabilities: dict[str, Any] = {"capabilities": {}}
     opts = []
     for opt in options:
         opts.append(opt.to_capabilities())
@@ -201,7 +203,7 @@ class WebDriver(BaseWebDriver):
         file_detector: Optional[FileDetector] = None,
         options: Optional[Union[BaseOptions, list[BaseOptions]]] = None,
         locator_converter: Optional[LocatorConverter] = None,
-        web_element_cls: Optional[Type[WebElement]] = None,
+        web_element_cls: Optional[type[WebElement]] = None,
         client_config: Optional[ClientConfig] = None,
     ) -> None:
         """Create a new driver that will issue commands using the wire
@@ -248,8 +250,8 @@ class WebDriver(BaseWebDriver):
             )
         self._is_remote = True
         self.session_id: Optional[str] = None
-        self.caps: Dict[str, Any] = {}
-        self.pinned_scripts: Dict[str, Any] = {}
+        self.caps: dict[str, Any] = {}
+        self.pinned_scripts: dict[str, Any] = {}
         self.error_handler = ErrorHandler()
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
@@ -270,6 +272,8 @@ class WebDriver(BaseWebDriver):
         self._storage = None
         self._webextension = None
         self._permissions = None
+        self._emulation = None
+        self._input = None
         self._devtools = None
 
     def __repr__(self):
@@ -668,7 +672,7 @@ class WebDriver(BaseWebDriver):
         --------
         >>> driver.print_page()
         """
-        options: Union[Dict[str, Any], Any] = {}
+        options: Union[dict[str, Any], Any] = {}
         if print_options:
             options = print_options.to_dict()
 
@@ -1207,9 +1211,16 @@ class WebDriver(BaseWebDriver):
             return self._devtools, self._websocket_connection
         if self.caps["browserName"].lower() == "firefox":
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
-        self._websocket_connection = WebSocketConnection(ws_url)
+        self._websocket_connection = WebSocketConnection(
+            ws_url,
+            self.command_executor.client_config.websocket_timeout,
+            self.command_executor.client_config.websocket_interval,
+        )
         targets = self._websocket_connection.execute(self._devtools.target.get_targets())
-        target_id = targets[0].target_id
+        for target in targets:
+            if target.target_id == self.current_window_handle:
+                target_id = target.target_id
+                break
         session = self._websocket_connection.execute(self._devtools.target.attach_to_target(target_id, True))
         self._websocket_connection.session_id = session
         return self._devtools, self._websocket_connection
@@ -1230,7 +1241,10 @@ class WebDriver(BaseWebDriver):
         devtools = cdp.import_devtools(version)
         async with cdp.open_cdp(ws_url) as conn:
             targets = await conn.execute(devtools.target.get_targets())
-            target_id = targets[0].target_id
+            for target in targets:
+                if target.target_id == self.current_window_handle:
+                    target_id = target.target_id
+                    break
             async with conn.open_session(target_id) as session:
                 yield BidiConnection(session, cdp, devtools)
 
@@ -1240,7 +1254,7 @@ class WebDriver(BaseWebDriver):
             self._start_bidi()
 
         if not self._script:
-            self._script = Script(self._websocket_connection)
+            self._script = Script(self._websocket_connection, self)
 
         return self._script
 
@@ -1250,7 +1264,11 @@ class WebDriver(BaseWebDriver):
         else:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
-        self._websocket_connection = WebSocketConnection(ws_url)
+        self._websocket_connection = WebSocketConnection(
+            ws_url,
+            self.command_executor.client_config.websocket_timeout,
+            self.command_executor.client_config.websocket_interval,
+        )
 
     @property
     def network(self):
@@ -1390,16 +1408,64 @@ class WebDriver(BaseWebDriver):
 
         return self._webextension
 
+    @property
+    def emulation(self):
+        """Returns an emulation module object for BiDi emulation commands.
+
+        Returns:
+        --------
+        Emulation: an object containing access to BiDi emulation commands.
+
+        Examples:
+        ---------
+        >>> from selenium.webdriver.common.bidi.emulation import GeolocationCoordinates
+        >>> coordinates = GeolocationCoordinates(37.7749, -122.4194)
+        >>> driver.emulation.set_geolocation_override(coordinates=coordinates, contexts=[context_id])
+        """
+        if not self._websocket_connection:
+            self._start_bidi()
+
+        if self._emulation is None:
+            self._emulation = Emulation(self._websocket_connection)
+
+        return self._emulation
+
+    @property
+    def input(self):
+        """Returns an input module object for BiDi input commands.
+
+        Returns:
+        --------
+        Input: an object containing access to BiDi input commands.
+
+        Examples:
+        ---------
+        >>> from selenium.webdriver.common.bidi.input import KeySourceActions, KeyDownAction, KeyUpAction
+        >>> key_actions = KeySourceActions(id="keyboard", actions=[KeyDownAction(value="a"), KeyUpAction(value="a")])
+        >>> driver.input.perform_actions(driver.current_window_handle, [key_actions])
+        >>> driver.input.release_actions(driver.current_window_handle)
+        """
+        if not self._websocket_connection:
+            self._start_bidi()
+
+        if self._input is None:
+            self._input = Input(self._websocket_connection)
+
+        return self._input
+
     def _get_cdp_details(self):
         import json
 
         import urllib3
 
         http = urllib3.PoolManager()
-        if self.caps.get("browserName") == "chrome":
-            debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
-        elif self.caps.get("browserName") == "MicrosoftEdge":
-            debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
+        try:
+            if self.caps.get("browserName") == "chrome":
+                debugger_address = self.caps.get("goog:chromeOptions").get("debuggerAddress")
+            elif self.caps.get("browserName") in ("MicrosoftEdge", "webview2"):
+                debugger_address = self.caps.get("ms:edgeOptions").get("debuggerAddress")
+        except AttributeError:
+            raise WebDriverException("Can't get debugger address.")
 
         res = http.request("GET", f"http://{debugger_address}/json/version")
         data = json.loads(res.data)

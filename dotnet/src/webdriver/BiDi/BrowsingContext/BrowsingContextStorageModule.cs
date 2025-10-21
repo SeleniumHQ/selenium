@@ -22,7 +22,7 @@ using OpenQA.Selenium.BiDi.Storage;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public class BrowsingContextStorageModule(BrowsingContext context, StorageModule storageModule)
+public sealed class BrowsingContextStorageModule(BrowsingContext context, StorageModule storageModule)
 {
     public Task<GetCookiesResult> GetCookiesAsync(GetCookiesOptions? options = null)
     {

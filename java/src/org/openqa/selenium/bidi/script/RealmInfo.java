@@ -76,7 +76,7 @@ public class RealmInfo {
 
     input.endObject();
 
-    if (realmType.equals(RealmType.WINDOW)) {
+    if (realmType != null && realmType.equals(RealmType.WINDOW)) {
       return new WindowRealmInfo(
           realmId, origin, realmType, browsingContext, Optional.ofNullable(sandbox));
     }

@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record MessageEventArgs(BiDi BiDi, Channel Channel, RemoteValue Data, Source Source) : EventArgs(BiDi);
+public sealed record MessageEventArgs(BiDi BiDi, Channel Channel, RemoteValue Data, Source Source) : EventArgs(BiDi);

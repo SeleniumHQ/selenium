@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.DevTools;
 public static class ICommandResponseExtensions
 {
     /// <summary>
-    /// Returns the strongly-typed response for an object impelementing the <see cref="ICommandResponse"/> interface.
+    /// Returns the strongly-typed response for an object implementing the <see cref="ICommandResponse"/> interface.
     /// </summary>
     /// <typeparam name="TCommandResponse">The concrete implementation type of command response expected.</typeparam>
     /// <param name="response">The <see cref="ICommandResponse"/> object to convert to the implementation type</param>

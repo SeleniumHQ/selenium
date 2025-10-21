@@ -22,12 +22,12 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal class AddPreloadScriptCommand(AddPreloadScriptCommandParameters @params)
-    : Command<AddPreloadScriptCommandParameters, AddPreloadScriptResult>(@params, "script.addPreloadScript");
+internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params)
+    : Command<AddPreloadScriptParameters, AddPreloadScriptResult>(@params, "script.addPreloadScript");
 
-internal record AddPreloadScriptCommandParameters(string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : CommandParameters;
+internal sealed record AddPreloadScriptParameters(string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : Parameters;
 
-public record AddPreloadScriptOptions : CommandOptions
+public sealed class AddPreloadScriptOptions : CommandOptions
 {
     public AddPreloadScriptOptions() { }
 
@@ -44,11 +44,11 @@ public record AddPreloadScriptOptions : CommandOptions
     public string? Sandbox { get; set; }
 }
 
-public record BrowsingContextAddPreloadScriptOptions
+public sealed record BrowsingContextAddPreloadScriptOptions
 {
     public IEnumerable<ChannelLocalValue>? Arguments { get; set; }
 
     public string? Sandbox { get; set; }
 }
 
-internal record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;
+public sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;

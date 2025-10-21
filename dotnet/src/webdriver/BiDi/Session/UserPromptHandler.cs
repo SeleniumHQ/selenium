@@ -17,9 +17,12 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Session;
 
-public record UserPromptHandler
+public sealed record UserPromptHandler
 {
     public UserPromptHandlerType? Alert { get; set; }
 
@@ -34,6 +37,7 @@ public record UserPromptHandler
     public UserPromptHandlerType? Prompt { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<UserPromptHandlerType>))]
 public enum UserPromptHandlerType
 {
     Accept,

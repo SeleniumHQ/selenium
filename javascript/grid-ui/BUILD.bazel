@@ -32,6 +32,7 @@ SRCS = glob(
     exclude = [
         "src/simple.ts",
         "src/**/*.test.tsx",
+        "src/tests/**/*",
     ],
 )
 

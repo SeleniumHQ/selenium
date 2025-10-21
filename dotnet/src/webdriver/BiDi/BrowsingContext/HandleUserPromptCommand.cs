@@ -21,14 +21,16 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-class HandleUserPromptCommand(HandleUserPromptCommandParameters @params)
-    : Command<HandleUserPromptCommandParameters, EmptyResult>(@params, "browsingContext.handleUserPrompt");
+internal sealed class HandleUserPromptCommand(HandleUserPromptParameters @params)
+    : Command<HandleUserPromptParameters, HandleUserPromptResult>(@params, "browsingContext.handleUserPrompt");
 
-internal record HandleUserPromptCommandParameters(BrowsingContext Context, bool? Accept, string? UserText) : CommandParameters;
+internal sealed record HandleUserPromptParameters(BrowsingContext Context, bool? Accept, string? UserText) : Parameters;
 
-public record HandleUserPromptOptions : CommandOptions
+public sealed class HandleUserPromptOptions : CommandOptions
 {
     public bool? Accept { get; set; }
 
     public string? UserText { get; set; }
 }
+
+public sealed record HandleUserPromptResult : EmptyResult;

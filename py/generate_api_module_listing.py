@@ -15,13 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# -----------------------------------------------------------------
-# This script recursively scans the `selenium` package directory
-# to find all modules, then generates the `py/docs/source/api.rst`
-# file containing a listing of all modules in separate sections.
-# The `api.rst` file is later used by `sphinx-autogen` to generate
-# sphinx autodoc stub pages used in the Python API documentation.
-# See `py/tox.ini` for how it is invoked.
+
+"""This script recursively scans the `selenium` package directory
+to find all modules, then generates the `py/docs/source/api.rst`
+file containing a listing of all modules in separate sections.
+The `api.rst` file is later used by `sphinx-autogen` to generate
+sphinx autodoc stub pages used in the Python API documentation.
+See `py/tox.ini` for how it is invoked."""
 
 import os
 import site
@@ -47,8 +47,8 @@ if __name__ == "__main__":
     package_name = "selenium"
     output_file = os.path.join("docs", "source", "api.rst")
     print(f"generating module list for sphinx autodoc in: {output_file}\n")
-    modules = find_modules(package_name)
-    base_modules = [mod for mod in sorted(set(module.rsplit(".", 1)[0] for module in modules)) if mod != package_name]
+    modules = [module for module in find_modules(package_name) if ".devtools." not in module]
+    base_modules = [mod for mod in sorted({module.rsplit(".", 1)[0] for module in modules}) if mod != package_name]
     print("found sections:")
     for base_module in base_modules:
         print(f"    {base_module}")
@@ -82,7 +82,8 @@ Selenium Documentation
             )
             for module in modules:
                 if base_module in module:
-                    f.write(f"   {module}\n")
+                    if len(module.split(".")) - len(base_module.split(".")) == 1:
+                        f.write(f"   {module}\n")
         f.write(
             """
 Indices and tables

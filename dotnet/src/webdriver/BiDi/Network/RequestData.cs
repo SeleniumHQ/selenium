@@ -21,4 +21,14 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record RequestData(Request Request, string Url, string Method, IReadOnlyList<Header> Headers, IReadOnlyList<Cookie> Cookies, long? HeadersSize, long? BodySize, string Destination, string? InitiatorType, FetchTimingInfo Timings);
+public sealed record RequestData(
+    Request Request,
+    string Url,
+    string Method,
+    IReadOnlyList<Header> Headers,
+    IReadOnlyList<Cookie> Cookies,
+    long? HeadersSize,
+    long? BodySize,
+    string Destination,
+    string? InitiatorType,
+    FetchTimingInfo Timings);
