@@ -9,6 +9,14 @@ load(
     "firefox_data",
 )
 
+BIDI_BROWSERS = [
+    "chrome",
+    "chrome-beta",
+    "edge",
+    "firefox",
+    "firefox-beta",
+]
+
 BROWSERS = {
     "chrome": {
         "data": chrome_data,
@@ -215,7 +223,7 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
         )
 
         # Generate a test target for bidi browser execution if there is a matching tag
-        if "bidi" in tags:
+        if "bidi" in tags and browser in BIDI_BROWSERS:
             rb_test(
                 name = "{}-{}-bidi".format(name, browser),
                 size = "large",
@@ -225,6 +233,32 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
                 env = BROWSERS[browser]["env"] | {"WEBDRIVER_BIDI": "true"},
                 main = "@bundle//bin:rspec",
                 tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-bidi".format(browser)],
+                deps = depset(
+                    ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
+                    BROWSERS[browser]["deps"] +
+                    deps,
+                ),
+                visibility = ["//rb:__subpackages__"],
+                target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+            )
+            rb_test(
+                name = "{}-{}-remote-bidi".format(name, browser),
+                size = "large",
+                srcs = srcs,
+                args = ["rb/spec/"],
+                data = BROWSERS[browser]["data"] + data + [
+                    "//common/src/web",
+                    "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                    "//rb/spec:java-location",
+                    "@bazel_tools//tools/jdk:current_java_runtime",
+                ],
+                env = BROWSERS[browser]["env"] | {
+                    "WD_BAZEL_JAVA_LOCATION": "$(rootpath //rb/spec:java-location)",
+                    "WD_SPEC_DRIVER": "remote",
+                    "WEBDRIVER_BIDI": "true",
+                },
+                main = "@bundle//bin:rspec",
+                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-remote-bidi".format(browser)],
                 deps = depset(
                     ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
                     BROWSERS[browser]["deps"] +

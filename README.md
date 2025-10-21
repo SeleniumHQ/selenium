@@ -397,7 +397,7 @@ bazel test //py:all
 Test targets:
 
 | Command                                                                          | Description                                        |
-| -------------------------------------------------------------------------------- | -------------------------------------------------- |
+|----------------------------------------------------------------------------------|----------------------------------------------------|
 | `bazel test //rb/...`                                                            | Run unit, all integration tests and lint           |
 | `bazel test //rb:lint`                                                           | Run RuboCop linter                                 |
 | `bazel test //rb/spec/...`                                                       | Run unit and integration tests for all browsers    |
@@ -406,23 +406,29 @@ Test targets:
 | `bazel test //rb/spec/... --test_size_filters large`                             | Run integration tests for all browsers             |
 | `bazel test //rb/spec/integration/...`                                           | Run integration tests for all browsers             |
 | `bazel test //rb/spec/integration/... --test_tag_filters firefox`                | Run integration tests for local Firefox only       |
-| `bazel test //rb/spec/integration/... --test_tag_filters firefox-remote`         | Run integration tests for remote Firefox only      |
+| `bazel test //rb/spec/integration/... --test_tag_filters bidi`                   | Run integration tests for all bidi tests           |
 | `bazel test //rb/spec/integration/... --test_tag_filters firefox,firefox-remote` | Run integration tests for local and remote Firefox |
 
 Ruby test targets have the same name as the spec file with `_spec.rb` removed, so you can run them individually.
-Integration tests targets also have a browser and remote suffix to control which browser to pick and whether to use Grid.
+Integration tests targets also allow specific suffixes to control specific browsers and settings.
+These targets are dynamically generated in the `rb/spec/tests.bzl` file
+Running in BiDi mode will be increasingly important as we re-implement classic selenium functionality with BiDi protocol.
+Not every test is set to run with BiDi by default, and which spec files are valid is explicitly
+with the `BIDI_BROWSERS` in the `tests.bzl` file and `_BIDI_FILES` in `//rb/spec/integration/selenium/webdriver/BUILD.bazel`
 
-| Test file                                               | Test target                                                      |
-| ------------------------------------------------------- | ---------------------------------------------------------------- |
-| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`         | `//rb/spec/unit/selenium/webdriver:proxy`                        |
-| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome`         |
-| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome-remote`  |
-| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox`        |
-| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox-remote` |
+| Test file                                               | Test target                                                          |
+| ------------------------------------------------------- |----------------------------------------------------------------------|
+| `rb/spec/unit/selenium/webdriver/proxy_spec.rb`         | `//rb/spec/unit/selenium/webdriver:proxy`                            |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome`             |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox-beta`       |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome-remote`      |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-firefox-bidi`       |
+| `rb/spec/integration/selenium/webdriver/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver:driver-chrome-remote-bidi` |
 
 Supported browsers:
 
 * `chrome`
+* `chrome-beta`
 * `edge`
 * `firefox`
 * `firefox-beta`
@@ -441,6 +447,7 @@ Supported environment variables for use with `--test_env`:
 - `WD_REMOTE_URL` - URL of an already running server to use for remote tests
 - `DOWNLOAD_SERVER` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
 - `DEBUG` - turns on verbose debugging
+- `WEBDRIVER_BIDI` - enables `web_socket_url` in the capabilities
 - `HEADLESS` - for chrome, edge and firefox; runs tests in headless mode
 - `DISABLE_BUILD_CHECK` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
 - `CHROME_BINARY` - path to test specific Chrome browser

@@ -1,9 +1,10 @@
-load("//rb/spec:tests.bzl", "rb_integration_test")
+load("//rb/spec:tests.bzl", "BIDI_BROWSERS", "rb_integration_test")
 
 [
     rb_integration_test(
         name = file[:-8],
         srcs = [file],
+        browsers = BIDI_BROWSERS,
         tags = [
             "bidi",
             "exclusive-if-local",
