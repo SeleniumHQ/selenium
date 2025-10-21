@@ -59,11 +59,11 @@ _BIDI_FILES = [
         name = f[:-8],
         srcs = [f],
         tags = ["bidi"],
-      deps = [
-          "//rb/lib/selenium/devtools",
-          "//rb/lib/selenium/webdriver:bidi",
-      ],
-  )
+        deps = [
+            "//rb/lib/selenium/devtools",
+            "//rb/lib/selenium/webdriver:bidi",
+        ],
+    )
     for f in _BIDI_FILES
 ]
 
