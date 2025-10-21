@@ -39,7 +39,7 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: Optional[str] = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
         log_output: Optional[str] = None,
         service_args: Optional[Sequence[str]] = None,

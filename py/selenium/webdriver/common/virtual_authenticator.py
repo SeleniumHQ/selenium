@@ -80,7 +80,7 @@ class Credential:
         self,
         credential_id: bytes,
         is_resident_credential: bool,
-        rp_id: str,
+        rp_id: Optional[str],
         user_handle: Optional[bytes],
         private_key: bytes,
         sign_count: int,
@@ -112,7 +112,7 @@ class Credential:
         return self._is_resident_credential
 
     @property
-    def rp_id(self) -> str:
+    def rp_id(self) -> Optional[str]:
         return self._rp_id
 
     @property
