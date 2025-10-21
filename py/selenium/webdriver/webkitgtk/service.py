@@ -17,8 +17,8 @@
 
 import shutil
 import warnings
-from collections.abc import Mapping
-from typing import IO, Optional, Sequence
+from collections.abc import Mapping, Sequence
+from typing import IO, Optional
 
 from selenium.webdriver.common import service
 
