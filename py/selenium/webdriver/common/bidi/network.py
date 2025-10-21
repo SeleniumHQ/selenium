@@ -17,7 +17,7 @@
 
 import base64
 from enum import Enum
-from typing import Union
+from typing import Optional, Union
 
 from selenium.webdriver.common.bidi.common import command_builder
 
@@ -428,11 +428,17 @@ class Network:
                 network=self,
                 request_id=request_id,
                 url=response_data.get("url"),
+                protocol=response_data.get("protocol"),
                 status_code=response_data.get("status"),
                 status_text=response_data.get("statusText"),
                 headers=response_data.get("headers", []),
                 mime_type=response_data.get("mimeType"),
                 from_cache=response_data.get("fromCache", False),
+                bytes_received=response_data.get("bytesReceived"),
+                headers_size=response_data.get("headersSize"),
+                body_size=response_data.get("bodySize"),
+                content=response_data.get("content"),
+                auth_challenges=response_data.get("authChallenges"),
             )
             callback(response)
 
@@ -661,27 +667,39 @@ class Request:
 
 
 class Response:
-    """Represents a network response."""
+    """Represents a network response - network.ResponseData type"""
 
     def __init__(
         self,
         network: Network,
-        request_id,
-        url=None,
-        status_code=None,
-        status_text=None,
-        headers=None,
-        mime_type=None,
-        from_cache=False,
+        request_id: str,
+        url: str = None,
+        protocol: str = None,
+        status_code: int = None,
+        status_text: str = None,
+        headers: list = None,
+        mime_type: str = None,
+        from_cache: bool = False,
+        bytes_received: int = None,
+        headers_size: Optional[int] = None,
+        body_size: Optional[int] = None,
+        content: dict = None,
+        auth_challenges: Optional[list] = None,
     ):
-        self.network = network
-        self.request_id = request_id
-        self.url = url
-        self.status_code = status_code
-        self.status_text = status_text
-        self.headers = headers or []
-        self.mime_type = mime_type
-        self.from_cache = from_cache
+        self.network: Network = network
+        self.request_id: str = request_id
+        self.url: str = url
+        self.protocol: str = protocol
+        self.status_code: int = status_code
+        self.status_text: str = status_text
+        self.headers: list = headers or []
+        self.mime_type: str = mime_type
+        self.from_cache: bool = from_cache
+        self.bytes_received: int = bytes_received
+        self.headers_size: Optional[int] = headers_size
+        self.body_size: Optional[int] = body_size
+        self.content: dict = content
+        self.auth_challenges: Optional[list] = auth_challenges
 
     def continue_response(self, cookies=None, credentials=None, headers=None, reason_phrase=None, status_code=None):
         """Continue a response blocked by a network intercept.
