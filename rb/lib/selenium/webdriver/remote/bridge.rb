@@ -209,13 +209,18 @@ module Selenium
         QUIT_ERRORS = [IOError, EOFError, WebSocket::Error].freeze
 
         def quit
-          execute :delete_session
-        ensure
           begin
-            http.close
-          rescue *QUIT_ERRORS
-            nil
+            execute :delete_session
+          rescue *QUIT_ERRORS => e
+            WebDriver.logger.debug "delete_session failed during quit: #{e.class}: #{e.message}", id: :ws
+          ensure
+            begin
+              http.close
+            rescue *QUIT_ERRORS => e
+              WebDriver.logger.debug "http.close failed during quit: #{e.class}: #{e&.message}", id: :ws
+            end
           end
+          nil
         end
 
         def close

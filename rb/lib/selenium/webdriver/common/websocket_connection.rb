@@ -170,9 +170,12 @@ module Selenium
         rescue Error::WebDriverError, *CONNECTION_ERRORS => e
           WebDriver.logger.debug "Callback aborted: #{e.class}: #{e.message}", id: :ws
         rescue StandardError => e
-          # Unexpected handler failure; log with a short backtrace.
+          # Do not allow an error raised during bidi interception to prevent potential deadlock
+          Thread.main.raise(e) unless @closing || params['isBlocked']
+
+          condition = @closing ? 'on closing' : 'during interception'
           bt = Array(e.backtrace).first(5).join("\n")
-          WebDriver.logger.error "Callback error: #{e.class}: #{e.message}\n#{bt}", id: :ws
+          WebDriver.logger.error "Callback error #{condition}: #{e.class}: #{e.message}\n#{bt}", id: :ws
         end
       end
 
