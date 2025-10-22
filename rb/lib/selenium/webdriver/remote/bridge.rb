@@ -212,12 +212,12 @@ module Selenium
           begin
             execute :delete_session
           rescue *QUIT_ERRORS => e
-            WebDriver.logger.debug "delete_session failed during quit: #{e.class}: #{e.message}", id: :ws
+            WebDriver.logger.debug "delete_session failed during quit: #{e.class}: #{e.message}", id: :quit
           ensure
             begin
               http.close
             rescue *QUIT_ERRORS => e
-              WebDriver.logger.debug "http.close failed during quit: #{e.class}: #{e&.message}", id: :ws
+              WebDriver.logger.debug "http.close failed during quit: #{e.class}: #{e&.message}", id: :quit
             end
           end
           nil
