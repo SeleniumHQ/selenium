@@ -62,7 +62,8 @@ module Selenium
           driver.quit
         end
 
-        it 'enables BiDi on initialization', exclusive: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
+        it 'enables BiDi on initialization',
+           exclusive: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
           quit_driver
 
           options = Selenium::WebDriver::Options.chrome(bidi: true)
