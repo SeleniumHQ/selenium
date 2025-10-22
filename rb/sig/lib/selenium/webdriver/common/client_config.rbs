@@ -1,0 +1,28 @@
+module Selenium
+  module WebDriver
+
+    ClientConfig: Class
+
+    class ClientConfig
+      attr_reader open_timeout: Integer?
+      attr_reader read_timeout: Integer?
+      attr_reader proxy: Selenium::WebDriver::Proxy?
+      attr_reader extra_headers: Hash[String, String]?
+      attr_reader user_agent: String?
+      attr_reader server_url: (String | URI)?
+
+      def initialize: (
+          ?open_timeout: Integer?,
+          ?read_timeout: Integer?,
+          ?proxy: Selenium::WebDriver::Proxy?,
+          ?extra_headers: Hash[String, String]?,
+          ?user_agent: String?,
+          ?server_url: (String | URI)?
+        ) -> void
+
+      def with: (**untyped) -> ClientConfig
+      def to_h: -> Hash[Symbol, untyped]
+      def deconstruct_keys: (Array[Symbol]?) -> Hash[Symbol, untyped]
+    end
+  end
+end

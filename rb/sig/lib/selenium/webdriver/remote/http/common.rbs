@@ -11,13 +11,13 @@ module Selenium
 
           @common_headers: Hash[String, untyped]
 
-          attr_accessor self.extra_headers: Hash[String, untyped]
+          attr_accessor self.extra_headers: Hash[String, untyped]?
 
-          attr_writer self.user_agent: String
+          attr_writer self.user_agent: String?
 
           def self.user_agent: -> String
 
-          attr_writer server_url: String
+          attr_writer server_url?: URI
 
           def quit_errors: () -> Array[untyped]
 
@@ -25,11 +25,13 @@ module Selenium
 
           def call: (untyped verb, untyped url, untyped command_hash) -> untyped
 
+          def server_url?: -> bool
+
           private
 
           def common_headers: -> Hash[String, untyped]
 
-          def server_url: () -> String
+          def server_url: () -> URI
 
           def request: (*untyped) -> untyped
 

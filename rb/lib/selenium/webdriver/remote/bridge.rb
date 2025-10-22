@@ -54,17 +54,18 @@ module Selenium
         # Initializes the bridge with the given server URL
         # @param [String, URI] url url for the remote server
         # @param [Object] http_client an HTTP client instance that implements the same protocol as Http::Default
+        # @param [ClientConfig] client_config configuration for the HTTP client
         # @api private
         #
 
-        def initialize(url:, http_client: nil)
-          uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless uri.path.end_with?('/')
+        def initialize(url: nil, http_client: nil, client_config: nil)
+          if http_client && client_config
+            raise Error::WebDriverError, 'Cannot specify both http_client and client_config'
+          end
 
-          @http = http_client || Http::Default.new
-          @http.server_url = uri
+          @http = http_client || create_http_client(client_config, url: url)
+
           @file_detector = nil
-
           @locator_converter = self.class.locator_converter
         end
 
@@ -93,6 +94,8 @@ module Selenium
             extend(WebDriver::Safari::Features)
           when 'internet explorer'
             extend(WebDriver::IE::Features)
+          else
+            raise Error::WebDriverError, "Unknown browser name: #{@capabilities[:browser_name]}"
           end
         end
 
@@ -661,6 +664,41 @@ module Selenium
         def prepare_capabilities_payload(capabilities)
           capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
           {capabilities: capabilities}
+        end
+
+        def create_http_client(client_config, url: nil)
+          http = build_http_client(client_config)
+          validate_server_url_args(url, client_config)
+          http.server_url = normalize_url(url || client_config&.server_url)
+          http
+        end
+
+        def build_http_client(client_config)
+          if client_config
+            http = Http::Default.new(open_timeout: client_config.open_timeout,
+                                     read_timeout: client_config.read_timeout)
+            http.proxy = client_config.proxy if client_config.proxy
+
+            Http::Common.extra_headers = client_config.extra_headers if client_config.extra_headers
+            Http::Common.user_agent = client_config.user_agent if client_config.user_agent
+          else
+            http = Http::Default.new
+          end
+          http
+        end
+
+        def validate_server_url_args(url, client_config)
+          if url && client_config&.server_url
+            raise Error::WebDriverError, 'Cannot specify url in both keyword and http_client'
+          elsif url.nil? && !client_config&.server_url
+            raise Error::WebDriverError, 'No server URL provided'
+          end
+        end
+
+        def normalize_url(url)
+          url = URI.parse(url) if url && !url.is_a?(URI)
+          url&.path += '/' unless url&.path&.end_with?('/')
+          url
         end
       end # Bridge
     end # Remote

@@ -30,7 +30,7 @@ module Selenium
 
         attr_reader capabilities: untyped
 
-        def initialize: (url: String | URI, ?http_client: untyped?) -> void
+        def initialize: (?url: (String | URI)?, ?http_client: untyped?, ?client_config: ClientConfig?) -> void
 
         def bidi: -> WebDriver::Error::WebDriverError
 
@@ -247,6 +247,14 @@ module Selenium
         def prepare_capabilities_payload: (untyped capabilities) -> { capabilities: untyped }
 
         def convert_locator: (untyped how, untyped what) -> ::Array[untyped]
+
+        def create_http_client: (?ClientConfig? client_config, ?url: (String | URI)?) -> Http::Common
+
+        def build_http_client: (ClientConfig? client_config) -> Http::Common
+
+        def validate_server_url_args: ((String | URI)? url, ClientConfig? client_config) -> void
+
+        def normalize_url: ((String | URI)? url) -> URI?
 
         ESCAPE_CSS_REGEXP: ::Regexp
 

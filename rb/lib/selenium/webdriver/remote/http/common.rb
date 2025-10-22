@@ -40,6 +40,10 @@ module Selenium
 
           attr_writer :server_url
 
+          def server_url?
+            !@server_url.nil?
+          end
+
           def quit_errors
             [IOError]
           end
