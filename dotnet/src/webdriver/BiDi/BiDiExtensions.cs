@@ -1,4 +1,4 @@
-// <copyright file="WebDriver.Extensions.cs" company="Selenium Committers">
+// <copyright file="BiDiExtensions.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,13 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Extensions.Permissions;
 using System;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
-public static class WebDriverExtensions
+public static class BiDiExtensions
 {
     public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null)
     {
@@ -41,10 +40,5 @@ public static class WebDriverExtensions
         var bidi = await BiDi.ConnectAsync(webSocketUrl, options).ConfigureAwait(false);
 
         return bidi;
-    }
-
-    public static PermissionsModule AsPermissions(this BiDi bidi)
-    {
-        return Module.Create<PermissionsModule>(bidi, bidi.DefaultBiDiOptions());
     }
 }
