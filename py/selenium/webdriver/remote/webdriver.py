@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 """The WebDriver implementation."""
 
 import base64
@@ -49,6 +50,7 @@ from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.fedcm.dialog import Dialog
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
@@ -57,23 +59,21 @@ from selenium.webdriver.common.virtual_authenticator import (
     VirtualAuthenticatorOptions,
     required_virtual_authenticator,
 )
+from selenium.webdriver.remote.bidi_connection import BidiConnection
+from selenium.webdriver.remote.client_config import ClientConfig
+from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.errorhandler import ErrorHandler
+from selenium.webdriver.remote.fedcm import FedCM
+from selenium.webdriver.remote.file_detector import FileDetector, LocalFileDetector
+from selenium.webdriver.remote.locator_converter import LocatorConverter
+from selenium.webdriver.remote.mobile import Mobile
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.script_key import ScriptKey
+from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.switch_to import SwitchTo
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 from selenium.webdriver.support.relative_locator import RelativeBy
-
-from ..common.fedcm.dialog import Dialog
-from .bidi_connection import BidiConnection
-from .client_config import ClientConfig
-from .command import Command
-from .errorhandler import ErrorHandler
-from .fedcm import FedCM
-from .file_detector import FileDetector, LocalFileDetector
-from .locator_converter import LocatorConverter
-from .mobile import Mobile
-from .remote_connection import RemoteConnection
-from .script_key import ScriptKey
-from .shadowroot import ShadowRoot
-from .switch_to import SwitchTo
-from .webelement import WebElement
-from .websocket_connection import WebSocketConnection
 
 cdp = None
 
@@ -1211,7 +1211,11 @@ class WebDriver(BaseWebDriver):
             return self._devtools, self._websocket_connection
         if self.caps["browserName"].lower() == "firefox":
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
-        self._websocket_connection = WebSocketConnection(ws_url)
+        self._websocket_connection = WebSocketConnection(
+            ws_url,
+            self.command_executor.client_config.websocket_timeout,
+            self.command_executor.client_config.websocket_interval,
+        )
         targets = self._websocket_connection.execute(self._devtools.target.get_targets())
         for target in targets:
             if target.target_id == self.current_window_handle:
@@ -1260,7 +1264,11 @@ class WebDriver(BaseWebDriver):
         else:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
-        self._websocket_connection = WebSocketConnection(ws_url)
+        self._websocket_connection = WebSocketConnection(
+            ws_url,
+            self.command_executor.client_config.websocket_timeout,
+            self.command_executor.client_config.websocket_interval,
+        )
 
     @property
     def network(self):

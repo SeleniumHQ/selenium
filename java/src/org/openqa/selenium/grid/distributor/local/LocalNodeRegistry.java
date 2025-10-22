@@ -357,12 +357,19 @@ public class LocalNodeRegistry implements NodeRegistry {
 
   @Override
   public Set<NodeStatus> getAvailableNodes() {
+    // Filter nodes are UP and have capacity (available slots)
+    return getUpNodes().stream()
+        .filter(NodeStatus::hasCapacity)
+        .collect(ImmutableSet.toImmutableSet());
+  }
+
+  @Override
+  public Set<NodeStatus> getUpNodes() {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
       return model.getSnapshot().stream()
-          // Filter nodes are UP and have capacity (available slots)
-          .filter(node -> UP.equals(node.getAvailability()) && node.hasCapacity())
+          .filter(node -> UP.equals(node.getAvailability()))
           .collect(ImmutableSet.toImmutableSet());
     } finally {
       readLock.unlock();

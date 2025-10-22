@@ -22,9 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     module FedCM
-      describe FedCM,
-               exclude: {browser: :chrome, reason: 'https://issues.chromium.org/u/0/issues/425801332'},
-               exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: %i[chrome edge]}] do
+      describe FedCM, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: %i[chrome edge]}] do
         let(:dialog) { driver.fedcm_dialog }
 
         before { driver.get url_for('fedcm/fedcm.html') }

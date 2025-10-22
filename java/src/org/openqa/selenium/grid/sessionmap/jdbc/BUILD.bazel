@@ -21,6 +21,7 @@ java_export(
         "//java/src/org/openqa/selenium/grid",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
+        "@maven//:org_jspecify_jspecify",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],

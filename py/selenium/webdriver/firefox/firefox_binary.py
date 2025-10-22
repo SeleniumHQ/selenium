@@ -17,8 +17,8 @@
 
 
 import os
+import sys
 import time
-from platform import system
 from subprocess import DEVNULL, STDOUT, Popen
 
 from typing_extensions import deprecated
@@ -34,18 +34,18 @@ class FirefoxBinary:
     def __init__(self, firefox_path=None, log_file=None):
         """Creates a new instance of Firefox binary.
 
-        :Args:
-         - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.
-         - log_file - A file object to redirect the firefox process output to. It can be sys.stdout.
-                      Please note that with parallel run the output won't be synchronous.
-                      By default, it will be redirected to /dev/null.
+        Args:
+            firefox_path: Path to the Firefox executable. By default, it will be detected from the standard locations.
+            log_file: A file object to redirect the firefox process output to. It can be sys.stdout.
+                Please note that with parallel run the output won't be synchronous.
+                By default, it will be redirected to /dev/null.
         """
         self._start_cmd = firefox_path
         # We used to default to subprocess.PIPE instead of /dev/null, but after
         # a while the pipe would fill up and Firefox would freeze.
         self._log_file = log_file or DEVNULL
         self.command_line = None
-        self.platform = system().lower()
+        self.platform = sys.platform
         if not self._start_cmd:
             self._start_cmd = self._get_firefox_start_cmd()
         if not self._start_cmd.strip():

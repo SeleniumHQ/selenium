@@ -68,7 +68,8 @@ class _PageLoadStrategyDescriptor:
     """Determines the point at which a navigation command is returned:
     https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
 
-    :param strategy: the strategy corresponding to a document readiness state
+    Args:
+        strategy: the strategy corresponding to a document readiness state
     """
 
     def __init__(self, name):
@@ -89,9 +90,11 @@ class _UnHandledPromptBehaviorDescriptor:
     command sent is not handling the alert:
     https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:
 
-    :param behavior: behavior to use when an alert is encountered
+    Args:
+        behavior: behavior to use when an alert is encountered
 
-    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
+    Returns:
+        Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
     """
 
     def __init__(self, name):
@@ -114,9 +117,11 @@ class _TimeoutsDescriptor:
     """How long the driver should wait for actions to complete before:
     returning an error https://w3c.github.io/webdriver/#timeouts:
 
-    :param timeouts: values in milliseconds for implicit wait, page load and script timeout
+    Args:
+        timeouts: values in milliseconds for implicit wait, page load and script timeout
 
-    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
+    Returns:
+        Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
     """
 
     def __init__(self, name):
@@ -133,7 +138,10 @@ class _TimeoutsDescriptor:
 
 
 class _ProxyDescriptor:
-    """:Returns: Proxy if set, otherwise None."""
+    """
+    Returns:
+        Proxy if set, otherwise None.
+    """
 
     def __init__(self, name):
         self.name = name
@@ -441,8 +449,10 @@ class BaseOptions(metaclass=ABCMeta):
     ) -> None:
         """Enables mobile browser use for browsers that support it.
 
-        :Args:
-            android_activity: The name of the android package to start
+        Args:
+            android_package: The name of the android package to start
+            android_activity: The name of the android activity
+            device_serial: The device serial number
         """
         if not android_package:
             raise AttributeError("android_package must be passed in")
@@ -478,14 +488,17 @@ class ArgOptions(BaseOptions):
 
     @property
     def arguments(self):
-        """:Returns: A list of arguments needed for the browser."""
+        """
+        Returns:
+            A list of arguments needed for the browser.
+        """
         return self._arguments
 
     def add_argument(self, argument: str) -> None:
         """Adds an argument to the list.
 
-        :Args:
-         - Sets the arguments
+        Args:
+            argument: Sets the arguments
         """
         if argument:
             self._arguments.append(argument)

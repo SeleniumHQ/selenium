@@ -19,10 +19,10 @@ import errno
 import logging
 import os
 import subprocess
+import sys
 from abc import ABC, abstractmethod
 from collections.abc import Mapping
 from io import IOBase
-from platform import system
 from subprocess import PIPE
 from time import sleep
 from typing import IO, Any, Optional, Union, cast
@@ -41,11 +41,12 @@ class Service(ABC):
     launch a child program in a new process as an interim process to
     communicate with a browser.
 
-    :param executable: install path of the executable.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+    Args:
+        executable: install path of the executable.
+        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
@@ -57,14 +58,15 @@ class Service(ABC):
         driver_path_env_key: Optional[str] = None,
         **kwargs,
     ) -> None:
+        self.log_output: Optional[Union[int, IOBase]]
         if isinstance(log_output, str):
             self.log_output = cast(IOBase, open(log_output, "a+", encoding="utf-8"))
         elif log_output == subprocess.STDOUT:
-            self.log_output = cast(Optional[Union[int, IOBase]], None)
+            self.log_output = None
         elif log_output is None or log_output == subprocess.DEVNULL:
-            self.log_output = cast(Optional[Union[int, IOBase]], subprocess.DEVNULL)
+            self.log_output = subprocess.DEVNULL
         else:
-            self.log_output = log_output
+            self.log_output = cast(Union[int, IOBase], log_output)
 
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
@@ -95,9 +97,9 @@ class Service(ABC):
     def start(self) -> None:
         """Starts the Service.
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
+        Raises:
+            WebDriverException: Raised either when it can't start the service
+                or when it can't connect to the service
         """
         if self._path is None:
             raise WebDriverException("Service path cannot be None.")
@@ -200,17 +202,18 @@ class Service(ABC):
     def _start_process(self, path: str) -> None:
         """Creates a subprocess by executing the command provided.
 
-        :param cmd: full command to execute
+        Args:
+            path: full command to execute
         """
         cmd = [path]
         cmd.extend(self.command_line_args())
-        close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
+        close_file_descriptors = self.popen_kw.pop("close_fds", sys.platform != "win32")
         try:
             start_info = None
-            if system() == "Windows":
-                start_info = subprocess.STARTUPINFO()  # type: ignore[attr-defined]
-                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW  # type: ignore[attr-defined]
-                start_info.wShowWindow = subprocess.SW_HIDE  # type: ignore[attr-defined]
+            if sys.platform == "win32":
+                start_info = subprocess.STARTUPINFO()
+                start_info.dwFlags = subprocess.CREATE_NEW_CONSOLE | subprocess.STARTF_USESHOWWINDOW
+                start_info.wShowWindow = subprocess.SW_HIDE
 
             self.process = subprocess.Popen(
                 cmd,

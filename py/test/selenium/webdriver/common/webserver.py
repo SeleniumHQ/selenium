@@ -24,6 +24,8 @@ import os
 import re
 import threading
 
+import filetype
+
 try:
     from urllib import request as urllib_request
 except ImportError:
@@ -70,8 +72,20 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
     def _serve_file(self, file_path):
         """Serve a file from the HTML root directory."""
-        with open(file_path, encoding="latin-1") as f:
-            return f.read().encode("utf-8")
+        with open(file_path, "rb") as f:
+            content = f.read()
+
+        kind = filetype.guess(content)
+        if kind is not None:
+            return content, kind.mime
+
+        # fallback for text files that filetype can't detect
+        if file_path.endswith(".txt"):
+            return content, "text/plain"
+        elif file_path.endswith(".json"):
+            return content, "application/json"
+        else:
+            return content, "text/html"
 
     def _send_response(self, content_type="text/html"):
         """Send a response."""
@@ -89,8 +103,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 self._send_response("text/html")
                 self.wfile.write(html)
             elif os.path.isfile(file_path):
-                content_type = "application/json" if file_path.endswith(".json") else "text/html"
-                content = self._serve_file(file_path)
+                content, content_type = self._serve_file(file_path)
                 self._send_response(content_type)
                 self.wfile.write(content)
             else:

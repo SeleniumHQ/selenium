@@ -171,6 +171,14 @@ public abstract class DriverService : ICommandServer
     protected virtual bool HasShutdown => true;
 
     /// <summary>
+    /// Gets a value indicating whether process redirection is enforced regardless of other settings.
+    /// </summary>
+    /// <remarks>Set this property to <see langword="true"/> to force all process output and error streams to
+    /// be redirected, even if redirection is not required by default behavior. This can be useful in scenarios where
+    /// capturing process output is necessary for logging or analysis.</remarks>
+    protected virtual internal bool EnableProcessRedirection { get; } = false;
+
+    /// <summary>
     /// Gets a value indicating whether the service is responding to HTTP requests.
     /// </summary>
     protected virtual bool IsInitialized
@@ -249,14 +257,18 @@ public abstract class DriverService : ICommandServer
         this.driverServiceProcess.StartInfo.RedirectStandardOutput = true;
         this.driverServiceProcess.StartInfo.RedirectStandardError = true;
 
-        this.driverServiceProcess.OutputDataReceived += this.OnDriverProcessDataReceived;
-        this.driverServiceProcess.ErrorDataReceived += this.OnDriverProcessDataReceived;
+        if (this.EnableProcessRedirection)
+        {
+            this.driverServiceProcess.OutputDataReceived += this.OnDriverProcessDataReceived;
+            this.driverServiceProcess.ErrorDataReceived += this.OnDriverProcessDataReceived;
+        }
 
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
 
-        // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
         this.driverServiceProcess.Start();
+
+        // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
 
@@ -289,7 +301,7 @@ public abstract class DriverService : ICommandServer
             {
                 this.Stop();
 
-                if (this.driverServiceProcess is not null)
+                if (EnableProcessRedirection && this.driverServiceProcess is not null)
                 {
                     this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
                     this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
@@ -333,16 +345,9 @@ public abstract class DriverService : ICommandServer
     /// </summary>
     /// <param name="sender">The sender of the event.</param>
     /// <param name="args">The data received event arguments.</param>
-    /// <param name="isError">A value indicating whether the data received is from the error stream.</param>
     protected virtual void OnDriverProcessDataReceived(object sender, DataReceivedEventArgs args)
     {
-        if (string.IsNullOrEmpty(args.Data))
-            return;
 
-        if (_logger.IsEnabled(LogEventLevel.Trace))
-        {
-            _logger.Trace(args.Data);
-        }
     }
 
     /// <summary>
