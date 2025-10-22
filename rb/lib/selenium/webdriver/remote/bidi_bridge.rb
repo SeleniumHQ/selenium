@@ -46,9 +46,10 @@ module Selenium
         end
 
         def quit
-          super
-        ensure
           bidi.close
+          super
+        rescue *QUIT_ERRORS
+          nil
         end
 
         def close
