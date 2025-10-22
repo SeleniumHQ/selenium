@@ -34,8 +34,8 @@ module Selenium
           # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
           # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
           def initialize(open_timeout: nil, read_timeout: nil)
-            @open_timeout = open_timeout
-            @read_timeout = read_timeout
+            @open_timeout = open_timeout if open_timeout
+            @read_timeout = read_timeout if read_timeout
             super()
           end
 

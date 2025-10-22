@@ -4,9 +4,9 @@ module Selenium
       module Http
         # @api private
         class Default < Common
-          @open_timeout: Integer
+          @open_timeout: Numeric
 
-          @read_timeout: Integer
+          @read_timeout: Numeric
 
           @http: untyped
 
@@ -14,11 +14,11 @@ module Selenium
 
           attr_writer proxy: Proxy?
 
-          attr_accessor open_timeout: Integer
+          attr_accessor open_timeout: Numeric
 
-          attr_accessor read_timeout: Integer
+          attr_accessor read_timeout: Numeric
 
-          def initialize: (?open_timeout: Integer?, ?read_timeout: Integer?) -> void
+          def initialize: (?open_timeout: Numeric?, ?read_timeout: Numeric?) -> void
 
           def close: () -> untyped
 
