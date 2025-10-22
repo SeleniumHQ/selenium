@@ -63,7 +63,9 @@ module Selenium
             raise Error::WebDriverError, 'Cannot specify both http_client and client_config'
           end
 
-          @http = http_client || create_http_client(client_config, url: url)
+          @http = http_client || build_http_client(client_config)
+          validate_server_url_args(url, client_config)
+          @http.server_url = normalize_url(url || client_config&.server_url)
 
           @file_detector = nil
           @locator_converter = self.class.locator_converter
@@ -90,12 +92,12 @@ module Selenium
             extend(WebDriver::Firefox::Features)
           when 'msedge', 'MicrosoftEdge'
             extend(WebDriver::Edge::Features)
-          when 'Safari', 'Safari Technology Preview'
+          when 'safari', 'Safari', 'Safari Technology Preview'
             extend(WebDriver::Safari::Features)
           when 'internet explorer'
             extend(WebDriver::IE::Features)
           else
-            raise Error::WebDriverError, "Unknown browser name: #{@capabilities[:browser_name]}"
+            WebDriver.logger.info "Unknown browser: #{capabilities[:browser_name]}", id: :session
           end
         end
 
