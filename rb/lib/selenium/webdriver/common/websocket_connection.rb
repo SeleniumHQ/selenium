@@ -98,7 +98,7 @@ module Selenium
         begin
           socket.write(out_frame.to_s)
         rescue *CONNECTION_ERRORS => e
-          raise Error::WebDriverError, "WebSocket is closed (#{e.class}: #{e.message})"
+          raise e, "WebSocket is closed (#{e.class}: #{e.message})"
         end
 
         wait.until do
