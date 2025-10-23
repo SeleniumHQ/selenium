@@ -15,20 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.net;
 
-import org.jspecify.annotations.Nullable;
-
-/**
- * Provides information about the local network interfaces.
- *
- * <p>Basically an abstraction created to allow stubbing of java.net.NetworkInterface, also soothes
- * some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
- */
-public interface NetworkInterfaceProvider {
-  Iterable<NetworkInterface> getNetworkInterfaces();
-
-  // TODO: Remove this whole method
-  // This method should only return an interface if it's named exactly "lo"
-  @Nullable NetworkInterface getLoInterface();
-}
+import org.jspecify.annotations.NullMarked;
