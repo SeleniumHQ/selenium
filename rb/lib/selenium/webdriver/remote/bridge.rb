@@ -217,7 +217,7 @@ module Selenium
             begin
               http.close
             rescue *QUIT_ERRORS => e
-              WebDriver.logger.debug "http.close failed during quit: #{e.class}: #{e&.message}", id: :quit
+              WebDriver.logger.debug "http.close failed during quit: #{e.class}: #{e.message}", id: :quit
             end
           end
           nil

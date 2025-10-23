@@ -37,7 +37,11 @@ module Selenium
 
       def initialize(url:)
         @callback_threads = ThreadGroup.new
-        @mtx = Mutex.new
+
+        @callbacks_mtx = Mutex.new
+        @messages_mtx = Mutex.new
+        @closing_mtx = Mutex.new
+
         @closing = false
         @session_id = nil
         @url = url
@@ -47,7 +51,7 @@ module Selenium
       end
 
       def close
-        @mtx.synchronize do
+        @closing_mtx.synchronize do
           return if @closing
 
           @closing = true
@@ -64,8 +68,8 @@ module Selenium
         @socket_thread&.join(0.5)
         @callback_threads.list.each do |thread|
           thread.join(0.5)
-        rescue StandardError
-          nil
+        rescue StandardError => e
+          WebDriver.logger.debug "Failed to join thread during close: #{e.class}: #{e.message}", id: :ws
         end
       end
 
@@ -74,18 +78,22 @@ module Selenium
       end
 
       def add_callback(event, &block)
-        @mtx.synchronize do
+        @callbacks_mtx.synchronize do
           callbacks[event] << block
           block.object_id
         end
       end
 
       def remove_callback(event, id)
-        removed = @mtx.synchronize { callbacks[event].reject! { |cb| cb.object_id == id } }
-        return if removed || @closing
+        @callbacks_mtx.synchronize do
+          return if @closing
 
-        ids = @mtx.synchronize { callbacks[event]&.map(&:object_id) }
-        raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}: #{ids}"
+          callbacks_for_event = callbacks[event]
+          return if callbacks_for_event.reject! { |cb| cb.object_id == id }
+
+          ids = callbacks[event]&.map(&:object_id)
+          raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}: #{ids}"
+        end
       end
 
       def send_cmd(**payload)
@@ -102,7 +110,7 @@ module Selenium
         end
 
         wait.until do
-          @mtx.synchronize { messages.delete(id) }
+          @messages_mtx.synchronize { messages.delete(id) }
         end
       end
 
@@ -133,7 +141,7 @@ module Selenium
               next unless message['method']
 
               params = message['params']
-              @mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
+              @messages_mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
                 @callback_threads.add(callback_thread(params, &callback))
               end
             end
@@ -154,7 +162,7 @@ module Selenium
         return {} if message.empty?
 
         msg = JSON.parse(message)
-        @mtx.synchronize { messages[msg['id']] = msg if msg.key?('id') }
+        @messages_mtx.synchronize { messages[msg['id']] = msg if msg.key?('id') }
 
         WebDriver.logger.debug "WebSocket <- #{msg}"[...MAX_LOG_MESSAGE_SIZE], id: :ws
         msg
