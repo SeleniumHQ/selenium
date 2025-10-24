@@ -43,6 +43,7 @@ public sealed record AddDataCollectorResult(Collector Collector) : EmptyResult;
 [JsonConverter(typeof(CamelCaseEnumConverter<DataType>))]
 public enum DataType
 {
+    Request,
     Response
 }
 

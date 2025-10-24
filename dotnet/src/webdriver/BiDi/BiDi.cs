@@ -18,7 +18,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -34,8 +33,6 @@ public sealed class BiDi : IAsyncDisposable
     private readonly Broker _broker;
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly BiDiJsonSerializerContext _jsonContext;
-
-    private readonly ConcurrentDictionary<Type, Module> _modules = [];
 
     private BiDi(string url)
     {
@@ -68,32 +65,37 @@ public sealed class BiDi : IAsyncDisposable
         _jsonContext = new BiDiJsonSerializerContext(_jsonOptions);
 
         _broker = new Broker(this, uri, _jsonOptions);
+        SessionModule = Module.Create<Session.SessionModule>(this, _broker, _jsonOptions, _jsonContext);
+        BrowsingContext = Module.Create<BrowsingContext.BrowsingContextModule>(this, _broker, _jsonOptions, _jsonContext);
+        Browser = Module.Create<Browser.BrowserModule>(this, _broker, _jsonOptions, _jsonContext);
+        Network = Module.Create<Network.NetworkModule>(this, _broker, _jsonOptions, _jsonContext);
+        InputModule = Module.Create<Input.InputModule>(this, _broker, _jsonOptions, _jsonContext);
+        Script = Module.Create<Script.ScriptModule>(this, _broker, _jsonOptions, _jsonContext);
+        Log = Module.Create<Log.LogModule>(this, _broker, _jsonOptions, _jsonContext);
+        Storage = Module.Create<Storage.StorageModule>(this, _broker, _jsonOptions, _jsonContext);
+        WebExtension = Module.Create<WebExtension.WebExtensionModule>(this, _broker, _jsonOptions, _jsonContext);
+        Emulation = Module.Create<Emulation.EmulationModule>(this, _broker, _jsonOptions, _jsonContext);
     }
 
-    internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
+    internal Session.SessionModule SessionModule { get; }
 
-    public BrowsingContext.BrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
+    public BrowsingContext.BrowsingContextModule BrowsingContext { get; }
 
-    public Browser.BrowserModule Browser => AsModule<Browser.BrowserModule>();
+    public Browser.BrowserModule Browser { get; }
 
-    public Network.NetworkModule Network => AsModule<Network.NetworkModule>();
+    public Network.NetworkModule Network { get; }
 
-    internal Input.InputModule InputModule => AsModule<Input.InputModule>();
+    internal Input.InputModule InputModule { get; }
 
-    public Script.ScriptModule Script => AsModule<Script.ScriptModule>();
+    public Script.ScriptModule Script { get; }
 
-    public Log.LogModule Log => AsModule<Log.LogModule>();
+    public Log.LogModule Log { get; }
 
-    public Storage.StorageModule Storage => AsModule<Storage.StorageModule>();
+    public Storage.StorageModule Storage { get; }
 
-    public WebExtension.WebExtensionModule WebExtension => AsModule<WebExtension.WebExtensionModule>();
+    public WebExtension.WebExtensionModule WebExtension { get; }
 
-    public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
-
-    public TModule AsModule<TModule>() where TModule : Module, new()
-    {
-        return (TModule)_modules.GetOrAdd(typeof(TModule), _ => Module.Create<TModule>(this, _broker, _jsonOptions, _jsonContext));
-    }
+    public Emulation.EmulationModule Emulation { get; }
 
     public Task<Session.StatusResult> StatusAsync()
     {

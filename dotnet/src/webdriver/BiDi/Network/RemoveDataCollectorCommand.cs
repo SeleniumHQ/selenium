@@ -22,8 +22,10 @@ using OpenQA.Selenium.BiDi.Communication;
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed class RemoveDataCollectorCommand(RemoveDataCollectorParameters @params)
-    : Command<RemoveDataCollectorParameters, EmptyResult>(@params, "network.removeDataCollector");
+    : Command<RemoveDataCollectorParameters, RemoveDataCollectorResult>(@params, "network.removeDataCollector");
 
 internal sealed record RemoveDataCollectorParameters(Collector Collector) : Parameters;
 
 public class RemoveDataCollectorOptions : CommandOptions;
+
+public sealed record RemoveDataCollectorResult : EmptyResult;

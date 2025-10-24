@@ -18,6 +18,8 @@
 package org.openqa.selenium.federatedcredentialmanagement;
 
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents an account displayed in a FedCM account list.
@@ -27,29 +29,30 @@ import java.util.Map;
  * @see <a href="https://w3c-fedid.github.io/FedCM/#webdriver-accountlist">
  *     https://w3c-fedid.github.io/FedCM/#webdriver-accountlist</a>
  */
+@NullMarked
 public class FederatedCredentialManagementAccount {
-  private final String accountId;
-  private final String email;
-  private final String name;
-  private final String givenName;
-  private final String pictureUrl;
+  private final @Nullable String accountId;
+  private final @Nullable String email;
+  private final @Nullable String name;
+  private final @Nullable String givenName;
+  private final @Nullable String pictureUrl;
 
   /**
    * The config URL of the identity provider that provided this account.
    *
    * <p>This allows identifying the IDP in multi-IDP cases.
    */
-  private final String idpConfigUrl;
+  private final @Nullable String idpConfigUrl;
 
   /**
    * The login state for this account.
    *
    * <p>One of LOGIN_STATE_SIGNIN and LOGIN_STATE_SIGNUP.
    */
-  private final String loginState;
+  private final @Nullable String loginState;
 
-  private final String termsOfServiceUrl;
-  private final String privacyPolicyUrl;
+  private final @Nullable String termsOfServiceUrl;
+  private final @Nullable String privacyPolicyUrl;
 
   public static final String LOGIN_STATE_SIGNIN = "SignIn";
   public static final String LOGIN_STATE_SIGNUP = "SignUp";
@@ -66,39 +69,39 @@ public class FederatedCredentialManagementAccount {
     privacyPolicyUrl = (String) dict.getOrDefault("privacyPolicyUrl", null);
   }
 
-  public String getAccountid() {
+  public @Nullable String getAccountid() {
     return accountId;
   }
 
-  public String getEmail() {
+  public @Nullable String getEmail() {
     return email;
   }
 
-  public String getName() {
+  public @Nullable String getName() {
     return name;
   }
 
-  public String getGivenName() {
+  public @Nullable String getGivenName() {
     return givenName;
   }
 
-  public String getPictureUrl() {
+  public @Nullable String getPictureUrl() {
     return pictureUrl;
   }
 
-  public String getIdpConfigUrl() {
+  public @Nullable String getIdpConfigUrl() {
     return idpConfigUrl;
   }
 
-  public String getLoginState() {
+  public @Nullable String getLoginState() {
     return loginState;
   }
 
-  public String getTermsOfServiceUrl() {
+  public @Nullable String getTermsOfServiceUrl() {
     return termsOfServiceUrl;
   }
 
-  public String getPrivacyPolicyUrl() {
+  public @Nullable String getPrivacyPolicyUrl() {
     return privacyPolicyUrl;
   }
 }

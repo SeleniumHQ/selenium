@@ -1,3 +1,17 @@
+Selenium 4.37.0
+* Add CDP for Chrome 141 and remove 138
+* Fix mypy errors in by file and exceptions file (#16300)
+* Update docstrings style according to google guideline (#16445)
+* Support Python 3.14 and drop Python 3.9 (#16342)
+* Update docstrings style (#16427)
+* Fix default rpId in virtual authenticator (#16428)
+* Raise NotImplementedError when deleting downloads in driver subclass (#16423)
+* Configure WebSocket timeout and wait interval via ClientConfig (#16248)
+* Re-add defaults for Chromium kwargs (#16372)
+* Add --enable-chrome-logs to chrome service args to inherit browser i/o streams (#16202)
+* Fix type annotations in the chromium webdriver file (#16309)
+* Raise InvalidSelectorException for compound class names (#16291)
+
 Selenium 4.36.0
 * Add CDP for Chrome 140 and remove 137
 * close ipv6 port in case of error (#16165)
