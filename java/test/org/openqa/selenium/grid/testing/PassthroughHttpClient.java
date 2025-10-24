@@ -48,6 +48,19 @@ public class PassthroughHttpClient implements HttpClient {
     throw new UnsupportedOperationException("openSocket");
   }
 
+  @Override
+  public <T> java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<T>> sendAsyncNative(
+      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler) {
+    throw new UnsupportedOperationException("sendAsyncNative");
+  }
+
+  @Override
+  public <T> java.net.http.HttpResponse<T> sendNative(
+      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler)
+      throws java.io.IOException, InterruptedException {
+    throw new UnsupportedOperationException("sendNative");
+  }
+
   public static class Factory implements HttpClient.Factory {
 
     private final Routable handler;

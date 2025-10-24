@@ -297,6 +297,23 @@ public class RemoteWebDriverBuilder {
               public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
                 return handler.execute(req);
               }
+
+              @Override
+              public <T>
+                  java.util.concurrent.CompletableFuture<java.net.http.HttpResponse<T>>
+                      sendAsyncNative(
+                          java.net.http.HttpRequest request,
+                          java.net.http.HttpResponse.BodyHandler<T> handler) {
+                throw new UnsupportedOperationException("sendAsyncNative is not supported");
+              }
+
+              @Override
+              public <T> java.net.http.HttpResponse<T> sendNative(
+                  java.net.http.HttpRequest request,
+                  java.net.http.HttpResponse.BodyHandler<T> handler)
+                  throws java.io.IOException, InterruptedException {
+                throw new UnsupportedOperationException("sendNative is not supported");
+              }
             };
           }
         };

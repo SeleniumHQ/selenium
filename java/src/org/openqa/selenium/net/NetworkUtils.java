@@ -28,17 +28,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 
+@NullMarked
 public class NetworkUtils {
 
-  private static InetAddress cachedIp4NonLoopbackAddressOfThisMachine;
-  private static String cachedIp4NonLoopbackAddressHostName;
+  private static @Nullable InetAddress cachedIp4NonLoopbackAddressOfThisMachine;
+  private static @Nullable String cachedIp4NonLoopbackAddressHostName;
 
   private final NetworkInterfaceProvider networkInterfaceProvider;
-  private volatile String hostname;
-  private volatile String address;
+  private volatile @Nullable String hostname;
+  private volatile @Nullable String address;
 
   NetworkUtils(NetworkInterfaceProvider networkInterfaceProvider) {
     this.networkInterfaceProvider = networkInterfaceProvider;
@@ -56,13 +60,13 @@ public class NetworkUtils {
   public String getHostname() {
     determineHostnameAndAddress();
 
-    return hostname;
+    return Require.nonNull("Hostname", hostname);
   }
 
   public String getHostAddress() {
     determineHostnameAndAddress();
 
-    return address;
+    return Require.nonNull("Address", address);
   }
 
   public String getPrivateLocalAddress() {
@@ -81,7 +85,7 @@ public class NetworkUtils {
    *
    * @return A String representing the host name or non-loopback IP4 address of this machine.
    */
-  public String getNonLoopbackAddressOfThisMachine() {
+  public @Nullable String getNonLoopbackAddressOfThisMachine() {
     InetAddress ip4NonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine();
     if (!Objects.equals(
         cachedIp4NonLoopbackAddressOfThisMachine, ip4NonLoopbackAddressOfThisMachine)) {
@@ -113,10 +117,13 @@ public class NetworkUtils {
    *
    * @return The address part og such an address
    */
-  public String obtainLoopbackIp4Address() {
+  public @Nullable String obtainLoopbackIp4Address() {
     final NetworkInterface networkInterface = getLoopBackAndIp4Only();
     if (networkInterface != null) {
-      return networkInterface.getIp4LoopbackOnly().getHostName();
+      InetAddress loopback = networkInterface.getIp4LoopbackOnly();
+      if (loopback != null) {
+        return loopback.getHostName();
+      }
     }
 
     final String ipOfIp4LoopBack = getIpOfLoopBackIp4();
@@ -156,7 +163,7 @@ public class NetworkUtils {
     return firstAddress;
   }
 
-  public String getIpOfLoopBackIp4() {
+  public @Nullable String getIpOfLoopBackIp4() {
     for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
       final InetAddress netAddress = iface.getIp4LoopbackOnly();
       if (netAddress != null) {
@@ -166,7 +173,7 @@ public class NetworkUtils {
     return null;
   }
 
-  private NetworkInterface getLoopBackAndIp4Only() {
+  private @Nullable NetworkInterface getLoopBackAndIp4Only() {
     for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
       if (iface.isIp4AddressBindingOnly() && iface.isLoopBack()) {
         return iface;
