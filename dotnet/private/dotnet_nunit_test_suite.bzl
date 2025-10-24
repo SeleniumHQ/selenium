@@ -13,12 +13,12 @@ _BROWSERS = {
             "--params=ActiveDriverConfig=Chrome",
         ] + select({
             "@selenium//common:use_pinned_linux_chrome": [
-                "--params=DriverServiceLocation=$(location @linux_chromedriver//:chromedriver)",
-                "--params=BrowserLocation=$(location @linux_chrome//:chrome-linux64/chrome)",
+                "--params=DriverServiceLocation=$(location @linux_beta_chromedriver//:chromedriver)",
+                "--params=BrowserLocation=$(location @linux_beta_chrome//:chrome-linux64/chrome)",
             ],
             "@selenium//common:use_pinned_macos_chrome": [
-                "--params=DriverServiceLocation=$(location @mac_chromedriver//:chromedriver)",
-                "--params=BrowserLocation=$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
+                "--params=DriverServiceLocation=$(location @mac_beta_chromedriver//:chromedriver)",
+                "--params=BrowserLocation=$(location @mac_beta_chrome//:Chrome.app)/Contents/MacOS/Chrome",
             ],
             "@selenium//common:use_local_chromedriver": [],
             "//conditions:default": [
