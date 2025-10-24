@@ -38,16 +38,16 @@ class Service(service.Service):
     ) -> None:
         """Creates a new instance of the Service.
 
-        :Args:
-         - executable_path : Path to the IEDriver
-         - port : Port the service is running on
-         - host : (Optional) IP address the service port is bound
-         - service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-         - log_level : (Optional) Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG",
-           "TRACE". Default is "FATAL".
-         - log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-           Default is "stdout".
-         - driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+        Args:
+            executable_path: Path to the IEDriver
+            port: Port the service is running on
+            host: (Optional) IP address the service port is bound
+            service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+            log_level: (Optional) Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG",
+                "TRACE". Default is "FATAL".
+            log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+                Default is "stdout".
+            driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
         """
         self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_IEDRIVER"
