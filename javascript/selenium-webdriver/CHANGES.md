@@ -1,6 +1,5 @@
 ## 4.38.0
 
-- Bumping version for Nightly
 - update devtools versions
 - bump versions in preparation for release
 
