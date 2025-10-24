@@ -10,7 +10,6 @@
 * [bidi] remove deprecated classes for log inspector (#16474)
     > * remove deprecated classes from previous implementation of bidi log module
 * update devtools versions
-* bump versions in preparation for release
 
 4.37.0 (2025-10-16)
 =========================
