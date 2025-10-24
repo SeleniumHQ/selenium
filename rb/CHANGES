@@ -1,7 +1,6 @@
 4.38.0 (2025-10-24)
 =========================
 * Fix Network issue by removing nil values on network requests (#16442)
-    > * request cookie and header setters now take hashes
     > * put the unit tests back
     > * All tests fixed
 * Remove cruft from old CI environment (#16473)
