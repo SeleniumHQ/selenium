@@ -29,7 +29,7 @@ module Selenium
       autoload :Response, 'selenium/webdriver/devtools/response'
 
       def initialize(url:, target_type:)
-        @ws = WebSocketConnection.new(url: url)
+        @ws = WebSocketConnection.new(url: url, protocol: :devtools)
         @session_id = nil
         start_session(target_type: target_type)
       end

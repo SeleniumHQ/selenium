@@ -35,7 +35,7 @@ module Selenium
 
       MAX_LOG_MESSAGE_SIZE = 9999
 
-      def initialize(url:)
+      def initialize(url:, protocol: nil)
         @callback_threads = ThreadGroup.new
 
         @callbacks_mtx = Mutex.new
@@ -45,6 +45,7 @@ module Selenium
         @closing = false
         @session_id = nil
         @url = url
+        @protocol = protocol
 
         process_handshake
         @socket_thread = attach_socket_listener
@@ -91,7 +92,7 @@ module Selenium
           callbacks_for_event = callbacks[event]
           return if callbacks_for_event.reject! { |cb| cb.object_id == id }
 
-          ids = callbacks[event]&.map(&:object_id)
+          ids = callbacks_for_event.map(&:object_id)
           raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}: #{ids}"
         end
       end
@@ -109,9 +110,7 @@ module Selenium
           raise e, "WebSocket is closed (#{e.class}: #{e.message})"
         end
 
-        wait.until do
-          @messages_mtx.synchronize { messages.delete(id) }
-        end
+        wait.until { @messages_mtx.synchronize { messages.delete(id) } }
       end
 
       private
@@ -140,9 +139,8 @@ module Selenium
               message = process_frame(frame)
               next unless message['method']
 
-              params = message['params']
               @messages_mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
-                @callback_threads.add(callback_thread(params, &callback))
+                @callback_threads.add(callback_thread(message['params'], &callback))
               end
             end
           end
@@ -178,9 +176,13 @@ module Selenium
         rescue Error::WebDriverError, *CONNECTION_ERRORS => e
           WebDriver.logger.debug "Callback aborted: #{e.class}: #{e.message}", id: :ws
         rescue StandardError => e
-          # Main thread needs to know that it can stop waiting
-          Thread.main.raise(e) if params['isBlocked']
           return if @closing
+
+          if devtools?
+            # Async thread exceptions are not deterministic and should not be relied on; we should stop
+            WebDriver.logger.deprecate('propogating errors from DevTools callbacks')
+            Thread.main.raise(e)
+          end
 
           bt = Array(e.backtrace).first(5).join("\n")
           WebDriver.logger.error "Callback error: #{e.class}: #{e.message}\n#{bt}", id: :ws
@@ -206,6 +208,14 @@ module Selenium
 
       def ws
         @ws ||= WebSocket::Handshake::Client.new(url: @url)
+      end
+
+      def devtools?
+        @protocol == :devtools
+      end
+
+      def bidi?
+        @protocol == :bidi
       end
 
       def next_id
