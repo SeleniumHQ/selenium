@@ -1,3 +1,9 @@
+## 4.38.0
+
+- Bumping version for Nightly
+- update devtools versions
+- bump versions in preparation for release
+
 ## 4.37.0
 
 - Add CDP for Chrome 141 and remove 138

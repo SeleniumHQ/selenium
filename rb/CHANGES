@@ -1,3 +1,18 @@
+4.38.0 (2025-10-24)
+=========================
+* Bumping version for Nightly
+* Fix Network issue by removing nil values on network requests (#16442)
+    > * Remove nil values for network requests
+    > * Update intercept request and response and improve headers and cookies
+    > * request cookie and header setters now take hashes
+    > * put the unit tests back
+    > * All tests fixed
+* Remove cruft from old CI environment (#16473)
+* [bidi] remove deprecated classes for log inspector (#16474)
+    > * remove deprecated classes from previous implementation of bidi log module
+* update devtools versions
+* bump versions in preparation for release
+
 4.37.0 (2025-10-16)
 =========================
 * Add CDP for Chrome 141 and remove 138
