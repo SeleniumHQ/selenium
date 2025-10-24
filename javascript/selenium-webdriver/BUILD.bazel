@@ -16,7 +16,7 @@ VERSION = "4.38.0-nightly202510172330"
 BROWSER_VERSIONS = [
     "v140",
     "v141",
-    "v139",
+    "v142",
 ]
 
 js_library(
