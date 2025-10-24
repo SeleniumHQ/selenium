@@ -17,8 +17,6 @@
 
 from typing import Any, Optional, Union
 
-from langcodes import standardize_tag, tag_is_valid
-
 from selenium.webdriver.common.bidi.common import command_builder
 
 
@@ -165,20 +163,6 @@ class GeolocationPositionError:
         return {"type": self.type}
 
 
-def _is_valid_language_tag(locale: str) -> str | None:
-    """Validate and normalize a BCP 47 language tag."""
-
-    if locale is None:
-        return None
-
-    if not tag_is_valid(locale):
-        raise ValueError(f"Invalid locale: {locale}")
-
-    # Canonicalization / normalization
-    normalized = standardize_tag(locale)
-    return normalized
-
-
 class Emulation:
     """
     BiDi implementation of the emulation module.
@@ -256,9 +240,6 @@ class Emulation:
 
         if contexts is None and user_contexts is None:
             raise ValueError("Must specify either contexts or userContexts")
-
-        if locale is not None and not _is_valid_language_tag(locale):
-            raise ValueError(f"Invalid language tag: {locale}")
 
         params: dict[str, Any] = {"locale": locale}
 
