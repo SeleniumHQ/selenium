@@ -1,6 +1,5 @@
 4.38.0 (2025-10-24)
 =========================
-* Bumping version for Nightly
 * Fix Network issue by removing nil values on network requests (#16442)
     > * Remove nil values for network requests
     > * Update intercept request and response and improve headers and cookies
