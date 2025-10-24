@@ -8,7 +8,6 @@
     > * All tests fixed
 * Remove cruft from old CI environment (#16473)
 * [bidi] remove deprecated classes for log inspector (#16474)
-    > * remove deprecated classes from previous implementation of bidi log module
 * update devtools versions
 
 4.37.0 (2025-10-16)
