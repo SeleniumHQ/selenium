@@ -215,3 +215,38 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setGeolocationOverride", params))
+
+    def set_timezone_override(
+        self,
+        timezone: Optional[str] = None,
+        contexts: Optional[list[str]] = None,
+        user_contexts: Optional[list[str]] = None,
+    ) -> None:
+        """Set timezone override for the given contexts or user contexts.
+
+        Parameters:
+        -----------
+            timezone: Timezone identifier (IANA timezone name or offset string like '+01:00'),
+                     or None to clear the override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+        ------
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                       contexts nor user_contexts are provided.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and user_contexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or user_contexts")
+
+        params: dict[str, Any] = {"timezone": timezone}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setTimezoneOverride", params))

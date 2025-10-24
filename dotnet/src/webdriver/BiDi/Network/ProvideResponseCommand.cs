@@ -23,7 +23,7 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed class ProvideResponseCommand(ProvideResponseParameters @params)
-    : Command<ProvideResponseParameters, EmptyResult>(@params, "network.provideResponse");
+    : Command<ProvideResponseParameters, ProvideResponseResult>(@params, "network.provideResponse");
 
 internal sealed record ProvideResponseParameters(Request Request, BytesValue? Body, IEnumerable<SetCookieHeader>? Cookies, IEnumerable<Header>? Headers, string? ReasonPhrase, long? StatusCode) : Parameters;
 
@@ -39,3 +39,5 @@ public sealed class ProvideResponseOptions : CommandOptions
 
     public long? StatusCode { get; set; }
 }
+
+public sealed record ProvideResponseResult : EmptyResult;

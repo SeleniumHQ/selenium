@@ -18,12 +18,15 @@
 package org.openqa.selenium.federatedcredentialmanagement;
 
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents an open dialog of the Federated Credential Management API.
  *
  * @see <a href="https://w3c-fedid.github.io/FedCM/">https://w3c-fedid.github.io/FedCM/</a>
  */
+@NullMarked
 public interface FederatedCredentialManagementDialog {
 
   String DIALOG_TYPE_ACCOUNT_LIST = "AccountChooser";
@@ -44,13 +47,13 @@ public interface FederatedCredentialManagementDialog {
    *
    * <p>One of DIALOG_TYPE_ACCOUNT_LIST and DIALOG_TYPE_AUTO_REAUTH.
    */
-  String getDialogType();
+  @Nullable String getDialogType();
 
   /** Returns the title of the dialog. */
-  String getTitle();
+  @Nullable String getTitle();
 
   /** Returns the subtitle of the dialog or null if none. */
-  String getSubtitle();
+  @Nullable String getSubtitle();
 
   void clickDialog();
 

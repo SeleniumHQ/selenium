@@ -103,7 +103,7 @@ module Selenium
       end
 
       it 'can maximize the current window' do
-        window.size = old_size = Dimension.new(700, 700)
+        window.size = old_size = Dimension.new(650, 650)
 
         window.maximize
         wait.until { window.size != old_size }

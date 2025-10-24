@@ -58,5 +58,6 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
+        artifact("org.jspecify:jspecify"),
     ],
 )
