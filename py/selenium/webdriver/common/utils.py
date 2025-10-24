@@ -68,11 +68,11 @@ def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional
     If the optional port number is provided, only IPs that listen on the given
     port are considered.
 
-    :Args:
-        - host - hostname
-        - port - port number
+    Args:
+        host: hostname
+        port: port number
 
-    :Returns:
+    Returns:
         A single IP address, as a string. If any IPv4 address is found, one is
         returned. Otherwise, if any IPv6 address is found, one is returned. If
         neither, then None is returned.
@@ -101,9 +101,9 @@ def join_host_port(host: str, port: int) -> str:
     This is a minimal implementation intended to cope with IPv6 literals. For
     example, _join_host_port('::1', 80) == '[::1]:80'.
 
-    :Args:
-        - host - hostname or IP
-        - port - port number
+    Args:
+        host: hostname or IP
+        port: port number
     """
     if ":" in host and not host.startswith("["):
         return f"[{host}]:{port}"
@@ -113,9 +113,9 @@ def join_host_port(host: str, port: int) -> str:
 def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
     """Tries to connect to the server at port to see if it is running.
 
-    :Args:
-        - port - port number
-        - host - hostname or IP
+    Args:
+        port: port number
+        host: hostname or IP
     """
     socket_ = None
     try:
@@ -141,10 +141,10 @@ def is_url_connectable(
     """Sends a request to the HTTP server at the /status endpoint to see if it
     responds successfully.
 
-    :Args:
-        - port - port number
-        - host - hostname or IP
-        - scheme - URL scheme
+    Args:
+        port: port number
+        host: hostname or IP
+        scheme: URL scheme
     """
     try:
         with urllib.request.urlopen(f"{scheme}://{host}:{port}/status") as res:

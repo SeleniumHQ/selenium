@@ -25,25 +25,18 @@ from selenium.webdriver.remote.webelement import WebElement
 def with_tag_name(tag_name: str) -> "RelativeBy":
     """Start searching for relative objects using a tag name.
 
-    Parameters:
-    -----------
-    tag_name : str
-        The DOM tag of element to start searching.
+    Args:
+        tag_name: The DOM tag of element to start searching.
 
     Returns:
-    --------
-    RelativeBy
-        Use this object to create filters within a `find_elements` call.
+        RelativeBy: Use this object to create filters within a `find_elements` call.
 
     Raises:
-    -------
-    WebDriverException
-        If `tag_name` is None.
+        WebDriverException: If `tag_name` is None.
 
-    Notes:
-    ------
-    - This method is deprecated and may be removed in future versions.
-    - Please use `locate_with` instead.
+    Note:
+        This method is deprecated and may be removed in future versions.
+        Please use `locate_with` instead.
     """
     warnings.warn("This method is deprecated and may be removed in future versions. Please use `locate_with` instead.")
     if not tag_name:
@@ -54,23 +47,16 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
 def locate_with(by: ByType, using: str) -> "RelativeBy":
     """Start searching for relative objects your search criteria with By.
 
-    Parameters:
-    -----------
-    by : ByType
-        The method to find the element.
-
-    using : str
-        The value from `By` passed in.
+    Args:
+        by: The method to find the element.
+        using: The value from `By` passed in.
 
     Returns:
-    --------
-    RelativeBy
-        Use this object to create filters within a `find_elements` call.
+        RelativeBy: Use this object to create filters within a `find_elements` call.
 
     Example:
-    --------
-    >>> lowest = driver.find_element(By.ID, "below")
-    >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").above(lowest))
+        >>> lowest = driver.find_element(By.ID, "below")
+        >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").above(lowest))
     """
     assert by is not None, "Please pass in a by argument"
     assert using is not None, "Please pass in a using argument"
@@ -97,13 +83,9 @@ class RelativeBy:
         """Creates a new RelativeBy object. It is preferred if you use the
         `locate_with` method as this signature could change.
 
-        Attributes:
-        -----------
-        root : Dict[By, str]
-            - A dict with `By` enum as the key and the search query as the value
-
-        filters : List
-            - A list of the filters that will be searched. If none are passed
+        Args:
+            root: A dict with `By` enum as the key and the search query as the value
+            filters: A list of the filters that will be searched. If none are passed
                 in please use the fluent API on the object to create the filters
         """
         self.root = root
@@ -118,19 +100,14 @@ class RelativeBy:
     def above(self, element_or_locator: Union[WebElement, LocatorType, None] = None) -> "RelativeBy":
         """Add a filter to look for elements above.
 
-        Parameters:
-        -----------
-        element_or_locator : Union[WebElement, Dict, None]
-            Element to look above
+        Args:
+            element_or_locator: Element to look above
 
         Returns:
-        --------
-        RelativeBy
+            RelativeBy
 
         Raises:
-        -------
-        WebDriverException
-            If `element_or_locator` is None.
+            WebDriverException: If `element_or_locator` is None.
 
         Example:
         --------
@@ -152,24 +129,18 @@ class RelativeBy:
     def below(self, element_or_locator: Union[WebElement, dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements below.
 
-        Parameters:
-        -----------
-        element_or_locator : Union[WebElement, Dict, None]
-            Element to look below
+        Args:
+            element_or_locator: Element to look below
 
         Returns:
-        --------
-        RelativeBy
+            RelativeBy
 
         Raises:
-        -------
-        WebDriverException
-            If `element_or_locator` is None.
+            WebDriverException: If `element_or_locator` is None.
 
         Example:
-        --------
-        >>> highest = driver.find_element(By.ID, "high")
-        >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").below(highest))
+            >>> highest = driver.find_element(By.ID, "high")
+            >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").below(highest))
         """
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling below method")
@@ -186,24 +157,18 @@ class RelativeBy:
     def to_left_of(self, element_or_locator: Union[WebElement, dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements to the left of.
 
-        Parameters:
-        -----------
-        element_or_locator : Union[WebElement, Dict, None]
-            Element to look to the left of
+        Args:
+            element_or_locator: Element to look to the left of
 
         Returns:
-        --------
-        RelativeBy
+            RelativeBy
 
         Raises:
-        -------
-        WebDriverException
-            If `element_or_locator` is None.
+            WebDriverException: If `element_or_locator` is None.
 
         Example:
-        --------
-        >>> right = driver.find_element(By.ID, "right")
-        >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").to_left_of(right))
+            >>> right = driver.find_element(By.ID, "right")
+            >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").to_left_of(right))
         """
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling to_left_of method")
@@ -220,24 +185,18 @@ class RelativeBy:
     def to_right_of(self, element_or_locator: Union[WebElement, dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements right of.
 
-        Parameters:
-        -----------
-        element_or_locator : Union[WebElement, Dict, None]
-            Element to look right of
+        Args:
+            element_or_locator: Element to look right of
 
         Returns:
-        --------
-        RelativeBy
+            RelativeBy
 
         Raises:
-        -------
-        WebDriverException
-            If `element_or_locator` is None.
+            WebDriverException: If `element_or_locator` is None.
 
         Example:
-        --------
-        >>> left = driver.find_element(By.ID, "left")
-        >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").to_right_of(left))
+            >>> left = driver.find_element(By.ID, "left")
+            >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").to_right_of(left))
         """
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling to_right_of method")
@@ -254,8 +213,8 @@ class RelativeBy:
     def straight_above(self, element_or_locator: Union[WebElement, LocatorType, None] = None) -> "RelativeBy":
         """Add a filter to look for elements above.
 
-        :Args:
-            - element_or_locator: Element to look above
+        Args:
+            element_or_locator: Element to look above
         """
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
@@ -272,8 +231,8 @@ class RelativeBy:
     def straight_below(self, element_or_locator: Union[WebElement, dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements below.
 
-        :Args:
-            - element_or_locator: Element to look below
+        Args:
+            element_or_locator: Element to look below
         """
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling below method")
@@ -290,8 +249,8 @@ class RelativeBy:
     def straight_left_of(self, element_or_locator: Union[WebElement, dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements to the left of.
 
-        :Args:
-            - element_or_locator: Element to look to the left of
+        Args:
+            element_or_locator: Element to look to the left of
         """
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling to_left_of method")
@@ -308,8 +267,8 @@ class RelativeBy:
     def straight_right_of(self, element_or_locator: Union[WebElement, dict, None] = None) -> "RelativeBy":
         """Add a filter to look for elements right of.
 
-        :Args:
-            - element_or_locator: Element to look right of
+        Args:
+            element_or_locator: Element to look right of
         """
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling to_right_of method")
@@ -326,28 +285,20 @@ class RelativeBy:
     def near(self, element_or_locator: Union[WebElement, LocatorType, None] = None, distance: int = 50) -> "RelativeBy":
         """Add a filter to look for elements near.
 
-        Parameters:
-        -----------
-        element_or_locator : Union[WebElement, Dict, None]
-            Element to look near by the element or within a distance
-
-        distance : int
-            Distance in pixel
+        Args:
+            element_or_locator: Element to look near by the element or within a distance
+            distance: Distance in pixel
 
         Returns:
-        --------
-        RelativeBy
+            RelativeBy
 
         Raises:
-        -------
-        WebDriverException
-            - If `element_or_locator` is None
-            - If `distance` is less than or equal to 0.
+            WebDriverException: If `element_or_locator` is None
+            WebDriverException: If `distance` is less than or equal to 0.
 
         Example:
-        --------
-        >>> near = driver.find_element(By.ID, "near")
-        >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").near(near, 50))
+            >>> near = driver.find_element(By.ID, "near")
+            >>> elements = driver.find_elements(locate_with(By.CSS_SELECTOR, "p").near(near, 50))
         """
         if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling near method")
