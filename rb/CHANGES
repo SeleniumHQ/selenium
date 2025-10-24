@@ -1,6 +1,6 @@
 4.38.0 (2025-10-24)
 =========================
-* Fix Network issue by removing nil values on network requests (#16442)
+* Fix BiDi Network issue by removing nil values on network requests (#16442)
 * Remove cruft from old CI environment (#16473)
 * [bidi] remove deprecated classes for log inspector (#16474)
 * update devtools versions
