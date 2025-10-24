@@ -1,7 +1,6 @@
 ## 4.38.0
 
 - update devtools versions
-- bump versions in preparation for release
 
 ## 4.37.0
 
