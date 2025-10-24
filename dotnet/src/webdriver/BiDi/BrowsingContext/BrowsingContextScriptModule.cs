@@ -19,13 +19,12 @@
 
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Script;
-using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptModule scriptModule)
 {
-    public async Task<PreloadScript> AddPreloadScriptAsync(string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
+    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync(string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
     {
         AddPreloadScriptOptions addPreloadScriptOptions = new(options)
         {
@@ -35,7 +34,7 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
         return await scriptModule.AddPreloadScriptAsync(functionDeclaration, addPreloadScriptOptions).ConfigureAwait(false);
     }
 
-    public async Task<IReadOnlyList<RealmInfo>> GetRealmsAsync(GetRealmsOptions? options = null)
+    public async Task<GetRealmsResult> GetRealmsAsync(GetRealmsOptions? options = null)
     {
         options ??= new();
 

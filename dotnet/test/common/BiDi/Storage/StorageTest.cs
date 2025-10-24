@@ -31,7 +31,7 @@ class StorageTest : BiDiTestFixture
     {
         driver.Url = UrlBuilder.WhereIs("animals");
 
-        var cookies = await bidi.Storage.GetCookiesAsync(new()
+        var cookiesResult = await bidi.Storage.GetCookiesAsync(new()
         {
             Filter = new()
             {
@@ -40,8 +40,8 @@ class StorageTest : BiDiTestFixture
             }
         });
 
-        Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies, Is.Empty);
+        Assert.That(cookiesResult, Is.Not.Null);
+        Assert.That(cookiesResult.Cookies, Is.Empty);
     }
 
     [Test]
@@ -49,9 +49,9 @@ class StorageTest : BiDiTestFixture
     {
         driver.Url = UrlBuilder.WhereIs("animals");
 
-        var userContexts = await bidi.Browser.GetUserContextsAsync();
+        var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 
-        var cookies = await context.Storage.GetCookiesAsync(new()
+        var cookiesResult = await context.Storage.GetCookiesAsync(new()
         {
             Filter = new()
             {
@@ -60,9 +60,9 @@ class StorageTest : BiDiTestFixture
             }
         });
 
-        Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies, Is.Empty);
-        Assert.That(cookies.PartitionKey.UserContext, Is.EqualTo(userContexts[0].UserContext));
+        Assert.That(cookiesResult, Is.Not.Null);
+        Assert.That(cookiesResult.Cookies, Is.Empty);
+        Assert.That(cookiesResult.PartitionKey.UserContext, Is.EqualTo(userContextsResult.UserContexts[0].UserContext));
     }
 
     [Test]
@@ -92,12 +92,12 @@ class StorageTest : BiDiTestFixture
             Expiry = expiry
         });
 
-        var cookies = await context.Storage.GetCookiesAsync();
+        var cookiesResult = await context.Storage.GetCookiesAsync();
 
-        Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies, Has.Count.EqualTo(1));
+        Assert.That(cookiesResult, Is.Not.Null);
+        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(1));
 
-        var cookie = cookies[0];
+        var cookie = cookiesResult.Cookies[0];
 
         Assert.That(cookie.Name, Is.EqualTo("fish"));
         Assert.That((cookie.Value as StringBytesValue).Value, Is.EqualTo("cod"));
@@ -118,12 +118,12 @@ class StorageTest : BiDiTestFixture
         driver.Manage().Cookies.AddCookie(new("key1", "value1"));
         driver.Manage().Cookies.AddCookie(new("key2", "value2"));
 
-        var cookies = await bidi.Storage.GetCookiesAsync();
+        var cookiesResult = await bidi.Storage.GetCookiesAsync();
 
-        Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies, Has.Count.EqualTo(2));
-        Assert.That(cookies[0].Name, Is.EqualTo("key1"));
-        Assert.That(cookies[1].Name, Is.EqualTo("key2"));
+        Assert.That(cookiesResult, Is.Not.Null);
+        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(2));
+        Assert.That(cookiesResult.Cookies[0].Name, Is.EqualTo("key1"));
+        Assert.That(cookiesResult.Cookies[1].Name, Is.EqualTo("key2"));
     }
 
     [Test]
@@ -138,10 +138,10 @@ class StorageTest : BiDiTestFixture
 
         Assert.That(result, Is.Not.Null);
 
-        var cookies = await bidi.Storage.GetCookiesAsync();
+        var cookiesResult = await bidi.Storage.GetCookiesAsync();
 
-        Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies.Count, Is.EqualTo(0));
+        Assert.That(cookiesResult, Is.Not.Null);
+        Assert.That(cookiesResult.Cookies.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -157,11 +157,11 @@ class StorageTest : BiDiTestFixture
 
         Assert.That(result, Is.Not.Null);
 
-        var cookies = await bidi.Storage.GetCookiesAsync();
+        var cookiesResult = await bidi.Storage.GetCookiesAsync();
 
-        Assert.That(cookies, Is.Not.Null);
-        Assert.That(cookies, Has.Count.EqualTo(1));
-        Assert.That(cookies[0].Name, Is.EqualTo("key2"));
+        Assert.That(cookiesResult, Is.Not.Null);
+        Assert.That(cookiesResult.Cookies, Has.Count.EqualTo(1));
+        Assert.That(cookiesResult.Cookies[0].Name, Is.EqualTo("key2"));
     }
 
     [Test]

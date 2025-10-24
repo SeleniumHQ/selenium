@@ -200,7 +200,8 @@ public class SeleniumManager {
         } else if (current.is(MAC)) {
           folder = "macos";
         } else if (current.is(LINUX)) {
-          if (System.getProperty("os.arch").contains("arm")) {
+          if (System.getProperty("os.arch").contains("arm")
+              || System.getProperty("os.arch").contains("aarch64")) {
             throw new WebDriverException("Linux ARM is not supported by Selenium Manager");
           } else {
             folder = "linux";

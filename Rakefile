@@ -97,7 +97,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v140:v140.publish
-  //java/src/org/openqa/selenium/devtools/v138:v138.publish
+  //java/src/org/openqa/selenium/devtools/v141:v141.publish
   //java/src/org/openqa/selenium/devtools/v139:v139.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -685,7 +685,7 @@ namespace :py do
       end
     end
 
-    desc 'Python Remote tests with Firefox'
+    desc 'Python Remote tests with Chrome'
     task :remote do
       Rake::Task['py:clean'].invoke
       Bazel.execute('test', [], '//py:test-remote')
@@ -747,9 +747,12 @@ namespace :rb do
 
   desc 'Update generated Ruby files for local development'
   task :local_dev do
+    puts 'installing ruby, this may take a minute'
     Bazel.execute('build', [], '@bundle//:bundle')
     Rake::Task['rb:build'].invoke
     Rake::Task['grid'].invoke
+    # A command like this is required to move ruby binary into working directory
+    Bazel.execute('build', %w[--test_arg --dry-run], '@bundle//bin:rubocop')
   end
 
   desc 'Push Ruby gems to rubygems'
