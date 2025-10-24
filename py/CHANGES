@@ -1,7 +1,6 @@
 Selenium 4.38.0
 * Bumping version for Nightly
 * Replaced :param: and :args: from docstrings (#16469)
-* bump versions in preparation for release
 
 Selenium 4.37.0
 * Add CDP for Chrome 141 and remove 138
