@@ -50,22 +50,19 @@ class ClientConfig:
     keep_alive = _ClientConfigDescriptor("_keep_alive")
     """Gets and Sets Keep Alive value."""
     proxy = _ClientConfigDescriptor("_proxy")
-    """Gets and Sets the proxy used for communicating to the driver/server."""
+    """Gets and Sets the proxy used for communicating with the driver/server."""
     ignore_certificates = _ClientConfigDescriptor("_ignore_certificates")
     """Gets and Sets the ignore certificate check value."""
     init_args_for_pool_manager = _ClientConfigDescriptor("_init_args_for_pool_manager")
     """Gets and Sets the ignore certificate check."""
     timeout = _ClientConfigDescriptor("_timeout")
-    """Gets and Sets the timeout (in seconds) used for communicating to the
-    driver/server."""
+    """Gets and Sets the timeout (in seconds) used for communicating with the driver/server."""
     ca_certs = _ClientConfigDescriptor("_ca_certs")
     """Gets and Sets the path to bundle of CA certificates."""
     username = _ClientConfigDescriptor("_username")
-    """Gets and Sets the username used for basic authentication to the
-    remote."""
+    """Gets and Sets the username used for basic authentication to the remote."""
     password = _ClientConfigDescriptor("_password")
-    """Gets and Sets the password used for basic authentication to the
-    remote."""
+    """Gets and Sets the password used for basic authentication to the remote."""
     auth_type = _ClientConfigDescriptor("_auth_type")
     """Gets and Sets the type of authentication to the remote server."""
     token = _ClientConfigDescriptor("_token")
@@ -74,6 +71,10 @@ class ClientConfig:
     """Gets and Sets user agent to be added to the request headers."""
     extra_headers = _ClientConfigDescriptor("_extra_headers")
     """Gets and Sets extra headers to be added to the request."""
+    websocket_timeout = _ClientConfigDescriptor("_websocket_timeout")
+    """Gets and Sets the WebSocket response wait timeout (in seconds) used for communicating with the browser."""
+    websocket_interval = _ClientConfigDescriptor("_websocket_interval")
+    """Gets and Sets the WebSocket response wait interval (in seconds) used for communicating with the browser."""
 
     def __init__(
         self,
@@ -90,6 +91,8 @@ class ClientConfig:
         token: Optional[str] = None,
         user_agent: Optional[str] = None,
         extra_headers: Optional[dict] = None,
+        websocket_timeout: Optional[float] = 30.0,
+        websocket_interval: Optional[float] = 0.1,
     ) -> None:
         self.remote_server_addr = remote_server_addr
         self.keep_alive = keep_alive
@@ -103,6 +106,8 @@ class ClientConfig:
         self.token = token
         self.user_agent = user_agent
         self.extra_headers = extra_headers
+        self.websocket_timeout = websocket_timeout
+        self.websocket_interval = websocket_interval
 
         self.ca_certs = (
             (os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where())

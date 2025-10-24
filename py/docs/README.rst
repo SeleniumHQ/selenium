@@ -66,7 +66,7 @@ Contributing to Python docs
 
 First it is recommended that you read the main `CONTRIBUTING.md <https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md>`_.
 
-Some steps for contibuting to the Python documentation ...
+Some steps for contributing to the Python documentation ...
 
 - Check out changes locally using instructions above.
 - Try to resolve any warnings/errors.

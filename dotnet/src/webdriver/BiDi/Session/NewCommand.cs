@@ -21,10 +21,10 @@ using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class NewCommand(NewCommandParameters @params)
-    : Command<NewCommandParameters, NewResult>(@params, "session.new");
+internal sealed class NewCommand(NewParameters @params)
+    : Command<NewParameters, NewResult>(@params, "session.new");
 
-internal sealed record NewCommandParameters(CapabilitiesRequest Capabilities) : CommandParameters;
+internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
 
 public sealed class NewOptions : CommandOptions;
 

@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverFinder;
@@ -78,11 +79,11 @@ public class InternetExplorerDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public InternetExplorerDriverService(
-      File executable,
+      @Nullable File executable,
       int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment)
+      @Nullable Duration timeout,
+      @Nullable List<String> args,
+      @Nullable Map<String, String> environment)
       throws IOException {
     super(
         executable,
@@ -128,10 +129,10 @@ public class InternetExplorerDriverService extends DriverService {
       extends DriverService.Builder<
           InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
 
-    private InternetExplorerDriverLogLevel logLevel;
-    private String host = null;
-    private File extractPath = null;
-    private Boolean silent = null;
+    private @Nullable InternetExplorerDriverLogLevel logLevel;
+    private @Nullable String host = null;
+    private @Nullable File extractPath = null;
+    private @Nullable Boolean silent = null;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -154,7 +155,7 @@ public class InternetExplorerDriverService extends DriverService {
      * @param logLevel A level of the log verbosity.
      * @return A self reference.
      */
-    public Builder withLogLevel(InternetExplorerDriverLogLevel logLevel) {
+    public Builder withLogLevel(@Nullable InternetExplorerDriverLogLevel logLevel) {
       this.logLevel = logLevel;
       return this;
     }
@@ -165,7 +166,7 @@ public class InternetExplorerDriverService extends DriverService {
      * @param host A host name.
      * @return A self reference.
      */
-    public Builder withHost(String host) {
+    public Builder withHost(@Nullable String host) {
       this.host = host;
       return this;
     }
@@ -176,7 +177,7 @@ public class InternetExplorerDriverService extends DriverService {
      * @param extractPath A path.
      * @return A self reference.
      */
-    public Builder withExtractPath(File extractPath) {
+    public Builder withExtractPath(@Nullable File extractPath) {
       this.extractPath = extractPath;
       return this;
     }
@@ -187,7 +188,7 @@ public class InternetExplorerDriverService extends DriverService {
      * @param silent To be silent in stdout or not.
      * @return A self reference.
      */
-    public Builder withSilent(Boolean silent) {
+    public Builder withSilent(@Nullable Boolean silent) {
       this.silent = silent;
       return this;
     }
@@ -244,7 +245,11 @@ public class InternetExplorerDriverService extends DriverService {
 
     @Override
     protected InternetExplorerDriverService createDriverService(
-        File exe, int port, Duration timeout, List<String> args, Map<String, String> environment) {
+        @Nullable File exe,
+        int port,
+        @Nullable Duration timeout,
+        @Nullable List<String> args,
+        @Nullable Map<String, String> environment) {
       try {
         return new InternetExplorerDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

@@ -35,7 +35,7 @@ public sealed class PinnedScript
     /// <param name="scriptId">The internal ID of this script.</param>
     /// <remarks>
     /// This constructor is explicitly internal. Creation of pinned script objects
-    /// is strictly the perview of Selenium, and should not be required by external
+    /// is strictly the purview of Selenium, and should not be required by external
     /// libraries.
     /// </remarks>
     internal PinnedScript(string script, string stringHandle, string scriptId)

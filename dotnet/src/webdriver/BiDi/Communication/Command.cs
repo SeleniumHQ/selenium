@@ -24,10 +24,9 @@ namespace OpenQA.Selenium.BiDi.Communication;
 
 public abstract class Command
 {
-    protected Command(string method, Type resultType)
+    protected Command(string method)
     {
         Method = method;
-        ResultType = resultType;
     }
 
     [JsonPropertyOrder(1)]
@@ -35,22 +34,19 @@ public abstract class Command
 
     [JsonPropertyOrder(0)]
     public long Id { get; internal set; }
-
-    [JsonIgnore]
-    public Type ResultType { get; }
 }
 
-internal abstract class Command<TCommandParameters, TCommandResult>(TCommandParameters @params, string method) : Command(method, typeof(TCommandResult))
-    where TCommandParameters : CommandParameters
-    where TCommandResult : EmptyResult
+internal abstract class Command<TParameters, TResult>(TParameters @params, string method) : Command(method)
+    where TParameters : Parameters
+    where TResult : EmptyResult
 {
     [JsonPropertyOrder(2)]
-    public TCommandParameters Params { get; } = @params;
+    public TParameters Params { get; } = @params;
 }
 
-internal record CommandParameters
+internal record Parameters
 {
-    public static CommandParameters Empty { get; } = new CommandParameters();
+    public static Parameters Empty { get; } = new Parameters();
 }
 
-public record EmptyResult;
+public abstract record EmptyResult;

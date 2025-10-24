@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
@@ -54,6 +55,7 @@ public sealed record AccessibilityValue
 
 public sealed record ContextValue(BrowsingContext Context);
 
+[JsonConverter(typeof(CamelCaseEnumConverter<MatchType>))]
 public enum MatchType
 {
     Full,

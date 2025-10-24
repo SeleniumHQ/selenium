@@ -21,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +30,10 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
+import org.openqa.selenium.bidi.module.Script;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class BrowsingContextInspectorTest extends JupiterTestBase {
 
@@ -229,6 +232,75 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
       NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
       assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
       assertThat(navigationInfo.getUrl()).contains("/bidi/logEntryAdded.html");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canListenToDownloadWillBeginEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<DownloadInfo> future = new CompletableFuture<>();
+
+      inspector.onDownloadWillBegin(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/downloads/download.html"), ReadinessState.COMPLETE);
+
+      driver.findElement(By.id("file-1")).click();
+
+      DownloadInfo downloadInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(downloadInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(downloadInfo.getUrl()).contains("/downloads/file_1.txt");
+      assertThat(downloadInfo.getSuggestedFilename()).isEqualTo("file_1.txt");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
+  void canListenToNavigationFailedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+
+      inspector.onNavigationFailed(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      try {
+        context.navigate(
+            "http://invalid-domain-that-does-not-exist.test/", ReadinessState.COMPLETE);
+      } catch (Exception e) {
+        // Expect an exception due to navigation failure
+      }
+
+      NavigationInfo navigationInfo = future.get(5, TimeUnit.SECONDS);
+      assertThat(navigationInfo.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(navigationInfo.getUrl())
+          .isEqualTo("http://invalid-domain-that-does-not-exist.test/");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canListenToHistoryUpdatedEvent()
+      throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver);
+        Script script = new Script(driver)) {
+      CompletableFuture<HistoryUpdated> future = new CompletableFuture<>();
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/simpleTest.html"), ReadinessState.COMPLETE);
+
+      inspector.onHistoryUpdated(future::complete);
+
+      // Use history.pushState to trigger history updated event
+      script.evaluateFunctionInBrowsingContext(
+          context.getId(), "history.pushState({}, '', '/new-path')", false, Optional.empty());
+
+      HistoryUpdated historyUpdated = future.get(5, TimeUnit.SECONDS);
+      assertThat(historyUpdated.getBrowsingContextId()).isEqualTo(context.getId());
+      assertThat(historyUpdated.getUrl()).contains("/new-path");
     }
   }
 }

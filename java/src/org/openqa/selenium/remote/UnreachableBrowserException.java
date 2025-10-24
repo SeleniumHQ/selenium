@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
 /**
@@ -33,12 +35,13 @@ import org.openqa.selenium.WebDriverException;
  *
  * 1)
  */
+@NullMarked
 public class UnreachableBrowserException extends WebDriverException {
-  public UnreachableBrowserException(String message) {
+  public UnreachableBrowserException(@Nullable String message) {
     super(message);
   }
 
-  public UnreachableBrowserException(String message, Throwable cause) {
+  public UnreachableBrowserException(@Nullable String message, @Nullable Throwable cause) {
     super(message, cause);
   }
 }

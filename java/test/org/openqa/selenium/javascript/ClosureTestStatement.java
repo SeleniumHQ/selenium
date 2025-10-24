@@ -18,7 +18,6 @@
 package org.openqa.selenium.javascript;
 
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
 import com.google.common.base.Stopwatch;
 import java.net.URL;
@@ -60,13 +59,11 @@ class ClosureTestStatement {
 
     WebDriver driver = driverSupplier.get();
 
-    if (!isOnTravis()) {
-      // Attempt to make the window as big as possible.
-      try {
-        driver.manage().window().maximize();
-      } catch (RuntimeException ignored) {
-        // We tried.
-      }
+    // Attempt to make the window as big as possible.
+    try {
+      driver.manage().window().maximize();
+    } catch (RuntimeException ignored) {
+      // We tried.
     }
 
     JavascriptExecutor executor = (JavascriptExecutor) driver;

@@ -201,7 +201,7 @@ class StorageCommandsTest extends JupiterTestBase {
     BytesValue value = new BytesValue(BytesValue.Type.STRING, "cod");
     String domain = appServer.getHostName();
 
-    long expiry = Instant.now().toEpochMilli() + 3600 * 1000;
+    long expiry = Instant.now().getEpochSecond() + 3600;
 
     String path = "/common/animals";
 

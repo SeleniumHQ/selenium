@@ -17,6 +17,9 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed record Initiator(InitiatorType Type)
@@ -30,6 +33,7 @@ public sealed record Initiator(InitiatorType Type)
     public Request? Request { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<InitiatorType>))]
 public enum InitiatorType
 {
     Parser,

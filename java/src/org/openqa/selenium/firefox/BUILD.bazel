@@ -16,5 +16,6 @@ java_export(
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/manager",
         "//java/src/org/openqa/selenium/remote",
+        "@maven//:org_jspecify_jspecify",
     ],
 )

@@ -17,8 +17,12 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Session;
 
+[JsonConverter(typeof(SubscriptionConverter))]
 public sealed class Subscription
 {
     internal Subscription(string id)

@@ -18,9 +18,9 @@
 use crate::config::ManagerConfig;
 use crate::config::OS::MACOS;
 use crate::files::BrowserPath;
-use crate::{create_http_client, Logger, SeleniumManager, STABLE};
-use anyhow::anyhow;
+use crate::{Logger, STABLE, SeleniumManager, create_http_client};
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::path::PathBuf;

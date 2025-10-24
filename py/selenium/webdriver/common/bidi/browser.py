@@ -16,7 +16,11 @@
 # under the License.
 
 
+from typing import Any, Optional
+
 from selenium.webdriver.common.bidi.common import command_builder
+from selenium.webdriver.common.bidi.session import UserPromptHandler
+from selenium.webdriver.common.proxy import Proxy
 
 
 class ClientWindowState:
@@ -182,14 +186,36 @@ class Browser:
     def __init__(self, conn):
         self.conn = conn
 
-    def create_user_context(self) -> str:
+    def create_user_context(
+        self,
+        accept_insecure_certs: Optional[bool] = None,
+        proxy: Optional[Proxy] = None,
+        unhandled_prompt_behavior: Optional[UserPromptHandler] = None,
+    ) -> str:
         """Creates a new user context.
+
+        Parameters:
+        -----------
+            accept_insecure_certs: Optional flag to accept insecure TLS certificates
+            proxy: Optional proxy configuration for the user context
+            unhandled_prompt_behavior: Optional configuration for handling user prompts
 
         Returns:
         -------
             str: The ID of the created user context.
         """
-        result = self.conn.execute(command_builder("browser.createUserContext", {}))
+        params: dict[str, Any] = {}
+
+        if accept_insecure_certs is not None:
+            params["acceptInsecureCerts"] = accept_insecure_certs
+
+        if proxy is not None:
+            params["proxy"] = proxy.to_bidi_dict()
+
+        if unhandled_prompt_behavior is not None:
+            params["unhandledPromptBehavior"] = unhandled_prompt_behavior.to_dict()
+
+        result = self.conn.execute(command_builder("browser.createUserContext", params))
         return result["userContext"]
 
     def get_user_contexts(self) -> list[str]:
