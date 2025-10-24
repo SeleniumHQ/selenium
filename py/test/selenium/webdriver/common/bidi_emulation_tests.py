@@ -49,7 +49,12 @@ def get_browser_geolocation(driver, user_context=None):
 
 
 def get_browser_locale(driver):
-    return driver.execute_script("return navigator.languages || [navigator.language];")
+    result = driver.script._evaluate(
+        "Intl.DateTimeFormat().resolvedOptions().locale",
+        {"context": driver.current_window_handle},
+        await_promise=False,
+    )
+    return result.result["value"]
 
 
 def test_emulation_initialized(driver):
@@ -223,15 +228,12 @@ def test_set_geolocation_override_with_error(driver, pages):
 def test_set_locale_override_with_contexts(driver, pages):
     """Test setting locale override with browsing contexts."""
     context_id = driver.current_window_handle
-    driver.browsing_context.navigate(context_id, pages.url("formPage.html"))
-
-    original_locale = get_browser_locale(driver)
-    print("Original locale:", original_locale)
 
     # Set locale override to French
     test_locale = "fr-FR"
     driver.emulation.set_locale_override(locale=test_locale, contexts=[context_id])
-    driver.browsing_context.reload(context_id, wait="complete")
+
+    driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
 
     current_locale = get_browser_locale(driver)
     assert current_locale == test_locale, f"Expected locale {test_locale}, got {current_locale}"
@@ -239,20 +241,18 @@ def test_set_locale_override_with_contexts(driver, pages):
 
 def test_set_locale_override_with_user_contexts(driver, pages):
     """Test setting locale override with user contexts."""
-    # Create a user context
     user_context = driver.browser.create_user_context()
 
     context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
 
     driver.switch_to.window(context_id)
-    driver.browsing_context.navigate(context_id, pages.url("formPage.html"))
-
-    original_locale = get_browser_locale(driver)
-    print("Original locale:", original_locale)
 
     # Set locale override to Spanish
     test_locale = "es-ES"
     driver.emulation.set_locale_override(locale=test_locale, user_contexts=[user_context])
+
+    url = pages.url("formPage.html")
+    driver.browsing_context.navigate(context_id, url, wait="complete")
 
     current_locale = get_browser_locale(driver)
     assert current_locale == test_locale, f"Expected locale {test_locale}, got {current_locale}"
