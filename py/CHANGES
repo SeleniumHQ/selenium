@@ -1,5 +1,5 @@
 Selenium 4.38.0
-* Bumping version for Nightly
+* update devtools versions
 * Replaced :param: and :args: from docstrings (#16469)
 
 Selenium 4.37.0
