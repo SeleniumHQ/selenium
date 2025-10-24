@@ -747,9 +747,12 @@ namespace :rb do
 
   desc 'Update generated Ruby files for local development'
   task :local_dev do
+    puts 'installing ruby, this may take a minute'
     Bazel.execute('build', [], '@bundle//:bundle')
     Rake::Task['rb:build'].invoke
     Rake::Task['grid'].invoke
+    # A command like this is required to move ruby binary into working directory
+    Bazel.execute('build', %w[--test_arg --dry-run], '@bundle//bin:rubocop')
   end
 
   desc 'Push Ruby gems to rubygems'
