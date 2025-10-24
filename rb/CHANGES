@@ -1,7 +1,6 @@
 4.38.0 (2025-10-24)
 =========================
 * Fix Network issue by removing nil values on network requests (#16442)
-    > * Remove nil values for network requests
     > * Update intercept request and response and improve headers and cookies
     > * request cookie and header setters now take hashes
     > * put the unit tests back
