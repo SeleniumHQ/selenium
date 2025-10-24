@@ -347,17 +347,18 @@ def test_set_locale_override_with_contexts(driver, pages, locale, expected_local
 def test_set_locale_override_with_user_contexts(driver, pages, value):
     """Test setting locale override with user contexts."""
     user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
 
-    context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+            driver.emulation.set_locale_override(locale=value, user_contexts=[user_context])
 
-    driver.switch_to.window(context_id)
+            driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
 
-    driver.emulation.set_locale_override(locale=value, user_contexts=[user_context])
-
-    driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
-
-    current_locale = get_browser_locale(driver)
-    assert current_locale == value, f"Expected locale {value}, got {current_locale}"
-
-    driver.browsing_context.close(context_id)
-    driver.browser.remove_user_context(user_context)
+            current_locale = get_browser_locale(driver)
+            assert current_locale == value, f"Expected locale {value}, got {current_locale}"
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
