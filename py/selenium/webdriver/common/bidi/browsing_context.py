@@ -59,13 +59,11 @@ class NavigationInfo:
     def from_json(cls, json: dict) -> "NavigationInfo":
         """Creates a NavigationInfo instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the navigation information.
 
         Returns:
-        -------
-            NavigationInfo: A new instance of NavigationInfo.
+            A new instance of NavigationInfo.
         """
         context = json.get("context")
         if context is None or not isinstance(context, str):
@@ -111,13 +109,11 @@ class BrowsingContextInfo:
     def from_json(cls, json: dict) -> "BrowsingContextInfo":
         """Creates a BrowsingContextInfo instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the browsing context information.
 
         Returns:
-        -------
-            BrowsingContextInfo: A new instance of BrowsingContextInfo.
+            A new instance of BrowsingContextInfo.
         """
         children = None
         raw_children = json.get("children")
@@ -218,13 +214,11 @@ class UserPromptOpenedParams:
     def from_json(cls, json: dict) -> "UserPromptOpenedParams":
         """Creates a UserPromptOpenedParams instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the user prompt parameters.
 
         Returns:
-        -------
-            UserPromptOpenedParams: A new instance of UserPromptOpenedParams.
+            A new instance of UserPromptOpenedParams.
         """
         context = json.get("context")
         if context is None or not isinstance(context, str):
@@ -274,13 +268,11 @@ class UserPromptClosedParams:
     def from_json(cls, json: dict) -> "UserPromptClosedParams":
         """Creates a UserPromptClosedParams instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the user prompt closed parameters.
 
         Returns:
-        -------
-            UserPromptClosedParams: A new instance of UserPromptClosedParams.
+            A new instance of UserPromptClosedParams.
         """
         context = json.get("context")
         if context is None or not isinstance(context, str):
@@ -323,13 +315,11 @@ class HistoryUpdatedParams:
     def from_json(cls, json: dict) -> "HistoryUpdatedParams":
         """Creates a HistoryUpdatedParams instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             json: A dictionary containing the history updated parameters.
 
         Returns:
-        -------
-            HistoryUpdatedParams: A new instance of HistoryUpdatedParams.
+            A new instance of HistoryUpdatedParams.
         """
         context = json.get("context")
         if context is None or not isinstance(context, str):
@@ -621,8 +611,7 @@ class _EventManager:
     def subscribe_to_event(self, bidi_event: str, contexts: Optional[list[str]] = None) -> None:
         """Subscribe to a BiDi event if not already subscribed.
 
-        Parameters:
-        ----------
+        Args:
             bidi_event: The BiDi event name.
             contexts: Optional browsing context IDs to subscribe to.
         """
@@ -635,8 +624,7 @@ class _EventManager:
     def unsubscribe_from_event(self, bidi_event: str) -> None:
         """Unsubscribe from a BiDi event if no more callbacks exist.
 
-        Parameters:
-        ----------
+        Args:
             bidi_event: The BiDi event name.
         """
         with self._subscription_lock:
@@ -734,20 +722,17 @@ class BrowsingContext:
         """Get a list of all available event names.
 
         Returns:
-        -------
-            List[str]: A list of event names that can be used with event handlers.
+            A list of event names that can be used with event handlers.
         """
         return list(cls.EVENT_CONFIGS.keys())
 
     def activate(self, context: str) -> None:
         """Activates and focuses the given top-level traversable.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID to activate.
 
         Raises:
-        ------
             Exception: If the browsing context is not a top-level traversable.
         """
         params = {"context": context}
@@ -762,16 +747,14 @@ class BrowsingContext:
     ) -> str:
         """Captures an image of the given navigable, and returns it as a Base64-encoded string.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID to capture.
             origin: The origin of the screenshot, either "viewport" or "document".
             format: The format of the screenshot.
             clip: The clip rectangle of the screenshot.
 
         Returns:
-        -------
-            str: The Base64-encoded screenshot.
+            The Base64-encoded screenshot.
         """
         params: dict[str, Any] = {"context": context, "origin": origin}
         if format is not None:
@@ -785,13 +768,11 @@ class BrowsingContext:
     def close(self, context: str, prompt_unload: bool = False) -> None:
         """Closes a top-level traversable.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID to close.
             prompt_unload: Whether to prompt to unload.
 
         Raises:
-        ------
             Exception: If the browsing context is not a top-level traversable.
         """
         params = {"context": context, "promptUnload": prompt_unload}
@@ -806,16 +787,14 @@ class BrowsingContext:
     ) -> str:
         """Creates a new navigable, either in a new tab or in a new window, and returns its navigable id.
 
-        Parameters:
-        -----------
+        Args:
             type: The type of the new navigable, either "tab" or "window".
             reference_context: The reference browsing context ID.
             background: Whether to create the new navigable in the background.
             user_context: The user context ID.
 
         Returns:
-        -------
-            str: The browsing context ID of the created navigable.
+            The browsing context ID of the created navigable.
         """
         params: dict[str, Any] = {"type": type}
         if reference_context is not None:
@@ -836,14 +815,12 @@ class BrowsingContext:
         """Returns a tree of all descendent navigables including the given parent itself, or all top-level contexts
         when no parent is provided.
 
-        Parameters:
-        -----------
+        Args:
             max_depth: The maximum depth of the tree.
             root: The root browsing context ID.
 
         Returns:
-        -------
-            List[BrowsingContextInfo]: A list of browsing context information.
+            A list of browsing context information.
         """
         params: dict[str, Any] = {}
         if max_depth is not None:
@@ -862,8 +839,7 @@ class BrowsingContext:
     ) -> None:
         """Allows closing an open prompt.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             accept: Whether to accept the prompt.
             user_text: The text to enter in the prompt.
@@ -886,8 +862,7 @@ class BrowsingContext:
     ) -> list[dict]:
         """Returns a list of all nodes matching the specified locator.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             locator: The locator to use.
             max_node_count: The maximum number of nodes to return.
@@ -895,8 +870,7 @@ class BrowsingContext:
             start_nodes: The start nodes.
 
         Returns:
-        -------
-            List[Dict]: A list of nodes.
+            A list of nodes.
         """
         params: dict[str, Any] = {"context": context, "locator": locator}
         if max_node_count is not None:
@@ -917,15 +891,13 @@ class BrowsingContext:
     ) -> dict:
         """Navigates a navigable to the given URL.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             url: The URL to navigate to.
             wait: The readiness state to wait for.
 
         Returns:
-        -------
-            Dict: A dictionary containing the navigation result.
+            A dictionary containing the navigation result.
         """
         params = {"context": context, "url": url}
         if wait is not None:
@@ -948,8 +920,7 @@ class BrowsingContext:
         """Creates a paginated representation of a document, and returns it as a PDF document represented as a
         Base64-encoded string.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             background: Whether to include the background.
             margin: The margin parameters.
@@ -960,8 +931,7 @@ class BrowsingContext:
             shrink_to_fit: Whether to shrink to fit.
 
         Returns:
-        -------
-            str: The Base64-encoded PDF document.
+            The Base64-encoded PDF document.
         """
         params = {
             "context": context,
@@ -988,15 +958,13 @@ class BrowsingContext:
     ) -> dict:
         """Reloads a navigable.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             ignore_cache: Whether to ignore the cache.
             wait: The readiness state to wait for.
 
         Returns:
-        -------
-            Dict: A dictionary containing the navigation result.
+            A dictionary containing the navigation result.
         """
         params: dict[str, Any] = {"context": context}
         if ignore_cache is not None:
@@ -1016,15 +984,13 @@ class BrowsingContext:
     ) -> None:
         """Modifies specific viewport characteristics on the given top-level traversable.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             viewport: The viewport parameters.
             device_pixel_ratio: The device pixel ratio.
             user_contexts: The user context IDs.
 
         Raises:
-        ------
             Exception: If the browsing context is not a top-level traversable.
         """
         params: dict[str, Any] = {}
@@ -1042,14 +1008,12 @@ class BrowsingContext:
     def traverse_history(self, context: str, delta: int) -> dict:
         """Traverses the history of a given navigable by a delta.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             delta: The delta to traverse by.
 
         Returns:
-        -------
-            Dict: A dictionary containing the traverse history result.
+            A dictionary containing the traverse history result.
         """
         params = {"context": context, "delta": delta}
         result = self.conn.execute(command_builder("browsingContext.traverseHistory", params))
@@ -1058,23 +1022,20 @@ class BrowsingContext:
     def add_event_handler(self, event: str, callback: Callable, contexts: Optional[list[str]] = None) -> int:
         """Add an event handler to the browsing context.
 
-        Parameters:
-        ----------
+        Args:
             event: The event to subscribe to.
             callback: The callback function to execute on event.
             contexts: The browsing context IDs to subscribe to.
 
         Returns:
-        -------
-            int: callback id
+            Callback id.
         """
         return self._event_manager.add_event_handler(event, callback, contexts)
 
     def remove_event_handler(self, event: str, callback_id: int) -> None:
         """Remove an event handler from the browsing context.
 
-        Parameters:
-        ----------
+        Args:
             event: The event to unsubscribe from.
             callback_id: The callback id to remove.
         """

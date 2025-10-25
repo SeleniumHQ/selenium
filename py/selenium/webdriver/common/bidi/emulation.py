@@ -35,8 +35,7 @@ class GeolocationCoordinates:
     ):
         """Initialize GeolocationCoordinates.
 
-        Parameters:
-        -----------
+        Args:
             latitude: Latitude coordinate (-90.0 to 90.0).
             longitude: Longitude coordinate (-180.0 to 180.0).
             accuracy: Accuracy in meters (>= 0.0), defaults to 1.0.
@@ -46,8 +45,8 @@ class GeolocationCoordinates:
             speed: Speed in meters per second (>= 0.0) or None, defaults to None.
 
         Raises:
-        ------
-            ValueError: If coordinates are out of valid range or if altitude_accuracy is provided without altitude.
+            ValueError: If coordinates are out of valid range or if altitude_accuracy
+                is provided without altitude.
         """
         self.latitude = latitude
         self.longitude = longitude
@@ -180,18 +179,16 @@ class Emulation:
     ) -> None:
         """Set geolocation override for the given contexts or user contexts.
 
-        Parameters:
-        -----------
+        Args:
             coordinates: Geolocation coordinates to emulate, or None.
             error: Geolocation error to emulate, or None.
             contexts: List of browsing context IDs to apply the override to.
             user_contexts: List of user context IDs to apply the override to.
 
         Raises:
-        ------
             ValueError: If both coordinates and error are provided, or if both contexts
-                       and user_contexts are provided, or if neither contexts nor
-                       user_contexts are provided.
+                and user_contexts are provided, or if neither contexts nor
+                user_contexts are provided.
         """
         if coordinates is not None and error is not None:
             raise ValueError("Cannot specify both coordinates and error")
@@ -224,17 +221,15 @@ class Emulation:
     ) -> None:
         """Set timezone override for the given contexts or user contexts.
 
-        Parameters:
-        -----------
+        Args:
             timezone: Timezone identifier (IANA timezone name or offset string like '+01:00'),
-                     or None to clear the override.
+                or None to clear the override.
             contexts: List of browsing context IDs to apply the override to.
             user_contexts: List of user context IDs to apply the override to.
 
         Raises:
-        ------
             ValueError: If both contexts and user_contexts are provided, or if neither
-                       contexts nor user_contexts are provided.
+                contexts nor user_contexts are provided.
         """
         if contexts is not None and user_contexts is not None:
             raise ValueError("Cannot specify both contexts and user_contexts")
