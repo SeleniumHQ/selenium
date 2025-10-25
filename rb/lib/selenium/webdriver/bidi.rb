@@ -32,7 +32,7 @@ module Selenium
       autoload :InterceptedItem, 'selenium/webdriver/bidi/network/intercepted_item'
 
       def initialize(url:)
-        @ws = WebSocketConnection.new(url: url, protocol: :bidi)
+        @ws = WebSocketConnection.new(url: url)
       end
 
       def close

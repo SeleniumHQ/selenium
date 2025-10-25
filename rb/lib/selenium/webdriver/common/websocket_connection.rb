@@ -35,7 +35,7 @@ module Selenium
 
       MAX_LOG_MESSAGE_SIZE = 9999
 
-      def initialize(url:, protocol: nil)
+      def initialize(url:)
         @callback_threads = ThreadGroup.new
 
         @callbacks_mtx = Mutex.new
@@ -45,7 +45,6 @@ module Selenium
         @closing = false
         @session_id = nil
         @url = url
-        @protocol = protocol
 
         process_handshake
         @socket_thread = attach_socket_listener
@@ -178,12 +177,6 @@ module Selenium
         rescue StandardError => e
           return if @closing
 
-          if devtools?
-            # Async thread exceptions are not deterministic and should not be relied on; we should stop
-            WebDriver.logger.deprecate('propogating errors from DevTools callbacks')
-            Thread.main.raise(e)
-          end
-
           bt = Array(e.backtrace).first(5).join("\n")
           WebDriver.logger.error "Callback error: #{e.class}: #{e.message}\n#{bt}", id: :ws
         end
@@ -208,14 +201,6 @@ module Selenium
 
       def ws
         @ws ||= WebSocket::Handshake::Client.new(url: @url)
-      end
-
-      def devtools?
-        @protocol == :devtools
-      end
-
-      def bidi?
-        @protocol == :bidi
       end
 
       def next_id

@@ -45,13 +45,12 @@ module Selenium
         }.to yield_control
       end
 
-      it 'propagates errors in events' do
+      it 'logs errors in events' do
+        driver.devtools.page.enable
+        driver.devtools.page.on(:load_event_fired) { raise 'This is fine!' }
         expect {
-          driver.devtools.page.enable
-          driver.devtools.page.on(:load_event_fired) { raise 'This is fine!' }
           driver.navigate.to url_for('xhtmlTest.html')
-          sleep 0.5
-        }.to raise_error(RuntimeError, 'This is fine!')
+        }.to have_error(:ws, /This is fine!/)
       end
 
       describe '#target' do
