@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.support.select &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.support.select &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.support.select </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -222,8 +222,8 @@
 <span class="w">        </span><span class="sd">"""Constructor. A check is made that the given element is, indeed, a</span>
 <span class="sd">        SELECT tag. If it is not, then an UnexpectedTagNameException is thrown.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - webelement - SELECT element to wrap</span>
+<span class="sd">        Args:</span>
+<span class="sd">            webelement: SELECT element to wrap</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            from selenium.webdriver.support.ui import Select \n</span>
@@ -263,10 +263,11 @@
 
 <span class="sd">        &lt;option value="foo"&gt;Bar&lt;/option&gt;</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - value - The value to match against</span>
+<span class="sd">        Args:</span>
+<span class="sd">            value: The value to match against</span>
 
-<span class="sd">        throws NoSuchElementException If there is no option with specified value in SELECT</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            NoSuchElementException: If there is no option with specified value in SELECT</span>
 <span class="sd">        """</span>
         <span class="n">css</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"option[value =</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">css</span><span class="p">)</span>
@@ -286,10 +287,11 @@
 <span class="w">        </span><span class="sd">"""Select the option at the given index. This is done by examining the</span>
 <span class="sd">        "index" attribute of an element, and not merely by counting.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - index - The option at this index will be selected</span>
+<span class="sd">        Args:</span>
+<span class="sd">            index: The option at this index will be selected</span>
 
-<span class="sd">        throws NoSuchElementException If there is no option with specified index in SELECT</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            NoSuchElementException: If there is no option with specified index in SELECT</span>
 <span class="sd">        """</span>
         <span class="n">match</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
@@ -307,10 +309,11 @@
 
 <span class="sd">         &lt;option value="foo"&gt;Bar&lt;/option&gt;</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - text - The visible text to match against</span>
+<span class="sd">        Args:</span>
+<span class="sd">            text: The visible text to match against</span>
 
-<span class="sd">         throws NoSuchElementException If there is no option with specified text in SELECT</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            NoSuchElementException: If there is no option with specified text in SELECT</span>
 <span class="sd">        """</span>
         <span class="n">xpath</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">".//option[normalize-space(.) = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_escape_string</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">xpath</span><span class="p">)</span>
@@ -366,10 +369,11 @@
 
 <span class="sd">         &lt;option value="foo"&gt;Bar&lt;/option&gt;</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - value - The value to match against</span>
+<span class="sd">        Args:</span>
+<span class="sd">            value: The value to match against</span>
 
-<span class="sd">         throws NoSuchElementException If there is no option with specified value in SELECT</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            NoSuchElementException: If there is no option with specified value in SELECT</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"You may only deselect options of a multi-select"</span><span class="p">)</span>
@@ -389,10 +393,11 @@
 <span class="w">        </span><span class="sd">"""Deselect the option at the given index. This is done by examining</span>
 <span class="sd">        the "index" attribute of an element, and not merely by counting.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - index - The option at this index will be deselected</span>
+<span class="sd">        Args:</span>
+<span class="sd">            index: The option at this index will be deselected</span>
 
-<span class="sd">         throws NoSuchElementException If there is no option with specified index in SELECT</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            NoSuchElementException: If there is no option with specified index in SELECT</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"You may only deselect options of a multi-select"</span><span class="p">)</span>
@@ -411,8 +416,8 @@
 
 <span class="sd">        &lt;option value="foo"&gt;Bar&lt;/option&gt;</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - text - The visible text to match against</span>
+<span class="sd">        Args:</span>
+<span class="sd">            text: The visible text to match against</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"You may only deselect options of a multi-select"</span><span class="p">)</span>
@@ -467,8 +472,8 @@
         <span class="n">css_value_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"hidden"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0.0"</span><span class="p">]</span>
         <span class="n">css_property_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"visibility"</span><span class="p">,</span> <span class="s2">"display"</span><span class="p">,</span> <span class="s2">"opacity"</span><span class="p">]</span>
 
-        <span class="k">for</span> <span class="nb">property</span> <span class="ow">in</span> <span class="n">css_property_candidates</span><span class="p">:</span>
-            <span class="n">css_value</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">value_of_css_property</span><span class="p">(</span><span class="nb">property</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">css_property</span> <span class="ow">in</span> <span class="n">css_property_candidates</span><span class="p">:</span>
+            <span class="n">css_value</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">value_of_css_property</span><span class="p">(</span><span class="n">css_property</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">css_value</span> <span class="ow">in</span> <span class="n">css_value_candidates</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>

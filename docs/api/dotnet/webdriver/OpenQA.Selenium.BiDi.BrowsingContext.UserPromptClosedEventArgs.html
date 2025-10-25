@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs" class="text-break">
-Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -167,16 +167,16 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean)">
-  UserPromptClosedEventArgs(BiDi, BrowsingContext, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,System.String)">
+  UserPromptClosedEventArgs(BiDi, BrowsingContext, bool, string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserPromptClosedEventArgs(BiDi BiDi, BrowsingContext Context, bool Accepted)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserPromptClosedEventArgs(BiDi BiDi, BrowsingContext Context, bool Accepted, string? UserText)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -186,6 +186,8 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
     <dt><code>Accepted</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+    <dt><code>UserText</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
   </dl>
 
@@ -208,7 +210,7 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_Accepted" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.Accepted">
   Accepted
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -239,15 +241,14 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_UserText" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.UserText">
   UserText
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public string? UserText { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string? UserText { get; init; }</code></pre>
   </div>
 
 
@@ -271,7 +272,7 @@ public string? UserText { get; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22" class="edit-link">Edit this page</a>
         </div>
 
 

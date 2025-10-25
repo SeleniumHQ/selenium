@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.remote.remote_connection &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.remote_connection </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -367,10 +367,11 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_timeout</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">""":Returns:</span>
+<span class="w">        </span><span class="sd">"""Returns timeout value in seconds for all http requests made to the Remote Connection.</span>
 
-<span class="sd">        Timeout value in seconds for all http requests made to the</span>
-<span class="sd">        Remote Connection</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Timeout value in seconds for all http requests made to the</span>
+<span class="sd">            Remote Connection</span>
 <span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="s2">"get_timeout() in RemoteConnection is deprecated, get timeout from client_config instead"</span><span class="p">,</span>
@@ -386,8 +387,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">set_timeout</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Override the default timeout.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">            - timeout - timeout value for http requests in seconds</span>
+<span class="sd">        Args:</span>
+<span class="sd">            timeout: timeout value for http requests in seconds</span>
 <span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="s2">"set_timeout() in RemoteConnection is deprecated, set timeout in client_config instead"</span><span class="p">,</span>
@@ -414,11 +415,12 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_certificate_bundle_path">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_certificate_bundle_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">""":Returns:</span>
+<span class="w">        </span><span class="sd">"""Returns paths of the .pem encoded certificate to verify connection to command executor.</span>
 
-<span class="sd">        Paths of the .pem encoded certificate to verify connection to</span>
-<span class="sd">        command executor. Defaults to certifi.where() or</span>
-<span class="sd">        REQUESTS_CA_BUNDLE env variable if set.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Paths of the .pem encoded certificate to verify connection to</span>
+<span class="sd">            command executor. Defaults to certifi.where() or</span>
+<span class="sd">            REQUESTS_CA_BUNDLE env variable if set.</span>
 <span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="s2">"get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from client_config instead"</span><span class="p">,</span>
@@ -436,8 +438,8 @@
 <span class="sd">        command executor. Can also be set to None to disable certificate</span>
 <span class="sd">        validation.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">            - path - path of a .pem encoded certificate chain.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            path: path of a .pem encoded certificate chain.</span>
 <span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="s2">"set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs in client_config instead"</span><span class="p">,</span>
@@ -453,9 +455,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">get_remote_connection_headers</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parsed_url</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Get headers for remote request.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - parsed_url - The parsed url</span>
-<span class="sd">         - keep_alive (Boolean) - Is this a keep-alive connection (default: False)</span>
+<span class="sd">        Args:</span>
+<span class="sd">            parsed_url: The parsed url</span>
+<span class="sd">            keep_alive: Is this a keep-alive connection (default: False)</span>
 <span class="sd">        """</span>
 
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
@@ -607,10 +609,10 @@
 <span class="sd">        Any path substitutions required for the URL mapped to the command should be</span>
 <span class="sd">        included in the command parameters.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - command - A string specifying the command to execute.</span>
-<span class="sd">         - params - A dictionary of named parameters to send with the command as</span>
-<span class="sd">           its JSON payload.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            command: A string specifying the command to execute.</span>
+<span class="sd">            params: A dictionary of named parameters to send with the command as</span>
+<span class="sd">                its JSON payload.</span>
 <span class="sd">        """</span>
         <span class="n">command_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_commands</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">command_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Unrecognised command </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">"</span>
@@ -627,16 +629,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Send an HTTP request to the remote server.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - method - A string for the HTTP method to send the request with.</span>
-<span class="sd">         - url - A string for the URL to send the request to.</span>
-<span class="sd">         - body - A string for request body. Ignored unless method is POST or PUT.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            method: A string for the HTTP method to send the request with.</span>
+<span class="sd">            url: A string for the URL to send the request to.</span>
+<span class="sd">            body: A string for request body. Ignored unless method is POST or PUT.</span>
 
-<span class="sd">        :Returns:</span>
-<span class="sd">          A dictionary with the server's parsed JSON response.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A dictionary with the server's parsed JSON response.</span>
 <span class="sd">        """</span>
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_remote_connection_headers</span><span class="p">(</span><span class="n">parsed_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_config</span><span class="o">.</span><span class="n">keep_alive</span><span class="p">)</span>
@@ -697,12 +699,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_trim_large_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dict</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_trim_large_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dict</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Truncate string values in a dictionary if they exceed max_length.</span>
 
-<span class="sd">        :param dict: Dictionary with potentially large values</span>
-<span class="sd">        :param max_length: Maximum allowed length of string values</span>
-<span class="sd">        :return: Dictionary with truncated string values</span>
+<span class="sd">        Args:</span>
+<span class="sd">            input_dict: Dictionary with potentially large values</span>
+<span class="sd">            max_length: Maximum allowed length of string values</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary with truncated string values</span>
 <span class="sd">        """</span>
         <span class="n">output_dictionary</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>

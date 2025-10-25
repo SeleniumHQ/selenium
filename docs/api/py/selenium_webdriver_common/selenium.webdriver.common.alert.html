@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.alert &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.common.alert &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.alert </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -243,11 +243,8 @@ accepting, inputting, and getting text from alert prompts.</p>
 </pre></div>
 </div>
 <p>Creates a new Alert.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>driver: The WebDriver instance which performs user actions.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>driver: The WebDriver instance which performs user actions.</p>
 </dd>
 </dl>
 <dl class="py property">
@@ -264,11 +261,8 @@ accepting, inputting, and getting text from alert prompts.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.alert.Alert.accept">
 <span class="sig-name descname"><span class="pre">accept</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.accept"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.accept" title="Link to this definition">¶</a></dt>
 <dd><p>Accepts the alert available.</p>
-<dl class="field-list">
-<dt class="field-odd">Usage<span class="colon">:</span></dt>
-<dd class="field-odd"><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Alert</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>  <span class="c1"># Confirm a alert dialog.</span>
-</pre></div>
-</div>
+<dl class="simple">
+<dt>Example:</dt><dd><p>Alert(driver).accept()  # Confirm a alert dialog.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -276,11 +270,8 @@ accepting, inputting, and getting text from alert prompts.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.alert.Alert.send_keys">
 <span class="sig-name descname"><span class="pre">send_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keysToSend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/alert.html#Alert.send_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.alert.Alert.send_keys" title="Link to this definition">¶</a></dt>
 <dd><p>Send Keys to the Alert.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>keysToSend: The text to be sent to Alert.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>keysToSend: The text to be sent to Alert.</p>
 </dd>
 </dl>
 </dd></dl>

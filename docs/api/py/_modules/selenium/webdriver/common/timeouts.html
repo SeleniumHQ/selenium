@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.timeouts &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.common.timeouts &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.timeouts </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -250,16 +250,13 @@
 
 <span class="sd">        This implements https://w3c.github.io/webdriver/#timeouts.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - implicit_wait - Either an int or a float. Set how many</span>
-<span class="sd">            seconds to wait when searching for elements before</span>
-<span class="sd">            throwing an error.</span>
-<span class="sd">         - page_load - Either an int or a float. Set how many seconds</span>
-<span class="sd">            to wait for a page load to complete before throwing</span>
-<span class="sd">            an error.</span>
-<span class="sd">         - script - Either an int or a float. Set how many seconds to</span>
-<span class="sd">            wait for an asynchronous script to finish execution</span>
-<span class="sd">            before throwing an error.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            implicit_wait: Number of seconds to wait when searching for elements</span>
+<span class="sd">                before throwing an error.</span>
+<span class="sd">            page_load: Number of seconds to wait for a page load to complete</span>
+<span class="sd">                before throwing an error.</span>
+<span class="sd">            script: Number of seconds to wait for an asynchronous script to</span>
+<span class="sd">                finish execution before throwing an error.</span>
 <span class="sd">        """</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_implicit_wait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert</span><span class="p">(</span><span class="n">implicit_wait</span><span class="p">)</span>
@@ -268,55 +265,21 @@
 
     <span class="c1"># Creating descriptor objects</span>
     <span class="n">implicit_wait</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">"_implicit_wait"</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Get or set how many seconds to wait when searching for elements.</span>
+<span class="w">    </span><span class="sd">"""Number of seconds to wait when searching for elements.</span>
 
-<span class="sd">    This does not set the value on the remote end.</span>
-
-<span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.implicit_wait`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.implicit_wait` = `value`</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Note: This does not set the value on the remote end.</span>
 <span class="sd">    """</span>
 
     <span class="n">page_load</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">"_page_load"</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Get or set how many seconds to wait for the page to load.</span>
+<span class="w">    </span><span class="sd">"""Number of seconds to wait for the page to load.</span>
 
-<span class="sd">    This does not set the value on the remote end.</span>
-
-<span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.page_load`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.page_load` = `value`</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Note: This does not set the value on the remote end.</span>
 <span class="sd">    """</span>
 
     <span class="n">script</span> <span class="o">=</span> <span class="n">_TimeoutsDescriptor</span><span class="p">(</span><span class="s2">"_script"</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Get or set how many seconds to wait for an asynchronous script to finish</span>
-<span class="sd">    execution.</span>
+<span class="w">    </span><span class="sd">"""Number of seconds to wait for an asynchronous script to finish execution.</span>
 
-<span class="sd">    This does not set the value on the remote end.</span>
-
-<span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.script`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.script` = `value`</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Note: This does not set the value on the remote end.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>

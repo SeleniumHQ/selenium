@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.utils &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.common.utils &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.utils </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -267,11 +267,11 @@
 <span class="sd">    If the optional port number is provided, only IPs that listen on the given</span>
 <span class="sd">    port are considered.</span>
 
-<span class="sd">    :Args:</span>
-<span class="sd">        - host - hostname</span>
-<span class="sd">        - port - port number</span>
+<span class="sd">    Args:</span>
+<span class="sd">        host: hostname</span>
+<span class="sd">        port: port number</span>
 
-<span class="sd">    :Returns:</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        A single IP address, as a string. If any IPv4 address is found, one is</span>
 <span class="sd">        returned. Otherwise, if any IPv6 address is found, one is returned. If</span>
 <span class="sd">        neither, then None is returned.</span>
@@ -303,9 +303,9 @@
 <span class="sd">    This is a minimal implementation intended to cope with IPv6 literals. For</span>
 <span class="sd">    example, _join_host_port('::1', 80) == '[::1]:80'.</span>
 
-<span class="sd">    :Args:</span>
-<span class="sd">        - host - hostname or IP</span>
-<span class="sd">        - port - port number</span>
+<span class="sd">    Args:</span>
+<span class="sd">        host: hostname or IP</span>
+<span class="sd">        port: port number</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="s2">":"</span> <span class="ow">in</span> <span class="n">host</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">host</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"["</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">]:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span>
@@ -318,9 +318,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">is_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Tries to connect to the server at port to see if it is running.</span>
 
-<span class="sd">    :Args:</span>
-<span class="sd">        - port - port number</span>
-<span class="sd">        - host - hostname or IP</span>
+<span class="sd">    Args:</span>
+<span class="sd">        port: port number</span>
+<span class="sd">        host: hostname or IP</span>
 <span class="sd">    """</span>
     <span class="n">socket_</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
@@ -349,10 +349,10 @@
 <span class="w">    </span><span class="sd">"""Sends a request to the HTTP server at the /status endpoint to see if it</span>
 <span class="sd">    responds successfully.</span>
 
-<span class="sd">    :Args:</span>
-<span class="sd">        - port - port number</span>
-<span class="sd">        - host - hostname or IP</span>
-<span class="sd">        - scheme - URL scheme</span>
+<span class="sd">    Args:</span>
+<span class="sd">        port: port number</span>
+<span class="sd">        host: hostname or IP</span>
+<span class="sd">        scheme: URL scheme</span>
 <span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">scheme</span><span class="si">}</span><span class="s2">://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">/status"</span><span class="p">)</span> <span class="k">as</span> <span class="n">res</span><span class="p">:</span>

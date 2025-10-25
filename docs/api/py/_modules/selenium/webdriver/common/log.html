@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.log &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.common.log &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.log </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -258,9 +258,7 @@
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">mutation_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Listen for mutation events and emit them as they are found.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">             ::</span>
-
+<span class="sd">        Example:</span>
 <span class="sd">               async with driver.log.mutation_events() as event:</span>
 <span class="sd">                    pages.load("dynamic.html")</span>
 <span class="sd">                    driver.find_element(By.ID, "reveal").click()</span>
@@ -305,9 +303,7 @@
 <span class="w">        </span><span class="sd">"""Listen for JS errors and when the contextmanager exits check if</span>
 <span class="sd">        there were JS Errors.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">             ::</span>
-
+<span class="sd">        Example:</span>
 <span class="sd">                async with driver.log.add_js_error_listener() as error:</span>
 <span class="sd">                    driver.find_element(By.ID, "throwing-mouseover").click()</span>
 <span class="sd">                assert bool(error)</span>
@@ -331,12 +327,10 @@
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Listen for certain events that are passed in.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - event_type: The type of event that we want to look at.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            event_type: The type of event that we want to look at.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">             ::</span>
-
+<span class="sd">        Example:</span>
 <span class="sd">                async with driver.log.add_listener(Console.log) as messages:</span>
 <span class="sd">                    driver.execute_script("console.log('I like cheese')")</span>
 <span class="sd">                assert messages["message"] == "I love cheese"</span>

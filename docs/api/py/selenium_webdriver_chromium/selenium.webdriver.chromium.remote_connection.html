@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.chromium.remote_connection &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.chromium.remote_connection &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.chromium.remote_connection </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -280,13 +280,12 @@
 <dd><p>Send a command to the remote server.</p>
 <p>Any path substitutions required for the URL mapped to the command should be
 included in the command parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>command - A string specifying the command to execute.</p></li>
-<li><p>params - A dictionary of named parameters to send with the command as
-its JSON payload.</p></li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>command: A string specifying the command to execute.
+params: A dictionary of named parameters to send with the command as</p>
+<blockquote>
+<div><p>its JSON payload.</p>
+</div></blockquote>
 </dd>
 </dl>
 </dd></dl>
@@ -301,13 +300,13 @@ its JSON payload.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_certificate_bundle_path">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_certificate_bundle_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_certificate_bundle_path" title="Link to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-<p>Paths of the .pem encoded certificate to verify connection to
+<dd><p>Returns paths of the .pem encoded certificate to verify connection to command executor.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Paths of the .pem encoded certificate to verify connection to
 command executor. Defaults to certifi.where() or
 REQUESTS_CA_BUNDLE env variable if set.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_command">
@@ -318,28 +317,25 @@ REQUESTS_CA_BUNDLE env variable if set.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_remote_connection_headers">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_remote_connection_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parsed_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_remote_connection_headers" title="Link to this definition">¶</a></dt>
 <dd><p>Get headers for remote request.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>parsed_url - The parsed url</p></li>
-<li><p>keep_alive (Boolean) - Is this a keep-alive connection (default: False)</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>parsed_url: The parsed url
+keep_alive: Is this a keep-alive connection (default: False)</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_timeout">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_timeout" title="Link to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-<p>Timeout value in seconds for all http requests made to the
+<dd><p>Returns timeout value in seconds for all http requests made to the Remote Connection.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Timeout value in seconds for all http requests made to the
 Remote Connection</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.os">
-<span class="sig-name descname"><span class="pre">os</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'os'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.10.19/x64/lib/python3.10/os.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.os" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">os</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'os'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.10.18/x64/lib/python3.10/os.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.os" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.reset_timeout">
@@ -352,11 +348,8 @@ Remote Connection</p>
 <dd><p>Set the path to the certificate bundle to verify connection to
 command executor. Can also be set to None to disable certificate
 validation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>path - path of a .pem encoded certificate chain.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>path: path of a .pem encoded certificate chain.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -364,17 +357,14 @@ validation.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.set_timeout">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.set_timeout" title="Link to this definition">¶</a></dt>
 <dd><p>Override the default timeout.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>timeout - timeout value for http requests in seconds</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>timeout: timeout value for http requests in seconds</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.socket">
-<span class="sig-name descname"><span class="pre">socket</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'socket'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.10.19/x64/lib/python3.10/socket.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.socket" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">socket</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'socket'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.10.18/x64/lib/python3.10/socket.py'&gt;</span></em><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.socket" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.system">
@@ -382,7 +372,7 @@ validation.</p>
 <dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.user_agent">
-<span class="sig-name descname"><span class="pre">user_agent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'selenium/4.37.0</span> <span class="pre">(python</span> <span class="pre">linux)'</span></em><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.user_agent" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">user_agent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'selenium/4.38.0</span> <span class="pre">(python</span> <span class="pre">linux)'</span></em><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.user_agent" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 </dd></dl>
 </section>

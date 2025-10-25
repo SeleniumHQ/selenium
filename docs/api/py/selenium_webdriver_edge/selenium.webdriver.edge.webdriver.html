@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.edge.webdriver &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.edge.webdriver &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.edge.webdriver </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -401,15 +401,18 @@
 <dt class="sig sig-object py" id="selenium.webdriver.edge.webdriver.WebDriver">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.edge.webdriver.</span></span><span class="sig-name descname"><span class="pre">WebDriver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selenium.webdriver.edge.options.html#selenium.webdriver.edge.options.Options" title="selenium.webdriver.edge.options.Options"><span class="pre">Options</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selenium.webdriver.edge.service.html#selenium.webdriver.edge.service.Service" title="selenium.webdriver.edge.service.Service"><span class="pre">Service</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_alive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/edge/webdriver.html#WebDriver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.edge.webdriver.WebDriver" title="Link to this definition">¶</a></dt>
 <dd><p>Controls the MSEdgeDriver and allows you to drive the browser.</p>
-<p>Creates a new instance of the edge driver. Starts the service and
-then creates new instance of edge driver.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>options - this takes an instance of EdgeOptions</p></li>
-<li><p>service - Service object for handling the browser driver if you need to pass extra details</p></li>
-<li><p>keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.</p></li>
-</ul>
+<p>Creates a new instance of the edge driver.</p>
+<p>Starts the service and then creates new instance of edge driver.</p>
+<dl>
+<dt>Args:</dt><dd><p>options: An instance of EdgeOptions.
+service: Service object for handling the browser driver if you need</p>
+<blockquote>
+<div><p>to pass extra details.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>keep_alive: Whether to configure EdgeRemoteConnection to use HTTP</dt><dd><p>keep-alive.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl class="py method">

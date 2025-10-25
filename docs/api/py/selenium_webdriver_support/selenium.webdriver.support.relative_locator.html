@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.support.relative_locator &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.support.relative_locator &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.support.relative_locator </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -252,62 +252,34 @@
 <dt class="sig sig-object py" id="selenium.webdriver.support.relative_locator.with_tag_name">
 <span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.relative_locator.</span></span><span class="sig-name descname"><span class="pre">with_tag_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.support.relative_locator.RelativeBy" title="selenium.webdriver.support.relative_locator.RelativeBy"><span class="pre">RelativeBy</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#with_tag_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.with_tag_name" title="Link to this definition">¶</a></dt>
 <dd><p>Start searching for relative objects using a tag name.</p>
-<section id="parameters">
-<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
 <dl class="simple">
-<dt>tag_name<span class="classifier">str</span></dt><dd><p>The DOM tag of element to start searching.</p>
+<dt>Args:</dt><dd><p>tag_name: The DOM tag of element to start searching.</p>
+</dd>
+<dt>Returns:</dt><dd><p>RelativeBy: Use this object to create filters within a <cite>find_elements</cite> call.</p>
+</dd>
+<dt>Raises:</dt><dd><p>WebDriverException: If <cite>tag_name</cite> is None.</p>
+</dd>
+<dt>Note:</dt><dd><p>This method is deprecated and may be removed in future versions.
+Please use <cite>locate_with</cite> instead.</p>
 </dd>
 </dl>
-</section>
-<section id="returns">
-<h2 id="returns">Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>RelativeBy</dt><dd><p>Use this object to create filters within a <cite>find_elements</cite> call.</p>
-</dd>
-</dl>
-</section>
-<section id="raises">
-<h2 id="raises">Raises:<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>WebDriverException</dt><dd><p>If <cite>tag_name</cite> is None.</p>
-</dd>
-</dl>
-</section>
-<section id="notes">
-<h2 id="notes">Notes:<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>This method is deprecated and may be removed in future versions.</p></li>
-<li><p>Please use <cite>locate_with</cite> instead.</p></li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="selenium.webdriver.support.relative_locator.locate_with">
 <span class="sig-prename descclassname"><span class="pre">selenium.webdriver.support.relative_locator.</span></span><span class="sig-name descname"><span class="pre">locate_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'id'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'xpath'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'link</span> <span class="pre">text'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'partial</span> <span class="pre">link</span> <span class="pre">text'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'name'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'tag</span> <span class="pre">name'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'class</span> <span class="pre">name'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'css</span> <span class="pre">selector'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">using</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.support.relative_locator.RelativeBy" title="selenium.webdriver.support.relative_locator.RelativeBy"><span class="pre">RelativeBy</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/support/relative_locator.html#locate_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.support.relative_locator.locate_with" title="Link to this definition">¶</a></dt>
 <dd><p>Start searching for relative objects your search criteria with By.</p>
-<section id="id1">
-<h2 id="id1">Parameters:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>by<span class="classifier">ByType</span></dt><dd><p>The method to find the element.</p>
+<dl>
+<dt>Args:</dt><dd><p>by: The method to find the element.
+using: The value from <cite>By</cite> passed in.</p>
 </dd>
-<dt>using<span class="classifier">str</span></dt><dd><p>The value from <cite>By</cite> passed in.</p>
+<dt>Returns:</dt><dd><p>RelativeBy: Use this object to create filters within a <cite>find_elements</cite> call.</p>
 </dd>
-</dl>
-</section>
-<section id="id2">
-<h2 id="id2">Returns:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>RelativeBy</dt><dd><p>Use this object to create filters within a <cite>find_elements</cite> call.</p>
-</dd>
-</dl>
-</section>
-<section id="example">
-<h2 id="example">Example:<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lowest</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"below"</span><span class="p">)</span>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lowest</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"below"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locate_with</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span><span class="o">.</span><span class="n">above</span><span class="p">(</span><span class="n">lowest</span><span class="p">))</span>
 </pre></div>
 </div>
-</section>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.support.relative_locator.RelativeBy">
@@ -315,8 +287,8 @@
 <dd><p>Gives the opportunity to find elements based on their relative location
 on the page from a root element. It is recommended that you use the helper
 function to create it.</p>
-<section id="id3">
-<h2 id="id3">Example:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="example">
+<h2 id="example">Example:<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lowest</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"below"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locate_with</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span><span class="o">.</span><span class="n">above</span><span class="p">(</span><span class="n">lowest</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">el</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">]</span>
@@ -326,21 +298,12 @@ function to create it.</p>
 </div>
 <p>Creates a new RelativeBy object. It is preferred if you use the
 <cite>locate_with</cite> method as this signature could change.</p>
-</section>
-<section id="attributes">
-<h2 id="attributes">Attributes:<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>root<span class="classifier">Dict[By, str]</span></dt><dd><ul class="simple">
-<li><p>A dict with <cite>By</cite> enum as the key and the search query as the value</p></li>
-</ul>
-</dd>
-<dt>filters<span class="classifier">List</span></dt><dd><ul class="simple">
-<li><dl class="simple">
-<dt>A list of the filters that will be searched. If none are passed</dt><dd><p>in please use the fluent API on the object to create the filters</p>
-</dd>
-</dl>
-</li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>root: A dict with <cite>By</cite> enum as the key and the search query as the value
+filters: A list of the filters that will be searched. If none are passed</p>
+<blockquote>
+<div><p>in please use the fluent API on the object to create the filters</p>
+</div></blockquote>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -354,26 +317,16 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">above</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements above.</p>
-<section id="id4">
-<h3 id="id4">Parameters:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
 <dl class="simple">
-<dt>element_or_locator<span class="classifier">Union[WebElement, Dict, None]</span></dt><dd><p>Element to look above</p>
+<dt>Args:</dt><dd><p>element_or_locator: Element to look above</p>
+</dd>
+<dt>Returns:</dt><dd><p>RelativeBy</p>
+</dd>
+<dt>Raises:</dt><dd><p>WebDriverException: If <cite>element_or_locator</cite> is None.</p>
 </dd>
 </dl>
-</section>
-<section id="id5">
-<h3 id="id5">Returns:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
-<p>RelativeBy</p>
-</section>
-<section id="id6">
-<h3 id="id6">Raises:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>WebDriverException</dt><dd><p>If <cite>element_or_locator</cite> is None.</p>
-</dd>
-</dl>
-</section>
-<section id="id7">
-<h3 id="id7">Example:<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<section id="id1">
+<h3 id="id1">Example:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lowest</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"below"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locate_with</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span><span class="o">.</span><span class="n">above</span><span class="p">(</span><span class="n">lowest</span><span class="p">))</span>
 </pre></div>
@@ -386,31 +339,19 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">below</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements below.</p>
-<section id="id8">
-<h3 id="id8">Parameters:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>element_or_locator<span class="classifier">Union[WebElement, Dict, None]</span></dt><dd><p>Element to look below</p>
+<dl>
+<dt>Args:</dt><dd><p>element_or_locator: Element to look below</p>
 </dd>
-</dl>
-</section>
-<section id="id9">
-<h3 id="id9">Returns:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
-<p>RelativeBy</p>
-</section>
-<section id="id10">
-<h3 id="id10">Raises:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>WebDriverException</dt><dd><p>If <cite>element_or_locator</cite> is None.</p>
+<dt>Returns:</dt><dd><p>RelativeBy</p>
 </dd>
-</dl>
-</section>
-<section id="id11">
-<h3 id="id11">Example:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">highest</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"high"</span><span class="p">)</span>
+<dt>Raises:</dt><dd><p>WebDriverException: If <cite>element_or_locator</cite> is None.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">highest</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"high"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locate_with</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span><span class="o">.</span><span class="n">below</span><span class="p">(</span><span class="n">highest</span><span class="p">))</span>
 </pre></div>
 </div>
-</section>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.support.relative_locator.RelativeBy.to_left_of">
@@ -418,31 +359,19 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">to_left_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements to the left of.</p>
-<section id="id12">
-<h3 id="id12">Parameters:<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>element_or_locator<span class="classifier">Union[WebElement, Dict, None]</span></dt><dd><p>Element to look to the left of</p>
+<dl>
+<dt>Args:</dt><dd><p>element_or_locator: Element to look to the left of</p>
 </dd>
-</dl>
-</section>
-<section id="id13">
-<h3 id="id13">Returns:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
-<p>RelativeBy</p>
-</section>
-<section id="id14">
-<h3 id="id14">Raises:<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>WebDriverException</dt><dd><p>If <cite>element_or_locator</cite> is None.</p>
+<dt>Returns:</dt><dd><p>RelativeBy</p>
 </dd>
-</dl>
-</section>
-<section id="id15">
-<h3 id="id15">Example:<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">right</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"right"</span><span class="p">)</span>
+<dt>Raises:</dt><dd><p>WebDriverException: If <cite>element_or_locator</cite> is None.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">right</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"right"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locate_with</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span><span class="o">.</span><span class="n">to_left_of</span><span class="p">(</span><span class="n">right</span><span class="p">))</span>
 </pre></div>
 </div>
-</section>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.support.relative_locator.RelativeBy.to_right_of">
@@ -450,31 +379,19 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">to_right_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements right of.</p>
-<section id="id16">
-<h3 id="id16">Parameters:<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>element_or_locator<span class="classifier">Union[WebElement, Dict, None]</span></dt><dd><p>Element to look right of</p>
+<dl>
+<dt>Args:</dt><dd><p>element_or_locator: Element to look right of</p>
 </dd>
-</dl>
-</section>
-<section id="id17">
-<h3 id="id17">Returns:<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
-<p>RelativeBy</p>
-</section>
-<section id="id18">
-<h3 id="id18">Raises:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>WebDriverException</dt><dd><p>If <cite>element_or_locator</cite> is None.</p>
+<dt>Returns:</dt><dd><p>RelativeBy</p>
 </dd>
-</dl>
-</section>
-<section id="id19">
-<h3 id="id19">Example:<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h3>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">left</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"left"</span><span class="p">)</span>
+<dt>Raises:</dt><dd><p>WebDriverException: If <cite>element_or_locator</cite> is None.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">left</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"left"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locate_with</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span><span class="o">.</span><span class="n">to_right_of</span><span class="p">(</span><span class="n">left</span><span class="p">))</span>
 </pre></div>
 </div>
-</section>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.support.relative_locator.RelativeBy.straight_above">
@@ -482,11 +399,8 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">straight_above</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements above.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>element_or_locator: Element to look above</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>element_or_locator: Element to look above</p>
 </dd>
 </dl>
 </dd></dl>
@@ -496,11 +410,8 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">straight_below</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements below.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>element_or_locator: Element to look below</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>element_or_locator: Element to look below</p>
 </dd>
 </dl>
 </dd></dl>
@@ -510,11 +421,8 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">straight_left_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements to the left of.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>element_or_locator: Element to look to the left of</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>element_or_locator: Element to look to the left of</p>
 </dd>
 </dl>
 </dd></dl>
@@ -524,11 +432,8 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">straight_right_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements right of.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>element_or_locator: Element to look right of</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>element_or_locator: Element to look right of</p>
 </dd>
 </dl>
 </dd></dl>
@@ -538,36 +443,21 @@ function to create it.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">near</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_or_locator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">NoReturn</span></span></span></dt>
 <dd><p>Add a filter to look for elements near.</p>
-<section id="id20">
-<h3 id="id20">Parameters:<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>element_or_locator<span class="classifier">Union[WebElement, Dict, None]</span></dt><dd><p>Element to look near by the element or within a distance</p>
+<dl>
+<dt>Args:</dt><dd><p>element_or_locator: Element to look near by the element or within a distance
+distance: Distance in pixel</p>
 </dd>
-<dt>distance<span class="classifier">int</span></dt><dd><p>Distance in pixel</p>
+<dt>Returns:</dt><dd><p>RelativeBy</p>
 </dd>
-</dl>
-</section>
-<section id="id21">
-<h3 id="id21">Returns:<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h3>
-<p>RelativeBy</p>
-</section>
-<section id="id22">
-<h3 id="id22">Raises:<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>WebDriverException</dt><dd><ul class="simple">
-<li><p>If <cite>element_or_locator</cite> is None</p></li>
-<li><p>If <cite>distance</cite> is less than or equal to 0.</p></li>
-</ul>
+<dt>Raises:</dt><dd><p>WebDriverException: If <cite>element_or_locator</cite> is None
+WebDriverException: If <cite>distance</cite> is less than or equal to 0.</p>
 </dd>
-</dl>
-</section>
-<section id="id23">
-<h3 id="id23">Example:<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h3>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">near</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"near"</span><span class="p">)</span>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">near</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"near"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">locate_with</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">"p"</span><span class="p">)</span><span class="o">.</span><span class="n">near</span><span class="p">(</span><span class="n">near</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
 </pre></div>
 </div>
-</section>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.support.relative_locator.RelativeBy.to_dict">

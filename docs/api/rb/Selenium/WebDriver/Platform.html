@@ -711,16 +711,16 @@
       <pre class="lines">
 
 
+139
+140
 141
 142
 143
 144
-145
-146
-147</pre>
+145</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 141</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 139</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_file'>assert_file</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
@@ -775,14 +775,14 @@
       <pre class="lines">
 
 
+133
+134
 135
 136
-137
-138
-139</pre>
+137</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 135</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 133</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_file'>assert_file</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_file?'>file?</span> <span class='id identifier rubyid_path'>path</span>
@@ -830,17 +830,13 @@
 58
 59
 60
-61
-62
-63</pre>
+61</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ci'>ci</span>
-  <span class='kw'>if</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TRAVIS</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
-    <span class='symbol'>:travis</span>
-  <span class='kw'>elsif</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>JENKINS</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='kw'>if</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>JENKINS</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
     <span class='symbol'>:jenkins</span>
   <span class='kw'>elsif</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>APPVEYOR</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
     <span class='symbol'>:appveyor</span>
@@ -894,12 +890,12 @@
       <pre class="lines">
 
 
-102
-103
-104</pre>
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cygwin?'>cygwin?</span>
   <span class='const'>RUBY_PLATFORM</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cygwin</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -937,17 +933,17 @@
       <pre class="lines">
 
 
+112
+113
 114
 115
 116
 117
 118
-119
-120
-121</pre>
+119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 112</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cygwin_path'>cygwin_path</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='label'>only_cygwin:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_path'>path</span> <span class='kw'>if</span> <span class='id identifier rubyid_only_cygwin'>only_cygwin</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_cygwin?'>cygwin?</span>
@@ -1033,14 +1029,14 @@
       <pre class="lines">
 
 
+147
+148
 149
 150
-151
-152
-153</pre>
+151</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exit_hook'>exit_hook</span>
   <span class='id identifier rubyid_pid'>pid</span> <span class='op'>=</span> <span class='const'>Process</span><span class='period'>.</span><span class='id identifier rubyid_pid'>pid</span>
@@ -1123,15 +1119,15 @@
       <pre class="lines">
 
 
+177
+178
 179
 180
 181
-182
-183
-184</pre>
+182</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 179</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 177</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_interfaces'>interfaces</span>
   <span class='id identifier rubyid_interfaces'>interfaces</span> <span class='op'>=</span> <span class='const'>Socket</span><span class='period'>.</span><span class='id identifier rubyid_getaddrinfo'>getaddrinfo</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>localhost</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='int'>8080</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='lbracket'>[</span><span class='int'>3</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -1172,6 +1168,8 @@
       <pre class="lines">
 
 
+161
+162
 163
 164
 165
@@ -1184,12 +1182,10 @@
 172
 173
 174
-175
-176
-177</pre>
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 161</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ip'>ip</span>
   <span class='id identifier rubyid_orig'>orig</span> <span class='op'>=</span> <span class='const'>Socket</span><span class='period'>.</span><span class='id identifier rubyid_do_not_reverse_lookup'>do_not_reverse_lookup</span>
@@ -1252,12 +1248,12 @@
       <pre class="lines">
 
 
-65
-66
-67</pre>
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_jruby?'>jruby?</span>
   <span class='id identifier rubyid_engine'>engine</span> <span class='op'>==</span> <span class='symbol'>:jruby</span>
@@ -1308,12 +1304,12 @@
       <pre class="lines">
 
 
-85
-86
-87</pre>
+83
+84
+85</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_linux?'>linux?</span>
   <span class='id identifier rubyid_os'>os</span> <span class='op'>==</span> <span class='symbol'>:linux</span>
@@ -1364,16 +1360,16 @@
       <pre class="lines">
 
 
+153
+154
 155
 156
 157
 158
-159
-160
-161</pre>
+159</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 153</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_localhost'>localhost</span>
   <span class='id identifier rubyid_info'>info</span> <span class='op'>=</span> <span class='const'>Socket</span><span class='period'>.</span><span class='id identifier rubyid_getaddrinfo'>getaddrinfo</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>localhost</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='int'>80</span><span class='comma'>,</span> <span class='const'>Socket</span><span class='op'>::</span><span class='const'>AF_INET</span><span class='comma'>,</span> <span class='const'>Socket</span><span class='op'>::</span><span class='const'>SOCK_STREAM</span>
@@ -1428,12 +1424,12 @@
       <pre class="lines">
 
 
-81
-82
-83</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mac?'>mac?</span>
   <span class='id identifier rubyid_os'>os</span> <span class='op'>==</span> <span class='symbol'>:macosx</span>
@@ -1471,12 +1467,12 @@
       <pre class="lines">
 
 
-131
-132
-133</pre>
+129
+130
+131</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 131</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_make_writable'>make_writable</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
   <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_chmod'>chmod</span> <span class='int'>0o766</span><span class='comma'>,</span> <span class='id identifier rubyid_file'>file</span>
@@ -1514,12 +1510,12 @@
       <pre class="lines">
 
 
-106
-107
-108</pre>
+104
+105
+106</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_null_device'>null_device</span>
   <span class='const'>File</span><span class='op'>::</span><span class='const'>NULL</span>
@@ -1624,12 +1620,12 @@
       <pre class="lines">
 
 
-73
-74
-75</pre>
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ruby_version'>ruby_version</span>
   <span class='const'>RUBY_VERSION</span>
@@ -1680,12 +1676,12 @@
       <pre class="lines">
 
 
-69
-70
-71</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 69</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_truffleruby?'>truffleruby?</span>
   <span class='id identifier rubyid_engine'>engine</span> <span class='op'>==</span> <span class='symbol'>:truffleruby</span>
@@ -1736,12 +1732,12 @@
       <pre class="lines">
 
 
-89
-90
-91</pre>
+87
+88
+89</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unix?'>unix?</span>
   <span class='id identifier rubyid_os'>os</span> <span class='op'>==</span> <span class='symbol'>:unix</span>
@@ -1779,12 +1775,12 @@
       <pre class="lines">
 
 
-123
-124
-125</pre>
+121
+122
+123</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 123</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unix_path'>unix_path</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_tr'>tr</span><span class='lparen'>(</span><span class='const'>File</span><span class='op'>::</span><span class='const'>ALT_SEPARATOR</span><span class='comma'>,</span> <span class='const'>File</span><span class='op'>::</span><span class='const'>SEPARATOR</span><span class='rparen'>)</span>
@@ -1835,12 +1831,12 @@
       <pre class="lines">
 
 
-77
-78
-79</pre>
+75
+76
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_windows?'>windows?</span>
   <span class='id identifier rubyid_os'>os</span> <span class='op'>==</span> <span class='symbol'>:windows</span>
@@ -1878,12 +1874,12 @@
       <pre class="lines">
 
 
-127
-128
-129</pre>
+125
+126
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 127</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_windows_path'>windows_path</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span><span class='period'>.</span><span class='id identifier rubyid_tr'>tr</span><span class='lparen'>(</span><span class='const'>File</span><span class='op'>::</span><span class='const'>SEPARATOR</span><span class='comma'>,</span> <span class='const'>File</span><span class='op'>::</span><span class='const'>ALT_SEPARATOR</span><span class='rparen'>)</span>
@@ -1921,12 +1917,12 @@
       <pre class="lines">
 
 
-110
-111
-112</pre>
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wrap_in_quotes_if_necessary'>wrap_in_quotes_if_necessary</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_windows?'>windows?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_cygwin?'>cygwin?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>%(</span><span class='tstring_content'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_str'>str</span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>)</span></span> <span class='op'>:</span> <span class='id identifier rubyid_str'>str</span>
@@ -1977,17 +1973,17 @@
       <pre class="lines">
 
 
+91
+92
 93
 94
 95
 96
 97
-98
-99
-100</pre>
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 93</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/platform.rb', line 91</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wsl?'>wsl?</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_linux?'>linux?</span>
@@ -2007,7 +2003,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Oct 17 21:34:11 2025 by
+  Generated on Sat Oct 25 01:10:59 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.2.8).
 </div>
