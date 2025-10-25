@@ -14,17 +14,16 @@ from packaging.version import parse
 http = urllib3.PoolManager()
 root_dir = Path(os.path.realpath(__file__)).parent.parent
 
+"""This is the same method from pinned_browser. Use --chrome_channel=Beta if
+using early stable release."""
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--chrome_channel", default="Stable", help="Set the Chrome channel"
+)
+args = parser.parse_args()
+channel = args.chrome_channel
 
 def get_chrome_milestone():
-    """This is the same method from pinned_browser. Use --chrome_channel=Beta if
-    using early stable release."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--chrome_channel", default="Stable", help="Set the Chrome channel"
-    )
-    args = parser.parse_args()
-    channel = args.chrome_channel
-
     r = http.request(
         "GET",
         f"https://chromiumdash.appspot.com/fetch_releases?channel={channel}&num=1&platform=Mac,Linux",
@@ -195,16 +194,12 @@ def update_dotnet(chrome_milestone):
             file, old_chrome(chrome_milestone), new_chrome(chrome_milestone)
         )
 
-    files = [
-        root_dir / "dotnet/test/common/CustomDriverConfigs/StableChannelChromeDriver.cs"
-    ]
-    dir_path = root_dir / "dotnet/test/common/DevTools"
-    files.extend(str(file) for file in dir_path.glob("*") if file.is_file())
-    for file in files:
-        replace_in_file(
-            file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone)
-        )
-
+    if channel == "Stable":
+        dir_path = root_dir / "dotnet/test/common/DevTools"
+        for file in dir_path.glob("*") if file.is_file()
+            replace_in_file(
+                file, previous_chrome(chrome_milestone), new_chrome(chrome_milestone)
+            )
 
 def update_ruby(chrome_milestone):
     file = root_dir / "rb/lib/selenium/devtools/BUILD.bazel"
