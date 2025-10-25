@@ -45,7 +45,7 @@ class ShadowRoot:
     def id(self) -> str:
         return self._id
 
-    def find_element(self, by: str = By.ID, value: str = None)-> WebElement:
+    def find_element(self, by: str = By.ID, value: str = None) -> WebElement:
         """Find an element inside a shadow root given a By strategy and
         locator.
 
@@ -65,7 +65,7 @@ class ShadowRoot:
             The first matching `WebElement` found on the page.
 
         Example:
-            >>> element = driver.find_element(By.ID, 'foo')
+            >>> element = driver.find_element(By.ID, "foo")
         """
         if by == By.ID:
             by = By.CSS_SELECTOR
@@ -100,7 +100,7 @@ class ShadowRoot:
             List of `WebElements` matching locator strategy found on the page.
 
         Example:
-            >>> element = driver.find_elements(By.ID, 'foo')
+            >>> element = driver.find_elements(By.ID, "foo")
         """
         if by == By.ID:
             by = By.CSS_SELECTOR

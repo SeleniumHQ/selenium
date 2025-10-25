@@ -504,9 +504,9 @@ class WebDriver(BaseWebDriver):
             *args: Any applicable arguments for your JavaScript.
 
         Example:
-            >>> input_id = "username"
-            >>> input_value = "test_user"
-            >>> driver.execute_script("document.getElementById(arguments[0]).value = arguments[1];", input_id, input_value)
+            >>> id = "username"
+            >>> value = "test_user"
+            >>> driver.execute_script("document.getElementById(arguments[0]).value = arguments[1];", id, value)
         """
         if isinstance(script, ScriptKey):
             try:
@@ -1302,8 +1302,8 @@ class WebDriver(BaseWebDriver):
 
         Examples:
             >>> from selenium.webdriver.common.bidi.input import KeySourceActions, KeyDownAction, KeyUpAction
-            >>> key_actions = KeySourceActions(id="keyboard", actions=[KeyDownAction(value="a"), KeyUpAction(value="a")])
-            >>> driver.input.perform_actions(driver.current_window_handle, [key_actions])
+            >>> actions = KeySourceActions(id="keyboard", actions=[KeyDownAction(value="a"), KeyUpAction(value="a")])
+            >>> driver.input.perform_actions(driver.current_window_handle, [actions])
             >>> driver.input.release_actions(driver.current_window_handle)
         """
         if not self._websocket_connection:

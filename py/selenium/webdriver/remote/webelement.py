@@ -531,7 +531,7 @@ class WebElement(BaseWebElement):
             The first matching `WebElement` found on the page.
 
         Example:
-            >>> element = driver.find_element(By.ID, 'foo')
+            >>> element = driver.find_element(By.ID, "foo")
         """
         by, value = self._parent.locator_converter.convert(by, value)
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]

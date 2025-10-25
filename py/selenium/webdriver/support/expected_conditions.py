@@ -558,7 +558,7 @@ def staleness_of(element: WebElement) -> Callable[[Any], bool]:
         >>> from selenium.webdriver.common.by import By
         >>> from selenium.webdriver.support.ui import WebDriverWait
         >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_element_stale = WebDriverWait(driver, 10).until(EC.staleness_of(driver.find_element(By.CLASS_NAME, "foo")))
+        >>> is_stale = WebDriverWait(driver, 10).until(EC.staleness_of(driver.find_element(By.CLASS_NAME, "foo")))
     """
 
     def _predicate(_):
