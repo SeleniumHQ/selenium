@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.switch_to </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -230,10 +230,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">active_element</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Returns the element with focus, or BODY if nothing has focus.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
-<span class="sd">                element = driver.switch_to.active_element</span>
+<span class="sd">        Example:</span>
+<span class="sd">            element = driver.switch_to.active_element</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_ACTIVE_ELEMENT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
 
@@ -241,10 +239,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">alert</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Alert</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Switches focus to an alert on the page.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
-<span class="sd">                alert = driver.switch_to.alert</span>
+<span class="sd">        Example:</span>
+<span class="sd">            alert = driver.switch_to.alert</span>
 <span class="sd">        """</span>
         <span class="n">alert</span> <span class="o">=</span> <span class="n">Alert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">alert</span><span class="o">.</span><span class="n">text</span>
@@ -255,10 +251,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">default_content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Switch focus to the default frame.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
-<span class="sd">                driver.switch_to.default_content()</span>
+<span class="sd">        Example:</span>
+<span class="sd">            driver.switch_to.default_content()</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_FRAME</span><span class="p">,</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span></div>
 
@@ -269,13 +263,11 @@
 <span class="w">        </span><span class="sd">"""Switches focus to the specified frame, by index, name, or</span>
 <span class="sd">        webelement.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - frame_reference: The name of the window to switch to, an integer representing the index,</span>
-<span class="sd">                            or a webelement that is an (i)frame to switch to.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            frame_reference: The name of the window to switch to, an integer representing the index,</span>
+<span class="sd">                or a webelement that is an (i)frame to switch to.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
+<span class="sd">        Example:</span>
 <span class="sd">                driver.switch_to.frame("frame_name")</span>
 <span class="sd">                driver.switch_to.frame(1)</span>
 <span class="sd">                driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])</span>
@@ -300,9 +292,7 @@
 <span class="sd">        The type hint can be one of "tab" or "window". If not specified the</span>
 <span class="sd">        browser will automatically select it.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
+<span class="sd">        Example:</span>
 <span class="sd">                driver.switch_to.new_window("tab")</span>
 <span class="sd">        """</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_WINDOW</span><span class="p">,</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="n">type_hint</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span>
@@ -315,9 +305,7 @@
 <span class="w">        </span><span class="sd">"""Switches focus to the parent context. If the current context is the</span>
 <span class="sd">        top level browsing context, the context remains unchanged.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
+<span class="sd">        Example:</span>
 <span class="sd">                driver.switch_to.parent_frame()</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_PARENT_FRAME</span><span class="p">)</span></div>
@@ -328,13 +316,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Switches focus to the specified window.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - window_name: The name or window handle of the window to switch to.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            window_name: The name or window handle of the window to switch to.</span>
 
-<span class="sd">        :Usage:</span>
-<span class="sd">            ::</span>
-
-<span class="sd">                driver.switch_to.window("main")</span>
+<span class="sd">        Example:</span>
+<span class="sd">            driver.switch_to.window("main")</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_w3c_window</span><span class="p">(</span><span class="n">window_name</span><span class="p">)</span></div>
 

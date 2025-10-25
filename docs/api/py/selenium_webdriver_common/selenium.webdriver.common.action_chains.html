@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.common.action_chains &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.action_chains </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -286,12 +286,9 @@ are queued up.</p>
 <p>Either way, the actions are performed in the order they are called, one after
 another.</p>
 <p>Creates a new ActionChains.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>driver: The WebDriver instance which performs user actions.</p></li>
-<li><p>duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>driver: The WebDriver instance which performs user actions.
+duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -309,12 +306,11 @@ end.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.click">
 <span class="sig-name descname"><span class="pre">click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.click" title="Link to this definition">¶</a></dt>
 <dd><p>Clicks an element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>on_element: The element to click.
-If None, clicks on current mouse position.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>on_element: The element to click.</dt><dd><p>If None, clicks on current mouse position.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -322,12 +318,11 @@ If None, clicks on current mouse position.</p></li>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.click_and_hold">
 <span class="sig-name descname"><span class="pre">click_and_hold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.click_and_hold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.click_and_hold" title="Link to this definition">¶</a></dt>
 <dd><p>Holds down the left mouse button on an element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>on_element: The element to mouse down.
-If None, clicks on current mouse position.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>on_element: The element to mouse down.</dt><dd><p>If None, clicks on current mouse position.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -335,12 +330,11 @@ If None, clicks on current mouse position.</p></li>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.context_click">
 <span class="sig-name descname"><span class="pre">context_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.context_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.context_click" title="Link to this definition">¶</a></dt>
 <dd><p>Performs a context-click (right click) on an element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>on_element: The element to context-click.
-If None, clicks on current mouse position.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>on_element: The element to context-click.</dt><dd><p>If None, clicks on current mouse position.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -348,12 +342,11 @@ If None, clicks on current mouse position.</p></li>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.double_click">
 <span class="sig-name descname"><span class="pre">double_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.double_click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.double_click" title="Link to this definition">¶</a></dt>
 <dd><p>Double-clicks an element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>on_element: The element to double-click.
-If None, clicks on current mouse position.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>on_element: The element to double-click.</dt><dd><p>If None, clicks on current mouse position.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -362,12 +355,9 @@ If None, clicks on current mouse position.</p></li>
 <span class="sig-name descname"><span class="pre">drag_and_drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop" title="Link to this definition">¶</a></dt>
 <dd><p>Holds down the left mouse button on the source element, then moves
 to the target element and releases the mouse button.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>source: The element to mouse down.</p></li>
-<li><p>target: The element to mouse up.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>source: The element to mouse down.
+target: The element to mouse up.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -376,13 +366,10 @@ to the target element and releases the mouse button.</p>
 <span class="sig-name descname"><span class="pre">drag_and_drop_by_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">xoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop_by_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset" title="Link to this definition">¶</a></dt>
 <dd><p>Holds down the left mouse button on the source element, then moves
 to the target offset and releases the mouse button.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>source: The element to mouse down.</p></li>
-<li><p>xoffset: X offset to move to.</p></li>
-<li><p>yoffset: Y offset to move to.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>source: The element to mouse down.
+xoffset: X offset to move to.
+yoffset: Y offset to move to.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -391,13 +378,12 @@ to the target offset and releases the mouse button.</p>
 <span class="sig-name descname"><span class="pre">key_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_down"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_down" title="Link to this definition">¶</a></dt>
 <dd><p>Sends a key press only, without releasing it. Should only be used
 with modifier keys (Control, Alt and Shift).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>value: The modifier key to send. Values are defined in <cite>Keys</cite> class.</p></li>
-<li><p>element: The element to send keys.
-If None, sends a key to current focused element.</p></li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>value: The modifier key to send. Values are defined in <cite>Keys</cite> class.
+element: The element to send keys.</p>
+<blockquote>
+<div><p>If None, sends a key to current focused element.</p>
+</div></blockquote>
 </dd>
 </dl>
 <p>Example, pressing ctrl+c:</p>
@@ -409,13 +395,12 @@ If None, sends a key to current focused element.</p></li>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.key_up">
 <span class="sig-name descname"><span class="pre">key_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_up" title="Link to this definition">¶</a></dt>
 <dd><p>Releases a modifier key.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>value: The modifier key to send. Values are defined in Keys class.</p></li>
-<li><p>element: The element to send keys.
-If None, sends a key to current focused element.</p></li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>value: The modifier key to send. Values are defined in Keys class.
+element: The element to send keys.</p>
+<blockquote>
+<div><p>If None, sends a key to current focused element.</p>
+</div></blockquote>
 </dd>
 </dl>
 <p>Example, pressing ctrl+c:</p>
@@ -427,12 +412,9 @@ If None, sends a key to current focused element.</p></li>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.move_by_offset">
 <span class="sig-name descname"><span class="pre">move_by_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_by_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_by_offset" title="Link to this definition">¶</a></dt>
 <dd><p>Moving the mouse to an offset from current mouse position.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>xoffset: X offset to move to, as a positive or negative integer.</p></li>
-<li><p>yoffset: Y offset to move to, as a positive or negative integer.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>xoffset: X offset to move to, as a positive or negative integer.
+yoffset: Y offset to move to, as a positive or negative integer.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -440,11 +422,8 @@ If None, sends a key to current focused element.</p></li>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.move_to_element">
 <span class="sig-name descname"><span class="pre">move_to_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element" title="Link to this definition">¶</a></dt>
 <dd><p>Moving the mouse to the middle of an element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>to_element: The WebElement to move to.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>to_element: The WebElement to move to.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -453,13 +432,10 @@ If None, sends a key to current focused element.</p></li>
 <span class="sig-name descname"><span class="pre">move_to_element_with_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">xoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yoffset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element_with_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset" title="Link to this definition">¶</a></dt>
 <dd><p>Move the mouse by an offset of the specified element. Offsets are
 relative to the in-view center point of the element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>to_element: The WebElement to move to.</p></li>
-<li><p>xoffset: X offset to move to, as a positive or negative integer.</p></li>
-<li><p>yoffset: Y offset to move to, as a positive or negative integer.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>to_element: The WebElement to move to.
+xoffset: X offset to move to, as a positive or negative integer.
+yoffset: Y offset to move to, as a positive or negative integer.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -472,12 +448,11 @@ relative to the in-view center point of the element.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.release">
 <span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.release"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.release" title="Link to this definition">¶</a></dt>
 <dd><p>Releasing a held mouse button on an element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>on_element: The element to mouse up.
-If None, releases on current mouse position.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>on_element: The element to mouse up.</dt><dd><p>If None, releases on current mouse position.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -485,12 +460,11 @@ If None, releases on current mouse position.</p></li>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.send_keys">
 <span class="sig-name descname"><span class="pre">send_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">keys_to_send</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys" title="Link to this definition">¶</a></dt>
 <dd><p>Sends keys to current focused element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>keys_to_send: The keys to send.  Modifier keys constants can be found in the
-‘Keys’ class.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>keys_to_send: The keys to send. Modifier keys constants can be found in the</dt><dd><p>‘Keys’ class.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -498,13 +472,12 @@ If None, releases on current mouse position.</p></li>
 <dt class="sig sig-object py" id="selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element">
 <span class="sig-name descname"><span class="pre">send_keys_to_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">keys_to_send</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.send_keys_to_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.send_keys_to_element" title="Link to this definition">¶</a></dt>
 <dd><p>Sends keys to an element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>element: The element to send keys.</p></li>
-<li><p>keys_to_send: The keys to send.  Modifier keys constants can be found in the
-‘Keys’ class.</p></li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>element: The element to send keys.
+keys_to_send: The keys to send. Modifier keys constants can be found in the</p>
+<blockquote>
+<div><p>‘Keys’ class.</p>
+</div></blockquote>
 </dd>
 </dl>
 </dd></dl>
@@ -513,11 +486,8 @@ If None, releases on current mouse position.</p></li>
 <span class="sig-name descname"><span class="pre">scroll_to_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_to_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_to_element" title="Link to this definition">¶</a></dt>
 <dd><p>If the element is outside the viewport, scrolls the bottom of the
 element to the bottom of the viewport.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>element: Which element to scroll into the viewport.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>element: Which element to scroll into the viewport.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -526,12 +496,9 @@ element to the bottom of the viewport.</p>
 <span class="sig-name descname"><span class="pre">scroll_by_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.action_chains.ActionChains" title="selenium.webdriver.common.action_chains.ActionChains"><span class="pre">ActionChains</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.scroll_by_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.scroll_by_amount" title="Link to this definition">¶</a></dt>
 <dd><p>Scrolls by provided amounts with the origin in the top left corner
 of the viewport.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</p></li>
-<li><p>delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
+delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -543,19 +510,12 @@ origin is either the center of an element or the upper left of the
 viewport plus any offsets. If the origin is an element, and the element
 is not in the viewport, the bottom of the element will first be
 scrolled to the bottom of the viewport.</p>
-<dl class="field-list">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>origin: Where scroll originates (viewport or element center) plus provided offsets.</p></li>
-<li><p>delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.</p></li>
-<li><p>delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p>If the origin with offset is outside the viewport.
-- MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>scroll_origin: Where scroll originates (viewport or element center) plus provided offsets.
+delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
+delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.</p>
 </dd>
-</dl>
+<dt>Raises:</dt><dd><p>MoveTargetOutOfBoundsException: If the origin with offset is outside the viewport.</p>
 </dd>
 </dl>
 </dd></dl>

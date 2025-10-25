@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.virtual_authenticator </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -2268,16 +2268,13 @@ must be a string, whose characters will be mapped to None in the result.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.virtual_authenticator.</span></span><span class="sig-name descname"><span class="pre">Credential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credential_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_resident_credential</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_handle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">private_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sign_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="Link to this definition">¶</a></dt>
 <dd><p>Constructor. A credential stored in a virtual authenticator.
 <a class="reference external" href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>credential_id (bytes): Unique base64 encoded string.</p></li>
-<li><p>is_resident_credential (bool): Whether the credential is client-side discoverable.</p></li>
-<li><p>rp_id (str): Relying party identifier.</p></li>
-<li><p>user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string. Can be None.</p></li>
-<li><p>private_key (bytes): Base64 encoded PKCS#8 private key.</p></li>
-<li><p>sign_count (int): initial value for a signature counter.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>credential_id (bytes): Unique base64 encoded string.
+is_resident_credential (bool): Whether the credential is client-side discoverable.
+rp_id (str): Relying party identifier.
+user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string. Can be None.
+private_key (bytes): Base64 encoded PKCS#8 private key.
+sign_count (int): initial value for a signature counter.</p>
 </dd>
 </dl>
 <dl class="py property">
@@ -2308,19 +2305,13 @@ must be a string, whose characters will be mapped to None in the result.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.virtual_authenticator.Credential.create_non_resident_credential">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_non_resident_credential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">private_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sign_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="selenium.webdriver.common.virtual_authenticator.Credential"><span class="pre">Credential</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential.create_non_resident_credential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.create_non_resident_credential" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a non-resident (i.e. stateless) credential.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>id (bytes): Unique base64 encoded string.</p></li>
-<li><p>rp_id (str): Relying party identifier.</p></li>
-<li><p>private_key (bytes): Base64 encoded PKCS</p></li>
-<li><p>sign_count (int): initial value for a signature counter.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>id (bytes): Unique base64 encoded string.
+rp_id (str): Relying party identifier.
+private_key (bytes): Base64 encoded PKCS
+sign_count (int): initial value for a signature counter.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p>Credential: A non-resident credential.</p></li>
-</ul>
+<dt>Returns:</dt><dd><p>Credential: A non-resident credential.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2328,21 +2319,14 @@ must be a string, whose characters will be mapped to None in the result.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.virtual_authenticator.Credential.create_resident_credential">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_resident_credential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_handle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">private_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sign_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="selenium.webdriver.common.virtual_authenticator.Credential"><span class="pre">Credential</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential.create_resident_credential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.create_resident_credential" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a resident (i.e. stateful) credential.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>id (bytes): Unique base64 encoded string.</p></li>
-<li><p>rp_id (str): Relying party identifier.</p></li>
-<li><p>user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.</p></li>
-<li><p>private_key (bytes): Base64 encoded PKCS</p></li>
-<li><p>sign_count (int): initial value for a signature counter.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>id (bytes): Unique base64 encoded string.
+rp_id (str): Relying party identifier.
+user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.
+private_key (bytes): Base64 encoded PKCS
+sign_count (int): initial value for a signature counter.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>Credential: A resident credential.</p></li>
-</ul>
-</p>
+<dt>Returns:</dt><dd><p>Credential: A resident credential.</p>
 </dd>
 </dl>
 </dd></dl>

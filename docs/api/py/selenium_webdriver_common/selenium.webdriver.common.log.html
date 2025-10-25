@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.log &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.common.log &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.log </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -242,18 +242,18 @@ webdriver base classes.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.log.Log.mutation_events">
 <span class="sig-name descname"><span class="pre">mutation_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">AsyncGenerator</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/log.html#Log.mutation_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.log.Log.mutation_events" title="Link to this definition">¶</a></dt>
 <dd><p>Listen for mutation events and emit them as they are found.</p>
-<dl class="field-list">
-<dt class="field-odd">Usage<span class="colon">:</span></dt>
-<dd class="field-odd"><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">driver</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">mutation_events</span><span class="p">()</span> <span class="k">as</span> <span class="n">event</span><span class="p">:</span>
-     <span class="n">pages</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"dynamic.html"</span><span class="p">)</span>
-     <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"reveal"</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
-     <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>                        <span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"revealed"</span><span class="p">)))</span>
-
- <span class="k">assert</span> <span class="n">event</span><span class="p">[</span><span class="s2">"attribute_name"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"style"</span>
- <span class="k">assert</span> <span class="n">event</span><span class="p">[</span><span class="s2">"current_value"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">""</span>
- <span class="k">assert</span> <span class="n">event</span><span class="p">[</span><span class="s2">"old_value"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"display:none;"</span>
-</pre></div>
-</div>
+<dl>
+<dt>Example:</dt><dd><dl>
+<dt>async with driver.log.mutation_events() as event:</dt><dd><blockquote>
+<div><p>pages.load(“dynamic.html”)
+driver.find_element(By.ID, “reveal”).click()
+WebDriverWait(driver, 5)                        .until(EC.visibility_of(driver.find_element(By.ID, “revealed”)))</p>
+</div></blockquote>
+<p>assert event[“attribute_name”] == “style”
+assert event[“current_value”] == “”
+assert event[“old_value”] == “display:none;”</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -262,14 +262,13 @@ webdriver base classes.</p>
 <span class="sig-name descname"><span class="pre">add_js_error_listener</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">AsyncGenerator</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/log.html#Log.add_js_error_listener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.log.Log.add_js_error_listener" title="Link to this definition">¶</a></dt>
 <dd><p>Listen for JS errors and when the contextmanager exits check if
 there were JS Errors.</p>
-<dl class="field-list">
-<dt class="field-odd">Usage<span class="colon">:</span></dt>
-<dd class="field-odd"><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">driver</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">add_js_error_listener</span><span class="p">()</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-    <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"throwing-mouseover"</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
-<span class="k">assert</span> <span class="nb">bool</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">error</span><span class="o">.</span><span class="n">exception_details</span><span class="o">.</span><span class="n">stack_trace</span><span class="o">.</span><span class="n">call_frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">function_name</span> <span class="o">==</span> <span class="s2">"onmouseover"</span>
-</pre></div>
-</div>
+<dl>
+<dt>Example:</dt><dd><dl class="simple">
+<dt>async with driver.log.add_js_error_listener() as error:</dt><dd><p>driver.find_element(By.ID, “throwing-mouseover”).click()</p>
+</dd>
+</dl>
+<p>assert bool(error)
+assert error.exception_details.stack_trace.call_frames[0].function_name == “onmouseover”</p>
 </dd>
 </dl>
 </dd></dl>
@@ -277,18 +276,14 @@ there were JS Errors.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.common.log.Log.add_listener">
 <span class="sig-name descname"><span class="pre">add_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">AsyncGenerator</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/log.html#Log.add_listener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.log.Log.add_listener" title="Link to this definition">¶</a></dt>
 <dd><p>Listen for certain events that are passed in.</p>
-<dl class="field-list">
-<dt class="field-odd">Args<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p>event_type: The type of event that we want to look at.</p></li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>event_type: The type of event that we want to look at.</p>
 </dd>
-<dt class="field-even">Usage<span class="colon">:</span></dt>
-<dd class="field-even"><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">driver</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">add_listener</span><span class="p">(</span><span class="n">Console</span><span class="o">.</span><span class="n">log</span><span class="p">)</span> <span class="k">as</span> <span class="n">messages</span><span class="p">:</span>
-    <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">"console.log('I like cheese')"</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">messages</span><span class="p">[</span><span class="s2">"message"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"I love cheese"</span>
-</pre></div>
-</div>
+<dt>Example:</dt><dd><dl class="simple">
+<dt>async with driver.log.add_listener(Console.log) as messages:</dt><dd><p>driver.execute_script(“console.log(‘I like cheese’)”)</p>
+</dd>
+</dl>
+<p>assert messages[“message”] == “I love cheese”</p>
 </dd>
 </dl>
 </dd></dl>

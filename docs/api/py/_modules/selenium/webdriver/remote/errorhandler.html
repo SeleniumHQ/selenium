@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.remote.errorhandler &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.remote.errorhandler &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.errorhandler </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -249,9 +249,9 @@
 <div class="viewcode-block" id="ExceptionMapping">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ExceptionMapping">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExceptionMapping</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    :Maps each errorcode in ErrorCode object to corresponding exception</span>
-<span class="sd">    Please refer to https://www.w3.org/TR/webdriver2/#errors for w3c specification</span>
+<span class="w">    </span><span class="sd">"""Maps each errorcode in ErrorCode object to corresponding exception.</span>
+
+<span class="sd">    Please refer to https://www.w3.org/TR/webdriver2/#errors for w3c specification.</span>
 <span class="sd">    """</span>
 
     <span class="n">NO_SUCH_ELEMENT</span> <span class="o">=</span> <span class="n">NoSuchElementException</span>
@@ -350,11 +350,12 @@
 <span class="w">        </span><span class="sd">"""Checks that a JSON response from the WebDriver does not have an</span>
 <span class="sd">        error.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - response - The JSON response from the WebDriver server as a dictionary</span>
-<span class="sd">           object.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            response: The JSON response from the WebDriver server as a dictionary</span>
+<span class="sd">                object.</span>
 
-<span class="sd">        :Raises: If the response contains an error message.</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            WebDriverException: If the response contains an error message.</span>
 <span class="sd">        """</span>
         <span class="n">status</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span> <span class="ow">or</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>

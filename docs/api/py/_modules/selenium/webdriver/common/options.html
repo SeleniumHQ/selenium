@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.options &#8212; Selenium 4.37.0 documentation</title>
+    <title>selenium.webdriver.common.options &#8212; Selenium 4.38.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=3928f412"></script>
+    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.37.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.37.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.options </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.37.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.37.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.37.0 documentation">Selenium 4.37.0 documentation</a>
+       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
   </label>
   
 
@@ -265,7 +265,8 @@
 <span class="w">    </span><span class="sd">"""Determines the point at which a navigation command is returned:</span>
 <span class="sd">    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.</span>
 
-<span class="sd">    :param strategy: the strategy corresponding to a document readiness state</span>
+<span class="sd">    Args:</span>
+<span class="sd">        strategy: the strategy corresponding to a document readiness state</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -286,9 +287,11 @@
 <span class="sd">    command sent is not handling the alert:</span>
 <span class="sd">    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:</span>
 
-<span class="sd">    :param behavior: behavior to use when an alert is encountered</span>
+<span class="sd">    Args:</span>
+<span class="sd">        behavior: behavior to use when an alert is encountered</span>
 
-<span class="sd">    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -311,9 +314,11 @@
 <span class="w">    </span><span class="sd">"""How long the driver should wait for actions to complete before:</span>
 <span class="sd">    returning an error https://w3c.github.io/webdriver/#timeouts:</span>
 
-<span class="sd">    :param timeouts: values in milliseconds for implicit wait, page load and script timeout</span>
+<span class="sd">    Args:</span>
+<span class="sd">        timeouts: values in milliseconds for implicit wait, page load and script timeout</span>
 
-<span class="sd">    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
@@ -330,7 +335,10 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_ProxyDescriptor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">""":Returns: Proxy if set, otherwise None."""</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Proxy if set, otherwise None.</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -645,8 +653,10 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Enables mobile browser use for browsers that support it.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">            android_activity: The name of the android package to start</span>
+<span class="sd">        Args:</span>
+<span class="sd">            android_package: The name of the android package to start</span>
+<span class="sd">            android_activity: The name of the android activity</span>
+<span class="sd">            device_serial: The device serial number</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">android_package</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">"android_package must be passed in"</span><span class="p">)</span>
@@ -692,7 +702,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">""":Returns: A list of arguments needed for the browser."""</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of arguments needed for the browser.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
 
 <div class="viewcode-block" id="ArgOptions.add_argument">
@@ -700,8 +713,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argument</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Adds an argument to the list.</span>
 
-<span class="sd">        :Args:</span>
-<span class="sd">         - Sets the arguments</span>
+<span class="sd">        Args:</span>
+<span class="sd">            argument: Sets the arguments</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">argument</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>

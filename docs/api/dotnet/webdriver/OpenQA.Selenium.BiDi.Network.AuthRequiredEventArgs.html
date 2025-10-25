@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs" data-uid="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs" class="text-break">
-Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -196,16 +196,16 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
 
   <a id="OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_Int64_OpenQA_Selenium_BiDi_Network_RequestData_System_DateTimeOffset_OpenQA_Selenium_BiDi_Network_ResponseData_" data-uid="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.Int64,OpenQA.Selenium.BiDi.Network.RequestData,System.DateTimeOffset,OpenQA.Selenium.BiDi.Network.ResponseData)">
-  AuthRequiredEventArgs(BiDi, BrowsingContext?, bool, Navigation?, long, RequestData, DateTimeOffset, ResponseData)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_Int64_OpenQA_Selenium_BiDi_Network_RequestData_System_DateTimeOffset_OpenQA_Selenium_BiDi_Network_ResponseData_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Network_Intercept__" data-uid="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.Int64,OpenQA.Selenium.BiDi.Network.RequestData,System.DateTimeOffset,OpenQA.Selenium.BiDi.Network.ResponseData,System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Network.Intercept})">
+  AuthRequiredEventArgs(BiDi, BrowsingContext?, bool, Navigation?, long, RequestData, DateTimeOffset, ResponseData, IReadOnlyList&lt;Intercept&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AuthRequiredEventArgs(BiDi BiDi, BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response)</code></pre>
+    <pre><code class="lang-csharp hljs">public AuthRequiredEventArgs(BiDi BiDi, BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response, IReadOnlyList&lt;Intercept&gt;? Intercepts)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -225,6 +225,8 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
     <dt><code>Timestamp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
     <dd></dd>
     <dt><code>Response</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.ResponseData.html">ResponseData</a></dt>
+    <dd></dd>
+    <dt><code>Intercepts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Intercept.html">Intercept</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -247,7 +249,7 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
 
   <h3 id="OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs_Response" data-uid="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs.Response">
   Response
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -278,7 +280,7 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -254,6 +254,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#cookies=-instance_method" title="#cookies= (instance method)">#<strong>cookies=</strong>(cookies = {})  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#fail-instance_method" title="#fail (instance method)">#<strong>fail</strong>  &#x21d2; Object </a>
     
 
@@ -276,7 +298,29 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#headers-instance_method" title="#headers (instance method)">#<strong>headers</strong>  &#x21d2; Object </a>
+      <a href="#headers-instance_method" title="#headers (instance method)">#<strong>headers</strong>(headers = {})  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#headers=-instance_method" title="#headers= (instance method)">#<strong>headers=</strong>(headers = {})  &#x21d2; Object </a>
     
 
     
@@ -369,7 +413,9 @@
 32
 33
 34
-35</pre>
+35
+36
+37</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 30</span>
@@ -379,6 +425,8 @@
   <span class='ivar'>@method</span> <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='ivar'>@url</span> <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='ivar'>@body</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='ivar'>@headers</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='ivar'>@cookies</span> <span class='op'>=</span> <span class='kw'>nil</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -541,8 +589,6 @@
       <pre class="lines">
 
 
-37
-38
 39
 40
 41
@@ -550,17 +596,23 @@
 43
 44
 45
-46</pre>
+46
+47
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_continue'>continue</span>
+  <span class='id identifier rubyid_cookies'>cookies</span> <span class='op'>=</span> <span class='ivar'>@cookies</span><span class='op'>&amp;.</span><span class='id identifier rubyid_as_json'>as_json</span>
+  <span class='id identifier rubyid_headers'>headers</span> <span class='op'>=</span> <span class='ivar'>@headers</span><span class='op'>&amp;.</span><span class='id identifier rubyid_as_json'>as_json</span>
   <span class='id identifier rubyid_network'>network</span><span class='period'>.</span><span class='id identifier rubyid_continue_request'>continue_request</span><span class='lparen'>(</span>
     <span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span>
     <span class='label'>body:</span> <span class='id identifier rubyid_body'>body</span><span class='comma'>,</span>
-    <span class='label'>cookies:</span> <span class='id identifier rubyid_cookies'>cookies</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span><span class='comma'>,</span>
-    <span class='label'>headers:</span> <span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span><span class='comma'>,</span>
+    <span class='label'>cookies:</span> <span class='id identifier rubyid_cookies'>cookies</span><span class='comma'>,</span>
+    <span class='label'>headers:</span> <span class='id identifier rubyid_headers'>headers</span><span class='comma'>,</span>
     <span class='label'>method:</span> <span class='id identifier rubyid_method'>method</span><span class='comma'>,</span>
     <span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span>
   <span class='rparen'>)</span>
@@ -585,15 +637,45 @@
       <pre class="lines">
 
 
-63
-64
-65</pre>
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookies'>cookies</span><span class='lparen'>(</span><span class='id identifier rubyid_cookies'>cookies</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='ivar'>@cookies</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Cookies.html" title="Selenium::WebDriver::BiDi::Cookies (class)">Cookies</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Cookies.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Cookies#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_cookies'>cookies</span><span class='rparen'>)</span>
+  <span class='ivar'>@cookies</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Cookies.html" title="Selenium::WebDriver::BiDi::Cookies (class)">Cookies</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../BiDi.html#initialize-instance_method" title="Selenium::WebDriver::BiDi#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_cookies'>cookies</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="cookies=-instance_method">
+  
+    #<strong>cookies=</strong>(cookies = {})  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+75
+76
+77</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 75</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cookies='>cookies=</span><span class='lparen'>(</span><span class='id identifier rubyid_cookies'>cookies</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@cookies</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Cookies.html" title="Selenium::WebDriver::BiDi::Cookies (class)">Cookies</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../BiDi.html#initialize-instance_method" title="Selenium::WebDriver::BiDi#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_cookies'>cookies</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -615,12 +697,12 @@
       <pre class="lines">
 
 
-48
-49
-50</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fail'>fail</span>
   <span class='id identifier rubyid_network'>network</span><span class='period'>.</span><span class='id identifier rubyid_fail_request'>fail_request</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
@@ -633,7 +715,7 @@
       <div class="method_details ">
   <h3 class="signature " id="headers-instance_method">
   
-    #<strong>headers</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>headers</strong>(headers = {})  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -645,15 +727,45 @@
       <pre class="lines">
 
 
-59
-60
-61</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 67</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_headers'>headers</span>
-  <span class='ivar'>@headers</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Headers.html" title="Selenium::WebDriver::BiDi::Headers (class)">Headers</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../BiDi.html#initialize-instance_method" title="Selenium::WebDriver::BiDi#initialize (method)">new</a></span></span>
+<span class='kw'>def</span> <span class='id identifier rubyid_headers'>headers</span><span class='lparen'>(</span><span class='id identifier rubyid_headers'>headers</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@headers</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Headers.html" title="Selenium::WebDriver::BiDi::Headers (class)">Headers</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../BiDi.html#initialize-instance_method" title="Selenium::WebDriver::BiDi#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_headers'>headers</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="headers=-instance_method">
+  
+    #<strong>headers=</strong>(headers = {})  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/intercepted_request.rb', line 63</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_headers='>headers=</span><span class='lparen'>(</span><span class='id identifier rubyid_headers'>headers</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@headers</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Headers.html" title="Selenium::WebDriver::BiDi::Headers (class)">Headers</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../BiDi.html#initialize-instance_method" title="Selenium::WebDriver::BiDi#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_headers'>headers</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -665,7 +777,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Oct 17 21:34:15 2025 by
+  Generated on Sat Oct 25 01:11:03 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.2.8).
 </div>

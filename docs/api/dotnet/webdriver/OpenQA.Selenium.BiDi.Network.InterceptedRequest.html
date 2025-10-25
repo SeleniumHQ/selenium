@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest" class="text-break">
-Class InterceptedRequest  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L61"><i class="bi bi-code-slash"></i></a>
+Class InterceptedRequest  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -192,16 +192,16 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 
   <a id="OpenQA_Selenium_BiDi_Network_InterceptedRequest__ctor_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_Int64_OpenQA_Selenium_BiDi_Network_RequestData_System_DateTimeOffset_OpenQA_Selenium_BiDi_Network_Initiator_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.Int64,OpenQA.Selenium.BiDi.Network.RequestData,System.DateTimeOffset,OpenQA.Selenium.BiDi.Network.Initiator)">
-  InterceptedRequest(BiDi, BrowsingContext?, bool, Navigation?, long, RequestData, DateTimeOffset, Initiator)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L61"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_Int64_OpenQA_Selenium_BiDi_Network_RequestData_System_DateTimeOffset_OpenQA_Selenium_BiDi_Network_Initiator_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Network_Intercept__" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.Int64,OpenQA.Selenium.BiDi.Network.RequestData,System.DateTimeOffset,OpenQA.Selenium.BiDi.Network.Initiator,System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Network.Intercept})">
+  InterceptedRequest(BiDi, BrowsingContext?, bool, Navigation?, long, RequestData, DateTimeOffset, Initiator, IReadOnlyList&lt;Intercept&gt;?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L62"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public InterceptedRequest(BiDi BiDi, BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator)</code></pre>
+    <pre><code class="lang-csharp hljs">public InterceptedRequest(BiDi BiDi, BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator, IReadOnlyList&lt;Intercept&gt;? Intercepts)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -221,6 +221,8 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
     <dt><code>Timestamp</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
     <dd></dd>
     <dt><code>Initiator</code> <a class="xref" href="OpenQA.Selenium.BiDi.Network.Initiator.html">Initiator</a></dt>
+    <dd></dd>
+    <dt><code>Intercepts</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.Intercept.html">Intercept</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -243,7 +245,7 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 
   <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_ContinueAsync_OpenQA_Selenium_BiDi_Network_ContinueRequestOptions_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.ContinueAsync(OpenQA.Selenium.BiDi.Network.ContinueRequestOptions)">
   ContinueAsync(ContinueRequestOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L65"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -279,7 +281,7 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 
   <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_FailAsync" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.FailAsync">
   FailAsync()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L69"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L70"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -310,7 +312,7 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 
   <h3 id="OpenQA_Selenium_BiDi_Network_InterceptedRequest_ProvideResponseAsync_OpenQA_Selenium_BiDi_Network_ProvideResponseOptions_" data-uid="OpenQA.Selenium.BiDi.Network.InterceptedRequest.ProvideResponseAsync(OpenQA.Selenium.BiDi.Network.ProvideResponseOptions)">
   ProvideResponseAsync(ProvideResponseOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L75"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -346,7 +348,7 @@ Class InterceptedRequest  <a class="header-action link-secondary" title="View so
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L61" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/NetworkModule.HighLevel.cs/#L62" class="edit-link">Edit this page</a>
         </div>
 
 

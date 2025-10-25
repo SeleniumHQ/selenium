@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Script_NodeProperties" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties" class="text-break">
-Class NodeProperties  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L25"><i class="bi bi-code-slash"></i></a>
+Class NodeProperties  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -157,16 +157,16 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <a id="OpenQA_Selenium_BiDi_Script_NodeProperties__ctor_" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties__ctor_System_Int64_System_Int64_" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.#ctor(System.Int64,System.Int64)">
-  NodeProperties(long, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties__ctor_System_Int64_System_Int64_System_Collections_Generic_IReadOnlyDictionary_System_String_System_String__System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Script_NodeRemoteValue__System_String_System_Nullable_OpenQA_Selenium_BiDi_Script_Mode__System_String_System_String_OpenQA_Selenium_BiDi_Script_NodeRemoteValue_" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.#ctor(System.Int64,System.Int64,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String},System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Script.NodeRemoteValue},System.String,System.Nullable{OpenQA.Selenium.BiDi.Script.Mode},System.String,System.String,OpenQA.Selenium.BiDi.Script.NodeRemoteValue)">
+  NodeProperties(long, long, IReadOnlyDictionary&lt;string, string&gt;?, IReadOnlyList&lt;NodeRemoteValue&gt;?, string?, Mode?, string?, string?, NodeRemoteValue?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public NodeProperties(long NodeType, long ChildNodeCount)</code></pre>
+    <pre><code class="lang-csharp hljs">public NodeProperties(long NodeType, long ChildNodeCount, IReadOnlyDictionary&lt;string, string&gt;? Attributes, IReadOnlyList&lt;NodeRemoteValue&gt;? Children, string? LocalName, Mode? Mode, string? NamespaceUri, string? NodeValue, NodeRemoteValue? ShadowRoot)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -174,6 +174,20 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
     <dt><code>NodeType</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd></dd>
     <dt><code>ChildNodeCount</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+    <dt><code>Attributes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlydictionary-2">IReadOnlyDictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>Children</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Script.NodeRemoteValue.html">NodeRemoteValue</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>LocalName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>Mode</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.Mode.html">Mode</a>?</dt>
+    <dd></dd>
+    <dt><code>NamespaceUri</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>NodeValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>ShadowRoot</code> <a class="xref" href="OpenQA.Selenium.BiDi.Script.NodeRemoteValue.html">NodeRemoteValue</a></dt>
     <dd></dd>
   </dl>
 
@@ -196,15 +210,14 @@ Class NodeProperties  <a class="header-action link-secondary" title="View source
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_Attributes" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.Attributes">
   Attributes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public IReadOnlyDictionary&lt;string, string&gt;? Attributes { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyDictionary&lt;string, string&gt;? Attributes { get; init; }</code></pre>
   </div>
 
 
@@ -228,7 +241,7 @@ public IReadOnlyDictionary&lt;string, string&gt;? Attributes { get; }</code></pr
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_ChildNodeCount" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.ChildNodeCount">
   ChildNodeCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -259,15 +272,14 @@ public IReadOnlyDictionary&lt;string, string&gt;? Attributes { get; }</code></pr
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_Children" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.Children">
   Children
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L30"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public IReadOnlyList&lt;NodeRemoteValue&gt;? Children { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;NodeRemoteValue&gt;? Children { get; init; }</code></pre>
   </div>
 
 
@@ -291,15 +303,14 @@ public IReadOnlyList&lt;NodeRemoteValue&gt;? Children { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_LocalName" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.LocalName">
   LocalName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public string? LocalName { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string? LocalName { get; init; }</code></pre>
   </div>
 
 
@@ -323,15 +334,14 @@ public string? LocalName { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_Mode" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.Mode">
   Mode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public Mode? Mode { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public Mode? Mode { get; init; }</code></pre>
   </div>
 
 
@@ -355,15 +365,14 @@ public Mode? Mode { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_NamespaceUri" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.NamespaceUri">
   NamespaceUri
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L39"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public string? NamespaceUri { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string? NamespaceUri { get; init; }</code></pre>
   </div>
 
 
@@ -387,7 +396,7 @@ public string? NamespaceUri { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_NodeType" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.NodeType">
   NodeType
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -418,15 +427,14 @@ public string? NamespaceUri { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_NodeValue" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.NodeValue">
   NodeValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public string? NodeValue { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string? NodeValue { get; init; }</code></pre>
   </div>
 
 
@@ -450,15 +458,14 @@ public string? NodeValue { get; }</code></pre>
 
   <h3 id="OpenQA_Selenium_BiDi_Script_NodeProperties_ShadowRoot" data-uid="OpenQA.Selenium.BiDi.Script.NodeProperties.ShadowRoot">
   ShadowRoot
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L45"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public NodeRemoteValue? ShadowRoot { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public NodeRemoteValue? ShadowRoot { get; init; }</code></pre>
   </div>
 
 
@@ -482,7 +489,7 @@ public NodeRemoteValue? ShadowRoot { get; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L25" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Script/NodeProperties.cs/#L24" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -167,8 +167,8 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Session_UserPromptHandlerType_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptType_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Session.UserPromptHandlerType,OpenQA.Selenium.BiDi.BrowsingContext.UserPromptType,System.String)">
-  UserPromptOpenedEventArgs(BiDi, BrowsingContext, UserPromptHandlerType, UserPromptType, string)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Session_UserPromptHandlerType_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptType_System_String_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Session.UserPromptHandlerType,OpenQA.Selenium.BiDi.BrowsingContext.UserPromptType,System.String,System.String)">
+  UserPromptOpenedEventArgs(BiDi, BrowsingContext, UserPromptHandlerType, UserPromptType, string, string?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptOpenedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -176,7 +176,7 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserPromptOpenedEventArgs(BiDi BiDi, BrowsingContext Context, UserPromptHandlerType Handler, UserPromptType Type, string Message)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserPromptOpenedEventArgs(BiDi BiDi, BrowsingContext Context, UserPromptHandlerType Handler, UserPromptType Type, string Message, string? DefaultValue)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -190,6 +190,8 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
     <dt><code>Type</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptType.html">UserPromptType</a></dt>
     <dd></dd>
     <dt><code>Message</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+    <dt><code>DefaultValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
   </dl>
 
@@ -212,15 +214,14 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
 
   <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs_DefaultValue" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.DefaultValue">
   DefaultValue
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptOpenedEventArgs.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptOpenedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonInclude]
-public string? DefaultValue { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string? DefaultValue { get; init; }</code></pre>
   </div>
 
 
