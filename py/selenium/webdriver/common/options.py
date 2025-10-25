@@ -201,7 +201,7 @@ class BaseOptions(metaclass=ABCMeta):
         bool when getting, None when setting.
     """
 
-    strict_file_interactability : o = _BaseOptionsDescriptor("strictFileInteractability")
+    strict_file_interactability = _BaseOptionsDescriptor("strictFileInteractability")
     """Gets and Sets whether session is about file interactability.
 
     Usage:
