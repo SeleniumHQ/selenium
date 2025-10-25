@@ -3,7 +3,9 @@
 require 'English'
 $LOAD_PATH.unshift File.expand_path('.')
 
+require 'base64'
 require 'rake'
+require 'net/http'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
@@ -982,6 +984,37 @@ namespace :java do
 
     puts "Releasing Java artifacts to Maven repository at '#{ENV.fetch('MAVEN_REPO', nil)}'"
     java_release_targets.each { |target| Bazel.execute('run', ['--config=release'], target) }
+
+    Rake::Task['java:publish'].invoke unless nightly
+  end
+
+  desc 'Publish to sonatype'
+  task :publish do |_task|
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+    user = ENV.fetch('MAVEN_USER')
+    pass = ENV.fetch('MAVEN_PASSWORD')
+
+    uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq')
+    encoded = Base64.strict_encode64("#{user}:#{pass}")
+
+    puts 'Triggering validation POST to Central Portal...'
+    req = Net::HTTP::Post.new(uri)
+    req['Authorization'] = "Basic #{encoded}"
+    req['Accept'] = '*/*'
+    req['Content-Length'] = '0'
+
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
+                                                  open_timeout: 10, read_timeout: 60) do |http|
+      http.request(req)
+    end
+
+    if res.is_a?(Net::HTTPSuccess)
+      puts "Manual upload triggered successfully (HTTP #{res.code})"
+    else
+      warn "Manual upload failed (HTTP #{res.code}): #{res.code} #{res.message}"
+      warn res.body if res.body && !res.body.empty?
+      exit(1)
+    end
   end
 
   desc 'Install jars to local m2 directory'
