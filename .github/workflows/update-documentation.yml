@@ -40,10 +40,13 @@ on:
     secrets:
       SELENIUM_CI_TOKEN:
         required: true
-      GITHUB_TOKEN:
-        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ github.token }}
 
 jobs:
   build-docs:
