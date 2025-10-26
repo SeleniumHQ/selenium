@@ -20,7 +20,6 @@ from hashlib import md5 as md5_hash
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.command import Command
-from selenium.webdriver.remote.webelement import WebElement
 
 
 class ShadowRoot:
@@ -45,7 +44,7 @@ class ShadowRoot:
     def id(self) -> str:
         return self._id
 
-    def find_element(self, by: str = By.ID, value: str = None) -> WebElement:
+    def find_element(self, by: str = By.ID, value: str = None):
         """Find an element inside a shadow root given a By strategy and
         locator.
 
@@ -81,7 +80,7 @@ class ShadowRoot:
 
         return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: str = By.ID, value: str = None) -> list[WebElement]:
+    def find_elements(self, by: str = By.ID, value: str = None) -> list:
         """Find elements inside a shadow root given a By strategy and locator.
 
         Args:
