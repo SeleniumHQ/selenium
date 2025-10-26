@@ -414,6 +414,11 @@
       assertFalse(isShown(content));
       assertFalse(isShown(findElement({ id: 'b' }, content)));
     }
+
+    function testNestedTextNode() {
+      var content = findElement({ id: 'nestedTextNode' });
+      assertFalse(isShown(content));
+    }
   </script>
 
   <style type="text/css">
@@ -657,6 +662,10 @@
   <div id='contentVisibility' style='content-visibility: hidden'>
     A
     <div id='b'>B</div>
+  </div>
+
+  <div id='nestedTextNode' style='width: 0px; overflow: visible'>
+    <div style="display: none;">text</div>
   </div>
 
 </body>
