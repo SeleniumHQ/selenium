@@ -324,7 +324,7 @@ class BaseOptions(metaclass=ABCMeta):
         value: str
 
     Returns:
-        bool when getting, None when setting.
+        str when getting, None when setting.
     """
 
     def __init__(self) -> None:
