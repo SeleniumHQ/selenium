@@ -2,13 +2,15 @@ module Selenium
   module WebDriver
     class BiDi
       class LogHandler
+        BASE_LOG_ENTRY: Array[Symbol]
+
         @bidi: BiDi
 
         @log_entry_subscribed: bool
 
-        ConsoleLogEntry: Struct
+        ConsoleLogEntry: WebDriver::Types::Struct
 
-        JavaScriptLogEntry: Struct
+        JavaScriptLogEntry: WebDriver::Types::Struct
 
         def initialize: (BiDi bidi) -> void
 

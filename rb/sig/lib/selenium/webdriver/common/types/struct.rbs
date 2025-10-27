@@ -1,0 +1,11 @@
+module Selenium
+  module WebDriver
+    module Types
+      class Struct < ::Struct[untyped]
+        def self.define: (*(String | Symbol) members) ?{ () -> void } -> Struct
+
+        alias self.new self.define
+      end
+    end
+  end
+end

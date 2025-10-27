@@ -24,7 +24,6 @@ module Selenium
       autoload :LogHandler, 'selenium/webdriver/bidi/log_handler'
       autoload :Browser, 'selenium/webdriver/bidi/browser'
       autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
-      autoload :Struct, 'selenium/webdriver/bidi/struct'
       autoload :Network, 'selenium/webdriver/bidi/network'
       autoload :InterceptedRequest, 'selenium/webdriver/bidi/network/intercepted_request'
       autoload :InterceptedResponse, 'selenium/webdriver/bidi/network/intercepted_response'

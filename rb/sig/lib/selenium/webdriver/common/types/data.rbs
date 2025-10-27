@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module Types
+      class Data < ::Data
+        def self.define: (*(String | Symbol) members){ () -> void } -> Data
+      end
+    end
+  end
+end

@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     class BiDi
       class Browser
-        Window: Selenium::WebDriver::BiDi::Browser::Window
+        Window: WebDriver::Types::Struct
 
         @bidi: BiDi
 

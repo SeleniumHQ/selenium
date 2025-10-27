@@ -21,11 +21,12 @@ module Selenium
   module WebDriver
     class BiDi
       class Browser
-        Window = Struct.new(:handle, :active, :height, :width, :x, :y, :state) do
+        Window = WebDriver::Types::Struct.define(:handle, :active, :height, :width, :x, :y, :state) do
           def active?
             active
           end
         end
+
         def initialize(bidi)
           @bidi = bidi
         end

@@ -1,0 +1,9 @@
+module Selenium
+  module WebDriver
+    module Types
+      def self.camel_to_snake: (String s) -> String
+
+      def self.normalize_args: (Array[(String | Symbol)] args, Hash[(String | Symbol), untyped] opts) -> Hash[Symbol, untyped]
+    end
+  end
+end
