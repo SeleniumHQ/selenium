@@ -18,6 +18,7 @@
 import {
   Box,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -35,6 +36,12 @@ function NodeDetailsDialog (props) {
   const { node } = props
   const nodeInfo: NodeInfo = node
 
+  const getStatusColor = (status: string) => {
+    if (status === 'DOWN') return 'error'
+    if (status === 'DRAINING') return 'warning'
+    return 'success'
+  }
+
   return (
     <Box component='span'>
       <IconButton
@@ -50,15 +57,26 @@ function NodeDetailsDialog (props) {
         aria-labelledby='node-info-dialog' open={open}
       >
         <DialogTitle id='node-info-dialog'>
-          <OsLogo osName={nodeInfo.osInfo.name} />
-          <Box fontWeight='fontWeightBold' mr={1} display='inline'>
-            URI:
+          <Box display='flex' alignItems='center' gap={1} flexWrap='wrap'>
+            <OsLogo osName={nodeInfo.osInfo.name} />
+            <Box fontWeight='fontWeightBold' display='inline'>
+              URI:
+            </Box>
+            <Box display='inline'>{nodeInfo.uri}</Box>
+            <Chip 
+              label={nodeInfo.status} 
+              color={getStatusColor(nodeInfo.status)}
+              size='small'
+              sx={{ ml: 'auto' }}
+            />
           </Box>
-          {nodeInfo.uri}
         </DialogTitle>
         <DialogContent dividers>
           <Typography gutterBottom>
             Node Id: {nodeInfo.id}
+          </Typography>
+          <Typography gutterBottom>
+            Status: {nodeInfo.status}
           </Typography>
           <Typography gutterBottom>
             OS Arch: {nodeInfo.osInfo.arch}

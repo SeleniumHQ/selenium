@@ -88,13 +88,13 @@ class Credential:
         """Constructor. A credential stored in a virtual authenticator.
         https://w3c.github.io/webauthn/#credential-parameters.
 
-        :Args:
-            - credential_id (bytes): Unique base64 encoded string.
-            - is_resident_credential (bool): Whether the credential is client-side discoverable.
-            - rp_id (str): Relying party identifier.
-            - user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string. Can be None.
-            - private_key (bytes): Base64 encoded PKCS#8 private key.
-            - sign_count (int): initial value for a signature counter.
+        Args:
+            credential_id (bytes): Unique base64 encoded string.
+            is_resident_credential (bool): Whether the credential is client-side discoverable.
+            rp_id (str): Relying party identifier.
+            user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string. Can be None.
+            private_key (bytes): Base64 encoded PKCS#8 private key.
+            sign_count (int): initial value for a signature counter.
         """
         self._id = credential_id
         self._is_resident_credential = is_resident_credential
@@ -133,14 +133,14 @@ class Credential:
     def create_non_resident_credential(cls, id: bytes, rp_id: str, private_key: bytes, sign_count: int) -> "Credential":
         """Creates a non-resident (i.e. stateless) credential.
 
-        :Args:
-          - id (bytes): Unique base64 encoded string.
-          - rp_id (str): Relying party identifier.
-          - private_key (bytes): Base64 encoded PKCS
-          - sign_count (int): initial value for a signature counter.
+        Args:
+            id (bytes): Unique base64 encoded string.
+            rp_id (str): Relying party identifier.
+            private_key (bytes): Base64 encoded PKCS
+            sign_count (int): initial value for a signature counter.
 
-        :Returns:
-          - Credential: A non-resident credential.
+        Returns:
+            Credential: A non-resident credential.
         """
         return cls(id, False, rp_id, None, private_key, sign_count)
 
@@ -150,15 +150,15 @@ class Credential:
     ) -> "Credential":
         """Creates a resident (i.e. stateful) credential.
 
-        :Args:
-          - id (bytes): Unique base64 encoded string.
-          - rp_id (str): Relying party identifier.
-          - user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.
-          - private_key (bytes): Base64 encoded PKCS
-          - sign_count (int): initial value for a signature counter.
+        Args:
+            id (bytes): Unique base64 encoded string.
+            rp_id (str): Relying party identifier.
+            user_handle (bytes): userHandle associated to the credential. Must be Base64 encoded string.
+            private_key (bytes): Base64 encoded PKCS
+            sign_count (int): initial value for a signature counter.
 
-        :returns:
-          - Credential: A resident credential.
+        Returns:
+            Credential: A resident credential.
         """
         return cls(id, True, rp_id, user_handle, private_key, sign_count)
 
