@@ -250,3 +250,37 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setTimezoneOverride", params))
+
+    def set_locale_override(
+        self,
+        locale: Optional[str] = None,
+        contexts: Optional[list[str]] = None,
+        user_contexts: Optional[list[str]] = None,
+    ) -> None:
+        """Set locale override for the given contexts or user contexts.
+
+        Parameters:
+        -----------
+            locale: Locale string as per BCP 47, or None to clear override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+        ------
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                       contexts nor user_contexts are provided, or if locale is invalid.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and userContexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or userContexts")
+
+        params: dict[str, Any] = {"locale": locale}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setLocaleOverride", params))

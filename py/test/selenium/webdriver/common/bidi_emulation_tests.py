@@ -64,6 +64,15 @@ def get_browser_geolocation(driver, user_context=None):
     """)
 
 
+def get_browser_locale(driver):
+    result = driver.script._evaluate(
+        "Intl.DateTimeFormat().resolvedOptions().locale",
+        {"context": driver.current_window_handle},
+        await_promise=False,
+    )
+    return result.result["value"]
+
+
 def test_emulation_initialized(driver):
     """Test that the emulation module is initialized properly."""
     assert driver.emulation is not None
@@ -293,3 +302,63 @@ def test_set_timezone_override_using_offset(driver, pages):
     assert timezone_string == "+05:30", f"Expected timezone '+05:30', got: {timezone_string}"
 
     driver.emulation.set_timezone_override(timezone=None, contexts=[context_id])
+
+
+@pytest.mark.parametrize(
+    "locale,expected_locale",
+    [
+        # Locale with Unicode extension keyword for collation.
+        ("de-DE-u-co-phonebk", "de-DE"),
+        # Lowercase language and region.
+        ("fr-ca", "fr-CA"),
+        # Uppercase language and region (should be normalized by Intl.Locale).
+        ("FR-CA", "fr-CA"),
+        # Mixed case language and region (should be normalized by Intl.Locale).
+        ("fR-cA", "fr-CA"),
+        # Locale with transform extension (simple case).
+        ("en-t-zh", "en"),
+    ],
+)
+def test_set_locale_override_with_contexts(driver, pages, locale, expected_locale):
+    """Test setting locale override with browsing contexts."""
+    context_id = driver.current_window_handle
+
+    driver.emulation.set_locale_override(locale=locale, contexts=[context_id])
+
+    driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+    current_locale = get_browser_locale(driver)
+    assert current_locale == expected_locale, f"Expected locale {expected_locale}, got {current_locale}"
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        # Simple language code (2-letter).
+        "en",
+        # Language and region (both 2-letter).
+        "en-US",
+        # Language and script (4-letter).
+        "sr-Latn",
+        # Language, script, and region.
+        "zh-Hans-CN",
+    ],
+)
+def test_set_locale_override_with_user_contexts(driver, pages, value):
+    """Test setting locale override with user contexts."""
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+
+            driver.emulation.set_locale_override(locale=value, user_contexts=[user_context])
+
+            driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+            current_locale = get_browser_locale(driver)
+            assert current_locale == value, f"Expected locale {value}, got {current_locale}"
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
