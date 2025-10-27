@@ -362,3 +362,74 @@ def test_set_locale_override_with_user_contexts(driver, pages, value):
             driver.browsing_context.close(context_id)
     finally:
         driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_firefox(reason="Not yet supported")
+def test_set_scripting_enabled_with_contexts(driver, pages):
+    """Test disabling scripting with browsing contexts."""
+    context_id = driver.current_window_handle
+
+    # disable scripting
+    driver.emulation.set_scripting_enabled(enabled=False, contexts=[context_id])
+
+    driver.browsing_context.navigate(
+        context=context_id,
+        url="data:text/html,<script>window.foo=123;</script>",
+        wait="complete",
+    )
+    result = driver.script._evaluate("'foo' in window", {"context": context_id}, await_promise=False)
+    assert result.result["value"] is False, "Page script should not have executed when scripting is disabled"
+
+    # clear override via None to restore JS
+    driver.emulation.set_scripting_enabled(enabled=None, contexts=[context_id])
+    driver.browsing_context.navigate(
+        context=context_id,
+        url="data:text/html,<script>window.foo=123;</script>",
+        wait="complete",
+    )
+    result = driver.script._evaluate("'foo' in window", {"context": context_id}, await_promise=False)
+    assert result.result["value"] is True, "Page script should execute after clearing the override"
+
+
+@pytest.mark.xfail_firefox(reason="Not yet supported")
+def test_set_scripting_enabled_with_user_contexts(driver, pages):
+    """Test disabling scripting with user contexts."""
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+
+            driver.emulation.set_scripting_enabled(enabled=False, user_contexts=[user_context])
+
+            url = pages.url("javascriptPage.html")
+            driver.browsing_context.navigate(context_id, url, wait="complete")
+
+            # Check that inline event handlers don't work; this page has an onclick handler
+            click_field = driver.find_element("id", "clickField")
+            initial_value = click_field.get_attribute("value")  # initial value is 'Hello'
+            click_field.click()
+
+            # Get the value after click, it should remain unchanged if scripting is disabled
+            result_value = driver.script._evaluate(
+                "document.getElementById('clickField').value", {"context": context_id}, await_promise=False
+            )
+            assert result_value.result["value"] == initial_value, (
+                "Inline onclick handler should not execute, i.e, value should not change to 'clicked'"
+            )
+
+            # Clear the scripting override
+            driver.emulation.set_scripting_enabled(enabled=None, user_contexts=[user_context])
+
+            driver.browsing_context.navigate(context_id, url, wait="complete")
+
+            # Click the element again, it should change to 'Clicked' now
+            driver.find_element("id", "clickField").click()
+            result_value = driver.script._evaluate(
+                "document.getElementById('clickField').value", {"context": context_id}, await_promise=False
+            )
+            assert result_value.result["value"] == "Clicked"
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
