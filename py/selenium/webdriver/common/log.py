@@ -57,9 +57,7 @@ class Log:
     async def mutation_events(self) -> AsyncGenerator[dict[str, Any], None]:
         """Listen for mutation events and emit them as they are found.
 
-        :Usage:
-             ::
-
+        Example:
                async with driver.log.mutation_events() as event:
                     pages.load("dynamic.html")
                     driver.find_element(By.ID, "reveal").click()
@@ -101,9 +99,7 @@ class Log:
         """Listen for JS errors and when the contextmanager exits check if
         there were JS Errors.
 
-        :Usage:
-             ::
-
+        Example:
                 async with driver.log.add_js_error_listener() as error:
                     driver.find_element(By.ID, "throwing-mouseover").click()
                 assert bool(error)
@@ -124,12 +120,10 @@ class Log:
     async def add_listener(self, event_type) -> AsyncGenerator[dict[str, Any], None]:
         """Listen for certain events that are passed in.
 
-        :Args:
-         - event_type: The type of event that we want to look at.
+        Args:
+            event_type: The type of event that we want to look at.
 
-        :Usage:
-             ::
-
+        Example:
                 async with driver.log.add_listener(Console.log) as messages:
                     driver.execute_script("console.log('I like cheese')")
                 assert messages["message"] == "I love cheese"

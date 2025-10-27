@@ -252,17 +252,11 @@ public sealed record HtmlCollectionRemoteValue : RemoteValue
     public IReadOnlyList<RemoteValue>? Value { get; set; }
 }
 
-public sealed record NodeRemoteValue : RemoteValue, ISharedReference
+public sealed record NodeRemoteValue(string? SharedId, NodeProperties? Value) : RemoteValue, ISharedReference
 {
-    [JsonInclude]
-    public string? SharedId { get; internal set; }
-
     public Handle? Handle { get; set; }
 
     public InternalId? InternalId { get; set; }
-
-    [JsonInclude]
-    public NodeProperties? Value { get; internal set; }
 }
 
 public sealed record WindowProxyRemoteValue(WindowProxyProperties Value) : RemoteValue

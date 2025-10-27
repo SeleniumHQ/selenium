@@ -21,6 +21,22 @@ from selenium.webdriver.common.bidi.permissions import PermissionState
 from selenium.webdriver.common.window import WindowTypes
 
 
+def get_browser_timezone_string(driver):
+    result = driver.script._evaluate(
+        "Intl.DateTimeFormat().resolvedOptions().timeZone",
+        {"context": driver.current_window_handle},
+        await_promise=False,
+    )
+    return result.result["value"]
+
+
+def get_browser_timezone_offset(driver):
+    result = driver.script._evaluate(
+        "new Date().getTimezoneOffset()", {"context": driver.current_window_handle}, await_promise=False
+    )
+    return result.result["value"]
+
+
 def get_browser_geolocation(driver, user_context=None):
     origin = driver.execute_script("return window.location.origin;")
     driver.permissions.set_permission("geolocation", PermissionState.GRANTED, origin, user_context=user_context)
@@ -46,6 +62,15 @@ def get_browser_geolocation(driver, user_context=None):
             }
         );
     """)
+
+
+def get_browser_locale(driver):
+    result = driver.script._evaluate(
+        "Intl.DateTimeFormat().resolvedOptions().locale",
+        {"context": driver.current_window_handle},
+        await_promise=False,
+    )
+    return result.result["value"]
 
 
 def test_emulation_initialized(driver):
@@ -214,3 +239,126 @@ def test_set_geolocation_override_with_error(driver, pages):
 
     result = get_browser_geolocation(driver)
     assert "error" in result, f"Expected geolocation error, got: {result}"
+
+
+def test_set_timezone_override_with_context(driver, pages):
+    """Test setting timezone override with a browsing context."""
+    context_id = driver.current_window_handle
+    pages.load("blank.html")
+
+    initial_timezone_string = get_browser_timezone_string(driver)
+
+    # Set timezone to Tokyo (UTC+9)
+    driver.emulation.set_timezone_override(timezone="Asia/Tokyo", contexts=[context_id])
+
+    timezone_offset = get_browser_timezone_offset(driver)
+    timezone_string = get_browser_timezone_string(driver)
+
+    # Tokyo is UTC+9, so the offset should be -540 minutes (negative because it's ahead of UTC)
+    assert timezone_offset == -540, f"Expected timezone offset -540, got: {timezone_offset}"
+    assert timezone_string == "Asia/Tokyo", f"Expected timezone 'Asia/Tokyo', got: {timezone_string}"
+
+    # Clear the timezone override
+    driver.emulation.set_timezone_override(timezone=None, contexts=[context_id])
+
+    # verify setting timezone to None clears the timezone override
+    timezone_after_clear_with_none = get_browser_timezone_string(driver)
+    assert timezone_after_clear_with_none == initial_timezone_string
+
+
+def test_set_timezone_override_with_user_context(driver, pages):
+    """Test setting timezone override with a user context."""
+    user_context = driver.browser.create_user_context()
+    context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+
+    driver.switch_to.window(context_id)
+    pages.load("blank.html")
+
+    driver.emulation.set_timezone_override(timezone="America/New_York", user_contexts=[user_context])
+
+    timezone_string = get_browser_timezone_string(driver)
+    assert timezone_string == "America/New_York", f"Expected timezone 'America/New_York', got: {timezone_string}"
+
+    driver.emulation.set_timezone_override(timezone=None, user_contexts=[user_context])
+
+    driver.browsing_context.close(context_id)
+    driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_firefox(reason="Firefox returns UTC as timezone string in case of offset.")
+def test_set_timezone_override_using_offset(driver, pages):
+    """Test setting timezone override using offset."""
+    context_id = driver.current_window_handle
+    pages.load("blank.html")
+
+    # set timezone to India (UTC+05:30) using offset
+    driver.emulation.set_timezone_override(timezone="+05:30", contexts=[context_id])
+
+    timezone_offset = get_browser_timezone_offset(driver)
+    timezone_string = get_browser_timezone_string(driver)
+
+    # India is UTC+05:30, so the offset should be -330 minutes (negative because it's ahead of UTC)
+    assert timezone_offset == -330, f"Expected timezone offset -540, got: {timezone_offset}"
+    assert timezone_string == "+05:30", f"Expected timezone '+05:30', got: {timezone_string}"
+
+    driver.emulation.set_timezone_override(timezone=None, contexts=[context_id])
+
+
+@pytest.mark.parametrize(
+    "locale,expected_locale",
+    [
+        # Locale with Unicode extension keyword for collation.
+        ("de-DE-u-co-phonebk", "de-DE"),
+        # Lowercase language and region.
+        ("fr-ca", "fr-CA"),
+        # Uppercase language and region (should be normalized by Intl.Locale).
+        ("FR-CA", "fr-CA"),
+        # Mixed case language and region (should be normalized by Intl.Locale).
+        ("fR-cA", "fr-CA"),
+        # Locale with transform extension (simple case).
+        ("en-t-zh", "en"),
+    ],
+)
+def test_set_locale_override_with_contexts(driver, pages, locale, expected_locale):
+    """Test setting locale override with browsing contexts."""
+    context_id = driver.current_window_handle
+
+    driver.emulation.set_locale_override(locale=locale, contexts=[context_id])
+
+    driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+    current_locale = get_browser_locale(driver)
+    assert current_locale == expected_locale, f"Expected locale {expected_locale}, got {current_locale}"
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        # Simple language code (2-letter).
+        "en",
+        # Language and region (both 2-letter).
+        "en-US",
+        # Language and script (4-letter).
+        "sr-Latn",
+        # Language, script, and region.
+        "zh-Hans-CN",
+    ],
+)
+def test_set_locale_override_with_user_contexts(driver, pages, value):
+    """Test setting locale override with user contexts."""
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+
+            driver.emulation.set_locale_override(locale=value, user_contexts=[user_context])
+
+            driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+            current_locale = get_browser_locale(driver)
+            assert current_locale == value, f"Expected locale {value}, got {current_locale}"
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)

@@ -27,9 +27,9 @@ class ElementScrollBehavior(Enum):
 
 
 class _IeOptionsDescriptor:
-    """_IeOptionsDescriptor is an implementation of Descriptor Protocol:
+    """_IeOptionsDescriptor is an implementation of Descriptor Protocol.
 
-    : Any look-up or assignment to the below attributes in `Options` class will be intercepted
+    Any look-up or assignment to the below attributes in `Options` class will be intercepted
     by `__get__` and `__set__` method respectively.
 
     - `browser_attach_timeout`
@@ -50,13 +50,15 @@ class _IeOptionsDescriptor:
     - `attach_to_edge_chrome`
     - `edge_executable_path`
 
+    When an attribute lookup happens:
 
-    : When an attribute lookup happens,
     Example:
         `self. browser_attach_timeout`
         `__get__` method does a dictionary look up in the dictionary `_options` in `Options` class
         and returns the value of key `browserAttachTimeout`
-    : When an attribute assignment happens,
+
+    When an attribute assignment happens:
+
     Example:
         `self.browser_attach_timeout` = 30
         `__set__` method sets/updates the value of the key `browserAttachTimeout` in `_options`
@@ -368,20 +370,26 @@ class Options(ArgOptions):
 
     @property
     def options(self) -> dict:
-        """:Returns: A dictionary of browser options."""
+        """
+        Returns:
+            A dictionary of browser options.
+        """
         return self._options
 
     @property
     def additional_options(self) -> dict:
-        """:Returns: The additional options."""
+        """
+        Returns:
+            The additional options.
+        """
         return self._additional
 
     def add_additional_option(self, name: str, value) -> None:
         """Adds an additional option not yet added as a safe option for IE.
 
-        :Args:
-         - name: name of the option to add
-         - value: value of the option to add
+        Args:
+            name: name of the option to add
+            value: value of the option to add
         """
         self._additional[name] = value
 
