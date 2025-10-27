@@ -20,16 +20,21 @@
 module Selenium
   module WebDriver
     module Types
+      #
+      # A subclass of ::Data that allows optional, unordered, camel-cased key-value pairs.
+      #
+      # @api private
+      #
       class Data < ::Data
         def self.define(*members, &blk)
           klass = super(*members.map(&:to_sym), &blk)
 
-          klass.singleton_class.prepend(Module.new {
+          klass.singleton_class.prepend(Module.new do
             def new(*args, **opts)
               norm = WebDriver::Types.normalize_args(args, opts)
               super(*members.map { |m| norm[m] })
             end
-          })
+          end)
 
           klass
         end
