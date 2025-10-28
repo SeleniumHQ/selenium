@@ -312,9 +312,7 @@ class Script:
             raise WebDriverException(error_message)
 
     def __convert_to_local_value(self, value) -> dict:
-        """
-        Converts a Python value to BiDi LocalValue format.
-        """
+        """Converts a Python value to BiDi LocalValue format."""
         if value is None:
             return {"type": "null"}
         elif isinstance(value, bool):
