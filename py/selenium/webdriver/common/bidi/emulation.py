@@ -162,9 +162,7 @@ class GeolocationPositionError:
 
 
 class Emulation:
-    """
-    BiDi implementation of the emulation module.
-    """
+    """BiDi implementation of the emulation module."""
 
     def __init__(self, conn):
         self.conn = conn

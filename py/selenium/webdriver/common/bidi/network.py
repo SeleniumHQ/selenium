@@ -53,22 +53,19 @@ class Network:
         self.callbacks = {}
         self.subscriptions = {}
 
-    def _add_intercept(self, phases=[], contexts=None, url_patterns=None):
+    def _add_intercept(self, phases=None, contexts=None, url_patterns=None):
         """Add an intercept to the network.
 
-        Parameters:
-        ----------
-            phases (list, optional): A list of phases to intercept.
-                Default is empty list.
-            contexts (list, optional): A list of contexts to intercept.
-                Default is None.
-            url_patterns (list, optional): A list of URL patterns to intercept.
-                Default is None.
+        Args:
+            phases: A list of phases to intercept. Default is None (empty list).
+            contexts: A list of contexts to intercept. Default is None.
+            url_patterns: A list of URL patterns to intercept. Default is None.
 
         Returns:
-        -------
-            str : intercept id
+            str: intercept id
         """
+        if phases is None:
+            phases = []
         params = {}
         if contexts is not None:
             params["contexts"] = contexts
@@ -87,17 +84,13 @@ class Network:
     def _remove_intercept(self, intercept=None):
         """Remove a specific intercept, or all intercepts.
 
-        Parameters:
-        ----------
-            intercept (str, optional): The intercept to remove.
-                Default is None.
+        Args:
+            intercept: The intercept to remove. Default is None.
 
         Raises:
-        ------
-            Exception: If intercept is not found.
+            ValueError: If intercept is not found.
 
-        Notes:
-        -----
+        Note:
             If intercept is None, all intercepts will be removed.
         """
         if intercept is None:
@@ -115,15 +108,13 @@ class Network:
     def _on_request(self, event_name, callback):
         """Set a callback function to subscribe to a network event.
 
-        Parameters:
-        ----------
-            event_name (str): The event to subscribe to.
-            callback (function): The callback function to execute on event.
+        Args:
+            event_name: The event to subscribe to.
+            callback: The callback function to execute on event.
                 Takes Request object as argument.
 
         Returns:
-        -------
-            int : callback id
+            int: callback id
         """
 
         event = NetworkEvent(event_name)
@@ -154,19 +145,15 @@ class Network:
     def add_request_handler(self, event, callback, url_patterns=None, contexts=None):
         """Add a request handler to the network.
 
-        Parameters:
-        ----------
-            event (str): The event to subscribe to.
-            url_patterns (list, optional): A list of URL patterns to intercept.
-                Default is None.
-            contexts (list, optional): A list of contexts to intercept.
-                Default is None.
-            callback (function): The callback function to execute on request interception
+        Args:
+            event: The event to subscribe to.
+            callback: The callback function to execute on request interception.
                 Takes Request object as argument.
+            url_patterns: A list of URL patterns to intercept. Default is None.
+            contexts: A list of contexts to intercept. Default is None.
 
         Returns:
-        -------
-            int : callback id
+            int: callback id
         """
 
         try:
@@ -192,10 +179,9 @@ class Network:
     def remove_request_handler(self, event, callback_id):
         """Remove a request handler from the network.
 
-        Parameters:
-        ----------
-            event_name (str): The event to unsubscribe from.
-            callback_id (int): The callback id to remove.
+        Args:
+            event: The event to unsubscribe from.
+            callback_id: The callback id to remove.
         """
         try:
             event_name = self.EVENTS[event]
@@ -231,14 +217,12 @@ class Network:
     def add_auth_handler(self, username, password):
         """Add an authentication handler to the network.
 
-        Parameters:
-        ----------
-            username (str): The username to authenticate with.
-            password (str): The password to authenticate with.
+        Args:
+            username: The username to authenticate with.
+            password: The password to authenticate with.
 
         Returns:
-        -------
-            int : callback id
+            int: callback id
         """
         event = "auth_required"
 
@@ -250,9 +234,8 @@ class Network:
     def remove_auth_handler(self, callback_id):
         """Remove an authentication handler from the network.
 
-        Parameters:
-        ----------
-            callback_id (int): The callback id to remove.
+        Args:
+            callback_id: The callback id to remove.
         """
         event = "auth_required"
         self.remove_request_handler(event, callback_id)
@@ -317,15 +300,12 @@ class Request:
     def _continue_with_auth(self, username=None, password=None):
         """Continue with authentication.
 
-        Parameters:
-        ----------
-            request (Request): The request to continue with.
-            username (str): The username to authenticate with.
-            password (str): The password to authenticate with.
+        Args:
+            username: The username to authenticate with.
+            password: The password to authenticate with.
 
-        Notes:
-        -----
-            If username or password is None, it attempts auth with no credentials
+        Note:
+            If username or password is None, it attempts auth with no credentials.
         """
 
         params = {}
