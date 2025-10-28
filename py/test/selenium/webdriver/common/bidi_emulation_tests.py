@@ -16,7 +16,14 @@
 # under the License.
 import pytest
 
-from selenium.webdriver.common.bidi.emulation import Emulation, GeolocationCoordinates, GeolocationPositionError
+from selenium.webdriver.common.bidi.emulation import (
+    Emulation,
+    GeolocationCoordinates,
+    GeolocationPositionError,
+    ScreenOrientation,
+    ScreenOrientationNatural,
+    ScreenOrientationType,
+)
 from selenium.webdriver.common.bidi.permissions import PermissionState
 from selenium.webdriver.common.window import WindowTypes
 
@@ -71,6 +78,24 @@ def get_browser_locale(driver):
         await_promise=False,
     )
     return result.result["value"]
+
+
+def get_screen_orientation(driver, context_id):
+    result = driver.script._evaluate(
+        "screen.orientation.type",
+        {"context": context_id},
+        await_promise=False,
+    )
+    orientation_type = result.result["value"]
+
+    result = driver.script._evaluate(
+        "screen.orientation.angle",
+        {"context": context_id},
+        await_promise=False,
+    )
+    orientation_angle = result.result["value"]
+
+    return {"type": orientation_type, "angle": orientation_angle}
 
 
 def test_emulation_initialized(driver):
@@ -415,6 +440,78 @@ def test_set_scripting_enabled_with_user_contexts(driver, pages):
                 "document.getElementById('clickField').value", {"context": context_id}, await_promise=False
             )
             assert result_value.result["value"] == "Clicked"
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+def test_set_screen_orientation_override_with_contexts(driver, pages):
+    context_id = driver.current_window_handle
+    initial_orientation = get_screen_orientation(driver, context_id)
+
+    # Set landscape-primary orientation
+    orientation = ScreenOrientation(
+        natural=ScreenOrientationNatural.LANDSCAPE,
+        type=ScreenOrientationType.LANDSCAPE_PRIMARY,
+    )
+    driver.emulation.set_screen_orientation_override(screen_orientation=orientation, contexts=[context_id])
+
+    url = pages.url("formPage.html")
+    driver.browsing_context.navigate(context_id, url, wait="complete")
+
+    # Verify the orientation was set
+    current_orientation = get_screen_orientation(driver, context_id)
+    assert current_orientation["type"] == "landscape-primary", f"Expected landscape-primary, got {current_orientation}"
+    assert current_orientation["angle"] == 0, f"Expected angle 0, got {current_orientation['angle']}"
+
+    # Set portrait-secondary orientation
+    orientation = ScreenOrientation(
+        natural=ScreenOrientationNatural.PORTRAIT,
+        type=ScreenOrientationType.PORTRAIT_SECONDARY,
+    )
+    driver.emulation.set_screen_orientation_override(screen_orientation=orientation, contexts=[context_id])
+
+    # Verify the orientation was changed
+    current_orientation = get_screen_orientation(driver, context_id)
+    assert current_orientation["type"] == "portrait-secondary", (
+        f"Expected portrait-secondary, got {current_orientation}"
+    )
+    assert current_orientation["angle"] == 180, f"Expected angle 180, got {current_orientation['angle']}"
+
+    driver.emulation.set_screen_orientation_override(screen_orientation=None, contexts=[context_id])
+
+    # Verify orientation was cleared
+    assert get_screen_orientation(driver, context_id) == initial_orientation
+
+
+def test_set_screen_orientation_override_with_user_contexts(driver, pages):
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+
+            # Set landscape-secondary orientation on portrait natural using string
+            orientation = ScreenOrientation(
+                natural="portrait",
+                type="landscape-secondary",
+            )
+            driver.emulation.set_screen_orientation_override(
+                screen_orientation=orientation, user_contexts=[user_context]
+            )
+
+            url = pages.url("formPage.html")
+            driver.browsing_context.navigate(context_id, url, wait="complete")
+
+            # Verify the orientation was set
+            current_orientation = get_screen_orientation(driver, context_id)
+            assert current_orientation["type"] == "landscape-secondary", (
+                f"Expected landscape-secondary, got {current_orientation}"
+            )
+            assert current_orientation["angle"] == 270, f"Expected angle 270, got {current_orientation['angle']}"
+
+            driver.emulation.set_screen_orientation_override(screen_orientation=None, user_contexts=[user_context])
         finally:
             driver.browsing_context.close(context_id)
     finally:
