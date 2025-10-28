@@ -66,48 +66,14 @@ class Options(ArgOptions):
     SAFARI_TECH_PREVIEW = "Safari Technology Preview"
 
     # creating descriptor objects
-    automatic_inspection = _SafariOptionsDescriptor(AUTOMATIC_INSPECTION, bool)
-    """Get or Set Automatic Inspection value:
+    automatic_inspection: bool = _SafariOptionsDescriptor(AUTOMATIC_INSPECTION, bool)
+    """Whether to enable automatic inspection."""
 
-    Usage:
-    ------
-    - Get
-        - `self.automatic_inspection`
-    - Set
-        - `self.automatic_inspection` = `value`
+    automatic_profiling: bool = _SafariOptionsDescriptor(AUTOMATIC_PROFILING, bool)
+    """Whether to enable automatic profiling."""
 
-    Parameters:
-    -----------
-    `value`: `bool`
-    """
-    automatic_profiling = _SafariOptionsDescriptor(AUTOMATIC_PROFILING, bool)
-    """Get or Set Automatic Profiling value:
-
-    Usage:
-    ------
-    - Get
-        - `self.automatic_profiling`
-    - Set
-        - `self.automatic_profiling` = `value`
-
-    Parameters:
-    -----------
-    `value`: `bool`
-    """
-    use_technology_preview = _SafariOptionsDescriptor(SAFARI_TECH_PREVIEW, bool)
-    """Get and Set Technology Preview:
-
-    Usage:
-    ------
-    - Get
-        - `self.use_technology_preview`
-    - Set
-        - `self.use_technology_preview` = `value`
-
-    Parameters:
-    -----------
-    `value`: `bool`
-    """
+    use_technology_preview: bool = _SafariOptionsDescriptor(SAFARI_TECH_PREVIEW, bool)
+    """Whether to use Safari Technology Preview."""
 
     @property
     def default_capabilities(self) -> dict[str, str]:

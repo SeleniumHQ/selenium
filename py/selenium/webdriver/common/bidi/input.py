@@ -356,12 +356,10 @@ class FileDialogInfo:
     def from_dict(cls, data: dict) -> "FileDialogInfo":
         """Creates a FileDialogInfo instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the file dialog information.
 
         Returns:
-        -------
             FileDialogInfo: A new instance of FileDialogInfo.
         """
         return cls(context=data["context"], multiple=data["multiple"], element=data.get("element"))
@@ -396,8 +394,7 @@ class Input:
     ) -> None:
         """Performs a sequence of user input actions.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID where actions should be performed.
             actions: A list of source actions to perform.
         """
@@ -407,8 +404,7 @@ class Input:
     def release_actions(self, context: str) -> None:
         """Releases all input state for the given context.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID to release actions for.
         """
         params = {"context": context}
@@ -417,8 +413,7 @@ class Input:
     def set_files(self, context: str, element: dict, files: list[str]) -> None:
         """Sets files for a file input element.
 
-        Parameters:
-        -----------
+        Args:
             context: The browsing context ID.
             element: The element reference (script.SharedReference).
             files: A list of file paths to set.
@@ -426,15 +421,13 @@ class Input:
         params = {"context": context, "element": element, "files": files}
         self.conn.execute(command_builder("input.setFiles", params))
 
-    def add_file_dialog_handler(self, handler):
+    def add_file_dialog_handler(self, handler) -> int:
         """Add a handler for file dialog opened events.
 
-        Parameters:
-        -----------
+        Args:
             handler: Callback function that takes a FileDialogInfo object.
 
         Returns:
-        --------
             int: Callback ID for removing the handler later.
         """
         # Subscribe to the event if not already subscribed
@@ -454,8 +447,7 @@ class Input:
     def remove_file_dialog_handler(self, callback_id: int) -> None:
         """Remove a file dialog handler.
 
-        Parameters:
-        -----------
+        Args:
             callback_id: The callback ID returned by add_file_dialog_handler.
         """
         if callback_id in self.callbacks:
