@@ -45,8 +45,7 @@ class GeolocationCoordinates:
             speed: Speed in meters per second (>= 0.0) or None, defaults to None.
 
         Raises:
-            ValueError: If coordinates are out of valid range or if altitude_accuracy
-                is provided without altitude.
+            ValueError: If coordinates are out of valid range or if altitude_accuracy is provided without altitude.
         """
         self.latitude = latitude
         self.longitude = longitude
@@ -163,9 +162,7 @@ class GeolocationPositionError:
 
 
 class Emulation:
-    """
-    BiDi implementation of the emulation module.
-    """
+    """BiDi implementation of the emulation module."""
 
     def __init__(self, conn):
         self.conn = conn
@@ -254,16 +251,14 @@ class Emulation:
     ) -> None:
         """Set locale override for the given contexts or user contexts.
 
-        Parameters:
-        -----------
+        Args:
             locale: Locale string as per BCP 47, or None to clear override.
             contexts: List of browsing context IDs to apply the override to.
             user_contexts: List of user context IDs to apply the override to.
 
         Raises:
-        ------
             ValueError: If both contexts and user_contexts are provided, or if neither
-                       contexts nor user_contexts are provided, or if locale is invalid.
+                contexts nor user_contexts are provided, or if locale is invalid.
         """
         if contexts is not None and user_contexts is not None:
             raise ValueError("Cannot specify both contexts and userContexts")
@@ -279,3 +274,39 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setLocaleOverride", params))
+
+    def set_scripting_enabled(
+        self,
+        enabled: Union[bool, None] = False,
+        contexts: Optional[list[str]] = None,
+        user_contexts: Optional[list[str]] = None,
+    ) -> None:
+        """Set scripting enabled override for the given contexts or user contexts.
+
+        Args:
+            enabled: False to disable scripting, None to clear the override.
+                Note: Only emulation of disabled JavaScript is supported.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided, or if enabled is True.
+        """
+        if enabled:
+            raise ValueError("Only emulation of disabled JavaScript is supported (enabled must be False or None)")
+
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and userContexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or userContexts")
+
+        params: dict[str, Any] = {"enabled": enabled}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setScriptingEnabled", params))
