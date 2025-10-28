@@ -74,13 +74,11 @@ def get_browser_locale(driver):
 
 
 def test_emulation_initialized(driver):
-    """Test that the emulation module is initialized properly."""
     assert driver.emulation is not None
     assert isinstance(driver.emulation, Emulation)
 
 
 def test_set_geolocation_override_with_coordinates_in_context(driver, pages):
-    """Test setting geolocation override with coordinates."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
     coords = GeolocationCoordinates(45.5, -122.4194, accuracy=10.0)
@@ -96,7 +94,6 @@ def test_set_geolocation_override_with_coordinates_in_context(driver, pages):
 
 
 def test_set_geolocation_override_with_coordinates_in_user_context(driver, pages):
-    """Test setting geolocation override with coordinates in a user context."""
     # Create a user context
     user_context = driver.browser.create_user_context()
 
@@ -121,7 +118,6 @@ def test_set_geolocation_override_with_coordinates_in_user_context(driver, pages
 
 
 def test_set_geolocation_override_all_coords(driver, pages):
-    """Test setting geolocation override with coordinates."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
     coords = GeolocationCoordinates(
@@ -147,7 +143,6 @@ def test_set_geolocation_override_all_coords(driver, pages):
 
 
 def test_set_geolocation_override_with_multiple_contexts(driver, pages):
-    """Test setting geolocation override with multiple browsing contexts."""
     # Create two browsing contexts
     context1_id = driver.browsing_context.create(type=WindowTypes.TAB)
     context2_id = driver.browsing_context.create(type=WindowTypes.TAB)
@@ -181,7 +176,6 @@ def test_set_geolocation_override_with_multiple_contexts(driver, pages):
 
 
 def test_set_geolocation_override_with_multiple_user_contexts(driver, pages):
-    """Test setting geolocation override with multiple user contexts."""
     # Create two user contexts
     user_context1 = driver.browser.create_user_context()
     user_context2 = driver.browser.create_user_context()
@@ -229,7 +223,6 @@ def test_set_geolocation_override_with_multiple_user_contexts(driver, pages):
 
 @pytest.mark.xfail_firefox
 def test_set_geolocation_override_with_error(driver, pages):
-    """Test setting geolocation override with error."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
 
@@ -242,7 +235,6 @@ def test_set_geolocation_override_with_error(driver, pages):
 
 
 def test_set_timezone_override_with_context(driver, pages):
-    """Test setting timezone override with a browsing context."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
 
@@ -267,7 +259,6 @@ def test_set_timezone_override_with_context(driver, pages):
 
 
 def test_set_timezone_override_with_user_context(driver, pages):
-    """Test setting timezone override with a user context."""
     user_context = driver.browser.create_user_context()
     context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
 
@@ -287,7 +278,6 @@ def test_set_timezone_override_with_user_context(driver, pages):
 
 @pytest.mark.xfail_firefox(reason="Firefox returns UTC as timezone string in case of offset.")
 def test_set_timezone_override_using_offset(driver, pages):
-    """Test setting timezone override using offset."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
 
@@ -320,7 +310,6 @@ def test_set_timezone_override_using_offset(driver, pages):
     ],
 )
 def test_set_locale_override_with_contexts(driver, pages, locale, expected_locale):
-    """Test setting locale override with browsing contexts."""
     context_id = driver.current_window_handle
 
     driver.emulation.set_locale_override(locale=locale, contexts=[context_id])
@@ -345,7 +334,6 @@ def test_set_locale_override_with_contexts(driver, pages, locale, expected_local
     ],
 )
 def test_set_locale_override_with_user_contexts(driver, pages, value):
-    """Test setting locale override with user contexts."""
     user_context = driver.browser.create_user_context()
     try:
         context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
@@ -366,7 +354,6 @@ def test_set_locale_override_with_user_contexts(driver, pages, value):
 
 @pytest.mark.xfail_firefox(reason="Not yet supported")
 def test_set_scripting_enabled_with_contexts(driver, pages):
-    """Test disabling scripting with browsing contexts."""
     context_id = driver.current_window_handle
 
     # disable scripting
@@ -393,7 +380,6 @@ def test_set_scripting_enabled_with_contexts(driver, pages):
 
 @pytest.mark.xfail_firefox(reason="Not yet supported")
 def test_set_scripting_enabled_with_user_contexts(driver, pages):
-    """Test disabling scripting with user contexts."""
     user_context = driver.browser.create_user_context()
     try:
         context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
