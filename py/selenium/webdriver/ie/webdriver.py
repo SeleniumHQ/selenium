@@ -39,10 +39,10 @@ class WebDriver(RemoteWebDriver):
 
         Starts the service and then creates new instance of Ie driver.
 
-        :Args:
-         - options - IE Options instance, providing additional IE options
-         - service - (Optional) service instance for managing the starting and stopping of the driver.
-         - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
+        Args:
+            options: IE Options instance, providing additional IE options
+            service: (Optional) service instance for managing the starting and stopping of the driver.
+            keep_alive: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
 
         self.service = service if service else Service()

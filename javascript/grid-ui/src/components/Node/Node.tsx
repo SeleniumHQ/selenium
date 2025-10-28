@@ -101,12 +101,33 @@ function Node (props) {
     }
     setLiveViewSessionId('')
   }
-  const getCardStyle = (status: string) => ({
-    height: '100%',
-    flexGrow: 1,
-    opacity: status === 'DOWN' ? 0.25 : 1,
-    bgcolor: (status === 'DOWN' || status === 'DRAINING') ? 'grey.A100' : ''
-  })
+  const getCardStyle = (status: string) => {
+    const baseStyle = {
+      height: '100%',
+      flexGrow: 1
+    }
+    
+    if (status === 'DOWN') {
+      return {
+        ...baseStyle,
+        opacity: 0.6,
+        border: '2px solid',
+        borderColor: 'error.main',
+        bgcolor: 'action.disabledBackground'
+      }
+    }
+    
+    if (status === 'DRAINING') {
+      return {
+        ...baseStyle,
+        border: '2px solid',
+        borderColor: 'warning.main',
+        bgcolor: 'action.hover'
+      }
+    }
+    
+    return baseStyle
+  }
 
   return (
     <>
@@ -172,7 +193,7 @@ function Node (props) {
             {node.uri}
           </Typography>
         </DialogTitle>
-        <DialogContent dividers sx={{ height: '600px' }}>
+        <DialogContent dividers sx={{ height: '600px', bgcolor: 'background.default', p: 0 }}>
           <LiveView
             ref={liveViewRef as any}
             url={getVncUrl(vncSession, origin)}
