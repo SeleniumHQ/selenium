@@ -88,9 +88,7 @@ module Selenium
               sleep 2
               retry
             rescue Errno::ECONNREFUSED => e
-              raise e.class, "using proxy: #{http.proxy_uri}" if http.proxy?
-
-              raise
+              handle_connection_refused(e)
             end
 
             if response.is_a? Net::HTTPRedirection
@@ -102,6 +100,12 @@ module Selenium
               WebDriver.logger.debug("   <<<  #{response.instance_variable_get(:@header).inspect}", id: :header)
               create_response response.code, response.body, response.content_type
             end
+          end
+
+          def handle_connection_refused(error)
+            raise error.class, "using proxy: #{http.proxy_uri}" if http.proxy?
+
+            raise
           end
 
           def new_request_for(verb, url, headers, payload)

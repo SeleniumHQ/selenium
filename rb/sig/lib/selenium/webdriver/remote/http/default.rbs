@@ -32,6 +32,8 @@ module Selenium
 
           def request: (untyped verb, untyped url, untyped headers, untyped payload, ?::Integer redirects) -> untyped
 
+          def handle_connection_refused: (Errno::ECONNREFUSED exception) -> untyped
+
           def new_request_for: (untyped verb, untyped url, untyped headers, untyped payload) -> untyped
 
           def response_for: (untyped request) -> untyped
