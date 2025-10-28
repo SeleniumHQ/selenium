@@ -37,6 +37,15 @@ class ScreenOrientationType(Enum):
     LANDSCAPE_SECONDARY = "landscape-secondary"
 
 
+def _convert_to_enum(value, enum_class):
+    if isinstance(value, enum_class):
+        return value
+    try:
+        return enum_class(value)
+    except ValueError:
+        raise ValueError(f"Invalid orientation: {value}")
+
+
 class ScreenOrientation:
     """Represents screen orientation configuration."""
 
@@ -55,22 +64,9 @@ class ScreenOrientation:
         Raises:
             ValueError: If natural or type values are invalid.
         """
-        # Convert strings to enums if needed
-        if isinstance(natural, str):
-            try:
-                self.natural = ScreenOrientationNatural(natural)
-            except ValueError:
-                raise ValueError(f"Invalid natural orientation: {natural}")
-        else:
-            self.natural = natural
-
-        if isinstance(type, str):
-            try:
-                self.type = ScreenOrientationType(type)
-            except ValueError:
-                raise ValueError(f"Invalid orientation type: {type}")
-        else:
-            self.type = type
+        # handle string values
+        self.natural = _convert_to_enum(natural, ScreenOrientationNatural)
+        self.type = _convert_to_enum(type, ScreenOrientationType)
 
     def to_dict(self) -> dict[str, str]:
         return {
