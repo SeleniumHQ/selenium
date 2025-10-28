@@ -37,11 +37,11 @@ class WebDriver(RemoteWebDriver):
         """Creates a new Safari driver instance and launches or finds a running
         safaridriver service.
 
-        :Args:
-         - keep_alive - Whether to configure SafariRemoteConnection to use
-             HTTP keep-alive. Defaults to True.
-         - options - Instance of ``options.Options``.
-         - service - Service object for handling the browser driver if you need to pass extra details
+        Args:
+            keep_alive: Whether to configure SafariRemoteConnection to use
+                HTTP keep-alive. Defaults to True.
+            options: Instance of ``options.Options``.
+            service: Service object for handling the browser driver if you need to pass extra details
         """
         self.service = service if service else Service()
         options = options if options else Options()

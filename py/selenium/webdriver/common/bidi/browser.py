@@ -59,7 +59,6 @@ class ClientWindowInfo:
         """Gets the state of the client window.
 
         Returns:
-        -------
             str: The state of the client window (one of the ClientWindowState constants).
         """
         return self.state
@@ -68,7 +67,6 @@ class ClientWindowInfo:
         """Gets the client window identifier.
 
         Returns:
-        -------
             str: The client window identifier.
         """
         return self.client_window
@@ -77,7 +75,6 @@ class ClientWindowInfo:
         """Gets the width of the client window.
 
         Returns:
-        -------
             int: The width of the client window.
         """
         return self.width
@@ -86,7 +83,6 @@ class ClientWindowInfo:
         """Gets the height of the client window.
 
         Returns:
-        -------
             int: The height of the client window.
         """
         return self.height
@@ -95,7 +91,6 @@ class ClientWindowInfo:
         """Gets the x coordinate of the client window.
 
         Returns:
-        -------
             int: The x coordinate of the client window.
         """
         return self.x
@@ -104,7 +99,6 @@ class ClientWindowInfo:
         """Gets the y coordinate of the client window.
 
         Returns:
-        -------
             int: The y coordinate of the client window.
         """
         return self.y
@@ -113,7 +107,6 @@ class ClientWindowInfo:
         """Checks if the client window is active.
 
         Returns:
-        -------
             bool: True if the client window is active, False otherwise.
         """
         return self.active
@@ -122,16 +115,13 @@ class ClientWindowInfo:
     def from_dict(cls, data: dict) -> "ClientWindowInfo":
         """Creates a ClientWindowInfo instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the client window information.
 
         Returns:
-        -------
             ClientWindowInfo: A new instance of ClientWindowInfo.
 
         Raises:
-        ------
             ValueError: If required fields are missing or have invalid types.
         """
         try:
@@ -175,7 +165,7 @@ class ClientWindowInfo:
                 active=active,
             )
         except (KeyError, TypeError) as e:
-            raise ValueError(f"Invalid data format for ClientWindowInfo: {e}")
+            raise ValueError(f"Invalid data format for ClientWindowInfo: {e}") from e
 
 
 class Browser:
@@ -194,14 +184,12 @@ class Browser:
     ) -> str:
         """Creates a new user context.
 
-        Parameters:
-        -----------
-            accept_insecure_certs: Optional flag to accept insecure TLS certificates
-            proxy: Optional proxy configuration for the user context
-            unhandled_prompt_behavior: Optional configuration for handling user prompts
+        Args:
+            accept_insecure_certs: Optional flag to accept insecure TLS certificates.
+            proxy: Optional proxy configuration for the user context.
+            unhandled_prompt_behavior: Optional configuration for handling user prompts.
 
         Returns:
-        -------
             str: The ID of the created user context.
         """
         params: dict[str, Any] = {}
@@ -222,7 +210,6 @@ class Browser:
         """Gets all user contexts.
 
         Returns:
-        -------
             List[str]: A list of user context IDs.
         """
         result = self.conn.execute(command_builder("browser.getUserContexts", {}))
@@ -231,16 +218,14 @@ class Browser:
     def remove_user_context(self, user_context_id: str) -> None:
         """Removes a user context.
 
-        Parameters:
-        -----------
+        Args:
             user_context_id: The ID of the user context to remove.
 
         Raises:
-        ------
-            Exception: If the user context ID is "default" or does not exist.
+            ValueError: If the user context ID is "default" or does not exist.
         """
         if user_context_id == "default":
-            raise Exception("Cannot remove the default user context")
+            raise ValueError("Cannot remove the default user context")
 
         params = {"userContext": user_context_id}
         self.conn.execute(command_builder("browser.removeUserContext", params))
@@ -249,7 +234,6 @@ class Browser:
         """Gets all client windows.
 
         Returns:
-        -------
             List[ClientWindowInfo]: A list of client window information.
         """
         result = self.conn.execute(command_builder("browser.getClientWindows", {}))

@@ -36,9 +36,9 @@ class WebDriver(RemoteWebDriver):
 
         Starts the service and then creates new instance of WebKitGTK Driver.
 
-        :Args:
-         - options : an instance of WebKitGTKOptions
-         - service : Service object for handling the browser driver if you need to pass extra details
+        Args:
+            options: an instance of WebKitGTKOptions
+            service: Service object for handling the browser driver if you need to pass extra details
         """
 
         options = options if options else Options()
