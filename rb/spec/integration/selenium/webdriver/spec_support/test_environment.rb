@@ -276,7 +276,9 @@ module Selenium
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
-          WebDriver::Options.chrome(args: args, **opts)
+          args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
+          opts[:args] = args
+          WebDriver::Options.chrome(**opts)
         end
 
         def edge_options(args: [], **opts)
@@ -285,7 +287,9 @@ module Selenium
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
           args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
-          WebDriver::Options.edge(args: args, **opts)
+          args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
+          opts[:args] = args
+          WebDriver::Options.edge(**opts)
         end
 
         def firefox_options(args: [], **opts)

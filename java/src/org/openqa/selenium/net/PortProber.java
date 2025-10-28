@@ -26,8 +26,10 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.Platform;
 
+@NullMarked
 public class PortProber {
 
   public static final int HIGHEST_PORT = 65535;

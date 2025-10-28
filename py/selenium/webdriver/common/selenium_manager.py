@@ -38,9 +38,11 @@ class SeleniumManager:
     def binary_paths(self, args: list) -> dict:
         """Determines the locations of the requested assets.
 
-        :Args:
-         - args: the commands to send to the selenium manager binary.
-        :Returns: dictionary of assets and their path
+        Args:
+            args: the commands to send to the selenium manager binary.
+
+        Returns:
+            Dictionary of assets and their path.
         """
 
         args = [str(self._get_binary())] + args
@@ -57,9 +59,11 @@ class SeleniumManager:
     def _get_binary() -> Path:
         """Determines the path of the correct Selenium Manager binary.
 
-        :Returns: The Selenium Manager executable location
+        Returns:
+            The Selenium Manager executable location.
 
-        :Raises: WebDriverException if the platform is unsupported
+        Raises:
+            WebDriverException: If the platform is unsupported.
         """
 
         compiled_path = Path(__file__).parent.joinpath("selenium-manager")
@@ -105,9 +109,11 @@ class SeleniumManager:
     def _run(args: list[str]) -> dict:
         """Executes the Selenium Manager Binary.
 
-        :Args:
-         - args: the components of the command being executed.
-        :Returns: The log string containing the driver location.
+        Args:
+            args: the components of the command being executed.
+
+        Returns:
+            The log string containing the driver location.
         """
         command = " ".join(args)
         logger.debug("Executing process: %s", command)
