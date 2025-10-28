@@ -485,18 +485,30 @@ def test_set_screen_orientation_override_with_contexts(driver, pages):
     assert get_screen_orientation(driver, context_id) == initial_orientation
 
 
-def test_set_screen_orientation_override_with_user_contexts(driver, pages):
+@pytest.mark.parametrize(
+    "natural,orientation_type,expected_angle",
+    [
+        # Portrait natural orientations
+        ("portrait", "portrait-primary", 0),
+        ("portrait", "portrait-secondary", 180),
+        ("portrait", "landscape-primary", 90),
+        ("portrait", "landscape-secondary", 270),
+        # Landscape natural orientations
+        ("landscape", "portrait-primary", 90),
+        ("landscape", "portrait-secondary", 270),
+        ("landscape", "landscape-primary", 0),
+        ("landscape", "landscape-secondary", 180),
+    ],
+)
+def test_set_screen_orientation_override_with_user_contexts(driver, pages, natural, orientation_type, expected_angle):
     user_context = driver.browser.create_user_context()
     try:
         context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
         try:
             driver.switch_to.window(context_id)
 
-            # Set landscape-secondary orientation on portrait natural using string
-            orientation = ScreenOrientation(
-                natural="portrait",
-                type="landscape-secondary",
-            )
+            # Set the specified orientation
+            orientation = ScreenOrientation(natural=natural, type=orientation_type)
             driver.emulation.set_screen_orientation_override(
                 screen_orientation=orientation, user_contexts=[user_context]
             )
@@ -506,10 +518,9 @@ def test_set_screen_orientation_override_with_user_contexts(driver, pages):
 
             # Verify the orientation was set
             current_orientation = get_screen_orientation(driver, context_id)
-            assert current_orientation["type"] == "landscape-secondary", (
-                f"Expected landscape-secondary, got {current_orientation}"
-            )
-            assert current_orientation["angle"] == 270, f"Expected angle 270, got {current_orientation['angle']}"
+
+            assert current_orientation["type"] == orientation_type
+            assert current_orientation["angle"] == expected_angle
 
             driver.emulation.set_screen_orientation_override(screen_orientation=None, user_contexts=[user_context])
         finally:
