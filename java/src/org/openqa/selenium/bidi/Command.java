@@ -48,7 +48,7 @@ public class Command<X> {
       Function<JsonInput, X> mapper,
       boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
-    this.params = Map.copyOf(Require.nonNull("Command parameters", params));
+    this.params = Require.nonNull("Command parameters", params);
     this.mapper = Require.nonNull("Mapper for result", mapper);
     this.sendsResponse = sendsResponse;
   }

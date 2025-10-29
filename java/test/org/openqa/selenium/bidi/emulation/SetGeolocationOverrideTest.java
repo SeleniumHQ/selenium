@@ -38,7 +38,7 @@ import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsSecureServer;
 
 @NeedsSecureServer
-class EmulationTest extends JupiterTestBase {
+class SetGeolocationOverrideTest extends JupiterTestBase {
   Object getBrowserGeolocation(WebDriver driver, String userContext, String origin) {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     Permission permission = new Permission(driver);
