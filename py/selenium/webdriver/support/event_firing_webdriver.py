@@ -135,6 +135,20 @@ class EventFiringWebDriver:
         return WebDriver._wrap_value(self._driver, value)
 
     def __setattr__(self, item, value):
+        """Set an attribute on the EventFiringWebDriver or wrapped driver.
+
+        Sets internal attributes (those starting with '_') on this instance.
+        Other attributes are delegated to the wrapped driver. Exceptions
+        are reported to the listener.
+
+        Args:
+            item: The attribute name.
+            value: The attribute value.
+
+        Raises:
+            Exception: Any exception from the wrapped driver is re-raised
+                after being reported to the listener.
+        """
         if item.startswith("_") or not hasattr(self._driver, item):
             object.__setattr__(self, item, value)
         else:
@@ -145,6 +159,22 @@ class EventFiringWebDriver:
                 raise
 
     def __getattr__(self, name):
+        """Get an attribute from the wrapped driver.
+
+        Wraps returned WebElement objects and callable attributes. Exceptions
+        are reported to the listener.
+
+        Args:
+            name: The attribute name.
+
+        Returns:
+            The attribute value from the wrapped driver, with WebElement
+            objects wrapped and callables wrapped to report exceptions.
+
+        Raises:
+            Exception: Any exception from the wrapped driver is re-raised
+                after being reported to the listener.
+        """
         def _wrap(*args, **kwargs):
             try:
                 result = attrib(*args, **kwargs)
@@ -205,6 +235,20 @@ class EventFiringWebElement:
         return _wrap_elements(result, self._ef_driver)
 
     def __setattr__(self, item, value):
+        """Set an attribute on the EventFiringWebElement or wrapped element.
+
+        Sets internal attributes (those starting with '_') on this instance.
+        Other attributes are delegated to the wrapped element. Exceptions
+        are reported to the listener.
+
+        Args:
+            item: The attribute name.
+            value: The attribute value.
+
+        Raises:
+            Exception: Any exception from the wrapped element is re-raised
+                after being reported to the listener.
+        """
         if item.startswith("_") or not hasattr(self._webelement, item):
             object.__setattr__(self, item, value)
         else:
@@ -215,6 +259,22 @@ class EventFiringWebElement:
                 raise
 
     def __getattr__(self, name):
+        """Get an attribute from the wrapped element.
+
+        Wraps returned WebElement objects and callable attributes. Exceptions
+        are reported to the listener.
+
+        Args:
+            name: The attribute name.
+
+        Returns:
+            The attribute value from the wrapped element, with WebElement
+            objects wrapped and callables wrapped to report exceptions.
+
+        Raises:
+            Exception: Any exception from the wrapped element is re-raised
+                after being reported to the listener.
+        """
         def _wrap(*args, **kwargs):
             try:
                 result = attrib(*args, **kwargs)
