@@ -190,6 +190,13 @@ class Service(ABC):
             logger.error("Error terminating service process.", exc_info=True)
 
     def __del__(self) -> None:
+        """Cleanup and terminate the service process when the object is destroyed.
+
+        Attempts to gracefully stop the service process when the instance is
+        garbage collected. `subprocess.Popen` doesn't send signals on `__del__`,
+        so we explicitly call stop() here. Note: globals are not referenced here
+        as they may be None during interpreter shutdown.
+        """
         # `subprocess.Popen` doesn't send signal on `__del__`;
         # so we attempt to close the launched process when `__del__`
         # is triggered.
