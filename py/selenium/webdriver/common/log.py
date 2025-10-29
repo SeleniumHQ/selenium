@@ -68,7 +68,6 @@ class Log:
                 assert event["current_value"] == ""
                 assert event["old_value"] == "display:none;"
         """
-
         page = self.cdp.get_session_context("page.enable")
         await page.execute(self.devtools.page.enable())
         runtime = self.cdp.get_session_context("runtime.enable")
@@ -105,7 +104,6 @@ class Log:
                 assert bool(error)
                 assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
         """
-
         session = self.cdp.get_session_context("page.enable")
         await session.execute(self.devtools.page.enable())
         session = self.cdp.get_session_context("runtime.enable")
@@ -128,7 +126,6 @@ class Log:
                     driver.execute_script("console.log('I like cheese')")
                 assert messages["message"] == "I love cheese"
         """
-
         from selenium.webdriver.common.bidi.console import Console
 
         session = self.cdp.get_session_context("page.enable")

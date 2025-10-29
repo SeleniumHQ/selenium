@@ -223,7 +223,6 @@ class WebDriver(BaseWebDriver):
                 WebElement.
             client_config: Custom client configuration to use. Defaults to None.
         """
-
         if options is None:
             raise TypeError(
                 "missing 1 required keyword-only argument: 'options' (instance of driver `options.Options` class)"
@@ -349,7 +348,6 @@ class WebDriver(BaseWebDriver):
         Args:
             capabilities: A capabilities dict to start the session with.
         """
-
         caps = _create_caps(capabilities)
         try:
             response = self.execute(Command.NEW_SESSION, caps)["value"]
@@ -709,7 +707,6 @@ class WebDriver(BaseWebDriver):
         Example:
             >>> driver.delete_cookie("my_cookie")
         """
-
         # firefox deletes all cookies when "" is passed as name
         if not name or name.isspace():
             raise ValueError("Cookie name cannot be empty")
@@ -959,7 +956,6 @@ class WebDriver(BaseWebDriver):
         Example:
             >>> driver.get_window_size()
         """
-
         self._check_if_window_handle_is_current(windowHandle)
         size = self.get_window_rect()
 
@@ -987,7 +983,6 @@ class WebDriver(BaseWebDriver):
         Example:
             >>> driver.get_window_position()
         """
-
         self._check_if_window_handle_is_current(windowHandle)
         position = self.get_window_rect()
 
@@ -1018,7 +1013,6 @@ class WebDriver(BaseWebDriver):
             >>> driver.set_window_rect(width=100, height=200)
             >>> driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
-
         if (x is None and y is None) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
@@ -1179,7 +1173,8 @@ class WebDriver(BaseWebDriver):
     @property
     def _session(self):
         """Returns the BiDi session object for the current WebDriver
-        session."""
+        session.
+        """
         if not self._websocket_connection:
             self._start_bidi()
 

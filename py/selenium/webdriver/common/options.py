@@ -375,7 +375,8 @@ class BaseOptions(metaclass=ABCMeta):
 
     def ignore_local_proxy_environment_variables(self) -> None:
         """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-        being picked up and used."""
+        being picked up and used.
+        """
         self._ignore_local_proxy = True
 
 
@@ -409,7 +410,8 @@ class ArgOptions(BaseOptions):
 
     def ignore_local_proxy_environment_variables(self) -> None:
         """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-        being picked up and used."""
+        being picked up and used.
+        """
         warnings.warn(
             "using ignore_local_proxy_environment_variables in Options has been deprecated, "
             "instead, create a Proxy instance with ProxyType.DIRECT to ignore proxy settings, "

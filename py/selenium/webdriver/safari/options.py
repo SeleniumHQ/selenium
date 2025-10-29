@@ -30,11 +30,13 @@ class _SafariOptionsDescriptor:
     - `use_technology_preview`
 
     : When an attribute lookup happens,
+
     Example:
         `self.automatic_inspection`
         `__get__` method does a dictionary look up in the dictionary `_caps` of `Options` class
         and returns the value of key `safari:automaticInspection`
     : When an attribute assignment happens,
+
     Example:
         `self.automatic_inspection` = True
         `__set__` method sets/updates the value of the key `safari:automaticInspection` in `_caps`

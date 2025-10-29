@@ -144,9 +144,26 @@ respect-gitignore = true
 target-version = "py39"
 
 [tool.ruff.lint]
-extend-select = ["E4", "E7", "E9", "F", "I", "E501", "RUF022", "TID252"]
+extend-select = ["D", "E4", "E7", "E9", "F", "I", "E501", "RUF022", "TID252"]
 fixable = ["ALL"]
+# remove these as we cleanup docstrings
+extend-ignore = [
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D102", # Missing docstring in public method
+    "D103", # Missing docstring in public function
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "D107", # Missing docstring in `__init__`
+    "D205", # 1 blank line required between summary line and description
+    "D212", # Multi-line docstring summary should start at the first line
+    "D415", # First line should end with a period, question mark, or exclamation point
+    "D417", # Missing argument descriptions in the docstring for `__init__`
+]
 
 [tool.ruff.format]
 docstring-code-format = true
 docstring-code-line-length = 120
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
