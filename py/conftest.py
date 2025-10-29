@@ -106,7 +106,15 @@ selenium_driver = None
 
 
 class ContainerProtocol:
-    def __contains__(self, name):
+    def __contains__(self, name) -> bool:
+        """Check if a name exists in the container (case-insensitive).
+
+        Args:
+            name: The name to check for existence.
+
+        Returns:
+            True if the name exists (case-insensitive), False otherwise.
+        """
         if name.lower() in self.__dict__:
             return True
         return False
