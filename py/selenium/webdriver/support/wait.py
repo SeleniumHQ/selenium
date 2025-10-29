@@ -73,6 +73,11 @@ class WebDriverWait(Generic[D]):
         self._ignored_exceptions = tuple(exceptions)
 
     def __repr__(self) -> str:
+        """Return a string representation of the WebDriverWait object.
+
+        Returns:
+            A string representation showing the module, class name, and session ID.
+        """
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self._driver.session_id}")>'
 
     def until(self, method: Callable[[D], Union[Literal[False], T]], message: str = "") -> T:
