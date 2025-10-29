@@ -30,12 +30,31 @@ class ShadowRoot:
         self._id = id_
 
     def __eq__(self, other_shadowroot) -> bool:
+        """Compare this ShadowRoot with another ShadowRoot for equality.
+
+        Args:
+            other_shadowroot: The other ShadowRoot object to compare with.
+
+        Returns:
+            True if both ShadowRoot objects have the same ID, False otherwise.
+        """
         return self._id == other_shadowroot._id
 
     def __hash__(self) -> int:
+        """Return the hash code for this ShadowRoot.
+
+        Returns:
+            The integer hash of the ShadowRoot ID.
+        """
         return int(md5_hash(self._id.encode("utf-8")).hexdigest(), 16)
 
     def __repr__(self) -> str:
+        """Return a string representation of the ShadowRoot object.
+
+        Returns:
+            A string representation showing the module, class name, session ID,
+            and ShadowRoot element ID.
+        """
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
             type(self), self.session.session_id, self._id
         )
