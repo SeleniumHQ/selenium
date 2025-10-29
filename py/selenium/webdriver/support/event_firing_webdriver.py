@@ -175,6 +175,7 @@ class EventFiringWebDriver:
             Exception: Any exception from the wrapped driver is re-raised
                 after being reported to the listener.
         """
+
         def _wrap(*args, **kwargs):
             try:
                 result = attrib(*args, **kwargs)
@@ -275,6 +276,7 @@ class EventFiringWebElement:
             Exception: Any exception from the wrapped element is re-raised
                 after being reported to the listener.
         """
+
         def _wrap(*args, **kwargs):
             try:
                 result = attrib(*args, **kwargs)
