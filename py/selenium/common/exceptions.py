@@ -35,6 +35,12 @@ class WebDriverException(Exception):
         self.stacktrace = stacktrace
 
     def __str__(self) -> str:
+        """Return a formatted string representation of the exception.
+
+        Returns:
+            A formatted string containing the error message, screenshot info,
+            and stacktrace if available.
+        """
         exception_msg = f"Message: {self.msg}\n"
         if self.screen:
             exception_msg += "Screenshot: available via screen\n"
@@ -147,6 +153,11 @@ class UnexpectedAlertPresentException(WebDriverException):
         self.alert_text = alert_text
 
     def __str__(self) -> str:
+        """Return a formatted string representation of the alert exception.
+
+        Returns:
+            A formatted string containing the alert text and parent exception info.
+        """
         return f"Alert Text: {self.alert_text}\n{super().__str__()}"
 
 
