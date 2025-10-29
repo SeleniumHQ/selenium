@@ -187,6 +187,11 @@ class Credential:
         return cls(_id, is_resident_credential, rp_id, user_handle, private_key, sign_count)
 
     def __str__(self) -> str:
+        """Return a string representation of the credential.
+
+        Returns:
+            A formatted string containing all credential properties.
+        """
         return f"Credential(id={self.id}, is_resident_credential={self.is_resident_credential}, rp_id={self.rp_id},\
             user_handle={self.user_handle}, private_key={self.private_key}, sign_count={self.sign_count})"
 
