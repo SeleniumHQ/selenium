@@ -310,7 +310,8 @@ class RelativeBy:
 
     def to_dict(self) -> dict:
         """Create a dict that will be passed to the driver to start searching
-        for the element."""
+        for the element.
+        """
         return {
             "relative": {
                 "root": self.root,

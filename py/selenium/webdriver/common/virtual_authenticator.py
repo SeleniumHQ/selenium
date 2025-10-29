@@ -56,7 +56,6 @@ class VirtualAuthenticatorOptions:
 
         Initialize VirtualAuthenticatorOptions object.
         """
-
         self.protocol: str = protocol
         self.transport: str = transport
         self.has_resident_key: bool = has_resident_key
@@ -194,7 +193,8 @@ class Credential:
 
 def required_chromium_based_browser(func):
     """A decorator to ensure that the client used is a chromium based
-    browser."""
+    browser.
+    """
 
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -209,7 +209,8 @@ def required_chromium_based_browser(func):
 
 def required_virtual_authenticator(func):
     """A decorator to ensure that the function is called with a virtual
-    authenticator."""
+    authenticator.
+    """
 
     @functools.wraps(func)
     @required_chromium_based_browser

@@ -30,7 +30,7 @@ class Select:
             webelement: SELECT element to wrap
 
         Example:
-            from selenium.webdriver.support.ui import Select \n
+            from selenium.webdriver.support.ui import Select
             Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)
         """
         if webelement.tag_name.lower() != "select":
@@ -47,13 +47,15 @@ class Select:
     @property
     def all_selected_options(self) -> list[WebElement]:
         """Returns a list of all selected options belonging to this select
-        tag."""
+        tag.
+        """
         return [opt for opt in self.options if opt.is_selected()]
 
     @property
     def first_selected_option(self) -> WebElement:
         """The first selected option in this select tag (or the currently
-        selected option in a normal select)"""
+        selected option in a normal select)
+        """
         for opt in self.options:
             if opt.is_selected():
                 return opt

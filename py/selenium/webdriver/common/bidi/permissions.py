@@ -39,9 +39,7 @@ class PermissionDescriptor:
 
 
 class Permissions:
-    """
-    BiDi implementation of the permissions module.
-    """
+    """BiDi implementation of the permissions module."""
 
     def __init__(self, conn):
         self.conn = conn

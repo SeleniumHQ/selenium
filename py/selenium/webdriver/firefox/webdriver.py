@@ -49,7 +49,6 @@ class WebDriver(RemoteWebDriver):
             service: (Optional) service instance for managing the starting and stopping of the driver.
             keep_alive: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
         """
-
         self.service = service if service else Service()
         options = options if options else Options()
 
@@ -131,7 +130,6 @@ class WebDriver(RemoteWebDriver):
         Example:
             driver.install_addon("/path/to/firebug.xpi")
         """
-
         if os.path.isdir(path):
             fp = BytesIO()
             # filter all trailing slash found in path

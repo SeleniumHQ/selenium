@@ -62,7 +62,6 @@ class Timeouts:
             script: Number of seconds to wait for an asynchronous script to
                 finish execution before throwing an error.
         """
-
         self._implicit_wait = self._convert(implicit_wait)
         self._page_load = self._convert(page_load)
         self._script = self._convert(script)

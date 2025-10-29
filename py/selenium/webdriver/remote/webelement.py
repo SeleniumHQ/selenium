@@ -256,8 +256,6 @@ class WebElement(BaseWebElement):
             >>> # Generally it's better to wrap the file path in one of the methods
             >>> # in os.path to return the actual path to support cross OS testing.
             >>> # file_input.send_keys(os.path.abspath("path/to/profilepic.gif"))
-            >>> # When using Cygwin, the path need to be provided in Windows format.
-            >>> # file_input.send_keys(f"C:/cygwin{os.path.abspath('path/to/profilepic.gif').replace('/', '\\')}")
         """
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding

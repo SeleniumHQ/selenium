@@ -27,7 +27,8 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 class ChromiumDriver(RemoteWebDriver):
     """Controls the WebDriver instance of ChromiumDriver and allows you to
-    drive the browser."""
+    drive the browser.
+    """
 
     def __init__(
         self,
@@ -47,7 +48,6 @@ class ChromiumDriver(RemoteWebDriver):
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-
         self.service = service if service else ChromiumService()
         options = options if options else ChromiumOptions()
 
