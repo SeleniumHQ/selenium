@@ -73,6 +73,12 @@ class WebElement(BaseWebElement):
         self._id = id_
 
     def __repr__(self):
+        """Return a string representation of the WebElement object.
+
+        Returns:
+            A string representation showing the module, class name, session ID,
+            and element ID.
+        """
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}", element="{self._id}")>'
 
     @property
@@ -488,10 +494,26 @@ class WebElement(BaseWebElement):
         """
         return self._id
 
-    def __eq__(self, element):
+    def __eq__(self, element) -> bool:
+        """Compare this WebElement with another element for equality.
+
+        Args:
+            element: The element to compare with.
+
+        Returns:
+            True if both elements have the same ID, False otherwise.
+        """
         return hasattr(element, "id") and self._id == element.id
 
-    def __ne__(self, element):
+    def __ne__(self, element) -> bool:
+        """Compare this WebElement with another element for inequality.
+
+        Args:
+            element: The element to compare with.
+
+        Returns:
+            True if the elements are not equal, False otherwise.
+        """
         return not self.__eq__(element)
 
     # Private Methods
@@ -559,6 +581,11 @@ class WebElement(BaseWebElement):
         return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value})["value"]
 
     def __hash__(self) -> int:
+        """Return the hash code for this WebElement.
+
+        Returns:
+            The integer hash of the WebElement ID.
+        """
         return int(md5_hash(self._id.encode("utf-8")).hexdigest(), 16)
 
     def _upload(self, filename):
