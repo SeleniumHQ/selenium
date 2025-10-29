@@ -27,7 +27,6 @@ class InputDevice:
         self.actions: list[Any] = []
 
     def add_action(self, action: Any) -> None:
-        """"""
         self.actions.append(action)
 
     def clear_actions(self) -> None:

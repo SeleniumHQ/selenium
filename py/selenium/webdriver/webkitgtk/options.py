@@ -63,7 +63,8 @@ class Options(ArgOptions):
 
     def to_capabilities(self):
         """Creates a capabilities with all the options that have been set and
-        returns a dictionary with everything."""
+        returns a dictionary with everything.
+        """
         caps = self._caps
 
         browser_options = {}

@@ -44,7 +44,6 @@ class SeleniumManager:
         Returns:
             Dictionary of assets and their path.
         """
-
         args = [str(self._get_binary())] + args
         if logger.getEffectiveLevel() == logging.DEBUG:
             args.append("--debug")
@@ -65,7 +64,6 @@ class SeleniumManager:
         Raises:
             WebDriverException: If the platform is unsupported.
         """
-
         compiled_path = Path(__file__).parent.joinpath("selenium-manager")
         exe = sysconfig.get_config_var("EXE")
         if exe is not None:
