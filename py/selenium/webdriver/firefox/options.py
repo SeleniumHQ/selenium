@@ -64,7 +64,10 @@ class Options(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """:Returns: The location of the binary."""
+        """
+        Returns:
+            The location of the binary.
+        """
         return self._binary_location
 
     @binary_location.setter  # noqa
@@ -76,7 +79,10 @@ class Options(ArgOptions):
 
     @property
     def preferences(self) -> dict:
-        """:Returns: A dict of preferences."""
+        """
+        Returns:
+            A dict of preferences.
+        """
         return self._preferences
 
     def set_preference(self, name: str, value: Union[str, int, bool]):
@@ -85,7 +91,10 @@ class Options(ArgOptions):
 
     @property
     def profile(self) -> Optional[FirefoxProfile]:
-        """:Returns: The Firefox profile to use."""
+        """
+        Returns:
+            The Firefox profile to use.
+        """
         return self._profile
 
     @profile.setter

@@ -335,7 +335,10 @@ class PrintOptions:
         self._margin: _MarginOpts = {}
 
     def to_dict(self) -> _PrintOpts:
-        """:Returns: A hash of print options configured."""
+        """
+        Returns:
+            A hash of print options configured.
+        """
         return self._print_options
 
     def set_page_size(self, page_size: dict) -> None:

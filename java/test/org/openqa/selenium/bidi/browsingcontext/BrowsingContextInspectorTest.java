@@ -259,6 +259,28 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
   @Test
   @NeedsFreshDriver
   @NotYetImplemented(FIREFOX)
+  void canListenToDownloadEnd() throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<DownloadEnded> future = new CompletableFuture<>();
+
+      inspector.onDownloadEnd(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/downloads/download.html"), ReadinessState.COMPLETE);
+
+      driver.findElement(By.id("file-1")).click();
+
+      DownloadEnded downloadEnded = future.get(5, TimeUnit.SECONDS);
+      assertThat(downloadEnded.getDownloadParams().getBrowsingContextId())
+          .isEqualTo(context.getId());
+      assertThat(downloadEnded.isCompleted()).isTrue();
+      assertThat(downloadEnded.getDownloadParams().getUrl()).contains("/downloads/file_1.txt");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
   void canListenToNavigationFailedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
