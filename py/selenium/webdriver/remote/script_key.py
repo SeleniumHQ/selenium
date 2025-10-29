@@ -26,8 +26,21 @@ class ScriptKey:
     def id(self):
         return self._id
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
+        """Compare this ScriptKey with another object for equality.
+
+        Args:
+            other: The object to compare with.
+
+        Returns:
+            True if the script key ID equals the other object, False otherwise.
+        """
         return self._id == other
 
     def __repr__(self) -> str:
+        """Return a string representation of the ScriptKey object.
+
+        Returns:
+            A string representation showing the script key ID.
+        """
         return f"ScriptKey(id={self.id})"
