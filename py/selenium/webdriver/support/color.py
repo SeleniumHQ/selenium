@@ -152,23 +152,56 @@ class Color:
         return f"#{self.red:02x}{self.green:02x}{self.blue:02x}"
 
     def __eq__(self, other: object) -> bool:
+        """Compare this Color with another object for equality.
+
+        Args:
+            other: The object to compare with.
+
+        Returns:
+            True if both are Color objects with the same RGBA values, False
+            otherwise. Returns NotImplemented if other is not a Color.
+        """
         if isinstance(other, Color):
             return self.rgba == other.rgba
         return NotImplemented
 
     def __ne__(self, other: Any) -> bool:
+        """Compare this Color with another object for inequality.
+
+        Args:
+            other: The object to compare with.
+
+        Returns:
+            True if the objects are not equal, False otherwise. Returns
+            NotImplemented if the comparison is not supported.
+        """
         result = self.__eq__(other)
         if result is NotImplemented:
             return result
         return not result
 
     def __hash__(self) -> int:
+        """Return the hash code for this Color.
+
+        Returns:
+            The integer hash of the Color's RGBA values.
+        """
         return hash((self.red, self.green, self.blue, self.alpha))
 
     def __repr__(self) -> str:
+        """Return a string representation of the Color object.
+
+        Returns:
+            A string representation showing all RGBA components.
+        """
         return f"Color(red={self.red}, green={self.green}, blue={self.blue}, alpha={self.alpha})"
 
     def __str__(self) -> str:
+        """Return a string representation of the Color.
+
+        Returns:
+            A user-friendly string showing the RGBA value.
+        """
         return f"Color: {self.rgba}"
 
 
