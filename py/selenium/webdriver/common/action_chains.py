@@ -366,7 +366,19 @@ class ActionChains:
     # Context manager so ActionChains can be used in a 'with .. as' statements.
 
     def __enter__(self) -> ActionChains:
+        """Enter the context manager.
+
+        Returns:
+            The ActionChains instance for use in the with block.
+        """
         return self  # Return created instance of self.
 
     def __exit__(self, _type, _value, _traceback) -> None:
+        """Exit the context manager.
+
+        Args:
+            _type: The exception type if an error occurred in the with block.
+            _value: The exception value if an error occurred in the with block.
+            _traceback: The traceback if an error occurred in the with block.
+        """
         pass  # Do nothing, does not require additional cleanup.
