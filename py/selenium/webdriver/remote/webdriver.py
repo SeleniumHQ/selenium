@@ -271,9 +271,19 @@ class WebDriver(BaseWebDriver):
         self._devtools = None
 
     def __repr__(self):
+        """Return a string representation of the WebDriver object.
+
+        Returns:
+            A string representation showing the module, class name, and session ID.
+        """
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
 
     def __enter__(self):
+        """Enter the context manager.
+
+        Returns:
+            The WebDriver instance for use in the with block.
+        """
         return self
 
     def __exit__(
@@ -282,6 +292,15 @@ class WebDriver(BaseWebDriver):
         exc: Optional[BaseException],
         traceback: Optional[types.TracebackType],
     ):
+        """Exit the context manager.
+
+        Quits the WebDriver session when exiting the with block.
+
+        Args:
+            exc_type: The exception type if an error occurred in the with block.
+            exc: The exception value if an error occurred in the with block.
+            traceback: The traceback if an error occurred in the with block.
+        """
         self.quit()
 
     @contextmanager
