@@ -63,6 +63,11 @@ class PointerParameters:
     pointer_type: str = PointerType.MOUSE
 
     def __post_init__(self):
+        """Validate the pointer type after dataclass initialization.
+
+        Raises:
+            ValueError: If the pointer_type is not one of the valid types.
+        """
         if self.pointer_type not in PointerType.VALID_TYPES:
             raise ValueError(f"Invalid pointer type: {self.pointer_type}. Must be one of {PointerType.VALID_TYPES}")
 
@@ -84,6 +89,11 @@ class PointerCommonProperties:
     azimuth_angle: float = 0.0
 
     def __post_init__(self):
+        """Validate pointer common properties after dataclass initialization.
+
+        Raises:
+            ValueError: If any of the properties are outside their valid ranges.
+        """
         if self.width < 1:
             raise ValueError("width must be at least 1")
         if self.height < 1:
@@ -309,6 +319,10 @@ class PointerSourceActions:
     )
 
     def __post_init__(self):
+        """Initialize default pointer parameters if not provided.
+
+        Sets default PointerParameters if none are specified during initialization.
+        """
         if self.parameters is None:
             self.parameters = PointerParameters()
 
