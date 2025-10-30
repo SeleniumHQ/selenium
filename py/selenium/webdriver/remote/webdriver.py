@@ -822,6 +822,7 @@ class WebDriver(BaseWebDriver):
                 values include: By.ID, By.NAME, By.XPATH, By.CSS_SELECTOR,
                 By.CLASS_NAME, By.TAG_NAME, By.LINK_TEXT, By.PARTIAL_LINK_TEXT,
                 or RelativeBy.
+            value: The locator value to use with the specified `by` strategy.
 
         Returns:
             The first matching WebElement found on the page.
@@ -847,6 +848,7 @@ class WebDriver(BaseWebDriver):
                 values include: By.ID, By.NAME, By.XPATH, By.CSS_SELECTOR,
                 By.CLASS_NAME, By.TAG_NAME, By.LINK_TEXT, By.PARTIAL_LINK_TEXT,
                 or RelativeBy.
+            value: The locator value to use with the specified `by` strategy.
 
         Returns:
             List of WebElements matching locator strategy found on the page.
