@@ -31,9 +31,7 @@ import org.openqa.selenium.bidi.module.Browser;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NeedsSecureServer;
 
-@NeedsSecureServer
 public class SetTimezoneOverrideTest extends JupiterTestBase {
   String getTimezoneString(WebDriver driver, String context) {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
@@ -56,7 +54,7 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
     BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
     String contextId = context.getId();
 
-    String url = appServer.whereIsSecure("blank.html");
+    String url = appServer.whereIs("blank.html");
     context.navigate(url, ReadinessState.COMPLETE);
 
     Emulation emul = new Emulation(driver);
@@ -88,7 +86,7 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
             driver, new CreateContextParameters(WindowType.TAB).userContext(userContext));
     String contextId = context.getId();
 
-    String url = appServer.whereIsSecure("blank.html");
+    String url = appServer.whereIs("blank.html");
     context.navigate(url, ReadinessState.COMPLETE);
 
     Emulation emul = new Emulation(driver);
@@ -120,7 +118,7 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
     BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
     String contextId = context.getId();
 
-    String url = appServer.whereIsSecure("blank.html");
+    String url = appServer.whereIs("blank.html");
     context.navigate(url, ReadinessState.COMPLETE);
 
     Emulation emul = new Emulation(driver);
