@@ -36,8 +36,10 @@ def _wrap_elements(result, ef_driver):
 
 
 class EventFiringWebDriver:
-    """A wrapper around an arbitrary WebDriver instance which supports firing
-    events.
+    """Wrap an arbitrary WebDriver instance and support firing events.
+
+    This wrapper allows you to hook into various WebDriver events through an
+    AbstractEventListener implementation.
     """
 
     def __init__(self, driver: WebDriver, event_listener: AbstractEventListener) -> None:
@@ -75,7 +77,8 @@ class EventFiringWebDriver:
 
     @property
     def wrapped_driver(self) -> WebDriver:
-        """
+        """Get the wrapped WebDriver instance.
+
         Returns:
             The WebDriver instance wrapped by this EventsFiringWebDriver.
         """
@@ -173,7 +176,8 @@ class EventFiringWebElement:
 
     @property
     def wrapped_element(self) -> WebElement:
-        """
+        """Get the wrapped WebElement instance.
+
         Returns:
             The WebElement wrapped by this EventFiringWebElement instance.
         """

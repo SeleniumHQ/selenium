@@ -165,9 +165,10 @@ class WebElement(BaseWebElement):
             return self.parent.execute_script("return arguments[0][arguments[1]]", self, name)
 
     def get_dom_attribute(self, name) -> str:
-        """Gets the given attribute of the element. Unlike
-        :func:`~selenium.webdriver.remote.BaseWebElement.get_attribute`, this
-        method only returns attributes declared in the element's HTML markup.
+        """Get the HTML attribute value (not reflected properties) of the element.
+
+        Returns only attributes declared in the element's HTML markup, unlike
+        :func:`~selenium.webdriver.remote.BaseWebElement.get_attribute`.
 
         Args:
             name: Name of the attribute to retrieve.
@@ -278,10 +279,7 @@ class WebElement(BaseWebElement):
 
     @property
     def shadow_root(self) -> ShadowRoot:
-        """Returns a shadow root of the element if there is one or an error.
-        Only works from Chromium 96, Firefox 96, and Safari 16.4 onwards.
-
-        If the alert is present it switches the given driver to it.
+        """Get the shadow root attached to this element if present (Chromium 96+, Firefox 96+, Safari 16.4+).
 
         Returns:
             The ShadowRoot object.
@@ -311,9 +309,10 @@ class WebElement(BaseWebElement):
 
     @property
     def location_once_scrolled_into_view(self) -> dict:
-        """THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover where
-        on the screen an element is so that we can click it. This method should
-        cause the element to be scrolled into view.
+        """Get the element's location on screen after scrolling it into view.
+
+        This may change without warning and scrolls the element into view
+        before calculating coordinates for clicking purposes.
 
         Returns:
             The top lefthand corner location on the screen, or zero
@@ -411,8 +410,7 @@ class WebElement(BaseWebElement):
 
     @property
     def screenshot_as_base64(self) -> str:
-        """Gets the screenshot of the current element as a base64 encoded
-        string.
+        """Get a base64-encoded screenshot of the current element.
 
         Returns:
             The screenshot of the element as a base64 encoded string.
@@ -435,8 +433,9 @@ class WebElement(BaseWebElement):
         return b64decode(self.screenshot_as_base64.encode("ascii"))
 
     def screenshot(self, filename) -> bool:
-        """Saves a screenshot of the current element to a PNG image file.
-        Returns False if there is any IOError, else returns True. Use full
+        """Save a PNG screenshot of the current element to a file.
+
+        Returns False if an IOError occurs, True if successful. Use full
         paths in your filename.
 
         Args:
@@ -466,8 +465,7 @@ class WebElement(BaseWebElement):
 
     @property
     def parent(self):
-        """Internal reference to the WebDriver instance this element was found
-        from.
+        """Get the WebDriver instance this element was found from.
 
         Example:
             >>> element = driver.find_element(By.ID, "foo")

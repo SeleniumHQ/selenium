@@ -57,8 +57,7 @@ def title_is(title: str) -> Callable[[WebDriver], bool]:
 
 
 def title_contains(title: str) -> Callable[[WebDriver], bool]:
-    """An expectation for checking that the title contains a case-sensitive
-    substring.
+    """Check that the title contains a case-sensitive substring.
 
     Args:
         title: The fragment of title expected.
