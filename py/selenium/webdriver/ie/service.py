@@ -48,6 +48,7 @@ class Service(service.Service):
             log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
                 Default is "stdout".
             driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+            **kwargs: Additional keyword arguments to pass to the parent Service class.
         """
         self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_IEDRIVER"

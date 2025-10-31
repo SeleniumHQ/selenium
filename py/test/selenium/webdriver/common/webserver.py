@@ -132,7 +132,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
             self.send_error(500, f"Error found: {e}")
 
     def log_message(self, format, *args):
-        """Override default to avoid trashing stderr"""
+        """Override default to avoid trashing stderr."""
         pass
 
 

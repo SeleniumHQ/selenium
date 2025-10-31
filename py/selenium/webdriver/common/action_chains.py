@@ -72,6 +72,8 @@ class ActionChains:
         Args:
             driver: The WebDriver instance which performs user actions.
             duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput
+            devices: Optional list of input devices (PointerInput, KeyInput, WheelInput) to use.
+                If not provided, default devices will be created.
         """
         self._driver = driver
         mouse = None

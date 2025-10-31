@@ -65,8 +65,10 @@ class _BaseOptionsDescriptor:
 
 
 class _PageLoadStrategyDescriptor:
-    """Determines the point at which a navigation command is returned:
-    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
+    """Determines the point at which a navigation command is returned.
+
+    See:
+      - https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
 
     Args:
         strategy: the strategy corresponding to a document readiness state
@@ -86,9 +88,10 @@ class _PageLoadStrategyDescriptor:
 
 
 class _UnHandledPromptBehaviorDescriptor:
-    """How the driver should respond when an alert is present and the:
-    command sent is not handling the alert:
-    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:
+    """How the driver should respond when an alert is present and the command sent is not handling the alert.
+
+    See:
+      - https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:
 
     Args:
         behavior: behavior to use when an alert is encountered
@@ -114,8 +117,10 @@ class _UnHandledPromptBehaviorDescriptor:
 
 
 class _TimeoutsDescriptor:
-    """How long the driver should wait for actions to complete before:
-    returning an error https://w3c.github.io/webdriver/#timeouts:
+    """How long the driver should wait for actions to complete before returning an error.
+
+    See:
+      - https://w3c.github.io/webdriver/#timeouts
 
     Args:
         timeouts: values in milliseconds for implicit wait, page load and script timeout

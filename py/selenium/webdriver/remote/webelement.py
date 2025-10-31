@@ -524,6 +524,7 @@ class WebElement(BaseWebElement):
                 - By.LINK_TEXT: Locate a link element by its exact text.
                 - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.
                 - RelativeBy: Locate elements relative to a specified root element.
+            value: The locator value to use with the specified `by` strategy.
 
         Returns:
             The first matching `WebElement` found on the page.
@@ -548,6 +549,7 @@ class WebElement(BaseWebElement):
                 - By.LINK_TEXT: Locate a link element by its exact text.
                 - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.
                 - RelativeBy: Locate elements relative to a specified root element.
+            value: The locator value to use with the specified `by` strategy.
 
         Returns:
             List of `WebElements` matching locator strategy found on the page.
