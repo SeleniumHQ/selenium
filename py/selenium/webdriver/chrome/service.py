@@ -24,8 +24,7 @@ from selenium.webdriver.chromium import service
 
 
 class Service(service.ChromiumService):
-    """A Service class that is responsible for the starting and stopping of
-    `chromedriver`.
+    """Service class responsible for starting and stopping the chromedriver executable.
 
     Args:
         executable_path: Install path of the chromedriver executable, defaults
