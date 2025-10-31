@@ -55,7 +55,7 @@ class Options(ArgOptions):
         """
         self._overlay_scrollbars_enabled = value
 
-    def to_capabilities(self)-> dict:
+    def to_capabilities(self) -> dict:
         """Create a capabilities dictionary with all set options."""
         caps = self._caps
 
