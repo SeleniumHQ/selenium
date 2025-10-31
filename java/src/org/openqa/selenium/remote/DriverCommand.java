@@ -158,7 +158,7 @@ public interface DriverCommand {
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
-    return new CommandPayload(NEW_SESSION, Map.of("capabilities", singleton(capabilities)));
+    return NEW_SESSION(singleton(capabilities));
   }
 
   static CommandPayload NEW_SESSION(Collection<Capabilities> capabilities) {

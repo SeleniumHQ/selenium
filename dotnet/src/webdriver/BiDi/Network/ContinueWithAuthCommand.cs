@@ -23,13 +23,13 @@ using System.Text.Json.Serialization;
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal class ContinueWithAuthCommand(ContinueWithAuthParameters @params)
-    : Command<ContinueWithAuthParameters, EmptyResult>(@params, "network.continueWithAuth");
+    : Command<ContinueWithAuthParameters, ContinueWithAuthResult>(@params, "network.continueWithAuth");
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "action")]
 [JsonDerivedType(typeof(ContinueWithAuthCredentials), "provideCredentials")]
 [JsonDerivedType(typeof(ContinueWithAuthDefaultCredentials), "default")]
 [JsonDerivedType(typeof(ContinueWithAuthCancelCredentials), "cancel")]
-internal abstract record ContinueWithAuthParameters(Request Request) : CommandParameters;
+internal abstract record ContinueWithAuthParameters(Request Request) : Parameters;
 
 internal sealed record ContinueWithAuthCredentials(Request Request, AuthCredentials Credentials) : ContinueWithAuthParameters(Request);
 
@@ -49,3 +49,4 @@ public sealed class ContinueWithAuthDefaultCredentialsOptions : ContinueWithAuth
 
 public sealed class ContinueWithAuthCancelCredentialsOptions : ContinueWithAuthNoCredentialsOptions;
 
+public sealed record ContinueWithAuthResult : EmptyResult;

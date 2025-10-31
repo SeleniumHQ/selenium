@@ -209,8 +209,7 @@ def test_sending_keys_to_element(driver, pages):
 
 
 def test_can_send_keys_between_clicks(driver, pages):
-    """
-    For W3C, ensures that the correct number of pauses are given to the other
+    """For W3C, ensures that the correct number of pauses are given to the other
     input device.
     """
     pages.load("javascriptPage.html")

@@ -572,10 +572,14 @@ public class RemoteWebDriver
         if (e instanceof SessionNotCreatedException) {
           toThrow = (WebDriverException) e;
         } else {
+          // When this exception comes from a remote end, the real cause is usually hidden in the
+          // cause. Let's try to rescue it and display it at the top level.
+          String cause = e.getCause() != null ? " " + e.getCause().getMessage() : "";
           toThrow =
               new SessionNotCreatedException(
                   "Possible causes are invalid address of the remote server or browser start-up"
-                      + " failure.",
+                      + " failure."
+                      + cause,
                   e);
         }
       } else if (e instanceof WebDriverException) {

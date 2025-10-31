@@ -61,8 +61,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="assets\nuget\build\netstandard2.0\Selenium.WebDriver.targets" Pack="true" PackagePath="build\netstandard2.0\" />
-    <None Include="assets\nuget\buildTransitive\netstandard2.0\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\netstandard2.0\" />
+    <None Include="assets\nuget\build\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
+    <None Include="assets\nuget\buildTransitive\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
   </ItemGroup>
 
   <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="BeforeBuild">

@@ -17,8 +17,12 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Browser;
 
+[JsonConverter(typeof(BrowserClientWindowConverter))]
 public sealed record ClientWindow
 {
     internal ClientWindow(string id)

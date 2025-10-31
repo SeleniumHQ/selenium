@@ -160,12 +160,11 @@ public abstract class ChromiumDriverService : DriverService
 
             if (this.LogLevel != ChromiumDriverLogLevel.Default)
             {
-                if (Enum.IsDefined(typeof(ChromiumDriverLogLevel), this.LogLevel))
-                {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
-                }
+                argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-level={0}", this.LogLevel.ToString().ToUpperInvariant()));
             }
 
+            // Unconditionally redirect browser logs to the same log as the driver
+            argsBuilder.Append(" --enable-chrome-logs");
 
             return argsBuilder.ToString();
         }

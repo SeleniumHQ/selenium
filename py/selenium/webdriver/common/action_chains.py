@@ -20,13 +20,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Union
 
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.actions.key_input import KeyInput
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+from selenium.webdriver.common.actions.wheel_input import ScrollOrigin, WheelInput
+from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.webelement import WebElement
-
-from .actions.action_builder import ActionBuilder
-from .actions.key_input import KeyInput
-from .actions.pointer_input import PointerInput
-from .actions.wheel_input import ScrollOrigin, WheelInput
-from .utils import keys_to_typing
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
@@ -70,9 +69,9 @@ class ActionChains:
     def __init__(self, driver: WebDriver, duration: int = 250, devices: list[AnyDevice] | None = None) -> None:
         """Creates a new ActionChains.
 
-        :Args:
-         - driver: The WebDriver instance which performs user actions.
-         - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput
+        Args:
+            driver: The WebDriver instance which performs user actions.
+            duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput
         """
         self._driver = driver
         mouse = None
@@ -94,7 +93,8 @@ class ActionChains:
 
     def reset_actions(self) -> None:
         """Clears actions that are already stored locally and on the remote
-        end."""
+        end.
+        """
         self.w3c_actions.clear_actions()
         for device in self.w3c_actions.devices:
             device.clear_actions()
@@ -102,9 +102,9 @@ class ActionChains:
     def click(self, on_element: WebElement | None = None) -> ActionChains:
         """Clicks an element.
 
-        :Args:
-         - on_element: The element to click.
-           If None, clicks on current mouse position.
+        Args:
+            on_element: The element to click.
+                If None, clicks on current mouse position.
         """
         if on_element:
             self.move_to_element(on_element)
@@ -118,9 +118,9 @@ class ActionChains:
     def click_and_hold(self, on_element: WebElement | None = None) -> ActionChains:
         """Holds down the left mouse button on an element.
 
-        :Args:
-         - on_element: The element to mouse down.
-           If None, clicks on current mouse position.
+        Args:
+            on_element: The element to mouse down.
+                If None, clicks on current mouse position.
         """
         if on_element:
             self.move_to_element(on_element)
@@ -133,9 +133,9 @@ class ActionChains:
     def context_click(self, on_element: WebElement | None = None) -> ActionChains:
         """Performs a context-click (right click) on an element.
 
-        :Args:
-         - on_element: The element to context-click.
-           If None, clicks on current mouse position.
+        Args:
+            on_element: The element to context-click.
+                If None, clicks on current mouse position.
         """
         if on_element:
             self.move_to_element(on_element)
@@ -149,9 +149,9 @@ class ActionChains:
     def double_click(self, on_element: WebElement | None = None) -> ActionChains:
         """Double-clicks an element.
 
-        :Args:
-         - on_element: The element to double-click.
-           If None, clicks on current mouse position.
+        Args:
+            on_element: The element to double-click.
+                If None, clicks on current mouse position.
         """
         if on_element:
             self.move_to_element(on_element)
@@ -166,9 +166,9 @@ class ActionChains:
         """Holds down the left mouse button on the source element, then moves
         to the target element and releases the mouse button.
 
-        :Args:
-         - source: The element to mouse down.
-         - target: The element to mouse up.
+        Args:
+            source: The element to mouse down.
+            target: The element to mouse up.
         """
         self.click_and_hold(source)
         self.release(target)
@@ -178,10 +178,10 @@ class ActionChains:
         """Holds down the left mouse button on the source element, then moves
         to the target offset and releases the mouse button.
 
-        :Args:
-         - source: The element to mouse down.
-         - xoffset: X offset to move to.
-         - yoffset: Y offset to move to.
+        Args:
+            source: The element to mouse down.
+            xoffset: X offset to move to.
+            yoffset: Y offset to move to.
         """
         self.click_and_hold(source)
         self.move_by_offset(xoffset, yoffset)
@@ -192,10 +192,10 @@ class ActionChains:
         """Sends a key press only, without releasing it. Should only be used
         with modifier keys (Control, Alt and Shift).
 
-        :Args:
-         - value: The modifier key to send. Values are defined in `Keys` class.
-         - element: The element to send keys.
-           If None, sends a key to current focused element.
+        Args:
+            value: The modifier key to send. Values are defined in `Keys` class.
+            element: The element to send keys.
+                If None, sends a key to current focused element.
 
         Example, pressing ctrl+c::
 
@@ -212,10 +212,10 @@ class ActionChains:
     def key_up(self, value: str, element: WebElement | None = None) -> ActionChains:
         """Releases a modifier key.
 
-        :Args:
-         - value: The modifier key to send. Values are defined in Keys class.
-         - element: The element to send keys.
-           If None, sends a key to current focused element.
+        Args:
+            value: The modifier key to send. Values are defined in Keys class.
+            element: The element to send keys.
+                If None, sends a key to current focused element.
 
         Example, pressing ctrl+c::
 
@@ -232,11 +232,10 @@ class ActionChains:
     def move_by_offset(self, xoffset: int, yoffset: int) -> ActionChains:
         """Moving the mouse to an offset from current mouse position.
 
-        :Args:
-         - xoffset: X offset to move to, as a positive or negative integer.
-         - yoffset: Y offset to move to, as a positive or negative integer.
+        Args:
+            xoffset: X offset to move to, as a positive or negative integer.
+            yoffset: Y offset to move to, as a positive or negative integer.
         """
-
         self.w3c_actions.pointer_action.move_by(xoffset, yoffset)
         self.w3c_actions.key_action.pause()
 
@@ -245,10 +244,9 @@ class ActionChains:
     def move_to_element(self, to_element: WebElement) -> ActionChains:
         """Moving the mouse to the middle of an element.
 
-        :Args:
-         - to_element: The WebElement to move to.
+        Args:
+            to_element: The WebElement to move to.
         """
-
         self.w3c_actions.pointer_action.move_to(to_element)
         self.w3c_actions.key_action.pause()
 
@@ -258,12 +256,11 @@ class ActionChains:
         """Move the mouse by an offset of the specified element. Offsets are
         relative to the in-view center point of the element.
 
-        :Args:
-         - to_element: The WebElement to move to.
-         - xoffset: X offset to move to, as a positive or negative integer.
-         - yoffset: Y offset to move to, as a positive or negative integer.
+        Args:
+            to_element: The WebElement to move to.
+            xoffset: X offset to move to, as a positive or negative integer.
+            yoffset: Y offset to move to, as a positive or negative integer.
         """
-
         self.w3c_actions.pointer_action.move_to(to_element, int(xoffset), int(yoffset))
         self.w3c_actions.key_action.pause()
 
@@ -271,7 +268,6 @@ class ActionChains:
 
     def pause(self, seconds: float | int) -> ActionChains:
         """Pause all inputs for the specified duration in seconds."""
-
         self.w3c_actions.pointer_action.pause(seconds)
         self.w3c_actions.key_action.pause(int(seconds))
 
@@ -280,9 +276,9 @@ class ActionChains:
     def release(self, on_element: WebElement | None = None) -> ActionChains:
         """Releasing a held mouse button on an element.
 
-        :Args:
-         - on_element: The element to mouse up.
-           If None, releases on current mouse position.
+        Args:
+            on_element: The element to mouse up.
+                If None, releases on current mouse position.
         """
         if on_element:
             self.move_to_element(on_element)
@@ -295,9 +291,9 @@ class ActionChains:
     def send_keys(self, *keys_to_send: str) -> ActionChains:
         """Sends keys to current focused element.
 
-        :Args:
-         - keys_to_send: The keys to send.  Modifier keys constants can be found in the
-           'Keys' class.
+        Args:
+            keys_to_send: The keys to send. Modifier keys constants can be found in the
+                'Keys' class.
         """
         typing = keys_to_typing(keys_to_send)
 
@@ -310,10 +306,10 @@ class ActionChains:
     def send_keys_to_element(self, element: WebElement, *keys_to_send: str) -> ActionChains:
         """Sends keys to an element.
 
-        :Args:
-         - element: The element to send keys.
-         - keys_to_send: The keys to send.  Modifier keys constants can be found in the
-           'Keys' class.
+        Args:
+            element: The element to send keys.
+            keys_to_send: The keys to send. Modifier keys constants can be found in the
+                'Keys' class.
         """
         self.click(element)
         self.send_keys(*keys_to_send)
@@ -323,10 +319,9 @@ class ActionChains:
         """If the element is outside the viewport, scrolls the bottom of the
         element to the bottom of the viewport.
 
-        :Args:
-         - element: Which element to scroll into the viewport.
+        Args:
+            element: Which element to scroll into the viewport.
         """
-
         self.w3c_actions.wheel_action.scroll(origin=element)
         return self
 
@@ -334,11 +329,10 @@ class ActionChains:
         """Scrolls by provided amounts with the origin in the top left corner
         of the viewport.
 
-        :Args:
-         - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
-         - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
+        Args:
+            delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
+            delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
         """
-
         self.w3c_actions.wheel_action.scroll(delta_x=delta_x, delta_y=delta_y)
         return self
 
@@ -349,15 +343,14 @@ class ActionChains:
         is not in the viewport, the bottom of the element will first be
         scrolled to the bottom of the viewport.
 
-        :Args:
-         - origin: Where scroll originates (viewport or element center) plus provided offsets.
-         - delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
-         - delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
+        Args:
+            scroll_origin: Where scroll originates (viewport or element center) plus provided offsets.
+            delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
+            delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
 
-         :Raises: If the origin with offset is outside the viewport.
-          - MoveTargetOutOfBoundsException - If the origin with offset is outside the viewport.
+        Raises:
+            MoveTargetOutOfBoundsException: If the origin with offset is outside the viewport.
         """
-
         if not isinstance(scroll_origin, ScrollOrigin):
             raise TypeError(f"Expected object of type ScrollOrigin, got: {type(scroll_origin)}")
 

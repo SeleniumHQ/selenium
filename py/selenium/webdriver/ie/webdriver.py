@@ -18,17 +18,17 @@
 from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.ie.options import Options
+from selenium.webdriver.ie.service import Service
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
-from .options import Options
-from .service import Service
-
 
 class WebDriver(RemoteWebDriver):
     """Controls the IEServerDriver and allows you to drive Internet
-    Explorer."""
+    Explorer.
+    """
 
     def __init__(
         self,
@@ -40,12 +40,11 @@ class WebDriver(RemoteWebDriver):
 
         Starts the service and then creates new instance of Ie driver.
 
-        :Args:
-         - options - IE Options instance, providing additional IE options
-         - service - (Optional) service instance for managing the starting and stopping of the driver.
-         - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
+        Args:
+            options: IE Options instance, providing additional IE options
+            service: (Optional) service instance for managing the starting and stopping of the driver.
+            keep_alive: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-
         self.service = service if service else Service()
         options = options if options else Options()
 
@@ -80,4 +79,7 @@ class WebDriver(RemoteWebDriver):
         raise NotImplementedError
 
     def get_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def delete_downloadable_files(self, *args, **kwargs):
         raise NotImplementedError

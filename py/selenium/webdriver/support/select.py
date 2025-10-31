@@ -26,11 +26,11 @@ class Select:
         """Constructor. A check is made that the given element is, indeed, a
         SELECT tag. If it is not, then an UnexpectedTagNameException is thrown.
 
-        :Args:
-         - webelement - SELECT element to wrap
+        Args:
+            webelement: SELECT element to wrap
 
         Example:
-            from selenium.webdriver.support.ui import Select \n
+            from selenium.webdriver.support.ui import Select
             Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)
         """
         if webelement.tag_name.lower() != "select":
@@ -47,13 +47,15 @@ class Select:
     @property
     def all_selected_options(self) -> list[WebElement]:
         """Returns a list of all selected options belonging to this select
-        tag."""
+        tag.
+        """
         return [opt for opt in self.options if opt.is_selected()]
 
     @property
     def first_selected_option(self) -> WebElement:
         """The first selected option in this select tag (or the currently
-        selected option in a normal select)"""
+        selected option in a normal select)
+        """
         for opt in self.options:
             if opt.is_selected():
                 return opt
@@ -65,10 +67,11 @@ class Select:
 
         <option value="foo">Bar</option>
 
-        :Args:
-         - value - The value to match against
+        Args:
+            value: The value to match against
 
-        throws NoSuchElementException If there is no option with specified value in SELECT
+        Raises:
+            NoSuchElementException: If there is no option with specified value in SELECT
         """
         css = f"option[value ={self._escape_string(value)}]"
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
@@ -85,10 +88,11 @@ class Select:
         """Select the option at the given index. This is done by examining the
         "index" attribute of an element, and not merely by counting.
 
-        :Args:
-         - index - The option at this index will be selected
+        Args:
+            index: The option at this index will be selected
 
-        throws NoSuchElementException If there is no option with specified index in SELECT
+        Raises:
+            NoSuchElementException: If there is no option with specified index in SELECT
         """
         match = str(index)
         for opt in self.options:
@@ -103,10 +107,11 @@ class Select:
 
          <option value="foo">Bar</option>
 
-        :Args:
-         - text - The visible text to match against
+        Args:
+            text: The visible text to match against
 
-         throws NoSuchElementException If there is no option with specified text in SELECT
+        Raises:
+            NoSuchElementException: If there is no option with specified text in SELECT
         """
         xpath = f".//option[normalize-space(.) = {self._escape_string(text)}]"
         opts = self._el.find_elements(By.XPATH, xpath)
@@ -156,10 +161,11 @@ class Select:
 
          <option value="foo">Bar</option>
 
-        :Args:
-         - value - The value to match against
+        Args:
+            value: The value to match against
 
-         throws NoSuchElementException If there is no option with specified value in SELECT
+        Raises:
+            NoSuchElementException: If there is no option with specified value in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -176,10 +182,11 @@ class Select:
         """Deselect the option at the given index. This is done by examining
         the "index" attribute of an element, and not merely by counting.
 
-        :Args:
-         - index - The option at this index will be deselected
+        Args:
+            index: The option at this index will be deselected
 
-         throws NoSuchElementException If there is no option with specified index in SELECT
+        Raises:
+            NoSuchElementException: If there is no option with specified index in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -195,8 +202,8 @@ class Select:
 
         <option value="foo">Bar</option>
 
-        :Args:
-         - text - The visible text to match against
+        Args:
+            text: The visible text to match against
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -250,8 +257,8 @@ class Select:
         css_value_candidates = ["hidden", "none", "0", "0.0"]
         css_property_candidates = ["visibility", "display", "opacity"]
 
-        for property in css_property_candidates:
-            css_value = option.value_of_css_property(property)
+        for css_property in css_property_candidates:
+            css_value = option.value_of_css_property(css_property)
             if css_value in css_value_candidates:
                 return False
         return True

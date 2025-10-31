@@ -18,15 +18,14 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Communication;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class GetTreeCommand(GetTreeCommandParameters @params)
-    : Command<GetTreeCommandParameters, GetTreeResult>(@params, "browsingContext.getTree");
+internal sealed class GetTreeCommand(GetTreeParameters @params)
+    : Command<GetTreeParameters, GetTreeResult>(@params, "browsingContext.getTree");
 
-internal sealed record GetTreeCommandParameters(long? MaxDepth, BrowsingContext? Root) : CommandParameters;
+internal sealed record GetTreeParameters(long? MaxDepth, BrowsingContext? Root) : Parameters;
 
 public sealed class GetTreeOptions : CommandOptions
 {
@@ -47,20 +46,4 @@ public sealed record BrowsingContextGetTreeOptions
     public long? MaxDepth { get; set; }
 }
 
-public sealed record GetTreeResult : EmptyResult, IReadOnlyList<BrowsingContextInfo>
-{
-    internal GetTreeResult(IReadOnlyList<BrowsingContextInfo> contexts)
-    {
-        Contexts = contexts;
-    }
-
-    public IReadOnlyList<BrowsingContextInfo> Contexts { get; }
-
-    public BrowsingContextInfo this[int index] => Contexts[index];
-
-    public int Count => Contexts.Count;
-
-    public IEnumerator<BrowsingContextInfo> GetEnumerator() => Contexts.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (Contexts as IEnumerable).GetEnumerator();
-}
+public sealed record GetTreeResult(IReadOnlyList<BrowsingContextInfo> Contexts) : EmptyResult;

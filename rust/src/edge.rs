@@ -15,18 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::config::ManagerConfig;
 use crate::config::ARCH::{ARM64, X32};
+use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{BrowserPath, compose_driver_path_in_cache};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, get_binary_extension, path_to_string, Logger, SeleniumManager, BETA,
-    DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_PV_ARG,
-    REG_VERSION_ARG, STABLE,
+    BETA, DASH_DASH_VERSION, DEV, ENV_PROGRAM_FILES_X86, Logger, NIGHTLY, OFFLINE_REQUEST_ERR_MSG,
+    REG_PV_ARG, REG_VERSION_ARG, STABLE, SeleniumManager, create_http_client, get_binary_extension,
+    path_to_string,
 };
 use anyhow::Error;
 use reqwest::Client;
@@ -283,11 +283,7 @@ impl SeleniumManager for EdgeManager {
                 "win64"
             }
         } else if MACOS.is(os) {
-            if ARM64.is(arch) {
-                "mac64_m1"
-            } else {
-                "mac64"
-            }
+            if ARM64.is(arch) { "mac64_m1" } else { "mac64" }
         } else {
             "linux64"
         };
@@ -349,11 +345,7 @@ impl SeleniumManager for EdgeManager {
                 "win64"
             }
         } else if MACOS.is(os) {
-            if ARM64.is(arch) {
-                "mac-arm64"
-            } else {
-                "mac64"
-            }
+            if ARM64.is(arch) { "mac-arm64" } else { "mac64" }
         } else {
             "linux64"
         }
