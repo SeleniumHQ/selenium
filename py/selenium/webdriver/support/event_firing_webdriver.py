@@ -77,11 +77,7 @@ class EventFiringWebDriver:
 
     @property
     def wrapped_driver(self) -> WebDriver:
-        """Get the wrapped WebDriver instance.
-
-        Returns:
-            The WebDriver instance wrapped by this EventsFiringWebDriver.
-        """
+        """Returns the WebDriver instance wrapped by this EventsFiringWebDriver."""
         return self._driver
 
     def get(self, url: str) -> None:
@@ -176,11 +172,7 @@ class EventFiringWebElement:
 
     @property
     def wrapped_element(self) -> WebElement:
-        """Get the wrapped WebElement instance.
-
-        Returns:
-            The WebElement wrapped by this EventFiringWebElement instance.
-        """
+        """Returns the WebElement wrapped by this EventFiringWebElement instance."""
         return self._webelement
 
     def click(self) -> None:

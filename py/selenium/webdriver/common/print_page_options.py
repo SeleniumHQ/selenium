@@ -335,7 +335,8 @@ class PrintOptions:
         self._margin: _MarginOpts = {}
 
     def to_dict(self) -> _PrintOpts:
-        """
+        """Get a dictionary of the configured print options.
+
         Returns:
             A hash of print options configured.
         """

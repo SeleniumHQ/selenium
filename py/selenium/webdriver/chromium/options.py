@@ -38,10 +38,7 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def binary_location(self) -> str:
-        """
-        Returns:
-            The location of the binary, otherwise an empty string.
-        """
+        """Returns the location of the binary, otherwise an empty string."""
         return self._binary_location
 
     @binary_location.setter
@@ -57,16 +54,12 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def debugger_address(self) -> Optional[str]:
-        """
-        Returns:
-            The address of the remote devtools instance.
-        """
+        """Returns the address of the remote devtools instance."""
         return self._debugger_address
 
     @debugger_address.setter
     def debugger_address(self, value: str) -> None:
-        """Allows you to set the address of the remote devtools instance that
-        the ChromeDriver instance will try to connect to during an active wait.
+        """Set the address of the remote devtools instance for active wait connection.
 
         Args:
             value: Address of remote devtools instance if any (hostname[:port]).
@@ -77,10 +70,7 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def extensions(self) -> list[str]:
-        """
-        Returns:
-            A list of encoded extensions that will be loaded.
-        """
+        """Returns a list of encoded extensions that will be loaded."""
 
         def _decode(file_data: BinaryIO) -> str:
             # Should not use base64.encodestring() which inserts newlines every
@@ -96,8 +86,7 @@ class ChromiumOptions(ArgOptions):
         return encoded_extensions + self._extensions
 
     def add_extension(self, extension: str) -> None:
-        """Adds the path to the extension to a list that will be used to
-        extract it to the ChromeDriver.
+        """Add the path to an extension to be extracted to ChromeDriver.
 
         Args:
             extension: Path to the *.crx file.
@@ -112,8 +101,7 @@ class ChromiumOptions(ArgOptions):
             raise ValueError("argument can not be null")
 
     def add_encoded_extension(self, extension: str) -> None:
-        """Adds Base64 encoded string with extension data to a list that will
-        be used to extract it to the ChromeDriver.
+        """Add Base64-encoded string with extension data to be extracted to ChromeDriver.
 
         Args:
             extension: Base64 encoded string with extension data.
@@ -125,10 +113,7 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def experimental_options(self) -> dict:
-        """
-        Returns:
-            A dictionary of experimental options for chromium.
-        """
+        """Returns a dictionary of experimental options for chromium."""
         return self._experimental_options
 
     def add_experimental_option(self, name: str, value: Union[str, int, dict, list[str]]) -> None:
@@ -142,11 +127,7 @@ class ChromiumOptions(ArgOptions):
 
     @property
     def enable_webextensions(self) -> bool:
-        """
-        Returns:
-            Whether webextension support is enabled for Chromium-based browsers.
-            True if webextension support is enabled, False otherwise.
-        """
+        """Return whether webextension support is enabled for Chromium-based browsers."""
         return self._enable_webextensions
 
     @enable_webextensions.setter

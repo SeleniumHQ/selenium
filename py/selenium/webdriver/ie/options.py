@@ -302,7 +302,8 @@ class Options(ArgOptions):
 
     @property
     def options(self) -> dict:
-        """
+        """Get a dictionary of browser options.
+
         Returns:
             A dictionary of browser options.
         """
@@ -310,7 +311,8 @@ class Options(ArgOptions):
 
     @property
     def additional_options(self) -> dict:
-        """
+        """Get the additional options.
+
         Returns:
             The additional options.
         """
