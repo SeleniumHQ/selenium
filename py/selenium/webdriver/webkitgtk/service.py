@@ -26,8 +26,7 @@ DEFAULT_EXECUTABLE_PATH: str = shutil.which("WebKitWebDriver")
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of
-    `WebKitWebDriver`.
+    """A Service class that is responsible for the starting and stopping of `WebKitWebDriver`.
 
     Args:
         executable_path: Install path of the WebKitWebDriver executable,

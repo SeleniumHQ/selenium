@@ -74,8 +74,7 @@ def title_contains(title: str) -> Callable[[WebDriver], bool]:
 
 
 def presence_of_element_located(locator: tuple[str, str]) -> Callable[[WebDriverOrWebElement], WebElement]:
-    """An expectation for checking that an element is present on the DOM of a
-    page. This does not necessarily mean that the element is visible.
+    """Check that an element is present on the DOM (not necessarily visible).
 
     Args:
         locator: Used to find the element.
@@ -97,8 +96,7 @@ def presence_of_element_located(locator: tuple[str, str]) -> Callable[[WebDriver
 
 
 def url_contains(url: str) -> Callable[[WebDriver], bool]:
-    """An expectation for checking that the current url contains a case-
-    sensitive substring.
+    """Check that the current url contains a case-sensitive substring.
 
     Args:
         url: The fragment of url expected.
@@ -149,8 +147,7 @@ def url_to_be(url: str) -> Callable[[WebDriver], bool]:
 
 
 def url_changes(url: str) -> Callable[[WebDriver], bool]:
-    """An expectation for checking the current url is different than a given
-    string.
+    """Check that the current url differs from a given string.
 
     Args:
         url: The expected url, which must not be an exact match.
@@ -168,9 +165,7 @@ def url_changes(url: str) -> Callable[[WebDriver], bool]:
 def visibility_of_element_located(
     locator: tuple[str, str],
 ) -> Callable[[WebDriverOrWebElement], Union[Literal[False], WebElement]]:
-    """An expectation for checking that an element is present on the DOM of a
-    page and visible. Visibility means that the element is not only displayed
-    but also has a height and width that is greater than 0.
+    """Check that an element is present on the DOM and visible (has size).
 
     Args:
         locator: Used to find the element.
@@ -195,11 +190,7 @@ def visibility_of_element_located(
 
 
 def visibility_of(element: WebElement) -> Callable[[Any], Union[Literal[False], WebElement]]:
-    """An expectation for checking that an element, known to be present on the
-    DOM of a page, is visible.
-
-    Visibility means that the element is not only displayed but also has
-    a height and width that is greater than 0.
+    """Check that an element is visible (present on DOM and has size).
 
     Args:
         element: The WebElement to check.
@@ -221,8 +212,7 @@ def visibility_of(element: WebElement) -> Callable[[Any], Union[Literal[False], 
 
 
 def _element_if_visible(element: WebElement, visibility: bool = True) -> Union[Literal[False], WebElement]:
-    """An expectation for checking that an element, known to be present on the
-    DOM of a page, is of the expected visibility.
+    """Check if an element has the expected visibility state.
 
     Args:
         element: The WebElement to check.
@@ -235,8 +225,7 @@ def _element_if_visible(element: WebElement, visibility: bool = True) -> Union[L
 
 
 def presence_of_all_elements_located(locator: tuple[str, str]) -> Callable[[WebDriverOrWebElement], list[WebElement]]:
-    """An expectation for checking that there is at least one element present
-    on a web page.
+    """Check that all elements matching the locator are present on the DOM.
 
     Args:
         locator: Used to find the element.
@@ -258,8 +247,7 @@ def presence_of_all_elements_located(locator: tuple[str, str]) -> Callable[[WebD
 
 
 def visibility_of_any_elements_located(locator: tuple[str, str]) -> Callable[[WebDriverOrWebElement], list[WebElement]]:
-    """An expectation for checking that there is at least one element visible
-    on a web page.
+    """Check that at least one element is visible on the web page.
 
     Args:
         locator: Used to find the element.
@@ -283,9 +271,7 @@ def visibility_of_any_elements_located(locator: tuple[str, str]) -> Callable[[We
 def visibility_of_all_elements_located(
     locator: tuple[str, str],
 ) -> Callable[[WebDriverOrWebElement], Union[list[WebElement], Literal[False]]]:
-    """An expectation for checking that all elements are present on the DOM of
-    a page and visible. Visibility means that the elements are not only
-    displayed but also has a height and width that is greater than 0.
+    """Check that all elements are present on the DOM and visible (have size).
 
     Args:
         locator: Used to find the elements.
@@ -314,8 +300,7 @@ def visibility_of_all_elements_located(
 
 
 def text_to_be_present_in_element(locator: tuple[str, str], text_: str) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation for checking if the given text is present in the
-    specified element.
+    """Check that the given text is present in the specified element.
 
     Args:
         locator: Used to find the element.
@@ -346,8 +331,7 @@ def text_to_be_present_in_element(locator: tuple[str, str], text_: str) -> Calla
 def text_to_be_present_in_element_value(
     locator: tuple[str, str], text_: str
 ) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation for checking if the given text is present in the
-    element's value.
+    """Check that the given text is present in the element's value.
 
     Args:
         locator: Used to find the element.
@@ -380,8 +364,7 @@ def text_to_be_present_in_element_value(
 def text_to_be_present_in_element_attribute(
     locator: tuple[str, str], attribute_: str, text_: str
 ) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation for checking if the given text is present in the
-    element's attribute.
+    """Check that the given text is present in the element's attribute.
 
     Args:
         locator: Used to find the element.
@@ -415,11 +398,7 @@ def text_to_be_present_in_element_attribute(
 def frame_to_be_available_and_switch_to_it(
     locator: Union[tuple[str, str], str, WebElement],
 ) -> Callable[[WebDriver], bool]:
-    """An expectation for checking whether the given frame is available to
-    switch to.
-
-    If the frame is available it switches the given driver to the
-    specified frame.
+    """Check that the given frame is available and switch to it.
 
     Args:
         locator: Used to find the frame.
@@ -449,8 +428,7 @@ def frame_to_be_available_and_switch_to_it(
 def invisibility_of_element_located(
     locator: Union[WebElement, tuple[str, str]],
 ) -> Callable[[WebDriverOrWebElement], Union[WebElement, bool]]:
-    """An Expectation for checking that an element is either invisible or not
-    present on the DOM.
+    """Check that an element is either invisible or not present on the DOM.
 
     Args:
         locator: Used to find the element.
@@ -492,8 +470,7 @@ def invisibility_of_element_located(
 def invisibility_of_element(
     element: Union[WebElement, tuple[str, str]],
 ) -> Callable[[WebDriverOrWebElement], Union[WebElement, bool]]:
-    """An Expectation for checking that an element is either invisible or not
-    present on the DOM.
+    """Check that an element is either invisible or not present on the DOM.
 
     Args:
         element: Used to find the element.
@@ -515,8 +492,7 @@ def invisibility_of_element(
 def element_to_be_clickable(
     mark: Union[WebElement, tuple[str, str]],
 ) -> Callable[[WebDriverOrWebElement], Union[Literal[False], WebElement]]:
-    """An Expectation for checking an element is visible and enabled such that
-    you can click it.
+    """Check that an element is visible and enabled so it can be clicked.
 
     Args:
         mark: Used to find the element.
@@ -646,8 +622,7 @@ def element_selection_state_to_be(element: WebElement, is_selected: bool) -> Cal
 def element_located_selection_state_to_be(
     locator: tuple[str, str], is_selected: bool
 ) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation to locate an element and check if the selection state
-    specified is in that state.
+    """Check that an element's selection state matches the expected state.
 
     Args:
         locator: Used to find the element.
@@ -696,9 +671,8 @@ def number_of_windows_to_be(num_windows: int) -> Callable[[WebDriver], bool]:
     return _predicate
 
 
-def new_window_is_opened(current_handles: list[str]) -> Callable[[WebDriver], bool]:
-    """An expectation that a new window will be opened and have the number of
-    windows handles increase.
+def new_window_is_opened(current_handles: set[str]) -> Callable[[WebDriver], bool]:
+    """Check that a new window has been opened (window handles count increased).
 
     Args:
         current_handles: The current window handles.
@@ -719,9 +693,8 @@ def new_window_is_opened(current_handles: list[str]) -> Callable[[WebDriver], bo
     return _predicate
 
 
-def alert_is_present() -> Callable[[WebDriver], Union[Alert, Literal[False]]]:
-    """An expectation for checking if an alert is currently present and
-    switching to it.
+def alert_is_present() -> Callable[[WebDriver], Union[Alert, bool]]:
+    """Check that an alert is present and switch to it.
 
     Returns:
         The Alert once it is located.
@@ -745,8 +718,7 @@ def alert_is_present() -> Callable[[WebDriver], Union[Alert, Literal[False]]]:
 
 
 def element_attribute_to_include(locator: tuple[str, str], attribute_: str) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation for checking if the given attribute is included in the
-    specified element.
+    """Check if the given attribute is included in the specified element.
 
     Args:
         locator: Used to find the element.
