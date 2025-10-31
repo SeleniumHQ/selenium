@@ -146,7 +146,6 @@ target-version = "py39"
 [tool.ruff.lint]
 extend-select = ["D", "E4", "E7", "E9", "F", "I", "E501", "RUF022", "TID252"]
 fixable = ["ALL"]
-# remove these as we cleanup docstrings
 extend-ignore = [
     "D100", # Missing docstring in public module
     "D101", # Missing docstring in public class
@@ -157,7 +156,6 @@ extend-ignore = [
     "D107", # Missing docstring in `__init__`
     "D205", # 1 blank line required between summary line and description
     "D212", # Multi-line docstring summary should start at the first line
-    "D415", # First line should end with a period, question mark, or exclamation point
 ]
 
 [tool.ruff.format]
