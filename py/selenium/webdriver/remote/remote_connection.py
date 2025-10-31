@@ -246,7 +246,6 @@ class RemoteConnection:
             parsed_url: The parsed url
             keep_alive: Is this a keep-alive connection (default: False)
         """
-
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json;charset=UTF-8",

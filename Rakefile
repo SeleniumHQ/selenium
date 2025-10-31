@@ -98,7 +98,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v140:v140.publish
   //java/src/org/openqa/selenium/devtools/v141:v141.publish
-  //java/src/org/openqa/selenium/devtools/v139:v139.publish
+  //java/src/org/openqa/selenium/devtools/v142:v142.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
@@ -747,9 +747,12 @@ namespace :rb do
 
   desc 'Update generated Ruby files for local development'
   task :local_dev do
+    puts 'installing ruby, this may take a minute'
     Bazel.execute('build', [], '@bundle//:bundle')
     Rake::Task['rb:build'].invoke
     Rake::Task['grid'].invoke
+    # A command like this is required to move ruby binary into working directory
+    Bazel.execute('build', %w[--test_arg --dry-run], '@bundle//bin:rubocop')
   end
 
   desc 'Push Ruby gems to rubygems'
