@@ -25,8 +25,7 @@ DEFAULT_EXECUTABLE_PATH = shutil.which("WPEWebDriver")
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of
-    `WPEWebDriver`.
+    """A Service class that is responsible for the starting and stopping of `WPEWebDriver`.
 
     Args:
         executable_path: Install path of the WPEWebDriver executable, defaults
