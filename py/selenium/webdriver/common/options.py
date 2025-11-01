@@ -395,11 +395,7 @@ class ArgOptions(BaseOptions):
 
     @property
     def arguments(self):
-        """Get a list of arguments needed for the browser.
-
-        Returns:
-            A list of arguments needed for the browser.
-        """
+        """Returns a list of arguments needed for the browser."""
         return self._arguments
 
     def add_argument(self, argument: str) -> None:

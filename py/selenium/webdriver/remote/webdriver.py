@@ -1133,7 +1133,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def _session(self) -> Session:
-        """Get the BiDi session object for the current WebDriver session."""
+        """Returns the BiDi session object for the current WebDriver session."""
         if not self._websocket_connection:
             self._start_bidi()
 
@@ -1144,7 +1144,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def browsing_context(self) -> BrowsingContext:
-        """Get a browsing context module object for BiDi browsing context commands.
+        """Returns a browsing context module object for BiDi browsing context commands.
 
         Returns:
             An object containing access to BiDi browsing context commands.
@@ -1430,7 +1430,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def fedcm(self) -> FedCM:
-        """Get access to Federated Credential Management (FedCM) dialog commands.
+        """Returns the Federated Credential Management (FedCM) dialog commands.
 
         Returns:
             An object providing access to all Federated Credential Management

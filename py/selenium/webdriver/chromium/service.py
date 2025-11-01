@@ -75,6 +75,7 @@ class ChromiumService(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter
