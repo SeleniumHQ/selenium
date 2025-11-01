@@ -36,11 +36,10 @@ class WebDriver(RemoteWebDriver):
 
         Starts the service and then creates new instance of WPEWebKit Driver.
 
-        :Args:
-         - options : an instance of ``WPEWebKitOptions``
-         - service : Service object for handling the browser driver if you need to pass extra details
+        Args:
+            options: an instance of ``WPEWebKitOptions``
+            service: Service object for handling the browser driver if you need to pass extra details
         """
-
         options = options if options else Options()
         self.service = service if service else Service()
         self.service.path = DriverFinder(self.service, options).get_driver_path()
@@ -51,7 +50,8 @@ class WebDriver(RemoteWebDriver):
 
     def quit(self):
         """Closes the browser and shuts down the WPEWebKitDriver executable
-        that is started when starting the WPEWebKitDriver."""
+        that is started when starting the WPEWebKitDriver.
+        """
         try:
             super().quit()
         except http_client.BadStatusLine:
@@ -63,4 +63,7 @@ class WebDriver(RemoteWebDriver):
         raise NotImplementedError
 
     def get_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def delete_downloadable_files(self, *args, **kwargs):
         raise NotImplementedError

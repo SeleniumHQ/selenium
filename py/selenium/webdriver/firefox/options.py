@@ -57,14 +57,18 @@ class Options(ArgOptions):
     @deprecated("use binary_location instead")
     def binary(self, new_binary: Union[str, FirefoxBinary]) -> None:
         """Sets location of the browser binary, either by string or
-        ``FirefoxBinary`` instance."""
+        ``FirefoxBinary`` instance.
+        """
         if isinstance(new_binary, FirefoxBinary):
             new_binary = new_binary._start_cmd
         self.binary_location = str(new_binary)
 
     @property
     def binary_location(self) -> str:
-        """:Returns: The location of the binary."""
+        """
+        Returns:
+            The location of the binary.
+        """
         return self._binary_location
 
     @binary_location.setter  # noqa
@@ -76,7 +80,10 @@ class Options(ArgOptions):
 
     @property
     def preferences(self) -> dict:
-        """:Returns: A dict of preferences."""
+        """
+        Returns:
+            A dict of preferences.
+        """
         return self._preferences
 
     def set_preference(self, name: str, value: Union[str, int, bool]):
@@ -85,13 +92,17 @@ class Options(ArgOptions):
 
     @property
     def profile(self) -> Optional[FirefoxProfile]:
-        """:Returns: The Firefox profile to use."""
+        """
+        Returns:
+            The Firefox profile to use.
+        """
         return self._profile
 
     @profile.setter
     def profile(self, new_profile: Union[str, FirefoxProfile]) -> None:
         """Sets location of the browser profile to use, either by string or
-        ``FirefoxProfile``."""
+        ``FirefoxProfile``.
+        """
         if not isinstance(new_profile, FirefoxProfile):
             new_profile = FirefoxProfile(new_profile)
         self._profile = new_profile

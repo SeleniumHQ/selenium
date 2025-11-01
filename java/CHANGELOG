@@ -1,3 +1,29 @@
+v4.38.0
+======
+* JSpecify annotations for `ExecuteMethod` (#16464)
+* JSpecify annotations for `org.openqa.selenium.federatedcredent… (#16461)
+* JSpecify annotations for `org.openqa.selenium.interactions` (#16462)
+* JSpecify annotations for `org.openqa.selenium.net` (#16463)
+* JSpecify annotations for `Credential` and `MBean` (#16481)
+* JSpecify annotations for `ScriptKey` and `UnpinnedScriptKey` (#16483)
+* JSpecify annotations for `FileDetector` (#16482)
+* JSpecify annotations for `ExpectedCondition` (#16489)
+* JSpecify annotations for `Response` `SessionId` `HttpSessionId` (#16490)
+* [java][bidi]: add test for onHistoryUpdated event (#16293)
+* update devtools versions
+
+v4.37.0
+======
+* Add CDP for Chrome 141 and remove 138
+* Linux ARM "os.arch" system property is "aarch64" (#16381)
+* Rescuing the remote cause for session creation errors (#16418)
+* feat: Add native Java 11 HTTP client methods to HttpClient interface (#16412)
+* refactor(remote/command): Merge overload's business logic (#14469)
+* make augmentation of HasBiDi/HasDevTools lazy-loaded (#16338)
+* [grid] Add event bus heartbeat to prevent steal connection (#16444)
+* JSpecify annotations for `org.openqa.selenium.grid.jmx` (#16431)
+* JSpecify annotations for `org.openqa.selenium.bidi.permissions` (#16430)
+
 v4.36.0
 ======
 * Add CDP for Chrome 140 and remove 137
@@ -15,6 +41,7 @@ v4.36.0
 * Fix falsy Spotbugs warning about not closed resource (#16318)
 * [grid] Fix regression Distributor rejecting requests when nodes have supported caps but no free slots (#16327)
 * Feat 14291/add jspecify annotations to exception classes pt4 (#16028)
+* [grid] UI Light/Dark Mode Toggle (#16364)
 
 v4.35.0
 ======
