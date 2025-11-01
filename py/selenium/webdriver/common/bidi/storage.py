@@ -43,8 +43,7 @@ class BytesValue:
         """Converts the BytesValue to a dictionary.
 
         Returns:
-        -------
-            Dict: A dictionary representation of the BytesValue.
+            A dictionary representation of the BytesValue.
         """
         return {"type": self.type, "value": self.value}
 
@@ -78,13 +77,11 @@ class Cookie:
     def from_dict(cls, data: dict) -> "Cookie":
         """Creates a Cookie instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the cookie information.
 
         Returns:
-        -------
-            Cookie: A new instance of Cookie.
+            A new instance of Cookie.
         """
         # Validation for empty strings
         name = data.get("name")
@@ -137,8 +134,7 @@ class CookieFilter:
         """Converts the CookieFilter to a dictionary.
 
         Returns:
-        -------
-            Dict: A dictionary representation of the CookieFilter.
+            A dictionary representation of the CookieFilter.
         """
         result: dict[str, Any] = {}
         if self.name is not None:
@@ -173,13 +169,11 @@ class PartitionKey:
     def from_dict(cls, data: dict) -> "PartitionKey":
         """Creates a PartitionKey instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the partition key information.
 
         Returns:
-        -------
-            PartitionKey: A new instance of PartitionKey.
+            A new instance of PartitionKey.
         """
         return cls(
             user_context=data.get("userContext"),
@@ -198,7 +192,6 @@ class BrowsingContextPartitionDescriptor:
         """Converts the BrowsingContextPartitionDescriptor to a dictionary.
 
         Returns:
-        -------
             Dict: A dictionary representation of the BrowsingContextPartitionDescriptor.
         """
         return {"type": self.type, "context": self.context}
@@ -216,7 +209,6 @@ class StorageKeyPartitionDescriptor:
         """Converts the StorageKeyPartitionDescriptor to a dictionary.
 
         Returns:
-        -------
             Dict: A dictionary representation of the StorageKeyPartitionDescriptor.
         """
         result = {"type": self.type}
@@ -286,13 +278,11 @@ class GetCookiesResult:
     def from_dict(cls, data: dict) -> "GetCookiesResult":
         """Creates a GetCookiesResult instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the get cookies result information.
 
         Returns:
-        -------
-            GetCookiesResult: A new instance of GetCookiesResult.
+            A new instance of GetCookiesResult.
         """
         cookies = [Cookie.from_dict(cookie) for cookie in data.get("cookies", [])]
         partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
@@ -309,13 +299,11 @@ class SetCookieResult:
     def from_dict(cls, data: dict) -> "SetCookieResult":
         """Creates a SetCookieResult instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the set cookie result information.
 
         Returns:
-        -------
-            SetCookieResult: A new instance of SetCookieResult.
+            A new instance of SetCookieResult.
         """
         partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
         return cls(partition_key=partition_key)
@@ -331,13 +319,11 @@ class DeleteCookiesResult:
     def from_dict(cls, data: dict) -> "DeleteCookiesResult":
         """Creates a DeleteCookiesResult instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the delete cookies result information.
 
         Returns:
-        -------
-            DeleteCookiesResult: A new instance of DeleteCookiesResult.
+            A new instance of DeleteCookiesResult.
         """
         partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
         return cls(partition_key=partition_key)
@@ -354,16 +340,20 @@ class Storage:
         filter: Optional[CookieFilter] = None,
         partition: Optional[Union[BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor]] = None,
     ) -> GetCookiesResult:
-        """Retrieves cookies that match the given parameters.
+        """Gets cookies matching the specified filter.
 
-        Parameters:
-        -----------
-            filter: Optional filter to match cookies.
-            partition: Optional partition descriptor.
+        Args:
+            filter: Optional filter to specify which cookies to retrieve.
+            partition: Optional partition key to limit the scope of the operation.
 
         Returns:
-        -------
-            GetCookiesResult: The result of the get cookies command.
+            A GetCookiesResult containing the cookies and partition key.
+
+        Example:
+            result = await storage.get_cookies(
+                filter=CookieFilter(name="sessionId"),
+                partition=PartitionKey(...)
+            )
         """
         params = {}
         if filter is not None:
@@ -381,14 +371,12 @@ class Storage:
     ) -> SetCookieResult:
         """Sets a cookie in the browser.
 
-        Parameters:
-        -----------
+        Args:
             cookie: The cookie to set.
             partition: Optional partition descriptor.
 
         Returns:
-        -------
-            SetCookieResult: The result of the set cookie command.
+            The result of the set cookie command.
         """
         params = {"cookie": cookie.to_dict()}
         if partition is not None:
@@ -404,14 +392,12 @@ class Storage:
     ) -> DeleteCookiesResult:
         """Deletes cookies that match the given parameters.
 
-        Parameters:
-        -----------
+        Args:
             filter: Optional filter to match cookies to delete.
             partition: Optional partition descriptor.
 
         Returns:
-        -------
-            DeleteCookiesResult: The result of the delete cookies command.
+            The result of the delete cookies command.
         """
         params = {}
         if filter is not None:

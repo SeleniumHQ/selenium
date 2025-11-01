@@ -1,3 +1,17 @@
+v4.38.0
+======
+* JSpecify annotations for `ExecuteMethod` (#16464)
+* JSpecify annotations for `org.openqa.selenium.federatedcredent… (#16461)
+* JSpecify annotations for `org.openqa.selenium.interactions` (#16462)
+* JSpecify annotations for `org.openqa.selenium.net` (#16463)
+* JSpecify annotations for `Credential` and `MBean` (#16481)
+* JSpecify annotations for `ScriptKey` and `UnpinnedScriptKey` (#16483)
+* JSpecify annotations for `FileDetector` (#16482)
+* JSpecify annotations for `ExpectedCondition` (#16489)
+* JSpecify annotations for `Response` `SessionId` `HttpSessionId` (#16490)
+* [java][bidi]: add test for onHistoryUpdated event (#16293)
+* update devtools versions
+
 v4.37.0
 ======
 * Add CDP for Chrome 141 and remove 138

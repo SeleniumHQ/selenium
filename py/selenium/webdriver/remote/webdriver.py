@@ -93,10 +93,8 @@ def _create_caps(caps):
     Moves the Firefox profile, if present, from the old location to the new Firefox
     options object.
 
-    Parameters:
-    -----------
-    caps : dict
-        - A dictionary of capabilities requested by the caller.
+    Args:
+        caps: A dictionary of capabilities requested by the caller.
     """
     caps = copy.deepcopy(caps)
     always_match = {}
@@ -209,26 +207,22 @@ class WebDriver(BaseWebDriver):
         """Create a new driver that will issue commands using the wire
         protocol.
 
-        Parameters:
-        -----------
-        command_executor : str or remote_connection.RemoteConnection
-            - Either a string representing the URL of the remote server or a custom
-            remote_connection.RemoteConnection object. Defaults to 'http://127.0.0.1:4444/wd/hub'.
-        keep_alive : bool (Deprecated)
-            - Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive. Defaults to True.
-        file_detector : object or None
-            - Pass a custom file detector object during instantiation. If None, the default
-                LocalFileDetector() will be used.
-        options : options.Options
-            - Instance of a driver options.Options class.
-        locator_converter : object or None
-            - Custom locator converter to use. Defaults to None.
-        web_element_cls : class
-            - Custom class to use for web elements. Defaults to WebElement.
-        client_config : object or None
-            - Custom client configuration to use. Defaults to None.
+        Args:
+            command_executor: Either a string representing the URL of the remote
+                server or a custom remote_connection.RemoteConnection object.
+                Defaults to 'http://127.0.0.1:4444/wd/hub'.
+            keep_alive: (Deprecated) Whether to configure
+                remote_connection.RemoteConnection to use HTTP keep-alive.
+                Defaults to True.
+            file_detector: Pass a custom file detector object during
+                instantiation. If None, the default LocalFileDetector() will be
+                used.
+            options: Instance of a driver options.Options class.
+            locator_converter: Custom locator converter to use. Defaults to None.
+            web_element_cls: Custom class to use for web elements. Defaults to
+                WebElement.
+            client_config: Custom client configuration to use. Defaults to None.
         """
-
         if options is None:
             raise TypeError(
                 "missing 1 required keyword-only argument: 'options' (instance of driver `options.Options` class)"
@@ -295,21 +289,20 @@ class WebDriver(BaseWebDriver):
         """Overrides the current file detector (if necessary) in limited
         context. Ensures the original file detector is set afterwards.
 
-        Parameters:
-        -----------
-        file_detector_class : object
-            - Class of the desired file detector. If the class is different
-            from the current file_detector, then the class is instantiated with args and kwargs
-            and used as a file detector during the duration of the context manager.
-        args : tuple
-            - Optional arguments that get passed to the file detector class during instantiation.
-        kwargs : dict
-            - Keyword arguments, passed the same way as args.
+        Args:
+            file_detector_class: Class of the desired file detector. If the
+                class is different from the current file_detector, then the
+                class is instantiated with args and kwargs and used as a file
+                detector during the duration of the context manager.
+            *args: Optional arguments that get passed to the file detector class
+                during instantiation.
+            **kwargs: Keyword arguments, passed the same way as args.
 
         Example:
-        --------
-        >>> with webdriver.file_detector_context(UselessFileDetector):
-        >>>    someinput.send_keys('/etc/hosts')
+            ```
+            with webdriver.file_detector_context(UselessFileDetector):
+                someinput.send_keys("/etc/hosts")
+            ````
         """
         last_detector = None
         if not isinstance(self.file_detector, file_detector_class):
@@ -327,12 +320,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def name(self) -> str:
-        """Returns the name of the underlying browser for this instance.
-
-        Example:
-        --------
-        >>> name = driver.name
-        """
+        """Returns the name of the underlying browser for this instance."""
         if "browserName" in self.caps:
             return self.caps["browserName"]
         raise KeyError("browserName not specified in session capabilities")
@@ -355,12 +343,9 @@ class WebDriver(BaseWebDriver):
     def start_session(self, capabilities: dict) -> None:
         """Creates a new session with the desired capabilities.
 
-        Parameters:
-        -----------
-        capabilities : dict
-            - A capabilities dict to start the session with.
+        Args:
+            capabilities: A capabilities dict to start the session with.
         """
-
         caps = _create_caps(capabilities)
         try:
             response = self.execute(Command.NEW_SESSION, caps)["value"]
@@ -403,46 +388,34 @@ class WebDriver(BaseWebDriver):
         return value
 
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
-        """Execute Chrome Devtools Protocol command and get returned result The
-        command and command args should follow chrome devtools protocol
-        domains/commands, refer to link
-        https://chromedevtools.github.io/devtools-protocol/
+        """Execute Chrome Devtools Protocol command and get returned result.
 
-        Parameters:
-        -----------
-        cmd : str,
-            - Command name
+        The command and command args should follow chrome devtools protocol domains/commands:
+          - https://chromedevtools.github.io/devtools-protocol/
 
-        cmd_args : dict
-            - Command args
-            - Empty dict {} if there is no command args
+        Args:
+            cmd: Command name.
+            cmd_args: Command args. Empty dict {} if there is no command args.
 
         Returns:
-        --------
-            A dict, empty dict {} if there is no result to return.
-                - To getResponseBody: {'base64Encoded': False, 'body': 'response body string'}
+            A dict, empty dict {} if there is no result to return. To
+            getResponseBody: {'base64Encoded': False, 'body': 'response body
+            string'}
 
         Example:
-        --------
-        >>> driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": requestId})
-
+            `driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": requestId})`
         """
         return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
     def execute(self, driver_command: str, params: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """Sends a command to be executed by a command.CommandExecutor.
 
-        Parameters:
-        -----------
-        driver_command : str
-            - The name of the command to execute as a string.
-
-        params : dict
-            - A dictionary of named Parameters to send with the command.
+        Args:
+            driver_command: The name of the command to execute as a string.
+            params: A dictionary of named parameters to send with the command.
 
         Returns:
-        --------
-          dict - The command's JSON response loaded into a dictionary object.
+            The command's JSON response loaded into a dictionary object.
         """
         params = self._wrap_value(params)
 
@@ -469,16 +442,12 @@ class WebDriver(BaseWebDriver):
         The method does not return until the page is fully loaded (i.e. the
         onload event has fired).
 
-        Parameters:
-        -----------
-        url : str
-            - The URL to be opened by the browser.
-            - Must include the protocol (e.g., http://, https://).
+        Args:
+            url: The URL to be opened by the browser. Must include the protocol
+                (e.g., http://, https://).
 
         Example:
-        --------
-        >>> driver = webdriver.Chrome()
-        >>> driver.get("https://example.com")
+            `driver.get("https://example.com")`
         """
         self.execute(Command.GET, {"url": url})
 
@@ -487,9 +456,10 @@ class WebDriver(BaseWebDriver):
         """Returns the title of the current page.
 
         Example:
-        --------
-        >>> element = driver.find_element(By.ID, "foo")
-        >>> print(element.title())
+            ```
+            element = driver.find_element(By.ID, "foo")
+            print(element.title())
+            ```
         """
         return self.execute(Command.GET_TITLE).get("value", "")
 
@@ -498,8 +468,7 @@ class WebDriver(BaseWebDriver):
         hashable ID.
 
         Example:
-        --------
-        >>> script = "return document.getElementById('foo').value"
+            `script = "return document.getElementById('foo').value"`
         """
         script_key_instance = ScriptKey(script_key)
         self.pinned_scripts[script_key_instance.id] = script
@@ -509,8 +478,7 @@ class WebDriver(BaseWebDriver):
         """Remove a pinned script from storage.
 
         Example:
-        --------
-        >>> driver.unpin(script_key)
+            `driver.unpin(script_key)`
         """
         try:
             self.pinned_scripts.pop(script_key.id)
@@ -521,27 +489,23 @@ class WebDriver(BaseWebDriver):
         """Return a list of all pinned scripts.
 
         Example:
-        --------
-        >>> pinned_scripts = driver.get_pinned_scripts()
+            `pinned_scripts = driver.get_pinned_scripts()`
         """
         return list(self.pinned_scripts)
 
     def execute_script(self, script: str, *args):
         """Synchronously Executes JavaScript in the current window/frame.
 
-        Parameters:
-        -----------
-        script : str
-            - The javascript to execute.
-
-        *args : tuple
-            - Any applicable arguments for your JavaScript.
+        Args:
+            script: The javascript to execute.
+            *args: Any applicable arguments for your JavaScript.
 
         Example:
-        --------
-        >>> input_id = "username"
-        >>> input_value = "test_user"
-        >>> driver.execute_script("document.getElementById(arguments[0]).value = arguments[1];", input_id, input_value)
+            ```
+            id = "username"
+            value = "test_user"
+            driver.execute_script("document.getElementById(arguments[0]).value = arguments[1];", id, value)
+            ```
         """
         if isinstance(script, ScriptKey):
             try:
@@ -557,19 +521,16 @@ class WebDriver(BaseWebDriver):
     def execute_async_script(self, script: str, *args):
         """Asynchronously Executes JavaScript in the current window/frame.
 
-        Parameters:
-        -----------
-        script : str
-            - The javascript to execute.
-
-        *args : tuple
-            - Any applicable arguments for your JavaScript.
+        Args:
+            script: The javascript to execute.
+            *args: Any applicable arguments for your JavaScript.
 
         Example:
-        --------
-        >>> script = "var callback = arguments[arguments.length - 1]; "
-        ...     "window.setTimeout(function(){ callback('timeout') }, 3000);"
-        >>> driver.execute_async_script(script)
+            ```
+            script = "var callback = arguments[arguments.length - 1]; "
+                "window.setTimeout(function(){ callback('timeout') }, 3000);"
+            driver.execute_async_script(script)
+            ```
         """
         converted_args = list(args)
         command = Command.W3C_EXECUTE_SCRIPT_ASYNC
@@ -578,40 +539,20 @@ class WebDriver(BaseWebDriver):
 
     @property
     def current_url(self) -> str:
-        """Gets the URL of the current page.
-
-        Example:
-        --------
-        >>> print(driver.current_url)
-        """
+        """Gets the URL of the current page."""
         return self.execute(Command.GET_CURRENT_URL)["value"]
 
     @property
     def page_source(self) -> str:
-        """Gets the source of the current page.
-
-        Example:
-        --------
-        >>> print(driver.page_source)
-        """
+        """Gets the source of the current page."""
         return self.execute(Command.GET_PAGE_SOURCE)["value"]
 
     def close(self) -> None:
-        """Closes the current window.
-
-        Example:
-        --------
-        >>> driver.close()
-        """
+        """Closes the current window."""
         self.execute(Command.CLOSE)
 
     def quit(self) -> None:
-        """Quits the driver and closes every associated window.
-
-        Example:
-        --------
-        >>> driver.quit()
-        """
+        """Quits the driver and closes every associated window."""
         try:
             self.execute(Command.QUIT)
         finally:
@@ -621,41 +562,21 @@ class WebDriver(BaseWebDriver):
 
     @property
     def current_window_handle(self) -> str:
-        """Returns the handle of the current window.
-
-        Example:
-        --------
-        >>> print(driver.current_window_handle)
-        """
+        """Returns the handle of the current window."""
         return self.execute(Command.W3C_GET_CURRENT_WINDOW_HANDLE)["value"]
 
     @property
     def window_handles(self) -> list[str]:
-        """Returns the handles of all windows within the current session.
-
-        Example:
-        --------
-        >>> print(driver.window_handles)
-        """
+        """Returns the handles of all windows within the current session."""
         return self.execute(Command.W3C_GET_WINDOW_HANDLES)["value"]
 
     def maximize_window(self) -> None:
-        """Maximizes the current window that webdriver is using.
-
-        Example:
-        --------
-        >>> driver.maximize_window()
-        """
+        """Maximizes the current window that webdriver is using."""
         command = Command.W3C_MAXIMIZE_WINDOW
         self.execute(command, None)
 
     def fullscreen_window(self) -> None:
-        """Invokes the window manager-specific 'full screen' operation.
-
-        Example:
-        --------
-        >>> driver.fullscreen_window()
-        """
+        """Invokes the window manager-specific 'full screen' operation."""
         self.execute(Command.FULLSCREEN_WINDOW)
 
     def minimize_window(self) -> None:
@@ -666,11 +587,7 @@ class WebDriver(BaseWebDriver):
         """Takes PDF of the current page.
 
         The driver makes a best effort to return a PDF based on the
-        provided Parameters.
-
-        Example:
-        --------
-        >>> driver.print_page()
+        provided parameters.
         """
         options: Union[dict[str, Any], Any] = {}
         if print_options:
@@ -683,62 +600,40 @@ class WebDriver(BaseWebDriver):
         """Return an object containing all options to switch focus into.
 
         Returns:
-        --------
-        SwitchTo: an object containing all options to switch focus into.
+            An object containing all options to switch focus into.
 
         Examples:
-        --------
-        >>> element = driver.switch_to.active_element
-        >>> alert = driver.switch_to.alert
-        >>> driver.switch_to.default_content()
-        >>> driver.switch_to.frame("frame_name")
-        >>> driver.switch_to.frame(1)
-        >>> driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])
-        >>> driver.switch_to.parent_frame()
-        >>> driver.switch_to.window("main")
+            `element = driver.switch_to.active_element`
+            `alert = driver.switch_to.alert`
+            `driver.switch_to.default_content()`
+            `driver.switch_to.frame("frame_name")`
+            `driver.switch_to.frame(1)`
+            `driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])`
+            `driver.switch_to.parent_frame()`
+            `driver.switch_to.window("main")`
         """
         return self._switch_to
 
     # Navigation
     def back(self) -> None:
-        """Goes one step backward in the browser history.
-
-        Example:
-        --------
-        >>> driver.back()
-        """
+        """Goes one step backward in the browser history."""
         self.execute(Command.GO_BACK)
 
     def forward(self) -> None:
-        """Goes one step forward in the browser history.
-
-        Example:
-        --------
-        >>> driver.forward()
-        """
+        """Goes one step forward in the browser history."""
         self.execute(Command.GO_FORWARD)
 
     def refresh(self) -> None:
-        """Refreshes the current page.
-
-        Example:
-        --------
-        >>> driver.refresh()
-        """
+        """Refreshes the current page."""
         self.execute(Command.REFRESH)
 
-    # Options
     def get_cookies(self) -> list[dict]:
         """Returns a set of dictionaries, corresponding to cookies visible in
         the current session.
 
         Returns:
-        --------
-        cookies:List[dict] : A list of dictionaries, corresponding to cookies visible in the current
-
-        Example:
-        --------
-        >>> cookies = driver.get_cookies()
+            A list of dictionaries, corresponding to cookies visible in the
+            current session.
         """
         return self.execute(Command.GET_ALL_COOKIES)["value"]
 
@@ -747,8 +642,7 @@ class WebDriver(BaseWebDriver):
         or whitespace. Returns the cookie if found, None if not.
 
         Example:
-        --------
-        >>> cookie = driver.get_cookie("my_cookie")
+            `cookie = driver.get_cookie("my_cookie")`
         """
         if not name or name.isspace():
             raise ValueError("Cookie name cannot be empty")
@@ -763,40 +657,31 @@ class WebDriver(BaseWebDriver):
         the name is empty or whitespace.
 
         Example:
-        --------
-        >>> driver.delete_cookie("my_cookie")
+            `driver.delete_cookie("my_cookie")`
         """
-
-        # firefox deletes all cookies when "" is passed as name
+        # Firefox deletes all cookies when "" is passed as name
         if not name or name.isspace():
             raise ValueError("Cookie name cannot be empty")
 
         self.execute(Command.DELETE_COOKIE, {"name": name})
 
     def delete_all_cookies(self) -> None:
-        """Delete all cookies in the scope of the session.
-
-        Example:
-        --------
-        >>> driver.delete_all_cookies()
-        """
+        """Delete all cookies in the scope of the session."""
         self.execute(Command.DELETE_ALL_COOKIES)
 
     def add_cookie(self, cookie_dict) -> None:
         """Adds a cookie to your current session.
 
-        Parameters:
-        -----------
-        cookie_dict : dict
-            - A dictionary object, with required keys - "name" and "value";
-            - Optional keys - "path", "domain", "secure", "httpOnly", "expiry", "sameSite"
+        Args:
+            cookie_dict: A dictionary object, with required keys - "name" and
+                "value"; Optional keys - "path", "domain", "secure", "httpOnly",
+                "expiry", "sameSite".
 
         Examples:
-        --------
-        >>> driver.add_cookie({"name": "foo", "value": "bar"})
-        >>> driver.add_cookie({"name": "foo", "value": "bar", "path": "/"})
-        >>> driver.add_cookie({"name": "foo", "value": "bar", "path": "/", "secure": True})
-        >>> driver.add_cookie({"name": "foo", "value": "bar", "sameSite": "Strict"})
+            `driver.add_cookie({"name": "foo", "value": "bar"})`
+            `driver.add_cookie({"name": "foo", "value": "bar", "path": "/"})`
+            `driver.add_cookie({"name": "foo", "value": "bar", "path": "/", "secure": True})`
+            `driver.add_cookie({"name": "foo", "value": "bar", "sameSite": "Strict"})`
         """
         if "sameSite" in cookie_dict:
             assert cookie_dict["sameSite"] in ["Strict", "Lax", "None"]
@@ -811,14 +696,11 @@ class WebDriver(BaseWebDriver):
         per session. To set the timeout for calls to execute_async_script, see
         set_script_timeout.
 
-        Parameters:
-        -----------
-        time_to_wait : float
-            - Amount of time to wait (in seconds)
+        Args:
+            time_to_wait: Amount of time to wait (in seconds).
 
         Example:
-        --------
-        >>> driver.implicitly_wait(30)
+            `driver.implicitly_wait(30)`
         """
         self.execute(Command.SET_TIMEOUTS, {"implicit": int(float(time_to_wait) * 1000)})
 
@@ -826,14 +708,11 @@ class WebDriver(BaseWebDriver):
         """Set the amount of time that the script should wait during an
         execute_async_script call before throwing an error.
 
-        Parameters:
-        -----------
-        time_to_wait : float
-            - The amount of time to wait (in seconds)
+        Args:
+            time_to_wait: The amount of time to wait (in seconds).
 
         Example:
-        --------
-        >>> driver.set_script_timeout(30)
+            `driver.set_script_timeout(30)`
         """
         self.execute(Command.SET_TIMEOUTS, {"script": int(float(time_to_wait) * 1000)})
 
@@ -841,14 +720,11 @@ class WebDriver(BaseWebDriver):
         """Set the amount of time to wait for a page load to complete before
         throwing an error.
 
-        Parameters:
-        -----------
-        time_to_wait : float
-             - The amount of time to wait (in seconds)
+        Args:
+            time_to_wait: The amount of time to wait (in seconds).
 
         Example:
-        --------
-        >>> driver.set_page_load_timeout(30)
+            `driver.set_page_load_timeout(30)`
         """
         try:
             self.execute(Command.SET_TIMEOUTS, {"pageLoad": int(float(time_to_wait) * 1000)})
@@ -860,15 +736,13 @@ class WebDriver(BaseWebDriver):
         """Get all the timeouts that have been set on the current session.
 
         Returns:
-        --------
-        Timeouts: A named tuple with the following fields:
-            - implicit_wait: The time to wait for elements to be found.
-            - page_load: The time to wait for a page to load.
-            - script: The time to wait for scripts to execute.
+            A named tuple with the following fields:
+              - implicit_wait: The time to wait for elements to be found.
+              - page_load: The time to wait for a page to load.
+              - script: The time to wait for scripts to execute.
 
         Example:
-        --------
-        >>> driver.timeouts
+            `driver.timeouts`
         """
         timeouts = self.execute(Command.GET_TIMEOUTS)["value"]
         timeouts["implicit_wait"] = timeouts.pop("implicit") / 1000
@@ -882,38 +756,29 @@ class WebDriver(BaseWebDriver):
         set timeouts.
 
         Example:
-        --------
-        >>> my_timeouts = Timeouts()
-        >>> my_timeouts.implicit_wait = 10
-        >>> driver.timeouts = my_timeouts
+            ```
+            my_timeouts = Timeouts()
+            my_timeouts.implicit_wait = 10
+            driver.timeouts = my_timeouts
+            ```
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())["value"]
 
     def find_element(self, by=By.ID, value: Optional[str] = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
-        Parameters:
-        -----------
-        by : selenium.webdriver.common.by.By
-            The locating strategy to use. Default is `By.ID`. Supported values include:
-            - By.ID: Locate by element ID.
-            - By.NAME: Locate by the `name` attribute.
-            - By.XPATH: Locate by an XPath expression.
-            - By.CSS_SELECTOR: Locate by a CSS selector.
-            - By.CLASS_NAME: Locate by the `class` attribute.
-            - By.TAG_NAME: Locate by the tag name (e.g., "input", "button").
-            - By.LINK_TEXT: Locate a link element by its exact text.
-            - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.
-            - RelativeBy: Locate elements relative to a specified root element.
-
-        Example:
-        --------
-        element = driver.find_element(By.ID, 'foo')
+        Args:
+            by: The locating strategy to use. Default is `By.ID`. Supported
+                values include: By.ID, By.NAME, By.XPATH, By.CSS_SELECTOR,
+                By.CLASS_NAME, By.TAG_NAME, By.LINK_TEXT, By.PARTIAL_LINK_TEXT,
+                or RelativeBy.
+            value: The locator value to use with the specified `by` strategy.
 
         Returns:
-        -------
-        WebElement
-            The first matching `WebElement` found on the page.
+            The first matching WebElement found on the page.
+
+        Example:
+            `element = driver.find_element(By.ID, 'foo')`
         """
         by, value = self.locator_converter.convert(by, value)
 
@@ -928,28 +793,18 @@ class WebDriver(BaseWebDriver):
     def find_elements(self, by=By.ID, value: Optional[str] = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
-        Parameters:
-        -----------
-        by : selenium.webdriver.common.by.By
-            The locating strategy to use. Default is `By.ID`. Supported values include:
-            - By.ID: Locate by element ID.
-            - By.NAME: Locate by the `name` attribute.
-            - By.XPATH: Locate by an XPath expression.
-            - By.CSS_SELECTOR: Locate by a CSS selector.
-            - By.CLASS_NAME: Locate by the `class` attribute.
-            - By.TAG_NAME: Locate by the tag name (e.g., "input", "button").
-            - By.LINK_TEXT: Locate a link element by its exact text.
-            - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.
-            - RelativeBy: Locate elements relative to a specified root element.
-
-        Example:
-        --------
-        element = driver.find_elements(By.ID, 'foo')
+        Args:
+            by: The locating strategy to use. Default is `By.ID`. Supported
+                values include: By.ID, By.NAME, By.XPATH, By.CSS_SELECTOR,
+                By.CLASS_NAME, By.TAG_NAME, By.LINK_TEXT, By.PARTIAL_LINK_TEXT,
+                or RelativeBy.
+            value: The locator value to use with the specified `by` strategy.
 
         Returns:
-        -------
-        List[WebElement]
-            list of `WebElements` matching locator strategy found on the page.
+            List of WebElements matching locator strategy found on the page.
+
+        Example:
+            `element = driver.find_elements(By.ID, 'foo')`
         """
         by, value = self.locator_converter.convert(by, value)
 
@@ -968,12 +823,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def capabilities(self) -> dict:
-        """Returns the drivers current capabilities being used.
-
-        Example:
-        --------
-        >>> print(driver.capabilities)
-        """
+        """Returns the drivers current capabilities being used."""
         return self.caps
 
     def get_screenshot_as_file(self, filename) -> bool:
@@ -981,15 +831,12 @@ class WebDriver(BaseWebDriver):
         Returns False if there is any IOError, else returns True. Use full
         paths in your filename.
 
-        Parameters:
-        -----------
-        filename : str
-            - The full path you wish to save your screenshot to. This
-            - should end with a `.png` extension.
+        Args:
+            filename: The full path you wish to save your screenshot to. This
+                should end with a `.png` extension.
 
         Example:
-        --------
-        >>> driver.get_screenshot_as_file("/Screenshots/foo.png")
+            `driver.get_screenshot_as_file("./screenshots/foo.png")`
         """
         if not str(filename).lower().endswith(".png"):
             warnings.warn(
@@ -1012,15 +859,12 @@ class WebDriver(BaseWebDriver):
         Returns False if there is any IOError, else returns True. Use full
         paths in your filename.
 
-        Parameters:
-        -----------
-        filename : str
-            - The full path you wish to save your screenshot to. This
-            - should end with a `.png` extension.
+        Args:
+            filename: The full path you wish to save your screenshot to. This
+                should end with a `.png` extension.
 
         Example:
-        --------
-        >>> driver.save_screenshot("/Screenshots/foo.png")
+            `driver.save_screenshot("./screenshots/foo.png")`
         """
         return self.get_screenshot_as_file(filename)
 
@@ -1028,8 +872,7 @@ class WebDriver(BaseWebDriver):
         """Gets the screenshot of the current window as a binary data.
 
         Example:
-        --------
-        >>> driver.get_screenshot_as_png()
+            `driver.get_screenshot_as_png()`
         """
         return b64decode(self.get_screenshot_as_base64().encode("ascii"))
 
@@ -1038,25 +881,20 @@ class WebDriver(BaseWebDriver):
         which is useful in embedded images in HTML.
 
         Example:
-        --------
-        >>> driver.get_screenshot_as_base64()
+            `driver.get_screenshot_as_base64()`
         """
         return self.execute(Command.SCREENSHOT)["value"]
 
     def set_window_size(self, width, height, windowHandle: str = "current") -> None:
-        """Sets the width and height of the current window. (window.resizeTo)
+        """Sets the width and height of the current window.
 
-        Parameters:
-        -----------
-        width : int
-            - the width in pixels to set the window to
-
-        height : int
-            - the height in pixels to set the window to
+        Args:
+            width: The width in pixels to set the window to.
+            height: The height in pixels to set the window to.
+            windowHandle: The handle of the window to resize. Default is "current".
 
         Example:
-        --------
-        >>> driver.set_window_size(800, 600)
+            `driver.set_window_size(800, 600)`
         """
         self._check_if_window_handle_is_current(windowHandle)
         self.set_window_rect(width=int(width), height=int(height))
@@ -1065,10 +903,8 @@ class WebDriver(BaseWebDriver):
         """Gets the width and height of the current window.
 
         Example:
-        --------
-        >>> driver.get_window_size()
+            `driver.get_window_size()`
         """
-
         self._check_if_window_handle_is_current(windowHandle)
         size = self.get_window_rect()
 
@@ -1078,19 +914,15 @@ class WebDriver(BaseWebDriver):
         return {k: size[k] for k in ("width", "height")}
 
     def set_window_position(self, x: float, y: float, windowHandle: str = "current") -> dict:
-        """Sets the x,y position of the current window. (window.moveTo)
+        """Sets the x,y position of the current window.
 
-        Parameters:
-        ---------
-        x : float
-            - The x-coordinate in pixels to set the window position
-
-        y : float
-            - The y-coordinate in pixels to set the window position
+        Args:
+            x: The x-coordinate in pixels to set the window position.
+            y: The y-coordinate in pixels to set the window position.
+            windowHandle: The handle of the window to reposition. Default is "current".
 
         Example:
-        --------
-        >>> driver.set_window_position(0, 0)
+            `driver.set_window_position(0, 0)`
         """
         self._check_if_window_handle_is_current(windowHandle)
         return self.set_window_rect(x=int(x), y=int(y))
@@ -1099,10 +931,8 @@ class WebDriver(BaseWebDriver):
         """Gets the x,y position of the current window.
 
         Example:
-        --------
-        >>> driver.get_window_position()
+            `driver.get_window_position()`
         """
-
         self._check_if_window_handle_is_current(windowHandle)
         position = self.get_window_rect()
 
@@ -1118,8 +948,7 @@ class WebDriver(BaseWebDriver):
         of the current window.
 
         Example:
-        --------
-        >>> driver.get_window_rect()
+            `driver.get_window_rect()`
         """
         return self.execute(Command.GET_WINDOW_RECT)["value"]
 
@@ -1130,12 +959,10 @@ class WebDriver(BaseWebDriver):
         `set_window_size`.
 
         Example:
-        --------
-        >>> driver.set_window_rect(x=10, y=10)
-        >>> driver.set_window_rect(width=100, height=200)
-        >>> driver.set_window_rect(x=10, y=10, width=100, height=200)
+            `driver.set_window_rect(x=10, y=10)`
+            `driver.set_window_rect(width=100, height=200)`
+            `driver.set_window_rect(x=10, y=10, width=100, height=200)`
         """
-
         if (x is None and y is None) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
@@ -1150,14 +977,10 @@ class WebDriver(BaseWebDriver):
         """Set the file detector to be used when sending keyboard input. By
         default, this is set to a file detector that does nothing.
 
-        - see FileDetector
-        - see LocalFileDetector
-        - see UselessFileDetector
+        See FileDetector, LocalFileDetector, and UselessFileDetector.
 
-        Parameters:
-        -----------
-        detector : Any
-            - The detector to use. Must not be None.
+        Args:
+            detector: The detector to use. Must not be None.
         """
         if not detector:
             raise WebDriverException("You may not set a file detector that is null")
@@ -1170,8 +993,7 @@ class WebDriver(BaseWebDriver):
         """Gets the current orientation of the device.
 
         Example:
-        --------
-        >>> orientation = driver.orientation
+            `orientation = driver.orientation`
         """
         return self.execute(Command.GET_SCREEN_ORIENTATION)["value"]
 
@@ -1179,14 +1001,11 @@ class WebDriver(BaseWebDriver):
     def orientation(self, value) -> None:
         """Sets the current orientation of the device.
 
-        Parameters:
-        -----------
-        value : str
-            - orientation to set it to.
+        Args:
+            value: Orientation to set it to.
 
         Example:
-        --------
-        >>> driver.orientation = "landscape"
+            `driver.orientation = "landscape"`
         """
         allowed_values = ["LANDSCAPE", "PORTRAIT"]
         if value.upper() in allowed_values:
@@ -1285,15 +1104,13 @@ class WebDriver(BaseWebDriver):
         """Returns a browser module object for BiDi browser commands.
 
         Returns:
-        --------
-        Browser: an object containing access to BiDi browser commands.
+            An object containing access to BiDi browser commands.
 
         Examples:
-        ---------
-        >>> user_context = driver.browser.create_user_context()
-        >>> user_contexts = driver.browser.get_user_contexts()
-        >>> client_windows = driver.browser.get_client_windows()
-        >>> driver.browser.remove_user_context(user_context)
+            `user_context = driver.browser.create_user_context()`
+            `user_contexts = driver.browser.get_user_contexts()`
+            `client_windows = driver.browser.get_client_windows()`
+            `driver.browser.remove_user_context(user_context)`
         """
         if not self._websocket_connection:
             self._start_bidi()
@@ -1306,7 +1123,8 @@ class WebDriver(BaseWebDriver):
     @property
     def _session(self):
         """Returns the BiDi session object for the current WebDriver
-        session."""
+        session.
+        """
         if not self._websocket_connection:
             self._start_bidi()
 
@@ -1321,15 +1139,13 @@ class WebDriver(BaseWebDriver):
         commands.
 
         Returns:
-        --------
-        BrowsingContext: an object containing access to BiDi browsing context commands.
+            An object containing access to BiDi browsing context commands.
 
         Examples:
-        ---------
-        >>> context_id = driver.browsing_context.create(type="tab")
-        >>> driver.browsing_context.navigate(context=context_id, url="https://www.selenium.dev")
-        >>> driver.browsing_context.capture_screenshot(context=context_id)
-        >>> driver.browsing_context.close(context_id)
+            `context_id = driver.browsing_context.create(type="tab")`
+            `driver.browsing_context.navigate(context=context_id, url="https://www.selenium.dev")`
+            `driver.browsing_context.capture_screenshot(context=context_id)`
+            `driver.browsing_context.close(context_id)`
         """
         if not self._websocket_connection:
             self._start_bidi()
@@ -1344,17 +1160,17 @@ class WebDriver(BaseWebDriver):
         """Returns a storage module object for BiDi storage commands.
 
         Returns:
-        --------
-        Storage: an object containing access to BiDi storage commands.
+            An object containing access to BiDi storage commands.
 
         Examples:
-        ---------
-        >>> cookie_filter = CookieFilter(name="example")
-        >>> result = driver.storage.get_cookies(filter=cookie_filter)
-        >>> driver.storage.set_cookie(cookie=PartialCookie(
-                "name", BytesValue(BytesValue.TYPE_STRING, "value"), "domain")
-            )
-        >>> driver.storage.delete_cookies(filter=CookieFilter(name="example"))
+            ```
+            cookie_filter = CookieFilter(name="example")
+            result = driver.storage.get_cookies(filter=cookie_filter)
+            cookie=PartialCookie("name", BytesValue(BytesValue.TYPE_STRING, "value")
+            driver.storage.set_cookie(cookie=cookie, "domain"))
+            cookie_filter=CookieFilter(name="example")
+            driver.storage.delete_cookies(filter=cookie_filter)
+            ```
         """
         if not self._websocket_connection:
             self._start_bidi()
@@ -1369,14 +1185,15 @@ class WebDriver(BaseWebDriver):
         """Returns a permissions module object for BiDi permissions commands.
 
         Returns:
-        --------
-        Permissions: an object containing access to BiDi permissions commands.
+            An object containing access to BiDi permissions commands.
 
         Examples:
-        ---------
-        >>> from selenium.webdriver.common.bidi.permissions import PermissionDescriptor, PermissionState
-        >>> descriptor = PermissionDescriptor("geolocation")
-        >>> driver.permissions.set_permission(descriptor, PermissionState.GRANTED, "https://example.com")
+            ```
+            from selenium.webdriver.common.bidi.permissions import PermissionDescriptor, PermissionState
+
+            descriptor = PermissionDescriptor("geolocation")
+            driver.permissions.set_permission(descriptor, PermissionState.GRANTED, "https://example.com")
+            ```
         """
         if not self._websocket_connection:
             self._start_bidi()
@@ -1391,14 +1208,12 @@ class WebDriver(BaseWebDriver):
         """Returns a webextension module object for BiDi webextension commands.
 
         Returns:
-        --------
-        WebExtension: an object containing access to BiDi webextension commands.
+            An object containing access to BiDi webextension commands.
 
         Examples:
-        ---------
-        >>> extension_path = "/path/to/extension"
-        >>> extension_result = driver.webextension.install(path=extension_path)
-        >>> driver.webextension.uninstall(extension_result)
+            `extension_path = "/path/to/extension"`
+            `extension_result = driver.webextension.install(path=extension_path)`
+            `driver.webextension.uninstall(extension_result)`
         """
         if not self._websocket_connection:
             self._start_bidi()
@@ -1413,14 +1228,15 @@ class WebDriver(BaseWebDriver):
         """Returns an emulation module object for BiDi emulation commands.
 
         Returns:
-        --------
-        Emulation: an object containing access to BiDi emulation commands.
+            An object containing access to BiDi emulation commands.
 
         Examples:
-        ---------
-        >>> from selenium.webdriver.common.bidi.emulation import GeolocationCoordinates
-        >>> coordinates = GeolocationCoordinates(37.7749, -122.4194)
-        >>> driver.emulation.set_geolocation_override(coordinates=coordinates, contexts=[context_id])
+            ```
+            from selenium.webdriver.common.bidi.emulation import GeolocationCoordinates
+
+            coordinates = GeolocationCoordinates(37.7749, -122.4194)
+            driver.emulation.set_geolocation_override(coordinates=coordinates, contexts=[context_id])
+            ```
         """
         if not self._websocket_connection:
             self._start_bidi()
@@ -1435,15 +1251,16 @@ class WebDriver(BaseWebDriver):
         """Returns an input module object for BiDi input commands.
 
         Returns:
-        --------
-        Input: an object containing access to BiDi input commands.
+            An object containing access to BiDi input commands.
 
         Examples:
-        ---------
-        >>> from selenium.webdriver.common.bidi.input import KeySourceActions, KeyDownAction, KeyUpAction
-        >>> key_actions = KeySourceActions(id="keyboard", actions=[KeyDownAction(value="a"), KeyUpAction(value="a")])
-        >>> driver.input.perform_actions(driver.current_window_handle, [key_actions])
-        >>> driver.input.release_actions(driver.current_window_handle)
+            ```
+            from selenium.webdriver.common.bidi.input import KeySourceActions, KeyDownAction, KeyUpAction
+
+            actions = KeySourceActions(id="keyboard", actions=[KeyDownAction(value="a"), KeyUpAction(value="a")])
+            driver.input.perform_actions(driver.current_window_handle, [actions])
+            driver.input.release_actions(driver.current_window_handle)
+            ```
         """
         if not self._websocket_connection:
             self._start_bidi()
@@ -1484,21 +1301,18 @@ class WebDriver(BaseWebDriver):
         """Adds a virtual authenticator with the given options.
 
         Example:
-        --------
-        >>> from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
-        >>> options = VirtualAuthenticatorOptions(protocol="u2f", transport="usb", device_id="myDevice123")
-        >>> driver.add_virtual_authenticator(options)
+            ```
+            from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
+
+            options = VirtualAuthenticatorOptions(protocol="u2f", transport="usb", device_id="myDevice123")
+            driver.add_virtual_authenticator(options)
+            ```
         """
         self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, options.to_dict())["value"]
 
     @property
     def virtual_authenticator_id(self) -> Optional[str]:
-        """Returns the id of the virtual authenticator.
-
-        Example:
-        --------
-        >>> print(driver.virtual_authenticator_id)
-        """
+        """Returns the id of the virtual authenticator."""
         return self._authenticator_id
 
     @required_virtual_authenticator
@@ -1507,10 +1321,6 @@ class WebDriver(BaseWebDriver):
 
         The authenticator is no longer valid after removal, so no
         methods may be called.
-
-        Example:
-        --------
-        >>> driver.remove_virtual_authenticator()
         """
         self.execute(Command.REMOVE_VIRTUAL_AUTHENTICATOR, {"authenticatorId": self._authenticator_id})
         self._authenticator_id = None
@@ -1520,21 +1330,18 @@ class WebDriver(BaseWebDriver):
         """Injects a credential into the authenticator.
 
         Example:
-        --------
-        >>> from selenium.webdriver.common.credential import Credential
-        >>> credential = Credential(id="user@example.com", password="aPassword")
-        >>> driver.add_credential(credential)
+            ```
+            from selenium.webdriver.common.credential import Credential
+
+            credential = Credential(id="user@example.com", password="aPassword")
+            driver.add_credential(credential)
+            ```
         """
         self.execute(Command.ADD_CREDENTIAL, {**credential.to_dict(), "authenticatorId": self._authenticator_id})
 
     @required_virtual_authenticator
     def get_credentials(self) -> list[Credential]:
-        """Returns the list of credentials owned by the authenticator.
-
-        Example:
-        --------
-        >>> credentials = driver.get_credentials()
-        """
+        """Returns the list of credentials owned by the authenticator."""
         credential_data = self.execute(Command.GET_CREDENTIALS, {"authenticatorId": self._authenticator_id})
         return [Credential.from_dict(credential) for credential in credential_data["value"]]
 
@@ -1543,9 +1350,8 @@ class WebDriver(BaseWebDriver):
         """Removes a credential from the authenticator.
 
         Example:
-        --------
-        >>> credential_id = "user@example.com"
-        >>> driver.remove_credential(credential_id)
+            `credential_id = "user@example.com"`
+            `driver.remove_credential(credential_id)`
         """
         # Check if the credential is bytearray converted to b64 string
         if isinstance(credential_id, bytearray):
@@ -1557,12 +1363,7 @@ class WebDriver(BaseWebDriver):
 
     @required_virtual_authenticator
     def remove_all_credentials(self) -> None:
-        """Removes all credentials from the authenticator.
-
-        Example:
-        --------
-        >>> driver.remove_all_credentials()
-        """
+        """Removes all credentials from the authenticator."""
         self.execute(Command.REMOVE_ALL_CREDENTIALS, {"authenticatorId": self._authenticator_id})
 
     @required_virtual_authenticator
@@ -1570,23 +1371,17 @@ class WebDriver(BaseWebDriver):
         """Sets whether the authenticator will simulate success or fail on user
         verification.
 
-        Parameters:
-        -----------
-        verified: True if the authenticator will pass user verification, False otherwise.
+        Args:
+            verified: True if the authenticator will pass user verification,
+                False otherwise.
 
         Example:
-        --------
-        >>> driver.set_user_verified(True)
+            `driver.set_user_verified(True)`
         """
         self.execute(Command.SET_USER_VERIFIED, {"authenticatorId": self._authenticator_id, "isUserVerified": verified})
 
     def get_downloadable_files(self) -> list:
-        """Retrieves the downloadable files as a list of file names.
-
-        Example:
-        --------
-        >>> files = driver.get_downloadable_files()
-        """
+        """Retrieves the downloadable files as a list of file names."""
         if "se:downloadsEnabled" not in self.capabilities:
             raise WebDriverException("You must enable downloads in order to work with downloadable files.")
 
@@ -1596,17 +1391,13 @@ class WebDriver(BaseWebDriver):
         """Downloads a file with the specified file name to the target
         directory.
 
-        Parameters:
-        -----------
-        file_name : str
-            - The name of the file to download.
-
-        target_directory : str
-            - The path to the directory to save the downloaded file.
+        Args:
+            file_name: The name of the file to download.
+            target_directory: The path to the directory to save the downloaded
+                file.
 
         Example:
-        --------
-        >>> driver.download_file("example.zip", "/path/to/directory")
+            `driver.download_file("example.zip", "/path/to/directory")`
         """
         if "se:downloadsEnabled" not in self.capabilities:
             raise WebDriverException("You must enable downloads in order to work with downloadable files.")
@@ -1625,12 +1416,7 @@ class WebDriver(BaseWebDriver):
                 zip_ref.extractall(target_directory)
 
     def delete_downloadable_files(self) -> None:
-        """Deletes all downloadable files.
-
-        Example:
-        --------
-        >>> driver.delete_downloadable_files()
-        """
+        """Deletes all downloadable files."""
         if "se:downloadsEnabled" not in self.capabilities:
             raise WebDriverException("You must enable downloads in order to work with downloadable files.")
 
@@ -1642,32 +1428,26 @@ class WebDriver(BaseWebDriver):
         for interaction.
 
         Returns:
-        -------
-        FedCM: an object providing access to all Federated Credential Management (FedCM) dialog commands.
+            An object providing access to all Federated Credential Management
+            (FedCM) dialog commands.
 
         Examples:
-        --------
-        >>> title = driver.fedcm.title
-        >>> subtitle = driver.fedcm.subtitle
-        >>> dialog_type = driver.fedcm.dialog_type
-        >>> accounts = driver.fedcm.account_list
-        >>> driver.fedcm.select_account(0)
-        >>> driver.fedcm.accept()
-        >>> driver.fedcm.dismiss()
-        >>> driver.fedcm.enable_delay()
-        >>> driver.fedcm.disable_delay()
-        >>> driver.fedcm.reset_cooldown()
+            `driver.fedcm.title`
+            `driver.fedcm.subtitle`
+            `driver.fedcm.dialog_type`
+            `driver.fedcm.account_list`
+            `driver.fedcm.select_account(0)`
+            `driver.fedcm.accept()`
+            `driver.fedcm.dismiss()`
+            `driver.fedcm.enable_delay()`
+            `driver.fedcm.disable_delay()`
+            `driver.fedcm.reset_cooldown()`
         """
         return self._fedcm
 
     @property
     def supports_fedcm(self) -> bool:
-        """Returns whether the browser supports FedCM capabilities.
-
-        Example:
-        --------
-        >>> print(driver.supports_fedcm)
-        """
+        """Returns whether the browser supports FedCM capabilities."""
         return self.capabilities.get(ArgOptions.FEDCM_CAPABILITY, False)
 
     def _require_fedcm_support(self):
@@ -1680,37 +1460,24 @@ class WebDriver(BaseWebDriver):
 
     @property
     def dialog(self):
-        """Returns the FedCM dialog object for interaction.
-
-        Example:
-        --------
-        >>> dialog = driver.dialog
-        """
+        """Returns the FedCM dialog object for interaction."""
         self._require_fedcm_support()
         return Dialog(self)
 
     def fedcm_dialog(self, timeout=5, poll_frequency=0.5, ignored_exceptions=None):
         """Waits for and returns the FedCM dialog.
 
-        Parameters:
-        -----------
-        timeout : int
-            - How long to wait for the dialog
-
-        poll_frequency : floatHow
-            - Frequently to poll
-
-        ignored_exceptions : Any
-            - Exceptions to ignore while waiting
+        Args:
+            timeout: How long to wait for the dialog.
+            poll_frequency: How frequently to poll.
+            ignored_exceptions: Exceptions to ignore while waiting.
 
         Returns:
-        -------
-            The FedCM dialog object if found
+            The FedCM dialog object if found.
 
         Raises:
-        -------
-            TimeoutException if dialog doesn't appear
-            WebDriverException if FedCM not supported
+            TimeoutException: If dialog doesn't appear.
+            WebDriverException: If FedCM not supported.
         """
         from selenium.common.exceptions import NoAlertPresentException
         from selenium.webdriver.support.wait import WebDriverWait

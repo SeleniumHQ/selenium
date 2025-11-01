@@ -39,9 +39,7 @@ class PermissionDescriptor:
 
 
 class Permissions:
-    """
-    BiDi implementation of the permissions module.
-    """
+    """BiDi implementation of the permissions module."""
 
     def __init__(self, conn):
         self.conn = conn
@@ -55,16 +53,14 @@ class Permissions:
     ) -> None:
         """Sets a permission state for a given permission descriptor.
 
-        Parameters:
-        -----------
+        Args:
             descriptor: The permission name (str) or PermissionDescriptor object.
-                       Examples: "geolocation", "camera", "microphone"
+              Examples: "geolocation", "camera", "microphone".
             state: The permission state (granted, denied, prompt).
             origin: The origin for which the permission is set.
             user_context: The user context id (optional).
 
         Raises:
-        ------
             ValueError: If the permission state is invalid.
         """
         if state not in [PermissionState.GRANTED, PermissionState.DENIED, PermissionState.PROMPT]:
