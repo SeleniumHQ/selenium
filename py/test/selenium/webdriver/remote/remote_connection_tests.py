@@ -28,7 +28,7 @@ from selenium.webdriver.remote.client_config import ClientConfig
 
 
 def test_browser_specific_method(firefox_options, webserver):
-    """This only works on Firefox"""
+    """This only works on Firefox."""
     server_addr = f"http://{webserver.host}:{webserver.port}"
     with webdriver.Remote(options=firefox_options) as driver:
         driver.get(f"{server_addr}/simpleTest.html")

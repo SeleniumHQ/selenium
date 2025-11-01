@@ -27,7 +27,8 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 class ChromiumDriver(RemoteWebDriver):
     """Controls the WebDriver instance of ChromiumDriver and allows you to
-    drive the browser."""
+    drive the browser.
+    """
 
     def __init__(
         self,
@@ -47,7 +48,6 @@ class ChromiumDriver(RemoteWebDriver):
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-
         self.service = service if service else ChromiumService()
         options = options if options else ChromiumOptions()
 
@@ -105,7 +105,7 @@ class ChromiumDriver(RemoteWebDriver):
                 upload_throughput=500 * 1024,
             )  # maximal throughput
 
-            Note: 'throughput' can be used to set both (for download and upload).
+            Note: `throughput` can be used to set both (for download and upload).
         """
         self.execute("setNetworkConditions", {"network_conditions": network_conditions})
 
@@ -126,17 +126,19 @@ class ChromiumDriver(RemoteWebDriver):
         self.execute("setPermissions", {"descriptor": {"name": name}, "state": value})
 
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
-        """Execute Chrome Devtools Protocol command and get returned result The
-        command and command args should follow chrome devtools protocol
-        domains/commands, refer to link
-        https://chromedevtools.github.io/devtools-protocol/
+        """Execute Chrome Devtools Protocol command and get returned result.
+
+        The command and command args should follow chrome devtools protocol domains/commands
+
+        See:
+          - https://chromedevtools.github.io/devtools-protocol/
 
         Args:
             cmd: A str, command name
             cmd_args: A dict, command args. empty dict {} if there is no command args
 
         Example:
-            driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})
+            `driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})`
 
         Returns:
             A dict, empty dict {} if there is no result to return.

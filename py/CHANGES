@@ -1,3 +1,8 @@
+Selenium 4.38.0
+* update devtools versions
+* [py][bidi]: add set_timezone_override command in emulation (#16500)
+* Replaced :param: and :args: from docstrings (#16469)
+
 Selenium 4.37.0
 * Add CDP for Chrome 141 and remove 138
 * Fix mypy errors in by file and exceptions file (#16300)

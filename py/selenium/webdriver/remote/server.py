@@ -35,21 +35,14 @@ class Server:
     For more information on Selenium Grid, see:
         - https://www.selenium.dev/documentation/grid/getting_started/
 
-    Parameters:
-    -----------
-    host : str
-        Hostname or IP address to bind to (determined automatically if not specified)
-    port : int or str
-        Port to listen on (4444 if not specified)
-    path : str
-        Path/filename of existing server .jar file (Selenium Manager is used if not specified)
-    version : str
-        Version of server to download (latest version if not specified)
-    log_level : str
-        Logging level to control logging output ("INFO" if not specified)
-        Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST"
-    env: collections.abc.Mapping
-        Mapping that defines the environment variables for the server process
+    Args:
+        host: Hostname or IP address to bind to (determined automatically if not specified).
+        port: Port to listen on (4444 if not specified).
+        path: Path/filename of existing server .jar file (Selenium Manager is used if not specified).
+        version: Version of server to download (latest version if not specified).
+        log_level: Logging level to control logging output ("INFO" if not specified).
+            Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST".
+        env: Mapping that defines the environment variables for the server process.
     """
 
     def __init__(self, host=None, port=4444, path=None, version=None, log_level="INFO", env=None):

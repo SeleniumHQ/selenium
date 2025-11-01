@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "selenium"
-version = "4.38.0.202510172330"
+version = "4.39.0.202510242320"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 description = "Official Python bindings for Selenium WebDriver."
@@ -144,9 +144,23 @@ respect-gitignore = true
 target-version = "py39"
 
 [tool.ruff.lint]
-extend-select = ["E4", "E7", "E9", "F", "I", "E501", "RUF022", "TID252"]
+extend-select = ["D", "E4", "E7", "E9", "F", "I", "E501", "RUF022", "TID252"]
 fixable = ["ALL"]
+extend-ignore = [
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D102", # Missing docstring in public method
+    "D103", # Missing docstring in public function
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "D107", # Missing docstring in `__init__`
+    "D205", # 1 blank line required between summary line and description
+    "D212", # Multi-line docstring summary should start at the first line
+]
 
 [tool.ruff.format]
 docstring-code-format = true
 docstring-code-line-length = 120
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

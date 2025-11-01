@@ -148,7 +148,8 @@ class FirefoxProfile:
     @property
     def encoded(self) -> str:
         """Updates preferences and creates a zipped, base64 encoded string of
-        profile directory."""
+        profile directory.
+        """
         if self._desired_preferences:
             self.update_preferences()
         fp = BytesIO()
@@ -162,7 +163,8 @@ class FirefoxProfile:
 
     def _read_existing_userjs(self, userjs):
         """Reads existing preferences and adds them to desired preference
-        dictionary."""
+        dictionary.
+        """
         pref_pattern = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         with open(userjs, encoding="utf-8") as f:
             for usr in f:
@@ -239,7 +241,6 @@ class FirefoxProfile:
                 "unpack": False,
             }  # whether to unpack the addon
         """
-
         details = {"id": None, "unpack": False, "name": None, "version": None}
 
         def get_namespace_id(doc, url):
@@ -263,7 +264,8 @@ class FirefoxProfile:
 
         def parse_manifest_json(content):
             """Extracts the details from the contents of a WebExtensions
-            `manifest.json` file."""
+            `manifest.json` file.
+            """
             manifest = json.loads(content)
             try:
                 id = manifest["applications"]["gecko"]["id"]

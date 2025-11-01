@@ -124,12 +124,14 @@ class Service(ABC):
 
     def is_connectable(self) -> bool:
         """Establishes a socket connection to determine if the service running
-        on the port is accessible."""
+        on the port is accessible.
+        """
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
         """Dispatch an HTTP request to the shutdown endpoint for the service in
-        an attempt to stop it."""
+        an attempt to stop it.
+        """
         try:
             request.urlopen(f"{self.service_url}/shutdown")
         except URLError:
@@ -142,7 +144,6 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-
         if self.log_output not in {PIPE, subprocess.DEVNULL}:
             if isinstance(self.log_output, IOBase):
                 self.log_output.close()

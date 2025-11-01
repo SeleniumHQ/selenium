@@ -548,7 +548,7 @@ function RunningSessions (props) {
                                     </DialogTitle>
                                     <DialogContent
                                       dividers
-                                      sx={{ height: '600px' }}
+                                      sx={{ height: '600px', bgcolor: 'background.default', p: 0 }}
                                     >
                                       <LiveView
                                         ref={liveViewRef}

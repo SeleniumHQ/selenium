@@ -283,7 +283,6 @@ class Script:
         Raises:
             WebDriverException: If the script execution fails.
         """
-
         if self.driver is None:
             raise WebDriverException("Driver reference is required for script execution")
         browsing_context_id = self.driver.current_window_handle
@@ -312,9 +311,7 @@ class Script:
             raise WebDriverException(error_message)
 
     def __convert_to_local_value(self, value) -> dict:
-        """
-        Converts a Python value to BiDi LocalValue format.
-        """
+        """Converts a Python value to BiDi LocalValue format."""
         if value is None:
             return {"type": "null"}
         elif isinstance(value, bool):
