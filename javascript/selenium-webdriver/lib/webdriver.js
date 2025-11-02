@@ -1739,7 +1739,7 @@ class WebDriver {
 
     fs.mkdirSync(targetDirectory, { recursive: true })
     const zipFilePath = path.join(targetDirectory, `${fileName}.zip`)
-    fs.writeFileSync(zipFilePath, Buffer.from(base64Content, 'base64'))
+    fs.writeFileSync(zipFilePath, base64Content, 'base64')
 
     const zipData = fs.readFileSync(zipFilePath)
     await JSZip.loadAsync(zipData)
