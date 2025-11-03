@@ -19,6 +19,8 @@ package org.openqa.selenium.bidi.emulation;
 
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
@@ -33,6 +35,15 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 
 public class SetTimezoneOverrideTest extends JupiterTestBase {
+
+  int getExpectedTimezoneOffset(String timezoneId) {
+    ZoneId zone = ZoneId.of(timezoneId);
+    ZonedDateTime now = ZonedDateTime.now(zone);
+    return now.getOffset().getTotalSeconds()
+        / 60
+        * -1; // Negate to match JavaScript getTimezoneOffset behavior
+  }
+
   String getTimezoneString(WebDriver driver, String context) {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
 
@@ -66,9 +77,12 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
     String tzString = getTimezoneString(driver, contextId);
     Number tzOffset = getTimezoneOffset(driver, contextId);
 
+    int expectedOffset = getExpectedTimezoneOffset(timezone);
+
     assert tzString.equals(timezone)
         : "Timezone string mismatch: expected " + timezone + ", got " + tzString;
-    assert tzOffset.intValue() == 480 : "Timezone offset mismatch: expected 480, got " + tzOffset;
+    assert tzOffset.intValue() == expectedOffset
+        : "Timezone offset mismatch: expected " + expectedOffset + ", got " + tzOffset;
 
     emul.setTimezoneOverride(new SetTimezoneOverrideParameters(null).contexts(List.of(contextId)));
     String TzNew = getTimezoneString(driver, contextId);
@@ -98,9 +112,12 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
     String tzString = getTimezoneString(driver, contextId);
     Number tzOffset = getTimezoneOffset(driver, contextId);
 
+    int expectedOffset = getExpectedTimezoneOffset(timezone);
+
     assert tzString.equals(timezone)
         : "Timezone string mismatch: expected " + timezone + ", got " + tzString;
-    assert tzOffset.intValue() == 0 : "Timezone offset mismatch: expected 0, got " + tzOffset;
+    assert tzOffset.intValue() == expectedOffset
+        : "Timezone offset mismatch: expected " + expectedOffset + ", got " + tzOffset;
 
     emul.setTimezoneOverride(
         new SetTimezoneOverrideParameters(null).userContexts(List.of(userContext)));
