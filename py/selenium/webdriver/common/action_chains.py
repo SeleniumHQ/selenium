@@ -72,6 +72,8 @@ class ActionChains:
         Args:
             driver: The WebDriver instance which performs user actions.
             duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput
+            devices: Optional list of input devices (PointerInput, KeyInput, WheelInput) to use.
+                If not provided, default devices will be created.
         """
         self._driver = driver
         mouse = None
@@ -93,7 +95,8 @@ class ActionChains:
 
     def reset_actions(self) -> None:
         """Clears actions that are already stored locally and on the remote
-        end."""
+        end.
+        """
         self.w3c_actions.clear_actions()
         for device in self.w3c_actions.devices:
             device.clear_actions()
@@ -235,7 +238,6 @@ class ActionChains:
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
         """
-
         self.w3c_actions.pointer_action.move_by(xoffset, yoffset)
         self.w3c_actions.key_action.pause()
 
@@ -247,7 +249,6 @@ class ActionChains:
         Args:
             to_element: The WebElement to move to.
         """
-
         self.w3c_actions.pointer_action.move_to(to_element)
         self.w3c_actions.key_action.pause()
 
@@ -262,7 +263,6 @@ class ActionChains:
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
         """
-
         self.w3c_actions.pointer_action.move_to(to_element, int(xoffset), int(yoffset))
         self.w3c_actions.key_action.pause()
 
@@ -270,7 +270,6 @@ class ActionChains:
 
     def pause(self, seconds: float | int) -> ActionChains:
         """Pause all inputs for the specified duration in seconds."""
-
         self.w3c_actions.pointer_action.pause(seconds)
         self.w3c_actions.key_action.pause(int(seconds))
 
@@ -325,7 +324,6 @@ class ActionChains:
         Args:
             element: Which element to scroll into the viewport.
         """
-
         self.w3c_actions.wheel_action.scroll(origin=element)
         return self
 
@@ -337,7 +335,6 @@ class ActionChains:
             delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
             delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
         """
-
         self.w3c_actions.wheel_action.scroll(delta_x=delta_x, delta_y=delta_y)
         return self
 
@@ -356,7 +353,6 @@ class ActionChains:
         Raises:
             MoveTargetOutOfBoundsException: If the origin with offset is outside the viewport.
         """
-
         if not isinstance(scroll_origin, ScrollOrigin):
             raise TypeError(f"Expected object of type ScrollOrigin, got: {type(scroll_origin)}")
 

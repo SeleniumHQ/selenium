@@ -40,7 +40,6 @@ class WebDriver(RemoteWebDriver):
             options: an instance of WebKitGTKOptions
             service: Service object for handling the browser driver if you need to pass extra details
         """
-
         options = options if options else Options()
         self.service = service if service else Service()
         self.service.path = DriverFinder(self.service, options).get_driver_path()
@@ -51,7 +50,8 @@ class WebDriver(RemoteWebDriver):
 
     def quit(self):
         """Closes the browser and shuts down the WebKitGTKDriver executable
-        that is started when starting the WebKitGTKDriver."""
+        that is started when starting the WebKitGTKDriver.
+        """
         try:
             super().quit()
         except http_client.BadStatusLine:

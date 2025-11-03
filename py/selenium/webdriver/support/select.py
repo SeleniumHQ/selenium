@@ -30,7 +30,7 @@ class Select:
             webelement: SELECT element to wrap
 
         Example:
-            from selenium.webdriver.support.ui import Select \n
+            from selenium.webdriver.support.ui import Select
             Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)
         """
         if webelement.tag_name.lower() != "select":
@@ -47,23 +47,27 @@ class Select:
     @property
     def all_selected_options(self) -> list[WebElement]:
         """Returns a list of all selected options belonging to this select
-        tag."""
+        tag.
+        """
         return [opt for opt in self.options if opt.is_selected()]
 
     @property
     def first_selected_option(self) -> WebElement:
         """The first selected option in this select tag (or the currently
-        selected option in a normal select)"""
+        selected option in a normal select).
+        """
         for opt in self.options:
             if opt.is_selected():
                 return opt
         raise NoSuchElementException("No options are selected")
 
     def select_by_value(self, value: str) -> None:
-        """Select all options that have a value matching the argument. That is,
-        when given "foo" this would select an option like:
+        """Select all options that have a value matching the argument.
 
-        <option value="foo">Bar</option>
+        Example:
+            When given "foo" this would select an option like:
+
+                `<option value="foo">Bar</option>`
 
         Args:
             value: The value to match against
@@ -100,10 +104,12 @@ class Select:
         raise NoSuchElementException(f"Could not locate element with index {index}")
 
     def select_by_visible_text(self, text: str) -> None:
-        """Select all options that display text matching the argument. That is,
-        when given "Bar" this would select an option like:
+        """Select all options that display text matching the argument.
 
-         <option value="foo">Bar</option>
+        Example:
+            When given "Bar" this would select an option like:
+
+            `<option value="foo">Bar</option>`
 
         Args:
             text: The visible text to match against
@@ -154,10 +160,12 @@ class Select:
             self._unset_selected(opt)
 
     def deselect_by_value(self, value: str) -> None:
-        """Deselect all options that have a value matching the argument. That
-        is, when given "foo" this would deselect an option like:
+        """Deselect all options that have a value matching the argument.
 
-         <option value="foo">Bar</option>
+        Example:
+            When given "foo" this would deselect an option like:
+
+                `<option value="foo">Bar</option>`
 
         Args:
             value: The value to match against
@@ -195,10 +203,12 @@ class Select:
         raise NoSuchElementException(f"Could not locate element with index {index}")
 
     def deselect_by_visible_text(self, text: str) -> None:
-        """Deselect all options that display text matching the argument. That
-        is, when given "Bar" this would deselect an option like:
+        """Deselect all options that display text matching the argument.
 
-        <option value="foo">Bar</option>
+        Example:
+            when given "Bar" this would deselect an option like:
+
+                `<option value="foo">Bar</option>`
 
         Args:
             text: The visible text to match against

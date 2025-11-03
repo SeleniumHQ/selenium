@@ -283,7 +283,6 @@ class Script:
         Raises:
             WebDriverException: If the script execution fails.
         """
-
         if self.driver is None:
             raise WebDriverException("Driver reference is required for script execution")
         browsing_context_id = self.driver.current_window_handle

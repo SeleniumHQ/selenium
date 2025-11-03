@@ -100,7 +100,7 @@ class ChromiumOptions(ArgOptions):
         extract it to the ChromeDriver.
 
         Args:
-            extension: Path to the \\*.crx file.
+            extension: Path to the *.crx file.
         """
         if extension:
             extension_to_add = os.path.abspath(os.path.expanduser(extension))
