@@ -489,12 +489,12 @@ def test_set_screen_orientation_override_with_contexts(driver, pages):
     "natural,orientation_type,expected_angle",
     [
         # Portrait natural orientations
-        ("portrait", "portrait-primary", 0),
+        ("Portrait", "portrait-primary", 0),
         ("portrait", "portrait-secondary", 180),
         ("portrait", "landscape-primary", 90),
         ("portrait", "landscape-secondary", 270),
         # Landscape natural orientations
-        ("landscape", "portrait-primary", 90),
+        ("Landscape", "Portrait-Primary", 90),  # test with different casing
         ("landscape", "portrait-secondary", 270),
         ("landscape", "landscape-primary", 0),
         ("landscape", "landscape-secondary", 180),
@@ -519,7 +519,7 @@ def test_set_screen_orientation_override_with_user_contexts(driver, pages, natur
             # Verify the orientation was set
             current_orientation = get_screen_orientation(driver, context_id)
 
-            assert current_orientation["type"] == orientation_type
+            assert current_orientation["type"] == orientation_type.lower()
             assert current_orientation["angle"] == expected_angle
 
             driver.emulation.set_screen_orientation_override(screen_orientation=None, user_contexts=[user_context])

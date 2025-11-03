@@ -41,7 +41,7 @@ def _convert_to_enum(value, enum_class):
     if isinstance(value, enum_class):
         return value
     try:
-        return enum_class(value)
+        return enum_class(value.lower())
     except ValueError:
         raise ValueError(f"Invalid orientation: {value}")
 
