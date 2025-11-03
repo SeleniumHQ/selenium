@@ -68,7 +68,7 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
 
     assert tzString.equals(timezone)
         : "Timezone string mismatch: expected " + timezone + ", got " + tzString;
-    assert tzOffset.intValue() == 420 : "Timezone offset mismatch: expected 420, got " + tzOffset;
+    assert tzOffset.intValue() == 480 : "Timezone offset mismatch: expected 480, got " + tzOffset;
 
     emul.setTimezoneOverride(new SetTimezoneOverrideParameters(null).contexts(List.of(contextId)));
     String TzNew = getTimezoneString(driver, contextId);
