@@ -24,7 +24,9 @@ primitiveTypes = [
 ]
 
 
-def assignType(item:dict, type:str, is_array:bool=False, map_binary_to_string:bool=False) -> None:
+def assignType(
+    item: dict, type: str, is_array: bool = False, map_binary_to_string: bool = False
+) -> None:
     if is_array:
         item["type"] = "array"
         item["items"] = OrderedDict()
@@ -41,7 +43,9 @@ def assignType(item:dict, type:str, is_array:bool=False, map_binary_to_string:bo
         item["$ref"] = type
 
 
-def createItem(d:dict, experimental:bool | Any , deprecated:bool | Any, name:str | Any =None)->OrderedDict[str, Any]:
+def createItem(
+    d: dict, experimental: bool | Any, deprecated: bool | Any, name: str | Any = None
+) -> OrderedDict[str, Any]:
     result = OrderedDict(d)
     if name:
         result["name"] = name
@@ -55,7 +59,9 @@ def createItem(d:dict, experimental:bool | Any , deprecated:bool | Any, name:str
     return result
 
 
-def parse(data:str, file_name:str, map_binary_to_string:bool=False)-> OrderedDict[str, Any]:
+def parse(
+    data: str, file_name: str, map_binary_to_string: bool = False
+) -> OrderedDict[str, Any]:
     protocol = OrderedDict()
     protocol["version"] = OrderedDict()
     protocol["domains"] = []
@@ -184,7 +190,9 @@ def parse(data:str, file_name:str, map_binary_to_string:bool=False)-> OrderedDic
     return protocol
 
 
-def loads(data:str, file_name:str, map_binary_to_string:bool=False) -> OrderedDict[str, Any] | Any:
+def loads(
+    data: str, file_name: str, map_binary_to_string: bool = False
+) -> OrderedDict[str, Any] | Any:
     if file_name.endswith(".pdl"):
         return parse(data, file_name, map_binary_to_string)
     return json.loads(data)
