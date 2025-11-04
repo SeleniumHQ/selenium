@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import Any
+
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 
@@ -59,7 +61,7 @@ class Options(ArgOptions):
         """Create a capabilities dictionary with all set options."""
         caps = self._caps
 
-        browser_options = {}
+        browser_options: dict[str, Any] = {}
         if self.binary_location:
             browser_options["binary"] = self.binary_location
         if self.arguments:
