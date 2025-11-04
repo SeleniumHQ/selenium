@@ -257,18 +257,18 @@ class WebDriver(BaseWebDriver):
         self.start_session(capabilities)
         self._fedcm = FedCM(self)
 
-        self._websocket_connection = None
-        self._script = None
-        self._network = None
-        self._browser = None
-        self._bidi_session = None
-        self._browsing_context = None
-        self._storage = None
-        self._webextension = None
-        self._permissions = None
-        self._emulation = None
-        self._input = None
-        self._devtools = None
+        self._websocket_connection: Optional[WebSocketConnection] = None
+        self._script: Optional[Script] = None
+        self._network: Optional[Network] = None
+        self._browser: Optional[Browser] = None
+        self._bidi_session: Optional[Session] = None
+        self._browsing_context: Optional[BrowsingContext] = None
+        self._storage: Optional[Storage] = None
+        self._webextension: Optional[WebExtension] = None
+        self._permissions: Optional[Permissions] = None
+        self._emulation: Optional[Emulation] = None
+        self._input: Optional[Input] = None
+        self._devtools: Optional[Any] = None
 
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
