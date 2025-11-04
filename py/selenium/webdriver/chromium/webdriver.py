@@ -56,6 +56,11 @@ class ChromiumDriver(RemoteWebDriver):
         self.service.path = self.service.env_path() or finder.get_driver_path()
         self.service.start()
 
+        if browser_name is None:
+            raise ValueError("browser_name must be specified")
+        if vendor_prefix is None:
+            raise ValueError("vendor_prefix must be specified")
+
         executor = ChromiumRemoteConnection(
             remote_server_addr=self.service.service_url,
             browser_name=browser_name,
