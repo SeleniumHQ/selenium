@@ -49,9 +49,7 @@ class WebDriver(RemoteWebDriver):
         self._is_remote = False
 
     def quit(self):
-        """Closes the browser and shuts down the WPEWebKitDriver executable
-        that is started when starting the WPEWebKitDriver.
-        """
+        """Close the browser and shut down the WPEWebKit driver executable."""
         try:
             super().quit()
         except http_client.BadStatusLine:

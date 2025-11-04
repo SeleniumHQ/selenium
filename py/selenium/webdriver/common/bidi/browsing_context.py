@@ -812,7 +812,9 @@ class BrowsingContext:
         max_depth: Optional[int] = None,
         root: Optional[str] = None,
     ) -> list[BrowsingContextInfo]:
-        """Returns a tree of all descendent navigables including the given parent itself, or all top-level contexts
+        """Get a tree of all descendent navigables including the given parent itself.
+
+        Returns a tree of all descendent navigables including the given parent itself, or all top-level contexts
         when no parent is provided.
 
         Args:
@@ -917,8 +919,7 @@ class BrowsingContext:
         scale: float = 1.0,
         shrink_to_fit: bool = True,
     ) -> str:
-        """Creates a paginated representation of a document, and returns it as a PDF document represented as a
-        Base64-encoded string.
+        """Create a paginated PDF representation of the document as a Base64-encoded string.
 
         Args:
             context: The browsing context ID.
