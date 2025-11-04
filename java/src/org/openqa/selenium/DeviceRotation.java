@@ -17,8 +17,6 @@
 
 package org.openqa.selenium;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -96,23 +94,18 @@ public class DeviceRotation {
    * @return All axes mapped to a Map.
    */
   public Map<String, Integer> parameters() {
-    HashMap<String, Integer> values = new HashMap<>();
-    values.put("x", this.x);
-    values.put("y", this.y);
-    values.put("z", this.z);
-    return Collections.unmodifiableMap(values);
+    return Map.of("x", this.x, "y", this.y, "z", this.z);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof DeviceRotation)) {
+    if (!(o instanceof DeviceRotation obj)) {
       return false;
     }
     if (o == this) {
       return true;
     }
 
-    DeviceRotation obj = (DeviceRotation) o;
     return obj.getX() == this.getX() && obj.getY() == this.getY() && obj.getZ() == this.getZ();
   }
 
