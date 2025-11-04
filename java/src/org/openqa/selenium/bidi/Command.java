@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import org.openqa.selenium.internal.Require;
@@ -50,8 +51,7 @@ public class Command<X> {
       boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
     this.params =
-        Collections.unmodifiableMap(
-            new java.util.HashMap<>(Require.nonNull("Command parameters", params)));
+        Collections.unmodifiableMap(new HashMap<>(Require.nonNull("Command parameters", params)));
     this.mapper = Require.nonNull("Mapper for result", mapper);
     this.sendsResponse = sendsResponse;
   }
