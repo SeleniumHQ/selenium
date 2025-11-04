@@ -99,13 +99,14 @@ public class DeviceRotation {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof DeviceRotation obj)) {
+    if (!(o instanceof DeviceRotation)) {
       return false;
     }
     if (o == this) {
       return true;
     }
 
+    DeviceRotation obj = (DeviceRotation) o;
     return obj.getX() == this.getX() && obj.getY() == this.getY() && obj.getZ() == this.getZ();
   }
 
