@@ -636,9 +636,13 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_ALL_COOKIES)["value"]
 
     def get_cookie(self, name) -> Optional[dict]:
-        """Get a single cookie by name (case-sensitive; returns None if not found).
+        """Get a single cookie by name (case-sensitive,).
 
-        Raises ValueError if the name is empty or whitespace.
+        Returns:
+             A cookie dictionary or None if not found.
+
+        Raises:
+            ValueError if the name is empty or whitespace.
 
         Example:
             `cookie = driver.get_cookie("my_cookie")`
@@ -654,7 +658,8 @@ class WebDriver(BaseWebDriver):
     def delete_cookie(self, name) -> None:
         """Delete a single cookie with the given name (case-sensitive).
 
-        Raises ValueError if the name is empty or whitespace.
+        Raises:
+            ValueError if the name is empty or whitespace.
 
         Example:
             `driver.delete_cookie("my_cookie")`
@@ -835,8 +840,8 @@ class WebDriver(BaseWebDriver):
     def get_screenshot_as_file(self, filename) -> bool:
         """Save a screenshot of the current window to a PNG image file.
 
-        Returns False if there is any IOError, else returns True. Use full
-        paths in your filename.
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
 
         Args:
             filename: The full path you wish to save your screenshot to. This
@@ -864,8 +869,8 @@ class WebDriver(BaseWebDriver):
     def save_screenshot(self, filename) -> bool:
         """Save a screenshot of the current window to a PNG image file.
 
-        Returns False if there is any IOError, else returns True. Use full
-        paths in your filename.
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
 
         Args:
             filename: The full path you wish to save your screenshot to. This
@@ -955,7 +960,8 @@ class WebDriver(BaseWebDriver):
     def get_window_rect(self) -> dict:
         """Get the window's position and size.
 
-        Returns the x, y coordinates and height and width of the current window.
+        Returns:
+            x, y coordinates and height and width of the current window.
 
         Example:
             `driver.get_window_rect()`
@@ -1190,7 +1196,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def permissions(self) -> Permissions:
-        """Returns a permissions module object for BiDi permissions commands.
+        """Get a permissions module object for BiDi permissions commands.
 
         Returns:
             An object containing access to BiDi permissions commands.
@@ -1213,7 +1219,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def webextension(self) -> WebExtension:
-        """Returns a webextension module object for BiDi webextension commands.
+        """Get a webextension module object for BiDi webextension commands.
 
         Returns:
             An object containing access to BiDi webextension commands.
@@ -1233,7 +1239,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def emulation(self) -> Emulation:
-        """Returns an emulation module object for BiDi emulation commands.
+        """Get an emulation module object for BiDi emulation commands.
 
         Returns:
             An object containing access to BiDi emulation commands.
@@ -1256,7 +1262,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def input(self) -> Input:
-        """Returns an input module object for BiDi input commands.
+        """Get an input module object for BiDi input commands.
 
         Returns:
             An object containing access to BiDi input commands.
@@ -1399,8 +1405,7 @@ class WebDriver(BaseWebDriver):
 
         Args:
             file_name: The name of the file to download.
-            target_directory: The path to the directory to save the downloaded
-                file.
+            target_directory: The path to the directory to save the downloaded file.
 
         Example:
             `driver.download_file("example.zip", "/path/to/directory")`
@@ -1430,7 +1435,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def fedcm(self) -> FedCM:
-        """Returns the Federated Credential Management (FedCM) dialog commands.
+        """Get the Federated Credential Management (FedCM) dialog commands.
 
         Returns:
             An object providing access to all Federated Credential Management

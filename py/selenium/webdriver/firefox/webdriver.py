@@ -163,11 +163,12 @@ class WebDriver(RemoteWebDriver):
     def get_full_page_screenshot_as_file(self, filename) -> bool:
         """Save a full document screenshot of the current window to a PNG image file.
 
-        Returns False if there is any IOError, else returns True. Use full paths in your filename.
-
         Args:
             filename: The full path you wish to save your screenshot to. This
                 should end with a `.png` extension.
+
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
 
         Example:
             driver.get_full_page_screenshot_as_file("/Screenshots/foo.png")
@@ -190,11 +191,12 @@ class WebDriver(RemoteWebDriver):
     def save_full_page_screenshot(self, filename) -> bool:
         """Save a full document screenshot of the current window to a PNG image file.
 
-        Returns False if there is any IOError, else returns True. Use full paths in your filename.
-
         Args:
             filename: The full path you wish to save your screenshot to. This
                 should end with a `.png` extension.
+
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
 
         Example:
             driver.save_full_page_screenshot("/Screenshots/foo.png")
