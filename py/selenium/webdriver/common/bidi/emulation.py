@@ -15,9 +15,64 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from enum import Enum
 from typing import Any, Optional, Union
 
 from selenium.webdriver.common.bidi.common import command_builder
+
+
+class ScreenOrientationNatural(Enum):
+    """Natural screen orientation."""
+
+    PORTRAIT = "portrait"
+    LANDSCAPE = "landscape"
+
+
+class ScreenOrientationType(Enum):
+    """Screen orientation type."""
+
+    PORTRAIT_PRIMARY = "portrait-primary"
+    PORTRAIT_SECONDARY = "portrait-secondary"
+    LANDSCAPE_PRIMARY = "landscape-primary"
+    LANDSCAPE_SECONDARY = "landscape-secondary"
+
+
+def _convert_to_enum(value, enum_class):
+    if isinstance(value, enum_class):
+        return value
+    try:
+        return enum_class(value.lower())
+    except ValueError:
+        raise ValueError(f"Invalid orientation: {value}")
+
+
+class ScreenOrientation:
+    """Represents screen orientation configuration."""
+
+    def __init__(
+        self,
+        natural: Union[ScreenOrientationNatural, str],
+        type: Union[ScreenOrientationType, str],
+    ):
+        """Initialize ScreenOrientation.
+
+        Args:
+            natural: Natural screen orientation ("portrait" or "landscape").
+            type: Screen orientation type ("portrait-primary", "portrait-secondary",
+                "landscape-primary", or "landscape-secondary").
+
+        Raises:
+            ValueError: If natural or type values are invalid.
+        """
+        # handle string values
+        self.natural = _convert_to_enum(natural, ScreenOrientationNatural)
+        self.type = _convert_to_enum(type, ScreenOrientationType)
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "natural": self.natural.value,
+            "type": self.type.value,
+        }
 
 
 class GeolocationCoordinates:
@@ -310,3 +365,37 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setScriptingEnabled", params))
+
+    def set_screen_orientation_override(
+        self,
+        screen_orientation: Optional[ScreenOrientation] = None,
+        contexts: Optional[list[str]] = None,
+        user_contexts: Optional[list[str]] = None,
+    ) -> None:
+        """Set screen orientation override for the given contexts or user contexts.
+
+        Args:
+            screen_orientation: ScreenOrientation object to emulate, or None to clear the override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and userContexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or userContexts")
+
+        params: dict[str, Any] = {
+            "screenOrientation": screen_orientation.to_dict() if screen_orientation is not None else None
+        }
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setScreenOrientationOverride", params))
