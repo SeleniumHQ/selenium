@@ -54,6 +54,6 @@ public abstract class AbstractOverrideParameters implements OverrideParameters {
     if (!map.containsKey("contexts") && !map.containsKey("userContexts")) {
       throw new IllegalStateException("Must specify either contexts or userContexts");
     }
-    return map;
+    return new HashMap<>(map);
   }
 }
