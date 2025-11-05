@@ -18,11 +18,17 @@
 package org.openqa.selenium.testing;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -115,5 +121,43 @@ public abstract class JupiterTestBase {
 
   protected WebDriverWait wait(WebDriver driver) {
     return new WebDriverWait(driver, Duration.ofSeconds(10));
+  }
+
+  /**
+   * Get colors from image from each point at grid defined by stepX/stepY.
+   *
+   * @param image - image
+   * @param stepX - interval in pixels b/w point in X dimension
+   * @param stepY - interval in pixels b/w point in Y dimension
+   * @return set of colors in string hex presentation
+   */
+  protected final Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
+    Set<String> colors = new TreeSet<>();
+
+    try {
+      int height = image.getHeight();
+      int width = image.getWidth();
+      assertThat(width > 0).isTrue();
+      assertThat(height > 0).isTrue();
+
+      Raster raster = image.getRaster();
+      for (int i = 0; i < width; i = i + stepX) {
+        for (int j = 0; j < height; j = j + stepY) {
+          String hex =
+              String.format(
+                  "#%02x%02x%02x",
+                  (raster.getSample(i, j, 0)),
+                  (raster.getSample(i, j, 1)),
+                  (raster.getSample(i, j, 2)));
+          colors.add(hex);
+        }
+      }
+    } catch (Exception e) {
+      fail("Unable to get actual colors from screenshot: " + e.getMessage());
+    }
+
+    assertThat(colors).isNotEmpty();
+
+    return colors;
   }
 }

@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.google.common.collect.Sets;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +46,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
  * coloured areas - take screenshot - calculate expected colors as in tested HTML page - scan
  * screenshot for actual colors * compare
  *
- * @see org.openqa.selenium.TakesScreenshotTest
+ * (See related screenshot tests in the parent package.)
  */
 
 // TODO(user): verify expected behaviour after frame switching
@@ -180,44 +179,6 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
         cnt++;
       }
     }
-
-    return colors;
-  }
-
-  /**
-   * Get colors from image from each point at grid defined by stepX/stepY.
-   *
-   * @param image - image
-   * @param stepX - interval in pixels b/w point in X dimension
-   * @param stepY - interval in pixels b/w point in Y dimension
-   * @return set of colors in string hex presentation
-   */
-  private Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
-    Set<String> colors = new TreeSet<>();
-
-    try {
-      int height = image.getHeight();
-      int width = image.getWidth();
-      assertThat(width > 0).isTrue();
-      assertThat(height > 0).isTrue();
-
-      Raster raster = image.getRaster();
-      for (int i = 0; i < width; i = i + stepX) {
-        for (int j = 0; j < height; j = j + stepY) {
-          String hex =
-              String.format(
-                  "#%02x%02x%02x",
-                  (raster.getSample(i, j, 0)),
-                  (raster.getSample(i, j, 1)),
-                  (raster.getSample(i, j, 2)));
-          colors.add(hex);
-        }
-      }
-    } catch (Exception e) {
-      fail("Unable to get actual colors from screenshot: " + e.getMessage());
-    }
-
-    assertThat(colors).isNotEmpty();
 
     return colors;
   }

@@ -326,43 +326,6 @@ class TakesScreenshotTest extends JupiterTestBase {
     return colors;
   }
 
-  /**
-   * Get colors from image from each point at grid defined by stepX/stepY.
-   *
-   * @param image - image
-   * @param stepX - interval in pixels b/w point in X dimension
-   * @param stepY - interval in pixels b/w point in Y dimension
-   * @return set of colors in string hex presentation
-   */
-  private Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
-    Set<String> colors = new TreeSet<>();
-
-    try {
-      int height = image.getHeight();
-      int width = image.getWidth();
-      assertThat(width > 0).isTrue();
-      assertThat(height > 0).isTrue();
-
-      Raster raster = image.getRaster();
-      for (int i = 0; i < width; i = i + stepX) {
-        for (int j = 0; j < height; j = j + stepY) {
-          String hex =
-              String.format(
-                  "#%02x%02x%02x",
-                  (raster.getSample(i, j, 0)),
-                  (raster.getSample(i, j, 1)),
-                  (raster.getSample(i, j, 2)));
-          colors.add(hex);
-        }
-      }
-    } catch (Exception e) {
-      fail("Unable to get actual colors from screenshot: " + e.getMessage());
-    }
-
-    assertThat(colors).isNotEmpty();
-
-    return colors;
-  }
 
   /**
    * Compares sets of colors are same.
