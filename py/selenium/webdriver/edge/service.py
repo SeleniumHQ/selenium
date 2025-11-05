@@ -23,8 +23,7 @@ from selenium.webdriver.chromium import service
 
 
 class Service(service.ChromiumService):
-    """A Service class that is responsible for the starting and stopping of
-    `msedgedriver`.
+    """Service class responsible for starting and stopping msedgedriver.
 
     Args:
         executable_path: Install path of the msedgedriver executable, defaults to `msedgedriver`.
@@ -61,10 +60,7 @@ class Service(service.ChromiumService):
 
     @property
     def service_args(self) -> Sequence[str]:
-        """
-        Returns:
-            The sequence of service arguments.
-        """
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

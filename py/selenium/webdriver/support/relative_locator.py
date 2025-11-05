@@ -64,9 +64,9 @@ def locate_with(by: ByType, using: str) -> "RelativeBy":
 
 
 class RelativeBy:
-    """Gives the opportunity to find elements based on their relative location
-    on the page from a root element. It is recommended that you use the helper
-    function to create it.
+    """Find elements based on their relative location from a root element.
+
+    It is recommended that you use the helper function to create instances.
 
     Example:
     --------
@@ -80,8 +80,7 @@ class RelativeBy:
     LocatorType = dict[ByType, str]
 
     def __init__(self, root: Optional[dict[ByType, str]] = None, filters: Optional[list] = None):
-        """Creates a new RelativeBy object. It is preferred if you use the
-        `locate_with` method as this signature could change.
+        """Create a RelativeBy object (prefer using `locate_with` instead).
 
         Args:
             root: A dict with `By` enum as the key and the search query as the value
@@ -309,9 +308,7 @@ class RelativeBy:
         return self
 
     def to_dict(self) -> dict:
-        """Create a dict that will be passed to the driver to start searching
-        for the element.
-        """
+        """Create a dict to be passed to the driver for element searching."""
         return {
             "relative": {
                 "root": self.root,

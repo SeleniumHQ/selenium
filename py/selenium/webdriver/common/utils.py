@@ -138,8 +138,7 @@ def is_url_connectable(
     host: Optional[str] = "127.0.0.1",
     scheme: Optional[str] = "http",
 ) -> bool:
-    """Sends a request to the HTTP server at the /status endpoint to see if it
-    responds successfully.
+    """Send a request to the HTTP server at the /status endpoint to verify connectivity.
 
     Args:
         port: port number

@@ -57,8 +57,7 @@ def title_is(title: str) -> Callable[[WebDriver], bool]:
 
 
 def title_contains(title: str) -> Callable[[WebDriver], bool]:
-    """An expectation for checking that the title contains a case-sensitive
-    substring.
+    """Check that the title contains a case-sensitive substring.
 
     Args:
         title: The fragment of title expected.
@@ -74,8 +73,7 @@ def title_contains(title: str) -> Callable[[WebDriver], bool]:
 
 
 def presence_of_element_located(locator: tuple[str, str]) -> Callable[[WebDriverOrWebElement], WebElement]:
-    """An expectation for checking that an element is present on the DOM of a
-    page. This does not necessarily mean that the element is visible.
+    """Check that an element is present on the DOM (not necessarily visible).
 
     Args:
         locator: Used to find the element.
@@ -84,10 +82,10 @@ def presence_of_element_located(locator: tuple[str, str]) -> Callable[[WebDriver
         The WebElement once it is located.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "q")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "q")))
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -97,8 +95,7 @@ def presence_of_element_located(locator: tuple[str, str]) -> Callable[[WebDriver
 
 
 def url_contains(url: str) -> Callable[[WebDriver], bool]:
-    """An expectation for checking that the current url contains a case-
-    sensitive substring.
+    """Check that the current url contains a case-sensitive substring.
 
     Args:
         url: The fragment of url expected.
@@ -149,8 +146,7 @@ def url_to_be(url: str) -> Callable[[WebDriver], bool]:
 
 
 def url_changes(url: str) -> Callable[[WebDriver], bool]:
-    """An expectation for checking the current url is different than a given
-    string.
+    """Check that the current url differs from a given string.
 
     Args:
         url: The expected url, which must not be an exact match.
@@ -168,9 +164,7 @@ def url_changes(url: str) -> Callable[[WebDriver], bool]:
 def visibility_of_element_located(
     locator: tuple[str, str],
 ) -> Callable[[WebDriverOrWebElement], Union[Literal[False], WebElement]]:
-    """An expectation for checking that an element is present on the DOM of a
-    page and visible. Visibility means that the element is not only displayed
-    but also has a height and width that is greater than 0.
+    """Check that an element is visible (present in DOM and width/height greater than zero).
 
     Args:
         locator: Used to find the element.
@@ -179,10 +173,10 @@ def visibility_of_element_located(
         The WebElement once it is located and visible.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> element = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.NAME, "q")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        element = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.NAME, "q")))
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -195,11 +189,7 @@ def visibility_of_element_located(
 
 
 def visibility_of(element: WebElement) -> Callable[[Any], Union[Literal[False], WebElement]]:
-    """An expectation for checking that an element, known to be present on the
-    DOM of a page, is visible.
-
-    Visibility means that the element is not only displayed but also has
-    a height and width that is greater than 0.
+    """Check that an element is visible (present in DOM and width/height greater than zero).
 
     Args:
         element: The WebElement to check.
@@ -208,10 +198,10 @@ def visibility_of(element: WebElement) -> Callable[[Any], Union[Literal[False], 
         The WebElement once it is visible.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> element = WebDriverWait(driver, 10).until(EC.visibility_of(driver.find_element(By.NAME, "q")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        element = WebDriverWait(driver, 10).until(EC.visibility_of(driver.find_element(By.NAME, "q")))
     """
 
     def _predicate(_):
@@ -221,8 +211,7 @@ def visibility_of(element: WebElement) -> Callable[[Any], Union[Literal[False], 
 
 
 def _element_if_visible(element: WebElement, visibility: bool = True) -> Union[Literal[False], WebElement]:
-    """An expectation for checking that an element, known to be present on the
-    DOM of a page, is of the expected visibility.
+    """Check if an element has the expected visibility state.
 
     Args:
         element: The WebElement to check.
@@ -235,8 +224,7 @@ def _element_if_visible(element: WebElement, visibility: bool = True) -> Union[L
 
 
 def presence_of_all_elements_located(locator: tuple[str, str]) -> Callable[[WebDriverOrWebElement], list[WebElement]]:
-    """An expectation for checking that there is at least one element present
-    on a web page.
+    """Check that all elements matching the locator are present on the DOM.
 
     Args:
         locator: Used to find the element.
@@ -245,10 +233,10 @@ def presence_of_all_elements_located(locator: tuple[str, str]) -> Callable[[WebD
         The list of WebElements once they are located.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "foo")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "foo")))
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -258,8 +246,7 @@ def presence_of_all_elements_located(locator: tuple[str, str]) -> Callable[[WebD
 
 
 def visibility_of_any_elements_located(locator: tuple[str, str]) -> Callable[[WebDriverOrWebElement], list[WebElement]]:
-    """An expectation for checking that there is at least one element visible
-    on a web page.
+    """Check that at least one element is visible on the web page (present in DOM and width/height greater than zero).
 
     Args:
         locator: Used to find the element.
@@ -268,10 +255,10 @@ def visibility_of_any_elements_located(locator: tuple[str, str]) -> Callable[[We
         The list of WebElements once they are located and visible.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> elements = WebDriverWait(driver, 10).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "foo")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        elements = WebDriverWait(driver, 10).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "foo")))
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -283,9 +270,7 @@ def visibility_of_any_elements_located(locator: tuple[str, str]) -> Callable[[We
 def visibility_of_all_elements_located(
     locator: tuple[str, str],
 ) -> Callable[[WebDriverOrWebElement], Union[list[WebElement], Literal[False]]]:
-    """An expectation for checking that all elements are present on the DOM of
-    a page and visible. Visibility means that the elements are not only
-    displayed but also has a height and width that is greater than 0.
+    """Check that all elements are visible (present in DOM and width/height greater than zero).
 
     Args:
         locator: Used to find the elements.
@@ -294,10 +279,10 @@ def visibility_of_all_elements_located(
         The list of WebElements once they are located and visible.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "foo")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "foo")))
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -314,8 +299,7 @@ def visibility_of_all_elements_located(
 
 
 def text_to_be_present_in_element(locator: tuple[str, str], text_: str) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation for checking if the given text is present in the
-    specified element.
+    """Check that the given text is present in the specified element.
 
     Args:
         locator: Used to find the element.
@@ -325,12 +309,12 @@ def text_to_be_present_in_element(locator: tuple[str, str], text_: str) -> Calla
         True when the text is present, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_text_in_element = WebDriverWait(driver, 10).until(
-                EC.text_to_be_present_in_element((By.CLASS_NAME, "foo"), "bar")
-            )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_text_in_element = WebDriverWait(driver, 10).until(
+            EC.text_to_be_present_in_element((By.CLASS_NAME, "foo"), "bar")
+        )
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -346,8 +330,7 @@ def text_to_be_present_in_element(locator: tuple[str, str], text_: str) -> Calla
 def text_to_be_present_in_element_value(
     locator: tuple[str, str], text_: str
 ) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation for checking if the given text is present in the
-    element's value.
+    """Check that the given text is present in the element's value.
 
     Args:
         locator: Used to find the element.
@@ -357,12 +340,12 @@ def text_to_be_present_in_element_value(
         True when the text is present, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_text_in_element_value = WebDriverWait(driver, 10).until(
-        ...     EC.text_to_be_present_in_element_value((By.CLASS_NAME, "foo"), "bar")
-        ... )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_text_in_element_value = WebDriverWait(driver, 10).until(
+            EC.text_to_be_present_in_element_value((By.CLASS_NAME, "foo"), "bar")
+        )
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -380,8 +363,7 @@ def text_to_be_present_in_element_value(
 def text_to_be_present_in_element_attribute(
     locator: tuple[str, str], attribute_: str, text_: str
 ) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation for checking if the given text is present in the
-    element's attribute.
+    """Check that the given text is present in the element's attribute.
 
     Args:
         locator: Used to find the element.
@@ -392,12 +374,12 @@ def text_to_be_present_in_element_attribute(
         True when the text is present, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_text_in_element_attribute = WebDriverWait(driver, 10).until(
-        ...     EC.text_to_be_present_in_element_attribute((By.CLASS_NAME, "foo"), "bar", "baz")
-        ... )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_text_in_element_attribute = WebDriverWait(driver, 10).until(
+            EC.text_to_be_present_in_element_attribute((By.CLASS_NAME, "foo"), "bar", "baz")
+        )
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -415,11 +397,7 @@ def text_to_be_present_in_element_attribute(
 def frame_to_be_available_and_switch_to_it(
     locator: Union[tuple[str, str], str, WebElement],
 ) -> Callable[[WebDriver], bool]:
-    """An expectation for checking whether the given frame is available to
-    switch to.
-
-    If the frame is available it switches the given driver to the
-    specified frame.
+    """Check that the given frame is available and switch to it.
 
     Args:
         locator: Used to find the frame.
@@ -428,9 +406,9 @@ def frame_to_be_available_and_switch_to_it(
         True when the frame is available, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it("frame_name"))
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it("frame_name"))
     """
 
     def _predicate(driver: WebDriver):
@@ -449,8 +427,7 @@ def frame_to_be_available_and_switch_to_it(
 def invisibility_of_element_located(
     locator: Union[WebElement, tuple[str, str]],
 ) -> Callable[[WebDriverOrWebElement], Union[WebElement, bool]]:
-    """An Expectation for checking that an element is either invisible or not
-    present on the DOM.
+    """Check that an element is either invisible or not present on the DOM.
 
     Args:
         locator: Used to find the element.
@@ -459,10 +436,10 @@ def invisibility_of_element_located(
         True when the element is invisible or not present, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_invisible = WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.CLASS_NAME, "foo")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_invisible = WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.CLASS_NAME, "foo")))
 
     Note:
         In the case of NoSuchElement, returns true because the element is not
@@ -492,8 +469,7 @@ def invisibility_of_element_located(
 def invisibility_of_element(
     element: Union[WebElement, tuple[str, str]],
 ) -> Callable[[WebDriverOrWebElement], Union[WebElement, bool]]:
-    """An Expectation for checking that an element is either invisible or not
-    present on the DOM.
+    """Check that an element is either invisible or not present on the DOM.
 
     Args:
         element: Used to find the element.
@@ -502,12 +478,12 @@ def invisibility_of_element(
         True when the element is invisible or not present, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_invisible_or_not_present = WebDriverWait(driver, 10).until(
-        ...     EC.invisibility_of_element(driver.find_element(By.CLASS_NAME, "foo"))
-        ... )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_invisible_or_not_present = WebDriverWait(driver, 10).until(
+            EC.invisibility_of_element(driver.find_element(By.CLASS_NAME, "foo"))
+        )
     """
     return invisibility_of_element_located(element)
 
@@ -515,8 +491,7 @@ def invisibility_of_element(
 def element_to_be_clickable(
     mark: Union[WebElement, tuple[str, str]],
 ) -> Callable[[WebDriverOrWebElement], Union[Literal[False], WebElement]]:
-    """An Expectation for checking an element is visible and enabled such that
-    you can click it.
+    """Check that an element is visible and enabled so it can be clicked.
 
     Args:
         mark: Used to find the element.
@@ -525,10 +500,10 @@ def element_to_be_clickable(
         The WebElement once it is located and clickable.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "foo")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "foo")))
     """
 
     # renamed argument to 'mark', to indicate that both locator
@@ -555,10 +530,10 @@ def staleness_of(element: WebElement) -> Callable[[Any], bool]:
         False if the element is still attached to the DOM, true otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_stale = WebDriverWait(driver, 10).until(EC.staleness_of(driver.find_element(By.CLASS_NAME, "foo")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_stale = WebDriverWait(driver, 10).until(EC.staleness_of(driver.find_element(By.CLASS_NAME, "foo")))
     """
 
     def _predicate(_):
@@ -582,12 +557,12 @@ def element_to_be_selected(element: WebElement) -> Callable[[Any], bool]:
         True if the element is selected, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_selected = WebDriverWait(driver, 10).until(EC.element_to_be_selected(driver.find_element(
-                By.CLASS_NAME, "foo"))
-            )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_selected = WebDriverWait(driver, 10).until(EC.element_to_be_selected(driver.find_element(
+            By.CLASS_NAME, "foo"))
+        )
     """
 
     def _predicate(_):
@@ -606,10 +581,10 @@ def element_located_to_be_selected(locator: tuple[str, str]) -> Callable[[WebDri
         True if the element is selected, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_selected = WebDriverWait(driver, 10).until(EC.element_located_to_be_selected((By.CLASS_NAME, "foo")))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_selected = WebDriverWait(driver, 10).until(EC.element_located_to_be_selected((By.CLASS_NAME, "foo")))
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -629,12 +604,12 @@ def element_selection_state_to_be(element: WebElement, is_selected: bool) -> Cal
         True if the element's selection state is the same as is_selected.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_selected = WebDriverWait(driver, 10).until(
-        ...     EC.element_selection_state_to_be(driver.find_element(By.CLASS_NAME, "foo"), True)
-        ... )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_selected = WebDriverWait(driver, 10).until(
+            EC.element_selection_state_to_be(driver.find_element(By.CLASS_NAME, "foo"), True)
+        )
     """
 
     def _predicate(_):
@@ -646,8 +621,7 @@ def element_selection_state_to_be(element: WebElement, is_selected: bool) -> Cal
 def element_located_selection_state_to_be(
     locator: tuple[str, str], is_selected: bool
 ) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation to locate an element and check if the selection state
-    specified is in that state.
+    """Check that an element's selection state matches the expected state.
 
     Args:
         locator: Used to find the element.
@@ -657,12 +631,12 @@ def element_located_selection_state_to_be(
         True if the element's selection state is the same as is_selected.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_selected = WebDriverWait(driver, 10).until(EC.element_located_selection_state_to_be(
-                (By.CLASS_NAME, "foo"), True)
-            )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_selected = WebDriverWait(driver, 10).until(EC.element_located_selection_state_to_be(
+            (By.CLASS_NAME, "foo"), True)
+        )
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -685,9 +659,9 @@ def number_of_windows_to_be(num_windows: int) -> Callable[[WebDriver], bool]:
         True when the number of windows matches, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_number_of_windows = WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_number_of_windows = WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
     """
 
     def _predicate(driver: WebDriver):
@@ -696,9 +670,8 @@ def number_of_windows_to_be(num_windows: int) -> Callable[[WebDriver], bool]:
     return _predicate
 
 
-def new_window_is_opened(current_handles: list[str]) -> Callable[[WebDriver], bool]:
-    """An expectation that a new window will be opened and have the number of
-    windows handles increase.
+def new_window_is_opened(current_handles: set[str]) -> Callable[[WebDriver], bool]:
+    """Check that a new window has been opened (window handles count increased).
 
     Args:
         current_handles: The current window handles.
@@ -707,10 +680,10 @@ def new_window_is_opened(current_handles: list[str]) -> Callable[[WebDriver], bo
         True when a new window is opened, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.support.ui import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_new_window_opened = WebDriverWait(driver, 10).until(EC.new_window_is_opened(driver.window_handles))
+        from selenium.webdriver.support.ui import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_new_window_opened = WebDriverWait(driver, 10).until(EC.new_window_is_opened(driver.window_handles))
     """
 
     def _predicate(driver: WebDriver):
@@ -719,17 +692,16 @@ def new_window_is_opened(current_handles: list[str]) -> Callable[[WebDriver], bo
     return _predicate
 
 
-def alert_is_present() -> Callable[[WebDriver], Union[Alert, Literal[False]]]:
-    """An expectation for checking if an alert is currently present and
-    switching to it.
+def alert_is_present() -> Callable[[WebDriver], Union[Alert, bool]]:
+    """Check that an alert is present and switch to it.
 
     Returns:
         The Alert once it is located.
 
     Example:
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> alert = WebDriverWait(driver, 10).until(EC.alert_is_present())
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        alert = WebDriverWait(driver, 10).until(EC.alert_is_present())
 
     Note:
         If the alert is present it switches the given driver to it.
@@ -745,8 +717,7 @@ def alert_is_present() -> Callable[[WebDriver], Union[Alert, Literal[False]]]:
 
 
 def element_attribute_to_include(locator: tuple[str, str], attribute_: str) -> Callable[[WebDriverOrWebElement], bool]:
-    """An expectation for checking if the given attribute is included in the
-    specified element.
+    """Check if the given attribute is included in the specified element.
 
     Args:
         locator: Used to find the element.
@@ -756,12 +727,12 @@ def element_attribute_to_include(locator: tuple[str, str], attribute_: str) -> C
         True when the attribute is included, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> is_attribute_in_element = WebDriverWait(driver, 10).until(
-        ...     EC.element_attribute_to_include((By.CLASS_NAME, "foo"), "bar")
-        ... )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        is_attribute_in_element = WebDriverWait(driver, 10).until(
+            EC.element_attribute_to_include((By.CLASS_NAME, "foo"), "bar")
+        )
     """
 
     def _predicate(driver: WebDriverOrWebElement):
@@ -787,12 +758,13 @@ def any_of(*expected_conditions: Callable[[D], T]) -> Callable[[D], Union[Litera
         The result of the first matching condition, or False if none do.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> element = WebDriverWait(driver, 10).until(
-        ... EC.any_of(EC.presence_of_element_located((By.NAME, "q"),
-        ... EC.visibility_of_element_located((By.NAME, "q"))))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        element = WebDriverWait(driver, 10).until(
+            EC.any_of(EC.presence_of_element_located((By.NAME, "q"),
+            EC.visibility_of_element_located((By.NAME, "q")))
+        )
     """
 
     def any_of_condition(driver: D):
@@ -824,12 +796,13 @@ def all_of(
         The results of all the matching conditions, or False if any do not.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> elements = WebDriverWait(driver, 10).until(
-        ... EC.all_of(EC.presence_of_element_located((By.NAME, "q"),
-        ... EC.visibility_of_element_located((By.NAME, "q"))))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        elements = WebDriverWait(driver, 10).until(
+            EC.all_of(EC.presence_of_element_located((By.NAME, "q"),
+            EC.visibility_of_element_located((By.NAME, "q")))
+        )
     """
 
     def all_of_condition(driver: D):
@@ -859,12 +832,13 @@ def none_of(*expected_conditions: Callable[[D], Any]) -> Callable[[D], bool]:
         True if none of the conditions are true, False otherwise.
 
     Example:
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-        >>> element = WebDriverWait(driver, 10).until(
-        ... EC.none_of(EC.presence_of_element_located((By.NAME, "q"),
-        ... EC.visibility_of_element_located((By.NAME, "q"))))
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        element = WebDriverWait(driver, 10).until(
+            EC.none_of(EC.presence_of_element_located((By.NAME, "q"),
+            EC.visibility_of_element_located((By.NAME, "q")))
+        )
     """
 
     def none_of_condition(driver: D):

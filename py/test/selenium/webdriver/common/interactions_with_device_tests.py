@@ -194,9 +194,7 @@ def test_sending_keys_to_element_with_keyboard(driver, pages):
 
 
 def test_can_send_keys_between_clicks_with_keyboard(driver, pages):
-    """For W3C, ensures that the correct number of pauses are given to the other
-    input device.
-    """
+    """Ensure W3C sends correct pause count to other input devices."""
     pages.load("javascriptPage.html")
     keyup = driver.find_element(By.ID, "keyUp")
     keydown = driver.find_element(By.ID, "keyDown")

@@ -23,8 +23,7 @@ from selenium.webdriver.common import service, utils
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of
-    `geckodriver`.
+    """Service class responsible for starting and stopping geckodriver.
 
     Args:
         executable_path: install path of the geckodriver executable, defaults to `geckodriver`.
@@ -67,6 +66,7 @@ class Service(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

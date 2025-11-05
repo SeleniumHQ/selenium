@@ -37,8 +37,9 @@ logger = logging.getLogger(__name__)
 
 
 class Service(ABC):
-    """The abstract base class for all service objects.  Services typically
-    launch a child program in a new process as an interim process to
+    """Abstract base class for all service objects that manage driver processes.
+
+    Services typically launch a child program in a new process as an interim process to
     communicate with a browser.
 
     Args:
@@ -123,15 +124,15 @@ class Service(ABC):
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
-        """Establishes a socket connection to determine if the service running
-        on the port is accessible.
+        """Establish a socket connection to determine if the service is accessible.
+
+        Returns:
+            True if the service is connectable on the configured port, False otherwise.
         """
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
-        """Dispatch an HTTP request to the shutdown endpoint for the service in
-        an attempt to stop it.
-        """
+        """Dispatch an HTTP request to the shutdown endpoint to stop the service."""
         try:
             request.urlopen(f"{self.service_url}/shutdown")
         except URLError:
