@@ -547,7 +547,8 @@ public abstract class DriverOptions
             Selenium.UnhandledPromptBehavior.Dismiss => "dismiss",
             Selenium.UnhandledPromptBehavior.AcceptAndNotify => "accept and notify",
             Selenium.UnhandledPromptBehavior.DismissAndNotify => "dismiss and notify",
-            _ => null
+            null or Selenium.UnhandledPromptBehavior.Default => null,
+            _ => throw new ArgumentOutOfRangeException(nameof(behavior), $"UnhandledPromptBehavior value '{behavior}' is not recognized."),
         };
 
         if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorSingleOption singleOption)
