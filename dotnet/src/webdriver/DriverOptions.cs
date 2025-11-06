@@ -539,15 +539,14 @@ public abstract class DriverOptions
             capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
         }
 
-        [return: NotNullIfNotNull(nameof(behavior))]
-        static string? UnhandledPromptBehaviorToString(UnhandledPromptBehavior? behavior) => behavior switch
+        static string UnhandledPromptBehaviorToString(UnhandledPromptBehavior? behavior) => behavior switch
         {
             Selenium.UnhandledPromptBehavior.Ignore => "ignore",
             Selenium.UnhandledPromptBehavior.Accept => "accept",
             Selenium.UnhandledPromptBehavior.Dismiss => "dismiss",
             Selenium.UnhandledPromptBehavior.AcceptAndNotify => "accept and notify",
             Selenium.UnhandledPromptBehavior.DismissAndNotify => "dismiss and notify",
-            _ => null
+            _ => throw new WebDriverException($"'{behavior}' unhandled prompt behavior value is not recognized."),
         };
 
         if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorSingleOption singleOption)
