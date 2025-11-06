@@ -46,7 +46,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
  * coloured areas - take screenshot - calculate expected colors as in tested HTML page - scan
  * screenshot for actual colors * compare
  *
- * (See related screenshot tests in the parent package.)
+ * <p>(See related screenshot tests in the parent package.)
  */
 
 // TODO(user): verify expected behaviour after frame switching

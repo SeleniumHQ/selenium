@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.testing;
 
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.awt.image.BufferedImage;
@@ -131,7 +131,8 @@ public abstract class JupiterTestBase {
    * @param stepY - interval in pixels b/w point in Y dimension
    * @return set of colors in string hex presentation
    */
-  protected final Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
+  protected final Set<String> scanActualColors(
+      BufferedImage image, final int stepX, final int stepY) {
     Set<String> colors = new TreeSet<>();
 
     try {

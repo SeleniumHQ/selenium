@@ -326,7 +326,6 @@ class TakesScreenshotTest extends JupiterTestBase {
     return colors;
   }
 
-
   /**
    * Compares sets of colors are same.
    *
