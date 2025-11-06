@@ -34,7 +34,9 @@ AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 
 
 class ActionChains:
-    """ActionChains are a way to automate low level interactions such as mouse
+    """Automate low-level interactions like mouse movements, button actions, key presses, and context menus.
+
+    ActionChains are a way to automate low level interactions such as mouse
     movements, mouse button actions, key press, and context menu interactions.
     This is useful for doing more complex actions like hover over and drag and
     drop.
@@ -72,6 +74,8 @@ class ActionChains:
         Args:
             driver: The WebDriver instance which performs user actions.
             duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput
+            devices: Optional list of input devices (PointerInput, KeyInput, WheelInput) to use.
+                If not provided, default devices will be created.
         """
         self._driver = driver
         mouse = None
@@ -92,8 +96,7 @@ class ActionChains:
         self.w3c_actions.perform()
 
     def reset_actions(self) -> None:
-        """Clears actions that are already stored locally and on the remote
-        end."""
+        """Clear actions stored locally and on the remote end."""
         self.w3c_actions.clear_actions()
         for device in self.w3c_actions.devices:
             device.clear_actions()
@@ -162,8 +165,7 @@ class ActionChains:
         return self
 
     def drag_and_drop(self, source: WebElement, target: WebElement) -> ActionChains:
-        """Holds down the left mouse button on the source element, then moves
-        to the target element and releases the mouse button.
+        """Hold down the left mouse button on an element, then move to target and release.
 
         Args:
             source: The element to mouse down.
@@ -174,8 +176,7 @@ class ActionChains:
         return self
 
     def drag_and_drop_by_offset(self, source: WebElement, xoffset: int, yoffset: int) -> ActionChains:
-        """Holds down the left mouse button on the source element, then moves
-        to the target offset and releases the mouse button.
+        """Hold down the left mouse button on an element, then move by offset and release.
 
         Args:
             source: The element to mouse down.
@@ -188,8 +189,7 @@ class ActionChains:
         return self
 
     def key_down(self, value: str, element: WebElement | None = None) -> ActionChains:
-        """Sends a key press only, without releasing it. Should only be used
-        with modifier keys (Control, Alt and Shift).
+        """Send a key press only without releasing it (modifier keys only).
 
         Args:
             value: The modifier key to send. Values are defined in `Keys` class.
@@ -235,7 +235,6 @@ class ActionChains:
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
         """
-
         self.w3c_actions.pointer_action.move_by(xoffset, yoffset)
         self.w3c_actions.key_action.pause()
 
@@ -247,22 +246,21 @@ class ActionChains:
         Args:
             to_element: The WebElement to move to.
         """
-
         self.w3c_actions.pointer_action.move_to(to_element)
         self.w3c_actions.key_action.pause()
 
         return self
 
     def move_to_element_with_offset(self, to_element: WebElement, xoffset: int, yoffset: int) -> ActionChains:
-        """Move the mouse by an offset of the specified element. Offsets are
-        relative to the in-view center point of the element.
+        """Move the mouse to an element with the specified offsets.
+
+        Offsets are relative to the in-view center point of the element.
 
         Args:
             to_element: The WebElement to move to.
             xoffset: X offset to move to, as a positive or negative integer.
             yoffset: Y offset to move to, as a positive or negative integer.
         """
-
         self.w3c_actions.pointer_action.move_to(to_element, int(xoffset), int(yoffset))
         self.w3c_actions.key_action.pause()
 
@@ -270,7 +268,6 @@ class ActionChains:
 
     def pause(self, seconds: float | int) -> ActionChains:
         """Pause all inputs for the specified duration in seconds."""
-
         self.w3c_actions.pointer_action.pause(seconds)
         self.w3c_actions.key_action.pause(int(seconds))
 
@@ -319,31 +316,33 @@ class ActionChains:
         return self
 
     def scroll_to_element(self, element: WebElement) -> ActionChains:
-        """If the element is outside the viewport, scrolls the bottom of the
-        element to the bottom of the viewport.
+        """Scroll the element into the viewport if it's outside it.
+
+        Scrolls the bottom of the element to the bottom of the viewport.
 
         Args:
             element: Which element to scroll into the viewport.
         """
-
         self.w3c_actions.wheel_action.scroll(origin=element)
         return self
 
     def scroll_by_amount(self, delta_x: int, delta_y: int) -> ActionChains:
-        """Scrolls by provided amounts with the origin in the top left corner
+        """Scroll by a provided amount with the origin in the top left corner.
+
+        Scrolls by provided amounts with the origin in the top left corner
         of the viewport.
 
         Args:
             delta_x: Distance along X axis to scroll using the wheel. A negative value scrolls left.
             delta_y: Distance along Y axis to scroll using the wheel. A negative value scrolls up.
         """
-
         self.w3c_actions.wheel_action.scroll(delta_x=delta_x, delta_y=delta_y)
         return self
 
     def scroll_from_origin(self, scroll_origin: ScrollOrigin, delta_x: int, delta_y: int) -> ActionChains:
-        """Scrolls by provided amount based on a provided origin. The scroll
-        origin is either the center of an element or the upper left of the
+        """Scroll by a provided amount based on a scroll origin (element or viewport).
+
+        The scroll origin is either the center of an element or the upper left of the
         viewport plus any offsets. If the origin is an element, and the element
         is not in the viewport, the bottom of the element will first be
         scrolled to the bottom of the viewport.
@@ -356,7 +355,6 @@ class ActionChains:
         Raises:
             MoveTargetOutOfBoundsException: If the origin with offset is outside the viewport.
         """
-
         if not isinstance(scroll_origin, ScrollOrigin):
             raise TypeError(f"Expected object of type ScrollOrigin, got: {type(scroll_origin)}")
 

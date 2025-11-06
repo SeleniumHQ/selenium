@@ -34,8 +34,7 @@ def import_cdp():
 
 
 class Log:
-    """This class allows access to logging APIs that use the new WebDriver Bidi
-    protocol.
+    """Class for accessing logging APIs using the WebDriver Bidi protocol.
 
     This class is not to be used directly and should be used from the
     webdriver base classes.
@@ -68,7 +67,6 @@ class Log:
                 assert event["current_value"] == ""
                 assert event["old_value"] == "display:none;"
         """
-
         page = self.cdp.get_session_context("page.enable")
         await page.execute(self.devtools.page.enable())
         runtime = self.cdp.get_session_context("runtime.enable")
@@ -96,8 +94,7 @@ class Log:
 
     @asynccontextmanager
     async def add_js_error_listener(self) -> AsyncGenerator[dict[str, Any], None]:
-        """Listen for JS errors and when the contextmanager exits check if
-        there were JS Errors.
+        """Listen for JS errors and check if they occurred when the context manager exits.
 
         Example:
                 async with driver.log.add_js_error_listener() as error:
@@ -105,7 +102,6 @@ class Log:
                 assert bool(error)
                 assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
         """
-
         session = self.cdp.get_session_context("page.enable")
         await session.execute(self.devtools.page.enable())
         session = self.cdp.get_session_context("runtime.enable")
@@ -128,7 +124,6 @@ class Log:
                     driver.execute_script("console.log('I like cheese')")
                 assert messages["message"] == "I love cheese"
         """
-
         from selenium.webdriver.common.bidi.console import Console
 
         session = self.cdp.get_session_context("page.enable")

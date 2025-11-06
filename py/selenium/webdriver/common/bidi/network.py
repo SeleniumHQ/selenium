@@ -191,7 +191,6 @@ class Network:
         Returns:
             int: callback id
         """
-
         event = NetworkEvent(event_name)
 
         def _callback(event_data):
@@ -230,7 +229,6 @@ class Network:
         Returns:
             int: callback id
         """
-
         try:
             event_name = self.EVENTS[event]
             phase_name = self.PHASES[event]
@@ -277,7 +275,6 @@ class Network:
 
     def clear_request_handlers(self):
         """Clear all request handlers from the network."""
-
         for event_name in self.subscriptions:
             for callback_id in self.subscriptions[event_name].copy():
                 net_event = NetworkEvent(event_name)
@@ -596,7 +593,6 @@ class Request:
 
     def fail_request(self):
         """Fail this request."""
-
         if not self.request_id:
             raise ValueError("Request not found.")
 
@@ -605,7 +601,6 @@ class Request:
 
     def continue_request(self, body=None, method=None, headers=None, cookies=None, url=None):
         """Continue after intercepting this request."""
-
         if not self.request_id:
             raise ValueError("Request not found.")
 
@@ -633,7 +628,6 @@ class Request:
         Note:
             If username or password is None, it attempts auth with no credentials.
         """
-
         params = {}
         params["request"] = self.request_id
 

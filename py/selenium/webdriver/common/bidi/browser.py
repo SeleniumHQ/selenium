@@ -169,9 +169,7 @@ class ClientWindowInfo:
 
 
 class Browser:
-    """
-    BiDi implementation of the browser module.
-    """
+    """BiDi implementation of the browser module."""
 
     def __init__(self, conn):
         self.conn = conn

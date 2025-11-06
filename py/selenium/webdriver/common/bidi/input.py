@@ -378,9 +378,7 @@ class FileDialogOpened:
 
 
 class Input:
-    """
-    BiDi implementation of the input module.
-    """
+    """BiDi implementation of the input module."""
 
     def __init__(self, conn):
         self.conn = conn

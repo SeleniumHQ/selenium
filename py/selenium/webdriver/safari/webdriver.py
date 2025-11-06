@@ -34,8 +34,7 @@ class WebDriver(RemoteWebDriver):
         options: Optional[Options] = None,
         service: Optional[Service] = None,
     ) -> None:
-        """Creates a new Safari driver instance and launches or finds a running
-        safaridriver service.
+        """Create a new Safari driver instance and launch or find a running safaridriver service.
 
         Args:
             keep_alive: Whether to configure SafariRemoteConnection to use
