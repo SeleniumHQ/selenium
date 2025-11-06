@@ -16,17 +16,22 @@
 # under the License.
 
 import http.server
+import os
 import socketserver
+import tempfile
 import threading
+import time
 
 import pytest
 
 from selenium.webdriver.common.bidi.browser import ClientWindowInfo, ClientWindowState
+from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.session import UserPromptHandler, UserPromptHandlerType
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.common.window import WindowTypes
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class FakeProxyHandler(http.server.SimpleHTTPRequestHandler):
@@ -262,3 +267,90 @@ def test_create_user_context_with_unhandled_prompt_behavior(driver, pages):
 
     # Clean up
     driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_firefox
+def test_set_download_behavior_allowed(driver, pages):
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        driver.browser.set_download_behavior(allowed=True, destination_folder=tmp_dir)
+
+        context_id = driver.current_window_handle
+        url = pages.url("downloads/download.html")
+        driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
+
+        driver.find_element(By.ID, "file-1").click()
+
+        WebDriverWait(driver, 5).until(lambda d: "file_1.txt" in os.listdir(tmp_dir))
+
+        files = os.listdir(tmp_dir)
+        assert "file_1.txt" in files, f"Expected file_1.txt in {tmp_dir}, but found: {files}"
+
+        driver.browser.set_download_behavior(allowed=None)
+
+
+@pytest.mark.xfail_firefox
+def test_set_download_behavior_denied(driver, pages):
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        driver.browser.set_download_behavior(allowed=False)
+
+        context_id = driver.current_window_handle
+        url = pages.url("downloads/download.html")
+        driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
+
+        driver.find_element(By.ID, "file-1").click()
+
+        time.sleep(1)
+
+        files = os.listdir(tmp_dir)
+        assert len(files) == 0, f"No files should be downloaded when denied, but found: {files}"
+
+        driver.browser.set_download_behavior(allowed=None)
+
+
+@pytest.mark.xfail_firefox
+def test_set_download_behavior_user_context(driver, pages):
+    user_context = driver.browser.create_user_context()
+
+    try:
+        bc = driver.browsing_context.create(type=WindowTypes.WINDOW, user_context=user_context)
+        driver.switch_to.window(bc)
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            driver.browser.set_download_behavior(allowed=True, destination_folder=tmp_dir, user_contexts=[user_context])
+
+            url = pages.url("downloads/download.html")
+            driver.browsing_context.navigate(context=bc, url=url, wait=ReadinessState.COMPLETE)
+
+            driver.find_element(By.ID, "file-1").click()
+
+            WebDriverWait(driver, 5).until(lambda d: "file_1.txt" in os.listdir(tmp_dir))
+
+            files = os.listdir(tmp_dir)
+            assert "file_1.txt" in files, f"Expected file_1.txt in {tmp_dir}, but found: {files}"
+
+            initial_file_count = len(files)
+
+            driver.browser.set_download_behavior(allowed=False, user_contexts=[user_context])
+
+            driver.find_element(By.ID, "file-2").click()
+
+            time.sleep(1)
+
+            files_after = os.listdir(tmp_dir)
+            assert len(files_after) == initial_file_count, (
+                f"No new files should be downloaded when denied, but found: {files_after}"
+            )
+
+            driver.browser.set_download_behavior(allowed=None, user_contexts=[user_context])
+
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_firefox
+def test_set_download_behavior_validation(driver):
+    with pytest.raises(ValueError, match="destination_folder is required when allowed=True"):
+        driver.browser.set_download_behavior(allowed=True)
+
+    with pytest.raises(ValueError, match="destination_folder should not be provided when allowed=False"):
+        driver.browser.set_download_behavior(allowed=False, destination_folder="/tmp")
