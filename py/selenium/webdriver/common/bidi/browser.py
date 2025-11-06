@@ -14,8 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-
+import os
 from typing import Any, Optional
 
 from selenium.webdriver.common.bidi.common import command_builder
@@ -241,7 +240,7 @@ class Browser:
         self,
         *,
         allowed: Optional[bool] = None,
-        destination_folder: Optional[str] = None,
+        destination_folder: Optional[str | os.PathLike] = None,
         user_contexts: Optional[list[str]] = None,
     ) -> None:
         """Set the download behavior for the browser or specific user contexts.
@@ -268,7 +267,7 @@ class Browser:
                     raise ValueError("destination_folder is required when allowed=True.")
                 params["downloadBehavior"] = {
                     "type": "allowed",
-                    "destinationFolder": destination_folder,
+                    "destinationFolder": os.fspath(destination_folder),
                 }
             else:
                 if destination_folder:

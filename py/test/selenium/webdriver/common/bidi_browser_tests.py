@@ -18,12 +18,11 @@
 import http.server
 import os
 import socketserver
-import tempfile
 import threading
-import time
 
 import pytest
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.bidi.browser import ClientWindowInfo, ClientWindowState
 from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.session import UserPromptHandler, UserPromptHandlerType
@@ -270,9 +269,9 @@ def test_create_user_context_with_unhandled_prompt_behavior(driver, pages):
 
 
 @pytest.mark.xfail_firefox
-def test_set_download_behavior_allowed(driver, pages):
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        driver.browser.set_download_behavior(allowed=True, destination_folder=tmp_dir)
+def test_set_download_behavior_allowed(driver, pages, tmp_path):
+    try:
+        driver.browser.set_download_behavior(allowed=True, destination_folder=tmp_path)
 
         context_id = driver.current_window_handle
         url = pages.url("downloads/download.html")
@@ -280,17 +279,17 @@ def test_set_download_behavior_allowed(driver, pages):
 
         driver.find_element(By.ID, "file-1").click()
 
-        WebDriverWait(driver, 5).until(lambda d: "file_1.txt" in os.listdir(tmp_dir))
+        WebDriverWait(driver, 5).until(lambda d: "file_1.txt" in os.listdir(tmp_path))
 
-        files = os.listdir(tmp_dir)
-        assert "file_1.txt" in files, f"Expected file_1.txt in {tmp_dir}, but found: {files}"
-
+        files = os.listdir(tmp_path)
+        assert "file_1.txt" in files, f"Expected file_1.txt in {tmp_path}, but found: {files}"
+    finally:
         driver.browser.set_download_behavior(allowed=None)
 
 
 @pytest.mark.xfail_firefox
-def test_set_download_behavior_denied(driver, pages):
-    with tempfile.TemporaryDirectory() as tmp_dir:
+def test_set_download_behavior_denied(driver, pages, tmp_path):
+    try:
         driver.browser.set_download_behavior(allowed=False)
 
         context_id = driver.current_window_handle
@@ -299,34 +298,38 @@ def test_set_download_behavior_denied(driver, pages):
 
         driver.find_element(By.ID, "file-1").click()
 
-        time.sleep(1)
-
-        files = os.listdir(tmp_dir)
-        assert len(files) == 0, f"No files should be downloaded when denied, but found: {files}"
-
+        try:
+            WebDriverWait(driver, 3, poll_frequency=0.2).until(lambda _: len(os.listdir(tmp_path)) > 0)
+            files = os.listdir(tmp_path)
+            pytest.fail(f"A file was downloaded unexpectedly: {files}")
+        except TimeoutException:
+            pass  # Expected, no file downloaded
+    finally:
         driver.browser.set_download_behavior(allowed=None)
 
 
 @pytest.mark.xfail_firefox
-def test_set_download_behavior_user_context(driver, pages):
+def test_set_download_behavior_user_context(driver, pages, tmp_path):
     user_context = driver.browser.create_user_context()
 
     try:
         bc = driver.browsing_context.create(type=WindowTypes.WINDOW, user_context=user_context)
         driver.switch_to.window(bc)
 
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            driver.browser.set_download_behavior(allowed=True, destination_folder=tmp_dir, user_contexts=[user_context])
+        try:
+            driver.browser.set_download_behavior(
+                allowed=True, destination_folder=tmp_path, user_contexts=[user_context]
+            )
 
             url = pages.url("downloads/download.html")
             driver.browsing_context.navigate(context=bc, url=url, wait=ReadinessState.COMPLETE)
 
             driver.find_element(By.ID, "file-1").click()
 
-            WebDriverWait(driver, 5).until(lambda d: "file_1.txt" in os.listdir(tmp_dir))
+            WebDriverWait(driver, 5).until(lambda d: "file_1.txt" in os.listdir(tmp_path))
 
-            files = os.listdir(tmp_dir)
-            assert "file_1.txt" in files, f"Expected file_1.txt in {tmp_dir}, but found: {files}"
+            files = os.listdir(tmp_path)
+            assert "file_1.txt" in files, f"Expected file_1.txt in {tmp_path}, but found: {files}"
 
             initial_file_count = len(files)
 
@@ -334,15 +337,16 @@ def test_set_download_behavior_user_context(driver, pages):
 
             driver.find_element(By.ID, "file-2").click()
 
-            time.sleep(1)
-
-            files_after = os.listdir(tmp_dir)
-            assert len(files_after) == initial_file_count, (
-                f"No new files should be downloaded when denied, but found: {files_after}"
-            )
-
+            try:
+                WebDriverWait(driver, 3, poll_frequency=0.2).until(
+                    lambda _: len(os.listdir(tmp_path)) > initial_file_count
+                )
+                files_after = os.listdir(tmp_path)
+                pytest.fail(f"A file was downloaded unexpectedly: {files_after}")
+            except TimeoutException:
+                pass  # Expected, no file downloaded
+        finally:
             driver.browser.set_download_behavior(allowed=None, user_contexts=[user_context])
-
     finally:
         driver.browser.remove_user_context(user_context)
 
