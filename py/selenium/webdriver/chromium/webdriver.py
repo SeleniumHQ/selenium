@@ -26,9 +26,7 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
 class ChromiumDriver(RemoteWebDriver):
-    """Controls the WebDriver instance of ChromiumDriver and allows you to
-    drive the browser.
-    """
+    """Control the WebDriver instance of ChromiumDriver and drive the browser."""
 
     def __init__(
         self,
@@ -38,8 +36,7 @@ class ChromiumDriver(RemoteWebDriver):
         service: Optional[ChromiumService] = None,
         keep_alive: bool = True,
     ) -> None:
-        """Creates a new WebDriver instance of the ChromiumDriver. Starts the
-        service and then creates new WebDriver instance of ChromiumDriver.
+        """Create a new WebDriver instance, start the service, and create new ChromiumDriver instance.
 
         Args:
             browser_name: Browser name used when matching capabilities.
@@ -148,17 +145,11 @@ class ChromiumDriver(RemoteWebDriver):
         return super().execute_cdp_cmd(cmd, cmd_args)
 
     def get_sinks(self) -> list:
-        """
-        Returns:
-            A list of sinks available for Cast.
-        """
+        """Get a list of sinks available for Cast."""
         return self.execute("getSinks")["value"]
 
     def get_issue_message(self):
-        """
-        Returns:
-            An error message when there is any issue in a Cast session.
-        """
+        """Returns an error message when there is any issue in a Cast session."""
         return self.execute("getIssueMessage")["value"]
 
     @property
@@ -186,8 +177,7 @@ class ChromiumDriver(RemoteWebDriver):
         return self.execute(Command.GET_LOG, {"type": log_type})["value"]
 
     def set_sink_to_use(self, sink_name: str) -> dict:
-        """Sets a specific sink, using its name, as a Cast session receiver
-        target.
+        """Set a specific sink as a Cast session receiver target.
 
         Args:
             sink_name: Name of the sink to use as the target.

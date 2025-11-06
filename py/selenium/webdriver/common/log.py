@@ -34,8 +34,7 @@ def import_cdp():
 
 
 class Log:
-    """This class allows access to logging APIs that use the new WebDriver Bidi
-    protocol.
+    """Class for accessing logging APIs using the WebDriver Bidi protocol.
 
     This class is not to be used directly and should be used from the
     webdriver base classes.
@@ -95,8 +94,7 @@ class Log:
 
     @asynccontextmanager
     async def add_js_error_listener(self) -> AsyncGenerator[dict[str, Any], None]:
-        """Listen for JS errors and when the contextmanager exits check if
-        there were JS Errors.
+        """Listen for JS errors and check if they occurred when the context manager exits.
 
         Example:
                 async with driver.log.add_js_error_listener() as error:
