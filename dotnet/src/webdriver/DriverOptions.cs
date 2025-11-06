@@ -26,6 +26,27 @@ using System.Globalization;
 
 namespace OpenQA.Selenium;
 
+public abstract record UnhandledPromptBehaviorOption
+{
+    public static implicit operator UnhandledPromptBehaviorOption(UnhandledPromptBehavior? value)
+        => new UnhandledPromptBehaviorSingleOption(value);
+}
+
+public sealed record UnhandledPromptBehaviorSingleOption(UnhandledPromptBehavior? Value) : UnhandledPromptBehaviorOption;
+
+public sealed record UnhandledPromptBehaviorMultiOption : UnhandledPromptBehaviorOption
+{
+    public UnhandledPromptBehavior? Alert { get; set; }
+
+    public UnhandledPromptBehavior? Confirm { get; set; }
+
+    public UnhandledPromptBehavior? Prompt { get; set; }
+
+    public UnhandledPromptBehavior? BeforeUnload { get; set; }
+
+    public UnhandledPromptBehavior? Default { get; set; }
+}
+
 /// <summary>
 /// Specifies the behavior of handling unexpected alerts in the IE driver.
 /// </summary>
@@ -164,7 +185,7 @@ public abstract class DriverOptions
     /// Gets or sets the value for describing how unexpected alerts are to be handled in the browser.
     /// Defaults to <see cref="UnhandledPromptBehavior.Default"/>.
     /// </summary>
-    public UnhandledPromptBehavior UnhandledPromptBehavior { get; set; } = UnhandledPromptBehavior.Default;
+    public UnhandledPromptBehaviorOption? UnhandledPromptBehavior { get; set; }
 
     /// <summary>
     /// Gets or sets the value for describing how the browser is to wait for pages to load in the browser.
@@ -303,7 +324,7 @@ public abstract class DriverOptions
             return result;
         }
 
-        if (this.UnhandledPromptBehavior != UnhandledPromptBehavior.Default && other.UnhandledPromptBehavior != UnhandledPromptBehavior.Default)
+        if (this.UnhandledPromptBehavior is not null && other.UnhandledPromptBehavior is not null)
         {
             result.IsMergeConflict = true;
             result.MergeConflictOptionName = "UnhandledPromptBehavior";
@@ -508,29 +529,59 @@ public abstract class DriverOptions
             capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
         }
 
-        if (this.UnhandledPromptBehavior != UnhandledPromptBehavior.Default)
+        [return: NotNullIfNotNull(nameof(behavior))]
+        static string? UnhandledPromptBehaviorToString(UnhandledPromptBehavior? behavior) => behavior switch
         {
-            string unhandledPropmtBehaviorSetting = "ignore";
-            switch (this.UnhandledPromptBehavior)
+            Selenium.UnhandledPromptBehavior.Ignore => "ignore",
+            Selenium.UnhandledPromptBehavior.Accept => "accept",
+            Selenium.UnhandledPromptBehavior.Dismiss => "dismiss",
+            Selenium.UnhandledPromptBehavior.AcceptAndNotify => "accept and notify",
+            Selenium.UnhandledPromptBehavior.DismissAndNotify => "dismiss and notify",
+            _ => null
+        };
+
+        if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorSingleOption singleOption)
+        {
+            var stringValue = UnhandledPromptBehaviorToString(singleOption.Value);
+
+            if (stringValue is not null)
             {
-                case UnhandledPromptBehavior.Accept:
-                    unhandledPropmtBehaviorSetting = "accept";
-                    break;
+                capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, stringValue);
+            }
+        }
+        else if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorMultiOption multiOption)
+        {
+            Dictionary<string, string> multiOptionDictionary = [];
 
-                case UnhandledPromptBehavior.Dismiss:
-                    unhandledPropmtBehaviorSetting = "dismiss";
-                    break;
-
-                case UnhandledPromptBehavior.AcceptAndNotify:
-                    unhandledPropmtBehaviorSetting = "accept and notify";
-                    break;
-
-                case UnhandledPromptBehavior.DismissAndNotify:
-                    unhandledPropmtBehaviorSetting = "dismiss and notify";
-                    break;
+            if (multiOption.Alert is not null)
+            {
+                multiOptionDictionary["alert"] = UnhandledPromptBehaviorToString(multiOption.Alert);
             }
 
-            capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, unhandledPropmtBehaviorSetting);
+            if (multiOption.Confirm is not null)
+            {
+                multiOptionDictionary["confirm"] = UnhandledPromptBehaviorToString(multiOption.Confirm);
+            }
+
+            if (multiOption.Prompt is not null)
+            {
+                multiOptionDictionary["prompt"] = UnhandledPromptBehaviorToString(multiOption.Prompt);
+            }
+
+            if (multiOption.BeforeUnload is not null)
+            {
+                multiOptionDictionary["beforeUnload"] = UnhandledPromptBehaviorToString(multiOption.BeforeUnload);
+            }
+
+            if (multiOption.Default is not null)
+            {
+                multiOptionDictionary["default"] = UnhandledPromptBehaviorToString(multiOption.Default);
+            }
+
+            if (multiOptionDictionary.Count != 0)
+            {
+                capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, multiOptionDictionary);
+            }
         }
 
         if (this.Proxy != null)

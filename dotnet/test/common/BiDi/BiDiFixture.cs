@@ -39,7 +39,7 @@ public class BiDiTestFixture
         var options = new BiDiEnabledDriverOptions()
         {
             UseWebSocketUrl = true,
-            UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore,
+            UnhandledPromptBehavior = new UnhandledPromptBehaviorMultiOption() { Default = UnhandledPromptBehavior.Ignore },
         };
 
         driver = EnvironmentManager.Instance.CreateDriverInstance(options);
