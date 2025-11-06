@@ -29,7 +29,17 @@ namespace OpenQA.Selenium;
 public abstract record UnhandledPromptBehaviorOption
 {
     public static implicit operator UnhandledPromptBehaviorOption(UnhandledPromptBehavior? value)
+        => Single(value);
+
+    public static UnhandledPromptBehaviorOption Single(UnhandledPromptBehavior? value)
         => new UnhandledPromptBehaviorSingleOption(value);
+
+    public static UnhandledPromptBehaviorOption Multi(UnhandledPromptBehavior? alert = null,
+        UnhandledPromptBehavior? confirm = null,
+        UnhandledPromptBehavior? prompt = null,
+        UnhandledPromptBehavior? beforeUnload = null,
+        UnhandledPromptBehavior? @default = null)
+        => new UnhandledPromptBehaviorMultiOption() with { Alert = alert, Confirm = confirm, Prompt = prompt, BeforeUnload = beforeUnload, Default = @default };
 }
 
 public sealed record UnhandledPromptBehaviorSingleOption(UnhandledPromptBehavior? Value) : UnhandledPromptBehaviorOption;
