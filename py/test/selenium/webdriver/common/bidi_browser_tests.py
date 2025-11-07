@@ -270,6 +270,7 @@ def test_create_user_context_with_unhandled_prompt_behavior(driver, pages):
 
 @pytest.mark.xfail_firefox
 def test_set_download_behavior_allowed(driver, pages, tmp_path):
+    print(f"Driver info: {driver.capabilities}")
     try:
         driver.browser.set_download_behavior(allowed=True, destination_folder=tmp_path)
 
