@@ -28,33 +28,29 @@ namespace OpenQA.Selenium;
 
 public abstract record UnhandledPromptBehaviorOption
 {
-    public static implicit operator UnhandledPromptBehaviorOption(UnhandledPromptBehavior? value)
+    public static implicit operator UnhandledPromptBehaviorOption(UnhandledPromptBehavior value)
         => Single(value);
 
-    public static UnhandledPromptBehaviorOption Single(UnhandledPromptBehavior? value)
+    public static UnhandledPromptBehaviorOption Single(UnhandledPromptBehavior value)
         => new UnhandledPromptBehaviorSingleOption(value);
 
-    public static UnhandledPromptBehaviorOption Multi(UnhandledPromptBehavior? alert = null,
-        UnhandledPromptBehavior? confirm = null,
-        UnhandledPromptBehavior? prompt = null,
-        UnhandledPromptBehavior? beforeUnload = null,
-        UnhandledPromptBehavior? @default = null)
-        => new UnhandledPromptBehaviorMultiOption() with { Alert = alert, Confirm = confirm, Prompt = prompt, BeforeUnload = beforeUnload, Default = @default };
+    public static UnhandledPromptBehaviorOption Multi()
+        => new UnhandledPromptBehaviorMultiOption();
 }
 
-public sealed record UnhandledPromptBehaviorSingleOption(UnhandledPromptBehavior? Value) : UnhandledPromptBehaviorOption;
+public sealed record UnhandledPromptBehaviorSingleOption(UnhandledPromptBehavior Value) : UnhandledPromptBehaviorOption;
 
 public sealed record UnhandledPromptBehaviorMultiOption : UnhandledPromptBehaviorOption
 {
-    public UnhandledPromptBehavior? Alert { get; set; }
+    public UnhandledPromptBehavior Alert { get; set; } = UnhandledPromptBehavior.Default;
 
-    public UnhandledPromptBehavior? Confirm { get; set; }
+    public UnhandledPromptBehavior Confirm { get; set; } = UnhandledPromptBehavior.Default;
 
-    public UnhandledPromptBehavior? Prompt { get; set; }
+    public UnhandledPromptBehavior Prompt { get; set; } = UnhandledPromptBehavior.Default;
 
-    public UnhandledPromptBehavior? BeforeUnload { get; set; }
+    public UnhandledPromptBehavior BeforeUnload { get; set; } = UnhandledPromptBehavior.Default;
 
-    public UnhandledPromptBehavior? Default { get; set; }
+    public UnhandledPromptBehavior Default { get; set; } = UnhandledPromptBehavior.Default;
 }
 
 /// <summary>
@@ -539,52 +535,47 @@ public abstract class DriverOptions
             capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
         }
 
-        [return: NotNullIfNotNull(nameof(behavior))]
-        static string? UnhandledPromptBehaviorToString(UnhandledPromptBehavior? behavior) => behavior switch
+        static string UnhandledPromptBehaviorToString(UnhandledPromptBehavior behavior) => behavior switch
         {
             Selenium.UnhandledPromptBehavior.Ignore => "ignore",
             Selenium.UnhandledPromptBehavior.Accept => "accept",
             Selenium.UnhandledPromptBehavior.Dismiss => "dismiss",
             Selenium.UnhandledPromptBehavior.AcceptAndNotify => "accept and notify",
             Selenium.UnhandledPromptBehavior.DismissAndNotify => "dismiss and notify",
-            null or Selenium.UnhandledPromptBehavior.Default => null,
             _ => throw new ArgumentOutOfRangeException(nameof(behavior), $"UnhandledPromptBehavior value '{behavior}' is not recognized."),
         };
 
-        if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorSingleOption singleOption)
+        if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorSingleOption singleOption && singleOption.Value != Selenium.UnhandledPromptBehavior.Default)
         {
             var stringValue = UnhandledPromptBehaviorToString(singleOption.Value);
 
-            if (stringValue is not null)
-            {
-                capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, stringValue);
-            }
+            capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, stringValue);
         }
         else if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorMultiOption multiOption)
         {
             Dictionary<string, string> multiOptionDictionary = [];
 
-            if (multiOption.Alert is not null)
+            if (multiOption.Alert is not Selenium.UnhandledPromptBehavior.Default)
             {
                 multiOptionDictionary["alert"] = UnhandledPromptBehaviorToString(multiOption.Alert);
             }
 
-            if (multiOption.Confirm is not null)
+            if (multiOption.Confirm is not Selenium.UnhandledPromptBehavior.Default)
             {
                 multiOptionDictionary["confirm"] = UnhandledPromptBehaviorToString(multiOption.Confirm);
             }
 
-            if (multiOption.Prompt is not null)
+            if (multiOption.Prompt is not Selenium.UnhandledPromptBehavior.Default)
             {
                 multiOptionDictionary["prompt"] = UnhandledPromptBehaviorToString(multiOption.Prompt);
             }
 
-            if (multiOption.BeforeUnload is not null)
+            if (multiOption.BeforeUnload is not Selenium.UnhandledPromptBehavior.Default)
             {
                 multiOptionDictionary["beforeUnload"] = UnhandledPromptBehaviorToString(multiOption.BeforeUnload);
             }
 
-            if (multiOption.Default is not null)
+            if (multiOption.Default is not Selenium.UnhandledPromptBehavior.Default)
             {
                 multiOptionDictionary["default"] = UnhandledPromptBehaviorToString(multiOption.Default);
             }
