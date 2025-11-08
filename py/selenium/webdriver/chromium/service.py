@@ -24,15 +24,20 @@ from selenium.webdriver.common import service
 
 
 class ChromiumService(service.Service):
-    """A Service class that is responsible for the starting and stopping the
-    WebDriver instance of the ChromiumDriver.
+    """Service class responsible for starting and stopping the ChromiumDriver WebDriver instance.
 
-    :param executable_path: install path of the executable.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+    Args:
+        executable_path: Install path of the executable.
+        port: Port for the service to run on, defaults to 0 where the operating
+            system will decide.
+        service_args: (Optional) Sequence of args to be passed to the subprocess
+            when launching the executable.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO
+            instance or String path to file.
+        env: (Optional) Mapping of environment variables for the new process,
+            defaults to `os.environ`.
+        driver_path_env_key: (Optional) Environment variable to use to get the
+            path to the driver executable.
     """
 
     def __init__(
@@ -70,6 +75,7 @@ class ChromiumService(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

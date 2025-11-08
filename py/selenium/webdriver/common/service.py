@@ -37,15 +37,17 @@ logger = logging.getLogger(__name__)
 
 
 class Service(ABC):
-    """The abstract base class for all service objects.  Services typically
-    launch a child program in a new process as an interim process to
+    """Abstract base class for all service objects that manage driver processes.
+
+    Services typically launch a child program in a new process as an interim process to
     communicate with a browser.
 
-    :param executable: install path of the executable.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+    Args:
+        executable: install path of the executable.
+        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
@@ -96,9 +98,9 @@ class Service(ABC):
     def start(self) -> None:
         """Starts the Service.
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
+        Raises:
+            WebDriverException: Raised either when it can't start the service
+                or when it can't connect to the service
         """
         if self._path is None:
             raise WebDriverException("Service path cannot be None.")
@@ -122,13 +124,15 @@ class Service(ABC):
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
-        """Establishes a socket connection to determine if the service running
-        on the port is accessible."""
+        """Establish a socket connection to determine if the service is accessible.
+
+        Returns:
+            True if the service is connectable on the configured port, False otherwise.
+        """
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
-        """Dispatch an HTTP request to the shutdown endpoint for the service in
-        an attempt to stop it."""
+        """Dispatch an HTTP request to the shutdown endpoint to stop the service."""
         try:
             request.urlopen(f"{self.service_url}/shutdown")
         except URLError:
@@ -141,7 +145,6 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-
         if self.log_output not in {PIPE, subprocess.DEVNULL}:
             if isinstance(self.log_output, IOBase):
                 self.log_output.close()
@@ -201,7 +204,8 @@ class Service(ABC):
     def _start_process(self, path: str) -> None:
         """Creates a subprocess by executing the command provided.
 
-        :param cmd: full command to execute
+        Args:
+            path: full command to execute
         """
         cmd = [path]
         cmd.extend(self.command_line_args())

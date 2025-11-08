@@ -23,8 +23,10 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium.BiDi.Input;
 
 internal sealed class SetFilesCommand(SetFilesParameters @params)
-    : Command<SetFilesParameters, EmptyResult>(@params, "input.setFiles");
+    : Command<SetFilesParameters, SetFilesResult>(@params, "input.setFiles");
 
 internal sealed record SetFilesParameters(BrowsingContext.BrowsingContext Context, Script.ISharedReference Element, IEnumerable<string> Files) : Parameters;
 
 public sealed class SetFilesOptions : CommandOptions;
+
+public sealed record SetFilesResult : EmptyResult;

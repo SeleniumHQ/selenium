@@ -1,3 +1,15 @@
+## 4.38.0
+
+- update devtools versions
+
+## 4.37.0
+
+- Add CDP for Chrome 141 and remove 138
+
+## 4.36.0
+
+- Add CDP for Chrome 140 and remove 137
+
 ## 4.35.0
 
 - Add CDP for Chrome 139 and remove 136

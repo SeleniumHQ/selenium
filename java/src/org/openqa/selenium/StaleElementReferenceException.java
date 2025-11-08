@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class StaleElementReferenceException extends WebDriverException {
 
-  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#stale-element-reference-exception";
+  private static final String SUPPORT_URL = BASE_SUPPORT_URL + "#staleelementreferenceexception";
 
   public StaleElementReferenceException(@Nullable String message) {
     super(message);

@@ -26,16 +26,19 @@ DEFAULT_EXECUTABLE_PATH: str = shutil.which("WebKitWebDriver")
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of
-    `WebKitWebDriver`.
+    """A Service class that is responsible for the starting and stopping of `WebKitWebDriver`.
 
-    :param executable_path: install path of the WebKitWebDriver executable, defaults to the first
-        `WebKitWebDriver` in `$PATH`.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param log_output: (Optional) File path for the file to be opened and passed as the subprocess
-        stdout/stderr handler.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    Args:
+        executable_path: Install path of the WebKitWebDriver executable,
+            defaults to the first `WebKitWebDriver` in `$PATH`.
+        port: Port for the service to run on, defaults to 0 where the
+            operating system will decide.
+        service_args: (Optional) Sequence of args to be passed to the
+            subprocess when launching the executable.
+        log_output: (Optional) File path for the file to be opened and passed
+            as the subprocess stdout/stderr handler.
+        env: (Optional) Mapping of environment variables for the new process,
+            defaults to `os.environ`.
     """
 
     def __init__(
@@ -67,6 +70,7 @@ class Service(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

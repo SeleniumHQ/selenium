@@ -18,12 +18,11 @@
 from typing import Optional
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-
-from ..common.driver_finder import DriverFinder
-from .options import Options
-from .remote_connection import SafariRemoteConnection
-from .service import Service
+from selenium.webdriver.safari.options import Options
+from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+from selenium.webdriver.safari.service import Service
 
 
 class WebDriver(RemoteWebDriver):
@@ -35,14 +34,13 @@ class WebDriver(RemoteWebDriver):
         options: Optional[Options] = None,
         service: Optional[Service] = None,
     ) -> None:
-        """Creates a new Safari driver instance and launches or finds a running
-        safaridriver service.
+        """Create a new Safari driver instance and launch or find a running safaridriver service.
 
-        :Args:
-         - keep_alive - Whether to configure SafariRemoteConnection to use
-             HTTP keep-alive. Defaults to True.
-         - options - Instance of ``options.Options``.
-         - service - Service object for handling the browser driver if you need to pass extra details
+        Args:
+            keep_alive: Whether to configure SafariRemoteConnection to use
+                HTTP keep-alive. Defaults to True.
+            options: Instance of ``options.Options``.
+            service: Service object for handling the browser driver if you need to pass extra details
         """
         self.service = service if service else Service()
         options = options if options else Options()
@@ -113,4 +111,7 @@ class WebDriver(RemoteWebDriver):
         raise NotImplementedError
 
     def get_downloadable_files(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def delete_downloadable_files(self, *args, **kwargs):
         raise NotImplementedError

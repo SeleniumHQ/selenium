@@ -133,7 +133,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnMultiSelectionList() {
     assumeFalse(
         getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
@@ -163,7 +162,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnCustomMultiSelectionList() {
     driver.get(pages.selectableItemsPage);
     Keys key = getEffectivePlatform(driver).is(Platform.MAC) ? Keys.COMMAND : Keys.CONTROL;
@@ -196,7 +194,6 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingWithMultiplePointers() {
     driver.get(pages.selectableItemsPage);
 

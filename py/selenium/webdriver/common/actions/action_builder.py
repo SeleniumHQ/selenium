@@ -18,15 +18,14 @@
 
 from typing import Any, Optional, Union
 
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.key_actions import KeyActions
+from selenium.webdriver.common.actions.key_input import KeyInput
+from selenium.webdriver.common.actions.pointer_actions import PointerActions
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+from selenium.webdriver.common.actions.wheel_actions import WheelActions
+from selenium.webdriver.common.actions.wheel_input import WheelInput
 from selenium.webdriver.remote.command import Command
-
-from . import interaction
-from .key_actions import KeyActions
-from .key_input import KeyInput
-from .pointer_actions import PointerActions
-from .pointer_input import PointerInput
-from .wheel_actions import WheelActions
-from .wheel_input import WheelInput
 
 
 class ActionBuilder:
@@ -50,14 +49,11 @@ class ActionBuilder:
     def get_device_with(self, name: str) -> Optional[Union["WheelInput", "PointerInput", "KeyInput"]]:
         """Get the device with the given name.
 
-        Parameters:
-        -----------
-        name : str
-            The name of the device to get.
+        Args:
+            name: The name of the device to get.
 
         Returns:
-        --------
-        Optional[Union[WheelInput, PointerInput, KeyInput]] : The device with the given name.
+            The device with the given name, or None if not found.
         """
         return next(filter(lambda x: x == name, self.devices), None)
 
@@ -84,19 +80,15 @@ class ActionBuilder:
     def add_key_input(self, name: str) -> KeyInput:
         """Add a new key input device to the action builder.
 
-        Parameters:
-        -----------
-        name : str
-            The name of the key input device.
+        Args:
+            name: The name of the key input device.
 
         Returns:
-        --------
-        KeyInput : The newly created key input device.
+            The newly created key input device.
 
         Example:
-        --------
-        >>> action_builder = ActionBuilder(driver)
-        >>> action_builder.add_key_input(name="keyboard2")
+            >>> action_builder = ActionBuilder(driver)
+            >>> action_builder.add_key_input(name="keyboard2")
         """
         new_input = KeyInput(name)
         self._add_input(new_input)
@@ -105,25 +97,17 @@ class ActionBuilder:
     def add_pointer_input(self, kind: str, name: str) -> PointerInput:
         """Add a new pointer input device to the action builder.
 
-        Parameters:
-        -----------
-        kind : str
-            The kind of pointer input device.
-                - "mouse"
-                - "touch"
-                - "pen"
-
-        name : str
-            The name of the pointer input device.
+        Args:
+            kind: The kind of pointer input device. Valid values are "mouse",
+                "touch", or "pen".
+            name: The name of the pointer input device.
 
         Returns:
-        --------
-        PointerInput : The newly created pointer input device.
+            The newly created pointer input device.
 
         Example:
-        --------
-        >>> action_builder = ActionBuilder(driver)
-        >>> action_builder.add_pointer_input(kind="mouse", name="mouse")
+            >>> action_builder = ActionBuilder(driver)
+            >>> action_builder.add_pointer_input(kind="mouse", name="mouse")
         """
         new_input = PointerInput(kind, name)
         self._add_input(new_input)
@@ -132,19 +116,15 @@ class ActionBuilder:
     def add_wheel_input(self, name: str) -> WheelInput:
         """Add a new wheel input device to the action builder.
 
-        Parameters:
-        -----------
-        name : str
-            The name of the wheel input device.
+        Args:
+            name: The name of the wheel input device.
 
         Returns:
-        --------
-        WheelInput : The newly created wheel input device.
+            The newly created wheel input device.
 
         Example:
-        --------
-        >>> action_builder = ActionBuilder(driver)
-        >>> action_builder.add_wheel_input(name="wheel2")
+            >>> action_builder = ActionBuilder(driver)
+            >>> action_builder.add_wheel_input(name="wheel2")
         """
         new_input = WheelInput(name)
         self._add_input(new_input)
@@ -154,11 +134,10 @@ class ActionBuilder:
         """Performs all stored actions.
 
         Example:
-        --------
-        >>> action_builder = ActionBuilder(driver)
-        >>> keyboard = action_builder.key_input
-        >>> el = driver.find_element(id: "some_id")
-        >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys").perform()
+            >>> action_builder = ActionBuilder(driver)
+            >>> keyboard = action_builder.key_input
+            >>> el = driver.find_element(id: "some_id")
+            >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys").perform()
         """
         enc: dict[str, list[Any]] = {"actions": []}
         for device in self.devices:
@@ -172,21 +151,18 @@ class ActionBuilder:
         """Clears actions that are already stored on the remote end.
 
         Example:
-        --------
-        >>> action_builder = ActionBuilder(driver)
-        >>> keyboard = action_builder.key_input
-        >>> el = driver.find_element(By.ID, "some_id")
-        >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys")
-        >>> action_builder.clear_actions()
+            >>> action_builder = ActionBuilder(driver)
+            >>> keyboard = action_builder.key_input
+            >>> el = driver.find_element(By.ID, "some_id")
+            >>> action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys")
+            >>> action_builder.clear_actions()
         """
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)
 
     def _add_input(self, new_input: Union[KeyInput, PointerInput, WheelInput]) -> None:
         """Add a new input device to the action builder.
 
-        Parameters:
-        -----------
-        new_input : Union[KeyInput, PointerInput, WheelInput]
-            The new input device to add.
+        Args:
+            new_input: The new input device to add.
         """
         self.devices.append(new_input)

@@ -18,12 +18,21 @@
 import os
 import zipfile
 
+import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-extensions = os.path.abspath("../../../../../../test/extensions/")
+for extensions_dir in (
+    os.path.abspath("../../../../../../test/extensions/"),
+    os.path.abspath("../common/extensions/"),
+):
+    extensions = extensions_dir
+    if os.path.exists(extensions_dir):
+        break
 
 
+@pytest.mark.no_driver_after_test
 def test_install_uninstall_signed_addon_xpi(driver, pages):
     extension = os.path.join(extensions, "webextensions-selenium-example.xpi")
 
@@ -41,6 +50,7 @@ def test_install_uninstall_signed_addon_xpi(driver, pages):
     assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
 
+@pytest.mark.no_driver_after_test
 def test_install_uninstall_signed_addon_zip(driver, pages):
     extension = os.path.join(extensions, "webextensions-selenium-example.zip")
 
@@ -58,6 +68,7 @@ def test_install_uninstall_signed_addon_zip(driver, pages):
     assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
 
+@pytest.mark.no_driver_after_test
 def test_install_uninstall_unsigned_addon_zip(driver, pages):
     extension = os.path.join(extensions, "webextensions-selenium-example-unsigned.zip")
 
@@ -75,6 +86,7 @@ def test_install_uninstall_unsigned_addon_zip(driver, pages):
     assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
 
+@pytest.mark.no_driver_after_test
 def test_install_uninstall_signed_addon_dir(driver, pages):
     zip = os.path.join(extensions, "webextensions-selenium-example.zip")
 
@@ -96,6 +108,7 @@ def test_install_uninstall_signed_addon_dir(driver, pages):
     assert len(driver.find_elements(By.ID, "webextensions-selenium-example")) == 0
 
 
+@pytest.mark.no_driver_after_test
 def test_install_uninstall_unsigned_addon_dir(driver, pages):
     zip = os.path.join(extensions, "webextensions-selenium-example-unsigned.zip")
     target = os.path.join(extensions, "webextensions-selenium-example-unsigned-unzip")

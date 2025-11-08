@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
@@ -28,7 +29,7 @@ public partial class NetworkModule
     {
         var intercept = await AddInterceptAsync([InterceptPhase.BeforeRequestSent], options).ConfigureAwait(false);
 
-        await intercept.OnBeforeRequestSentAsync(async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator))).ConfigureAwait(false);
+        await intercept.OnBeforeRequestSentAsync(async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator, req.Intercepts))).ConfigureAwait(false);
 
         return intercept;
     }
@@ -37,7 +38,7 @@ public partial class NetworkModule
     {
         var intercept = await AddInterceptAsync([InterceptPhase.ResponseStarted], options).ConfigureAwait(false);
 
-        await intercept.OnResponseStartedAsync(async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response))).ConfigureAwait(false);
+        await intercept.OnResponseStartedAsync(async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response, res.Intercepts))).ConfigureAwait(false);
 
         return intercept;
     }
@@ -46,7 +47,7 @@ public partial class NetworkModule
     {
         var intercept = await AddInterceptAsync([InterceptPhase.AuthRequired], options).ConfigureAwait(false);
 
-        await intercept.OnAuthRequiredAsync(async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response))).ConfigureAwait(false);
+        await intercept.OnAuthRequiredAsync(async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response, auth.Intercepts))).ConfigureAwait(false);
 
         return intercept;
     }
@@ -58,8 +59,8 @@ public sealed class InterceptResponseOptions : AddInterceptOptions;
 
 public sealed class InterceptAuthOptions : AddInterceptOptions;
 
-public sealed record InterceptedRequest(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator)
-    : BeforeRequestSentEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Initiator)
+public sealed record InterceptedRequest(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator, IReadOnlyList<Intercept>? Intercepts)
+    : BeforeRequestSentEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Initiator, Intercepts)
 {
     public Task ContinueAsync(ContinueRequestOptions? options = null)
     {
@@ -77,8 +78,8 @@ public sealed record InterceptedRequest(BiDi BiDi, BrowsingContext.BrowsingConte
     }
 }
 
-public sealed record InterceptedResponse(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response)
-    : ResponseStartedEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Response)
+public sealed record InterceptedResponse(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response, IReadOnlyList<Intercept>? Intercepts)
+    : ResponseStartedEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Response, Intercepts)
 {
     public Task ContinueAsync(ContinueResponseOptions? options = null)
     {
@@ -86,8 +87,8 @@ public sealed record InterceptedResponse(BiDi BiDi, BrowsingContext.BrowsingCont
     }
 }
 
-public sealed record InterceptedAuth(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response)
-    : AuthRequiredEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Response)
+public sealed record InterceptedAuth(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, BrowsingContext.Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response, IReadOnlyList<Intercept>? Intercepts)
+    : AuthRequiredEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Response, Intercepts)
 {
     public Task ContinueAsync(AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null)
     {

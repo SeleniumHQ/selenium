@@ -115,7 +115,6 @@ class WindowTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   public void testCanMaximizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -159,7 +158,7 @@ class WindowTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(travis = true, gitHubActions = true)
+  @Ignore(gitHubActions = true)
   public void canMinimizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -173,7 +172,6 @@ class WindowTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
   public void canFullscreenTheWindow() {
@@ -191,7 +189,6 @@ class WindowTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
   public void canFullscreenTheWindowFromFrame() {
@@ -208,7 +205,6 @@ class WindowTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
   public void canFullscreenTheWindowFromIframe() {

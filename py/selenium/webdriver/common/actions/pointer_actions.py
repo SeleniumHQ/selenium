@@ -16,20 +16,22 @@
 # under the License.
 from typing import Optional
 
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.interaction import Interaction
+from selenium.webdriver.common.actions.mouse_button import MouseButton
+from selenium.webdriver.common.actions.pointer_input import PointerInput
 from selenium.webdriver.remote.webelement import WebElement
-
-from . import interaction
-from .interaction import Interaction
-from .mouse_button import MouseButton
-from .pointer_input import PointerInput
 
 
 class PointerActions(Interaction):
     def __init__(self, source: Optional[PointerInput] = None, duration: int = 250):
-        """
+        """Initialize a new PointerActions instance.
+
         Args:
-        - source: PointerInput instance
-        - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in source
+            source: Optional PointerInput instance. If not provided, a default
+                mouse PointerInput will be created.
+            duration: Override the default 250 msecs of DEFAULT_MOVE_DURATION
+                in the source.
         """
         if source is None:
             source = PointerInput(interaction.POINTER_MOUSE, "mouse")
