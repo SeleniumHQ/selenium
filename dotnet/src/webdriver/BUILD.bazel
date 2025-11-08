@@ -164,7 +164,6 @@ csharp_library(
         framework("nuget", "System.Text.Encodings.Web"),
         framework("nuget", "System.Text.Json"),
         framework("nuget", "System.ValueTuple"),
-        framework("nuget", "microsoft.netframework.referenceassemblies.net462"),
     ],
 )
 
