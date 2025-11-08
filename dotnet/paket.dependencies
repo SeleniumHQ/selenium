@@ -15,3 +15,4 @@ nuget NUnit 3.13.2
 nuget NUnitLite 3.13.2
 nuget System.Text.Json 8.0.5
 nuget Runfiles 0.14.0
+nuget microsoft.netframework.referenceassemblies.net462 1.0.3
