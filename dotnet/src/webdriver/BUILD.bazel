@@ -62,7 +62,6 @@ csharp_library(
     ],
 )
 
-
 csharp_library(
     name = "webdriver-netstandard2.0",
     srcs = [
