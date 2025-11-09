@@ -87,7 +87,6 @@ test --test_env=FIREFOX_NIGHTLY_BINARY
 test --test_env=GITHUB_ACTIONS
 test --test_env=MOZ_HEADLESS
 test --test_env=SELENIUM_BROWSER
-test --test_env=TRAVIS
 test --test_env=PYTHON_VERSION
 test --test_env=SE_AVOID_STATS=true
 

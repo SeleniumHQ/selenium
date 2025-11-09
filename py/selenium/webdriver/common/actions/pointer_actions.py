@@ -25,10 +25,13 @@ from selenium.webdriver.remote.webelement import WebElement
 
 class PointerActions(Interaction):
     def __init__(self, source: Optional[PointerInput] = None, duration: int = 250):
-        """
+        """Initialize a new PointerActions instance.
+
         Args:
-        - source: PointerInput instance
-        - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in source
+            source: Optional PointerInput instance. If not provided, a default
+                mouse PointerInput will be created.
+            duration: Override the default 250 msecs of DEFAULT_MOVE_DURATION
+                in the source.
         """
         if source is None:
             source = PointerInput(interaction.POINTER_MOUSE, "mouse")

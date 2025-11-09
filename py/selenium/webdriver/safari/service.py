@@ -22,8 +22,9 @@ from selenium.webdriver.common import service
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of
-    `safaridriver`  This is only supported on MAC OSX.
+    """Manage the safaridriver service lifecycle (start/stop).
+
+    This service is only supported on macOS.
 
     Args:
         executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
@@ -81,6 +82,7 @@ class Service(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

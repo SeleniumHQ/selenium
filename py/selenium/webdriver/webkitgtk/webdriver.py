@@ -36,11 +36,10 @@ class WebDriver(RemoteWebDriver):
 
         Starts the service and then creates new instance of WebKitGTK Driver.
 
-        :Args:
-         - options : an instance of WebKitGTKOptions
-         - service : Service object for handling the browser driver if you need to pass extra details
+        Args:
+            options: an instance of WebKitGTKOptions
+            service: Service object for handling the browser driver if you need to pass extra details
         """
-
         options = options if options else Options()
         self.service = service if service else Service()
         self.service.path = DriverFinder(self.service, options).get_driver_path()
@@ -50,8 +49,7 @@ class WebDriver(RemoteWebDriver):
         self._is_remote = False
 
     def quit(self):
-        """Closes the browser and shuts down the WebKitGTKDriver executable
-        that is started when starting the WebKitGTKDriver."""
+        """Close the browser and shut down the WebKitGTK driver executable."""
         try:
             super().quit()
         except http_client.BadStatusLine:

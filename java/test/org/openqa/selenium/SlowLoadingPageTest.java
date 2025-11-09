@@ -45,7 +45,7 @@ class SlowLoadingPageTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, travis = true, gitHubActions = true)
+  @Ignore(value = CHROME, gitHubActions = true)
   @Ignore(value = EDGE)
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();

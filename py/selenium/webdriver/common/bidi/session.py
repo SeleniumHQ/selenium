@@ -44,18 +44,16 @@ class UserPromptHandler:
     ):
         """Initialize UserPromptHandler.
 
-        Parameters:
-        -----------
-            alert: Handler type for alert prompts
-            before_unload: Handler type for beforeUnload prompts
-            confirm: Handler type for confirm prompts
-            default: Default handler type for all prompts
-            file: Handler type for file picker prompts
-            prompt: Handler type for prompt dialogs
+        Args:
+            alert: Handler type for alert prompts.
+            before_unload: Handler type for beforeUnload prompts.
+            confirm: Handler type for confirm prompts.
+            default: Default handler type for all prompts.
+            file: Handler type for file picker prompts.
+            prompt: Handler type for prompt dialogs.
 
         Raises:
-        ------
-            ValueError: If any handler type is not valid
+            ValueError: If any handler type is not valid.
         """
         for field_name, value in [
             ("alert", alert),
@@ -81,8 +79,7 @@ class UserPromptHandler:
         """Convert the UserPromptHandler to a dictionary for BiDi protocol.
 
         Returns:
-        -------
-            Dict[str, str]: Dictionary representation suitable for BiDi protocol
+            Dictionary representation suitable for BiDi protocol.
         """
         field_mapping = {
             "alert": "alert",
@@ -126,14 +123,13 @@ class Session:
         return command_builder("session.unsubscribe", params)
 
     def status(self):
-        """
-        The session.status command returns information about the remote end's readiness
-        to create new sessions and may include implementation-specific metadata.
+        """The session.status command returns information about the remote end's readiness.
 
-        Returns
-        -------
-        dict
-            Dictionary containing the ready state (bool), message (str) and metadata
+        Returns information about the remote end's readiness to create new sessions
+        and may include implementation-specific metadata.
+
+        Returns:
+            Dictionary containing the ready state (bool), message (str) and metadata.
         """
         cmd = command_builder("session.status", {})
         return self.conn.execute(cmd)

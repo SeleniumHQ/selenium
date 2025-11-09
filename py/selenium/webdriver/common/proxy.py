@@ -80,8 +80,7 @@ class _ProxyTypeDescriptor:
 
 
 class Proxy:
-    """Proxy contains information about proxy type and necessary proxy
-    settings."""
+    """Proxy configuration containing proxy type and necessary proxy settings."""
 
     proxyType = ProxyType.UNSPECIFIED
     autodetect = False
@@ -97,161 +96,41 @@ class Proxy:
 
     # create descriptor type objects
     auto_detect = _ProxyTypeDescriptor("autodetect", ProxyType.AUTODETECT)
-    """Gets and Sets `auto_detect`
-
-    Usage:
-    ------
-    - Get
-        - `self.auto_detect`
-    - Set
-        - `self.auto_detect` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """Proxy autodetection setting (boolean)."""
 
     # TODO: Remove ftpProxy in future version and remove deprecation warning
     ftp_proxy = _ProxyTypeDescriptor("ftpProxy", ProxyType.MANUAL)
-    """Gets and Sets `ftp_proxy`
-
-    Usage:
-    ------
-    - Get
-        - `self.ftp_proxy`
-    - Set
-        - `self.ftp_proxy` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """FTP proxy address (deprecated)."""
 
     http_proxy = _ProxyTypeDescriptor("httpProxy", ProxyType.MANUAL)
-    """Gets and Sets `http_proxy`
-
-    Usage:
-    ------
-    - Get
-        - `self.http_proxy`
-    - Set
-        - `self.http_proxy` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """HTTP proxy address."""
 
     no_proxy = _ProxyTypeDescriptor("noProxy", ProxyType.MANUAL)
-    """Gets and Sets `no_proxy`
-
-    Usage:
-    ------
-    - Get
-        - `self.no_proxy`
-    - Set
-        - `self.no_proxy` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """Addresses to bypass proxy."""
 
     proxy_autoconfig_url = _ProxyTypeDescriptor("proxyAutoconfigUrl", ProxyType.PAC)
-    """Gets and Sets `proxy_autoconfig_url`
-
-    Usage:
-    ------
-    - Get
-        - `self.proxy_autoconfig_url`
-    - Set
-        - `self.proxy_autoconfig_url` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """Proxy autoconfiguration URL."""
 
     ssl_proxy = _ProxyTypeDescriptor("sslProxy", ProxyType.MANUAL)
-    """Gets and Sets `ssl_proxy`
-
-    Usage:
-    ------
-    - Get
-        - `self.ssl_proxy`
-    - Set
-        - `self.ssl_proxy` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """SSL proxy address."""
 
     socks_proxy = _ProxyTypeDescriptor("socksProxy", ProxyType.MANUAL)
-    """Gets and Sets `socks_proxy`
-
-    Usage:
-    ------
-    - Get
-        - `self.sock_proxy`
-    - Set
-        - `self.socks_proxy` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """SOCKS proxy address."""
 
     socks_username = _ProxyTypeDescriptor("socksUsername", ProxyType.MANUAL)
-    """Gets and Sets `socks_password`
-
-    Usage:
-    ------
-    - Get
-        - `self.socks_password`
-    - Set
-        - `self.socks_password` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """SOCKS proxy username."""
 
     socks_password = _ProxyTypeDescriptor("socksPassword", ProxyType.MANUAL)
-    """Gets and Sets `socks_password`
-
-    Usage:
-    ------
-    - Get
-        - `self.socks_password`
-    - Set
-        - `self.socks_password` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """SOCKS proxy password."""
 
     socks_version = _ProxyTypeDescriptor("socksVersion", ProxyType.MANUAL)
-    """Gets and Sets `socks_version`
-
-    Usage:
-    ------
-    - Get
-        - `self.socks_version`
-    - Set
-        - `self.socks_version` = `value`
-
-    Parameters:
-    -----------
-    `value`: `str`
-    """
+    """SOCKS proxy version."""
 
     def __init__(self, raw=None):
         """Creates a new Proxy.
 
-        :Args:
-         - raw: raw proxy data. If None, default class values are used.
+        Args:
+            raw: Raw proxy data. If None, default class values are used.
         """
         if raw:
             if "proxyType" in raw and raw["proxyType"]:
@@ -293,8 +172,8 @@ class Proxy:
     def proxy_type(self, value) -> None:
         """Sets proxy type.
 
-        :Args:
-         - value: The proxy type.
+        Args:
+            value: The proxy type.
         """
         self._verify_proxy_type_compatibility(value)
         self.proxyType = value
@@ -326,12 +205,11 @@ class Proxy:
                 proxy_caps[proxy] = attr_value
         return proxy_caps
 
-    def to_bidi_dict(self):
+    def to_bidi_dict(self) -> dict:
         """Convert proxy settings to BiDi format.
 
         Returns:
-        -------
-            dict: Proxy configuration in BiDi format.
+            Proxy configuration in BiDi format.
         """
         proxy_type = self.proxyType["string"].lower()
         result = {"proxyType": proxy_type}
