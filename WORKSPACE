@@ -20,4 +20,3 @@ rules_closure_dependencies(
 )
 
 rules_closure_toolchains()
-
