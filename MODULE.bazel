@@ -67,6 +67,7 @@ npm.npm_translate_lock(
     data = [
         "@//:package.json",
         "@//:pnpm-workspace.yaml",
+        "@//javascript/atoms:package.json",
         "@//javascript/grid-ui:package.json",
         "@//javascript/selenium-webdriver:package.json",
     ],
