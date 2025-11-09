@@ -224,9 +224,9 @@ class RemoteConnection:
 
     @classmethod
     def set_certificate_bundle_path(cls, path):
-        """Set the path to the certificate bundle to verify connection to
-        command executor. Can also be set to None to disable certificate
-        validation.
+        """Set the path to the certificate bundle for verifying command executor connection.
+
+        Can also be set to None to disable certificate validation.
 
         Args:
             path: path of a .pem encoded certificate chain.
@@ -246,7 +246,6 @@ class RemoteConnection:
             parsed_url: The parsed url
             keep_alive: Is this a keep-alive connection (default: False)
         """
-
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json;charset=UTF-8",

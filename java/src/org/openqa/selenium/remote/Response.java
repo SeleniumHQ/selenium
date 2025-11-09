@@ -20,14 +20,17 @@ package org.openqa.selenium.remote;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class Response {
 
-  private volatile Object value;
-  private volatile String sessionId;
+  private volatile @Nullable Object value;
+  private volatile @Nullable String sessionId;
   @Deprecated // (forRemoval = true)
-  private volatile Integer status;
-  private volatile String state;
+  private volatile @Nullable Integer status;
+  private volatile @Nullable String state;
 
   public Response() {}
 
@@ -36,36 +39,36 @@ public class Response {
   }
 
   @Deprecated // (forRemoval = true)
-  public Integer getStatus() {
+  public @Nullable Integer getStatus() {
     return status;
   }
 
   @Deprecated // (forRemoval = true)
-  public void setStatus(Integer status) {
+  public void setStatus(@Nullable Integer status) {
     this.status = status;
   }
 
-  public String getState() {
+  public @Nullable String getState() {
     return state;
   }
 
-  public void setState(String state) {
+  public void setState(@Nullable String state) {
     this.state = state;
   }
 
-  public void setValue(Object value) {
+  public void setValue(@Nullable Object value) {
     this.value = value;
   }
 
-  public Object getValue() {
+  public @Nullable Object getValue() {
     return value;
   }
 
-  public void setSessionId(String sessionId) {
+  public void setSessionId(@Nullable String sessionId) {
     this.sessionId = sessionId;
   }
 
-  public String getSessionId() {
+  public @Nullable String getSessionId() {
     return sessionId;
   }
 
@@ -76,7 +79,7 @@ public class Response {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (!(o instanceof Response)) {
       return false;
     }

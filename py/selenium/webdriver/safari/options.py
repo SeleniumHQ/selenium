@@ -20,25 +20,24 @@ from selenium.webdriver.common.options import ArgOptions
 
 
 class _SafariOptionsDescriptor:
-    """_SafariOptionsDescriptor is an implementation of Descriptor protocol:
+    """_SafariOptionsDescriptor is an implementation of Descriptor protocol.
 
-    : Any look-up or assignment to the below attributes in `Options` class will be intercepted
-    by `__get__` and `__set__` method respectively.
+    Any look-up or assignment to the below attributes in `Options` class will be intercepted
+    by `__get__` and `__set__` method respectively when an attribute lookup happens:
 
-    - `automatic_inspection`
-    - `automatic_profiling`
-    - `use_technology_preview`
+      - `automatic_inspection`
+      - `automatic_profiling`
+      - `use_technology_preview`
 
-    : When an attribute lookup happens,
     Example:
         `self.automatic_inspection`
-        `__get__` method does a dictionary look up in the dictionary `_caps` of `Options` class
-        and returns the value of key `safari:automaticInspection`
-    : When an attribute assignment happens,
+        (`__get__` method does a dictionary look up in the dictionary `_caps` of `Options` class
+            and returns the value of key `safari:automaticInspection`)
+
     Example:
         `self.automatic_inspection` = True
-        `__set__` method sets/updates the value of the key `safari:automaticInspection` in `_caps`
-        dictionary in `Options` class.
+        (`__set__` method sets/updates the value of the key `safari:automaticInspection` in `_caps`
+            dictionary in `Options` class)
     """
 
     def __init__(self, name, expected_type):
@@ -66,48 +65,14 @@ class Options(ArgOptions):
     SAFARI_TECH_PREVIEW = "Safari Technology Preview"
 
     # creating descriptor objects
-    automatic_inspection = _SafariOptionsDescriptor(AUTOMATIC_INSPECTION, bool)
-    """Get or Set Automatic Inspection value:
+    automatic_inspection: bool = _SafariOptionsDescriptor(AUTOMATIC_INSPECTION, bool)
+    """Whether to enable automatic inspection."""
 
-    Usage:
-    ------
-    - Get
-        - `self.automatic_inspection`
-    - Set
-        - `self.automatic_inspection` = `value`
+    automatic_profiling: bool = _SafariOptionsDescriptor(AUTOMATIC_PROFILING, bool)
+    """Whether to enable automatic profiling."""
 
-    Parameters:
-    -----------
-    `value`: `bool`
-    """
-    automatic_profiling = _SafariOptionsDescriptor(AUTOMATIC_PROFILING, bool)
-    """Get or Set Automatic Profiling value:
-
-    Usage:
-    ------
-    - Get
-        - `self.automatic_profiling`
-    - Set
-        - `self.automatic_profiling` = `value`
-
-    Parameters:
-    -----------
-    `value`: `bool`
-    """
-    use_technology_preview = _SafariOptionsDescriptor(SAFARI_TECH_PREVIEW, bool)
-    """Get and Set Technology Preview:
-
-    Usage:
-    ------
-    - Get
-        - `self.use_technology_preview`
-    - Set
-        - `self.use_technology_preview` = `value`
-
-    Parameters:
-    -----------
-    `value`: `bool`
-    """
+    use_technology_preview: bool = _SafariOptionsDescriptor(SAFARI_TECH_PREVIEW, bool)
+    """Whether to use Safari Technology Preview."""
 
     @property
     def default_capabilities(self) -> dict[str, str]:
