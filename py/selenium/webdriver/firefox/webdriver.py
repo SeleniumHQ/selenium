@@ -26,6 +26,7 @@ from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
@@ -40,6 +41,7 @@ class WebDriver(RemoteWebDriver):
         options: Optional[Options] = None,
         service: Optional[Service] = None,
         keep_alive: bool = True,
+        client_config: Optional[ClientConfig] = None,
     ) -> None:
         """Create a new instance of the Firefox driver, start the service, and create new instance.
 
@@ -47,6 +49,20 @@ class WebDriver(RemoteWebDriver):
             options: Instance of ``options.Options``.
             service: (Optional) service instance for managing the starting and stopping of the driver.
             keep_alive: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
+                This parameter is ignored if client_config is provided.
+            client_config: ClientConfig instance for advanced HTTP/WebSocket configuration.
+                If provided, takes precedence over individual parameters like keep_alive.
+
+        Example:
+            Basic usage::
+
+                driver = webdriver.Firefox()
+
+            With custom config::
+
+                from selenium.webdriver.remote.client_config import ClientConfig
+                config = ClientConfig(websocket_timeout=10)
+                driver = webdriver.Firefox(client_config=config)
         """
         self.service = service if service else Service()
         options = options if options else Options()
@@ -59,10 +75,39 @@ class WebDriver(RemoteWebDriver):
         self.service.path = self.service.env_path() or finder.get_driver_path()
         self.service.start()
 
+        # If client_config is provided, use it; otherwise pass None and let
+        # FirefoxRemoteConnection create one from individual parameters
+        if client_config is None:
+            client_config = ClientConfig(
+                remote_server_addr=self.service.service_url,
+                keep_alive=keep_alive,
+                timeout=120,
+            )
+        else:
+            # If client_config is provided without remote_server_addr, set it
+            if client_config.remote_server_addr is None:
+                client_config = ClientConfig(
+                    remote_server_addr=self.service.service_url,
+                    keep_alive=client_config.keep_alive,
+                    proxy=client_config.proxy,
+                    ignore_certificates=client_config.ignore_certificates,
+                    timeout=client_config.timeout,
+                    ca_certs=client_config.ca_certs,
+                    username=client_config.username,
+                    password=client_config.password,
+                    auth_type=client_config.auth_type,
+                    token=client_config.token,
+                    user_agent=client_config.user_agent,
+                    extra_headers=client_config.extra_headers,
+                    websocket_timeout=client_config.websocket_timeout,
+                    websocket_interval=client_config.websocket_interval,
+                )
+
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
             keep_alive=keep_alive,
             ignore_proxy=options._ignore_local_proxy,
+            client_config=client_config,
         )
 
         try:

@@ -21,6 +21,7 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.chromium.service import ChromiumService
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -35,6 +36,7 @@ class ChromiumDriver(RemoteWebDriver):
         options: Optional[ChromiumOptions] = None,
         service: Optional[ChromiumService] = None,
         keep_alive: bool = True,
+        client_config: Optional[ClientConfig] = None,
     ) -> None:
         """Create a new WebDriver instance, start the service, and create new ChromiumDriver instance.
 
@@ -44,6 +46,9 @@ class ChromiumDriver(RemoteWebDriver):
             options: This takes an instance of ChromiumOptions.
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
+                This parameter is ignored if client_config is provided.
+            client_config: ClientConfig instance for advanced HTTP/WebSocket configuration.
+                If provided, takes precedence over individual parameters like keep_alive.
         """
         self.service = service if service else ChromiumService()
         options = options if options else ChromiumOptions()
@@ -56,12 +61,40 @@ class ChromiumDriver(RemoteWebDriver):
         self.service.path = self.service.env_path() or finder.get_driver_path()
         self.service.start()
 
+        # If client_config is provided, use it; otherwise create from individual parameters
+        if client_config is None:
+            client_config = ClientConfig(
+                remote_server_addr=self.service.service_url,
+                keep_alive=keep_alive,
+                timeout=120,
+            )
+        else:
+            # If client_config is provided without remote_server_addr, set it
+            if client_config.remote_server_addr is None:
+                client_config = ClientConfig(
+                    remote_server_addr=self.service.service_url,
+                    keep_alive=client_config.keep_alive,
+                    proxy=client_config.proxy,
+                    ignore_certificates=client_config.ignore_certificates,
+                    timeout=client_config.timeout,
+                    ca_certs=client_config.ca_certs,
+                    username=client_config.username,
+                    password=client_config.password,
+                    auth_type=client_config.auth_type,
+                    token=client_config.token,
+                    user_agent=client_config.user_agent,
+                    extra_headers=client_config.extra_headers,
+                    websocket_timeout=client_config.websocket_timeout,
+                    websocket_interval=client_config.websocket_interval,
+                )
+
         executor = ChromiumRemoteConnection(
             remote_server_addr=self.service.service_url,
             browser_name=browser_name,
             vendor_prefix=vendor_prefix,
             keep_alive=keep_alive,
             ignore_proxy=options._ignore_local_proxy,
+            client_config=client_config,
         )
 
         try:
