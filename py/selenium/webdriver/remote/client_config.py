@@ -78,7 +78,7 @@ class ClientConfig:
 
     def __init__(
         self,
-        remote_server_addr: str,
+        remote_server_addr: Optional[str] = None,
         keep_alive: Optional[bool] = True,
         proxy: Optional[Proxy] = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
         ignore_certificates: Optional[bool] = False,
