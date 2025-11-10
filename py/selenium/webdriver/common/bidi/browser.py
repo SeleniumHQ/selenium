@@ -14,8 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-
+import os
 from typing import Any, Optional
 
 from selenium.webdriver.common.bidi.common import command_builder
@@ -236,3 +235,46 @@ class Browser:
         """
         result = self.conn.execute(command_builder("browser.getClientWindows", {}))
         return [ClientWindowInfo.from_dict(window) for window in result["clientWindows"]]
+
+    def set_download_behavior(
+        self,
+        *,
+        allowed: Optional[bool] = None,
+        destination_folder: Optional[str | os.PathLike] = None,
+        user_contexts: Optional[list[str]] = None,
+    ) -> None:
+        """Set the download behavior for the browser or specific user contexts.
+
+        Args:
+            allowed: True to allow downloads, False to deny downloads, or None to
+                clear download behavior (revert to default).
+            destination_folder: Required when allowed is True. Specifies the folder
+                to store downloads in.
+            user_contexts: Optional list of user context IDs to apply this
+                behavior to. If omitted, updates the default behavior.
+
+        Raises:
+            ValueError: If allowed=True and destination_folder is missing, or if
+                allowed=False and destination_folder is provided.
+        """
+        params: dict[str, Any] = {}
+
+        if allowed is None:
+            params["downloadBehavior"] = None
+        else:
+            if allowed:
+                if not destination_folder:
+                    raise ValueError("destination_folder is required when allowed=True.")
+                params["downloadBehavior"] = {
+                    "type": "allowed",
+                    "destinationFolder": os.fspath(destination_folder),
+                }
+            else:
+                if destination_folder:
+                    raise ValueError("destination_folder should not be provided when allowed=False.")
+                params["downloadBehavior"] = {"type": "denied"}
+
+        if user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("browser.setDownloadBehavior", params))
