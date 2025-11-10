@@ -8,7 +8,7 @@ colorama==0.4.6
 cryptography==46.0.3
 debugpy==1.8.17
 distlib==0.4.0
-docutils==0.22.3
+docutils==0.21.2
 filelock==3.20.0
 filetype==1.2.0
 h11==0.16.0
