@@ -29,11 +29,17 @@ bazel_dep(name = "rules_proto", version = "7.0.2")
 bazel_dep(name = "rules_ruby", version = "0.19.0")
 bazel_dep(name = "rules_rust", version = "0.67.0")
 
-# Until `rules_jvm_external` 6.8 ships
+# Until `rules_jvm_external` allows us to separate first and third party deps
 single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
     patches = ["//java:rules_jvm_external_javadoc.patch"],
+)
+
+single_version_override(
+    module_name = "contrib_rules_jvm",
+    patch_strip = 1,
+    patches = ["//java:avoid-iterating-over-selects.patch"],
 )
 
 multitool = use_extension("@rules_multitool//multitool:extension.bzl", "multitool")
@@ -180,7 +186,9 @@ maven.install(
         "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         "com.google.code.findbugs:jsr305:3.0.2",
         "com.google.code.gson:gson:2.13.2",
-        "com.google.guava:guava:33.5.0-jre",
+        # When updating guava, be aware that up to at least 33.5.0-jre the module
+        # descriptor includes references to packages that don't exist.
+        "com.google.guava:guava:33.4.4-jre",
         "com.github.ben-manes.caffeine:caffeine:3.2.2",
         "com.google.auto:auto-common:1.2.2",
         "com.google.auto.service:auto-service:1.1.1",

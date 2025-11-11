@@ -1,0 +1,38 @@
+diff --git a/java/private/create_jvm_test_suite.bzl b/java/private/create_jvm_test_suite.bzl
+index f318a0f..20acba2 100644
+--- a/java/private/create_jvm_test_suite.bzl
++++ b/java/private/create_jvm_test_suite.bzl
+@@ -113,12 +113,12 @@ def create_jvm_test_suite(
+     )
+
+     # Get any deps referenced in make vars
+-    make_var_fields = (kwargs.get("jvm_flags", []) +
+-                       kwargs.get("javacopts", []) +
+-                       kwargs.get("args", []) +
+-                       kwargs.get("env", {}).values())
+-    make_var_deps = collections.uniq([dep for dep in deps for flag in make_var_fields if dep in flag])
+-    make_var_runtime_deps = collections.uniq([dep for dep in runtime_deps for flag in make_var_fields if dep in flag])
++#     make_var_fields = (kwargs.get("jvm_flags", []) +
++#                        kwargs.get("javacopts", []) +
++#                        kwargs.get("args", []) +
++#                        kwargs.get("env", {}).values())
++#     make_var_deps = collections.uniq([dep for dep in deps for flag in make_var_fields if dep in flag])
++#     make_var_runtime_deps = collections.uniq([dep for dep in runtime_deps for flag in make_var_fields if dep in flag])
+
+     for src in test_srcs:
+         suffix = src.rfind(".")
+@@ -130,9 +130,9 @@ def create_jvm_test_suite(
+             size = size,
+             srcs = [src],
+             test_class = test_class,
+-            deps = [":" + deps_lib_name] + make_var_deps,
++            deps = [":" + deps_lib_name],
+             tags = tags,
+-            runtime_deps = [":" + runtime_deps_lib_name] + make_var_runtime_deps,
++            runtime_deps = [":" + runtime_deps_lib_name],
+             visibility = ["//visibility:private"],
+             **kwargs
+         )
+--
+2.51.1
+

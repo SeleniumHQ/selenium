@@ -6,7 +6,6 @@ load(":junit5_test.bzl", "junit5_test")
 def java_test_suite(
         name,
         srcs,
-        runner = "junit5",
         test_suffixes = DEFAULT_TEST_SUFFIXES,
         package = None,
         deps = None,
@@ -21,7 +20,6 @@ def java_test_suite(
         define_library = java_library,
         # We want to use our own test runner
         define_test = junit5_test,
-        runner = runner,
         deps = deps,
         runtime_deps = runtime_deps,
         size = size,
