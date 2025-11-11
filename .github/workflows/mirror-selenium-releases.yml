@@ -19,8 +19,6 @@ jobs:
         cd common/mirror
         export JQ_FILTER="[.[] | {tag_name: .tag_name, assets: [.assets[] | {browser_download_url: .browser_download_url} ] } ]"
         curl -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/SeleniumHQ/selenium/releases | jq "$JQ_FILTER" > selenium
-    - name: Set current date
-      run: echo "DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
     - name: Commit files
       id: git
       run: |
@@ -29,26 +27,12 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
           git add common/mirror/selenium
-          git commit -m "Update mirror info (${{ env.DATE }})" -a
+          git commit -m "Update mirror info (`date`)" -a
           echo "::set-output name=commit::true"
         fi
-    - name: Create PR
+    - name: Push changes
       if: steps.git.outputs.commit == 'true'
-      uses: peter-evans/create-pull-request@v6
+      uses: ad-m/github-push-action@master
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "Update mirror info (${{ env.DATE }})"
-        title: "[ci] Update mirror info (${{ env.DATE }})"
-        body: |
-          Automated update of `common/mirror/selenium`.
-          - Trigger: ${{ github.event_name }}
-          - Committer: Selenium CI Bot
-        branch: ci/mirror-selenium-releases
-        base: trunk
-        labels: ci, automated
-        delete-branch: true
-        signoff: false
-        reviewers: |
-          bonigarcia
-        add-paths: |
-          common/mirror/selenium
+        github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+        branch: ${{ github.ref }}
