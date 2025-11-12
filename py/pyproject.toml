@@ -72,9 +72,9 @@ binding = "Exec"
     "NOTICE",
 ]
 
-[tool.pytest.ini_options]
+[tool.pytest]
 console_output_style = "progress"
-faulthandler_timeout = 60
+faulthandler_timeout = "60"
 log_cli = true
 trio_mode = true
 markers = [
