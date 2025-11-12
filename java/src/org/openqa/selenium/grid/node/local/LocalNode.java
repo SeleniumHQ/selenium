@@ -37,7 +37,6 @@ import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.Ticker;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -580,8 +579,8 @@ public class LocalNode extends Node implements Closeable {
   private Capabilities setDownloadsDirectory(TemporaryFilesystem downloadsTfs, Capabilities caps) {
     File tempDir = downloadsTfs.createTempDir("download", "");
     if (Browser.CHROME.is(caps) || Browser.EDGE.is(caps)) {
-      ImmutableMap<String, Serializable> map =
-          ImmutableMap.of(
+      Map<String, Serializable> map =
+          Map.of(
               "download.prompt_for_download",
               false,
               "download.default_directory",
@@ -592,8 +591,8 @@ public class LocalNode extends Node implements Closeable {
       return appendPrefs(caps, optionsKey, map);
     }
     if (Browser.FIREFOX.is(caps)) {
-      ImmutableMap<String, Serializable> map =
-          ImmutableMap.of(
+      Map<String, Serializable> map =
+          Map.of(
               "browser.download.folderList", 2, "browser.download.dir", tempDir.getAbsolutePath());
       return appendPrefs(caps, "moz:firefoxOptions", map);
     }
@@ -752,9 +751,7 @@ public class LocalNode extends Node implements Closeable {
     }
   }
 
-  /**
-   * User wants to list files that can be downloaded
-   */
+  /** User wants to list files that can be downloaded */
   private HttpResponse listDownloadedFiles(File downloadsDirectory) {
     List<String> collected =
       Arrays.stream(Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {}))
@@ -766,38 +763,40 @@ public class LocalNode extends Node implements Closeable {
   }
 
   private HttpResponse getDownloadedFile(HttpRequest req, File downloadsDirectory)
-    throws IOException {
+      throws IOException {
     String raw = string(req);
     if (raw.isEmpty()) {
       throw new WebDriverException(
-        "Please specify file to download in payload as {\"name\": \"fileToDownload\"}");
+          "Please specify file to download in payload as {\"name\": \"fileToDownload\"}");
     }
     Map<String, Object> incoming = JSON.toType(raw, Json.MAP_TYPE);
     String filename =
-      Optional.ofNullable(incoming.get("name"))
-        .map(Object::toString)
-        .orElseThrow(
-          () ->
-            new WebDriverException(
-              "Please specify file to download in payload as {\"name\":"
-              + " \"fileToDownload\"}"));
+        Optional.ofNullable(incoming.get("name"))
+            .map(Object::toString)
+            .orElseThrow(
+                () ->
+                    new WebDriverException(
+                        "Please specify file to download in payload as {\"name\":"
+                            + " \"fileToDownload\"}"));
     File[] allFiles =
-      Optional.ofNullable(downloadsDirectory.listFiles((dir, name) -> name.equals(filename)))
-        .orElse(new File[] {});
+        Optional.ofNullable(downloadsDirectory.listFiles((dir, name) -> name.equals(filename)))
+            .orElse(new File[] {});
     if (allFiles.length == 0) {
       throw new WebDriverException(
-        String.format(
-          "Cannot find file [%s] in directory %s.",
-          filename, downloadsDirectory.getAbsolutePath()));
+          String.format(
+              "Cannot find file [%s] in directory %s.",
+              filename, downloadsDirectory.getAbsolutePath()));
     }
     if (allFiles.length != 1) {
       throw new WebDriverException(
-        String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
+          String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
     }
     String content = Zip.zip(allFiles[0]);
-    Map<String, Object> data = Map.of(
-      "filename", filename,
-      "contents", content);
+    Map<String, Object> data =
+        Map.of(
+            "filename", filename,
+            "file", getFileInfo(allFiles[0]),
+            "contents", content);
     Map<String, Map<String, Object>> result = Map.of("value", data);
     return new HttpResponse().setContent(asJson(result));
   }
@@ -844,7 +843,7 @@ public class LocalNode extends Node implements Closeable {
           String.format("Expected there to be only 1 file. There were: %s", allFiles.length));
     }
 
-    ImmutableMap<String, Object> result = ImmutableMap.of("value", allFiles[0].getAbsolutePath());
+    Map<String, Object> result = Map.of("value", allFiles[0].getAbsolutePath());
 
     return new HttpResponse().setContent(asJson(result));
   }
@@ -1078,13 +1077,17 @@ public class LocalNode extends Node implements Closeable {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
-        "id", getId(),
-        "uri", externalUri,
-        "maxSessions", maxSessionCount,
-        "draining", isDraining(),
+    return Map.of(
+        "id",
+        getId(),
+        "uri",
+        externalUri,
+        "maxSessions",
+        maxSessionCount,
+        "draining",
+        isDraining(),
         "capabilities",
-            factories.stream().map(SessionSlot::getStereotype).collect(Collectors.toSet()));
+        factories.stream().map(SessionSlot::getStereotype).collect(Collectors.toSet()));
   }
 
   public static class Builder {
