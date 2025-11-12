@@ -738,63 +738,78 @@ public class LocalNode extends Node implements Closeable {
     }
     File downloadsDirectory =
         Optional.ofNullable(tempFS.getBaseDir().listFiles()).orElse(new File[] {})[0];
-    if (req.getMethod().equals(HttpMethod.GET)) {
-      // User wants to list files that can be downloaded
-      List<String> collected =
-          Arrays.stream(Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {}))
-              .map(File::getName)
-              .collect(Collectors.toList());
-      ImmutableMap<String, Object> data = ImmutableMap.of("names", collected);
-      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
-      return new HttpResponse().setContent(asJson(result));
-    }
-    if (req.getMethod().equals(HttpMethod.DELETE)) {
-      File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
-      for (File file : files) {
-        FileHandler.delete(file);
-      }
-      Map<String, Object> toReturn = new HashMap<>();
-      toReturn.put("value", null);
-      return new HttpResponse().setContent(asJson(toReturn));
-    }
-    String raw = string(req);
-    if (raw.isEmpty()) {
-      throw new WebDriverException(
-          "Please specify file to download in payload as {\"name\": \"fileToDownload\"}");
-    }
-    Map<String, Object> incoming = JSON.toType(raw, Json.MAP_TYPE);
-    String filename =
-        Optional.ofNullable(incoming.get("name"))
-            .map(Object::toString)
-            .orElseThrow(
-                () ->
-                    new WebDriverException(
-                        "Please specify file to download in payload as {\"name\":"
-                            + " \"fileToDownload\"}"));
+
     try {
-      File[] allFiles =
-          Optional.ofNullable(downloadsDirectory.listFiles((dir, name) -> name.equals(filename)))
-              .orElse(new File[] {});
-      if (allFiles.length == 0) {
-        throw new WebDriverException(
-            String.format(
-                "Cannot find file [%s] in directory %s.",
-                filename, downloadsDirectory.getAbsolutePath()));
+      if (req.getMethod().equals(HttpMethod.GET)) {
+        return listDownloadedFiles(downloadsDirectory);
       }
-      if (allFiles.length != 1) {
-        throw new WebDriverException(
-            String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
+      if (req.getMethod().equals(HttpMethod.DELETE)) {
+        return deleteDownloadedFile(downloadsDirectory);
       }
-      String content = Zip.zip(allFiles[0]);
-      ImmutableMap<String, Object> data =
-          ImmutableMap.of(
-              "filename", filename,
-              "contents", content);
-      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
-      return new HttpResponse().setContent(asJson(result));
+      return getDownloadedFile(req, downloadsDirectory);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  /**
+   * User wants to list files that can be downloaded
+   */
+  private HttpResponse listDownloadedFiles(File downloadsDirectory) {
+    List<String> collected =
+      Arrays.stream(Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {}))
+        .map(File::getName)
+        .collect(Collectors.toList());
+    Map<String, Object> data = Map.of("names", collected);
+    Map<String, Map<String, Object>> result = Map.of("value", data);
+    return new HttpResponse().setContent(asJson(result));
+  }
+
+  private HttpResponse getDownloadedFile(HttpRequest req, File downloadsDirectory)
+    throws IOException {
+    String raw = string(req);
+    if (raw.isEmpty()) {
+      throw new WebDriverException(
+        "Please specify file to download in payload as {\"name\": \"fileToDownload\"}");
+    }
+    Map<String, Object> incoming = JSON.toType(raw, Json.MAP_TYPE);
+    String filename =
+      Optional.ofNullable(incoming.get("name"))
+        .map(Object::toString)
+        .orElseThrow(
+          () ->
+            new WebDriverException(
+              "Please specify file to download in payload as {\"name\":"
+              + " \"fileToDownload\"}"));
+    File[] allFiles =
+      Optional.ofNullable(downloadsDirectory.listFiles((dir, name) -> name.equals(filename)))
+        .orElse(new File[] {});
+    if (allFiles.length == 0) {
+      throw new WebDriverException(
+        String.format(
+          "Cannot find file [%s] in directory %s.",
+          filename, downloadsDirectory.getAbsolutePath()));
+    }
+    if (allFiles.length != 1) {
+      throw new WebDriverException(
+        String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
+    }
+    String content = Zip.zip(allFiles[0]);
+    Map<String, Object> data = Map.of(
+      "filename", filename,
+      "contents", content);
+    Map<String, Map<String, Object>> result = Map.of("value", data);
+    return new HttpResponse().setContent(asJson(result));
+  }
+
+  private HttpResponse deleteDownloadedFile(File downloadsDirectory) {
+    File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
+    for (File file : files) {
+      FileHandler.delete(file);
+    }
+    Map<String, Object> toReturn = new HashMap<>();
+    toReturn.put("value", null);
+    return new HttpResponse().setContent(asJson(toReturn));
   }
 
   @Override
