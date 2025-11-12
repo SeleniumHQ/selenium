@@ -24,6 +24,7 @@ from typing import Optional, Union
 
 from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.client_config import ClientConfig
 
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
 
@@ -164,3 +165,18 @@ def keys_to_typing(value: Iterable[AnyKey]) -> list[str]:
         else:
             characters.extend(val)
     return characters
+
+
+def normalize_local_driver_config(
+    service_url: str, user_config: Optional[ClientConfig] = None, **defaults
+) -> ClientConfig:
+    """Creates a ClientConfig for local drivers."""
+    if user_config is None:
+        return ClientConfig(remote_server_addr=service_url, **defaults)
+
+    # Programmatically copy attributes to avoid brittleness
+    config_args = {
+        key.lstrip("_"): value for key, value in vars(user_config).items()
+    }
+    config_args["remote_server_addr"] = service_url
+    return ClientConfig(**config_args)

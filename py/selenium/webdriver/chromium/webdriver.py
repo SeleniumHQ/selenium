@@ -21,6 +21,7 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.chromium.service import ChromiumService
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.utils import normalize_local_driver_config
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -61,32 +62,9 @@ class ChromiumDriver(RemoteWebDriver):
         self.service.path = self.service.env_path() or finder.get_driver_path()
         self.service.start()
 
-        # Normalize client_config: always set remote_server_addr to service.service_url
-        # for local drivers (it cannot be overridden by user for local drivers)
-        if client_config is None:
-            client_config = ClientConfig(
-                remote_server_addr=self.service.service_url,
-                keep_alive=keep_alive,
-                timeout=120,
-            )
-        else:
-            # Always create new ClientConfig with service.service_url and copy all user fields
-            client_config = ClientConfig(
-                remote_server_addr=self.service.service_url,
-                keep_alive=client_config.keep_alive,
-                proxy=client_config.proxy,
-                ignore_certificates=client_config.ignore_certificates,
-                timeout=client_config.timeout,
-                ca_certs=client_config.ca_certs,
-                username=client_config.username,
-                password=client_config.password,
-                auth_type=client_config.auth_type,
-                token=client_config.token,
-                user_agent=client_config.user_agent,
-                extra_headers=client_config.extra_headers,
-                websocket_timeout=client_config.websocket_timeout,
-                websocket_interval=client_config.websocket_interval,
-            )
+        client_config = normalize_local_driver_config(
+            self.service.service_url, user_config=client_config, keep_alive=keep_alive, timeout=120
+        )
 
         executor = ChromiumRemoteConnection(
             remote_server_addr=self.service.service_url,
