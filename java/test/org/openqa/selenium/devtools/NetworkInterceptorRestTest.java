@@ -70,7 +70,8 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
                         new HttpResponse()
                             .addHeader(
                                 "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH")
-                            .addHeader("Access-Control-Allow-Origin", "*"));
+                            .addHeader("Access-Control-Allow-Origin", "*")
+                            .addHeader("Access-Control-Allow-Headers", "*"));
 
     appServer = new NettyAppServer(route);
     appServer.start();
@@ -81,188 +82,82 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
     safelyCall(() -> interceptor.close(), () -> driver.quit(), () -> appServer.stop());
   }
 
-  @Test
-  @NoDriverBeforeTest
-  void shouldInterceptPatchRequest() throws MalformedURLException {
+  private void assertRequest(HttpMethod method, boolean withBody) throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
         new NetworkInterceptor(
             driver,
-            Route.matching(req -> (req.getMethod() == HttpMethod.PATCH))
+            Route.matching(
+                    req -> req.getMethod() == method || req.getMethod() == HttpMethod.OPTIONS)
                 .to(
                     () ->
                         req -> {
+                          if (req.getMethod() == HttpMethod.OPTIONS) {
+                            return new HttpResponse()
+                                .setStatus(200)
+                                .addHeader("Access-Control-Allow-Origin", "*")
+                                .addHeader(
+                                    "Access-Control-Allow-Methods",
+                                    "GET, POST, PUT, DELETE, PATCH");
+                          }
                           seen.set(true);
                           return new HttpResponse()
                               .setStatus(200)
                               .addHeader("Access-Control-Allow-Origin", "*")
-                              .setContent(utf8String("Received response for PATCH"));
+                              .setContent(utf8String("Received response for " + method));
                         }));
 
     JavascriptExecutor js = (JavascriptExecutor) driver;
+    String script =
+        "var url = arguments[0];"
+            + "var callback = arguments[arguments.length - 1];"
+            + "var xhr = new XMLHttpRequest();"
+            + "xhr.open(arguments[1], url, true);"
+            + "xhr.onload = function() {"
+            + "  if (xhr.readyState == 4) {"
+            + "    callback(xhr.responseText);"
+            + "  }"
+            + "};"
+            + "xhr.onerror = function() {"
+            + "  callback('ERROR: ' + xhr.statusText);"
+            + "};"
+            + (withBody ? "xhr.send('Hey');" : "xhr.send();");
+
     Object response =
         js.executeAsyncScript(
-            "var url = arguments[0];"
-                + "var callback = arguments[arguments.length - 1];"
-                + "var xhr = new XMLHttpRequest();"
-                + "xhr.open('PATCH', url, true);"
-                + "xhr.onload = function() {"
-                + "  if (xhr.readyState == 4) {"
-                + "    callback(xhr.responseText);"
-                + "  }"
-                + "};"
-                + "xhr.send('Hey');",
-            new URL(appServer.whereIs("/")).toString());
+            script, new URL(appServer.whereIs("/")).toString(), method.toString());
 
     assertThat(seen.get()).isTrue();
-    assertThat(response.toString()).contains("Received response for PATCH");
+    assertThat(response.toString()).contains("Received response for " + method);
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  void shouldInterceptPatchRequest() throws MalformedURLException {
+    assertRequest(HttpMethod.PATCH, true);
   }
 
   @Test
   @NoDriverBeforeTest
   void shouldInterceptPutRequest() throws MalformedURLException {
-    AtomicBoolean seen = new AtomicBoolean(false);
-    interceptor =
-        new NetworkInterceptor(
-            driver,
-            Route.matching(req -> (req.getMethod() == HttpMethod.PUT))
-                .to(
-                    () ->
-                        req -> {
-                          seen.set(true);
-                          return new HttpResponse()
-                              .setStatus(200)
-                              .addHeader("Access-Control-Allow-Origin", "*")
-                              .setContent(utf8String("Received response for PUT"));
-                        }));
-
-    JavascriptExecutor js = (JavascriptExecutor) driver;
-    Object response =
-        js.executeAsyncScript(
-            "var url = arguments[0];"
-                + "var callback = arguments[arguments.length - 1];"
-                + "var xhr = new XMLHttpRequest();"
-                + "xhr.open('PUT', url, true);"
-                + "xhr.onload = function() {"
-                + "  if (xhr.readyState == 4) {"
-                + "    callback(xhr.responseText);"
-                + "  }"
-                + "};"
-                + "xhr.send('Hey');",
-            new URL(appServer.whereIs("/")).toString());
-
-    assertThat(seen.get()).isTrue();
-    assertThat(response.toString()).contains("Received response for PUT");
+    assertRequest(HttpMethod.PUT, true);
   }
 
   @Test
   @NoDriverBeforeTest
   void shouldInterceptPostRequest() throws MalformedURLException {
-    AtomicBoolean seen = new AtomicBoolean(false);
-    interceptor =
-        new NetworkInterceptor(
-            driver,
-            Route.matching(req -> (req.getMethod() == HttpMethod.POST))
-                .to(
-                    () ->
-                        req -> {
-                          seen.set(true);
-                          return new HttpResponse()
-                              .setStatus(200)
-                              .addHeader("Access-Control-Allow-Origin", "*")
-                              .setContent(utf8String("Received response for POST"));
-                        }));
-
-    JavascriptExecutor js = (JavascriptExecutor) driver;
-    Object response =
-        js.executeAsyncScript(
-            "var url = arguments[0];"
-                + "var callback = arguments[arguments.length - 1];"
-                + "var xhr = new XMLHttpRequest();"
-                + "xhr.open('POST', url, true);"
-                + "xhr.onload = function() {"
-                + "  if (xhr.readyState == 4) {"
-                + "    callback(xhr.responseText);"
-                + "  }"
-                + "};"
-                + "xhr.send('Hey');",
-            new URL(appServer.whereIs("/")).toString());
-
-    assertThat(seen.get()).isTrue();
-    assertThat(response.toString()).contains("Received response for POST");
+    assertRequest(HttpMethod.POST, true);
   }
 
   @Test
   @NoDriverBeforeTest
   void shouldInterceptDeleteRequest() throws MalformedURLException {
-    AtomicBoolean seen = new AtomicBoolean(false);
-    interceptor =
-        new NetworkInterceptor(
-            driver,
-            Route.matching(req -> (req.getMethod() == HttpMethod.DELETE))
-                .to(
-                    () ->
-                        req -> {
-                          seen.set(true);
-                          return new HttpResponse()
-                              .setStatus(200)
-                              .addHeader("Access-Control-Allow-Origin", "*")
-                              .setContent(utf8String("Received response for DELETE"));
-                        }));
-
-    JavascriptExecutor js = (JavascriptExecutor) driver;
-    Object response =
-        js.executeAsyncScript(
-            "var url = arguments[0];"
-                + "var callback = arguments[arguments.length - 1];"
-                + "var xhr = new XMLHttpRequest();"
-                + "xhr.open('DELETE', url, true);"
-                + "xhr.onload = function() {"
-                + "  if (xhr.readyState == 4) {"
-                + "    callback(xhr.responseText);"
-                + "  }"
-                + "};"
-                + "xhr.send('Hey');",
-            new URL(appServer.whereIs("/")).toString());
-
-    assertThat(seen.get()).isTrue();
-    assertThat(response.toString()).contains("Received response for DELETE");
+    assertRequest(HttpMethod.DELETE, true);
   }
 
   @Test
   @NoDriverBeforeTest
   void shouldInterceptGetRequest() throws MalformedURLException {
-    AtomicBoolean seen = new AtomicBoolean(false);
-    interceptor =
-        new NetworkInterceptor(
-            driver,
-            Route.matching(req -> (req.getMethod() == HttpMethod.GET))
-                .to(
-                    () ->
-                        req -> {
-                          seen.set(true);
-                          return new HttpResponse()
-                              .setStatus(200)
-                              .addHeader("Access-Control-Allow-Origin", "*")
-                              .setContent(utf8String("Received response for GET"));
-                        }));
-
-    JavascriptExecutor js = (JavascriptExecutor) driver;
-    Object response =
-        js.executeAsyncScript(
-            "var url = arguments[0];"
-                + "var callback = arguments[arguments.length - 1];"
-                + "var xhr = new XMLHttpRequest();"
-                + "xhr.open('GET', url, true);"
-                + "xhr.onload = function() {"
-                + "  if (xhr.readyState == 4) {"
-                + "    callback(xhr.responseText);"
-                + "  }"
-                + "};"
-                + "xhr.send();",
-            new URL(appServer.whereIs("/")).toString());
-
-    assertThat(seen.get()).isTrue();
-    assertThat(response.toString()).contains("Received response for GET");
+    assertRequest(HttpMethod.GET, false);
   }
 }
