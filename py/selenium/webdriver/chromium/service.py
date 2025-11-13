@@ -17,7 +17,6 @@
 
 from collections.abc import Mapping, Sequence
 from io import IOBase
-from typing import Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service

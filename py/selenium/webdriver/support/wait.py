@@ -16,9 +16,8 @@
 # under the License.
 
 import time
-from typing import Generic, Literal, Optional, TypeVar, Union
-
 from collections.abc import Callable
+from typing import Generic, Literal, TypeVar, Union
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.types import WaitExcTypes

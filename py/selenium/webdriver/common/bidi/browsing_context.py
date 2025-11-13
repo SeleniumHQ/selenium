@@ -16,10 +16,9 @@
 # under the License.
 
 import threading
-from dataclasses import dataclass
-from typing import Any, Optional, Union
-
 from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session

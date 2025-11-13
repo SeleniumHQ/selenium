@@ -23,7 +23,6 @@
 # This is a copy of https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
 # The license above is theirs and MUST be preserved.
 
-# flake8: noqa
 
 import builtins
 from dataclasses import dataclass
@@ -36,7 +35,7 @@ import os
 from pathlib import Path
 import re
 from textwrap import dedent, indent as tw_indent
-from typing import Optional , cast, List, Union
+from typing import Optional, cast, List, Union
 
 from collections.abc import Iterator
 

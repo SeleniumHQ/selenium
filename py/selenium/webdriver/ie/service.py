@@ -16,7 +16,6 @@
 # under the License.
 
 from collections.abc import Sequence
-from typing import Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 

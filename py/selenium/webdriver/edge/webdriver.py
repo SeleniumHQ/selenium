@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities

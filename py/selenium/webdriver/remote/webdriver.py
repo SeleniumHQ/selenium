@@ -30,7 +30,7 @@ from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 from selenium.common.exceptions import (
     InvalidArgumentException,

@@ -19,7 +19,6 @@ import base64
 import os
 import socket
 from enum import Enum
-from typing import Optional
 from urllib import parse
 
 import certifi

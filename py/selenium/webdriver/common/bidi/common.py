@@ -16,7 +16,6 @@
 # under the License.
 
 from collections.abc import Generator
-from typing import Optional
 
 
 def command_builder(method: str, params: dict | None = None) -> Generator[dict, dict, dict]:

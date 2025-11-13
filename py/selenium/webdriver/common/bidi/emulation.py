@@ -16,7 +16,7 @@
 # under the License.
 
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 

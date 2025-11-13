@@ -17,7 +17,7 @@
 
 import math
 from dataclasses import dataclass, field
-from typing import Any, Optional, Union
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session

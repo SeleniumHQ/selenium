@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Union
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.common import command_builder

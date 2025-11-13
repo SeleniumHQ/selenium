@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.actions.input_device import InputDevice

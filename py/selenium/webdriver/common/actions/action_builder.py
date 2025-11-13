@@ -16,7 +16,7 @@
 # under the License.
 
 
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.key_actions import KeyActions

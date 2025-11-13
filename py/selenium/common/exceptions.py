@@ -17,7 +17,7 @@
 """Exceptions that may happen in all the webdriver code."""
 
 from collections.abc import Sequence
-from typing import Any, Optional
+from typing import Any
 
 SUPPORT_MSG = "For documentation on this error, please visit:"
 ERROR_URL = "https://www.selenium.dev/documentation/webdriver/troubleshooting/errors"

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import os
-from typing import Any, Optional
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import UserPromptHandler

@@ -18,7 +18,7 @@
 import datetime
 import math
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.common import command_builder

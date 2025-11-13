@@ -20,7 +20,6 @@ import warnings
 import zipfile
 from contextlib import contextmanager
 from io import BytesIO
-from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.firefox.options import Options

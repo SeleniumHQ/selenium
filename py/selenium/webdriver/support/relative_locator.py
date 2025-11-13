@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import warnings
-from typing import NoReturn, Optional, Union, overload
+from typing import NoReturn, overload
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By, ByType

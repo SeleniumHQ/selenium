@@ -20,7 +20,7 @@ import pkgutil
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from importlib import import_module
-from typing import Any, Optional
+from typing import Any
 
 from selenium.webdriver.common.by import By
 

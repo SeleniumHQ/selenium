@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service

@@ -16,10 +16,8 @@
 # under the License.
 
 import re
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from typing import Any, Literal, TypeVar, Union
-
-from collections.abc import Callable
 
 from selenium.common.exceptions import (
     NoAlertPresentException,

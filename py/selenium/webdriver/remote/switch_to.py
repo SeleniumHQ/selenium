@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional, Union
 
 from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException, NoSuchWindowException
 from selenium.webdriver.common.alert import Alert

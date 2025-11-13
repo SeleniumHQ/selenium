@@ -16,7 +16,7 @@
 # under the License.
 
 import uuid
-from typing import Any, Optional
+from typing import Any
 
 
 class InputDevice:

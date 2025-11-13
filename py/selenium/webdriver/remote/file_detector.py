@@ -18,7 +18,6 @@
 from abc import ABCMeta, abstractmethod
 from contextlib import suppress
 from pathlib import Path
-from typing import Optional
 
 from selenium.types import AnyKey
 from selenium.webdriver.common.utils import keys_to_typing

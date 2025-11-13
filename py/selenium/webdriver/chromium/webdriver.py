@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection

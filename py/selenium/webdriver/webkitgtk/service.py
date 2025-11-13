@@ -18,7 +18,6 @@
 import shutil
 import warnings
 from collections.abc import Mapping, Sequence
-from typing import Optional
 
 from selenium.webdriver.common import service
 

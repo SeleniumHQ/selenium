@@ -18,7 +18,7 @@
 import functools
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any
 
 
 class Protocol(str, Enum):

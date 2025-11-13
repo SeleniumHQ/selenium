@@ -16,7 +16,6 @@
 # under the License.
 
 import http.client as http_client
-from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver

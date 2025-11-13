@@ -20,7 +20,6 @@
 import socket
 import urllib.request
 from collections.abc import Iterable
-from typing import Optional, Union
 
 from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys

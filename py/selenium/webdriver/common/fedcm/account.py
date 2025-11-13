@@ -16,7 +16,6 @@
 # under the License.
 
 from enum import Enum
-from typing import Optional
 
 
 class LoginState(Enum):
