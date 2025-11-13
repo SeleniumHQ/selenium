@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.node.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.nio.file.Files.readAttributes;
+import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
@@ -44,6 +46,7 @@ import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -753,13 +756,30 @@ public class LocalNode extends Node implements Closeable {
 
   /** User wants to list files that can be downloaded */
   private HttpResponse listDownloadedFiles(File downloadsDirectory) {
-    List<String> collected =
-      Arrays.stream(Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {}))
-        .map(File::getName)
-        .collect(Collectors.toList());
-    Map<String, Object> data = Map.of("names", collected);
+    File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
+    List<String> fileNames = Arrays.stream(files).map(File::getName).collect(Collectors.toList());
+    List<DownloadedFile> fileInfos =
+        Arrays.stream(files).map(this::getFileInfo).collect(Collectors.toList());
+
+    Map<String, Object> data =
+        Map.of(
+            "names", fileNames,
+            "files", fileInfos);
     Map<String, Map<String, Object>> result = Map.of("value", data);
     return new HttpResponse().setContent(asJson(result));
+  }
+
+  private DownloadedFile getFileInfo(File file) {
+    try {
+      BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
+      return new DownloadedFile(
+          file.getName(),
+          attributes.creationTime().toMillis(),
+          attributes.lastModifiedTime().toMillis(),
+          attributes.size());
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to get file attributes: " + file.getAbsolutePath(), e);
+    }
   }
 
   private HttpResponse getDownloadedFile(HttpRequest req, File downloadsDirectory)
