@@ -85,23 +85,23 @@
     <ItemGroup>
       <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
         <Visible>False</Visible>
-        <LogicalName>webdriver_prefs.json</LogicalName>
+        <LogicalName>$(AssemblyName).webdriver_prefs.json</LogicalName>
       </EmbeddedResource>
       <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
         <Visible>False</Visible>
-        <LogicalName>get-attribute.js</LogicalName>
+        <LogicalName>$(AssemblyName).get-attribute.js</LogicalName>
       </EmbeddedResource>
       <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js">
         <Visible>False</Visible>
-        <LogicalName>is-displayed.js</LogicalName>
+        <LogicalName>$(AssemblyName).is-displayed.js</LogicalName>
       </EmbeddedResource>
       <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js">
         <Visible>False</Visible>
-        <LogicalName>find-elements.js</LogicalName>
+        <LogicalName>$(AssemblyName).find-elements.js</LogicalName>
       </EmbeddedResource>
       <EmbeddedResource Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js">
         <Visible>False</Visible>
-        <LogicalName>mutation-listener.js</LogicalName>
+        <LogicalName>$(AssemblyName).mutation-listener.js</LogicalName>
       </EmbeddedResource>
     </ItemGroup>
   </Target>
