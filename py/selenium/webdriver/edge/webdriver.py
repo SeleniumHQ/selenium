@@ -28,8 +28,8 @@ class WebDriver(ChromiumDriver):
 
     def __init__(
         self,
-        options: Optional[Options] = None,
-        service: Optional[Service] = None,
+        options: Options | None = None,
+        service: Service | None = None,
         keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the edge driver.

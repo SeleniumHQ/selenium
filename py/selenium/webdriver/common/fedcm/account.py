@@ -28,7 +28,7 @@ class _AccountDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[str]:
+    def __get__(self, obj, cls) -> str | None:
         return obj._account_data.get(self.name)
 
     def __set__(self, obj, value) -> None:

@@ -31,8 +31,8 @@ class WebDriver(RemoteWebDriver):
     def __init__(
         self,
         keep_alive=True,
-        options: Optional[Options] = None,
-        service: Optional[Service] = None,
+        options: Options | None = None,
+        service: Service | None = None,
     ) -> None:
         """Create a new Safari driver instance and launch or find a running safaridriver service.
 

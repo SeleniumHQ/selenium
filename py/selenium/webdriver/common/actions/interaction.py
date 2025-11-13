@@ -43,5 +43,5 @@ class Pause(Interaction):
         super().__init__(source)
         self.duration = duration
 
-    def encode(self) -> dict[str, Union[str, int]]:
+    def encode(self) -> dict[str, str | int]:
         return {"type": self.PAUSE, "duration": int(self.duration * 1000)}

@@ -63,7 +63,7 @@ class WebExtension:
                 ) from e
             raise
 
-    def uninstall(self, extension_id_or_result: Union[str, dict]) -> None:
+    def uninstall(self, extension_id_or_result: str | dict) -> None:
         """Uninstalls a web extension from the remote end.
 
         Args:

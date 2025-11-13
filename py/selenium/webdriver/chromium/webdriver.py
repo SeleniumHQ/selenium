@@ -30,10 +30,10 @@ class ChromiumDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        browser_name: Optional[str] = None,
-        vendor_prefix: Optional[str] = None,
-        options: Optional[ChromiumOptions] = None,
-        service: Optional[ChromiumService] = None,
+        browser_name: str | None = None,
+        vendor_prefix: str | None = None,
+        options: ChromiumOptions | None = None,
+        service: ChromiumService | None = None,
         keep_alive: bool = True,
     ) -> None:
         """Create a new WebDriver instance, start the service, and create new ChromiumDriver instance.

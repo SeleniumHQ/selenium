@@ -22,7 +22,7 @@ from typing import Any, Optional
 class InputDevice:
     """Describes the input device being used for the action."""
 
-    def __init__(self, name: Optional[str] = None):
+    def __init__(self, name: str | None = None):
         self.name = name or uuid.uuid4()
         self.actions: list[Any] = []
 

@@ -32,21 +32,21 @@ class ActionBuilder:
     def __init__(
         self,
         driver,
-        mouse: Optional[PointerInput] = None,
-        wheel: Optional[WheelInput] = None,
-        keyboard: Optional[KeyInput] = None,
+        mouse: PointerInput | None = None,
+        wheel: WheelInput | None = None,
+        keyboard: KeyInput | None = None,
         duration: int = 250,
     ) -> None:
         mouse = mouse or PointerInput(interaction.POINTER_MOUSE, "mouse")
         keyboard = keyboard or KeyInput(interaction.KEY)
         wheel = wheel or WheelInput(interaction.WHEEL)
-        self.devices: list[Union[PointerInput, KeyInput, WheelInput]] = [mouse, keyboard, wheel]
+        self.devices: list[PointerInput | KeyInput | WheelInput] = [mouse, keyboard, wheel]
         self._key_action = KeyActions(keyboard)
         self._pointer_action = PointerActions(mouse, duration=duration)
         self._wheel_action = WheelActions(wheel)
         self.driver = driver
 
-    def get_device_with(self, name: str) -> Optional[Union["WheelInput", "PointerInput", "KeyInput"]]:
+    def get_device_with(self, name: str) -> Union["WheelInput", "PointerInput", "KeyInput"] | None:
         """Get the device with the given name.
 
         Args:
@@ -159,7 +159,7 @@ class ActionBuilder:
         """
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)
 
-    def _add_input(self, new_input: Union[KeyInput, PointerInput, WheelInput]) -> None:
+    def _add_input(self, new_input: KeyInput | PointerInput | WheelInput) -> None:
         """Add a new input device to the action builder.
 
         Args:

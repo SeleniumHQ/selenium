@@ -27,8 +27,8 @@ class ChromiumRemoteConnection(RemoteConnection):
         vendor_prefix: str,
         browser_name: str,
         keep_alive: bool = True,
-        ignore_proxy: Optional[bool] = False,
-        client_config: Optional[ClientConfig] = None,
+        ignore_proxy: bool | None = False,
+        client_config: ClientConfig | None = None,
     ) -> None:
         client_config = client_config or ClientConfig(
             remote_server_addr=remote_server_addr, keep_alive=keep_alive, timeout=120

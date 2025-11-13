@@ -47,7 +47,7 @@ class Log:
         self.devtools = bidi_session.devtools
         _pkg = ".".join(__name__.split(".")[:-1])
         # Ensure _mutation_listener_js is not None before decoding
-        _mutation_listener_js_bytes: Optional[bytes] = pkgutil.get_data(_pkg, "mutation-listener.js")
+        _mutation_listener_js_bytes: bytes | None = pkgutil.get_data(_pkg, "mutation-listener.js")
         if _mutation_listener_js_bytes is None:
             raise ValueError("Failed to load mutation-listener.js")
         self._mutation_listener_js = _mutation_listener_js_bytes.decode("utf8").strip()

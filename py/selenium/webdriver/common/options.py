@@ -338,7 +338,7 @@ class BaseOptions(metaclass=ABCMeta):
         self._caps = self.default_capabilities
         self._proxy = None
         self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
-        self.mobile_options: Optional[dict[str, str]] = None
+        self.mobile_options: dict[str, str] | None = None
         self._ignore_local_proxy = False
 
     @property
@@ -351,9 +351,9 @@ class BaseOptions(metaclass=ABCMeta):
 
     def enable_mobile(
         self,
-        android_package: Optional[str] = None,
-        android_activity: Optional[str] = None,
-        device_serial: Optional[str] = None,
+        android_package: str | None = None,
+        android_activity: str | None = None,
+        device_serial: str | None = None,
     ) -> None:
         """Enables mobile browser use for browsers that support it.
 

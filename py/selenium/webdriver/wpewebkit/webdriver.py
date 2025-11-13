@@ -30,7 +30,7 @@ class WebDriver(RemoteWebDriver):
     def __init__(
         self,
         options=None,
-        service: Optional[Service] = None,
+        service: Service | None = None,
     ):
         """Creates a new instance of the WPEWebKit driver.
 

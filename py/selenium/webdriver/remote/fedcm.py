@@ -30,7 +30,7 @@ class FedCM:
         return self._driver.execute(Command.GET_FEDCM_TITLE)["value"].get("title")
 
     @property
-    def subtitle(self) -> Optional[str]:
+    def subtitle(self) -> str | None:
         """Gets the subtitle of the dialog."""
         return self._driver.execute(Command.GET_FEDCM_TITLE)["value"].get("subtitle")
 

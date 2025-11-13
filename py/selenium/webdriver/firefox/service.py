@@ -36,12 +36,12 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        service_args: Optional[Sequence[str]] = None,
-        log_output: Optional[SubprocessStdAlias] = None,
-        env: Optional[Mapping[str, str]] = None,
-        driver_path_env_key: Optional[str] = None,
+        service_args: Sequence[str] | None = None,
+        log_output: SubprocessStdAlias | None = None,
+        env: Mapping[str, str] | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
         self._service_args = list(service_args or [])

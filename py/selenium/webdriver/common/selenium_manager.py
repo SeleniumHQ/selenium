@@ -69,7 +69,7 @@ class SeleniumManager:
         if exe is not None:
             compiled_path = compiled_path.with_suffix(exe)
 
-        path: Optional[Path] = None
+        path: Path | None = None
 
         if (env_path := os.getenv("SE_MANAGER_PATH")) is not None:
             logger.debug("Selenium Manager set by env SE_MANAGER_PATH to: %s", env_path)

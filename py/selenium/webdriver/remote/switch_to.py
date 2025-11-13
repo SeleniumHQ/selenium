@@ -58,7 +58,7 @@ class SwitchTo:
         """
         self._driver.execute(Command.SWITCH_TO_FRAME, {"id": None})
 
-    def frame(self, frame_reference: Union[str, int, WebElement]) -> None:
+    def frame(self, frame_reference: str | int | WebElement) -> None:
         """Switch focus to the specified frame by index, name, or element.
 
         Args:
@@ -81,7 +81,7 @@ class SwitchTo:
 
         self._driver.execute(Command.SWITCH_TO_FRAME, {"id": frame_reference})
 
-    def new_window(self, type_hint: Optional[str] = None) -> None:
+    def new_window(self, type_hint: str | None = None) -> None:
         """Switches to a new top-level browsing context.
 
         The type hint can be one of "tab" or "window". If not specified the

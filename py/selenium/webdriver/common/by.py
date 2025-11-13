@@ -91,7 +91,7 @@ class By:
         cls._custom_finders[name] = strategy
 
     @classmethod
-    def get_finder(cls, name: str) -> Optional[str]:
+    def get_finder(cls, name: str) -> str | None:
         return cls._custom_finders.get(name) or getattr(cls, name.upper(), None)
 
     @classmethod

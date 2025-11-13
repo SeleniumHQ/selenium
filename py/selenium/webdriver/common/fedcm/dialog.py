@@ -30,7 +30,7 @@ class Dialog:
         self._driver = driver
 
     @property
-    def type(self) -> Optional[str]:
+    def type(self) -> str | None:
         """Gets the type of the dialog currently being shown."""
         return self._driver.fedcm.dialog_type
 
@@ -40,7 +40,7 @@ class Dialog:
         return self._driver.fedcm.title
 
     @property
-    def subtitle(self) -> Optional[str]:
+    def subtitle(self) -> str | None:
         """Gets the subtitle of the dialog."""
         result = self._driver.fedcm.subtitle
         return result.get("subtitle") if result else None

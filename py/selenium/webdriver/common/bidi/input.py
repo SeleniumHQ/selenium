@@ -124,7 +124,7 @@ class PointerCommonProperties:
 class PauseAction:
     """Represents a pause action."""
 
-    duration: Optional[int] = None
+    duration: int | None = None
 
     @property
     def type(self) -> str:
@@ -173,7 +173,7 @@ class PointerDownAction:
     """Represents a pointer down action."""
 
     button: int = 0
-    properties: Optional[PointerCommonProperties] = None
+    properties: PointerCommonProperties | None = None
 
     @property
     def type(self) -> str:
@@ -208,9 +208,9 @@ class PointerMoveAction:
 
     x: float = 0
     y: float = 0
-    duration: Optional[int] = None
-    origin: Optional[Union[str, ElementOrigin]] = None
-    properties: Optional[PointerCommonProperties] = None
+    duration: int | None = None
+    origin: str | ElementOrigin | None = None
+    properties: PointerCommonProperties | None = None
 
     @property
     def type(self) -> str:
@@ -239,8 +239,8 @@ class WheelScrollAction:
     y: int = 0
     delta_x: int = 0
     delta_y: int = 0
-    duration: Optional[int] = None
-    origin: Optional[Union[str, ElementOrigin]] = Origin.VIEWPORT
+    duration: int | None = None
+    origin: str | ElementOrigin | None = Origin.VIEWPORT
 
     @property
     def type(self) -> str:
@@ -287,7 +287,7 @@ class KeySourceActions:
     """Represents a sequence of key actions."""
 
     id: str = ""
-    actions: list[Union[PauseAction, KeyDownAction, KeyUpAction]] = field(default_factory=list)
+    actions: list[PauseAction | KeyDownAction | KeyUpAction] = field(default_factory=list)
 
     @property
     def type(self) -> str:
@@ -303,8 +303,8 @@ class PointerSourceActions:
     """Represents a sequence of pointer actions."""
 
     id: str = ""
-    parameters: Optional[PointerParameters] = None
-    actions: list[Union[PauseAction, PointerDownAction, PointerUpAction, PointerMoveAction]] = field(
+    parameters: PointerParameters | None = None
+    actions: list[PauseAction | PointerDownAction | PointerUpAction | PointerMoveAction] = field(
         default_factory=list
     )
 
@@ -333,7 +333,7 @@ class WheelSourceActions:
     """Represents a sequence of wheel actions."""
 
     id: str = ""
-    actions: list[Union[PauseAction, WheelScrollAction]] = field(default_factory=list)
+    actions: list[PauseAction | WheelScrollAction] = field(default_factory=list)
 
     @property
     def type(self) -> str:
@@ -350,7 +350,7 @@ class FileDialogInfo:
 
     context: str
     multiple: bool
-    element: Optional[dict] = None
+    element: dict | None = None
 
     @classmethod
     def from_dict(cls, data: dict) -> "FileDialogInfo":
@@ -388,7 +388,7 @@ class Input:
     def perform_actions(
         self,
         context: str,
-        actions: list[Union[NoneSourceActions, KeySourceActions, PointerSourceActions, WheelSourceActions]],
+        actions: list[NoneSourceActions | KeySourceActions | PointerSourceActions | WheelSourceActions],
     ) -> None:
         """Performs a sequence of user input actions.
 

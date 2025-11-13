@@ -42,12 +42,12 @@ class ChromiumService(service.Service):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        service_args: Optional[Sequence[str]] = None,
-        log_output: Optional[SubprocessStdAlias] = None,
-        env: Optional[Mapping[str, str]] = None,
-        driver_path_env_key: Optional[str] = None,
+        service_args: Sequence[str] | None = None,
+        log_output: SubprocessStdAlias | None = None,
+        env: Mapping[str, str] | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
         self._service_args = list(service_args or [])
@@ -55,7 +55,7 @@ class ChromiumService(service.Service):
 
         if isinstance(log_output, str):
             self._service_args.append(f"--log-path={log_output}")
-            self.log_output: Optional[IOBase] = None
+            self.log_output: IOBase | None = None
         elif isinstance(log_output, IOBase):
             self.log_output = log_output
         else:

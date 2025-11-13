@@ -22,7 +22,7 @@ from selenium.webdriver.common.actions.wheel_input import WheelInput
 
 
 class WheelActions(Interaction):
-    def __init__(self, source: Optional[WheelInput] = None):
+    def __init__(self, source: WheelInput | None = None):
         if source is None:
             source = WheelInput(WHEEL)
         super().__init__(source)

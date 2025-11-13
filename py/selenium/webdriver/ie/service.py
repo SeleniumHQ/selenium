@@ -27,13 +27,13 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        host: Optional[str] = None,
-        service_args: Optional[Sequence[str]] = None,
-        log_level: Optional[str] = None,
-        log_output: Optional[SubprocessStdAlias] = None,
-        driver_path_env_key: Optional[str] = None,
+        host: str | None = None,
+        service_args: Sequence[str] | None = None,
+        log_level: str | None = None,
+        log_output: SubprocessStdAlias | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
         """Creates a new instance of the Service.

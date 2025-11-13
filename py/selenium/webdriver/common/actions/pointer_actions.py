@@ -24,7 +24,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 class PointerActions(Interaction):
-    def __init__(self, source: Optional[PointerInput] = None, duration: int = 250):
+    def __init__(self, source: PointerInput | None = None, duration: int = 250):
         """Initialize a new PointerActions instance.
 
         Args:
@@ -168,17 +168,17 @@ class PointerActions(Interaction):
         )
         return self
 
-    def click(self, element: Optional[WebElement] = None, button=MouseButton.LEFT):
+    def click(self, element: WebElement | None = None, button=MouseButton.LEFT):
         if element:
             self.move_to(element)
         self.pointer_down(button)
         self.pointer_up(button)
         return self
 
-    def context_click(self, element: Optional[WebElement] = None):
+    def context_click(self, element: WebElement | None = None):
         return self.click(element=element, button=MouseButton.RIGHT)
 
-    def click_and_hold(self, element: Optional[WebElement] = None, button=MouseButton.LEFT):
+    def click_and_hold(self, element: WebElement | None = None, button=MouseButton.LEFT):
         if element:
             self.move_to(element)
         self.pointer_down(button=button)
@@ -188,7 +188,7 @@ class PointerActions(Interaction):
         self.pointer_up(button=button)
         return self
 
-    def double_click(self, element: Optional[WebElement] = None):
+    def double_click(self, element: WebElement | None = None):
         if element:
             self.move_to(element)
         self.pointer_down(MouseButton.LEFT)
