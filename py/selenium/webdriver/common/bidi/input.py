@@ -304,9 +304,7 @@ class PointerSourceActions:
 
     id: str = ""
     parameters: PointerParameters | None = None
-    actions: list[PauseAction | PointerDownAction | PointerUpAction | PointerMoveAction] = field(
-        default_factory=list
-    )
+    actions: list[PauseAction | PointerDownAction | PointerUpAction | PointerMoveAction] = field(default_factory=list)
 
     def __post_init__(self):
         if self.parameters is None:
