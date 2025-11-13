@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
+using System.Reflection;
 using System.Text.Json;
 
 namespace OpenQA.Selenium.Firefox;
@@ -297,7 +298,7 @@ public class FirefoxProfile
 
     private Preferences ReadDefaultPreferences()
     {
-        using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver_prefs.json", "webdriver_prefs.json"))
+        using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver_prefs.json", $"{Assembly.GetExecutingAssembly().GetName().Name}.webdriver_prefs.json"))
         {
             using JsonDocument defaultPreferences = JsonDocument.Parse(defaultPrefsStream);
 

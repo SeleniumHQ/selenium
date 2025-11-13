@@ -101,7 +101,6 @@ internal static class ResourceUtilities
             }
 
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            resourceId = $"{executingAssembly.GetName().Name}.{resourceId}";
             resourceStream = executingAssembly.GetManifestResourceStream(resourceId);
         }
 
