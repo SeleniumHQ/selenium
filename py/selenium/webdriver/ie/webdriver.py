@@ -26,9 +26,7 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
 class WebDriver(RemoteWebDriver):
-    """Controls the IEServerDriver and allows you to drive Internet
-    Explorer.
-    """
+    """Control the IEServerDriver and drive Internet Explorer."""
 
     def __init__(
         self,

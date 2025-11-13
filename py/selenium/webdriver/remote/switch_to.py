@@ -59,12 +59,11 @@ class SwitchTo:
         self._driver.execute(Command.SWITCH_TO_FRAME, {"id": None})
 
     def frame(self, frame_reference: Union[str, int, WebElement]) -> None:
-        """Switches focus to the specified frame, by index, name, or
-        webelement.
+        """Switch focus to the specified frame by index, name, or element.
 
         Args:
-            frame_reference: The name of the window to switch to, an integer representing the index,
-                or a webelement that is an (i)frame to switch to.
+            frame_reference: The name of the frame to switch to, an integer representing the index,
+                or a WebElement that is an (i)frame to switch to.
 
         Example:
                 driver.switch_to.frame("frame_name")
@@ -95,8 +94,9 @@ class SwitchTo:
         self._w3c_window(value["handle"])
 
     def parent_frame(self) -> None:
-        """Switches focus to the parent context. If the current context is the
-        top level browsing context, the context remains unchanged.
+        """Switch focus to the parent browsing context.
+
+        If the current context is already the top level browsing context, it remains unchanged.
 
         Example:
                 driver.switch_to.parent_frame()

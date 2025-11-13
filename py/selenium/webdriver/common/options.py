@@ -143,7 +143,8 @@ class _TimeoutsDescriptor:
 
 
 class _ProxyDescriptor:
-    """
+    """Descriptor for proxy property access.
+
     Returns:
         Proxy if set, otherwise None.
     """
@@ -379,9 +380,7 @@ class BaseOptions(metaclass=ABCMeta):
         """Return minimal capabilities necessary as a dictionary."""
 
     def ignore_local_proxy_environment_variables(self) -> None:
-        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-        being picked up and used.
-        """
+        """Ignore HTTP_PROXY and HTTPS_PROXY environment variables."""
         self._ignore_local_proxy = True
 
 
@@ -396,10 +395,7 @@ class ArgOptions(BaseOptions):
 
     @property
     def arguments(self):
-        """
-        Returns:
-            A list of arguments needed for the browser.
-        """
+        """Returns a list of arguments needed for the browser."""
         return self._arguments
 
     def add_argument(self, argument: str) -> None:
@@ -414,8 +410,9 @@ class ArgOptions(BaseOptions):
             raise ValueError("argument can not be null")
 
     def ignore_local_proxy_environment_variables(self) -> None:
-        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-        being picked up and used.
+        """Ignore HTTP_PROXY and HTTPS_PROXY environment variables.
+
+        This method is deprecated; use a Proxy instance with ProxyType.DIRECT instead.
         """
         warnings.warn(
             "using ignore_local_proxy_environment_variables in Options has been deprecated, "

@@ -216,7 +216,7 @@ class CdpProperty:
     deprecated: bool
 
     @property
-    def py_name(self):
+    def py_name(self)->str:
         ''' Get this property's Python name. '''
         return snake_case(self.name)
 
@@ -590,7 +590,7 @@ class CdpCommand:
     domain: str
 
     @property
-    def py_name(self):
+    def py_name(self) -> str:
         ''' Get a Python name for this command. '''
         return snake_case(self.name)
 
@@ -794,7 +794,7 @@ class CdpDomain:
     events: List[CdpEvent]
 
     @property
-    def module(self):
+    def module(self) -> str:
         ''' The name of the Python module for this CDP domain. '''
         return snake_case(self.domain)
 

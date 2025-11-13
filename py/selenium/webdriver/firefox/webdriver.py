@@ -41,8 +41,7 @@ class WebDriver(RemoteWebDriver):
         service: Optional[Service] = None,
         keep_alive: bool = True,
     ) -> None:
-        """Creates a new instance of the Firefox driver. Starts the service and
-        then creates new instance of Firefox driver.
+        """Create a new instance of the Firefox driver, start the service, and create new instance.
 
         Args:
             options: Instance of ``options.Options``.
@@ -94,9 +93,10 @@ class WebDriver(RemoteWebDriver):
 
     @contextmanager
     def context(self, context):
-        """Sets the context that Selenium commands are running in using a
-        `with` statement. The state of the context on the server is saved
-        before entering the block, and restored upon exiting it.
+        """Set the context that Selenium commands are running in using a `with` statement.
+
+        The state of the context on the server is saved before entering the block,
+        and restored upon exiting it.
 
         Args:
             context: Context, may be one of the class properties
@@ -161,13 +161,14 @@ class WebDriver(RemoteWebDriver):
         self.execute("UNINSTALL_ADDON", {"id": identifier})
 
     def get_full_page_screenshot_as_file(self, filename) -> bool:
-        """Saves a full document screenshot of the current window to a PNG
-        image file. Returns False if there is any IOError, else returns True.
-        Use full paths in your filename.
+        """Save a full document screenshot of the current window to a PNG image file.
 
         Args:
             filename: The full path you wish to save your screenshot to. This
                 should end with a `.png` extension.
+
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
 
         Example:
             driver.get_full_page_screenshot_as_file("/Screenshots/foo.png")
@@ -188,13 +189,14 @@ class WebDriver(RemoteWebDriver):
         return True
 
     def save_full_page_screenshot(self, filename) -> bool:
-        """Saves a full document screenshot of the current window to a PNG
-        image file. Returns False if there is any IOError, else returns True.
-        Use full paths in your filename.
+        """Save a full document screenshot of the current window to a PNG image file.
 
         Args:
             filename: The full path you wish to save your screenshot to. This
                 should end with a `.png` extension.
+
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
 
         Example:
             driver.save_full_page_screenshot("/Screenshots/foo.png")
@@ -202,8 +204,7 @@ class WebDriver(RemoteWebDriver):
         return self.get_full_page_screenshot_as_file(filename)
 
     def get_full_page_screenshot_as_png(self) -> bytes:
-        """Gets the full document screenshot of the current window as a binary
-        data.
+        """Get the full document screenshot of the current window as binary data.
 
         Returns:
             Binary data of the screenshot.
@@ -214,8 +215,7 @@ class WebDriver(RemoteWebDriver):
         return base64.b64decode(self.get_full_page_screenshot_as_base64().encode("ascii"))
 
     def get_full_page_screenshot_as_base64(self) -> str:
-        """Gets the full document screenshot of the current window as a base64
-        encoded string which is useful in embedded images in HTML.
+        """Get the full document screenshot of the current window as a base64-encoded string.
 
         Returns:
             Base64 encoded string of the screenshot.

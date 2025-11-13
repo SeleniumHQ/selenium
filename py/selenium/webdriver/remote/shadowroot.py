@@ -45,8 +45,7 @@ class ShadowRoot:
         return self._id
 
     def find_element(self, by: str = By.ID, value: str = None):
-        """Find an element inside a shadow root given a By strategy and
-        locator.
+        """Find an element inside a shadow root given a By strategy and locator.
 
         Args:
             by: The locating strategy to use. Default is `By.ID`. Supported values include:
