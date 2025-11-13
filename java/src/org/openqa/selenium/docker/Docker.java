@@ -27,9 +27,22 @@ public class Docker {
   private static final Logger LOG = Logger.getLogger(Docker.class.getName());
   protected final HttpHandler client;
   private volatile Optional<DockerProtocol> dockerClient;
+  private final String apiVersion;
 
   public Docker(HttpHandler client) {
+    this(client, null);
+  }
+
+  /**
+   * Creates a Docker client with an optional API version override.
+   *
+   * @param client HTTP client for Docker communication
+   * @param apiVersion Optional API version to use (e.g., "1.41" or "1.44"). If null, the version
+   *     will be auto-detected.
+   */
+  public Docker(HttpHandler client, String apiVersion) {
     this.client = Require.nonNull("HTTP client", client);
+    this.apiVersion = apiVersion;
     this.dockerClient = Optional.empty();
   }
 
@@ -83,7 +96,11 @@ public class Docker {
 
     synchronized (this) {
       if (!dockerClient.isPresent()) {
-        dockerClient = new VersionCommand(client).getDockerProtocol();
+        VersionCommand versionCommand = new VersionCommand(client);
+        dockerClient =
+            apiVersion != null
+                ? versionCommand.getDockerProtocol(apiVersion)
+                : versionCommand.getDockerProtocol();
       }
     }
 

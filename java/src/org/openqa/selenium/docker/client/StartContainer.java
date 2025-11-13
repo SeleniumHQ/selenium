@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.client;
 
-import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.client.DockerMessages.throwIfNecessary;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.docker.ContainerId;
@@ -28,9 +28,15 @@ import org.openqa.selenium.remote.http.HttpRequest;
 
 class StartContainer {
   private final HttpHandler client;
+  private final String apiVersion;
 
   public StartContainer(HttpHandler client) {
+    this(client, DOCKER_API_VERSION);
+  }
+
+  public StartContainer(HttpHandler client, String apiVersion) {
     this.client = Require.nonNull("HTTP client", client);
+    this.apiVersion = Require.nonNull("API version", apiVersion);
   }
 
   public void apply(ContainerId id) {
@@ -38,7 +44,7 @@ class StartContainer {
 
     throwIfNecessary(
         client.execute(
-            new HttpRequest(POST, String.format("/v%s/containers/%s/start", DOCKER_API_VERSION, id))
+            new HttpRequest(POST, String.format("/v%s/containers/%s/start", apiVersion, id))
                 .addHeader("Content-Type", "text/plain")),
         "Unable to start container: %s",
         id);

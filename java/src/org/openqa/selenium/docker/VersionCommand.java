@@ -25,7 +25,7 @@ import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import org.openqa.selenium.docker.v1_41.V141Docker;
+import org.openqa.selenium.docker.client.DockerClient;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
@@ -38,13 +38,48 @@ class VersionCommand {
 
   private static final Json JSON = new Json();
   // Insertion order matters, and is preserved by ImmutableMap.
+  // Map Docker API versions to their implementations
+  // 1.44 is the default for Docker Engine 29.0.0+
+  // 1.41 is maintained for backward compatibility with legacy engines
+  // Both use the same generic implementation with different API version strings
   private static final Map<Version, Function<HttpHandler, DockerProtocol>> SUPPORTED_VERSIONS =
-      ImmutableMap.of(new Version("1.40"), V141Docker::new);
+      ImmutableMap.of(
+          new Version("1.44"), client -> new DockerClient(client, "1.44"),
+          new Version("1.41"), client -> new DockerClient(client, "1.41"),
+          new Version("1.40"), client -> new DockerClient(client, "1.40"));
 
   private final HttpHandler handler;
 
   public VersionCommand(HttpHandler handler) {
     this.handler = Require.nonNull("HTTP client", handler);
+  }
+
+  /**
+   * Gets the Docker protocol implementation for a user-specified API version. This allows users to
+   * override the automatic version detection and force a specific API version (e.g., 1.41 for
+   * legacy Docker engines).
+   *
+   * @param requestedVersion The API version to use (e.g., "1.41" or "1.44")
+   * @return Optional containing the DockerProtocol implementation if the version is supported
+   */
+  public Optional<DockerProtocol> getDockerProtocol(String requestedVersion) {
+    if (requestedVersion == null || requestedVersion.isEmpty()) {
+      return getDockerProtocol();
+    }
+
+    Version version = new Version(requestedVersion);
+    Function<HttpHandler, DockerProtocol> factory = SUPPORTED_VERSIONS.get(version);
+
+    if (factory != null) {
+      return Optional.of(factory.apply(handler));
+    }
+
+    // If exact version not found, try to find a compatible version
+    return SUPPORTED_VERSIONS.entrySet().stream()
+        .filter(entry -> entry.getKey().equalTo(version))
+        .map(Map.Entry::getValue)
+        .map(func -> func.apply(handler))
+        .findFirst();
   }
 
   public Optional<DockerProtocol> getDockerProtocol() {
