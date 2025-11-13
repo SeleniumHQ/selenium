@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.emulation;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.time.ZoneId;
@@ -79,14 +80,12 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
 
     int expectedOffset = getExpectedTimezoneOffset(timezone);
 
-    assert tzString.equals(timezone)
-        : "Timezone string mismatch: expected " + timezone + ", got " + tzString;
-    assert tzOffset.intValue() == expectedOffset
-        : "Timezone offset mismatch: expected " + expectedOffset + ", got " + tzOffset;
+    assertThat(tzString).isEqualTo(timezone);
+    assertThat(tzOffset.intValue()).isEqualTo(expectedOffset);
 
     emul.setTimezoneOverride(new SetTimezoneOverrideParameters(null).contexts(List.of(contextId)));
     String TzNew = getTimezoneString(driver, contextId);
-    assert TzNew.equals(tzOrg) : "Timezone reset failed: expected " + tzOrg + ", got " + TzNew;
+    assertThat(TzNew).isEqualTo(tzOrg);
   }
 
   @Test
@@ -114,15 +113,13 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
 
     int expectedOffset = getExpectedTimezoneOffset(timezone);
 
-    assert tzString.equals(timezone)
-        : "Timezone string mismatch: expected " + timezone + ", got " + tzString;
-    assert tzOffset.intValue() == expectedOffset
-        : "Timezone offset mismatch: expected " + expectedOffset + ", got " + tzOffset;
+    assertThat(tzString).isEqualTo(timezone);
+    assertThat(tzOffset.intValue()).isEqualTo(expectedOffset);
 
     emul.setTimezoneOverride(
         new SetTimezoneOverrideParameters(null).userContexts(List.of(userContext)));
     String TzNew = getTimezoneString(driver, contextId);
-    assert TzNew.equals(tzOrg) : "Timezone reset failed: expected " + tzOrg + ", got " + TzNew;
+    assertThat(TzNew).isEqualTo(tzOrg);
 
     context.close();
     browser.removeUserContext(userContext);
@@ -148,11 +145,11 @@ public class SetTimezoneOverrideTest extends JupiterTestBase {
     String tzString = getTimezoneString(driver, contextId);
     Number tzOffset = getTimezoneOffset(driver, contextId);
 
-    assert tzOffset.intValue() == -330 : "Expected timezone offset -330, got " + tzOffset;
-    assert tzString.equals("+05:30") : "Expected timezone '+05:30', got " + tzString;
+    assertThat(tzOffset.intValue()).isEqualTo(-330);
+    assertThat(tzString).isEqualTo("+05:30");
 
     emul.setTimezoneOverride(new SetTimezoneOverrideParameters(null).contexts(List.of(contextId)));
     String tzNew = getTimezoneString(driver, contextId);
-    assert tzNew.equals(tzOrg) : "Timezone reset failed: expected " + tzOrg + ", got " + tzNew;
+    assertThat(tzNew).isEqualTo(tzOrg);
   }
 }
