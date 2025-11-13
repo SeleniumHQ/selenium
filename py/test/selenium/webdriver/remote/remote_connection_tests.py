@@ -39,9 +39,10 @@ def test_browser_specific_method(firefox_options, webserver):
 
 
 def test_remote_webdriver_with_http_timeout(chromium_options, webserver):
-    """This test starts a remote webdriver with an http client timeout
-    set less than the implicit wait timeout, and verifies the http timeout
-    is triggered first when waiting for an element.
+    """This test starts a remote webdriver with an http client timeout.
+
+    It verifies the http timeout is triggered first when waiting for an element,
+    with the timeout set less than the implicit wait timeout.
     """
     http_timeout = 4
     wait_timeout = 6
@@ -56,9 +57,9 @@ def test_remote_webdriver_with_http_timeout(chromium_options, webserver):
 
 
 def test_remote_webdriver_with_websocket_timeout(chromium_options, webserver):
-    """This test starts a remote webdriver that uses websockets, and has a websocket
-    client timeout less than the default. It verifies the websocket times out according
-    to this value.
+    """This test starts a remote webdriver that uses websockets, and has a websocket client timeout.
+
+    It verifies the websocket times out according to this value.
     """
     websocket_timeout = 2.0
     websocket_interval = 1.0

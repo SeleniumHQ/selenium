@@ -16,6 +16,7 @@
 # under the License.
 
 """A simple web server for testing purpose.
+
 It serves the testing html pages that are needed by the webdriver unit tests.
 """
 

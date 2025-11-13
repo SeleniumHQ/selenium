@@ -1,21 +1,21 @@
 module(name = "selenium")
 
 bazel_dep(name = "apple_rules_lint", version = "0.4.0")
-bazel_dep(name = "aspect_bazel_lib", version = "2.13.0")
+bazel_dep(name = "aspect_bazel_lib", version = "2.14.0")
 bazel_dep(name = "aspect_rules_esbuild", version = "0.21.0")
 bazel_dep(name = "aspect_rules_js", version = "2.3.7")
 bazel_dep(name = "aspect_rules_ts", version = "3.6.0")
-bazel_dep(name = "bazel_features", version = "1.23.0")
-bazel_dep(name = "bazel_skylib", version = "1.7.1")
-bazel_dep(name = "buildifier_prebuilt", version = "6.4.0")
+bazel_dep(name = "bazel_features", version = "1.32.0")
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+bazel_dep(name = "buildifier_prebuilt", version = "7.3.1")
 bazel_dep(name = "contrib_rules_jvm", version = "0.27.0")
-bazel_dep(name = "platforms", version = "0.0.11")
+bazel_dep(name = "platforms", version = "1.0.0")
 
 # Required for the closure rules
 bazel_dep(name = "protobuf", version = "29.2", dev_dependency = True, repo_name = "com_google_protobuf")
 
 # Required for rules_rust to import the crates properly
-bazel_dep(name = "rules_cc", version = "0.2.0", dev_dependency = True)
+bazel_dep(name = "rules_cc", version = "0.2.8", dev_dependency = True)
 
 bazel_dep(name = "rules_dotnet", version = "0.17.5")
 bazel_dep(name = "rules_java", version = "8.7.1")
@@ -27,6 +27,7 @@ bazel_dep(name = "rules_pkg", version = "1.0.1")
 bazel_dep(name = "rules_python", version = "1.6.3")
 bazel_dep(name = "rules_proto", version = "7.0.2")
 bazel_dep(name = "rules_ruby", version = "0.19.0")
+bazel_dep(name = "rules_rust", version = "0.67.0")
 
 # Until `rules_jvm_external` 6.8 ships
 single_version_override(
@@ -366,6 +367,18 @@ ruby.bundle_fetch(
 use_repo(ruby, "bundle", "ruby", "ruby_toolchains")
 
 register_toolchains("@ruby_toolchains//:all")
+
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(versions = ["1.89.0"])
+
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
+crate.from_cargo(
+    name = "crates",
+    cargo_lockfile = "//rust:Cargo.lock",
+    lockfile = "//rust:Cargo.Bazel.lock",
+    manifests = ["//rust:Cargo.toml"],
+)
+use_repo(crate, "crates")
 
 selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")
 use_repo(

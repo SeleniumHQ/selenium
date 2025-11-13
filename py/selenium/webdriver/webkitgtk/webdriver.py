@@ -49,9 +49,7 @@ class WebDriver(RemoteWebDriver):
         self._is_remote = False
 
     def quit(self):
-        """Closes the browser and shuts down the WebKitGTKDriver executable
-        that is started when starting the WebKitGTKDriver.
-        """
+        """Close the browser and shut down the WebKitGTK driver executable."""
         try:
             super().quit()
         except http_client.BadStatusLine:

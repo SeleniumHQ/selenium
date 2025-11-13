@@ -24,8 +24,7 @@ from selenium.webdriver.common import service
 
 
 class ChromiumService(service.Service):
-    """A Service class that is responsible for the starting and stopping the
-    WebDriver instance of the ChromiumDriver.
+    """Service class responsible for starting and stopping the ChromiumDriver WebDriver instance.
 
     Args:
         executable_path: Install path of the executable.
@@ -76,6 +75,7 @@ class ChromiumService(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter
