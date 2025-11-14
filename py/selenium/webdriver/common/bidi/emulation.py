@@ -402,9 +402,9 @@ class Emulation:
 
     def set_user_agent_override(
         self,
-        user_agent: Optional[str] = None,
-        contexts: Optional[list[str]] = None,
-        user_contexts: Optional[list[str]] = None,
+        user_agent: str | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Set user agent override for the given contexts or user contexts.
 
@@ -418,10 +418,10 @@ class Emulation:
                 contexts nor user_contexts are provided.
         """
         if contexts is not None and user_contexts is not None:
-            raise ValueError("Cannot specify both contexts and userContexts")
+            raise ValueError("Cannot specify both contexts and user_contexts")
 
         if contexts is None and user_contexts is None:
-            raise ValueError("Must specify either contexts or userContexts")
+            raise ValueError("Must specify either contexts or user_contexts")
 
         params: dict[str, Any] = {"userAgent": user_agent}
 
