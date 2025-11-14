@@ -65,6 +65,7 @@ public class DockerOptions {
   static final String DEFAULT_VIDEO_IMAGE = "false";
   static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
   static final int DEFAULT_SERVER_START_TIMEOUT = 60;
+  static final String DEFAULT_DOCKER_API_VERSION = "1.44";
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
@@ -115,6 +116,10 @@ public class DockerOptions {
         config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
   }
 
+  private String getApiVersion() {
+    return config.get(DOCKER_SECTION, "api-version").orElse(DEFAULT_DOCKER_API_VERSION);
+  }
+
   private boolean isEnabled(Docker docker) {
     if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
       return false;
@@ -129,7 +134,8 @@ public class DockerOptions {
 
     HttpClient client =
         clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
-    Docker docker = new Docker(client);
+    String apiVersion = getApiVersion();
+    Docker docker = new Docker(client, apiVersion);
 
     if (!isEnabled(docker)) {
       throw new DockerException("Unable to reach the Docker daemon at " + getDockerUri());

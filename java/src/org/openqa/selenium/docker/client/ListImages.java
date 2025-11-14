@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.client;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -44,9 +44,21 @@ class ListImages {
       new TypeToken<Set<ImageSummary>>() {}.getType();
 
   private final HttpHandler client;
+  private final String apiVersion;
+  private final ApiVersionAdapter adapter;
 
   public ListImages(HttpHandler client) {
+    this(client, DOCKER_API_VERSION, AdapterFactory.createAdapter(DOCKER_API_VERSION));
+  }
+
+  public ListImages(HttpHandler client, String apiVersion) {
+    this(client, apiVersion, AdapterFactory.createAdapter(apiVersion));
+  }
+
+  public ListImages(HttpHandler client, String apiVersion, ApiVersionAdapter adapter) {
     this.client = Require.nonNull("HTTP client", client);
+    this.apiVersion = Require.nonNull("API version", apiVersion);
+    this.adapter = Require.nonNull("API version adapter", adapter);
   }
 
   public Set<Image> apply(Reference reference) {
@@ -57,7 +69,7 @@ class ListImages {
 
     // https://docs.docker.com/engine/api/v1.41/#operation/ImageList
     HttpRequest req =
-        new HttpRequest(GET, String.format("/v%s/images/json", DOCKER_API_VERSION))
+        new HttpRequest(GET, String.format("/v%s/images/json", apiVersion))
             .addHeader("Content-Type", JSON_UTF_8)
             .addQueryParameter("filters", JSON.toJson(filters));
 
@@ -65,6 +77,9 @@ class ListImages {
         DockerMessages.throwIfNecessary(
             client.execute(req), "Unable to list images for %s", reference);
 
+    // Note: Adapter is available for future use if ImageSummary parsing needs version-specific
+    // handling
+    // Currently, ImageSummary handles both VirtualSize and Size fields gracefully
     Set<ImageSummary> images = JSON.toType(string(response), SET_OF_IMAGE_SUMMARIES);
 
     return images.stream().map(org.openqa.selenium.docker.Image::new).collect(toImmutableSet());

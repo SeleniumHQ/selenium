@@ -26,8 +26,7 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
 class WebDriver(RemoteWebDriver):
-    """Controls the IEServerDriver and allows you to drive Internet
-    Explorer."""
+    """Control the IEServerDriver and drive Internet Explorer."""
 
     def __init__(
         self,
@@ -44,7 +43,6 @@ class WebDriver(RemoteWebDriver):
             service: (Optional) service instance for managing the starting and stopping of the driver.
             keep_alive: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-
         self.service = service if service else Service()
         options = options if options else Options()
 

@@ -15,9 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.client;
 
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -37,9 +37,15 @@ class PullImage {
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(PullImage.class.getName());
   private final HttpHandler client;
+  private final String apiVersion;
 
   public PullImage(HttpHandler client) {
+    this(client, DOCKER_API_VERSION);
+  }
+
+  public PullImage(HttpHandler client, String apiVersion) {
     this.client = Require.nonNull("HTTP client", client);
+    this.apiVersion = Require.nonNull("API version", apiVersion);
   }
 
   public void apply(Reference ref) {
@@ -49,7 +55,7 @@ class PullImage {
 
     String image = String.format("%s/%s", ref.getDomain(), ref.getName());
     HttpRequest req =
-        new HttpRequest(POST, String.format("/v%s/images/create", DOCKER_API_VERSION))
+        new HttpRequest(POST, String.format("/v%s/images/create", apiVersion))
             .addHeader("Content-Type", JSON_UTF_8)
             .addQueryParameter("fromImage", image)
             .addQueryParameter("platform", ref.getPlatform());
@@ -71,7 +77,12 @@ class PullImage {
         Map<String, Object> value = JSON.toType(Contents.string(res), MAP_TYPE);
         message = (String) value.get("message");
       } catch (Exception e) {
-        // fall through
+        // Unable to parse error response, use default message
+        LOG.fine(
+            "Failed to parse error response from Docker daemon for image "
+                + ref.getFamiliarName()
+                + ": "
+                + e.getMessage());
       }
 
       throw new DockerException(message);

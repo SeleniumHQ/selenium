@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -36,7 +36,53 @@ import org.openqa.selenium.remote.http.HttpResponse;
 class ListImagesTest {
 
   @Test
-  void shouldReturnImageIfTagIsPresent() {
+  void shouldReturnImageIfTagIsPresentWithApi141() {
+    testListImages("1.41");
+  }
+
+  @Test
+  void shouldReturnImageIfTagIsPresentWithApi144() {
+    testListImages("1.44");
+  }
+
+  @Test
+  void shouldHandleApi144ResponseWithoutVirtualSize() {
+    // API 1.44+ removes VirtualSize field
+    HttpHandler handler =
+        req -> {
+          String filters = req.getQueryParameter("filters");
+          String decoded = URLDecoder.decode(filters, StandardCharsets.UTF_8);
+          Map<String, Object> raw = new Json().toType(decoded, MAP_TYPE);
+
+          Map<?, ?> rawRef = (Map<?, ?>) raw.get("reference");
+          assertThat(rawRef.get("selenium/standalone-firefox:latest")).isEqualTo(true);
+
+          return new HttpResponse()
+              .addHeader("Content-Type", "application/json")
+              .setContent(
+                  utf8String(
+                      "[{\"Containers\":-1,\"Created\":1581716253,"
+                          + "\"Id\":\"sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e\","
+                          + "\"Labels\":{\"authors\":\"SeleniumHQ\"},\"ParentId\":\"\","
+                          + "\"RepoDigests\":null,"
+                          + "\"RepoTags\":[\"selenium/standalone-firefox:latest\"],"
+                          + "\"SharedSize\":-1,\"Size\":765131593}]")); // No VirtualSize field
+        };
+
+    Reference reference = Reference.parse("selenium/standalone-firefox:latest");
+
+    // Test with API 1.44 - should handle missing VirtualSize gracefully
+    Set<Image> images = new ListImages(handler, "1.44").apply(reference);
+
+    assertThat(images.size()).isEqualTo(1);
+    Image image = images.iterator().next();
+
+    assertThat(image.getId())
+        .isEqualTo(
+            new ImageId("sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e"));
+  }
+
+  private void testListImages(String apiVersion) {
 
     HttpHandler handler =
         req -> {
@@ -61,7 +107,8 @@ class ListImagesTest {
 
     Reference reference = Reference.parse("selenium/standalone-firefox:latest");
 
-    Set<Image> images = new ListImages(handler).apply(reference);
+    // Test with specified API version
+    Set<Image> images = new ListImages(handler, apiVersion).apply(reference);
 
     assertThat(images.size()).isEqualTo(1);
     Image image = images.iterator().next();

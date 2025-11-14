@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.client;
 
 import java.time.Duration;
 import java.util.Set;
@@ -32,35 +32,60 @@ import org.openqa.selenium.docker.internal.Reference;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 
-public class V141Docker implements DockerProtocol {
+public class DockerClient implements DockerProtocol {
 
   static final String DOCKER_API_VERSION = "1.41";
-  private static final Logger LOG = Logger.getLogger(V141Docker.class.getName());
-  private final org.openqa.selenium.docker.v1_41.ListImages listImages;
+  private static final Logger LOG = Logger.getLogger(DockerClient.class.getName());
+  private final String apiVersion;
+  private final ApiVersionAdapter adapter;
+  private final ListImages listImages;
   private final PullImage pullImage;
-  private final org.openqa.selenium.docker.v1_41.CreateContainer createContainer;
+  private final CreateContainer createContainer;
   private final StartContainer startContainer;
   private final StopContainer stopContainer;
   private final IsContainerPresent isContainerPresent;
-  private final org.openqa.selenium.docker.v1_41.InspectContainer inspectContainer;
-  private final org.openqa.selenium.docker.v1_41.GetContainerLogs containerLogs;
+  private final InspectContainer inspectContainer;
+  private final GetContainerLogs containerLogs;
 
-  public V141Docker(HttpHandler client) {
+  public DockerClient(HttpHandler client) {
+    this(client, DOCKER_API_VERSION);
+  }
+
+  public DockerClient(HttpHandler client, String apiVersion) {
     Require.nonNull("HTTP client", client);
-    listImages = new org.openqa.selenium.docker.v1_41.ListImages(client);
-    pullImage = new PullImage(client);
+    this.apiVersion = Require.nonNull("API version", apiVersion);
+    this.adapter = AdapterFactory.createAdapter(apiVersion);
 
-    createContainer = new org.openqa.selenium.docker.v1_41.CreateContainer(this, client);
-    startContainer = new StartContainer(client);
-    stopContainer = new StopContainer(client);
-    isContainerPresent = new IsContainerPresent(client);
-    inspectContainer = new org.openqa.selenium.docker.v1_41.InspectContainer(client);
-    containerLogs = new org.openqa.selenium.docker.v1_41.GetContainerLogs(client);
+    LOG.info(
+        "Initialized DockerClient with API version "
+            + apiVersion
+            + " (adapter: "
+            + adapter.getClass().getSimpleName()
+            + ")");
+
+    listImages = new ListImages(client, apiVersion, adapter);
+    pullImage = new PullImage(client, apiVersion);
+
+    createContainer = new CreateContainer(this, client, apiVersion, adapter);
+    startContainer = new StartContainer(client, apiVersion);
+    stopContainer = new StopContainer(client, apiVersion);
+    isContainerPresent = new IsContainerPresent(client, apiVersion);
+    inspectContainer = new InspectContainer(client, apiVersion, adapter);
+    containerLogs = new GetContainerLogs(client, apiVersion);
+  }
+
+  /**
+   * Returns the adapter for this API version.
+   *
+   * @return The API version adapter
+   */
+  public ApiVersionAdapter getAdapter() {
+    return adapter;
   }
 
   @Override
   public String version() {
-    return DOCKER_API_VERSION;
+    return apiVersion;
   }
 
   @Override
