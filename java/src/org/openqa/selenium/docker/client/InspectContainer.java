@@ -18,7 +18,6 @@
 package org.openqa.selenium.docker.client;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -43,10 +42,6 @@ class InspectContainer {
   private final HttpHandler client;
   private final String apiVersion;
   private final ApiVersionAdapter adapter;
-
-  public InspectContainer(HttpHandler client) {
-    this(client, DOCKER_API_VERSION, AdapterFactory.createAdapter(DOCKER_API_VERSION));
-  }
 
   public InspectContainer(HttpHandler client, String apiVersion) {
     this(client, apiVersion, AdapterFactory.createAdapter(apiVersion));

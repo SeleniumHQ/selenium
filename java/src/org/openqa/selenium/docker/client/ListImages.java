@@ -18,7 +18,6 @@
 package org.openqa.selenium.docker.client;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -47,10 +46,6 @@ class ListImages {
   private final String apiVersion;
   private final ApiVersionAdapter adapter;
 
-  public ListImages(HttpHandler client) {
-    this(client, DOCKER_API_VERSION, AdapterFactory.createAdapter(DOCKER_API_VERSION));
-  }
-
   public ListImages(HttpHandler client, String apiVersion) {
     this(client, apiVersion, AdapterFactory.createAdapter(apiVersion));
   }
@@ -67,7 +62,7 @@ class ListImages {
     String familiarName = reference.getFamiliarName();
     Map<String, Object> filters = ImmutableMap.of("reference", ImmutableMap.of(familiarName, true));
 
-    // https://docs.docker.com/engine/api/v1.41/#operation/ImageList
+    // https://docs.docker.com/engine/api/v1.40/#operation/ImageList
     HttpRequest req =
         new HttpRequest(GET, String.format("/v%s/images/json", apiVersion))
             .addHeader("Content-Type", JSON_UTF_8)

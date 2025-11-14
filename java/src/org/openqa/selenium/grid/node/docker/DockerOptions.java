@@ -65,7 +65,6 @@ public class DockerOptions {
   static final String DEFAULT_VIDEO_IMAGE = "false";
   static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
   static final int DEFAULT_SERVER_START_TIMEOUT = 60;
-  static final String DEFAULT_DOCKER_API_VERSION = "1.44";
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
@@ -117,7 +116,7 @@ public class DockerOptions {
   }
 
   private String getApiVersion() {
-    return config.get(DOCKER_SECTION, "api-version").orElse(DEFAULT_DOCKER_API_VERSION);
+    return config.get(DOCKER_SECTION, "api-version").orElse(null);
   }
 
   private boolean isEnabled(Docker docker) {
