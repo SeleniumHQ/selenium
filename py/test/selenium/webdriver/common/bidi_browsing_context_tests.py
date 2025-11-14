@@ -781,7 +781,6 @@ def test_add_event_handler_history_updated(driver, pages):
     driver.browsing_context.remove_event_handler("history_updated", callback_id)
 
 
-@pytest.mark.xfail_firefox
 def test_add_event_handler_download_will_begin(driver, pages):
     """Test adding event handler for download_will_begin event."""
     events_received = []
@@ -802,12 +801,12 @@ def test_add_event_handler_download_will_begin(driver, pages):
     WebDriverWait(driver, 5).until(lambda d: len(events_received) > 0)
 
     assert len(events_received) == 1
-    assert events_received[0].suggested_filename == "file_1.txt"
+    # filename maybe file_1.txt or file_1(1).txt depending on existing files in download dir
+    assert "file_1" in events_received[0].suggested_filename
 
     driver.browsing_context.remove_event_handler("download_will_begin", callback_id)
 
 
-@pytest.mark.xfail_firefox
 def test_add_event_handler_download_end(driver, pages):
     """Test adding event handler for download_end event."""
     events_received = []

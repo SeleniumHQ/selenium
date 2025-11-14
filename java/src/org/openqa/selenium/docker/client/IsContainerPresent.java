@@ -15,37 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.client;
 
-import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
+import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import java.time.Duration;
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
-class StopContainer {
+class IsContainerPresent {
   private final HttpHandler client;
+  private final String apiVersion;
 
-  public StopContainer(HttpHandler client) {
-    this.client = Require.nonNull("HTTP client", client);
+  public IsContainerPresent(HttpHandler client) {
+    this(client, DOCKER_API_VERSION);
   }
 
-  public void apply(ContainerId id, Duration timeout) {
+  public IsContainerPresent(HttpHandler client, String apiVersion) {
+    this.client = Require.nonNull("Http client", client);
+    this.apiVersion = Require.nonNull("API version", apiVersion);
+  }
+
+  public boolean apply(ContainerId id) {
     Require.nonNull("Container id", id);
-    Require.nonNull("Timeout", timeout);
 
-    String seconds = String.valueOf(timeout.toMillis() / 1000);
+    HttpResponse res =
+        client.execute(
+            new HttpRequest(GET, String.format("/v%s/containers/%s/json", apiVersion, id))
+                .addHeader("Content-Type", "text/plain"));
 
-    String requestUrl = String.format("/v%s/containers/%s/stop", DOCKER_API_VERSION, id);
-    HttpRequest request =
-        new HttpRequest(POST, requestUrl)
-            .addHeader("Content-Type", "text/plain")
-            .addQueryParameter("t", seconds);
-
-    throwIfNecessary(client.execute(request), "Unable to stop container: %s", id);
+    return res.isSuccessful();
   }
 }

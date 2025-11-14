@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.client;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -41,9 +41,21 @@ class InspectContainer {
   private static final Logger LOG = Logger.getLogger(InspectContainer.class.getName());
   private static final Json JSON = new Json();
   private final HttpHandler client;
+  private final String apiVersion;
+  private final ApiVersionAdapter adapter;
 
   public InspectContainer(HttpHandler client) {
+    this(client, DOCKER_API_VERSION, AdapterFactory.createAdapter(DOCKER_API_VERSION));
+  }
+
+  public InspectContainer(HttpHandler client, String apiVersion) {
+    this(client, apiVersion, AdapterFactory.createAdapter(apiVersion));
+  }
+
+  public InspectContainer(HttpHandler client, String apiVersion, ApiVersionAdapter adapter) {
     this.client = Require.nonNull("HTTP client", client);
+    this.apiVersion = Require.nonNull("API version", apiVersion);
+    this.adapter = Require.nonNull("API version adapter", adapter);
   }
 
   @SuppressWarnings("unchecked")
@@ -52,12 +64,15 @@ class InspectContainer {
 
     HttpResponse res =
         client.execute(
-            new HttpRequest(GET, String.format("/v%s/containers/%s/json", DOCKER_API_VERSION, id))
+            new HttpRequest(GET, String.format("/v%s/containers/%s/json", apiVersion, id))
                 .addHeader("Content-Type", "text/plain"));
     if (res.getStatus() != HTTP_OK) {
       LOG.warning("Unable to inspect container " + id);
     }
     Map<String, Object> rawInspectInfo = JSON.toType(Contents.string(res), MAP_TYPE);
+
+    // Adapt response to handle API version differences (e.g., deprecated fields in v1.44+)
+    rawInspectInfo = adapter.adaptContainerInspectResponse(rawInspectInfo);
     Map<String, Object> networkSettings =
         (Map<String, Object>) rawInspectInfo.get("NetworkSettings");
     Map<String, Object> networks = (Map<String, Object>) networkSettings.get("Networks");

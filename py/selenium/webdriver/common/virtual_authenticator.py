@@ -112,7 +112,7 @@ class Credential:
         return self._is_resident_credential
 
     @property
-    def rp_id(self) -> str:
+    def rp_id(self) -> Optional[str]:
         return self._rp_id
 
     @property

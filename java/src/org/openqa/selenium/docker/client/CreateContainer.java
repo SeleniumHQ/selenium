@@ -15,9 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker.v1_41;
+package org.openqa.selenium.docker.client;
 
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -45,20 +45,38 @@ class CreateContainer {
   private static final Logger LOG = Logger.getLogger(CreateContainer.class.getName());
   private final DockerProtocol protocol;
   private final HttpHandler client;
+  private final String apiVersion;
+  private final ApiVersionAdapter adapter;
 
   public CreateContainer(DockerProtocol protocol, HttpHandler client) {
+    this(protocol, client, DOCKER_API_VERSION, AdapterFactory.createAdapter(DOCKER_API_VERSION));
+  }
+
+  public CreateContainer(DockerProtocol protocol, HttpHandler client, String apiVersion) {
+    this(protocol, client, apiVersion, AdapterFactory.createAdapter(apiVersion));
+  }
+
+  public CreateContainer(
+      DockerProtocol protocol, HttpHandler client, String apiVersion, ApiVersionAdapter adapter) {
     this.protocol = Require.nonNull("Protocol", protocol);
     this.client = Require.nonNull("HTTP client", client);
+    this.apiVersion = Require.nonNull("API version", apiVersion);
+    this.adapter = Require.nonNull("API version adapter", adapter);
   }
 
   public Container apply(ContainerConfig info) {
     this.protocol.getImage(info.getImage().getName());
+
+    // Convert ContainerConfig to JSON and adapt for API version
+    Map<String, Object> requestJson = JSON.toType(JSON.toJson(info), MAP_TYPE);
+    Map<String, Object> adaptedRequest = adapter.adaptContainerCreateRequest(requestJson);
+
     HttpResponse res =
         DockerMessages.throwIfNecessary(
             client.execute(
-                new HttpRequest(POST, String.format("/v%s/containers/create", DOCKER_API_VERSION))
+                new HttpRequest(POST, String.format("/v%s/containers/create", apiVersion))
                     .addHeader("Content-Type", JSON_UTF_8)
-                    .setContent(asJson(info))),
+                    .setContent(asJson(adaptedRequest))),
             "Unable to create container: ",
             info);
 
