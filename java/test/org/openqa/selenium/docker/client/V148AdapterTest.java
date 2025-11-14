@@ -89,7 +89,8 @@ class V148AdapterTest {
   void shouldHandleImageManifestDescriptorInImageResponse() {
     V148Adapter adapter = new V148Adapter("1.48");
 
-    Map<String, Object> descriptor = Map.of("digest", "sha256:xyz789", "platform", "linux/amd64");
+    Map<String, Object> platform = Map.of("architecture", "amd64", "os", "linux");
+    Map<String, Object> descriptor = Map.of("digest", "sha256:xyz789", "platform", platform);
 
     Map<String, Object> response = new HashMap<>();
     response.put("Id", "sha256:abc123");
@@ -241,5 +242,36 @@ class V148AdapterTest {
   void shouldHandleNullContainerInspectResponse() {
     V148Adapter adapter = new V148Adapter("1.48");
     assertThat(adapter.adaptContainerInspectResponse(null)).isNull();
+  }
+
+  @Test
+  void shouldNotMutateOriginalResponseWhenRemovingDeprecatedFields() {
+    V148Adapter adapter = new V148Adapter("1.48");
+
+    // Create original response with deprecated fields
+    Map<String, Object> originalNetworkSettings = new HashMap<>();
+    originalNetworkSettings.put("IPAddress", "172.17.0.2");
+    originalNetworkSettings.put("HairpinMode", false);
+    originalNetworkSettings.put("Bridge", "docker0");
+
+    Map<String, Object> originalResponse = new HashMap<>();
+    originalResponse.put("Id", "container123");
+    originalResponse.put("NetworkSettings", originalNetworkSettings);
+
+    // Adapt the response
+    Map<String, Object> adapted = adapter.adaptContainerInspectResponse(originalResponse);
+
+    // Verify original response is unchanged
+    assertThat(originalResponse.get("NetworkSettings")).isEqualTo(originalNetworkSettings);
+    assertThat(originalNetworkSettings).containsKey("HairpinMode");
+    assertThat(originalNetworkSettings).containsKey("Bridge");
+
+    // Verify adapted response has deprecated fields removed
+    @SuppressWarnings("unchecked")
+    Map<String, Object> adaptedNetworkSettings =
+        (Map<String, Object>) adapted.get("NetworkSettings");
+    assertThat(adaptedNetworkSettings).doesNotContainKey("HairpinMode");
+    assertThat(adaptedNetworkSettings).doesNotContainKey("Bridge");
+    assertThat(adaptedNetworkSettings).containsKey("IPAddress");
   }
 }

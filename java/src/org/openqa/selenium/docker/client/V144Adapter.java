@@ -115,9 +115,14 @@ class V144Adapter implements ApiVersionAdapter {
     // v1.44+ includes DNSNames field
     // Ensure deprecated fields are handled if present
     @SuppressWarnings("unchecked")
-    Map<String, Object> networkSettings = (Map<String, Object>) adapted.get("NetworkSettings");
+    Map<String, Object> originalNetworkSettings =
+        (Map<String, Object>) adapted.get("NetworkSettings");
 
-    if (networkSettings != null) {
+    if (originalNetworkSettings != null) {
+      // Create defensive copy to avoid mutating the original response
+      Map<String, Object> networkSettings = new HashMap<>(originalNetworkSettings);
+      adapted.put("NetworkSettings", networkSettings);
+
       // Remove deprecated fields if present (they shouldn't be in v1.44+)
       String[] deprecatedFields = {
         "HairpinMode",
