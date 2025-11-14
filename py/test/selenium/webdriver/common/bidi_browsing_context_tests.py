@@ -721,6 +721,7 @@ def test_add_event_handler_user_prompt_opened(driver, pages):
     create_alert_page(driver, pages)
     driver.find_element(By.ID, "alert").click()
     WebDriverWait(driver, 5).until(EC.alert_is_present())
+    WebDriverWait(driver, 5).until(lambda d: len(events_received) > 0)
 
     assert len(events_received) == 1
     assert events_received[0].type == "alert"
