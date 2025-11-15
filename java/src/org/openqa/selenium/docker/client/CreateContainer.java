@@ -62,10 +62,16 @@ class CreateContainer {
     Map<String, Object> requestJson = JSON.toType(JSON.toJson(info), MAP_TYPE);
     Map<String, Object> adaptedRequest = adapter.adaptContainerCreateRequest(requestJson);
 
+    // Build the URL with optional name parameter
+    String url = String.format("/v%s/containers/create", apiVersion);
+    if (info.getName() != null && !info.getName().isEmpty()) {
+      url += "?name=" + info.getName();
+    }
+
     HttpResponse res =
         DockerMessages.throwIfNecessary(
             client.execute(
-                new HttpRequest(POST, String.format("/v%s/containers/create", apiVersion))
+                new HttpRequest(POST, url)
                     .addHeader("Content-Type", JSON_UTF_8)
                     .setContent(asJson(adaptedRequest))),
             "Unable to create container: ",

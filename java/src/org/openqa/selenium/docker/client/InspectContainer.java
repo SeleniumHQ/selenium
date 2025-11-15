@@ -80,7 +80,11 @@ class InspectContainer {
         mounts.stream().map(mount -> (Map<String, Object>) mount).collect(Collectors.toList());
     Map<String, Object> hostConfig =
         (Map<String, Object>) rawInspectInfo.getOrDefault("HostConfig", Collections.emptyMap());
+    Map<String, Object> config =
+        (Map<String, Object>) rawInspectInfo.getOrDefault("Config", Collections.emptyMap());
+    Map<String, String> labels =
+        (Map<String, String>) config.getOrDefault("Labels", Collections.emptyMap());
 
-    return new ContainerInfo(id, ip, mountedVolumes, networkName, hostConfig);
+    return new ContainerInfo(id, ip, mountedVolumes, networkName, hostConfig, labels);
   }
 }
