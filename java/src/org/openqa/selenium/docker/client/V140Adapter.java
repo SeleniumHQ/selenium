@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  * <ul>
  *   <li>Use {@code VirtualSize} field in image responses
  *   <li>Support single network endpoint in container creation
- *   <li>Use {@code filter} parameter (deprecated in 1.41+, use {@code filters})
+ *   <li>Use {@code filter} parameter (deprecated in 1.40+, use {@code filters})
  * </ul>
  *
  * <p>This adapter normalizes responses to ensure compatibility with newer code that expects the

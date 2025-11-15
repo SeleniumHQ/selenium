@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.docker.client;
 
-import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -47,14 +46,6 @@ class CreateContainer {
   private final HttpHandler client;
   private final String apiVersion;
   private final ApiVersionAdapter adapter;
-
-  public CreateContainer(DockerProtocol protocol, HttpHandler client) {
-    this(protocol, client, DOCKER_API_VERSION, AdapterFactory.createAdapter(DOCKER_API_VERSION));
-  }
-
-  public CreateContainer(DockerProtocol protocol, HttpHandler client, String apiVersion) {
-    this(protocol, client, apiVersion, AdapterFactory.createAdapter(apiVersion));
-  }
 
   public CreateContainer(
       DockerProtocol protocol, HttpHandler client, String apiVersion, ApiVersionAdapter adapter) {

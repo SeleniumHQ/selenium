@@ -34,7 +34,6 @@ import org.openqa.selenium.remote.http.HttpHandler;
 
 public class DockerClient implements DockerProtocol {
 
-  static final String DOCKER_API_VERSION = "1.41";
   private static final Logger LOG = Logger.getLogger(DockerClient.class.getName());
   private final String apiVersion;
   private final ApiVersionAdapter adapter;
@@ -46,10 +45,6 @@ public class DockerClient implements DockerProtocol {
   private final IsContainerPresent isContainerPresent;
   private final InspectContainer inspectContainer;
   private final GetContainerLogs containerLogs;
-
-  public DockerClient(HttpHandler client) {
-    this(client, DOCKER_API_VERSION);
-  }
 
   public DockerClient(HttpHandler client, String apiVersion) {
     Require.nonNull("HTTP client", client);

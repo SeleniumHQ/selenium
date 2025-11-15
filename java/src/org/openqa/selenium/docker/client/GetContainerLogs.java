@@ -18,7 +18,6 @@
 package org.openqa.selenium.docker.client;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.util.Arrays;
@@ -37,10 +36,6 @@ class GetContainerLogs {
   private static final Logger LOG = Logger.getLogger(GetContainerLogs.class.getName());
   private final HttpHandler client;
   private final String apiVersion;
-
-  public GetContainerLogs(HttpHandler client) {
-    this(client, DOCKER_API_VERSION);
-  }
 
   public GetContainerLogs(HttpHandler client, String apiVersion) {
     this.client = Require.nonNull("HTTP client", client);

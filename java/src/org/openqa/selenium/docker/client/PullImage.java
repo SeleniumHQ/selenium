@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.docker.client;
 
-import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -38,10 +37,6 @@ class PullImage {
   private static final Logger LOG = Logger.getLogger(PullImage.class.getName());
   private final HttpHandler client;
   private final String apiVersion;
-
-  public PullImage(HttpHandler client) {
-    this(client, DOCKER_API_VERSION);
-  }
 
   public PullImage(HttpHandler client, String apiVersion) {
     this.client = Require.nonNull("HTTP client", client);

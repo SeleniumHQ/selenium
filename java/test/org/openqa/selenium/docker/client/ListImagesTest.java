@@ -36,8 +36,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 class ListImagesTest {
 
   @Test
-  void shouldReturnImageIfTagIsPresentWithApi141() {
-    testListImages("1.41");
+  void shouldReturnImageIfTagIsPresentWithApi140() {
+    testListImages("1.40");
   }
 
   @Test

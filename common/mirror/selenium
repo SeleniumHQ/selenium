@@ -529,25 +529,5 @@
         "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.16.0/selenium-server-4.16.1.zip"
       }
     ]
-  },
-  {
-    "tag_name": "selenium-4.15.0",
-    "assets": [
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-dotnet-4.15.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-dotnet-strongnamed-4.15.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-java-4.15.0.zip"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-server-4.15.0.jar"
-      },
-      {
-        "browser_download_url": "https://github.com/SeleniumHQ/selenium/releases/download/selenium-4.15.0/selenium-server-4.15.0.zip"
-      }
-    ]
   }
 ]
