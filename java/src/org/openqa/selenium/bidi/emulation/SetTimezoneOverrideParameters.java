@@ -17,32 +17,20 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-public class SetGeolocationOverrideParameters extends AbstractOverrideParameters {
+public class SetTimezoneOverrideParameters extends AbstractOverrideParameters {
 
-  // Constructor for coordinates - must specify either contexts or userContexts later
-  public SetGeolocationOverrideParameters(GeolocationCoordinates coordinates) {
-    if (coordinates == null) {
-      throw new IllegalArgumentException("GeolocationCoordinates cannot be null");
-    }
-    map.put("coordinates", coordinates.toMap());
-  }
-
-  // Constructor for error - must specify either contexts or userContexts later
-  public SetGeolocationOverrideParameters(GeolocationPositionError error) {
-    if (error == null) {
-      throw new IllegalArgumentException("GeolocationPositionError cannot be null");
-    }
-    map.put("error", error.toMap());
+  public SetTimezoneOverrideParameters(String timezone) {
+    map.put("timezone", timezone);
   }
 
   @Override
-  public SetGeolocationOverrideParameters contexts(java.util.List<String> contexts) {
+  public SetTimezoneOverrideParameters contexts(java.util.List<String> contexts) {
     super.contexts(contexts);
     return this;
   }
 
   @Override
-  public SetGeolocationOverrideParameters userContexts(java.util.List<String> userContexts) {
+  public SetTimezoneOverrideParameters userContexts(java.util.List<String> userContexts) {
     super.userContexts(userContexts);
     return this;
   }

@@ -25,6 +25,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -411,7 +412,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     private static string GetMutationListenerScript()
     {
         string listenerScript = string.Empty;
-        using (Stream resourceStream = ResourceUtilities.GetResourceStream("mutation-listener.js", "mutation-listener.js"))
+        using (Stream resourceStream = ResourceUtilities.GetResourceStream("mutation-listener.js", $"{Assembly.GetExecutingAssembly().GetName().Name}.mutation-listener.js"))
         {
             using (StreamReader resourceReader = new StreamReader(resourceStream))
             {

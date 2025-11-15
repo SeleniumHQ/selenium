@@ -55,6 +55,14 @@ public class DockerFlags implements HasRoles {
   private Integer dockerPort;
 
   @Parameter(
+      names = {"--docker-api-version"},
+      description =
+          "Docker API version to use. Pin an API version instead of auto-detecting by"
+              + " implementation")
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "api-version", example = "1.40")
+  private String apiVersion;
+
+  @Parameter(
       names = {"--docker-server-start-timeout"},
       description =
           "Max time (in seconds) to wait for the server to successfully start up, before cancelling"
