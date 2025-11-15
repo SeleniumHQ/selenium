@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,9 +27,10 @@ public class Subscription : IAsyncDisposable
 {
     private readonly Session.Subscription _subscription;
     private readonly Broker _broker;
-    private readonly Communication.EventHandler _eventHandler;
 
-    internal Subscription(Session.Subscription subscription, Broker broker, Communication.EventHandler eventHandler)
+    private readonly EventHandler _eventHandler;
+
+    internal Subscription(Session.Subscription subscription, Broker broker, EventHandler eventHandler)
     {
         _subscription = subscription;
         _broker = broker;
