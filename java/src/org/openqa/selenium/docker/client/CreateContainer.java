@@ -22,6 +22,9 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -64,8 +67,14 @@ class CreateContainer {
 
     // Build the URL with optional name parameter
     String url = String.format("/v%s/containers/create", apiVersion);
-    if (info.getName() != null && !info.getName().isEmpty()) {
-      url += "?name=" + info.getName();
+    if (info.getName() != null && !info.getName().trim().isEmpty()) {
+      String containerName = info.getName().trim();
+      try {
+        String encodedName = URLEncoder.encode(containerName, StandardCharsets.UTF_8.toString());
+        url += "?name=" + encodedName;
+      } catch (UnsupportedEncodingException e) {
+        throw new DockerException("Failed to encode container name: " + containerName, e);
+      }
     }
 
     HttpResponse res =

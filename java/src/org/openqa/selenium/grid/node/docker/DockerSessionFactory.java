@@ -159,10 +159,17 @@ public class DockerSessionFactory implements SessionFactory {
     LOG.info("Starting session for " + sessionRequest.getDesiredCapabilities());
 
     int port = runningInDocker ? 4444 : PortProber.findFreePort();
-    // Using timestamp + short UUID to avoid conflicts in concurrent session creation
+    // Generate unique identifier for consistent naming between browser and recorder containers
+    // Using browserName-timestamp-UUID to avoid conflicts in concurrent session creation
+    String browserName = sessionRequest.getDesiredCapabilities().getBrowserName();
+    if (browserName != null && !browserName.isEmpty()) {
+      browserName = browserName.toLowerCase();
+    } else {
+      browserName = "unknown";
+    }
     long timestamp = System.currentTimeMillis();
-    String uniqueId = UUID.randomUUID().toString().substring(0, 6);
-    String sessionIdentifier = timestamp + "-" + uniqueId;
+    String uniqueId = UUID.randomUUID().toString().substring(0, 8);
+    String sessionIdentifier = String.format("%s-%d-%s", browserName, timestamp, uniqueId);
     try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), this.getClass().getName());
@@ -312,8 +319,7 @@ public class DockerSessionFactory implements SessionFactory {
     long browserContainerShmMemorySize = 2147483648L; // 2GB
 
     // Generate container name: browser-<browserName>-<timestamp>-<uuid>
-    String browserName = stereotype.getBrowserName().toLowerCase();
-    String containerName = String.format("browser-%s-%s", browserName, sessionIdentifier);
+    String containerName = String.format("browser-%s", sessionIdentifier);
 
     ContainerConfig containerConfig =
         image(browserImage)
@@ -380,8 +386,7 @@ public class DockerSessionFactory implements SessionFactory {
     Map<String, String> volumeBinds = Collections.singletonMap(hostPath, "/videos");
 
     // Generate container name: recorder-<browserName>-<timestamp>-<uuid>
-    String browserName = stereotype.getBrowserName().toLowerCase();
-    String containerName = String.format("recorder-%s-%s", browserName, sessionIdentifier);
+    String containerName = String.format("recorder-%s", sessionIdentifier);
 
     ContainerConfig containerConfig =
         image(videoImage)
