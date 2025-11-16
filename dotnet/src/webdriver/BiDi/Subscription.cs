@@ -51,15 +51,23 @@ public class Subscription : IAsyncDisposable
 
 public class SubscriptionOptions
 {
+    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+
     public TimeSpan? Timeout { get; set; }
 }
 
-public class BrowsingContextsSubscriptionOptions : SubscriptionOptions
+public class ContextSubscriptionOptions
 {
-    public BrowsingContextsSubscriptionOptions(SubscriptionOptions? options)
-    {
-        Timeout = options?.Timeout;
-    }
+    public TimeSpan? Timeout { get; set; }
+}
 
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+internal static class ContextSubscriptionOptionsExtensions
+{
+    public static SubscriptionOptions WithContext(this ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
+    {
+        Contexts = [context],
+        Timeout = options?.Timeout
+    };
 }

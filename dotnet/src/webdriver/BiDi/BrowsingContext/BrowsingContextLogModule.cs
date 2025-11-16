@@ -18,14 +18,14 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Log;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule logModule)
 {
-    public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, ContextSubscriptionOptions? options = null)
     {
         return logModule.OnEntryAddedAsync(async args =>
         {
@@ -33,10 +33,10 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
             {
                 await handler(args).ConfigureAwait(false);
             }
-        }, options);
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null)
     {
         return logModule.OnEntryAddedAsync(args =>
         {
@@ -44,6 +44,6 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
             {
                 handler(args);
             }
-        }, options);
+        }, options.WithContext(context));
     }
 }
