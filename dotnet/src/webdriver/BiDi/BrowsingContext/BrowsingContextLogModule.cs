@@ -33,7 +33,7 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
             {
                 await handler(args).ConfigureAwait(false);
             }
-        }, options.WithContext(context));
+        }, new SubscriptionOptions() { Timeout = options?.Timeout }); // special case, don't scopoe to context, awaiting https://github.com/w3c/webdriver-bidi/issues/1032
     }
 
     public Task<Subscription> OnEntryAddedAsync(Action<Log.LogEntry> handler, ContextSubscriptionOptions? options = null)
@@ -44,6 +44,6 @@ public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule 
             {
                 handler(args);
             }
-        }, options.WithContext(context));
+        }, new SubscriptionOptions() { Timeout = options?.Timeout }); // special case, don't scopoe to context, awaiting https://github.com/w3c/webdriver-bidi/issues/1032
     }
 }
