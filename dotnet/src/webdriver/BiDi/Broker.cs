@@ -164,7 +164,7 @@ public sealed class Broker : IAsyncDisposable
 
         var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
 
-        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
+        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action, options?.Contexts);
 
         handlers.Add(eventHandler);
 
@@ -180,7 +180,7 @@ public sealed class Broker : IAsyncDisposable
 
         var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
 
-        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
+        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func, options?.Contexts);
 
         handlers.Add(eventHandler);
 
