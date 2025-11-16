@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 internal sealed class SetViewportCommand(SetViewportParameters @params)
     : Command<SetViewportParameters, SetViewportResult>(@params, "browsingContext.setViewport");
 
-internal sealed record SetViewportParameters(BrowsingContext Context, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] Viewport? Viewport, double? DevicePixelRatio) : Parameters;
+internal sealed record SetViewportParameters(BrowsingContext Context, [property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] Viewport? Viewport, double? DevicePixelRatio) : Parameters;
 
 public sealed class SetViewportOptions : CommandOptions
 {
