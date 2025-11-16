@@ -18,7 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Input;
-using OpenQA.Selenium.BiDi.Json.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;

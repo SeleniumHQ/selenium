@@ -18,7 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.BrowsingContext;
-using OpenQA.Selenium.BiDi.Json.Internal;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
