@@ -213,13 +213,13 @@ public sealed class Broker : IAsyncDisposable
         }
     }
 
-    public async Task UnsubscribeAsync(Session.Subscription subscription, EventHandler eventHandler)
+    public async Task UnsubscribeAsync(Subscription subscription)
     {
-        var eventHandlers = _eventHandlers[eventHandler.EventName];
+        var eventHandlers = _eventHandlers[subscription.EventHandler.EventName];
 
-        eventHandlers.Remove(eventHandler);
+        eventHandlers.Remove(subscription.EventHandler);
 
-        await _bidi.SessionModule.UnsubscribeAsync([subscription]).ConfigureAwait(false);
+        await _bidi.SessionModule.UnsubscribeAsync([subscription.SubscriptionId]).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()

@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract class EventHandler(string eventName, IEnumerable<BrowsingContext.BrowsingContext>? contexts = null)
+internal abstract class EventHandler(string eventName, IEnumerable<BrowsingContext.BrowsingContext>? contexts = null)
 {
     public string EventName { get; } = eventName;
 
