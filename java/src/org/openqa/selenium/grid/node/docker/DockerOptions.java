@@ -38,6 +38,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
@@ -115,6 +116,10 @@ public class DockerOptions {
         config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
   }
 
+  private String getApiVersion() {
+    return config.get(DOCKER_SECTION, "api-version").orElse(null);
+  }
+
   private boolean isEnabled(Docker docker) {
     if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
       return false;
@@ -129,7 +134,8 @@ public class DockerOptions {
 
     HttpClient client =
         clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
-    Docker docker = new Docker(client);
+    String apiVersion = getApiVersion();
+    Docker docker = new Docker(client, apiVersion);
 
     if (!isEnabled(docker)) {
       throw new DockerException("Unable to reach the Docker daemon at " + getDockerUri());
@@ -168,6 +174,7 @@ public class DockerOptions {
     DockerAssetsPath assetsPath = getAssetsPath(info);
     String networkName = getDockerNetworkName(info);
     Map<String, Object> hostConfig = getDockerHostConfig(info);
+    Map<String, String> composeLabels = getComposeLabels(info);
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
@@ -203,7 +210,8 @@ public class DockerOptions {
                     info.isPresent(),
                     capabilities -> options.getSlotMatcher().matches(caps, capabilities),
                     hostConfig,
-                    hostConfigKeys));
+                    hostConfigKeys,
+                    composeLabels));
           }
           LOG.info(
               String.format(
@@ -250,6 +258,19 @@ public class DockerOptions {
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private Map<String, Object> getDockerHostConfig(Optional<ContainerInfo> info) {
     return info.map(ContainerInfo::getHostConfig).orElse(Collections.emptyMap());
+  }
+
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private Map<String, String> getComposeLabels(Optional<ContainerInfo> info) {
+    if (info.isEmpty()) {
+      return Collections.emptyMap();
+    }
+
+    Map<String, String> allLabels = info.get().getLabels();
+    // Filter for Docker Compose labels (com.docker.compose.*)
+    return allLabels.entrySet().stream()
+        .filter(entry -> entry.getKey().startsWith("com.docker.compose."))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

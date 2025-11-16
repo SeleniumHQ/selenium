@@ -98,6 +98,15 @@ def get_screen_orientation(driver, context_id):
     return {"type": orientation_type, "angle": orientation_angle}
 
 
+def get_browser_user_agent(driver):
+    result = driver.script._evaluate(
+        "navigator.userAgent",
+        {"context": driver.current_window_handle},
+        await_promise=False,
+    )
+    return result.result["value"]
+
+
 def test_emulation_initialized(driver):
     assert driver.emulation is not None
     assert isinstance(driver.emulation, Emulation)
@@ -523,6 +532,44 @@ def test_set_screen_orientation_override_with_user_contexts(driver, pages, natur
             assert current_orientation["angle"] == expected_angle
 
             driver.emulation.set_screen_orientation_override(screen_orientation=None, user_contexts=[user_context])
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+def test_set_user_agent_override_with_contexts(driver, pages):
+    context_id = driver.current_window_handle
+    url = pages.url("formPage.html")
+    driver.browsing_context.navigate(context_id, url, wait="complete")
+    initial_user_agent = get_browser_user_agent(driver)
+
+    custom_user_agent = "Mozilla/5.0 (Custom Test Agent)"
+    driver.emulation.set_user_agent_override(user_agent=custom_user_agent, contexts=[context_id])
+
+    assert get_browser_user_agent(driver) == custom_user_agent
+
+    driver.emulation.set_user_agent_override(user_agent=None, contexts=[context_id])
+    assert get_browser_user_agent(driver) == initial_user_agent
+
+
+def test_set_user_agent_override_with_user_contexts(driver, pages):
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+            url = pages.url("formPage.html")
+            driver.browsing_context.navigate(context_id, url, wait="complete")
+            initial_user_agent = get_browser_user_agent(driver)
+
+            custom_user_agent = "Mozilla/5.0 (Custom User Context Agent)"
+            driver.emulation.set_user_agent_override(user_agent=custom_user_agent, user_contexts=[user_context])
+
+            assert get_browser_user_agent(driver) == custom_user_agent
+
+            driver.emulation.set_user_agent_override(user_agent=None, user_contexts=[user_context])
+            assert get_browser_user_agent(driver) == initial_user_agent
         finally:
             driver.browsing_context.close(context_id)
     finally:
