@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Internal;
 /// <summary>
 /// Encapsulates methods for finding and extracting WebDriver resources.
 /// </summary>
-internal static class ResourceUtilities
+internal static partial class ResourceUtilities
 {
     private static string? productVersion;
     private static string? platformFamily;
