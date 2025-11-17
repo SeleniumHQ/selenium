@@ -8,6 +8,11 @@ Usage:
 
 Each identifier becomes a const string in ResourceUtilities class.
 The content is emitted as a C# raw string literal using 5-quotes.
+
+TODO:
+It would be nice to convert this small single-file utility to .NET10/C#,
+so it would work like `dotnet run generate_resources.cs -- <args>`.
+Meaning .NET developers can easily support it.
 """
 
 import argparse
