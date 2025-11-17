@@ -200,7 +200,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
         get
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string atom = GetWrappedAtom("is_displayed", ResourceUtilities.is_displayed);
+            string atom = GetWrappedAtom("is_displayed", ResourceUtilities.IsDisplayed);
             parameters.Add("script", atom);
             parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary() });
 
@@ -435,7 +435,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     public virtual string? GetAttribute(string attributeName)
     {
         Dictionary<string, object> parameters = new Dictionary<string, object>();
-        string atom = GetWrappedAtom("get_attribute", ResourceUtilities.get_attribute);
+        string atom = GetWrappedAtom("get_attribute", ResourceUtilities.GetAttribute);
         parameters.Add("script", atom);
         parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary(), attributeName });
 
