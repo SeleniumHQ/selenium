@@ -79,7 +79,7 @@
     <None Include="..\..\..\common\images\selenium_logo_small.png" Pack="true" PackagePath="logo.png" Visible="false" />
   </ItemGroup>
 
-  <Target Name="GenerateResources" BeforeTargets="BeforeBuild">
+  <Target Name="GenerateResources" BeforeTargets="CoreCompile">
     <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
 
     <ItemGroup>

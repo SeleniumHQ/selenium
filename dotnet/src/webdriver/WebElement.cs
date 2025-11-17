@@ -27,7 +27,6 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
 
 namespace OpenQA.Selenium;
 
@@ -201,7 +200,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
         get
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string atom = GetAtom("is-displayed.js");
+            string atom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", "is_displayed", ResourceUtilities.is_displayed);
             parameters.Add("script", atom);
             parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary() });
 
@@ -436,7 +435,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     public virtual string? GetAttribute(string attributeName)
     {
         Dictionary<string, object> parameters = new Dictionary<string, object>();
-        string atom = GetAtom("get-attribute.js");
+        string atom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", "get_attribute", ResourceUtilities.get_attribute);
         parameters.Add("script", atom);
         parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary(), attributeName });
 
@@ -705,22 +704,6 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
             >? parameters)
     {
         return this.driver.Execute(commandToExecute, parameters);
-    }
-
-    private static string GetAtom(string atomResourceName)
-    {
-        string atom;
-        using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, $"{Assembly.GetExecutingAssembly().GetName().Name}.{atomResourceName}"))
-        {
-            using (StreamReader atomReader = new StreamReader(atomStream))
-            {
-                atom = atomReader.ReadToEnd();
-            }
-        }
-
-        string atomName = atomResourceName.Replace(".js", "");
-        string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", atomName, atom);
-        return wrappedAtom;
     }
 
     private string UploadFile(string localFile)
