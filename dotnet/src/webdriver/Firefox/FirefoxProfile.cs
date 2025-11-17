@@ -297,7 +297,7 @@ public class FirefoxProfile
 
     private Preferences ReadDefaultPreferences()
     {
-        using JsonDocument defaultPreferences = JsonDocument.Parse(ResourceUtilities.webdriver_prefs);
+        using JsonDocument defaultPreferences = JsonDocument.Parse(ResourceUtilities.WebdriverPrefs);
 
         JsonElement immutableDefaultPreferences = defaultPreferences.RootElement.GetProperty("frozen");
         JsonElement editableDefaultPreferences = defaultPreferences.RootElement.GetProperty("mutable");
