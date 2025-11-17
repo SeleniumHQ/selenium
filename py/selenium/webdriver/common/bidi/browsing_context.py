@@ -16,8 +16,9 @@
 # under the License.
 
 import threading
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Union
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session
@@ -46,7 +47,7 @@ class NavigationInfo:
     def __init__(
         self,
         context: str,
-        navigation: Optional[str],
+        navigation: str | None,
         timestamp: int,
         url: str,
     ):
@@ -91,11 +92,11 @@ class BrowsingContextInfo:
         self,
         context: str,
         url: str,
-        children: Optional[list["BrowsingContextInfo"]],
+        children: list["BrowsingContextInfo"] | None,
         client_window: str,
         user_context: str,
-        parent: Optional[str] = None,
-        original_opener: Optional[str] = None,
+        parent: str | None = None,
+        original_opener: str | None = None,
     ):
         self.context = context
         self.url = url
@@ -168,7 +169,7 @@ class DownloadWillBeginParams(NavigationInfo):
     def __init__(
         self,
         context: str,
-        navigation: Optional[str],
+        navigation: str | None,
         timestamp: int,
         url: str,
         suggested_filename: str,
@@ -202,7 +203,7 @@ class UserPromptOpenedParams:
         handler: str,
         message: str,
         type: str,
-        default_value: Optional[str] = None,
+        default_value: str | None = None,
     ):
         self.context = context
         self.handler = handler
@@ -257,7 +258,7 @@ class UserPromptClosedParams:
         context: str,
         accepted: bool,
         type: str,
-        user_text: Optional[str] = None,
+        user_text: str | None = None,
     ):
         self.context = context
         self.accepted = accepted
@@ -344,7 +345,7 @@ class DownloadCanceledParams(NavigationInfo):
     def __init__(
         self,
         context: str,
-        navigation: Optional[str],
+        navigation: str | None,
         timestamp: int,
         url: str,
         status: str = "canceled",
@@ -373,11 +374,11 @@ class DownloadCompleteParams(NavigationInfo):
     def __init__(
         self,
         context: str,
-        navigation: Optional[str],
+        navigation: str | None,
         timestamp: int,
         url: str,
         status: str = "complete",
-        filepath: Optional[str] = None,
+        filepath: str | None = None,
     ):
         super().__init__(context, navigation, timestamp, url)
         self.status = status
@@ -410,7 +411,7 @@ class DownloadEndParams:
 
     def __init__(
         self,
-        download_params: Union[DownloadCanceledParams, DownloadCompleteParams],
+        download_params: DownloadCanceledParams | DownloadCompleteParams,
     ):
         self.download_params = download_params
 
@@ -608,7 +609,7 @@ class _EventManager:
             raise ValueError(f"Event '{event}' not found. Available events: {self._available_events}")
         return event_config
 
-    def subscribe_to_event(self, bidi_event: str, contexts: Optional[list[str]] = None) -> None:
+    def subscribe_to_event(self, bidi_event: str, contexts: list[str] | None = None) -> None:
         """Subscribe to a BiDi event if not already subscribed.
 
         Args:
@@ -644,7 +645,7 @@ class _EventManager:
             if callback_list and callback_id in callback_list:
                 callback_list.remove(callback_id)
 
-    def add_event_handler(self, event: str, callback: Callable, contexts: Optional[list[str]] = None) -> int:
+    def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
         event_config = self.validate_event(event)
 
         callback_id = self.conn.add_callback(event_config.event_class, callback)
@@ -742,8 +743,8 @@ class BrowsingContext:
         self,
         context: str,
         origin: str = "viewport",
-        format: Optional[dict] = None,
-        clip: Optional[dict] = None,
+        format: dict | None = None,
+        clip: dict | None = None,
     ) -> str:
         """Captures an image of the given navigable, and returns it as a Base64-encoded string.
 
@@ -781,9 +782,9 @@ class BrowsingContext:
     def create(
         self,
         type: str,
-        reference_context: Optional[str] = None,
+        reference_context: str | None = None,
         background: bool = False,
-        user_context: Optional[str] = None,
+        user_context: str | None = None,
     ) -> str:
         """Creates a new navigable, either in a new tab or in a new window, and returns its navigable id.
 
@@ -809,8 +810,8 @@ class BrowsingContext:
 
     def get_tree(
         self,
-        max_depth: Optional[int] = None,
-        root: Optional[str] = None,
+        max_depth: int | None = None,
+        root: str | None = None,
     ) -> list[BrowsingContextInfo]:
         """Get a tree of all descendent navigables including the given parent itself.
 
@@ -836,8 +837,8 @@ class BrowsingContext:
     def handle_user_prompt(
         self,
         context: str,
-        accept: Optional[bool] = None,
-        user_text: Optional[str] = None,
+        accept: bool | None = None,
+        user_text: str | None = None,
     ) -> None:
         """Allows closing an open prompt.
 
@@ -858,9 +859,9 @@ class BrowsingContext:
         self,
         context: str,
         locator: dict,
-        max_node_count: Optional[int] = None,
-        serialization_options: Optional[dict] = None,
-        start_nodes: Optional[list[dict]] = None,
+        max_node_count: int | None = None,
+        serialization_options: dict | None = None,
+        start_nodes: list[dict] | None = None,
     ) -> list[dict]:
         """Returns a list of all nodes matching the specified locator.
 
@@ -889,7 +890,7 @@ class BrowsingContext:
         self,
         context: str,
         url: str,
-        wait: Optional[str] = None,
+        wait: str | None = None,
     ) -> dict:
         """Navigates a navigable to the given URL.
 
@@ -912,10 +913,10 @@ class BrowsingContext:
         self,
         context: str,
         background: bool = False,
-        margin: Optional[dict] = None,
+        margin: dict | None = None,
         orientation: str = "portrait",
-        page: Optional[dict] = None,
-        page_ranges: Optional[list[Union[int, str]]] = None,
+        page: dict | None = None,
+        page_ranges: list[int | str] | None = None,
         scale: float = 1.0,
         shrink_to_fit: bool = True,
     ) -> str:
@@ -954,8 +955,8 @@ class BrowsingContext:
     def reload(
         self,
         context: str,
-        ignore_cache: Optional[bool] = None,
-        wait: Optional[str] = None,
+        ignore_cache: bool | None = None,
+        wait: str | None = None,
     ) -> dict:
         """Reloads a navigable.
 
@@ -978,10 +979,10 @@ class BrowsingContext:
 
     def set_viewport(
         self,
-        context: Optional[str] = None,
-        viewport: Optional[dict] = None,
-        device_pixel_ratio: Optional[float] = None,
-        user_contexts: Optional[list[str]] = None,
+        context: str | None = None,
+        viewport: dict | None = None,
+        device_pixel_ratio: float | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Modifies specific viewport characteristics on the given top-level traversable.
 
@@ -1020,7 +1021,7 @@ class BrowsingContext:
         result = self.conn.execute(command_builder("browsingContext.traverseHistory", params))
         return result
 
-    def add_event_handler(self, event: str, callback: Callable, contexts: Optional[list[str]] = None) -> int:
+    def add_event_handler(self, event: str, callback: Callable, contexts: list[str] | None = None) -> int:
         """Add an event handler to the browsing context.
 
         Args:

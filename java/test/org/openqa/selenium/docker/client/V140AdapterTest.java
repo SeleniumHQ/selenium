@@ -25,11 +25,11 @@ import org.junit.jupiter.api.Test;
 
 class V140AdapterTest {
 
-  private final V140Adapter adapter = new V140Adapter("1.41");
+  private final V140Adapter adapter = new V140Adapter("1.40");
 
   @Test
   void shouldReturnCorrectApiVersion() {
-    assertThat(adapter.getApiVersion()).isEqualTo("1.41");
+    assertThat(adapter.getApiVersion()).isEqualTo("1.40");
   }
 
   @Test

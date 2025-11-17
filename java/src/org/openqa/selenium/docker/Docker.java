@@ -37,7 +37,7 @@ public class Docker {
    * Creates a Docker client with an optional API version override.
    *
    * @param client HTTP client for Docker communication
-   * @param apiVersion Optional API version to use (e.g., "1.41" or "1.44"). If null, the version
+   * @param apiVersion Optional API version to use (e.g., "1.40" or "1.44"). If null, the version
    *     will be auto-detected.
    */
   public Docker(HttpHandler client, String apiVersion) {

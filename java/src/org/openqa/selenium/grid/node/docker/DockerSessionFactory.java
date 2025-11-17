@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -104,6 +105,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Predicate<Capabilities> predicate;
   private final Map<String, Object> hostConfig;
   private final List<String> hostConfigKeys;
+  private final Map<String, String> composeLabels;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -121,7 +123,8 @@ public class DockerSessionFactory implements SessionFactory {
       boolean runningInDocker,
       Predicate<Capabilities> predicate,
       Map<String, Object> hostConfig,
-      List<String> hostConfigKeys) {
+      List<String> hostConfigKeys,
+      Map<String, String> composeLabels) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -138,6 +141,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.hostConfig = Require.nonNull("Container host config", hostConfig);
     this.hostConfigKeys = Require.nonNull("Browser container host config keys", hostConfigKeys);
+    this.composeLabels = Require.nonNull("Docker Compose labels", composeLabels);
   }
 
   @Override
@@ -155,6 +159,17 @@ public class DockerSessionFactory implements SessionFactory {
     LOG.info("Starting session for " + sessionRequest.getDesiredCapabilities());
 
     int port = runningInDocker ? 4444 : PortProber.findFreePort();
+    // Generate unique identifier for consistent naming between browser and recorder containers
+    // Using browserName-timestamp-UUID to avoid conflicts in concurrent session creation
+    String browserName = sessionRequest.getDesiredCapabilities().getBrowserName();
+    if (browserName != null && !browserName.isEmpty()) {
+      browserName = browserName.toLowerCase();
+    } else {
+      browserName = "unknown";
+    }
+    long timestamp = System.currentTimeMillis();
+    String uniqueId = UUID.randomUUID().toString().substring(0, 8);
+    String sessionIdentifier = String.format("%s-%d-%s", browserName, timestamp, uniqueId);
     try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), this.getClass().getName());
@@ -163,7 +178,8 @@ public class DockerSessionFactory implements SessionFactory {
               ? "Creating container..."
               : "Creating container, mapping container port 4444 to " + port;
       LOG.info(logMessage);
-      Container container = createBrowserContainer(port, sessionRequest.getDesiredCapabilities());
+      Container container =
+          createBrowserContainer(port, sessionRequest.getDesiredCapabilities(), sessionIdentifier);
       container.start();
       ContainerInfo containerInfo = container.inspect();
 
@@ -243,7 +259,8 @@ public class DockerSessionFactory implements SessionFactory {
         String containerPath = path.get().getContainerPath(id);
         saveSessionCapabilities(mergedCapabilities, containerPath);
         String hostPath = path.get().getHostPath(id);
-        videoContainer = startVideoContainer(mergedCapabilities, containerIp, hostPath);
+        videoContainer =
+            startVideoContainer(mergedCapabilities, containerIp, hostPath, sessionIdentifier);
       }
 
       Dialect downstream =
@@ -288,7 +305,8 @@ public class DockerSessionFactory implements SessionFactory {
         .setCapability("se:forwardCdp", forwardCdpPath);
   }
 
-  private Container createBrowserContainer(int port, Capabilities sessionCapabilities) {
+  private Container createBrowserContainer(
+      int port, Capabilities sessionCapabilities, String sessionIdentifier) {
     Map<String, String> browserContainerEnvVars = new HashMap<>();
     // Enable env var to trigger video recording if session capabilities request and external video
     // container is disabled
@@ -299,16 +317,23 @@ public class DockerSessionFactory implements SessionFactory {
     }
     browserContainerEnvVars.putAll(getBrowserContainerEnvVars(sessionCapabilities));
     long browserContainerShmMemorySize = 2147483648L; // 2GB
+
+    // Generate container name: browser-<browserName>-<timestamp>-<uuid>
+    String containerName = String.format("browser-%s", sessionIdentifier);
+
     ContainerConfig containerConfig =
         image(browserImage)
             .env(browserContainerEnvVars)
             .shmMemorySize(browserContainerShmMemorySize)
             .network(networkName)
             .devices(devices)
-            .applyHostConfig(hostConfig, hostConfigKeys);
+            .applyHostConfig(hostConfig, hostConfigKeys)
+            .labels(composeLabels)
+            .name(containerName);
     Optional<DockerAssetsPath> path = ofNullable(this.assetsPath);
     if (path.isPresent() && videoImage == null && recordVideoForSession(sessionCapabilities)) {
-      containerConfig.bind(Collections.singletonMap(this.assetsPath.getHostPath(), "/videos"));
+      containerConfig =
+          containerConfig.bind(Collections.singletonMap(this.assetsPath.getHostPath(), "/videos"));
     }
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
@@ -349,15 +374,27 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   private Container startVideoContainer(
-      Capabilities sessionCapabilities, String browserContainerIp, String hostPath) {
+      Capabilities sessionCapabilities,
+      String browserContainerIp,
+      String hostPath,
+      String sessionIdentifier) {
     if (videoImage == null || !recordVideoForSession(sessionCapabilities)) {
       return null;
     }
     int videoPort = 9000;
     Map<String, String> envVars = getVideoContainerEnvVars(sessionCapabilities, browserContainerIp);
     Map<String, String> volumeBinds = Collections.singletonMap(hostPath, "/videos");
+
+    // Generate container name: recorder-<browserName>-<timestamp>-<uuid>
+    String containerName = String.format("recorder-%s", sessionIdentifier);
+
     ContainerConfig containerConfig =
-        image(videoImage).env(envVars).bind(volumeBinds).network(networkName);
+        image(videoImage)
+            .env(envVars)
+            .bind(volumeBinds)
+            .network(networkName)
+            .labels(composeLabels)
+            .name(containerName);
     if (!runningInDocker) {
       videoPort = PortProber.findFreePort();
       containerConfig = containerConfig.map(Port.tcp(9000), Port.tcp(videoPort));

@@ -30,7 +30,7 @@ from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
-from typing import Any, Optional, Union, cast
+from typing import Any, cast
 
 from selenium.common.exceptions import (
     InvalidArgumentException,
@@ -105,10 +105,10 @@ def _create_caps(caps) -> dict:
 
 def get_remote_connection(
     capabilities: dict,
-    command_executor: Union[str, RemoteConnection],
+    command_executor: str | RemoteConnection,
     keep_alive: bool,
     ignore_local_proxy: bool,
-    client_config: Optional[ClientConfig] = None,
+    client_config: ClientConfig | None = None,
 ) -> RemoteConnection:
     if isinstance(command_executor, str):
         client_config = client_config or ClientConfig(remote_server_addr=command_executor)
@@ -197,13 +197,13 @@ class WebDriver(BaseWebDriver):
 
     def __init__(
         self,
-        command_executor: Union[str, RemoteConnection] = "http://127.0.0.1:4444",
+        command_executor: str | RemoteConnection = "http://127.0.0.1:4444",
         keep_alive: bool = True,
-        file_detector: Optional[FileDetector] = None,
-        options: Optional[Union[BaseOptions, list[BaseOptions]]] = None,
-        locator_converter: Optional[LocatorConverter] = None,
-        web_element_cls: Optional[type[WebElement]] = None,
-        client_config: Optional[ClientConfig] = None,
+        file_detector: FileDetector | None = None,
+        options: BaseOptions | list[BaseOptions] | None = None,
+        locator_converter: LocatorConverter | None = None,
+        web_element_cls: type[WebElement] | None = None,
+        client_config: ClientConfig | None = None,
     ) -> None:
         """Create a new driver instance that issues commands using the WebDriver protocol.
 
@@ -243,7 +243,7 @@ class WebDriver(BaseWebDriver):
                 client_config=client_config,
             )
         self._is_remote = True
-        self.session_id: Optional[str] = None
+        self.session_id: str | None = None
         self.caps: dict[str, Any] = {}
         self.pinned_scripts: dict[str, Any] = {}
         self.error_handler = ErrorHandler()
@@ -257,18 +257,18 @@ class WebDriver(BaseWebDriver):
         self.start_session(capabilities)
         self._fedcm = FedCM(self)
 
-        self._websocket_connection: Optional[WebSocketConnection] = None
-        self._script: Optional[Script] = None
-        self._network: Optional[Network] = None
-        self._browser: Optional[Browser] = None
-        self._bidi_session: Optional[Session] = None
-        self._browsing_context: Optional[BrowsingContext] = None
-        self._storage: Optional[Storage] = None
-        self._webextension: Optional[WebExtension] = None
-        self._permissions: Optional[Permissions] = None
-        self._emulation: Optional[Emulation] = None
-        self._input: Optional[Input] = None
-        self._devtools: Optional[Any] = None
+        self._websocket_connection: WebSocketConnection | None = None
+        self._script: Script | None = None
+        self._network: Network | None = None
+        self._browser: Browser | None = None
+        self._bidi_session: Session | None = None
+        self._browsing_context: BrowsingContext | None = None
+        self._storage: Storage | None = None
+        self._webextension: WebExtension | None = None
+        self._permissions: Permissions | None = None
+        self._emulation: Emulation | None = None
+        self._input: Input | None = None
+        self._devtools: Any | None = None
 
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
@@ -278,9 +278,9 @@ class WebDriver(BaseWebDriver):
 
     def __exit__(
         self,
-        exc_type: Optional[type[BaseException]],
-        exc: Optional[BaseException],
-        traceback: Optional[types.TracebackType],
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        traceback: types.TracebackType | None,
     ):
         self.quit()
 
@@ -408,7 +408,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
-    def execute(self, driver_command: str, params: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+    def execute(self, driver_command: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
         """Sends a command to be executed by a command.CommandExecutor.
 
         Args:
@@ -582,13 +582,13 @@ class WebDriver(BaseWebDriver):
         """Invokes the window manager-specific 'minimize' operation."""
         self.execute(Command.MINIMIZE_WINDOW)
 
-    def print_page(self, print_options: Optional[PrintOptions] = None) -> str:
+    def print_page(self, print_options: PrintOptions | None = None) -> str:
         """Takes PDF of the current page.
 
         The driver makes a best effort to return a PDF based on the
         provided parameters.
         """
-        options: Union[dict[str, Any], Any] = {}
+        options: dict[str, Any] | Any = {}
         if print_options:
             options = print_options.to_dict()
 
@@ -635,7 +635,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_ALL_COOKIES)["value"]
 
-    def get_cookie(self, name) -> Optional[dict]:
+    def get_cookie(self, name) -> dict | None:
         """Get a single cookie by name (case-sensitive,).
 
         Returns:
@@ -775,7 +775,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())["value"]
 
-    def find_element(self, by=By.ID, value: Optional[str] = None) -> WebElement:
+    def find_element(self, by=By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -801,7 +801,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by=By.ID, value: Optional[str] = None) -> list[WebElement]:
+    def find_elements(self, by=By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:
@@ -1325,7 +1325,7 @@ class WebDriver(BaseWebDriver):
         self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, options.to_dict())["value"]
 
     @property
-    def virtual_authenticator_id(self) -> Optional[str]:
+    def virtual_authenticator_id(self) -> str | None:
         """Returns the id of the virtual authenticator."""
         return self._authenticator_id
 
@@ -1360,7 +1360,7 @@ class WebDriver(BaseWebDriver):
         return [Credential.from_dict(credential) for credential in credential_data["value"]]
 
     @required_virtual_authenticator
-    def remove_credential(self, credential_id: Union[str, bytearray]) -> None:
+    def remove_credential(self, credential_id: str | bytearray) -> None:
         """Removes a credential from the authenticator.
 
         Example:
@@ -1497,7 +1497,7 @@ class WebDriver(BaseWebDriver):
         if ignored_exceptions is None:
             ignored_exceptions = (NoAlertPresentException,)
 
-        def _check_fedcm() -> Optional[Dialog]:
+        def _check_fedcm() -> Dialog | None:
             try:
                 dialog = Dialog(self)
                 return dialog if dialog.type else None

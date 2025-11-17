@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 
 namespace OpenQA.Selenium;
 
@@ -709,7 +710,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     private static string GetAtom(string atomResourceName)
     {
         string atom;
-        using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
+        using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, $"{Assembly.GetExecutingAssembly().GetName().Name}.{atomResourceName}"))
         {
             using (StreamReader atomReader = new StreamReader(atomStream))
             {

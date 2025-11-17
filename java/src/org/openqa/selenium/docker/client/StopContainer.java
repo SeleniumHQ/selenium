@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.docker.client;
 
-import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.docker.client.DockerMessages.throwIfNecessary;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -30,10 +29,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 class StopContainer {
   private final HttpHandler client;
   private final String apiVersion;
-
-  public StopContainer(HttpHandler client) {
-    this(client, DOCKER_API_VERSION);
-  }
 
   public StopContainer(HttpHandler client, String apiVersion) {
     this.client = Require.nonNull("HTTP client", client);

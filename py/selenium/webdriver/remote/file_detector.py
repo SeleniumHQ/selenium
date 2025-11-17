@@ -18,7 +18,6 @@
 from abc import ABCMeta, abstractmethod
 from contextlib import suppress
 from pathlib import Path
-from typing import Optional
 
 from selenium.types import AnyKey
 from selenium.webdriver.common.utils import keys_to_typing
@@ -28,21 +27,21 @@ class FileDetector(metaclass=ABCMeta):
     """Identify whether a sequence of characters represents a file path."""
 
     @abstractmethod
-    def is_local_file(self, *keys: AnyKey) -> Optional[str]:
+    def is_local_file(self, *keys: AnyKey) -> str | None:
         raise NotImplementedError
 
 
 class UselessFileDetector(FileDetector):
     """A file detector that never finds anything."""
 
-    def is_local_file(self, *keys: AnyKey) -> Optional[str]:
+    def is_local_file(self, *keys: AnyKey) -> str | None:
         return None
 
 
 class LocalFileDetector(FileDetector):
     """Detects files on the local disk."""
 
-    def is_local_file(self, *keys: AnyKey) -> Optional[str]:
+    def is_local_file(self, *keys: AnyKey) -> str | None:
         file_path = "".join(keys_to_typing(keys))
 
         with suppress(OSError):

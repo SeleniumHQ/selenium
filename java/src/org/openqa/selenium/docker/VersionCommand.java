@@ -39,13 +39,14 @@ class VersionCommand {
   private static final Json JSON = new Json();
   // Insertion order matters, and is preserved by ImmutableMap.
   // Map Docker API versions to their implementations
-  // 1.44 is the default for Docker Engine 29.0.0+
-  // 1.41 is maintained for backward compatibility with legacy engines
-  // Both use the same generic implementation with different API version strings
+  // 1.48 is for Docker Engine v28+ with multi-platform and gateway priority support
+  // 1.44 is for Docker Engine v25+ with multi-network and modern features
+  // 1.40 is maintained for backward compatibility with legacy engines (Docker v19.03+)
+  // All use the same generic implementation with version-specific adapters
   private static final Map<Version, Function<HttpHandler, DockerProtocol>> SUPPORTED_VERSIONS =
       ImmutableMap.of(
+          new Version("1.48"), client -> new DockerClient(client, "1.48"),
           new Version("1.44"), client -> new DockerClient(client, "1.44"),
-          new Version("1.41"), client -> new DockerClient(client, "1.41"),
           new Version("1.40"), client -> new DockerClient(client, "1.40"));
 
   private final HttpHandler handler;
@@ -56,10 +57,10 @@ class VersionCommand {
 
   /**
    * Gets the Docker protocol implementation for a user-specified API version. This allows users to
-   * override the automatic version detection and force a specific API version (e.g., 1.41 for
+   * override the automatic version detection and force a specific API version (e.g., 1.40 for
    * legacy Docker engines).
    *
-   * @param requestedVersion The API version to use (e.g., "1.41" or "1.44")
+   * @param requestedVersion The API version to use (e.g., "1.40" or "1.44")
    * @return Optional containing the DockerProtocol implementation if the version is supported
    */
   public Optional<DockerProtocol> getDockerProtocol(String requestedVersion) {

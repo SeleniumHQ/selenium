@@ -57,9 +57,9 @@ public class DockerFlags implements HasRoles {
   @Parameter(
       names = {"--docker-api-version"},
       description =
-          "Docker API version to use. Only supported values are 1.41 (for Docker Engine"
-              + " older than v25) and 1.44 (for Docker Engine v29+). Default is 1.44.")
-  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "api-version", example = "1.41")
+          "Docker API version to use. Pin an API version instead of auto-detecting by"
+              + " implementation")
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "api-version", example = "1.40")
   private String apiVersion;
 
   @Parameter(
