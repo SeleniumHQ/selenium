@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -29,8 +28,8 @@ class WebDriver(ChromiumDriver):
 
     def __init__(
         self,
-        options: Optional[Options] = None,
-        service: Optional[Service] = None,
+        options: Options | None = None,
+        service: Service | None = None,
         keep_alive: bool = True,
         client_config: Optional[ClientConfig] = None,
     ) -> None:

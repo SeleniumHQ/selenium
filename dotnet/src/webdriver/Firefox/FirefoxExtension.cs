@@ -22,6 +22,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Reflection;
 using System.Text.Json.Nodes;
 using System.Xml;
 
@@ -88,7 +89,7 @@ public class FirefoxExtension
 
         // First, expand the .xpi archive into a temporary location.
         Directory.CreateDirectory(tempFileName);
-        Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, this.extensionResourceId);
+        Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, $"{Assembly.GetExecutingAssembly().GetName().Name}.{this.extensionResourceId}");
         using (ZipArchive extensionZipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
         {
             extensionZipArchive.ExtractToDirectory(tempFileName);

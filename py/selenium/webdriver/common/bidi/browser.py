@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import os
-from typing import Any, Optional
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import UserPromptHandler
@@ -175,9 +175,9 @@ class Browser:
 
     def create_user_context(
         self,
-        accept_insecure_certs: Optional[bool] = None,
-        proxy: Optional[Proxy] = None,
-        unhandled_prompt_behavior: Optional[UserPromptHandler] = None,
+        accept_insecure_certs: bool | None = None,
+        proxy: Proxy | None = None,
+        unhandled_prompt_behavior: UserPromptHandler | None = None,
     ) -> str:
         """Creates a new user context.
 
@@ -239,9 +239,9 @@ class Browser:
     def set_download_behavior(
         self,
         *,
-        allowed: Optional[bool] = None,
-        destination_folder: Optional[str | os.PathLike] = None,
-        user_contexts: Optional[list[str]] = None,
+        allowed: bool | None = None,
+        destination_folder: str | os.PathLike | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Set the download behavior for the browser or specific user contexts.
 

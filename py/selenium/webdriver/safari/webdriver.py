@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.driver_finder import DriverFinder
@@ -33,9 +32,9 @@ class WebDriver(RemoteWebDriver):
     def __init__(
         self,
         keep_alive: bool = True,
-        options: Optional[Options] = None,
-        service: Optional[Service] = None,
-        client_config: Optional[ClientConfig] = None,
+        options: Options | None = None,
+        service: Service | None = None,
+        client_config: ClientConfig | None = None,
     ) -> None:
         """Create a new Safari driver instance and launch or find a running safaridriver service.
 

@@ -23,7 +23,6 @@
 # This is a copy of https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
 # The license above is theirs and MUST be preserved.
 
-# flake8: noqa
 
 import builtins
 from dataclasses import dataclass
@@ -36,7 +35,9 @@ import os
 from pathlib import Path
 import re
 from textwrap import dedent, indent as tw_indent
-from typing import Optional , cast, List, Union, Iterator
+from typing import Optional, cast, List, Union
+
+from collections.abc import Iterator
 
 import inflection  # type: ignore
 
@@ -206,11 +207,11 @@ class CdpItems:
 class CdpProperty:
     ''' A property belonging to a non-primitive CDP type. '''
     name: str
-    description: Optional[str]
-    type: Optional[str]
-    ref: Optional[str]
-    enum: List[str]
-    items: Optional[CdpItems]
+    description: str | None
+    type: str | None
+    ref: str | None
+    enum: list[str]
+    items: CdpItems | None
     optional: bool
     experimental: bool
     deprecated: bool
@@ -316,11 +317,11 @@ class CdpProperty:
 class CdpType:
     ''' A top-level CDP type. '''
     id: str
-    description: Optional[str]
+    description: str | None
     type: str
-    items: Optional[CdpItems]
-    enum: List[str]
-    properties: List[CdpProperty]
+    items: CdpItems | None
+    enum: list[str]
+    properties: list[CdpProperty]
 
     @classmethod
     def from_json(cls, type_):
@@ -585,8 +586,8 @@ class CdpCommand:
     description: str
     experimental: bool
     deprecated: bool
-    parameters: List[CdpParameter]
-    returns: List[CdpReturn]
+    parameters: list[CdpParameter]
+    returns: list[CdpReturn]
     domain: str
 
     @property
@@ -712,10 +713,10 @@ class CdpCommand:
 class CdpEvent:
     ''' A CDP event object. '''
     name: str
-    description: Optional[str]
+    description: str | None
     deprecated: bool
     experimental: bool
-    parameters: List[CdpParameter]
+    parameters: list[CdpParameter]
     domain: str
 
     @property
@@ -786,12 +787,12 @@ class CdpEvent:
 class CdpDomain:
     ''' A CDP domain contains metadata, types, commands, and events. '''
     domain: str
-    description: Optional[str]
+    description: str | None
     experimental: bool
-    dependencies: List[str]
-    types: List[CdpType]
-    commands: List[CdpCommand]
-    events: List[CdpEvent]
+    dependencies: list[str]
+    types: list[CdpType]
+    commands: list[CdpCommand]
+    events: list[CdpEvent]
 
     @property
     def module(self) -> str:

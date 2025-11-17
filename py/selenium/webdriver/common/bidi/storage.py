@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
@@ -56,12 +56,12 @@ class Cookie:
         name: str,
         value: BytesValue,
         domain: str,
-        path: Optional[str] = None,
-        size: Optional[int] = None,
-        http_only: Optional[bool] = None,
-        secure: Optional[bool] = None,
-        same_site: Optional[str] = None,
-        expiry: Optional[int] = None,
+        path: str | None = None,
+        size: int | None = None,
+        http_only: bool | None = None,
+        secure: bool | None = None,
+        same_site: str | None = None,
+        expiry: int | None = None,
     ):
         self.name = name
         self.value = value
@@ -110,15 +110,15 @@ class CookieFilter:
 
     def __init__(
         self,
-        name: Optional[str] = None,
-        value: Optional[BytesValue] = None,
-        domain: Optional[str] = None,
-        path: Optional[str] = None,
-        size: Optional[int] = None,
-        http_only: Optional[bool] = None,
-        secure: Optional[bool] = None,
-        same_site: Optional[str] = None,
-        expiry: Optional[int] = None,
+        name: str | None = None,
+        value: BytesValue | None = None,
+        domain: str | None = None,
+        path: str | None = None,
+        size: int | None = None,
+        http_only: bool | None = None,
+        secure: bool | None = None,
+        same_site: str | None = None,
+        expiry: int | None = None,
     ):
         self.name = name
         self.value = value
@@ -161,7 +161,7 @@ class CookieFilter:
 class PartitionKey:
     """Represents a storage partition key."""
 
-    def __init__(self, user_context: Optional[str] = None, source_origin: Optional[str] = None):
+    def __init__(self, user_context: str | None = None, source_origin: str | None = None):
         self.user_context = user_context
         self.source_origin = source_origin
 
@@ -200,7 +200,7 @@ class BrowsingContextPartitionDescriptor:
 class StorageKeyPartitionDescriptor:
     """Represents a storage key partition descriptor."""
 
-    def __init__(self, user_context: Optional[str] = None, source_origin: Optional[str] = None):
+    def __init__(self, user_context: str | None = None, source_origin: str | None = None):
         self.type = "storageKey"
         self.user_context = user_context
         self.source_origin = source_origin
@@ -227,11 +227,11 @@ class PartialCookie:
         name: str,
         value: BytesValue,
         domain: str,
-        path: Optional[str] = None,
-        http_only: Optional[bool] = None,
-        secure: Optional[bool] = None,
-        same_site: Optional[str] = None,
-        expiry: Optional[int] = None,
+        path: str | None = None,
+        http_only: bool | None = None,
+        secure: bool | None = None,
+        same_site: str | None = None,
+        expiry: int | None = None,
     ):
         self.name = name
         self.value = value
@@ -337,8 +337,8 @@ class Storage:
 
     def get_cookies(
         self,
-        filter: Optional[CookieFilter] = None,
-        partition: Optional[Union[BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor]] = None,
+        filter: CookieFilter | None = None,
+        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
     ) -> GetCookiesResult:
         """Gets cookies matching the specified filter.
 
@@ -367,7 +367,7 @@ class Storage:
     def set_cookie(
         self,
         cookie: PartialCookie,
-        partition: Optional[Union[BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor]] = None,
+        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
     ) -> SetCookieResult:
         """Sets a cookie in the browser.
 
@@ -387,8 +387,8 @@ class Storage:
 
     def delete_cookies(
         self,
-        filter: Optional[CookieFilter] = None,
-        partition: Optional[Union[BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor]] = None,
+        filter: CookieFilter | None = None,
+        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
     ) -> DeleteCookiesResult:
         """Deletes cookies that match the given parameters.
 

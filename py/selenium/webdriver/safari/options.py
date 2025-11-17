@@ -65,13 +65,13 @@ class Options(ArgOptions):
     SAFARI_TECH_PREVIEW = "Safari Technology Preview"
 
     # creating descriptor objects
-    automatic_inspection: bool = _SafariOptionsDescriptor(AUTOMATIC_INSPECTION, bool)
+    automatic_inspection = _SafariOptionsDescriptor(AUTOMATIC_INSPECTION, bool)
     """Whether to enable automatic inspection."""
 
-    automatic_profiling: bool = _SafariOptionsDescriptor(AUTOMATIC_PROFILING, bool)
+    automatic_profiling = _SafariOptionsDescriptor(AUTOMATIC_PROFILING, bool)
     """Whether to enable automatic profiling."""
 
-    use_technology_preview: bool = _SafariOptionsDescriptor(SAFARI_TECH_PREVIEW, bool)
+    use_technology_preview = _SafariOptionsDescriptor(SAFARI_TECH_PREVIEW, bool)
     """Whether to use Safari Technology Preview."""
 
     @property
