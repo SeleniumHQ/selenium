@@ -148,37 +148,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
         capabilities = removeCapability(capabilities, "browserVersion");
       }
 
-      // 处理动态代理配置 - 3proxy sidecar热更新
+      // 处理动态代理配置 - tinyproxy sidecar热更新
       @SuppressWarnings("unchecked")
       Map<String, Object> proxyConfig = (Map<String, Object>) capabilities.asMap().get("se:proxyConfig");
-
-      if (proxyConfig != null && !proxyConfig.isEmpty()) {
-        String proxyIp = (String) proxyConfig.get("ip");
-        String proxyPort = (String) proxyConfig.get("port");
-        String proxyUsername = (String) proxyConfig.get("username");
-        String proxyPassword = (String) proxyConfig.get("password");
-
-        if (proxyIp != null && proxyPort != null) {
-          LOG.info("[TinyproxySessionFactory] 检测到代理配置切换请求: " + proxyUsername + "@" + proxyIp + ":" + proxyPort);
-
-          try {
-            // 调用sidecar脚本进行代理切换
-            long startTime = System.currentTimeMillis();
-            boolean switchSuccess = invokeSidecarProxySwitch(proxyIp, proxyPort, proxyUsername, proxyPassword);
-            long duration = System.currentTimeMillis() - startTime;
-
-            if (switchSuccess) {
-              LOG.info("[TinyproxySessionFactory] 代理切换成功: " + proxyUsername + "@" + proxyIp + ":" + proxyPort + " (耗时: " + duration + "ms)");
-            } else {
-              LOG.warning("[TinyproxySessionFactory] 代理切换失败，使用原有配置 (耗时: " + duration + "ms)");
-            }
-
-          } catch (Exception e) {
-            LOG.warning("[TinyproxySessionFactory] 代理切换异常: " + e.getMessage());
-            // 不抛出异常，继续创建会话，使用原有代理配置
-          }
-        }
-      }
+      applyProxyConfig(proxyConfig);
 
       //connect adb
       String adbDeviceId = (String) capabilities.asMap().get("se:adbDeviceId");
@@ -536,5 +509,56 @@ public class DriverServiceSessionFactory implements SessionFactory {
     command.add(proxyPassword != null ? proxyPassword : "");
 
     return command.toArray(new String[0]);
+  }
+
+  private void applyProxyConfig(Map<String, Object> proxyConfig) {
+    String proxyIp = normalizeProxyValue(proxyConfig, "ip");
+    String proxyPort = normalizeProxyValue(proxyConfig, "port");
+    String proxyUsername = normalizeProxyValue(proxyConfig, "username");
+    String proxyPassword = normalizeProxyValue(proxyConfig, "password");
+
+    if (isNotBlank(proxyIp) && isNotBlank(proxyPort)) {
+      LOG.info("[TinyproxySessionFactory] 检测到代理配置切换请求: "
+        + proxyUsername + "@" + proxyIp + ":" + proxyPort);
+      try {
+        long startTime = System.currentTimeMillis();
+        boolean switchSuccess = invokeSidecarProxySwitch(proxyIp, proxyPort, proxyUsername, proxyPassword);
+        long duration = System.currentTimeMillis() - startTime;
+        if (switchSuccess) {
+          LOG.info("[TinyproxySessionFactory] 代理切换成功: "
+            + proxyUsername + "@" + proxyIp + ":" + proxyPort + " (耗时: " + duration + "ms)");
+        } else {
+          LOG.warning("[TinyproxySessionFactory] 代理切换失败，保留当前tinyproxy配置 (耗时: " + duration + "ms)");
+        }
+      } catch (Exception e) {
+        LOG.warning("[TinyproxySessionFactory] 代理切换异常: " + e.getMessage());
+      }
+      return;
+    }
+
+    // 未提供有效代理信息或完全缺失se:proxyConfig，强制切到直连模式
+    String reason =
+      (proxyConfig == null || proxyConfig.isEmpty())
+        ? "未检测到se:proxyConfig，下发直连模式"
+        : "代理参数缺失/为空，切换到直连模式";
+    LOG.info("[TinyproxySessionFactory] " + reason);
+    boolean switched = invokeSidecarProxySwitch("", "", "", "");
+    if (switched) {
+      LOG.info("[TinyproxySessionFactory] tinyproxy已切换为直连配置");
+    } else {
+      LOG.warning("[TinyproxySessionFactory] tinyproxy切换直连失败，可能仍沿用旧代理配置");
+    }
+  }
+
+  private String normalizeProxyValue(Map<String, Object> proxyConfig, String key) {
+    if (proxyConfig == null || !proxyConfig.containsKey(key)) {
+      return "";
+    }
+    Object value = proxyConfig.get(key);
+    return value == null ? "" : value.toString().trim();
+  }
+
+  private boolean isNotBlank(String value) {
+    return value != null && !value.trim().isEmpty();
   }
 }
