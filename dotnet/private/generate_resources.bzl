@@ -1,6 +1,6 @@
 """Generate C# partial class with embedded JS resources via a Python tool."""
 
-def _resource_utilities_impl(ctx):
+def _generate_resource_utilities_impl(ctx):
     """Invoke a Python script to generate ResourceUtilities.cs from input files.
 
     This rule does not inspect file contents itself; it just wires inputs/outputs
@@ -34,8 +34,8 @@ def _resource_utilities_impl(ctx):
         progress_message = "Generating C# ResourceUtilities partial class",
     )
 
-resource_utilities = rule(
-    implementation = _resource_utilities_impl,
+generated_resource_utilities = rule(
+    implementation = _generate_resource_utilities_impl,
     attrs = {
         "srcs": attr.label_list(allow_files = True),
         "out": attr.output(mandatory = True),

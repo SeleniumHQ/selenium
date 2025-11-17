@@ -1,6 +1,6 @@
-load("//dotnet/private:generate_resources.bzl", "resource_utilities")
+load("//dotnet/private:generate_resources.bzl", "generated_resource_utilities")
 
 py_binary(
-	name = "generate_resources_tool",
-	srcs = ["generate_resources_tool.py"],
+    name = "generate_resources_tool",
+    srcs = ["generate_resources_tool.py"],
 )
