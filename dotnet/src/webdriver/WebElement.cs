@@ -200,7 +200,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
         get
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string atom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", "is_displayed", ResourceUtilities.is_displayed);
+            string atom = GetWrappedAtom("is_displayed", ResourceUtilities.is_displayed);
             parameters.Add("script", atom);
             parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary() });
 
@@ -435,7 +435,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     public virtual string? GetAttribute(string attributeName)
     {
         Dictionary<string, object> parameters = new Dictionary<string, object>();
-        string atom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", "get_attribute", ResourceUtilities.get_attribute);
+        string atom = GetWrappedAtom("get_attribute", ResourceUtilities.get_attribute);
         parameters.Add("script", atom);
         parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary(), attributeName });
 
@@ -704,6 +704,11 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
             >? parameters)
     {
         return this.driver.Execute(commandToExecute, parameters);
+    }
+
+    private static string GetWrappedAtom(string name, string content)
+    {
+        return string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", name, content);
     }
 
     private string UploadFile(string localFile)
