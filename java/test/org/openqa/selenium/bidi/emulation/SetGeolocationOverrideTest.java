@@ -233,5 +233,7 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
 
     // Error because there's no real geolocation available
     assertThat(r2.containsKey("error")).isTrue();
+
+    context.close();
   }
 }
