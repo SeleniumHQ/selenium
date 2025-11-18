@@ -36,7 +36,7 @@ public sealed class RelativeBy : By
 
     private static string GetWrappedAtom()
     {
-        string atom = ResourceUtilities.FindElements;
+        string atom = ResourceUtilities.FindElementsAtom;
 
         return string.Format(CultureInfo.InvariantCulture, "/* findElements */return ({0}).apply(null, arguments);", atom);
     }

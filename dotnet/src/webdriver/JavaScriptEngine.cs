@@ -140,7 +140,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     public async Task EnableDomMutationMonitoring()
     {
         // Execute the script to have it enabled on the currently loaded page.
-        string script = ResourceUtilities.MutationListener;
+        string script = ResourceUtilities.MutationListenerAtom;
         await this.session.Value.Domains.JavaScript.Evaluate(script).ConfigureAwait(false);
 
         await this.AddScriptCallbackBinding(MonitorBindingName).ConfigureAwait(false);

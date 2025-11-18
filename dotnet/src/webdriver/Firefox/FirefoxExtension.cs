@@ -69,7 +69,7 @@ public class FirefoxExtension
 
         // First, expand the .xpi archive into a temporary location.
         Directory.CreateDirectory(tempFileName);
-        using Stream zipFileStream = new MemoryStream(Encoding.UTF8.GetBytes(ResourceUtilities.WebdriverPrefs));
+        using Stream zipFileStream = new MemoryStream(Encoding.UTF8.GetBytes(ResourceUtilities.WebDriverPrefsJson));
         using (ZipArchive extensionZipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
         {
             extensionZipArchive.ExtractToDirectory(tempFileName);
