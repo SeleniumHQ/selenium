@@ -169,6 +169,7 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
   }
 
   @Test
+  @NeedsFreshDriver
   @Ignore(FIREFOX)
   void canSetGeolocationOverrideWithError() {
 
