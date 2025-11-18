@@ -41,6 +41,7 @@ csharp_library(
     name = "webdriver-net462",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
@@ -50,13 +51,6 @@ csharp_library(
     ],
     langversion = "12.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
     target_frameworks = [
         "net462",
     ],
