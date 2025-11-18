@@ -79,13 +79,11 @@
     <None Include="..\..\..\common\images\selenium_logo_small.png" Pack="true" PackagePath="logo.png" Visible="false" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
-  <Target Name="GenerateAtoms" BeforeTargets="BeforeBuild">
-    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" WorkingDirectory="../../.." />
   <Target Name="GenerateResources" BeforeTargets="CoreCompile">
     <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
 
