@@ -28,13 +28,13 @@ generated_assembly_info(
 
 generated_resource_utilities(
     name = "resource-utilities",
-    srcs = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = {
+        "//javascript/atoms/fragments:find-elements.js": "FindElements",
+        "//javascript/atoms/fragments:is-displayed.js": "IsDisplayed",
+        "//javascript/cdp-support:mutation-listener.js": "MutationListener",
+        "//javascript/webdriver/atoms:get-attribute.js": "GetAttribute",
+        "//third_party/js/selenium:webdriver_json": "WebdriverPrefs",
+    },
     out = "ResourceUtilities.g.cs",
 )
 

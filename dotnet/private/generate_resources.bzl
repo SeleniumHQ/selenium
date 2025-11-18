@@ -3,30 +3,25 @@
 def _generate_resource_utilities_impl(ctx):
     """Invoke a Python script to generate ResourceUtilities.cs from input files.
 
-    This rule does not inspect file contents itself; it just wires inputs/outputs
-    for the generator tool.
+    The mapping from C# property name to JS file is provided explicitly via the
+    'resources' attribute as a dict: { "PropertyName": label }.
     """
 
     args = ctx.actions.args()
     args.add("--output", ctx.outputs.out)
 
-    for src in ctx.files.srcs:
+    inputs = []
+    for target, name in ctx.attr.resources.items():
+        files = target.files.to_list()
+        if len(files) != 1:
+            fail("Each resource label must produce exactly one file, got {} for {}".format(len(files), name))
+        src = files[0]
+        inputs.append(src)
         args.add("--input")
-        # Each --input is "identifier=path"
-        name = src.basename.rsplit(".", 1)[0]
-        # Starlark strings are not directly iterable into characters, so use
-        # a simple replacement-based sanitization: non-identifier characters
-        # are replaced with '_'. This is conservative but sufficient.
-        ident = name
-        ident = ident.replace("-", "_")
-        ident = ident.replace(".", "_")
-        ident = ident.replace(" ", "_")
-        if ident and ident[0].isdigit():
-            ident = "_" + ident
-        args.add("%s=%s" % (ident, src.path))
+        args.add("%s=%s" % (name, src.path))
 
     ctx.actions.run(
-        inputs = ctx.files.srcs,
+        inputs = inputs,
         outputs = [ctx.outputs.out],
         executable = ctx.executable._tool,
         arguments = [args],
@@ -37,7 +32,7 @@ def _generate_resource_utilities_impl(ctx):
 generated_resource_utilities = rule(
     implementation = _generate_resource_utilities_impl,
     attrs = {
-        "srcs": attr.label_list(allow_files = True),
+        "resources": attr.label_keyed_string_dict(allow_files = True),
         "out": attr.output(mandatory = True),
         "_tool": attr.label(
             default = Label("//dotnet/private:generate_resources_tool"),

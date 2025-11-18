@@ -21,37 +21,6 @@ import sys
 from typing import List, Tuple
 
 
-def to_camel_case(name: str) -> str:
-    """Convert an identifier like "find-elements" or "webdriver_json" to PascalCase.
-
-    Non-alphanumeric characters are treated as separators; leading digits are preserved
-    but not used to start a new word. Example:
-        - "find-elements" -> "FindElements"
-        - "webdriver_json" -> "WebdriverJson"
-        - "1st-thing" -> "1stThing"
-    """
-    parts: List[str] = []
-    current: List[str] = []
-    for ch in name:
-        if ch.isalnum():
-            current.append(ch)
-        else:
-            if current:
-                parts.append("".join(current))
-                current = []
-    if current:
-        parts.append("".join(current))
-
-    if not parts:
-        return name
-
-    # Capitalize every part (PascalCase)
-    result: List[str] = []
-    for part in parts:
-        result.append(part[:1].upper() + part[1:])
-    return "".join(result)
-
-
 def parse_args(argv: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
@@ -74,8 +43,7 @@ def parse_input_spec(spec: str) -> Tuple[str, str]:
 
 def generate(output: str, inputs: List[Tuple[str, str]]) -> None:
     props: List[str] = []
-    for ident, path in inputs:
-        prop_name = to_camel_case(ident)
+    for prop_name, path in inputs:
         with open(path, "r", encoding="utf-8") as f:
             content = f.read()
         # Use a C# raw string literal with five quotes. For a valid raw
