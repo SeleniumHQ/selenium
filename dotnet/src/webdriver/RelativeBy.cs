@@ -22,8 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
-using System.Reflection;
 
 namespace OpenQA.Selenium;
 
@@ -38,14 +36,7 @@ public sealed class RelativeBy : By
 
     private static string GetWrappedAtom()
     {
-        string atom;
-        using (Stream atomStream = ResourceUtilities.GetResourceStream("find-elements.js", $"{Assembly.GetExecutingAssembly().GetName().Name}.find-elements.js"))
-        {
-            using (StreamReader atomReader = new StreamReader(atomStream))
-            {
-                atom = atomReader.ReadToEnd();
-            }
-        }
+        string atom = ResourceUtilities.FindElementsAtom;
 
         return string.Format(CultureInfo.InvariantCulture, "/* findElements */return ({0}).apply(null, arguments);", atom);
     }
