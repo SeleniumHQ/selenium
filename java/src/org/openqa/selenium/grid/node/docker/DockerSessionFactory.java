@@ -141,9 +141,11 @@ public class DockerSessionFactory implements SessionFactory {
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.hostConfig = Require.nonNull("Container host config", hostConfig);
     this.hostConfigKeys = Require.nonNull("Browser container host config keys", hostConfigKeys);
-    this.composeLabels = Require.nonNull("Docker Compose labels", composeLabels);
     // Merge compose labels with oneoff=False to prevent triggering --exit-code-from dynamic grid
-    this.composeLabels.put("com.docker.compose.oneoff", "False");
+    Map<String, String> allLabels =
+        new HashMap<>(Require.nonNull("Docker Compose labels", composeLabels));
+    allLabels.put("com.docker.compose.oneoff", "False");
+    this.composeLabels = Collections.unmodifiableMap(allLabels);
   }
 
   @Override
