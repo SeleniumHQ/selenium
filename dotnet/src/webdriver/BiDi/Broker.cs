@@ -114,7 +114,7 @@ public sealed class Broker : IAsyncDisposable
                             args.BiDi = _bidi;
 
                             // trying to undestand which event handler is intersted in
-                            // https://github.com/w3c/webdriver-bidi/issues/1032 - this isssue is attempt to improve
+                            // https://github.com/w3c/webdriver-bidi/issues/1032 - this BiDi spec proposal is how to improve
 
                             // handle browsing context subscriber
                             if (handler.Contexts is not null && args is BrowsingContextEventArgs browsingContextEventArgs && handler.Contexts.Contains(browsingContextEventArgs.Context))
