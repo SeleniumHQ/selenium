@@ -113,6 +113,9 @@ public sealed class Broker : IAsyncDisposable
 
                             args.BiDi = _bidi;
 
+                            // trying to undestand which event handler is intersted in
+                            // https://github.com/w3c/webdriver-bidi/issues/1032 - this isssue is attempt to improve
+
                             // handle browsing context subscriber
                             if (handler.Contexts is not null && args is BrowsingContextEventArgs browsingContextEventArgs && handler.Contexts.Contains(browsingContextEventArgs.Context))
                             {
@@ -120,6 +123,11 @@ public sealed class Broker : IAsyncDisposable
                             }
                             // handle only session subscriber
                             else if (handler.Contexts is null)
+                            {
+                                await handler.InvokeAsync(args).ConfigureAwait(false);
+                            }
+                            // if we didn't determine event scope
+                            else
                             {
                                 await handler.InvokeAsync(args).ConfigureAwait(false);
                             }
