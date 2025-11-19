@@ -33,7 +33,7 @@
     "clean-jsdoc-theme": "^4.3.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-mocha": "^11.2.0",
+    "eslint-plugin-mocha": "^10.5.0",
     "eslint-plugin-n": "^17.23.1",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-prettier": "^5.5.4",
