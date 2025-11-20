@@ -16,7 +16,6 @@
 # under the License.
 
 import http.client as http_client
-from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -30,7 +29,7 @@ class WebDriver(RemoteWebDriver):
     def __init__(
         self,
         options=None,
-        service: Optional[Service] = None,
+        service: Service | None = None,
     ):
         """Creates a new instance of the WPEWebKit driver.
 
@@ -49,9 +48,7 @@ class WebDriver(RemoteWebDriver):
         self._is_remote = False
 
     def quit(self):
-        """Closes the browser and shuts down the WPEWebKitDriver executable
-        that is started when starting the WPEWebKitDriver.
-        """
+        """Close the browser and shut down the WPEWebKit driver executable."""
         try:
             super().quit()
         except http_client.BadStatusLine:

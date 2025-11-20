@@ -1,5 +1,5 @@
 load("//common:defs.bzl", "copy_file")
-load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "framework", "generated_assembly_info", "nuget_pack")
+load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "framework", "generated_assembly_info", "generated_resource_utilities", "nuget_pack")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -25,10 +25,23 @@ generated_assembly_info(
     version = ASSEMBLY_VERSION,
 )
 
+generated_resource_utilities(
+    name = "resource-utilities",
+    out = "ResourceUtilities.g.cs",
+    resources = {
+        "//javascript/atoms/fragments:find-elements.js": "FindElementsAtom",
+        "//javascript/atoms/fragments:is-displayed.js": "IsDisplayedAtom",
+        "//javascript/cdp-support:mutation-listener.js": "MutationListenerAtom",
+        "//javascript/webdriver/atoms:get-attribute.js": "GetAttributeAtom",
+        "//third_party/js/selenium:webdriver_json": "WebDriverPrefsJson",
+    },
+)
+
 csharp_library(
     name = "webdriver-netstandard2.0",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
@@ -38,13 +51,7 @@ csharp_library(
     ],
     langversion = "12.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = [],
     target_frameworks = [
         "netstandard2.0",
     ],
@@ -66,6 +73,7 @@ csharp_library(
     name = "webdriver-net8.0",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
@@ -78,13 +86,7 @@ csharp_library(
     ],
     langversion = "12.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = [],
     target_frameworks = [
         "net8.0",
     ],
@@ -99,6 +101,7 @@ csharp_library(
     name = "webdriver-netstandard2.0-strongnamed",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
@@ -106,13 +109,7 @@ csharp_library(
     keyfile = "//dotnet:Selenium.snk",
     langversion = "12.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = [],
     target_frameworks = [
         "netstandard2.0",
     ],
@@ -134,6 +131,7 @@ csharp_library(
     name = "webdriver-net8.0-strongnamed",
     srcs = [
         ":assembly-info",
+        ":resource-utilities",
     ] + glob([
         "**/*.cs",
     ]) + devtools_version_targets(),
@@ -144,13 +142,7 @@ csharp_library(
     keyfile = "//dotnet:Selenium.snk",
     langversion = "12.0",
     nullable = "enable",
-    resources = [
-        "//javascript/atoms/fragments:find-elements.js",
-        "//javascript/atoms/fragments:is-displayed.js",
-        "//javascript/cdp-support:mutation-listener.js",
-        "//javascript/webdriver/atoms:get-attribute.js",
-        "//third_party/js/selenium:webdriver_json",
-    ],
+    resources = [],
     target_frameworks = [
         "net8.0",
     ],

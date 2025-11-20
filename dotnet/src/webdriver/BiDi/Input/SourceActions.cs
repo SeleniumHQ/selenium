@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
+using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters.Enumerable;
 using System;
 using System.Collections;
 using System.Collections.Generic;

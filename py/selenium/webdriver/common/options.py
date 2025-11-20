@@ -18,7 +18,6 @@
 import warnings
 from abc import ABCMeta, abstractmethod
 from enum import Enum
-from typing import Optional
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
@@ -65,8 +64,10 @@ class _BaseOptionsDescriptor:
 
 
 class _PageLoadStrategyDescriptor:
-    """Determines the point at which a navigation command is returned:
-    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
+    """Determines the point at which a navigation command is returned.
+
+    See:
+      - https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
 
     Args:
         strategy: the strategy corresponding to a document readiness state
@@ -86,9 +87,10 @@ class _PageLoadStrategyDescriptor:
 
 
 class _UnHandledPromptBehaviorDescriptor:
-    """How the driver should respond when an alert is present and the:
-    command sent is not handling the alert:
-    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:
+    """How the driver should respond when an alert is present and the command sent is not handling the alert.
+
+    See:
+      - https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:
 
     Args:
         behavior: behavior to use when an alert is encountered
@@ -114,8 +116,10 @@ class _UnHandledPromptBehaviorDescriptor:
 
 
 class _TimeoutsDescriptor:
-    """How long the driver should wait for actions to complete before:
-    returning an error https://w3c.github.io/webdriver/#timeouts:
+    """How long the driver should wait for actions to complete before returning an error.
+
+    See:
+      - https://w3c.github.io/webdriver/#timeouts
 
     Args:
         timeouts: values in milliseconds for implicit wait, page load and script timeout
@@ -138,7 +142,8 @@ class _TimeoutsDescriptor:
 
 
 class _ProxyDescriptor:
-    """
+    """Descriptor for proxy property access.
+
     Returns:
         Proxy if set, otherwise None.
     """
@@ -332,7 +337,7 @@ class BaseOptions(metaclass=ABCMeta):
         self._caps = self.default_capabilities
         self._proxy = None
         self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
-        self.mobile_options: Optional[dict[str, str]] = None
+        self.mobile_options: dict[str, str] | None = None
         self._ignore_local_proxy = False
 
     @property
@@ -345,9 +350,9 @@ class BaseOptions(metaclass=ABCMeta):
 
     def enable_mobile(
         self,
-        android_package: Optional[str] = None,
-        android_activity: Optional[str] = None,
-        device_serial: Optional[str] = None,
+        android_package: str | None = None,
+        android_activity: str | None = None,
+        device_serial: str | None = None,
     ) -> None:
         """Enables mobile browser use for browsers that support it.
 
@@ -374,9 +379,7 @@ class BaseOptions(metaclass=ABCMeta):
         """Return minimal capabilities necessary as a dictionary."""
 
     def ignore_local_proxy_environment_variables(self) -> None:
-        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-        being picked up and used.
-        """
+        """Ignore HTTP_PROXY and HTTPS_PROXY environment variables."""
         self._ignore_local_proxy = True
 
 
@@ -391,10 +394,7 @@ class ArgOptions(BaseOptions):
 
     @property
     def arguments(self):
-        """
-        Returns:
-            A list of arguments needed for the browser.
-        """
+        """Returns a list of arguments needed for the browser."""
         return self._arguments
 
     def add_argument(self, argument: str) -> None:
@@ -409,8 +409,9 @@ class ArgOptions(BaseOptions):
             raise ValueError("argument can not be null")
 
     def ignore_local_proxy_environment_variables(self) -> None:
-        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-        being picked up and used.
+        """Ignore HTTP_PROXY and HTTPS_PROXY environment variables.
+
+        This method is deprecated; use a Proxy instance with ProxyType.DIRECT instead.
         """
         warnings.warn(
             "using ignore_local_proxy_environment_variables in Options has been deprecated, "
