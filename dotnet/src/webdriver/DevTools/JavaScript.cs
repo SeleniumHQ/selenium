@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools;
@@ -85,7 +86,7 @@ public abstract class JavaScript
     /// </summary>
     /// <param name="script">The script to add to be evaluated when a new document is opened.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the internal ID of the script.</returns>
-    public abstract Task<string> AddScriptToEvaluateOnNewDocument(string script);
+    public abstract Task<string> AddScriptToEvaluateOnNewDocument([StringSyntax("javascript")] string script);
 
     /// <summary>
     /// Removes a JavaScript snippet from evaluate when a new document is opened.
@@ -103,7 +104,7 @@ public abstract class JavaScript
     /// This method is internal to the operation of pinned scripts in Selenium, and
     /// is therefore internal by design.
     /// </remarks>
-    internal abstract Task Evaluate(string script);
+    internal abstract Task Evaluate([StringSyntax("javascript")] string script);
 
     /// <summary>
     /// Raises the BindingCalled event.

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium;
 
@@ -62,7 +63,7 @@ public interface IJavaScriptExecutor
     /// variable, as if the function were called via "Function.apply"
     /// </para>
     /// </remarks>
-    object? ExecuteScript(string script, params object?[] args);
+    object? ExecuteScript([StringSyntax("javascript")] string script, params object?[] args);
 
     /// <summary>
     /// Executes JavaScript in the context of the currently selected frame or window.
@@ -108,5 +109,5 @@ public interface IJavaScriptExecutor
     /// <param name="script">The JavaScript code to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    object? ExecuteAsyncScript(string script, params object?[] args);
+    object? ExecuteAsyncScript([StringSyntax("javascript")] string script, params object?[] args);
 }

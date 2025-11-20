@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace OpenQA.Selenium;
@@ -47,6 +48,7 @@ public class InitializationScript
     /// <summary>
     /// Gets the JavaScript source of the initialization script.
     /// </summary>
+    [StringSyntax("javascript")]
     public string ScriptSource { get; }
 
     /// <summary>
