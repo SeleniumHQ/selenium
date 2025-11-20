@@ -30,9 +30,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
@@ -270,22 +272,14 @@ public class DockerOptions {
     List<String> customLabelKeys =
         config.getAll(DOCKER_SECTION, "grouping-labels").orElseGet(Collections::emptyList);
 
+    Set<String> groupingKeys = new HashSet<>(customLabelKeys);
+    groupingKeys.add("com.docker.compose.project");
+    groupingKeys.add("io.podman.compose.project");
+
     Map<String, String> allLabels = info.get().getLabels();
-    // Filter for project/grouping labels that work across orchestration systems
-    // Keep only project identifiers, exclude service-specific labels to prevent
-    // exit monitoring in Docker Compose, Podman Compose, etc.
+    // Filter for grouping labels that work across orchestration systems
     return allLabels.entrySet().stream()
-        .filter(
-            entry -> {
-              String key = entry.getKey();
-              // Docker Compose project label
-              if (key.equals("com.docker.compose.project")) return true;
-              // Podman Compose project label
-              if (key.equals("io.podman.compose.project")) return true;
-              // Custom user-defined grouping labels
-              if (customLabelKeys.contains(key)) return true;
-              return false;
-            })
+        .filter(entry -> groupingKeys.contains(entry.getKey()))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
