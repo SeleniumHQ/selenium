@@ -174,7 +174,7 @@ public class DockerOptions {
     DockerAssetsPath assetsPath = getAssetsPath(info);
     String networkName = getDockerNetworkName(info);
     Map<String, Object> hostConfig = getDockerHostConfig(info);
-    Map<String, String> composeLabels = getComposeLabels(info);
+    Map<String, String> groupingLabels = getGroupingLabels(info);
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
@@ -211,7 +211,7 @@ public class DockerOptions {
                     capabilities -> options.getSlotMatcher().matches(caps, capabilities),
                     hostConfig,
                     hostConfigKeys,
-                    composeLabels));
+                    groupingLabels));
           }
           LOG.info(
               String.format(
@@ -261,15 +261,31 @@ public class DockerOptions {
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  private Map<String, String> getComposeLabels(Optional<ContainerInfo> info) {
+  private Map<String, String> getGroupingLabels(Optional<ContainerInfo> info) {
     if (info.isEmpty()) {
       return Collections.emptyMap();
     }
 
+    // Get custom grouping labels from configuration
+    List<String> customLabelKeys =
+        config.getAll(DOCKER_SECTION, "grouping-labels").orElseGet(Collections::emptyList);
+
     Map<String, String> allLabels = info.get().getLabels();
-    // Filter for Docker Compose labels (com.docker.compose.*)
+    // Filter for project/grouping labels that work across orchestration systems
+    // Keep only project identifiers, exclude service-specific labels to prevent
+    // exit monitoring in Docker Compose, Podman Compose, etc.
     return allLabels.entrySet().stream()
-        .filter(entry -> entry.getKey().startsWith("com.docker.compose."))
+        .filter(
+            entry -> {
+              String key = entry.getKey();
+              // Docker Compose project label
+              if (key.equals("com.docker.compose.project")) return true;
+              // Podman Compose project label
+              if (key.equals("io.podman.compose.project")) return true;
+              // Custom user-defined grouping labels
+              if (customLabelKeys.contains(key)) return true;
+              return false;
+            })
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
