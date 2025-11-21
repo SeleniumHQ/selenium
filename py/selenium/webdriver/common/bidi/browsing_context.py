@@ -985,7 +985,7 @@ class BrowsingContext:
         self,
         context: str | None = None,
         viewport: dict | None | UNDEFINED = UNDEFINED,
-        device_pixel_ratio: float | UNDEFINED = UNDEFINED,
+        device_pixel_ratio: float | None | UNDEFINED = UNDEFINED,
         user_contexts: list[str] | None = None,
     ) -> None:
         """Modifies specific viewport characteristics on the given top-level traversable.
