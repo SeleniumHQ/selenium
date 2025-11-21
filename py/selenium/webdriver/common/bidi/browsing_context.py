@@ -997,11 +997,22 @@ class BrowsingContext:
             user_contexts: The user context IDs.
 
         Raises:
-            Exception: If the browsing context is not a top-level traversable.
+            Exception: If the browsing context is not a top-level traversable
+            ValueError: If neither `contexts` or `user_contexts` are used
+            ValueError: If both `contexts` and `user_contexts` are used
         """
+
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and user_contexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or user_contexts")
+
         params: dict[str, Any] = {}
-        if context is not None:
-            params["context"] = context
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
         if viewport is UNDEFINED:
             pass
         elif viewport is None:
@@ -1014,8 +1025,6 @@ class BrowsingContext:
             params["devicePixelRatio"] = None
         else:
             params["devicePixelRatio"] = device_pixel_ratio
-        if user_contexts is not None:
-            params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("browsingContext.setViewport", params))
 
