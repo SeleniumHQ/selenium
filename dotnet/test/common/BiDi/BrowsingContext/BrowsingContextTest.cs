@@ -322,7 +322,7 @@ class BrowsingContextTest : BiDiTestFixture
         Assert.That(await GetHeightAsync(), Is.EqualTo(300));
 
         await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300) });
-        await context.SetViewportAsync(new() { Viewport = default(Viewport?) }); // Explicitly sends "null"
+        await context.SetViewportAsync(new() { Viewport = default(Viewport?) }); // Explicitly sends "null", resetting to default
 
         Assert.That(await GetWidthAsync(), Is.EqualTo(defaultWidth));
         Assert.That(await GetHeightAsync(), Is.EqualTo(defaultHeight));
