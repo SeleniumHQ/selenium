@@ -405,7 +405,6 @@ def test_set_viewport_with_no_args_doesnt_change_values(driver, pages):
         driver.browsing_context.set_viewport(context=context_id, viewport=None, device_pixel_ratio=None)
 
 
-
 def test_set_viewport_back_to_default(driver, pages):
     """Test resetting the viewport and device pixel ratio to defaults."""
     context_id = driver.current_window_handle
