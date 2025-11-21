@@ -1013,7 +1013,7 @@ class BrowsingContext:
         elif device_pixel_ratio is None:
             params["devicePixelRatio"] = None
         else:
-            params["devicePixelRatio"] = viewport
+            params["devicePixelRatio"] = device_pixel_ratio
         if user_contexts is not None:
             params["userContexts"] = user_contexts
 
