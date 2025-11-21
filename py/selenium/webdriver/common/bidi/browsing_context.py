@@ -1002,15 +1002,15 @@ class BrowsingContext:
             ValueError: If both `contexts` and `user_contexts` are used
         """
 
-        if contexts is not None and user_contexts is not None:
-            raise ValueError("Cannot specify both contexts and user_contexts")
+        if context is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both context and user_contexts")
 
-        if contexts is None and user_contexts is None:
-            raise ValueError("Must specify either contexts or user_contexts")
+        if context is None and user_contexts is None:
+            raise ValueError("Must specify either context or user_contexts")
 
         params: dict[str, Any] = {}
-        if contexts is not None:
-            params["contexts"] = contexts
+        if context is not None:
+            params["context"] = context
         elif user_contexts is not None:
             params["userContexts"] = user_contexts
         if viewport is UNDEFINED:
