@@ -302,6 +302,8 @@ class BrowsingContextTest : BiDiTestFixture
 
         await context.SetViewportAsync(new() { Viewport = default });
 
+        await context.SetViewportAsync(new() { Viewport = default(Viewport?) }); // Explicitly passing null
+
         await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300) });
     }
 

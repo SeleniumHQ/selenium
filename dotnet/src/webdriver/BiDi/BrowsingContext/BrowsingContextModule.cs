@@ -82,7 +82,7 @@ public sealed class BrowsingContextModule : Module
 
     public async Task<SetViewportResult> SetViewportAsync(BrowsingContext context, SetViewportOptions? options = null)
     {
-        var @params = new SetViewportParameters(context, options?.GetViewport(), options?.DevicePixelRatio);
+        var @params = new SetViewportParameters(context, options?.Viewport, options?.DevicePixelRatio);
 
         return await Broker.ExecuteCommandAsync(new SetViewportCommand(@params), options, JsonContext.SetViewportCommand, JsonContext.SetViewportResult).ConfigureAwait(false);
     }
