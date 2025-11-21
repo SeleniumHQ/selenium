@@ -992,14 +992,14 @@ class BrowsingContext:
 
         Args:
             context: The browsing context ID.
-            viewport: The viewport parameters (`None` resets to default).
-            device_pixel_ratio: The device pixel ratio (`None` resets default).
+            viewport: The viewport parameters - {"width": <int>, "height": <int>} (`None` resets to default).
+            device_pixel_ratio: The device pixel ratio (`None` resets to default).
             user_contexts: The user context IDs.
 
         Raises:
             Exception: If the browsing context is not a top-level traversable
-            ValueError: If neither `contexts` or `user_contexts` are used
-            ValueError: If both `contexts` and `user_contexts` are used
+            ValueError: If neither `context` nor `user_contexts` is provided
+            ValueError: If both `context` and `user_contexts` are provided
         """
         if context is not None and user_contexts is not None:
             raise ValueError("Cannot specify both context and user_contexts")
