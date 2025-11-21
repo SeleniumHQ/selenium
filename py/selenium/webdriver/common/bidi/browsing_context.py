@@ -20,8 +20,12 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
+from typing_extensions import Sentinel
+
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session
+
+UNDEFINED = Sentinel("UNDEFINED")
 
 
 class ReadinessState:
@@ -980,16 +984,16 @@ class BrowsingContext:
     def set_viewport(
         self,
         context: str | None = None,
-        viewport: dict | None = None,
-        device_pixel_ratio: float | None = None,
+        viewport: dict | None | UNDEFINED = UNDEFINED,
+        device_pixel_ratio: float | UNDEFINED = UNDEFINED,
         user_contexts: list[str] | None = None,
     ) -> None:
         """Modifies specific viewport characteristics on the given top-level traversable.
 
         Args:
             context: The browsing context ID.
-            viewport: The viewport parameters.
-            device_pixel_ratio: The device pixel ratio.
+            viewport: The viewport parameters (`None` resets to default).
+            device_pixel_ratio: The device pixel ratio (`None` resets default).
             user_contexts: The user context IDs.
 
         Raises:
@@ -998,10 +1002,18 @@ class BrowsingContext:
         params: dict[str, Any] = {}
         if context is not None:
             params["context"] = context
-        if viewport is not None:
+        if viewport is UNDEFINED:
+            pass
+        elif viewport is None:
+            params["viewport"] = None
+        else:
             params["viewport"] = viewport
-        if device_pixel_ratio is not None:
-            params["devicePixelRatio"] = device_pixel_ratio
+        if device_pixel_ratio is UNDEFINED:
+            pass
+        elif device_pixel_ratio is None:
+            params["devicePixelRatio"] = None
+        else:
+            params["devicePixelRatio"] = viewport
         if user_contexts is not None:
             params["userContexts"] = user_contexts
 
