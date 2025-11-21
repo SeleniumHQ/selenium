@@ -17,9 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Text.Json.Serialization;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class SetViewportCommand(SetViewportParameters @params)

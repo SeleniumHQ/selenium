@@ -22,9 +22,10 @@ public class SetGeolocationOverrideParameters extends AbstractOverrideParameters
   // Constructor for coordinates - must specify either contexts or userContexts later
   public SetGeolocationOverrideParameters(GeolocationCoordinates coordinates) {
     if (coordinates == null) {
-      throw new IllegalArgumentException("GeolocationCoordinates cannot be null");
+      map.put("coordinates", null);
+    } else {
+      map.put("coordinates", coordinates.toMap());
     }
-    map.put("coordinates", coordinates.toMap());
   }
 
   // Constructor for error - must specify either contexts or userContexts later
