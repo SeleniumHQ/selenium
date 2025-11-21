@@ -1001,7 +1001,6 @@ class BrowsingContext:
             ValueError: If neither `contexts` or `user_contexts` are used
             ValueError: If both `contexts` and `user_contexts` are used
         """
-
         if context is not None and user_contexts is not None:
             raise ValueError("Cannot specify both context and user_contexts")
 
