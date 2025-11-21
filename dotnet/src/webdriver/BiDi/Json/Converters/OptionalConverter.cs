@@ -39,9 +39,9 @@ public sealed class OptionalConverter<T> : JsonConverter<Optional<T>>
 
     public override void Write(Utf8JsonWriter writer, Optional<T> value, JsonSerializerOptions options)
     {
-        if (value.TryGetValue(out var v))
+        if (value.TryGetValue(out var optionalValue))
         {
-            JsonSerializer.Serialize(writer, value.Value, options);
+            JsonSerializer.Serialize(writer, optionalValue, options);
         }
         else
         {
