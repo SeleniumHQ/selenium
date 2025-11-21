@@ -39,12 +39,13 @@ public sealed class OptionalConverter<T> : JsonConverter<Optional<T>>
 
     public override void Write(Utf8JsonWriter writer, Optional<T> value, JsonSerializerOptions options)
     {
-        if (!value.HasValue)
+        if (value.TryGetValue(out var v))
+        {
+            JsonSerializer.Serialize(writer, value.Value, options);
+        }
+        else
         {
             writer.WriteNullValue();
-            return;
         }
-
-        JsonSerializer.Serialize(writer, value.Value, options);
     }
 }
