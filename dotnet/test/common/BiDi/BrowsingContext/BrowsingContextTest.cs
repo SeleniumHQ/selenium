@@ -298,13 +298,17 @@ class BrowsingContextTest : BiDiTestFixture
     [Test]
     public async Task CanSetViewport()
     {
-        await context.SetViewportAsync(new() { Viewport = new(250, 300) });
+        await context.SetViewportAsync();
+
+        await context.SetViewportAsync(new() { Viewport = default });
+
+        await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300) });
     }
 
     [Test]
     public async Task CanSetViewportWithDevicePixelRatio()
     {
-        await context.SetViewportAsync(new() { Viewport = new(250, 300), DevicePixelRatio = 5 });
+        await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300), DevicePixelRatio = 5 });
     }
 
     [Test]
