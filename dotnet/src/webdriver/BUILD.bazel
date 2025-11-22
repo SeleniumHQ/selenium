@@ -12,6 +12,7 @@ load(
 
 exports_files([
     "WebDriver.csproj",
+    "Internal/StringSyntaxAttribute.cs"
 ])
 
 generated_assembly_info(
