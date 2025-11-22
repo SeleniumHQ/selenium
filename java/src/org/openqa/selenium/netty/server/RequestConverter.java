@@ -37,9 +37,12 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.ReferenceCountUtil;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -56,7 +59,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
   private static final List<io.netty.handler.codec.http.HttpMethod> SUPPORTED_METHODS =
       Arrays.asList(DELETE, GET, POST, OPTIONS);
   private volatile FileBackedOutputStream buffer;
-  private volatile int length;
+  private volatile long length;
   private volatile HttpRequest request;
 
   @Override
@@ -119,7 +122,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
         if (buffer != null) {
           ByteSource source = buffer.asByteSource();
-          int len = length;
+          long len = length;
 
           request.setContent(
               new Contents.Supplier() {
@@ -133,13 +136,29 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
                 }
 
                 @Override
-                public int length() {
+                public long length() {
                   return len;
                 }
 
                 @Override
                 public void close() throws IOException {
                   buffer.reset();
+                }
+
+                @Override
+                public String toString() {
+                  return String.format("Last content for %s (%s bytes)", request.toString(), len);
+                }
+
+                @Override
+                public String contentAsString(Charset charset) {
+                  ByteArrayOutputStream  out = new ByteArrayOutputStream();
+                  try {
+                    source.copyTo(out);
+                  } catch (IOException e) {
+                    throw new RuntimeException(e);
+                  }
+                  return out.toString(charset);
                 }
               });
         } else {

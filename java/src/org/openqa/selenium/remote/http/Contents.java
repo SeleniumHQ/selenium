@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.readAttributes;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,6 +32,7 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Base64;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -52,7 +54,7 @@ public class Contents {
      * @return the number of bytes that can be read from the InputStream returned by calling the get
      *     method.
      */
-    int length();
+    long length();
 
     /**
      * Release the related resources, if any.
@@ -61,6 +63,8 @@ public class Contents {
      */
     @Override
     void close() throws IOException;
+
+    String contentAsString(Charset charset);
   }
 
   private Contents() {
@@ -84,6 +88,57 @@ public class Contents {
     return bytes(value.toString().getBytes(charset));
   }
 
+  public static Supplier file(final File file) {
+    Require.nonNull("File to download", file);
+
+    return new Supplier() {
+      private volatile InputStream inputStream;
+
+      @Override
+      public synchronized InputStream get() {
+        if (inputStream != null) {
+          throw new IllegalStateException("File input stream has been opened before");
+        }
+        try {
+          inputStream = Files.newInputStream(file.toPath());
+        } catch (IOException e) {
+          throw new IllegalStateException("File not readable: " + file.getAbsolutePath(), e);
+        }
+
+        return inputStream;
+      }
+
+      @Override
+      public long length() {
+        try {
+          BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
+          return attributes.size();
+        } catch (IOException e) {
+          throw new IllegalStateException("File not readable: " + file.getAbsolutePath(), e);
+        }
+      }
+
+      public void close() {
+        if (inputStream != null) {
+          try {
+            inputStream.close();
+          } catch (IOException ignore) {
+          }
+        }
+      }
+
+      @Override
+      public String toString() {
+        return String.format("Contents.file(%s)", file);
+      }
+
+      @Override
+      public String contentAsString(Charset charset) {
+        throw new UnsupportedOperationException("File content may be too large");
+      }
+    };
+  }
+
   public static Supplier bytes(byte[] bytes) {
     Require.nonNull("Bytes to return", bytes, "may be empty");
 
@@ -98,7 +153,7 @@ public class Contents {
       }
 
       @Override
-      public int length() {
+      public long length() {
         if (closed) throw new IllegalStateException("Contents.Supplier has been closed before");
 
         return bytes.length;
@@ -106,6 +161,18 @@ public class Contents {
 
       public void close() {
         closed = true;
+      }
+
+      @Override
+      public String toString() {
+        return bytes.length < 256 ?
+               new String(bytes, UTF_8) :
+               String.format("%s bytes: \"%s\"...", bytes.length, new String(bytes, 0, 256, UTF_8));
+      }
+
+      @Override
+      public String contentAsString(Charset charset) {
+        return new String(bytes, charset);
       }
     };
   }
@@ -126,15 +193,23 @@ public class Contents {
     return string(supplier, UTF_8);
   }
 
+  /**
+   * @deprecated Use method {@link Supplier#contentAsString(Charset)} instead.
+   */
+  @Deprecated
   public static String string(Supplier supplier, Charset charset) {
     Require.nonNull("Supplier of input", supplier);
     Require.nonNull("Character set", charset);
 
-    return new String(bytes(supplier), charset);
+    return supplier.contentAsString(charset);
   }
 
+  /**
+   * @deprecated Use method {@link HttpMessage#contentAsString()} instead
+   */
+  @Deprecated
   public static String string(HttpMessage<?> message) {
-    return string(message.getContent(), message.getContentEncoding());
+    return message.contentAsString();
   }
 
   public static Reader utf8Reader(Supplier supplier) {
@@ -175,6 +250,11 @@ public class Contents {
     }
   }
 
+  /**
+   * @deprecated Not needed anymore. It's a bad idea to read the entire file to memory. It may cause
+   *     OutOfMemory errors in case of large files.
+   */
+  @Deprecated
   public static String string(File input) throws IOException {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
         InputStream isr = Files.newInputStream(input.toPath())) {

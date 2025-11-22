@@ -183,6 +183,15 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
     return content;
   }
 
+  @Override
+  public String toString() {
+    return getContent().toString();
+  }
+
+  public String contentAsString() {
+    return getContent().contentAsString(getContentEncoding());
+  }
+
   @SuppressWarnings("unchecked")
   private M self() {
     return (M) this;

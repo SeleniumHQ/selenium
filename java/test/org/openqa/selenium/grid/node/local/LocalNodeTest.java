@@ -434,4 +434,11 @@ class LocalNodeTest {
     assertThat(bidiEnabled).isNotNull();
     assertThat(Boolean.parseBoolean(bidiEnabled.toString())).isFalse();
   }
+
+  @Test
+  void extractsFileNameFromRequestUri() {
+    assertThat(node.extractFileName("/session/1234/se/files/logo.png")).isEqualTo("logo.png");
+    assertThat(node.extractFileName("/session/1234/se/files/файл+with+tähtedega.png"))
+        .isEqualTo("файл+with+tähtedega.png");
+  }
 }

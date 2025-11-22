@@ -23,8 +23,8 @@ import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
 
+import com.google.common.net.MediaType;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -73,11 +73,12 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
   @Override
   public Response decode(HttpResponse encodedResponse) {
-    String content = string(encodedResponse).trim();
-    LOG.log(
-        Level.FINER,
-        "Decoding response. Response code was: {0} and content: {1}",
-        new Object[] {encodedResponse.getStatus(), content});
+    if (LOG.isLoggable(Level.FINER)) {
+      LOG.log(
+          Level.FINER,
+          "Decoding response. Response code was: {0} and content: {1}",
+          new Object[] {encodedResponse.getStatus(), encodedResponse.getContent()});
+    }
     String contentType =
         Objects.requireNonNullElse(encodedResponse.getHeader(HttpHeader.ContentType.getName()), "");
 
@@ -88,6 +89,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     // text"}
     if (!encodedResponse.isSuccessful()) {
       LOG.fine("Processing an error");
+      String content = encodedResponse.contentAsString().trim();
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
         response.setState("unknown command");
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
@@ -143,6 +145,13 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
     response.setState("success");
     response.setStatus(ErrorCodes.SUCCESS);
+
+    if (contentType.startsWith(MediaType.OCTET_STREAM.toString())) {
+      response.setValue(encodedResponse.getContent());
+      return response;
+    }
+
+    String content = encodedResponse.contentAsString().trim();
     if (!content.isEmpty()) {
       if (contentType.startsWith("application/json")) {
         Map<String, Object> parsed = json.toType(content, MAP_TYPE);
