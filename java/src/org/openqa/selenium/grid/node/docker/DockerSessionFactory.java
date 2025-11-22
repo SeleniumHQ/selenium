@@ -105,7 +105,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Predicate<Capabilities> predicate;
   private final Map<String, Object> hostConfig;
   private final List<String> hostConfigKeys;
-  private final Map<String, String> composeLabels;
+  private final Map<String, String> groupingLabels;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -124,7 +124,7 @@ public class DockerSessionFactory implements SessionFactory {
       Predicate<Capabilities> predicate,
       Map<String, Object> hostConfig,
       List<String> hostConfigKeys,
-      Map<String, String> composeLabels) {
+      Map<String, String> groupingLabels) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.sessionTimeout = Require.nonNull("Session timeout", sessionTimeout);
@@ -141,11 +141,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.hostConfig = Require.nonNull("Container host config", hostConfig);
     this.hostConfigKeys = Require.nonNull("Browser container host config keys", hostConfigKeys);
-    // Merge compose labels with oneoff=False to prevent triggering --exit-code-from dynamic grid
-    Map<String, String> allLabels =
-        new HashMap<>(Require.nonNull("Docker Compose labels", composeLabels));
-    allLabels.put("com.docker.compose.oneoff", "False");
-    this.composeLabels = Collections.unmodifiableMap(allLabels);
+    this.groupingLabels = Require.nonNull("Container grouping labels", groupingLabels);
   }
 
   @Override
@@ -332,7 +328,7 @@ public class DockerSessionFactory implements SessionFactory {
             .network(networkName)
             .devices(devices)
             .applyHostConfig(hostConfig, hostConfigKeys)
-            .labels(composeLabels)
+            .labels(groupingLabels)
             .name(containerName);
     Optional<DockerAssetsPath> path = ofNullable(this.assetsPath);
     if (path.isPresent() && videoImage == null && recordVideoForSession(sessionCapabilities)) {
@@ -397,7 +393,7 @@ public class DockerSessionFactory implements SessionFactory {
             .env(envVars)
             .bind(volumeBinds)
             .network(networkName)
-            .labels(composeLabels)
+            .labels(groupingLabels)
             .name(containerName);
     if (!runningInDocker) {
       videoPort = PortProber.findFreePort();
