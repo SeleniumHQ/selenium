@@ -34,7 +34,7 @@ csharp_library(
         "UI/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet:source_files_support_needs_from_core"
+        "//dotnet:source_files_support_needs_from_core",
     ],
     out = "WebDriver.Support",
     langversion = "12.0",
@@ -76,7 +76,7 @@ csharp_library(
         "UI/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet:source_files_support_needs_from_core"
+        "//dotnet:source_files_support_needs_from_core",
     ],
     out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
