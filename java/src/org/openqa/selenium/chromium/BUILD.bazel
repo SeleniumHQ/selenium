@@ -20,6 +20,6 @@ java_export(
         "//java:auto-service",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
-        artifact("org.jspecify:jspecify"),
+        artifact("org.jspecify:jspecify:1.0.0"),
     ],
 )

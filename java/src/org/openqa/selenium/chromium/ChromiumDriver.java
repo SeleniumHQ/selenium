@@ -94,8 +94,11 @@ public class ChromiumDriver extends RemoteWebDriver
   private final Optional<DevTools> devTools;
   private final Optional<URI> biDiUri;
   private final Optional<BiDi> biDi;
+  /** May be null when the driver does not support casting; initialized during setup if available. */
   protected @Nullable HasCasting casting;
+  /** May be null when CDP is unavailable for the current browser/session. */
   protected @Nullable HasCdp cdp;
+
   private final Map<Integer, ScriptKey> scriptKeys = new HashMap<>();
 
   protected ChromiumDriver(
