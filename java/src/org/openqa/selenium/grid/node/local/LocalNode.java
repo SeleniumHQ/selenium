@@ -54,6 +54,7 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -844,10 +845,13 @@ public class LocalNode extends Node implements Closeable {
     BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
     return new HttpResponse()
         .setHeader("Content-Type", MediaType.OCTET_STREAM.toString())
-        .setHeader(
-            "Last-Modified",
-            HTTP_DATE_FORMAT.format(attributes.lastModifiedTime().toInstant().atZone(UTC)))
+        .setHeader("Content-Length", String.valueOf(attributes.size()))
+        .setHeader("Last-Modified", lastModifiedHeader(attributes.lastModifiedTime()))
         .setContent(Contents.file(file));
+  }
+
+  private String lastModifiedHeader(FileTime fileTime) {
+    return HTTP_DATE_FORMAT.format(fileTime.toInstant().atZone(UTC));
   }
 
   private File findDownloadedFile(File downloadsDirectory, String filename)

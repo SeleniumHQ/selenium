@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.http.jdk;
 import com.google.auto.service.AutoService;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -440,8 +441,7 @@ public class JdkHttpClient implements HttpClient {
 
     LOG.log(Level.FINE, "Executing request: {0}", req);
     long start = System.currentTimeMillis();
-
-    BodyHandler<byte[]> byteHandler = BodyHandlers.ofByteArray();
+    BodyHandler<InputStream> byteHandler = BodyHandlers.ofInputStream();
     try {
       HttpMethod method = req.getMethod();
       URI rawUri = messages.getRawUri(req);
@@ -456,7 +456,7 @@ public class JdkHttpClient implements HttpClient {
         }
 
         java.net.http.HttpRequest request = messages.createRequest(req, method, rawUri);
-        java.net.http.HttpResponse<byte[]> response = client.send(request, byteHandler);
+        java.net.http.HttpResponse<InputStream> response = client.send(request, byteHandler);
 
         switch (response.statusCode()) {
           case 303:

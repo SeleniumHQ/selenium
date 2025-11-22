@@ -62,6 +62,10 @@ public class Contents {
     void close() throws IOException;
 
     String contentAsString(Charset charset);
+
+    default Reader reader(Charset charset) {
+      return new InputStreamReader(get(), charset);
+    }
   }
 
   private Contents() {
@@ -87,6 +91,10 @@ public class Contents {
 
   public static Supplier file(final File file) {
     return new FileContentSupplier(file);
+  }
+
+  public static Supplier fromStream(InputStream stream, long length) {
+    return new InputStreamContentSupplier(stream, length);
   }
 
   public static Supplier bytes(byte[] bytes) {
@@ -138,7 +146,7 @@ public class Contents {
     Require.nonNull("Supplier of input", supplier);
     Require.nonNull("Character set", charset);
 
-    return new InputStreamReader(supplier.get(), charset);
+    return supplier.reader(charset);
   }
 
   public static Reader reader(HttpMessage<?> message) {

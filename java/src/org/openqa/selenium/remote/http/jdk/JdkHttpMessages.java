@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.http.jdk;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublisher;
@@ -152,7 +153,7 @@ class JdkHttpMessages {
     return URI.create(rawUrl);
   }
 
-  public HttpResponse createResponse(java.net.http.HttpResponse<byte[]> response) {
+  public HttpResponse createResponse(java.net.http.HttpResponse<InputStream> response) {
     HttpResponse res = new HttpResponse();
     res.setStatus(response.statusCode());
     response
@@ -163,10 +164,8 @@ class JdkHttpMessages {
                 values.stream()
                     .filter(Objects::nonNull)
                     .forEach(value -> res.addHeader(name, value)));
-    byte[] responseBody = response.body();
-    if (responseBody != null) {
-      res.setContent(Contents.bytes(responseBody));
-    }
+    long length = response.headers().firstValueAsLong("Content-Length").orElse(-1);
+    res.setContent(Contents.fromStream(response.body(), length));
 
     return res;
   }
