@@ -444,7 +444,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// variable, as if the function were called via "Function.apply"
     /// </para>
     /// </remarks>
-    public object? ExecuteScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[] args)
+    public object? ExecuteScript([StringSyntax(StringSyntaxConstantsSupport.JavaScript)] string script, params object?[] args)
     {
         if (this.WrappedDriver is not IJavaScriptExecutor javascriptDriver)
         {
@@ -544,7 +544,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="script">The JavaScript code to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    public object? ExecuteAsyncScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[] args)
+    public object? ExecuteAsyncScript([StringSyntax(StringSyntaxConstantsSupport.JavaScript)] string script, params object?[] args)
     {
         if (this.WrappedDriver is not IJavaScriptExecutor javascriptDriver)
         {
