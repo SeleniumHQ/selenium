@@ -29,6 +29,6 @@ pkg_zip(
 
 filegroup(
     name = "source_files_support_needs_from_core",
-    srcs = ["//dotnet/src/webdriver/Internal/StringSyntaxAttribute.cs"],
+    srcs = glob(["dotnet/src/webdriver/Internal/StringSyntaxAttribute.cs"]),
     visibility = ["//tgt:__pkg__"],
 )
