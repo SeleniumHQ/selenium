@@ -26,3 +26,9 @@ pkg_zip(
         "release-artifact",
     ],
 )
+
+filegroup(
+    name = "source_files_support_needs_from_core",
+    srcs = ["webdriver/Internal/StringSyntaxAttribute.cs"],
+    visibility = ["//tgt:__pkg__"],
+)  
