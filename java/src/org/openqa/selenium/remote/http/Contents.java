@@ -18,9 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.Files.readAttributes;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +30,6 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Base64;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -89,92 +86,11 @@ public class Contents {
   }
 
   public static Supplier file(final File file) {
-    Require.nonNull("File to download", file);
-
-    return new Supplier() {
-      private volatile InputStream inputStream;
-
-      @Override
-      public synchronized InputStream get() {
-        if (inputStream != null) {
-          throw new IllegalStateException("File input stream has been opened before");
-        }
-        try {
-          inputStream = Files.newInputStream(file.toPath());
-        } catch (IOException e) {
-          throw new IllegalStateException("File not readable: " + file.getAbsolutePath(), e);
-        }
-
-        return inputStream;
-      }
-
-      @Override
-      public long length() {
-        try {
-          BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
-          return attributes.size();
-        } catch (IOException e) {
-          throw new IllegalStateException("File not readable: " + file.getAbsolutePath(), e);
-        }
-      }
-
-      public void close() {
-        if (inputStream != null) {
-          try {
-            inputStream.close();
-          } catch (IOException ignore) {
-          }
-        }
-      }
-
-      @Override
-      public String toString() {
-        return String.format("Contents.file(%s)", file);
-      }
-
-      @Override
-      public String contentAsString(Charset charset) {
-        throw new UnsupportedOperationException("File content may be too large");
-      }
-    };
+    return new FileContentSupplier(file);
   }
 
   public static Supplier bytes(byte[] bytes) {
-    Require.nonNull("Bytes to return", bytes, "may be empty");
-
-    return new Supplier() {
-      private boolean closed;
-
-      @Override
-      public InputStream get() {
-        if (closed) throw new IllegalStateException("Contents.Supplier has been closed before");
-
-        return new ByteArrayInputStream(bytes);
-      }
-
-      @Override
-      public long length() {
-        if (closed) throw new IllegalStateException("Contents.Supplier has been closed before");
-
-        return bytes.length;
-      }
-
-      public void close() {
-        closed = true;
-      }
-
-      @Override
-      public String toString() {
-        return bytes.length < 256 ?
-               new String(bytes, UTF_8) :
-               String.format("%s bytes: \"%s\"...", bytes.length, new String(bytes, 0, 256, UTF_8));
-      }
-
-      @Override
-      public String contentAsString(Charset charset) {
-        return new String(bytes, charset);
-      }
-    };
+    return new BytesContentSupplier(bytes);
   }
 
   public static byte[] bytes(Supplier supplier) {
