@@ -14,16 +14,14 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Union
 
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.input_device import InputDevice
 from selenium.webdriver.remote.webelement import WebElement
-
-from . import interaction
-from .input_device import InputDevice
 
 
 class ScrollOrigin:
-    def __init__(self, origin: Union[str, WebElement], x_offset: int, y_offset: int) -> None:
+    def __init__(self, origin: str | WebElement, x_offset: int, y_offset: int) -> None:
         self._origin = origin
         self._x_offset = x_offset
         self._y_offset = y_offset
@@ -37,7 +35,7 @@ class ScrollOrigin:
         return cls("viewport", x_offset, y_offset)
 
     @property
-    def origin(self) -> Union[str, WebElement]:
+    def origin(self) -> str | WebElement:
         return self._origin
 
     @property
@@ -73,5 +71,5 @@ class WheelInput(InputDevice):
             }
         )
 
-    def create_pause(self, pause_duration: Union[int, float] = 0) -> None:
+    def create_pause(self, pause_duration: int | float = 0) -> None:
         self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})

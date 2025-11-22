@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -51,4 +50,4 @@ public sealed record BrowsingContextAddPreloadScriptOptions
     public string? Sandbox { get; set; }
 }
 
-internal sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;
+public sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;

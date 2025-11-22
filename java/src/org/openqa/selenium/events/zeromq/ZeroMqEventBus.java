@@ -21,6 +21,7 @@ import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVEN
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.function.Consumer;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
@@ -38,6 +39,7 @@ import org.zeromq.ZContext;
 public class ZeroMqEventBus {
 
   private static final String EVENTS_SECTION = "events";
+  private static final int DEFAULT_HEARTBEAT_PERIOD_SECONDS = 60;
 
   private ZeroMqEventBus() {
     // Use the create method.
@@ -45,10 +47,26 @@ public class ZeroMqEventBus {
 
   public static EventBus create(
       ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
+    return create(
+        context,
+        publish,
+        subscribe,
+        bind,
+        secret,
+        Duration.ofSeconds(DEFAULT_HEARTBEAT_PERIOD_SECONDS));
+  }
+
+  public static EventBus create(
+      ZContext context,
+      String publish,
+      String subscribe,
+      boolean bind,
+      Secret secret,
+      Duration heartbeatPeriod) {
     if (bind) {
-      return new BoundZmqEventBus(context, publish, subscribe, secret);
+      return new BoundZmqEventBus(context, publish, subscribe, secret, heartbeatPeriod);
     }
-    return new UnboundZmqEventBus(context, publish, subscribe, secret);
+    return new UnboundZmqEventBus(context, publish, subscribe, secret, heartbeatPeriod);
   }
 
   public static EventBus create(Config config) {
@@ -85,10 +103,25 @@ public class ZeroMqEventBus {
                 });
 
     boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
+    Duration heartbeatPeriod = getHeartbeatPeriod(config);
 
     SecretOptions secretOptions = new SecretOptions(config);
 
-    return create(new ZContext(), publish, subscribe, bind, secretOptions.getRegistrationSecret());
+    return create(
+        new ZContext(),
+        publish,
+        subscribe,
+        bind,
+        secretOptions.getRegistrationSecret(),
+        heartbeatPeriod);
+  }
+
+  private static Duration getHeartbeatPeriod(Config config) {
+    int periodSeconds =
+        config
+            .getInt(EVENTS_SECTION, "eventbus-heartbeat-period")
+            .orElse(DEFAULT_HEARTBEAT_PERIOD_SECONDS);
+    return Duration.ofSeconds(periodSeconds);
   }
 
   private static String mungeUri(URI base, String scheme, int port) {

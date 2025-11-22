@@ -10,7 +10,10 @@ java_library(
     ],
     deps = [
         "//java/src/org/openqa/selenium/grid/data",
+        artifact("com.google.protobuf:protobuf-java"),
+        artifact("com.google.protobuf.nano:protobuf-javanano"),
         artifact("io.lettuce:lettuce-core"),
+        artifact("org.jboss.marshalling:jboss-marshalling"),
         artifact("org.redisson:redisson"),
     ],
 )

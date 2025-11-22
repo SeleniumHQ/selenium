@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json.Serialization;
 
@@ -37,6 +37,7 @@ public sealed class CaptureScreenshotOptions : CommandOptions
     public ClipRectangle? Clip { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<ScreenshotOrigin>))]
 public enum ScreenshotOrigin
 {
     Viewport,

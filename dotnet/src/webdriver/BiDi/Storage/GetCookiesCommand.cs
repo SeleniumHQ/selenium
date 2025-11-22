@@ -17,9 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -37,26 +35,7 @@ public sealed class GetCookiesOptions : CommandOptions
     public PartitionDescriptor? Partition { get; set; }
 }
 
-public sealed record GetCookiesResult : EmptyResult, IReadOnlyList<Network.Cookie>
-{
-    internal GetCookiesResult(IReadOnlyList<Network.Cookie> cookies, PartitionKey partitionKey)
-    {
-        Cookies = cookies;
-        PartitionKey = partitionKey;
-    }
-
-    public IReadOnlyList<Network.Cookie> Cookies { get; }
-
-    public PartitionKey PartitionKey { get; init; }
-
-    public Network.Cookie this[int index] => Cookies[index];
-
-    public int Count => Cookies.Count;
-
-    public IEnumerator<Network.Cookie> GetEnumerator() => Cookies.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (Cookies as IEnumerable).GetEnumerator();
-}
+public sealed record GetCookiesResult(IReadOnlyList<Network.Cookie> Cookies, PartitionKey PartitionKey) : EmptyResult;
 
 public sealed record CookieFilter
 {

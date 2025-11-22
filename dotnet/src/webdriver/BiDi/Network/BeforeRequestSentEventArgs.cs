@@ -19,8 +19,9 @@
 
 using OpenQA.Selenium.BiDi.BrowsingContext;
 using System;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public record BeforeRequestSentEventArgs(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator)
-    : BaseParametersEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp);
+public record BeforeRequestSentEventArgs(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, Initiator Initiator, IReadOnlyList<Intercept>? Intercepts)
+    : BaseParametersEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);

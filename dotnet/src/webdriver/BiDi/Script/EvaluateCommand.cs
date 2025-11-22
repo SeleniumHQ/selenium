@@ -17,8 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 using System;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
@@ -40,6 +41,7 @@ public sealed class EvaluateOptions : CommandOptions
 //[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 //[JsonDerivedType(typeof(EvaluateResultSuccess), "success")]
 //[JsonDerivedType(typeof(EvaluateResultException), "exception")]
+[JsonConverter(typeof(EvaluateResultConverter))]
 public abstract record EvaluateResult : EmptyResult
 {
     public RemoteValue AsSuccessResult()
