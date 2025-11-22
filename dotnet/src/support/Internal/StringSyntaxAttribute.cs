@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-#if !NET8_0_OR_GREATER
-
 namespace System.Diagnostics.CodeAnalysis;
 
 /// <summary>Specifies the syntax used in a string.</summary>
@@ -84,6 +82,3 @@ internal sealed class StringSyntaxAttribute : Attribute
     /// <summary>The syntax identifier for strings containing XML.</summary>
     public const string Xml = nameof(Xml);
 }
-
-#endif
-
