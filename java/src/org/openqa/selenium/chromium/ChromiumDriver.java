@@ -20,6 +20,9 @@ package org.openqa.selenium.chromium;
 import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -67,6 +70,7 @@ import org.openqa.selenium.remote.http.HttpClient;
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
  * It is used as the base class for Chromium-based browser drivers (Chrome, Edge).
  */
+@NullMarked
 public class ChromiumDriver extends RemoteWebDriver
     implements HasAuthentication,
         HasBiDi,
@@ -90,8 +94,8 @@ public class ChromiumDriver extends RemoteWebDriver
   private final Optional<DevTools> devTools;
   private final Optional<URI> biDiUri;
   private final Optional<BiDi> biDi;
-  protected HasCasting casting;
-  protected HasCdp cdp;
+  protected @Nullable HasCasting casting;
+  protected @Nullable HasCdp cdp;
   private final Map<Integer, ScriptKey> scriptKeys = new HashMap<>();
 
   protected ChromiumDriver(
