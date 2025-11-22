@@ -19,6 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium;
 
@@ -54,7 +55,7 @@ public sealed class PinnedScript
     /// <summary>
     /// Gets the source representing the body of the function in the pinned script.
     /// </summary>
-    [StringSyntax("javascript")]
+    [StringSyntax(StringSyntaxConstants.JavaScript)]
     public string Source { get; }
 
     internal static string MakeCreationScript(string scriptHandle, string scriptSource)
