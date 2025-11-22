@@ -41,8 +41,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--Workaround for being unable to have two different types of the same name, despite both being internal--> 
+    <!--Workaround for being unable to have two different types of the same name, despite both being internal-->
     <Compile Include="$(CsprojIncludePath)\Internal\StringSyntaxAttribute.cs" />
+    <Compile Include="$(CsprojIncludePath)\Internal\StringSyntaxConstants.cs" />
   </ItemGroup>
 
 </Project>
