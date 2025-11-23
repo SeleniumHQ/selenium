@@ -25,7 +25,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace Selenium.WebDriver.SourceGenerator;
+namespace Selenium.WebDriver.ResourceUtilitiesGenerator;
 
 [Generator]
 public class ResourceUtilitiesGenerator : IIncrementalGenerator
