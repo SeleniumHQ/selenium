@@ -1,0 +1,25 @@
+load("@rules_dotnet//dotnet:defs.bzl", "csharp_library")
+load("//dotnet:defs.bzl", "framework")
+
+csharp_library(
+    name = "resource-utilities-generator",
+    srcs = [
+        "ResourceUtilitiesAtomGenerator.cs",
+    ],
+    analyzer_configs = [
+        ".analyzerconfig",
+    ],
+    langversion = "latest",
+    is_analyzer = True,
+    nullable = "enable",
+    is_language_specific_analyzer = True,
+    target_frameworks = ["netstandard2.0"],
+    visibility = ["//dotnet:__subpackages__"],
+    deps = [
+        framework("nuget", "microsoft.codeanalysis.analyzers"),
+        framework("nuget", "microsoft.codeanalysis.common"),
+        framework("nuget", "microsoft.codeanalysis.csharp"),
+        framework("nuget", "System.Collections.Immutable"),
+        framework("nuget", "System.Memory"),
+    ],
+)

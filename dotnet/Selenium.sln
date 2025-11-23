@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium.WebDriver.Safari.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium.WebDriver.Support.Tests", "test\support\Selenium.WebDriver.Support.Tests.csproj", "{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriver.SourceGenerator", "private\Selenium.WebDriver.SourceGenerator\Selenium.WebDriver.SourceGenerator.csproj", "{4C46AED0-45A6-40FB-A300-BDACC54D1F25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C46AED0-45A6-40FB-A300-BDACC54D1F25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C46AED0-45A6-40FB-A300-BDACC54D1F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C46AED0-45A6-40FB-A300-BDACC54D1F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C46AED0-45A6-40FB-A300-BDACC54D1F25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

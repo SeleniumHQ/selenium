@@ -15,3 +15,6 @@ nuget NUnit 3.13.2
 nuget NUnitLite 3.13.2
 nuget System.Text.Json 8.0.5
 nuget Runfiles 0.14.0
+nuget Microsoft.CodeAnalysis.Analyzers 3.3.4
+nuget Microsoft.CodeAnalysis.CSharp 4.9.2
+nuget Microsoft.CodeAnalysis.Common 4.9.2

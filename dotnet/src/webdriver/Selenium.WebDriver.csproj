@@ -79,13 +79,20 @@
     <None Include="..\..\..\common\images\selenium_logo_small.png" Pack="true" PackagePath="logo.png" Visible="false" />
   </ItemGroup>
 
-  <Target Name="GenerateResources" BeforeTargets="CoreCompile">
-    <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
+  <ItemGroup>
+    <ProjectReference Include="..\..\private\Selenium.WebDriver.SourceGenerator/Selenium.WebDriver.SourceGenerator.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
-    </ItemGroup>
-  </Target>
+  <ItemGroup>
+    <AdditionalFiles Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json" />
+    <AdditionalFiles Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js" />
+    <AdditionalFiles Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js" />
+    <AdditionalFiles Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js" />
+    <AdditionalFiles Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js" />
+    <AdditionalFiles Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js" />
+  </ItemGroup>
 
   <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
     <Exec Command="bazel build //dotnet/src/webdriver/cdp/..." WorkingDirectory="../../.." />
