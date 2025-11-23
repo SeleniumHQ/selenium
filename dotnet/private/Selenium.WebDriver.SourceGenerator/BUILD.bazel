@@ -9,10 +9,10 @@ csharp_library(
     analyzer_configs = [
         ".analyzerconfig",
     ],
-    langversion = "latest",
     is_analyzer = True,
-    nullable = "enable",
     is_language_specific_analyzer = True,
+    langversion = "latest",
+    nullable = "enable",
     target_frameworks = ["netstandard2.0"],
     visibility = ["//dotnet:__subpackages__"],
     deps = [

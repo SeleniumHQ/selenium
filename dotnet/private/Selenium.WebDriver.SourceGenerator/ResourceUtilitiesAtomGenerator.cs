@@ -2,7 +2,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Immutable;
-using System.Data;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -21,7 +20,7 @@ public class ResourceUtilitiesGenerator : IIncrementalGenerator
             {
                 var name = Path.GetFileName(data.Path);
                 var code = GenerateAtom(data, token, out var diagnostics);
-                
+
                 return (name, code, diagnostics);
             });
 
@@ -106,9 +105,9 @@ public class ResourceUtilitiesGenerator : IIncrementalGenerator
             language = "javascript";
             return "FindElementsAtom";
         }
- 
+
         diagnostic = Diagnostic.Create(new DiagnosticDescriptor("WRG1002", "Unknown resource file", "Unknown file in the resource generator '{0}'", "WebDriverResourceGenerator", DiagnosticSeverity.Warning, true), Location.None, filePath);
-        
+
         var suffix = filePath.EndsWith(".js") ? "Atom" : "Json";
 
         language = string.Empty;
