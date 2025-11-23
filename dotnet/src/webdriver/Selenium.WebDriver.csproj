@@ -80,7 +80,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\private\Selenium.WebDriver.SourceGenerator/Selenium.WebDriver.SourceGenerator.csproj"
+    <ProjectReference Include="..\..\private\Selenium.WebDriver.ResourceUtilitiesGenerator\Selenium.WebDriver.ResourceUtilitiesGenerator.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false" />
   </ItemGroup>
