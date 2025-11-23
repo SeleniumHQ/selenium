@@ -21,4 +21,4 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record StackTrace(IReadOnlyList<StackFrame> CallFrames);
+public sealed record StackTrace(IReadOnlyList<StackFrame> CallFrames);

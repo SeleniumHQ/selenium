@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "artifact", "java_library")
 
 java_library(
     name = "jmx",
@@ -7,5 +7,8 @@ java_library(
         "//java/src/org/openqa/selenium/grid:__subpackages__",
         "//java/src/org/openqa/selenium/grid/session:__pkg__",
         "//java/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        artifact("org.jspecify:jspecify"),
     ],
 )

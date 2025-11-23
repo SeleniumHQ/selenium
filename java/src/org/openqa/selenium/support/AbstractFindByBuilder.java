@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.openqa.selenium.By;
 
-public abstract class AbstractFindByBuilder {
+public abstract class AbstractFindByBuilder<T> {
 
-  public abstract By buildIt(Object annotation, Field field);
+  public abstract By buildIt(T annotation, Field field);
 
   protected By buildByFromFindBy(FindBy findBy) {
     assertValidFindBy(findBy);

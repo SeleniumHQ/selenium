@@ -63,12 +63,12 @@ compile_pip_requirements(
     ],
 )
 
-SE_VERSION = "4.34.0.202505232017"
+SE_VERSION = "4.39.0.202510242320"
 
 BROWSER_VERSIONS = [
-    "v137",
-    "v135",
-    "v136",
+    "v140",
+    "v141",
+    "v142",
 ]
 
 TEST_DEPS = [
@@ -196,6 +196,24 @@ copy_file(
     out = "selenium-%s.dist-info/LICENSE" % SE_VERSION,
 )
 
+select_file(
+    name = "global-notice",
+    srcs = "//:license",
+    subpath = "NOTICE",
+)
+
+copy_file(
+    name = "notice",
+    src = ":global-notice",
+    out = "NOTICE",
+)
+
+copy_file(
+    name = "notice-wheel",
+    src = ":global-notice",
+    out = "selenium-%s.dist-info/NOTICE" % SE_VERSION,
+)
+
 py_library(
     name = "selenium",
     srcs = glob(
@@ -251,6 +269,7 @@ pkg_files(
         "README.rst",
         "pyproject.toml",
         ":license",
+        ":notice",
         ":selenium-pkg",
         ":selenium-pkginfo",
         "//rust:selenium_manager_srcs",
@@ -295,25 +314,25 @@ py_wheel(
         "Topic :: Software Development :: Testing",
         "Topic :: Software Development :: Libraries",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
     ],
     description_file = "README.rst",
     distribution = "selenium",
     homepage = "https://www.selenium.dev",
-    license = "Apache 2.0",
-    python_requires = ">=3.9",
+    license = "Apache-2.0",
+    python_requires = ">=3.10",
     python_tag = "py3",
     requires = [
-        "urllib3[socks]~=2.4.0",
-        "trio~=0.30.0",
-        "trio-websocket~=0.12.2",
-        "certifi>=2025.4.26",
-        "typing_extensions~=4.13.2",
-        "websocket-client~=1.8.0",
+        "urllib3[socks]>=2.5.0,<3.0",
+        "trio>=0.31.0,<1.0",
+        "trio-websocket>=0.12.2,<1.0",
+        "certifi>=2025.10.5",
+        "typing_extensions>=4.15.0,<5.0",
+        "websocket-client>=1.8.0,<2.0",
     ],
     strip_path_prefixes = [
         "py/",
@@ -326,6 +345,7 @@ py_wheel(
     visibility = ["//visibility:public"],
     deps = [
         ":license-wheel",
+        ":notice-wheel",
         ":selenium-pkg",
     ],
 )
@@ -343,7 +363,6 @@ py_library(
         "test/selenium/webdriver/common/network.py",
         "test/selenium/webdriver/common/webserver.py",
         "test/selenium/webdriver/firefox/__init__.py",
-        "test/selenium/webdriver/firefox/conftest.py",
         "test/selenium/webdriver/marionette/__init__.py",
         "test/selenium/webdriver/marionette/conftest.py",
         "test/selenium/webdriver/safari/conftest.py",
@@ -421,7 +440,8 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ],
-            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"],
+            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+                      (["test/selenium/webdriver/common/devtools_tests.py"] if browser == "chrome-beta" else []),
         ),
         args = [
             "--instafail",
@@ -447,7 +467,8 @@ BIDI_TESTS = glob(["test/selenium/webdriver/common/**/*bidi*_tests.py"])
                 "test/selenium/webdriver/common/**/*.py",
                 "test/selenium/webdriver/support/**/*.py",
             ],
-            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
+            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+                      (["test/selenium/webdriver/common/devtools_tests.py"] if browser == "chrome-beta" else []),
         ),
         args = [
             "--instafail",
@@ -507,6 +528,29 @@ py_test_suite(
         "no-sandbox",
         "skip-rbe",
     ] + BROWSERS["chrome"]["tags"],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+    ] + TEST_DEPS,
+)
+
+py_test_suite(
+    name = "test-chrome-beta",
+    size = "large",
+    srcs = glob(
+        [
+            "test/selenium/webdriver/chrome/**/*.py",
+        ],
+    ),
+    args = [
+        "--instafail",
+    ] + BROWSERS["chrome-beta"]["args"],
+    data = BROWSERS["chrome-beta"]["data"],
+    env_inherit = ["DISPLAY"],
+    tags = [
+        "no-sandbox",
+    ] + BROWSERS["chrome-beta"]["tags"],
     deps = [
         ":init-tree",
         ":selenium",

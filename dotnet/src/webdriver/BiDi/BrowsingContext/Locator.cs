@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
@@ -29,13 +30,13 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 [JsonDerivedType(typeof(XPathLocator), "xpath")]
 public abstract record Locator;
 
-public record AccessibilityLocator(AccessibilityValue Value) : Locator;
+public sealed record AccessibilityLocator(AccessibilityValue Value) : Locator;
 
-public record CssLocator(string Value) : Locator;
+public sealed record CssLocator(string Value) : Locator;
 
-public record ContextLocator(ContextValue Value) : Locator;
+public sealed record ContextLocator(ContextValue Value) : Locator;
 
-public record InnerTextLocator(string Value) : Locator
+public sealed record InnerTextLocator(string Value) : Locator
 {
     public bool? IgnoreCase { get; set; }
 
@@ -44,16 +45,17 @@ public record InnerTextLocator(string Value) : Locator
     public long? MaxDepth { get; set; }
 }
 
-public record XPathLocator(string Value) : Locator;
+public sealed record XPathLocator(string Value) : Locator;
 
-public record AccessibilityValue
+public sealed record AccessibilityValue
 {
     public string? Name { get; set; }
     public string? Role { get; set; }
 }
 
-public record ContextValue(BrowsingContext Context);
+public sealed record ContextValue(BrowsingContext Context);
 
+[JsonConverter(typeof(CamelCaseEnumConverter<MatchType>))]
 public enum MatchType
 {
     Full,

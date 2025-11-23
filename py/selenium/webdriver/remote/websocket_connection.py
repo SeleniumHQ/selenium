@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import json
 import logging
 from ssl import CERT_NONE
@@ -28,16 +29,20 @@ logger = logging.getLogger(__name__)
 
 
 class WebSocketConnection:
-    _response_wait_timeout = 30
-    _response_wait_interval = 0.1
-
     _max_log_message_size = 9999
 
-    def __init__(self, url):
+    def __init__(self, url, timeout, interval):
+        if not isinstance(timeout, (int, float)) or timeout < 0:
+            raise WebDriverException("timeout must be a positive number")
+        if not isinstance(interval, (int, float)) or timeout < 0:
+            raise WebDriverException("interval must be a positive number")
+
+        self.url = url
+        self.response_wait_timeout = timeout
+        self.response_wait_interval = interval
+
         self.callbacks = {}
         self.session_id = None
-        self.url = url
-
         self._id = 0
         self._messages = {}
         self._started = False
@@ -46,7 +51,7 @@ class WebSocketConnection:
         self._wait_until(lambda: self._started)
 
     def close(self):
-        self._ws_thread.join(timeout=self._response_wait_timeout)
+        self._ws_thread.join(timeout=self.response_wait_timeout)
         self._ws.close()
         self._started = False
         self._ws = None
@@ -126,7 +131,7 @@ class WebSocketConnection:
                 self._ws.run_forever(suppress_origin=True)
 
         self._ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
-        self._ws_thread = Thread(target=run_socket)
+        self._ws_thread = Thread(target=run_socket, daemon=True)
         self._ws_thread.start()
 
     def _process_message(self, message):
@@ -139,11 +144,11 @@ class WebSocketConnection:
         if "method" in message:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
-                Thread(target=callback, args=(params,)).start()
+                Thread(target=callback, args=(params,), daemon=True).start()
 
     def _wait_until(self, condition):
-        timeout = self._response_wait_timeout
-        interval = self._response_wait_interval
+        timeout = self.response_wait_timeout
+        interval = self.response_wait_interval
 
         while timeout > 0:
             result = condition()

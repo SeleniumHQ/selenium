@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public class UserContext : IAsyncDisposable
+public sealed class UserContext : IAsyncDisposable
 {
     private readonly BiDi _bidi;
 

@@ -16,7 +16,7 @@
 // under the License.
 
 /**
- * @fileoverview Demonstrates how to use WebDriver's logging sysem.
+ * @fileoverview Demonstrates how to use WebDriver's logging system.
  */
 
 'use strict'

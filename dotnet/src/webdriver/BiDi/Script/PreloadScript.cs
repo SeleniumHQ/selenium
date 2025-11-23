@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public class PreloadScript : IAsyncDisposable
+public sealed class PreloadScript : IAsyncDisposable
 {
     private readonly BiDi _bidi;
 

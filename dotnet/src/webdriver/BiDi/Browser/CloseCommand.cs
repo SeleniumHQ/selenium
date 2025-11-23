@@ -17,11 +17,11 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal class CloseCommand()
-    : Command<CommandParameters, EmptyResult>(CommandParameters.Empty, "browser.close");
+internal sealed class CloseCommand()
+    : Command<Parameters, CloseResult>(Parameters.Empty, "browser.close");
 
-public record CloseOptions : CommandOptions;
+public sealed class CloseOptions : CommandOptions;
+
+public sealed record CloseResult : EmptyResult;

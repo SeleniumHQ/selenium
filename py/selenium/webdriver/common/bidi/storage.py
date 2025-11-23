@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional, Union
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
@@ -26,6 +26,7 @@ class SameSite:
     STRICT = "strict"
     LAX = "lax"
     NONE = "none"
+    DEFAULT = "default"
 
 
 class BytesValue:
@@ -42,8 +43,7 @@ class BytesValue:
         """Converts the BytesValue to a dictionary.
 
         Returns:
-        -------
-            Dict: A dictionary representation of the BytesValue.
+            A dictionary representation of the BytesValue.
         """
         return {"type": self.type, "value": self.value}
 
@@ -56,12 +56,12 @@ class Cookie:
         name: str,
         value: BytesValue,
         domain: str,
-        path: Optional[str] = None,
-        size: Optional[int] = None,
-        http_only: Optional[bool] = None,
-        secure: Optional[bool] = None,
-        same_site: Optional[str] = None,
-        expiry: Optional[int] = None,
+        path: str | None = None,
+        size: int | None = None,
+        http_only: bool | None = None,
+        secure: bool | None = None,
+        same_site: str | None = None,
+        expiry: int | None = None,
     ):
         self.name = name
         self.value = value
@@ -77,20 +77,25 @@ class Cookie:
     def from_dict(cls, data: dict) -> "Cookie":
         """Creates a Cookie instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the cookie information.
 
         Returns:
-        -------
-            Cookie: A new instance of Cookie.
+            A new instance of Cookie.
         """
-        value = BytesValue(data.get("value", {}).get("type"), data.get("value", {}).get("value"))
+        # Validation for empty strings
+        name = data.get("name")
+        if not name:
+            raise ValueError("name is required and cannot be empty")
+        domain = data.get("domain")
+        if not domain:
+            raise ValueError("domain is required and cannot be empty")
 
+        value = BytesValue(data.get("value", {}).get("type"), data.get("value", {}).get("value"))
         return cls(
-            name=data.get("name"),
+            name=str(name),
             value=value,
-            domain=data.get("domain"),
+            domain=str(domain),
             path=data.get("path"),
             size=data.get("size"),
             http_only=data.get("httpOnly"),
@@ -105,15 +110,15 @@ class CookieFilter:
 
     def __init__(
         self,
-        name: Optional[str] = None,
-        value: Optional[BytesValue] = None,
-        domain: Optional[str] = None,
-        path: Optional[str] = None,
-        size: Optional[int] = None,
-        http_only: Optional[bool] = None,
-        secure: Optional[bool] = None,
-        same_site: Optional[str] = None,
-        expiry: Optional[int] = None,
+        name: str | None = None,
+        value: BytesValue | None = None,
+        domain: str | None = None,
+        path: str | None = None,
+        size: int | None = None,
+        http_only: bool | None = None,
+        secure: bool | None = None,
+        same_site: str | None = None,
+        expiry: int | None = None,
     ):
         self.name = name
         self.value = value
@@ -125,14 +130,13 @@ class CookieFilter:
         self.same_site = same_site
         self.expiry = expiry
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Converts the CookieFilter to a dictionary.
 
         Returns:
-        -------
-            Dict: A dictionary representation of the CookieFilter.
+            A dictionary representation of the CookieFilter.
         """
-        result = {}
+        result: dict[str, Any] = {}
         if self.name is not None:
             result["name"] = self.name
         if self.value is not None:
@@ -157,7 +161,7 @@ class CookieFilter:
 class PartitionKey:
     """Represents a storage partition key."""
 
-    def __init__(self, user_context: Optional[str] = None, source_origin: Optional[str] = None):
+    def __init__(self, user_context: str | None = None, source_origin: str | None = None):
         self.user_context = user_context
         self.source_origin = source_origin
 
@@ -165,13 +169,11 @@ class PartitionKey:
     def from_dict(cls, data: dict) -> "PartitionKey":
         """Creates a PartitionKey instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the partition key information.
 
         Returns:
-        -------
-            PartitionKey: A new instance of PartitionKey.
+            A new instance of PartitionKey.
         """
         return cls(
             user_context=data.get("userContext"),
@@ -190,7 +192,6 @@ class BrowsingContextPartitionDescriptor:
         """Converts the BrowsingContextPartitionDescriptor to a dictionary.
 
         Returns:
-        -------
             Dict: A dictionary representation of the BrowsingContextPartitionDescriptor.
         """
         return {"type": self.type, "context": self.context}
@@ -199,7 +200,7 @@ class BrowsingContextPartitionDescriptor:
 class StorageKeyPartitionDescriptor:
     """Represents a storage key partition descriptor."""
 
-    def __init__(self, user_context: Optional[str] = None, source_origin: Optional[str] = None):
+    def __init__(self, user_context: str | None = None, source_origin: str | None = None):
         self.type = "storageKey"
         self.user_context = user_context
         self.source_origin = source_origin
@@ -208,7 +209,6 @@ class StorageKeyPartitionDescriptor:
         """Converts the StorageKeyPartitionDescriptor to a dictionary.
 
         Returns:
-        -------
             Dict: A dictionary representation of the StorageKeyPartitionDescriptor.
         """
         result = {"type": self.type}
@@ -227,11 +227,11 @@ class PartialCookie:
         name: str,
         value: BytesValue,
         domain: str,
-        path: Optional[str] = None,
-        http_only: Optional[bool] = None,
-        secure: Optional[bool] = None,
-        same_site: Optional[str] = None,
-        expiry: Optional[int] = None,
+        path: str | None = None,
+        http_only: bool | None = None,
+        secure: bool | None = None,
+        same_site: str | None = None,
+        expiry: int | None = None,
     ):
         self.name = name
         self.value = value
@@ -242,14 +242,14 @@ class PartialCookie:
         self.same_site = same_site
         self.expiry = expiry
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Converts the PartialCookie to a dictionary.
 
         Returns:
         -------
             Dict: A dictionary representation of the PartialCookie.
         """
-        result = {
+        result: dict[str, Any] = {
             "name": self.name,
             "value": self.value.to_dict(),
             "domain": self.domain,
@@ -278,13 +278,11 @@ class GetCookiesResult:
     def from_dict(cls, data: dict) -> "GetCookiesResult":
         """Creates a GetCookiesResult instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the get cookies result information.
 
         Returns:
-        -------
-            GetCookiesResult: A new instance of GetCookiesResult.
+            A new instance of GetCookiesResult.
         """
         cookies = [Cookie.from_dict(cookie) for cookie in data.get("cookies", [])]
         partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
@@ -301,13 +299,11 @@ class SetCookieResult:
     def from_dict(cls, data: dict) -> "SetCookieResult":
         """Creates a SetCookieResult instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the set cookie result information.
 
         Returns:
-        -------
-            SetCookieResult: A new instance of SetCookieResult.
+            A new instance of SetCookieResult.
         """
         partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
         return cls(partition_key=partition_key)
@@ -323,13 +319,11 @@ class DeleteCookiesResult:
     def from_dict(cls, data: dict) -> "DeleteCookiesResult":
         """Creates a DeleteCookiesResult instance from a dictionary.
 
-        Parameters:
-        -----------
+        Args:
             data: A dictionary containing the delete cookies result information.
 
         Returns:
-        -------
-            DeleteCookiesResult: A new instance of DeleteCookiesResult.
+            A new instance of DeleteCookiesResult.
         """
         partition_key = PartitionKey.from_dict(data.get("partitionKey", {}))
         return cls(partition_key=partition_key)
@@ -343,19 +337,23 @@ class Storage:
 
     def get_cookies(
         self,
-        filter: Optional[CookieFilter] = None,
-        partition: Optional[Union[BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor]] = None,
+        filter: CookieFilter | None = None,
+        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
     ) -> GetCookiesResult:
-        """Retrieves cookies that match the given parameters.
+        """Gets cookies matching the specified filter.
 
-        Parameters:
-        -----------
-            filter: Optional filter to match cookies.
-            partition: Optional partition descriptor.
+        Args:
+            filter: Optional filter to specify which cookies to retrieve.
+            partition: Optional partition key to limit the scope of the operation.
 
         Returns:
-        -------
-            GetCookiesResult: The result of the get cookies command.
+            A GetCookiesResult containing the cookies and partition key.
+
+        Example:
+            result = await storage.get_cookies(
+                filter=CookieFilter(name="sessionId"),
+                partition=PartitionKey(...)
+            )
         """
         params = {}
         if filter is not None:
@@ -369,18 +367,16 @@ class Storage:
     def set_cookie(
         self,
         cookie: PartialCookie,
-        partition: Optional[Union[BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor]] = None,
+        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
     ) -> SetCookieResult:
         """Sets a cookie in the browser.
 
-        Parameters:
-        -----------
+        Args:
             cookie: The cookie to set.
             partition: Optional partition descriptor.
 
         Returns:
-        -------
-            SetCookieResult: The result of the set cookie command.
+            The result of the set cookie command.
         """
         params = {"cookie": cookie.to_dict()}
         if partition is not None:
@@ -391,19 +387,17 @@ class Storage:
 
     def delete_cookies(
         self,
-        filter: Optional[CookieFilter] = None,
-        partition: Optional[Union[BrowsingContextPartitionDescriptor, StorageKeyPartitionDescriptor]] = None,
+        filter: CookieFilter | None = None,
+        partition: BrowsingContextPartitionDescriptor | StorageKeyPartitionDescriptor | None = None,
     ) -> DeleteCookiesResult:
         """Deletes cookies that match the given parameters.
 
-        Parameters:
-        -----------
+        Args:
             filter: Optional filter to match cookies to delete.
             partition: Optional partition descriptor.
 
         Returns:
-        -------
-            DeleteCookiesResult: The result of the delete cookies command.
+            The result of the delete cookies command.
         """
         params = {}
         if filter is not None:

@@ -1,3 +1,84 @@
+Selenium 4.38.0
+* update devtools versions
+* [py][bidi]: add set_timezone_override command in emulation (#16500)
+* Replaced :param: and :args: from docstrings (#16469)
+
+Selenium 4.37.0
+* Add CDP for Chrome 141 and remove 138
+* Fix mypy errors in by file and exceptions file (#16300)
+* Update docstrings style according to google guideline (#16445)
+* Support Python 3.14 and drop Python 3.9 (#16342)
+* Update docstrings style (#16427)
+* Fix default rpId in virtual authenticator (#16428)
+* Raise NotImplementedError when deleting downloads in driver subclass (#16423)
+* Configure WebSocket timeout and wait interval via ClientConfig (#16248)
+* Re-add defaults for Chromium kwargs (#16372)
+* Add --enable-chrome-logs to chrome service args to inherit browser i/o streams (#16202)
+* Fix type annotations in the chromium webdriver file (#16309)
+* Raise InvalidSelectorException for compound class names (#16291)
+
+Selenium 4.36.0
+* Add CDP for Chrome 140 and remove 137
+* close ipv6 port in case of error (#16165)
+* Update docstring and comments in keys.py (#16187)
+* Fix formatting (#16189)
+* Fix type annotation error and raise clearer error message (#16174)
+* Fix type annotation errors in service.py (#16250)
+* replace `platform.system()` with `sys.platform` (#16259)
+* Fix mypy type annotation issues in action_builder (#16207)
+* [bidi]: add `downloadEnd` event for browsing context (#16209)
+* Specify the full path for fedcm import in webdriver.py (#16286)
+* Fix mypy errors (#16283)
+* Update DesiredCapabilities example to use modern Options API (#16295)
+* Add args to is_url_connectable (#16212)
+* Convert all relative imports to absolute imports (#16311)
+* Raise InvalidSelectorException for compound class names (#16291)
+* Fix type annotations in the chromium webdriver file (#16309)
+
+Selenium 4.35.0
+* Add CDP for Chrome 139 and remove 136
+* [bidi]: implement bidi module - emulation (#15819)
+* Allow free_port() to bind to IPv6 if IPv4 is unavailable (#16003)
+* Fix vendor prefix for Edge browser remote connections (#16078)
+* [bidi]: support `accept_insecure_certs` and `proxy` parameters in `create_user_context` (#15983)
+* Encapsulated Geo Location co-ordinates using `getters/setters` (#16079)
+* [bidi]: add `unhandled_prompt_behavior` param for `create_user_context` (#16112)
+* add `default` as a value for SameSite (#16129)
+* Use native dict for type annotation (#16157)
+* Fix proxy basic auth handling special characters (#16105)
+* fix WebView2 and target issues related to CDP and BiDi (#16140)
+* [bidi]: add event handler support for browsing context (#16101)
+* [bidi]: Implement low-level API for Input BiDi module (#16049)
+
+Selenium 4.34.1
+* Updated urllib3 due to security issue https://github.com/urllib3/urllib3/security/advisories/GHSA-48p4-8xcf-vxj5
+
+Selenium 4.34.0
+* Add CDP for Chrome 138 and remove 135
+* Upgrade type hints (#15784)
+* Fix type error for attribute in remote_connection.py (#15810)
+* Fixed type hint (#15814)
+* Fix import for type hint (#15817)
+* [bidi]: add `enable_webextensions` option for chromium-based browsers (#15794)
+* Fix type annotation errors (#15841)
+* Fixed type annotation issues (#15847)
+* [bidi]: implement bidi permissions module (#15830)
+* Fixed mypy error and change source var (#15853)
+* do not use global var for devtools, allows multiple devtools to run (#15881)
+* Fix : Mypy type annotation errors - 2 (#15848)
+* [bidi]: add `timestamp` to `HistoryUpdatedParams` class (#15892)
+* Fix possible TypeError in expected conditions (#15891)
+* Refactor server.py to use properties (#15840)
+* Add properties (getter/setter) for service args (#15889)
+* Fix error handler for non-json response bodies (#15887)
+* [bidi]: add BiDi script module commands (#15880)
+* Fix: Mypy type annotation errors in remote/webdriver.py (#15900)
+* Deprecate support for FTP proxies (#15906)
+* Type hint cleanup (#15917)
+* Adding Note to enable_webextensions() regarding CDP (plus gen docstring updates) (#15927)
+* Return HTTP response reason when remote connection error occurs (#15942)
+* [py] add macOS specific keys to Key enum (#15948)
+
 Selenium 4.33.0
 * Add CDP for Chrome 137 and remove 134
 * [bidi]: add bidi storage module (#15669)
@@ -655,7 +736,7 @@ Selenium 4.0 Alpha 7
 * Add debugpy to requirements
 * Fix uploading multiple files on remote driver (#7472) (#8734)
 * Correct docstring around find_element and find_elements. Fixes #8806
-* Add the ability to ignore local proxys that are available
+* Add the ability to ignore local proxies that are available
 * add script pinning to python bindings
 * Deprecate desired_capabilities property in favour of capabilities property
 * Update tests to use requirements file

@@ -17,18 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal class PrintCommand(PrintCommandParameters @params)
-    : Command<PrintCommandParameters, PrintResult>(@params, "browsingContext.print");
+internal sealed class PrintCommand(PrintParameters @params)
+    : Command<PrintParameters, PrintResult>(@params, "browsingContext.print");
 
-internal record PrintCommandParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : CommandParameters;
+internal sealed record PrintParameters(BrowsingContext Context, bool? Background, PrintMargin? Margin, PrintOrientation? Orientation, PrintPage? Page, IEnumerable<PrintPageRange>? PageRanges, double? Scale, bool? ShrinkToFit) : Parameters;
 
-public record PrintOptions : CommandOptions
+public sealed class PrintOptions : CommandOptions
 {
     public bool? Background { get; set; }
 
@@ -56,6 +57,7 @@ public struct PrintMargin
     public double? Top { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<PrintOrientation>))]
 public enum PrintOrientation
 {
     Portrait,
@@ -69,6 +71,7 @@ public struct PrintPage
     public double? Width { get; set; }
 }
 
+[JsonConverter(typeof(PrintPageRangeConverter))]
 public readonly record struct PrintPageRange(int? Start, int? End)
 {
     public static implicit operator PrintPageRange(int index) { return new PrintPageRange(index, index); }
@@ -112,7 +115,7 @@ public readonly record struct PrintPageRange(int? Start, int? End)
 #endif
 }
 
-public record PrintResult(string Data) : EmptyResult
+public sealed record PrintResult(ReadOnlyMemory<byte> Data) : EmptyResult
 {
-    public byte[] ToByteArray() => Convert.FromBase64String(Data);
+    public byte[] ToByteArray() => Data.ToArray();
 }

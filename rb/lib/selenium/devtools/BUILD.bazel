@@ -4,9 +4,9 @@ load("@rules_ruby//ruby:defs.bzl", "rb_binary", "rb_library")
 package(default_visibility = ["//rb:__subpackages__"])
 
 CDP_VERSIONS = [
-    "v137",
-    "v135",
-    "v136",
+    "v140",
+    "v141",
+    "v142",
 ]
 
 rb_library(

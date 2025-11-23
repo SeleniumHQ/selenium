@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public class Handle
+public sealed class Handle
 {
     private readonly BiDi _bidi;
 

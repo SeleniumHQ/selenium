@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public class InternalId
+public sealed class InternalId
 {
     readonly BiDi _bidi;
 

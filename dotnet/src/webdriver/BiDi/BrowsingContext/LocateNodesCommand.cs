@@ -17,18 +17,16 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal class LocateNodesCommand(LocateNodesCommandParameters @params)
-    : Command<LocateNodesCommandParameters, LocateNodesResult>(@params, "browsingContext.locateNodes");
+internal sealed class LocateNodesCommand(LocateNodesParameters @params)
+    : Command<LocateNodesParameters, LocateNodesResult>(@params, "browsingContext.locateNodes");
 
-internal record LocateNodesCommandParameters(BrowsingContext Context, Locator Locator, long? MaxNodeCount, Script.SerializationOptions? SerializationOptions, IEnumerable<Script.ISharedReference>? StartNodes) : CommandParameters;
+internal sealed record LocateNodesParameters(BrowsingContext Context, Locator Locator, long? MaxNodeCount, Script.SerializationOptions? SerializationOptions, IEnumerable<Script.ISharedReference>? StartNodes) : Parameters;
 
-public record LocateNodesOptions : CommandOptions
+public sealed class LocateNodesOptions : CommandOptions
 {
     public long? MaxNodeCount { get; set; }
 
@@ -37,20 +35,4 @@ public record LocateNodesOptions : CommandOptions
     public IEnumerable<Script.ISharedReference>? StartNodes { get; set; }
 }
 
-public record LocateNodesResult : EmptyResult, IReadOnlyList<Script.NodeRemoteValue>
-{
-    private readonly IReadOnlyList<Script.NodeRemoteValue> _nodes;
-
-    internal LocateNodesResult(IReadOnlyList<Script.NodeRemoteValue> nodes)
-    {
-        _nodes = nodes;
-    }
-
-    public Script.NodeRemoteValue this[int index] => _nodes[index];
-
-    public int Count => _nodes.Count;
-
-    public IEnumerator<Script.NodeRemoteValue> GetEnumerator() => _nodes.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (_nodes as IEnumerable).GetEnumerator();
-}
+public sealed record LocateNodesResult(IReadOnlyList<Script.NodeRemoteValue> Nodes) : EmptyResult;

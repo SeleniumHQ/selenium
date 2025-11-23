@@ -23,7 +23,7 @@ using System;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public class BrowsingContextLogModule(BrowsingContext context, LogModule logModule)
+public sealed class BrowsingContextLogModule(BrowsingContext context, LogModule logModule)
 {
     public Task<Subscription> OnEntryAddedAsync(Func<Log.LogEntry, Task> handler, SubscriptionOptions? options = null)
     {

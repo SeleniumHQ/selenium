@@ -17,31 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-internal class GetClientWindowsCommand()
-    : Command<CommandParameters, GetClientWindowsResult>(CommandParameters.Empty, "browser.getClientWindows");
+internal sealed class GetClientWindowsCommand()
+    : Command<Parameters, GetClientWindowsResult>(Parameters.Empty, "browser.getClientWindows");
 
-public record GetClientWindowsOptions : CommandOptions;
+public sealed class GetClientWindowsOptions : CommandOptions;
 
-public record GetClientWindowsResult : EmptyResult, IReadOnlyList<ClientWindowInfo>
-{
-    private readonly IReadOnlyList<ClientWindowInfo> _clientWindows;
-
-    internal GetClientWindowsResult(IReadOnlyList<ClientWindowInfo> clientWindows)
-    {
-        _clientWindows = clientWindows;
-    }
-
-    public ClientWindowInfo this[int index] => _clientWindows[index];
-
-    public int Count => _clientWindows.Count;
-
-    public IEnumerator<ClientWindowInfo> GetEnumerator() => _clientWindows.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (_clientWindows as IEnumerable).GetEnumerator();
-}
+public sealed record GetClientWindowsResult(IReadOnlyList<ClientWindowInfo> ClientWindows) : EmptyResult;

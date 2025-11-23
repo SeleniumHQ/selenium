@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal class FailRequestCommand(FailRequestCommandParameters @params)
-    : Command<FailRequestCommandParameters, EmptyResult>(@params, "network.failRequest");
+internal sealed class FailRequestCommand(FailRequestParameters @params)
+    : Command<FailRequestParameters, FailRequestResult>(@params, "network.failRequest");
 
-internal record FailRequestCommandParameters(Request Request) : CommandParameters;
+internal sealed record FailRequestParameters(Request Request) : Parameters;
 
-public record FailRequestOptions : CommandOptions;
+public sealed class FailRequestOptions : CommandOptions;
+
+public sealed record FailRequestResult : EmptyResult;

@@ -17,16 +17,14 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal class SetViewportCommand(SetViewportCommandParameters @params)
-    : Command<SetViewportCommandParameters, EmptyResult>(@params, "browsingContext.setViewport");
+internal sealed class SetViewportCommand(SetViewportParameters @params)
+    : Command<SetViewportParameters, SetViewportResult>(@params, "browsingContext.setViewport");
 
-internal record SetViewportCommandParameters(BrowsingContext Context, Viewport? Viewport, double? DevicePixelRatio) : CommandParameters;
+internal sealed record SetViewportParameters(BrowsingContext Context, Viewport? Viewport, double? DevicePixelRatio) : Parameters;
 
-public record SetViewportOptions : CommandOptions
+public sealed class SetViewportOptions : CommandOptions
 {
     public Viewport? Viewport { get; set; }
 
@@ -34,3 +32,5 @@ public record SetViewportOptions : CommandOptions
 }
 
 public readonly record struct Viewport(long Width, long Height);
+
+public sealed record SetViewportResult : EmptyResult;

@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Script;
 
-internal class RemovePreloadScriptCommand(RemovePreloadScriptCommandParameters @params)
-    : Command<RemovePreloadScriptCommandParameters, EmptyResult>(@params, "script.removePreloadScript");
+internal sealed class RemovePreloadScriptCommand(RemovePreloadScriptParameters @params)
+    : Command<RemovePreloadScriptParameters, RemovePreloadScriptResult>(@params, "script.removePreloadScript");
 
-internal record RemovePreloadScriptCommandParameters(PreloadScript Script) : CommandParameters;
+internal sealed record RemovePreloadScriptParameters(PreloadScript Script) : Parameters;
 
-public record RemovePreloadScriptOptions : CommandOptions;
+public sealed class RemovePreloadScriptOptions : CommandOptions;
+
+public sealed record RemovePreloadScriptResult : EmptyResult;

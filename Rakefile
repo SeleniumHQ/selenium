@@ -96,9 +96,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v137:v137.publish
-  //java/src/org/openqa/selenium/devtools/v135:v135.publish
-  //java/src/org/openqa/selenium/devtools/v136:v136.publish
+  //java/src/org/openqa/selenium/devtools/v140:v140.publish
+  //java/src/org/openqa/selenium/devtools/v141:v141.publish
+  //java/src/org/openqa/selenium/devtools/v142:v142.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
@@ -685,7 +685,7 @@ namespace :py do
       end
     end
 
-    desc 'Python Remote tests with Firefox'
+    desc 'Python Remote tests with Chrome'
     task :remote do
       Rake::Task['py:clean'].invoke
       Bazel.execute('test', [], '//py:test-remote')
@@ -747,9 +747,12 @@ namespace :rb do
 
   desc 'Update generated Ruby files for local development'
   task :local_dev do
+    puts 'installing ruby, this may take a minute'
     Bazel.execute('build', [], '@bundle//:bundle')
     Rake::Task['rb:build'].invoke
     Rake::Task['grid'].invoke
+    # A command like this is required to move ruby binary into working directory
+    Bazel.execute('build', %w[--test_arg --dry-run], '@bundle//bin:rubocop')
   end
 
   desc 'Push Ruby gems to rubygems'
@@ -963,9 +966,9 @@ namespace :java do
     ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
     ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
-
-    repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
-    ENV['MAVEN_REPO'] = "https://oss.sonatype.org/#{repo}"
+    repo_domain = 'central.sonatype.com'
+    repo = nightly ? "#{repo_domain}/repository/maven-snapshots" : "ossrh-staging-api.#{repo_domain}/service/local/staging/deploy/maven2/"
+    ENV['MAVEN_REPO'] = "https://#{repo}"
     ENV['GPG_SIGN'] = (!nightly).to_s
 
     if nightly
@@ -1105,7 +1108,7 @@ namespace :all do
 
     ['common/devtools/',
      'dotnet/src/webdriver/DevTools/',
-     'dotnet/src/webdriver/WebDriver.csproj',
+     'dotnet/src/webdriver/Selenium.WebDriver.csproj',
      'dotnet/test/common/DevTools/',
      'dotnet/test/common/CustomDriverConfigs/',
      'dotnet/selenium-dotnet-version.bzl',
@@ -1118,12 +1121,13 @@ namespace :all do
   end
 
   desc 'Update all API Documentation'
-  task :docs do
-    Rake::Task['java:docs'].invoke('skip_update')
-    Rake::Task['py:docs'].invoke('skip_update')
-    Rake::Task['rb:docs'].invoke('skip_update')
-    Rake::Task['dotnet:docs'].invoke('skip_update')
-    Rake::Task['node:docs'].invoke('skip_update')
+  task :docs do |_task, arguments|
+    args = arguments.to_a
+    Rake::Task['java:docs'].invoke(*(args + ['skip_update']))
+    Rake::Task['py:docs'].invoke(*(args + ['skip_update']))
+    Rake::Task['rb:docs'].invoke(*(args + ['skip_update']))
+    Rake::Task['dotnet:docs'].invoke(*(args + ['skip_update']))
+    Rake::Task['node:docs'].invoke(*(args + ['skip_update']))
 
     update_gh_pages
   end

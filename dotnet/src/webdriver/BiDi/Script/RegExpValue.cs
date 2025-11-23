@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-public record RegExpValue(string Pattern)
+public sealed record RegExpValue(string Pattern)
 {
     public string? Flags { get; set; }
 

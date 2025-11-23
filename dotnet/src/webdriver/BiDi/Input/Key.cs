@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-//partial record Key
+//partial sealed record Key
 //{
 //    public const char Shift = '\uE008';
 

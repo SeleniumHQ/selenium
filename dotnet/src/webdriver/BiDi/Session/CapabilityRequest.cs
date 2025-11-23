@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-public record CapabilityRequest
+public sealed record CapabilityRequest
 {
     public bool? AcceptInsecureCerts { get; set; }
 

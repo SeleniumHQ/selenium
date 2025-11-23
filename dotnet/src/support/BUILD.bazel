@@ -32,7 +32,10 @@ csharp_library(
         "Events/*.cs",
         "Extensions/*.cs",
         "UI/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+        "//dotnet:source_files_support_needs_from_core",
+    ],
     out = "WebDriver.Support",
     langversion = "12.0",
     nullable = "enable",
@@ -56,7 +59,7 @@ nuget_pack(
     libs = {
         ":support": "WebDriver.Support",
     },
-    nuspec_template = "WebDriver.Support.nuspec",
+    nuspec_template = "Selenium.WebDriver.Support.nuspec",
     tags = [
         "block-network",
     ],
@@ -71,9 +74,12 @@ csharp_library(
         "Events/*.cs",
         "Extensions/*.cs",
         "UI/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+        "//dotnet:source_files_support_needs_from_core",
+    ],
     out = "WebDriver.Support.StrongNamed",
-    keyfile = "//dotnet:WebDriver.snk",
+    keyfile = "//dotnet:Selenium.snk",
     langversion = "12.0",
     nullable = "enable",
     target_frameworks = [
@@ -96,7 +102,7 @@ nuget_pack(
     libs = {
         ":support-strongnamed": "WebDriver.Support.StrongNamed",
     },
-    nuspec_template = "WebDriver.Support.StrongNamed.nuspec",
+    nuspec_template = "Selenium.WebDriver.Support.StrongNamed.nuspec",
     tags = [
         "block-network",
     ],

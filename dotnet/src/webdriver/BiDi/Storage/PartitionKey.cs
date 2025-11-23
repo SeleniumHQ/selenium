@@ -19,7 +19,7 @@
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-public class PartitionKey
+public sealed record PartitionKey
 {
     public Browser.UserContext? UserContext { get; set; }
 

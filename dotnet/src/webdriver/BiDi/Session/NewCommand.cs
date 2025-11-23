@@ -17,20 +17,18 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal class NewCommand(NewCommandParameters @params)
-    : Command<NewCommandParameters, NewResult>(@params, "session.new");
+internal sealed class NewCommand(NewParameters @params)
+    : Command<NewParameters, NewResult>(@params, "session.new");
 
-internal record NewCommandParameters(CapabilitiesRequest Capabilities) : CommandParameters;
+internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
 
-public record NewOptions : CommandOptions;
+public sealed class NewOptions : CommandOptions;
 
-public record NewResult(string SessionId, Capability Capability) : EmptyResult;
+public sealed record NewResult(string SessionId, Capability Capability) : EmptyResult;
 
-public record Capability(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
+public sealed record Capability(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
 {
     public ProxyConfiguration? Proxy { get; set; }
 

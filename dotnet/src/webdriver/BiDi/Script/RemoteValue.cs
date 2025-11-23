@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -53,6 +55,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 //[JsonDerivedType(typeof(HtmlCollectionRemoteValue), "htmlcollection")]
 //[JsonDerivedType(typeof(NodeRemoteValue), "node")]
 //[JsonDerivedType(typeof(WindowProxyRemoteValue), "window")]
+[JsonConverter(typeof(RemoteValueConverter))]
 public abstract record RemoteValue
 {
     public static implicit operator double(RemoteValue remoteValue) => (double)((NumberRemoteValue)remoteValue).Value;
@@ -97,178 +100,173 @@ public abstract record RemoteValue
     }
 }
 
-public record NumberRemoteValue(double Value) : PrimitiveProtocolRemoteValue;
-
-public record BooleanRemoteValue(bool Value) : PrimitiveProtocolRemoteValue;
-
-public record BigIntRemoteValue(string Value) : PrimitiveProtocolRemoteValue;
-
-public record StringRemoteValue(string Value) : PrimitiveProtocolRemoteValue;
-
-public record NullRemoteValue : PrimitiveProtocolRemoteValue;
-
-public record UndefinedRemoteValue : PrimitiveProtocolRemoteValue;
-
-public record SymbolRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record ArrayRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-
-    public IReadOnlyList<RemoteValue>? Value { get; set; }
-}
-
-public record ObjectRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-
-    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; set; }
-}
-
-public record FunctionRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record RegExpRemoteValue(RegExpValue Value) : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record DateRemoteValue(string Value) : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record MapRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-
-    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; set; }
-}
-
-public record SetRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-
-    public IReadOnlyList<RemoteValue>? Value { get; set; }
-}
-
-public record WeakMapRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record WeakSetRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record GeneratorRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record ErrorRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record ProxyRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record PromiseRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record TypedArrayRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record ArrayBufferRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
-public record NodeListRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-
-    public IReadOnlyList<RemoteValue>? Value { get; set; }
-}
-
-public record HtmlCollectionRemoteValue : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-
-    public IReadOnlyList<RemoteValue>? Value { get; set; }
-}
-
-public record NodeRemoteValue : RemoteValue, ISharedReference
-{
-    [JsonInclude]
-    public string? SharedId { get; internal set; }
-
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-
-    [JsonInclude]
-    public NodeProperties? Value { get; internal set; }
-}
-
-public record WindowProxyRemoteValue(WindowProxyProperties Value) : RemoteValue
-{
-    public Handle? Handle { get; set; }
-
-    public InternalId? InternalId { get; set; }
-}
-
 public abstract record PrimitiveProtocolRemoteValue : RemoteValue;
 
+public sealed record NumberRemoteValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolRemoteValue;
+
+public sealed record BooleanRemoteValue(bool Value) : PrimitiveProtocolRemoteValue;
+
+public sealed record BigIntRemoteValue(string Value) : PrimitiveProtocolRemoteValue;
+
+public sealed record StringRemoteValue(string Value) : PrimitiveProtocolRemoteValue;
+
+public sealed record NullRemoteValue : PrimitiveProtocolRemoteValue;
+
+public sealed record UndefinedRemoteValue : PrimitiveProtocolRemoteValue;
+
+public sealed record SymbolRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record ArrayRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+
+    public IReadOnlyList<RemoteValue>? Value { get; set; }
+}
+
+public sealed record ObjectRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+
+    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; set; }
+}
+
+public sealed record FunctionRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record RegExpRemoteValue(RegExpValue Value) : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record DateRemoteValue(string Value) : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record MapRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+
+    public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; set; }
+}
+
+public sealed record SetRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+
+    public IReadOnlyList<RemoteValue>? Value { get; set; }
+}
+
+public sealed record WeakMapRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record WeakSetRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record GeneratorRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record ErrorRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record ProxyRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record PromiseRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record TypedArrayRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record ArrayBufferRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record NodeListRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+
+    public IReadOnlyList<RemoteValue>? Value { get; set; }
+}
+
+public sealed record HtmlCollectionRemoteValue : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+
+    public IReadOnlyList<RemoteValue>? Value { get; set; }
+}
+
+public sealed record NodeRemoteValue(string? SharedId, NodeProperties? Value) : RemoteValue, ISharedReference
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+public sealed record WindowProxyRemoteValue(WindowProxyProperties Value) : RemoteValue
+{
+    public Handle? Handle { get; set; }
+
+    public InternalId? InternalId { get; set; }
+}
+
+[JsonConverter(typeof(CamelCaseEnumConverter<Mode>))]
 public enum Mode
 {
     Open,

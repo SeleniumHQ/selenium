@@ -67,6 +67,7 @@ public class DockerSession extends DefaultActiveSession {
     }
     saveLogs();
     container.stop(Duration.ofMinutes(1));
+    super.stop();
   }
 
   private void saveLogs() {

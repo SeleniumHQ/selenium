@@ -17,15 +17,18 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Storage;
 
-internal class DeleteCookiesCommand(DeleteCookiesCommandParameters @params)
-    : Command<DeleteCookiesCommandParameters, DeleteCookiesResult>(@params, "storage.deleteCookies");
+internal sealed class DeleteCookiesCommand(DeleteCookiesParameters @params)
+    : Command<DeleteCookiesParameters, DeleteCookiesResult>(@params, "storage.deleteCookies");
 
-internal record DeleteCookiesCommandParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : CommandParameters;
+internal sealed record DeleteCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 
-public record DeleteCookiesOptions : GetCookiesOptions;
+public sealed class DeleteCookiesOptions : CommandOptions
+{
+    public CookieFilter? Filter { get; set; }
 
-public record DeleteCookiesResult(PartitionKey PartitionKey) : EmptyResult;
+    public PartitionDescriptor? Partition { get; set; }
+}
+
+public sealed record DeleteCookiesResult(PartitionKey PartitionKey) : EmptyResult;

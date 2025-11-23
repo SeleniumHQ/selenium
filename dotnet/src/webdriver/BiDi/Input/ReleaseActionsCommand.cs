@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Input;
 
-internal class ReleaseActionsCommand(ReleaseActionsCommandParameters @params)
-    : Command<ReleaseActionsCommandParameters, EmptyResult>(@params, "input.releaseActions");
+internal sealed class ReleaseActionsCommand(ReleaseActionsParameters @params)
+    : Command<ReleaseActionsParameters, ReleaseActionsResult>(@params, "input.releaseActions");
 
-internal record ReleaseActionsCommandParameters(BrowsingContext.BrowsingContext Context) : CommandParameters;
+internal sealed record ReleaseActionsParameters(BrowsingContext.BrowsingContext Context) : Parameters;
 
-public record ReleaseActionsOptions : CommandOptions;
+public sealed class ReleaseActionsOptions : CommandOptions;
+
+public sealed record ReleaseActionsResult : EmptyResult;

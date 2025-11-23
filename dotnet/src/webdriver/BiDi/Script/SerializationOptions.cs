@@ -17,9 +17,12 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
-public class SerializationOptions
+public sealed class SerializationOptions
 {
     public long? MaxDomDepth { get; set; }
 
@@ -28,6 +31,7 @@ public class SerializationOptions
     public ShadowTree? IncludeShadowTree { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<ShadowTree>))]
 public enum ShadowTree
 {
     None,

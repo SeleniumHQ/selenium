@@ -35,21 +35,14 @@ class Server:
     For more information on Selenium Grid, see:
         - https://www.selenium.dev/documentation/grid/getting_started/
 
-    Parameters:
-    -----------
-    host : str
-        Hostname or IP address to bind to (determined automatically if not specified)
-    port : int or str
-        Port to listen on (4444 if not specified)
-    path : str
-        Path/filename of existing server .jar file (Selenium Manager is used if not specified)
-    version : str
-        Version of server to download (latest version if not specified)
-    log_level : str
-        Logging level to control logging output ("INFO" if not specified)
-        Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST"
-    env: collections.abc.Mapping
-        Mapping that defines the environment variables for the server process
+    Args:
+        host: Hostname or IP address to bind to (determined automatically if not specified).
+        port: Port to listen on (4444 if not specified).
+        path: Path/filename of existing server .jar file (Selenium Manager is used if not specified).
+        version: Version of server to download (latest version if not specified).
+        log_level: Logging level to control logging output ("INFO" if not specified).
+            Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST".
+        env: Mapping that defines the environment variables for the server process.
     """
 
     def __init__(self, host=None, port=4444, path=None, version=None, log_level="INFO", env=None):
@@ -57,49 +50,73 @@ class Server:
             raise TypeError("Not allowed to specify a version when using an existing server path")
 
         self.host = host
-        self.port = self._validate_port(port)
-        self.path = self._validate_path(path)
-        self.version = self._validate_version(version)
-        self.log_level = self._validate_log_level(log_level)
-        self.env = self._validate_env(env)
-
+        self.port = port
+        self.path = path
+        self.version = version
+        self.log_level = log_level
+        self.env = env
         self.process = None
-        self.status_url = self._get_status_url()
 
-    def _get_status_url(self):
+    @property
+    def status_url(self):
         host = self.host if self.host is not None else "localhost"
         return f"http://{host}:{self.port}/status"
 
-    def _validate_path(self, path):
+    @property
+    def path(self):
+        return self._path
+
+    @path.setter
+    def path(self, path):
         if path and not os.path.exists(path):
             raise OSError(f"Can't find server .jar located at {path}")
-        return path
+        self._path = path
 
-    def _validate_port(self, port):
+    @property
+    def port(self):
+        return self._port
+
+    @port.setter
+    def port(self, port):
         try:
             port = int(port)
         except ValueError:
             raise TypeError(f"{__class__.__name__}.__init__() got an invalid port: '{port}'")
         if not (0 <= port <= 65535):
             raise ValueError("port must be 0-65535")
-        return port
+        self._port = port
 
-    def _validate_version(self, version):
+    @property
+    def version(self):
+        return self._version
+
+    @version.setter
+    def version(self, version):
         if version:
             if not re.match(r"^\d+\.\d+\.\d+$", str(version)):
                 raise TypeError(f"{__class__.__name__}.__init__() got an invalid version: '{version}'")
-        return version
+        self._version = version
 
-    def _validate_log_level(self, log_level):
+    @property
+    def log_level(self):
+        return self._log_level
+
+    @log_level.setter
+    def log_level(self, log_level):
         levels = ("SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST")
         if log_level not in levels:
             raise TypeError(f"log_level must be one of: {', '.join(levels)}")
-        return log_level
+        self._log_level = log_level
 
-    def _validate_env(self, env):
+    @property
+    def env(self):
+        return self._env
+
+    @env.setter
+    def env(self, env):
         if env is not None and not isinstance(env, collections.abc.Mapping):
             raise TypeError("env must be a mapping of environment variables")
-        return env
+        self._env = env
 
     def _wait_for_server(self, timeout=10):
         start = time.time()

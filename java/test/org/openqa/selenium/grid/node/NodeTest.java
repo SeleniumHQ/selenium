@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -124,8 +125,8 @@ class NodeTest {
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
     if (isDownloadsTestCase) {
-      stereotype = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
-      caps = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
+      stereotype = new ImmutableCapabilities("browserName", "chrome", ENABLE_DOWNLOADS, true);
+      caps = new ImmutableCapabilities("browserName", "chrome", ENABLE_DOWNLOADS, true);
     }
 
     uri = new URI("http://localhost:1234");

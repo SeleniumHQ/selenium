@@ -30,6 +30,12 @@ public class BrowsingContextInfo {
 
   private final List<BrowsingContextInfo> children;
 
+  private final String clientWindow;
+
+  private final String originalOpener;
+
+  private final String userContext;
+
   private final String parentBrowsingContext;
 
   public String getId() {
@@ -44,15 +50,36 @@ public class BrowsingContextInfo {
     return children;
   }
 
+  public String getClientWindow() {
+    return clientWindow;
+  }
+
+  public String getOriginalOpener() {
+    return originalOpener;
+  }
+
+  public String getUserContext() {
+    return userContext;
+  }
+
   public String getParentBrowsingContext() {
     return parentBrowsingContext;
   }
 
   public BrowsingContextInfo(
-      String id, String url, List<BrowsingContextInfo> children, String parentBrowsingContext) {
+      String id,
+      String url,
+      List<BrowsingContextInfo> children,
+      String clientWindow,
+      String originalOpener,
+      String userContext,
+      String parentBrowsingContext) {
     this.id = id;
     this.url = url;
     this.children = children;
+    this.clientWindow = clientWindow;
+    this.originalOpener = originalOpener;
+    this.userContext = userContext;
     this.parentBrowsingContext = parentBrowsingContext;
   }
 
@@ -60,6 +87,9 @@ public class BrowsingContextInfo {
     String id = null;
     String url = null;
     List<BrowsingContextInfo> children = null;
+    String clientWindow = null;
+    String originalOpener = null;
+    String userContext = null;
     String parentBrowsingContext = null;
 
     input.beginObject();
@@ -81,6 +111,18 @@ public class BrowsingContextInfo {
           parentBrowsingContext = input.read(String.class);
           break;
 
+        case "clientWindow":
+          clientWindow = input.read(String.class);
+          break;
+
+        case "originalOpener":
+          originalOpener = input.read(String.class);
+          break;
+
+        case "userContext":
+          userContext = input.read(String.class);
+          break;
+
         default:
           input.skipValue();
           break;
@@ -89,6 +131,7 @@ public class BrowsingContextInfo {
 
     input.endObject();
 
-    return new BrowsingContextInfo(id, url, children, parentBrowsingContext);
+    return new BrowsingContextInfo(
+        id, url, children, clientWindow, originalOpener, userContext, parentBrowsingContext);
   }
 }

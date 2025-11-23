@@ -17,48 +17,27 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-internal class GetCookiesCommand(GetCookiesCommandParameters @params)
-    : Command<GetCookiesCommandParameters, GetCookiesResult>(@params, "storage.getCookies");
+internal sealed class GetCookiesCommand(GetCookiesParameters @params)
+    : Command<GetCookiesParameters, GetCookiesResult>(@params, "storage.getCookies");
 
-internal record GetCookiesCommandParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : CommandParameters;
+internal sealed record GetCookiesParameters(CookieFilter? Filter, PartitionDescriptor? Partition) : Parameters;
 
-public record GetCookiesOptions : CommandOptions
+public sealed class GetCookiesOptions : CommandOptions
 {
     public CookieFilter? Filter { get; set; }
 
     public PartitionDescriptor? Partition { get; set; }
 }
 
-public record GetCookiesResult : EmptyResult, IReadOnlyList<Network.Cookie>
-{
-    private readonly IReadOnlyList<Network.Cookie> _cookies;
+public sealed record GetCookiesResult(IReadOnlyList<Network.Cookie> Cookies, PartitionKey PartitionKey) : EmptyResult;
 
-    internal GetCookiesResult(IReadOnlyList<Network.Cookie> cookies, PartitionKey partitionKey)
-    {
-        _cookies = cookies;
-        PartitionKey = partitionKey;
-    }
-
-    public PartitionKey PartitionKey { get; init; }
-
-    public Network.Cookie this[int index] => _cookies[index];
-
-    public int Count => _cookies.Count;
-
-    public IEnumerator<Network.Cookie> GetEnumerator() => _cookies.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (_cookies as IEnumerable).GetEnumerator();
-}
-
-public class CookieFilter
+public sealed record CookieFilter
 {
     public string? Name { get; set; }
 
@@ -84,9 +63,9 @@ public class CookieFilter
 [JsonDerivedType(typeof(StorageKeyPartitionDescriptor), "storageKey")]
 public abstract record PartitionDescriptor;
 
-public record ContextPartitionDescriptor(BrowsingContext.BrowsingContext Context) : PartitionDescriptor;
+public sealed record ContextPartitionDescriptor(BrowsingContext.BrowsingContext Context) : PartitionDescriptor;
 
-public record StorageKeyPartitionDescriptor : PartitionDescriptor
+public sealed record StorageKeyPartitionDescriptor : PartitionDescriptor
 {
     public string? UserContext { get; set; }
 
