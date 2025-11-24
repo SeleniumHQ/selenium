@@ -26,3 +26,12 @@ pkg_zip(
         "release-artifact",
     ],
 )
+
+filegroup(
+    name = "source_files_support_needs_from_core",
+    srcs = [
+        "//dotnet/src/webdriver:Internal/StringSyntaxAttribute.cs",
+        "//dotnet/src/webdriver:Internal/StringSyntaxConstants.cs",
+    ],
+    visibility = ["__subpackages__"],
+)
