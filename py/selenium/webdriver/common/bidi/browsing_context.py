@@ -1012,17 +1012,9 @@ class BrowsingContext:
             params["context"] = context
         elif user_contexts is not None:
             params["userContexts"] = user_contexts
-        if viewport is UNDEFINED:
-            pass
-        elif viewport is None:
-            params["viewport"] = None
-        else:
+        if viewport is not UNDEFINED:
             params["viewport"] = viewport
-        if device_pixel_ratio is UNDEFINED:
-            pass
-        elif device_pixel_ratio is None:
-            params["devicePixelRatio"] = None
-        else:
+        if device_pixel_ratio is not UNDEFINED:
             params["devicePixelRatio"] = device_pixel_ratio
 
         self.conn.execute(command_builder("browsingContext.setViewport", params))
