@@ -85,6 +85,11 @@
                       ReferenceOutputAssembly="false" />
   </ItemGroup>
 
+  <Target Name="GenerateResources" BeforeTargets="BeforeBuild">
+    <!--Build the generated resource files-->
+    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" WorkingDirectory="../../.." />
+  </Target>
+
   <ItemGroup>
     <AdditionalFiles Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json" />
     <AdditionalFiles Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js" />

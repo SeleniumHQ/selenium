@@ -81,6 +81,9 @@ public class ResourceUtilitiesGenerator : IIncrementalGenerator
 
             internal static partial class ResourceUtilities
             {
+                /// <summary>
+                /// Extracted from the <c>{{Path.GetFileName(additionalText.Path)}}</c> resource file.
+                /// </summary>
                 [global::System.Diagnostics.CodeAnalysis.StringSyntaxAttribute("{{lang}}")]
                 internal const string {{propertyName}} =
             """""
