@@ -1,5 +1,5 @@
 load("//common:defs.bzl", "copy_file")
-load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "framework", "generated_assembly_info", "generated_resource_utilities", "nuget_pack")
+load("//dotnet:defs.bzl", "csharp_library", "devtools_version_targets", "generated_assembly_info", "generated_resource_utilities", "nuget_pack", "nuget_package")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -61,13 +61,13 @@ csharp_library(
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "NETStandard.Library"),
-        framework("nuget", "Microsoft.Bcl.AsyncInterfaces"),
-        framework("nuget", "System.Threading.Tasks.Extensions"),
-        framework("nuget", "System.Memory"),
-        framework("nuget", "System.Runtime.CompilerServices.Unsafe"),
-        framework("nuget", "System.Text.Encodings.Web"),
-        framework("nuget", "System.Text.Json"),
+        nuget_package("NETStandard.Library"),
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+        nuget_package("System.Memory"),
+        nuget_package("System.Runtime.CompilerServices.Unsafe"),
+        nuget_package("System.Text.Encodings.Web"),
+        nuget_package("System.Text.Json"),
     ],
 )
 
@@ -119,13 +119,13 @@ csharp_library(
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "NETStandard.Library"),
-        framework("nuget", "Microsoft.Bcl.AsyncInterfaces"),
-        framework("nuget", "System.Threading.Tasks.Extensions"),
-        framework("nuget", "System.Memory"),
-        framework("nuget", "System.Runtime.CompilerServices.Unsafe"),
-        framework("nuget", "System.Text.Encodings.Web"),
-        framework("nuget", "System.Text.Json"),
+        nuget_package("NETStandard.Library"),
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+        nuget_package("System.Memory"),
+        nuget_package("System.Runtime.CompilerServices.Unsafe"),
+        nuget_package("System.Text.Encodings.Web"),
+        nuget_package("System.Text.Json"),
     ],
 )
 
