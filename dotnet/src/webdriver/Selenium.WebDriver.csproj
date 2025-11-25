@@ -79,30 +79,11 @@
     <None Include="..\..\..\common\images\selenium_logo_small.png" Pack="true" PackagePath="logo.png" Visible="false" />
   </ItemGroup>
 
-  <Target Name="GenerateAtoms" BeforeTargets="BeforeBuild">
-    <Exec Command="bazel build //javascript/webdriver/atoms:get-attribute.js //javascript/atoms/fragments:is-displayed.js //javascript/atoms/fragments:find-elements.js" WorkingDirectory="../../.." />
+  <Target Name="GenerateResources" BeforeTargets="CoreCompile">
+    <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
 
     <ItemGroup>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
-        <Visible>False</Visible>
-        <LogicalName>$(AssemblyName).webdriver_prefs.json</LogicalName>
-      </EmbeddedResource>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
-        <Visible>False</Visible>
-        <LogicalName>$(AssemblyName).get-attribute.js</LogicalName>
-      </EmbeddedResource>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js">
-        <Visible>False</Visible>
-        <LogicalName>$(AssemblyName).is-displayed.js</LogicalName>
-      </EmbeddedResource>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js">
-        <Visible>False</Visible>
-        <LogicalName>$(AssemblyName).find-elements.js</LogicalName>
-      </EmbeddedResource>
-      <EmbeddedResource Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js">
-        <Visible>False</Visible>
-        <LogicalName>$(AssemblyName).mutation-listener.js</LogicalName>
-      </EmbeddedResource>
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
     </ItemGroup>
   </Target>
 

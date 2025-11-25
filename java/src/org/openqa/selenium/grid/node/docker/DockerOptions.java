@@ -30,9 +30,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
@@ -174,7 +176,7 @@ public class DockerOptions {
     DockerAssetsPath assetsPath = getAssetsPath(info);
     String networkName = getDockerNetworkName(info);
     Map<String, Object> hostConfig = getDockerHostConfig(info);
-    Map<String, String> composeLabels = getComposeLabels(info);
+    Map<String, String> groupingLabels = getGroupingLabels(info);
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
@@ -211,7 +213,7 @@ public class DockerOptions {
                     capabilities -> options.getSlotMatcher().matches(caps, capabilities),
                     hostConfig,
                     hostConfigKeys,
-                    composeLabels));
+                    groupingLabels));
           }
           LOG.info(
               String.format(
@@ -261,15 +263,23 @@ public class DockerOptions {
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  private Map<String, String> getComposeLabels(Optional<ContainerInfo> info) {
+  private Map<String, String> getGroupingLabels(Optional<ContainerInfo> info) {
     if (info.isEmpty()) {
       return Collections.emptyMap();
     }
 
+    // Get custom grouping labels from configuration
+    List<String> customLabelKeys =
+        config.getAll(DOCKER_SECTION, "grouping-labels").orElseGet(Collections::emptyList);
+
+    Set<String> groupingKeys = new HashSet<>(customLabelKeys);
+    groupingKeys.add("com.docker.compose.project");
+    groupingKeys.add("io.podman.compose.project");
+
     Map<String, String> allLabels = info.get().getLabels();
-    // Filter for Docker Compose labels (com.docker.compose.*)
+    // Filter for grouping labels that work across orchestration systems
     return allLabels.entrySet().stream()
-        .filter(entry -> entry.getKey().startsWith("com.docker.compose."))
+        .filter(entry -> groupingKeys.contains(entry.getKey()))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 

@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
-using System.Reflection;
 using System.Text.Json;
 
 namespace OpenQA.Selenium.Firefox;
@@ -298,15 +297,12 @@ public class FirefoxProfile
 
     private Preferences ReadDefaultPreferences()
     {
-        using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver_prefs.json", $"{Assembly.GetExecutingAssembly().GetName().Name}.webdriver_prefs.json"))
-        {
-            using JsonDocument defaultPreferences = JsonDocument.Parse(defaultPrefsStream);
+        using JsonDocument defaultPreferences = JsonDocument.Parse(ResourceUtilities.WebDriverPrefsJson);
 
-            JsonElement immutableDefaultPreferences = defaultPreferences.RootElement.GetProperty("frozen");
-            JsonElement editableDefaultPreferences = defaultPreferences.RootElement.GetProperty("mutable");
+        JsonElement immutableDefaultPreferences = defaultPreferences.RootElement.GetProperty("frozen");
+        JsonElement editableDefaultPreferences = defaultPreferences.RootElement.GetProperty("mutable");
 
-            return new Preferences(immutableDefaultPreferences, editableDefaultPreferences);
-        }
+        return new Preferences(immutableDefaultPreferences, editableDefaultPreferences);
     }
 
     /// <summary>
