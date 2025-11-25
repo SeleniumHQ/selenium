@@ -65,6 +65,8 @@ public class ContextSubscriptionOptions
 
 internal static class ContextSubscriptionOptionsExtensions
 {
+    // Converts ContextSubscriptionOptions to SubscriptionOptions with the specified context.
+    // Deeply copying other properties as needed.
     public static SubscriptionOptions WithContext(this ContextSubscriptionOptions? options, BrowsingContext.BrowsingContext context) => new()
     {
         Contexts = [context],
