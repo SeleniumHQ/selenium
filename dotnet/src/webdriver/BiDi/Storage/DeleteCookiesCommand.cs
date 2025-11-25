@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Storage;
 
 internal sealed class DeleteCookiesCommand(DeleteCookiesParameters @params)

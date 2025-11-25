@@ -17,7 +17,7 @@
 
 import base64
 import os
-from typing import BinaryIO, Optional, Union
+from typing import BinaryIO
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -32,8 +32,8 @@ class ChromiumOptions(ArgOptions):
         self._binary_location: str = ""
         self._extension_files: list[str] = []
         self._extensions: list[str] = []
-        self._experimental_options: dict[str, Union[str, int, dict, list[str]]] = {}
-        self._debugger_address: Optional[str] = None
+        self._experimental_options: dict[str, str | int | dict | list[str]] = {}
+        self._debugger_address: str | None = None
         self._enable_webextensions: bool = False
 
     @property
@@ -53,7 +53,7 @@ class ChromiumOptions(ArgOptions):
         self._binary_location = value
 
     @property
-    def debugger_address(self) -> Optional[str]:
+    def debugger_address(self) -> str | None:
         """Returns the address of the remote devtools instance."""
         return self._debugger_address
 
@@ -116,7 +116,7 @@ class ChromiumOptions(ArgOptions):
         """Returns a dictionary of experimental options for chromium."""
         return self._experimental_options
 
-    def add_experimental_option(self, name: str, value: Union[str, int, dict, list[str]]) -> None:
+    def add_experimental_option(self, name: str, value: str | int | dict | list[str]) -> None:
         """Adds an experimental option which is passed to chromium.
 
         Args:
