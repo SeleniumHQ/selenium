@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -15,6 +16,6 @@ java_export(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/manager",
         "//java/src/org/openqa/selenium/remote",
-        "@maven//:org_jspecify_jspecify",
+        artifact("org.jspecify:jspecify"),
     ],
 )

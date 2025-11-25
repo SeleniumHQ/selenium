@@ -22,7 +22,7 @@ java_library(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
-        "@maven//:org_jspecify_jspecify",
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
@@ -77,7 +77,7 @@ java_library(
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote/http",
-        "@maven//:org_jspecify_jspecify",
+        artifact("org.jspecify:jspecify"),
     ],
 )
 
