@@ -19,7 +19,7 @@ package org.openqa.selenium.bidi.emulation;
 
 public class SetScriptingEnabledParameters extends AbstractOverrideParameters {
   public SetScriptingEnabledParameters(Boolean enabled) {
-    if (enabled == Boolean.TRUE) {
+    if (Boolean.TRUE.equals(enabled)) {
       throw new IllegalArgumentException(
           "Only emulation of disabled JavaScript is supported (enabled must be false or null)");
     }
