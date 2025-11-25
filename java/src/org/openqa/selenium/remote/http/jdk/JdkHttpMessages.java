@@ -19,7 +19,10 @@ package org.openqa.selenium.remote.http.jdk;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.google.common.net.MediaType;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublisher;
@@ -156,17 +159,43 @@ class JdkHttpMessages {
   public HttpResponse createResponse(java.net.http.HttpResponse<InputStream> response) {
     HttpResponse res = new HttpResponse();
     res.setStatus(response.statusCode());
-    response
-        .headers()
+    copyHeaders(response, res);
+    res.setContent(extractContent(response));
+    return res;
+  }
+
+  private void copyHeaders(java.net.http.HttpResponse<?> from, HttpResponse to) {
+    from.headers()
         .map()
         .forEach(
             (name, values) ->
                 values.stream()
                     .filter(Objects::nonNull)
-                    .forEach(value -> res.addHeader(name, value)));
-    long length = response.headers().firstValueAsLong("Content-Length").orElse(-1);
-    res.setContent(Contents.fromStream(response.body(), length));
+                    .forEach(value -> to.addHeader(name, value)));
+  }
 
-    return res;
+  private Contents.Supplier extractContent(java.net.http.HttpResponse<InputStream> response) {
+    boolean isBinaryStream =
+        response
+            .headers()
+            .firstValue("Content-Type")
+            .map(contentType -> contentType.equalsIgnoreCase(MediaType.OCTET_STREAM.toString()))
+            .orElse(false);
+
+    if (isBinaryStream) {
+      long length = response.headers().firstValueAsLong("Content-Length").orElse(-1);
+      return Contents.fromStream(response.body(), length);
+    } else {
+      byte[] responseBody = readResponseBody(response);
+      return responseBody.length > 0 ? Contents.bytes(responseBody) : Contents.empty();
+    }
+  }
+
+  private byte[] readResponseBody(java.net.http.HttpResponse<InputStream> response) {
+    try (InputStream in = response.body()) {
+      return in.readAllBytes();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 }
