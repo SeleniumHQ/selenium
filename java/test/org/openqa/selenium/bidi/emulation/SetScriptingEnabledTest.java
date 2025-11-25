@@ -39,6 +39,13 @@ import org.openqa.selenium.testing.NeedsFreshDriver;
 
 public class SetScriptingEnabledTest extends JupiterTestBase {
 
+  private boolean isFooInWindow(String contextId, Script script) {
+    EvaluateResult result =
+        script.evaluateFunctionInBrowsingContext(
+            contextId, "'foo' in window", false, Optional.empty());
+    return (Boolean) ((EvaluateResultSuccess) result).getResult().getValue().get();
+  }
+
   @Test
   @NeedsFreshDriver
   @Ignore(FIREFOX)
@@ -52,26 +59,16 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
     emulation.setScriptingEnabled(
         new SetScriptingEnabledParameters(false).contexts(List.of(contextId)));
 
-    context.navigate(appServer.whereIs("script_page.html"), ReadinessState.COMPLETE);
+    context.navigate("data:text/html,<script>window.foo=123;</script>", ReadinessState.COMPLETE);
 
-    EvaluateResult resultDisabled =
-        script.evaluateFunctionInBrowsingContext(
-            contextId, "'foo' in window", false, Optional.empty());
-    Boolean valueDisabled =
-        (Boolean) ((EvaluateResultSuccess) resultDisabled).getResult().getValue().get();
-    assertThat(valueDisabled).isFalse();
+    assertThat(isFooInWindow(contextId, script)).isFalse();
 
     emulation.setScriptingEnabled(
         new SetScriptingEnabledParameters(null).contexts(List.of(contextId)));
 
-    context.navigate(appServer.whereIs("script_page.html"), ReadinessState.COMPLETE);
+    context.navigate("data:text/html,<script>window.foo=123;</script>", ReadinessState.COMPLETE);
 
-    EvaluateResult resultEnabled =
-        script.evaluateFunctionInBrowsingContext(
-            contextId, "'foo' in window", false, Optional.empty());
-    Boolean valueEnabled =
-        (Boolean) ((EvaluateResultSuccess) resultEnabled).getResult().getValue().get();
-    assertThat(valueEnabled).isTrue();
+    assertThat(isFooInWindow(contextId, script)).isTrue();
   }
 
   @Test
@@ -122,5 +119,7 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
 
     String resultValue2 = ((EvaluateResultSuccess) result2).getResult().getValue().get().toString();
     assertThat(resultValue2).isEqualTo("Clicked");
+
+    browser.removeUserContext(userContext);
   }
 }
