@@ -116,6 +116,17 @@ public class DockerFlags implements HasRoles {
   private List<String> devices;
 
   @Parameter(
+      names = {"--docker-grouping-labels"},
+      description =
+          "Users to specify custom labels for grouping dynamic containers. This will make the"
+              + " system more flexible for different platforms and use cases")
+  @ConfigValue(
+      section = DockerOptions.DOCKER_SECTION,
+      name = "grouping-labels",
+      example = "[\"azure.container.group\", \"aws.ecs.cluster\"]")
+  private List<String> groupingLabels;
+
+  @Parameter(
       names = {"--docker-video-image"},
       description = "Docker image to be used when video recording is enabled")
   @ConfigValue(

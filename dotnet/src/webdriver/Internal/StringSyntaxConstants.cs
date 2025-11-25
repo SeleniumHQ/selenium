@@ -1,4 +1,4 @@
-// <copyright file="SubscribeCommand.cs" company="Selenium Committers">
+// <copyright file="StringSyntaxConstants.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,20 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
+namespace OpenQA.Selenium.Internal;
 
-namespace OpenQA.Selenium.BiDi.Session;
-
-internal sealed class SubscribeCommand(SubscribeParameters @params)
-    : Command<SubscribeParameters, SubscribeResult>(@params, "session.subscribe");
-
-internal sealed record SubscribeParameters(IEnumerable<string> Events, IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
-
-public sealed class SubscribeOptions : CommandOptions
+internal static class StringSyntaxConstants
 {
-    public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
-
-    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+    public const string JavaScript = "javascript";
 }
-
-internal sealed record SubscribeResult(Subscription Subscription) : EmptyResult;
