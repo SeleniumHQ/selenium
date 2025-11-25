@@ -81,7 +81,7 @@ class BootstrapTest {
                 .setContent(
                     utf8String(
                         "{\"message\":\"client version 1.50 is too new. Maximum supported API"
-                            + " version is 1.41\"}"));
+                            + " version is 1.44\"}"));
 
     boolean isSupported = new Docker(client).isSupported();
 

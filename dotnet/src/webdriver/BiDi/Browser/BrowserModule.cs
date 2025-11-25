@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;

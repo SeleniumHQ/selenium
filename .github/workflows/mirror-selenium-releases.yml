@@ -16,9 +16,26 @@ jobs:
         fetch-depth: 0
     - name: Read api.github.com and filter response
       run: |
+        set -euo pipefail
         cd common/mirror
-        export JQ_FILTER="[.[] | {tag_name: .tag_name, assets: [.assets[] | {browser_download_url: .browser_download_url} ] } ]"
-        curl -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/SeleniumHQ/selenium/releases | jq "$JQ_FILTER" > selenium
+        TOKEN="${{ secrets.GITHUB_TOKEN }}"
+        JQ_FILTER='[.[] | {tag_name: .tag_name, assets: [.assets[] | {browser_download_url: .browser_download_url} ] } ]'
+        page=1
+        tmpfile="$(mktemp)"
+        : > "$tmpfile"
+        while :; do
+          echo "Fetching SeleniumHQ/selenium releases page $page..."
+          resp=$(curl -fsSL \
+            -H "Authorization: token $TOKEN" \
+            "https://api.github.com/repos/SeleniumHQ/selenium/releases?per_page=100&page=${page}")
+          if [ "$(echo "$resp" | jq 'length')" -eq 0 ]; then
+            break
+          fi
+          echo "$resp" | jq "$JQ_FILTER" >> "$tmpfile"
+          page=$((page+1))
+        done
+        jq -s 'add' "$tmpfile" > selenium
+        rm "$tmpfile"
     - name: Commit files
       id: git
       run: |

@@ -217,8 +217,7 @@ class FirefoxBinary:
         return built_path
 
     def which(self, fname):
-        """Returns the fully qualified path by searching Path of the given
-        name."""
+        """Return the fully qualified path by searching PATH for the given name."""
         for pe in os.environ["PATH"].split(os.pathsep):
             checkname = os.path.join(pe, fname)
             if os.access(checkname, os.X_OK) and not os.path.isdir(checkname):

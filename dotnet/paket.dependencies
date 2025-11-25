@@ -1,5 +1,5 @@
 group nuget
-framework: net8.0,netstandard2.0
+framework: net462,net8.0,netstandard2.0
 strategy: min
 source https://api.nuget.org/v3/index.json
 
