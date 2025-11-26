@@ -148,10 +148,46 @@ public class DriverServiceSessionFactory implements SessionFactory {
         capabilities = removeCapability(capabilities, "browserVersion");
       }
 
-      // 处理动态代理配置 - tinyproxy sidecar热更新
+      // 处理动态代理配置 - 3proxy sidecar热更新
       @SuppressWarnings("unchecked")
       Map<String, Object> proxyConfig = (Map<String, Object>) capabilities.asMap().get("se:proxyConfig");
-      applyProxyConfig(proxyConfig);
+
+      // 提取代理配置，如果为空则默认为空字符串（直连模式）
+      String proxyIp = "";
+      String proxyPort = "";
+      String proxyUsername = "";
+      String proxyPassword = "";
+
+      if (proxyConfig != null) {
+        proxyIp = (String) proxyConfig.get("ip");
+        proxyPort = (String) proxyConfig.get("port");
+        proxyUsername = (String) proxyConfig.get("username");
+        proxyPassword = (String) proxyConfig.get("password");
+      }
+
+      // 记录日志：如果是直连模式(ip为空)，明确打印
+      String configLog = (proxyIp != null && !proxyIp.isEmpty()) 
+          ? (proxyUsername != null ? proxyUsername + "@" : "") + proxyIp + ":" + proxyPort 
+          : "Direct Connection (No Proxy)";
+          
+      LOG.info("[TinyproxySessionFactory] 代理配置检查 (Config " + (proxyConfig != null ? "Present" : "Null/Reset") + "): " + configLog);
+
+      try {
+        // 无论是否有代理配置，都调用sidecar脚本以确保状态一致性（有配置则切换，无配置则重置为直连）
+        long startTime = System.currentTimeMillis();
+        boolean switchSuccess = invokeSidecarProxySwitch(proxyIp, proxyPort, proxyUsername, proxyPassword);
+        long duration = System.currentTimeMillis() - startTime;
+
+        if (switchSuccess) {
+          LOG.info("[TinyproxySessionFactory] 代理配置生效: " + configLog + " (耗时: " + duration + "ms)");
+        } else {
+          LOG.warning("[TinyproxySessionFactory] 代理配置切换失败，使用原有配置 (耗时: " + duration + "ms)");
+        }
+
+      } catch (Exception e) {
+        LOG.warning("[TinyproxySessionFactory] 代理切换异常: " + e.getMessage());
+        // 不抛出异常，继续创建会话，使用原有代理配置
+      }
 
       //connect adb
       String adbDeviceId = (String) capabilities.asMap().get("se:adbDeviceId");
@@ -501,64 +537,14 @@ public class DriverServiceSessionFactory implements SessionFactory {
     command.add("sudo");  // 添加sudo权限
     command.add("/bin/sh");
     command.add(scriptPath);
-    command.add(proxyIp);
-    command.add(proxyPort);
+    // 如果 ip/port 为 null，转为空字符串，脚本端会识别为直连模式
+    command.add(proxyIp != null ? proxyIp : "");
+    command.add(proxyPort != null ? proxyPort : "");
 
     // 用户名和密码可能为空，用空字符串表示
     command.add(proxyUsername != null ? proxyUsername : "");
     command.add(proxyPassword != null ? proxyPassword : "");
 
     return command.toArray(new String[0]);
-  }
-
-  private void applyProxyConfig(Map<String, Object> proxyConfig) {
-    String proxyIp = normalizeProxyValue(proxyConfig, "ip");
-    String proxyPort = normalizeProxyValue(proxyConfig, "port");
-    String proxyUsername = normalizeProxyValue(proxyConfig, "username");
-    String proxyPassword = normalizeProxyValue(proxyConfig, "password");
-
-    if (isNotBlank(proxyIp) && isNotBlank(proxyPort)) {
-      LOG.info("[TinyproxySessionFactory] 检测到代理配置切换请求: "
-        + proxyUsername + "@" + proxyIp + ":" + proxyPort);
-      try {
-        long startTime = System.currentTimeMillis();
-        boolean switchSuccess = invokeSidecarProxySwitch(proxyIp, proxyPort, proxyUsername, proxyPassword);
-        long duration = System.currentTimeMillis() - startTime;
-        if (switchSuccess) {
-          LOG.info("[TinyproxySessionFactory] 代理切换成功: "
-            + proxyUsername + "@" + proxyIp + ":" + proxyPort + " (耗时: " + duration + "ms)");
-        } else {
-          LOG.warning("[TinyproxySessionFactory] 代理切换失败，保留当前tinyproxy配置 (耗时: " + duration + "ms)");
-        }
-      } catch (Exception e) {
-        LOG.warning("[TinyproxySessionFactory] 代理切换异常: " + e.getMessage());
-      }
-      return;
-    }
-
-    // 未提供有效代理信息或完全缺失se:proxyConfig，强制切到直连模式
-    String reason =
-      (proxyConfig == null || proxyConfig.isEmpty())
-        ? "未检测到se:proxyConfig，下发直连模式"
-        : "代理参数缺失/为空，切换到直连模式";
-    LOG.info("[TinyproxySessionFactory] " + reason);
-    boolean switched = invokeSidecarProxySwitch("", "", "", "");
-    if (switched) {
-      LOG.info("[TinyproxySessionFactory] tinyproxy已切换为直连配置");
-    } else {
-      LOG.warning("[TinyproxySessionFactory] tinyproxy切换直连失败，可能仍沿用旧代理配置");
-    }
-  }
-
-  private String normalizeProxyValue(Map<String, Object> proxyConfig, String key) {
-    if (proxyConfig == null || !proxyConfig.containsKey(key)) {
-      return "";
-    }
-    Object value = proxyConfig.get(key);
-    return value == null ? "" : value.toString().trim();
-  }
-
-  private boolean isNotBlank(String value) {
-    return value != null && !value.trim().isEmpty();
   }
 }
