@@ -56,7 +56,10 @@ public class EnvironmentManager
         string currentDirectory = this.CurrentDirectory;
 
         string content = File.ReadAllText(dataFilePath);
-        TestEnvironment env = JsonSerializer.Deserialize<TestEnvironment>(content, SeleniumTestSerializerContext.Default.TestEnvironment);
+        TestEnvironment env = JsonSerializer.Deserialize<TestEnvironment>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
 
         string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
         string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
