@@ -1,4 +1,4 @@
-// <copyright file="TestEnvironment.cs" company="Selenium Committers">
+// <copyright file="SeleniumTestSerializerContext.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,25 +17,11 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
+
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.Environment;
 
-class TestEnvironment
-{
-    public bool CaptureWebServerOutput { get; set; }
-
-    public string DriverServiceLocation { get; set; }
-
-    public bool HideWebServerCommandPrompt { get; set; }
-
-    public string ActiveDriverConfig { get; set; }
-
-    public string ActiveWebsiteConfig { get; set; }
-
-    public Dictionary<string, WebsiteConfig> WebSiteConfigs { get; set; }
-
-    public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
-
-    public TestWebServerConfig TestWebServerConfig { get; set; }
-}
+[JsonSerializable(typeof(TestEnvironment))]
+[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
+internal sealed partial class SeleniumTestSerializerContext : JsonSerializerContext;
