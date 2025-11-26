@@ -23,10 +23,19 @@ namespace OpenQA.Selenium;
 /// Represents a configuration option that determines how unhandled prompts are managed during automated browser
 /// interactions.
 /// </summary>
-/// <remarks>Use this type to specify whether a single unhandled prompt behavior or multiple behaviors should be
-/// applied. The static methods provide convenient ways to create either a single-behavior or multi-behavior option.
+/// <remarks>
+/// Use this type to specify whether a single unhandled prompt behavior or multiple behaviors should be applied.
+/// The static methods provide convenient ways to create either a single-behavior or multi-behavior option.
 /// This abstraction is typically used in scenarios where browser automation frameworks need to control the handling of
-/// unexpected dialogs or prompts.</remarks>
+/// unexpected dialogs or prompts.
+/// <para>
+/// Derived types:
+/// <list type="bullet">
+/// <item><description><see cref="UnhandledPromptBehaviorSingleOption"/> - Wraps a single <see cref="UnhandledPromptBehavior"/> value applied to all prompt types. Create via the implicit conversion from <see cref="UnhandledPromptBehavior"/> or by calling <see cref="Single(UnhandledPromptBehavior)"/>.</description></item>
+/// <item><description><see cref="UnhandledPromptBehaviorMultiOption"/> - Allows configuring per-prompt behaviors (Alert, Confirm, Prompt, BeforeUnload, Default). Create via <see cref="Multi()"/>.</description></item>
+/// </list>
+/// </para>
+/// </remarks>
 public abstract record UnhandledPromptBehaviorOption
 {
     /// <summary>
