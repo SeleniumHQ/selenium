@@ -18,7 +18,6 @@
 import shutil
 import warnings
 from collections.abc import Mapping, Sequence
-from typing import Optional
 
 from selenium.webdriver.common import service
 
@@ -45,10 +44,10 @@ class Service(service.Service):
         self,
         executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
-        log_path: Optional[str] = None,
-        log_output: Optional[str] = None,
-        service_args: Optional[Sequence[str]] = None,
-        env: Optional[Mapping[str, str]] = None,
+        log_path: str | None = None,
+        log_output: str | None = None,
+        service_args: Sequence[str] | None = None,
+        env: Mapping[str, str] | None = None,
         **kwargs,
     ) -> None:
         self._service_args = list(service_args or [])

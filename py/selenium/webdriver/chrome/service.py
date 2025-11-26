@@ -17,7 +17,6 @@
 
 
 from collections.abc import Mapping, Sequence
-from typing import Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
@@ -41,11 +40,11 @@ class Service(service.ChromiumService):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        service_args: Optional[Sequence[str]] = None,
-        log_output: Optional[SubprocessStdAlias] = None,
-        env: Optional[Mapping[str, str]] = None,
+        service_args: Sequence[str] | None = None,
+        log_output: SubprocessStdAlias | None = None,
+        env: Mapping[str, str] | None = None,
         **kwargs,
     ) -> None:
         self._service_args = service_args or []
