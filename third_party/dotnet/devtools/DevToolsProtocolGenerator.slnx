@@ -1,3 +1,6 @@
 <Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path="generator_settings_template.json" />
+  </Folder>
   <Project Path="src/generator/DevToolsGenerator.csproj" />
 </Solution>
