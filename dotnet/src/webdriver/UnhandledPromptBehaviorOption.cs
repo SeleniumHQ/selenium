@@ -29,7 +29,7 @@ namespace OpenQA.Selenium;
 /// This abstraction is typically used in scenarios where browser automation frameworks need to control the handling of
 /// unexpected dialogs or prompts.
 /// <para>
-/// Derived types:
+/// Available options:
 /// <list type="bullet">
 /// <item><description><see cref="UnhandledPromptBehaviorSingleOption"/> - Wraps a single <see cref="UnhandledPromptBehavior"/> value applied to all prompt types. Create via the implicit conversion from <see cref="UnhandledPromptBehavior"/> or by calling <see cref="Single(UnhandledPromptBehavior)"/>.</description></item>
 /// <item><description><see cref="UnhandledPromptBehaviorMultiOption"/> - Allows configuring per-prompt behaviors (Alert, Confirm, Prompt, BeforeUnload, Default). Create via <see cref="Multi()"/>.</description></item>
