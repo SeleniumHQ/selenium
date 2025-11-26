@@ -162,26 +162,13 @@ public sealed class Broker : IAsyncDisposable
 
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
-        if (options is BrowsingContextsSubscriptionOptions browsingContextsOptions)
-        {
-            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = browsingContextsOptions.Contexts }).ConfigureAwait(false);
+        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
 
-            var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action, browsingContextsOptions?.Contexts);
+        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action, options?.Contexts);
 
-            handlers.Add(eventHandler);
+        handlers.Add(eventHandler);
 
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
-        else
-        {
-            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName]).ConfigureAwait(false);
-
-            var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
-
-            handlers.Add(eventHandler);
-
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
+        return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
@@ -191,26 +178,13 @@ public sealed class Broker : IAsyncDisposable
 
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
-        if (options is BrowsingContextsSubscriptionOptions browsingContextsOptions)
-        {
-            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = browsingContextsOptions.Contexts }).ConfigureAwait(false);
+        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
 
-            var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func, browsingContextsOptions.Contexts);
+        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func, options?.Contexts);
 
-            handlers.Add(eventHandler);
+        handlers.Add(eventHandler);
 
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
-        else
-        {
-            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName]).ConfigureAwait(false);
-
-            var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
-
-            handlers.Add(eventHandler);
-
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
+        return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
     public async Task UnsubscribeAsync(Subscription subscription)

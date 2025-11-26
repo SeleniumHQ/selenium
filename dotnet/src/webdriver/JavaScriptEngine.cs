@@ -164,7 +164,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     /// <param name="script">The JavaScript to be loaded on every page.</param>
     /// <returns>A task containing an <see cref="InitializationScript"/> object representing the script to be loaded on each page.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="scriptName"/> or <paramref name="script"/> are <see langword="null"/>.</exception>
-    public async Task<InitializationScript> AddInitializationScript(string scriptName, string script)
+    public async Task<InitializationScript> AddInitializationScript(string scriptName, [StringSyntax(StringSyntaxConstants.JavaScript)] string script)
     {
         if (scriptName is null)
         {
@@ -233,7 +233,7 @@ public class JavaScriptEngine : IJavaScriptEngine
     /// <param name="script">The JavaScript to pin</param>
     /// <returns>A task containing a <see cref="PinnedScript"/> object to use to execute the script.</returns>
     /// <exception cref="ArgumentNullException">If <paramref name="script"/> is <see langword="null"/>.</exception>
-    public async Task<PinnedScript> PinScript(string script)
+    public async Task<PinnedScript> PinScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script)
     {
         if (script == null)
         {
