@@ -16,7 +16,6 @@
 # under the License.
 
 import http.client as http_client
-from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -30,7 +29,7 @@ class WebDriver(RemoteWebDriver):
     def __init__(
         self,
         options=None,
-        service: Optional[Service] = None,
+        service: Service | None = None,
     ):
         """Creates a new instance of the WebKitGTK driver.
 

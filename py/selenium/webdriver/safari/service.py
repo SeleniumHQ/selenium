@@ -16,7 +16,6 @@
 # under the License.
 
 from collections.abc import Mapping, Sequence
-from typing import Optional
 
 from selenium.webdriver.common import service
 
@@ -38,13 +37,13 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        service_args: Optional[Sequence[str]] = None,
-        env: Optional[Mapping[str, str]] = None,
+        service_args: Sequence[str] | None = None,
+        env: Mapping[str, str] | None = None,
         reuse_service=False,
         enable_logging: bool = False,
-        driver_path_env_key: Optional[str] = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
         self._service_args = list(service_args or [])

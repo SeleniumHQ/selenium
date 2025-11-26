@@ -30,6 +30,7 @@ public class ContainerInfo {
   private final List<Map<String, Object>> mountedVolumes;
   private final String networkName;
   private Map<String, Object> hostConfig;
+  private Map<String, String> labels;
 
   public ContainerInfo(
       ContainerId id,
@@ -37,11 +38,22 @@ public class ContainerInfo {
       List<Map<String, Object>> mountedVolumes,
       String networkName,
       Map<String, Object> hostConfig) {
+    this(id, ip, mountedVolumes, networkName, hostConfig, Map.of());
+  }
+
+  public ContainerInfo(
+      ContainerId id,
+      String ip,
+      List<Map<String, Object>> mountedVolumes,
+      String networkName,
+      Map<String, Object> hostConfig,
+      Map<String, String> labels) {
     this.ip = Require.nonNull("Container ip address", ip);
     this.id = Require.nonNull("Container id", id);
     this.mountedVolumes = Require.nonNull("Mounted volumes", mountedVolumes);
     this.networkName = Require.nonNull("Network name", networkName);
     this.hostConfig = Require.nonNull("Host config", hostConfig);
+    this.labels = Require.nonNull("Labels", labels);
   }
 
   public String getIp() {
@@ -62,6 +74,10 @@ public class ContainerInfo {
 
   public Map<String, Object> getHostConfig() {
     return this.hostConfig;
+  }
+
+  public Map<String, String> getLabels() {
+    return this.labels;
   }
 
   @Override

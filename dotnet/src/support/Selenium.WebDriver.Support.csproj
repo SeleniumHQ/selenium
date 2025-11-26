@@ -40,4 +40,10 @@
     <ProjectReference Include="$(CsprojIncludePath)\Selenium.WebDriver.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!--Workaround for being unable to have two different types of the same name in WebDriver and in Support, despite both being internal-->
+    <Compile Include="$(CsprojIncludePath)\Internal\StringSyntaxAttribute.cs" />
+    <Compile Include="$(CsprojIncludePath)\Internal\StringSyntaxConstants.cs" />
+  </ItemGroup>
+
 </Project>
