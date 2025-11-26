@@ -1,5 +1,5 @@
 <Solution>
-  <Folder Name="/SolutionItems/">
+  <Folder Name="/Solution Items/">
     <File Path="generator_settings_template.json" />
   </Folder>
   <Project Path="src/generator/DevToolsGenerator.csproj" />
