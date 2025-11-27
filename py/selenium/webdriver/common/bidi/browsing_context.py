@@ -20,8 +20,12 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
+from typing_extensions import Sentinel
+
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session
+
+UNDEFINED = Sentinel("UNDEFINED")
 
 
 class ReadinessState:
@@ -980,30 +984,38 @@ class BrowsingContext:
     def set_viewport(
         self,
         context: str | None = None,
-        viewport: dict | None = None,
-        device_pixel_ratio: float | None = None,
+        viewport: dict | None | UNDEFINED = UNDEFINED,
+        device_pixel_ratio: float | None | UNDEFINED = UNDEFINED,
         user_contexts: list[str] | None = None,
     ) -> None:
         """Modifies specific viewport characteristics on the given top-level traversable.
 
         Args:
             context: The browsing context ID.
-            viewport: The viewport parameters.
-            device_pixel_ratio: The device pixel ratio.
+            viewport: The viewport parameters - {"width": <int>, "height": <int>} (`None` resets to default).
+            device_pixel_ratio: The device pixel ratio (`None` resets to default).
             user_contexts: The user context IDs.
 
         Raises:
-            Exception: If the browsing context is not a top-level traversable.
+            Exception: If the browsing context is not a top-level traversable
+            ValueError: If neither `context` nor `user_contexts` is provided
+            ValueError: If both `context` and `user_contexts` are provided
         """
+        if context is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both context and user_contexts")
+
+        if context is None and user_contexts is None:
+            raise ValueError("Must specify either context or user_contexts")
+
         params: dict[str, Any] = {}
         if context is not None:
             params["context"] = context
-        if viewport is not None:
-            params["viewport"] = viewport
-        if device_pixel_ratio is not None:
-            params["devicePixelRatio"] = device_pixel_ratio
-        if user_contexts is not None:
+        elif user_contexts is not None:
             params["userContexts"] = user_contexts
+        if viewport is not UNDEFINED:
+            params["viewport"] = viewport
+        if device_pixel_ratio is not UNDEFINED:
+            params["devicePixelRatio"] = device_pixel_ratio
 
         self.conn.execute(command_builder("browsingContext.setViewport", params))
 
