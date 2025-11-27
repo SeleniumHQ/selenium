@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http.jdk;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.HttpHeader.UserAgent;
 
 import com.google.common.net.MediaType;
 import java.io.IOException;
@@ -105,8 +106,8 @@ class JdkHttpMessages {
           builder.header(name, value);
         });
 
-    if (req.getHeader("User-Agent") == null) {
-      builder.header("User-Agent", AddSeleniumUserAgent.USER_AGENT);
+    if (req.getHeader(UserAgent) == null) {
+      builder.header(UserAgent.getName(), AddSeleniumUserAgent.USER_AGENT);
     }
 
     builder.timeout(config.readTimeout());

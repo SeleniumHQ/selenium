@@ -21,12 +21,12 @@ import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
 import static java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.Objects.requireNonNullElse;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
 
 import com.google.common.net.MediaType;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -39,7 +39,6 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
-import org.openqa.selenium.remote.http.HttpHeader;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 /**
@@ -76,11 +75,14 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     if (LOG.isLoggable(Level.FINER)) {
       LOG.log(
           Level.FINER,
-          "Decoding response. Response code was: {0} and content: {1}",
-          new Object[] {encodedResponse.getStatus(), encodedResponse.getContent()});
+          "Decoding response (status was: {0}, content type: {1}, content length: {2})",
+          new Object[] {
+            encodedResponse.getStatus(),
+            encodedResponse.getContentType(),
+            encodedResponse.getContentLength()
+          });
     }
-    String contentType =
-        Objects.requireNonNullElse(encodedResponse.getHeader(HttpHeader.ContentType.getName()), "");
+    String contentType = requireNonNullElse(encodedResponse.getContentType(), "");
 
     Response response = new Response();
 
