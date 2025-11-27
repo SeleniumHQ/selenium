@@ -1,4 +1,3 @@
-// <copyright file="TestEnvironment.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,27 +14,27 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-using System.Collections.Generic;
+package org.openqa.selenium.bidi.emulation;
 
-namespace OpenQA.Selenium.Environment;
+public class SetScriptingEnabledParameters extends AbstractOverrideParameters {
+  public SetScriptingEnabledParameters(Boolean enabled) {
+    if (Boolean.TRUE.equals(enabled)) {
+      throw new IllegalArgumentException(
+          "Only emulation of disabled JavaScript is supported (enabled must be false or null)");
+    }
+    map.put("enabled", enabled); // null or false
+  }
 
-class TestEnvironment
-{
-    public bool CaptureWebServerOutput { get; set; }
+  @Override
+  public SetScriptingEnabledParameters contexts(java.util.List<String> contexts) {
+    super.contexts(contexts);
+    return this;
+  }
 
-    public string DriverServiceLocation { get; set; }
-
-    public bool HideWebServerCommandPrompt { get; set; }
-
-    public string ActiveDriverConfig { get; set; }
-
-    public string ActiveWebsiteConfig { get; set; }
-
-    public Dictionary<string, WebsiteConfig> WebSiteConfigs { get; set; }
-
-    public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
-
-    public TestWebServerConfig TestWebServerConfig { get; set; }
+  @Override
+  public SetScriptingEnabledParameters userContexts(java.util.List<String> userContexts) {
+    super.userContexts(userContexts);
+    return this;
+  }
 }
