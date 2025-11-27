@@ -233,7 +233,7 @@ class CdpProperty:
                 py_ref = ref_to_python(self.items.ref)
                 ann = f"typing.List[{py_ref}]"
             else:
-                ann = "typing.List[{}]".format(CdpPrimitiveType.get_annotation(self.items.type))
+                ann = f"typing.List[{CdpPrimitiveType.get_annotation(self.items.type)}]"
         else:
             if self.ref:
                 py_ref = ref_to_python(self.ref)
