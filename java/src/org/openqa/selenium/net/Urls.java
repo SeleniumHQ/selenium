@@ -25,10 +25,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class Urls {
 
   private Urls() {

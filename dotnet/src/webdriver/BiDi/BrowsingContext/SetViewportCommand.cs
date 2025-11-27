@@ -17,18 +17,21 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 internal sealed class SetViewportCommand(SetViewportParameters @params)
     : Command<SetViewportParameters, SetViewportResult>(@params, "browsingContext.setViewport");
 
-internal sealed record SetViewportParameters(BrowsingContext Context, Viewport? Viewport, double? DevicePixelRatio) : Parameters;
+internal sealed record SetViewportParameters(BrowsingContext Context, [property: JsonConverter(typeof(OptionalConverter<Viewport?>))] Optional<Viewport?>? Viewport, [property: JsonConverter(typeof(OptionalConverter<double?>))] Optional<double?>? DevicePixelRatio) : Parameters;
 
 public sealed class SetViewportOptions : CommandOptions
 {
-    public Viewport? Viewport { get; set; }
+    public Optional<Viewport?>? Viewport { get; set; }
 
-    public double? DevicePixelRatio { get; set; }
+    public Optional<double?>? DevicePixelRatio { get; set; }
 }
 
 public readonly record struct Viewport(long Width, long Height);
