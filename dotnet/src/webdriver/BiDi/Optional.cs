@@ -1,4 +1,4 @@
-// <copyright file="TestEnvironment.cs" company="Selenium Committers">
+// <copyright file="Optional.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,25 +17,31 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
+using System;
 
-namespace OpenQA.Selenium.Environment;
+namespace OpenQA.Selenium.BiDi;
 
-class TestEnvironment
+public readonly record struct Optional<T>
 {
-    public bool CaptureWebServerOutput { get; set; }
+    private readonly T _value;
+    public bool HasValue { get; }
 
-    public string DriverServiceLocation { get; set; }
+    public T Value => HasValue
+        ? _value
+        : throw new InvalidOperationException("Optional has no value. Check IsSet first.");
 
-    public bool HideWebServerCommandPrompt { get; set; }
+    public Optional(T value)
+    {
+        _value = value;
+        HasValue = true;
+    }
 
-    public string ActiveDriverConfig { get; set; }
+    public bool TryGetValue(out T value)
+    {
+        value = _value;
+        return HasValue;
+    }
 
-    public string ActiveWebsiteConfig { get; set; }
-
-    public Dictionary<string, WebsiteConfig> WebSiteConfigs { get; set; }
-
-    public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
-
-    public TestWebServerConfig TestWebServerConfig { get; set; }
+    // implicit conversion from T -> Optional<T>
+    public static implicit operator Optional<T>(T value) => new(value);
 }
