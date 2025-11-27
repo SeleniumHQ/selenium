@@ -1,5 +1,5 @@
 load("//common:defs.bzl", "copy_file")
-load("//java:defs.bzl", "artifact","java_export", "java_library")
+load("//java:defs.bzl", "artifact", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
 
 java_export(
