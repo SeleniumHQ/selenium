@@ -1,7 +1,5 @@
 <Solution>
-  <Project Path="src/support/Selenium.WebDriver.Support.csproj" />
-  <Project Path="src/webdriver/Selenium.WebDriver.csproj" />
-  <Folder Name="/tests/">
+  <Folder Name="/test/">
     <Project Path="test/chrome/Selenium.WebDriver.Chrome.Tests.csproj" />
     <Project Path="test/common/Selenium.WebDriver.Common.Tests.csproj" />
     <Project Path="test/edge/Selenium.WebDriver.Edge.Tests.csproj" />
@@ -11,4 +9,6 @@
     <Project Path="test/safari/Selenium.WebDriver.Safari.Tests.csproj" />
     <Project Path="test/support/Selenium.WebDriver.Support.Tests.csproj" />
   </Folder>
+  <Project Path="src/support/Selenium.WebDriver.Support.csproj" />
+  <Project Path="src/webdriver/Selenium.WebDriver.csproj" />
 </Solution>
