@@ -16,8 +16,8 @@
 # under the License.
 
 import re
-from collections.abc import Iterable
-from typing import Any, Callable, Literal, TypeVar, Union
+from collections.abc import Callable, Iterable
+from typing import Any, Literal, TypeVar, Union
 
 from selenium.common.exceptions import (
     NoAlertPresentException,
@@ -163,7 +163,7 @@ def url_changes(url: str) -> Callable[[WebDriver], bool]:
 
 def visibility_of_element_located(
     locator: tuple[str, str],
-) -> Callable[[WebDriverOrWebElement], Union[Literal[False], WebElement]]:
+) -> Callable[[WebDriverOrWebElement], Literal[False] | WebElement]:
     """Check that an element is visible (present in DOM and width/height greater than zero).
 
     Args:
@@ -188,7 +188,7 @@ def visibility_of_element_located(
     return _predicate
 
 
-def visibility_of(element: WebElement) -> Callable[[Any], Union[Literal[False], WebElement]]:
+def visibility_of(element: WebElement) -> Callable[[Any], Literal[False] | WebElement]:
     """Check that an element is visible (present in DOM and width/height greater than zero).
 
     Args:
@@ -210,7 +210,7 @@ def visibility_of(element: WebElement) -> Callable[[Any], Union[Literal[False], 
     return _predicate
 
 
-def _element_if_visible(element: WebElement, visibility: bool = True) -> Union[Literal[False], WebElement]:
+def _element_if_visible(element: WebElement, visibility: bool = True) -> Literal[False] | WebElement:
     """Check if an element has the expected visibility state.
 
     Args:
@@ -269,7 +269,7 @@ def visibility_of_any_elements_located(locator: tuple[str, str]) -> Callable[[We
 
 def visibility_of_all_elements_located(
     locator: tuple[str, str],
-) -> Callable[[WebDriverOrWebElement], Union[list[WebElement], Literal[False]]]:
+) -> Callable[[WebDriverOrWebElement], list[WebElement] | Literal[False]]:
     """Check that all elements are visible (present in DOM and width/height greater than zero).
 
     Args:
@@ -395,7 +395,7 @@ def text_to_be_present_in_element_attribute(
 
 
 def frame_to_be_available_and_switch_to_it(
-    locator: Union[tuple[str, str], str, WebElement],
+    locator: tuple[str, str] | str | WebElement,
 ) -> Callable[[WebDriver], bool]:
     """Check that the given frame is available and switch to it.
 
@@ -425,8 +425,8 @@ def frame_to_be_available_and_switch_to_it(
 
 
 def invisibility_of_element_located(
-    locator: Union[WebElement, tuple[str, str]],
-) -> Callable[[WebDriverOrWebElement], Union[WebElement, bool]]:
+    locator: WebElement | tuple[str, str],
+) -> Callable[[WebDriverOrWebElement], WebElement | bool]:
     """Check that an element is either invisible or not present on the DOM.
 
     Args:
@@ -467,8 +467,8 @@ def invisibility_of_element_located(
 
 
 def invisibility_of_element(
-    element: Union[WebElement, tuple[str, str]],
-) -> Callable[[WebDriverOrWebElement], Union[WebElement, bool]]:
+    element: WebElement | tuple[str, str],
+) -> Callable[[WebDriverOrWebElement], WebElement | bool]:
     """Check that an element is either invisible or not present on the DOM.
 
     Args:
@@ -489,8 +489,8 @@ def invisibility_of_element(
 
 
 def element_to_be_clickable(
-    mark: Union[WebElement, tuple[str, str]],
-) -> Callable[[WebDriverOrWebElement], Union[Literal[False], WebElement]]:
+    mark: WebElement | tuple[str, str],
+) -> Callable[[WebDriverOrWebElement], Literal[False] | WebElement]:
     """Check that an element is visible and enabled so it can be clicked.
 
     Args:
@@ -692,7 +692,7 @@ def new_window_is_opened(current_handles: set[str]) -> Callable[[WebDriver], boo
     return _predicate
 
 
-def alert_is_present() -> Callable[[WebDriver], Union[Alert, bool]]:
+def alert_is_present() -> Callable[[WebDriver], Alert | bool]:
     """Check that an alert is present and switch to it.
 
     Returns:
@@ -745,7 +745,7 @@ def element_attribute_to_include(locator: tuple[str, str], attribute_: str) -> C
     return _predicate
 
 
-def any_of(*expected_conditions: Callable[[D], T]) -> Callable[[D], Union[Literal[False], T]]:
+def any_of(*expected_conditions: Callable[[D], T]) -> Callable[[D], Literal[False] | T]:
     """An expectation that any of multiple expected conditions is true.
 
     Equivalent to a logical 'OR'. Returns results of the first matching
@@ -781,8 +781,8 @@ def any_of(*expected_conditions: Callable[[D], T]) -> Callable[[D], Union[Litera
 
 
 def all_of(
-    *expected_conditions: Callable[[D], Union[T, Literal[False]]],
-) -> Callable[[D], Union[list[T], Literal[False]]]:
+    *expected_conditions: Callable[[D], T | Literal[False]],
+) -> Callable[[D], list[T] | Literal[False]]:
     """An expectation that all of multiple expected conditions is true.
 
     Equivalent to a logical 'AND'. When any ExpectedCondition is not met,

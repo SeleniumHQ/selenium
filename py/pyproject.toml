@@ -86,7 +86,8 @@ markers = [
     "xfail_safari: Tests expected to fail in Safari",
     "xfail_webkitgtk: Tests expected to fail in WebKitGTK",
     "xfail_wpewebkit: Tests expected to fail in WPEWebKit",
-    "no_driver_after_test: If there are no drivers after the test it will create a new one."
+    "no_driver_after_test: If there are no drivers after the test it will create a new one.",
+    "needs_fresh_driver: Mark tests that may need a fresh driver instance for proper isolation."
 ]
 python_files = ["test_*.py", "*_test.py", "*_tests.py"]
 testpaths = ["test"]
