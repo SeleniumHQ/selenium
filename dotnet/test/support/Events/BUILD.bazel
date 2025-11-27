@@ -1,4 +1,5 @@
-load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite")
+load("//dotnet/test:defs.bzl", "tests_nuget_package")
 
 SMALL_TESTS = [
     "EventFiringWebDriverTest.cs",
@@ -13,8 +14,8 @@ dotnet_nunit_test_suite(
         "//dotnet/src/support",
         "//dotnet/src/webdriver:webdriver-net8.0",
         "//dotnet/test/common:fixtures",
-        nuget_package("NUnit"),
-        nuget_package("Moq"),
+        tests_nuget_package("NUnit"),
+        tests_nuget_package("Moq"),
     ],
 )
 
@@ -38,6 +39,6 @@ dotnet_nunit_test_suite(
         "//dotnet/src/support",
         "//dotnet/src/webdriver:webdriver-net8.0",
         "//dotnet/test/common:fixtures",
-        nuget_package("NUnit"),
+        tests_nuget_package("NUnit"),
     ],
 )

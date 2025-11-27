@@ -101,6 +101,12 @@ use_repo(dotnet, "dotnet_toolchains")
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")
 use_repo(selenium_paket, "paket.nuget")
 
+selenium_tests_paket = use_extension("//dotnet:paket.tests_nuget_extension.bzl", "tests_nuget_extension")
+use_repo(selenium_tests_paket, "paket.tests_nuget")
+
+selenium_devtools_paket = use_extension("//dotnet:paket.devtools_generator_nuget_extension.bzl", "devtools_generator_nuget_extension")
+use_repo(selenium_devtools_paket, "paket.devtools_generator_nuget")
+
 register_toolchains("@dotnet_toolchains//:all")
 
 oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")

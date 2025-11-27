@@ -122,7 +122,7 @@ def dotnet_nunit_test_suite(
     lib_srcs = [src for src in srcs if not _is_test(src, test_suffixes)]
 
     extra_deps = [
-        "@paket.nuget//nunitlite",
+        "@paket.tests_nuget//nunitlite",
     ]
 
     if browsers and len(browsers):

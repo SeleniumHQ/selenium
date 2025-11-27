@@ -1,4 +1,5 @@
-load("//dotnet:defs.bzl", "csharp_library", "dotnet_nunit_test_suite", "nuget_package")
+load("//dotnet:defs.bzl", "csharp_library", "dotnet_nunit_test_suite")
+load("//dotnet/test:defs.bzl", "tests_nuget_package")
 
 filegroup(
     name = "assembly-fixtures",
@@ -52,8 +53,8 @@ csharp_library(
     ],
     deps = [
         "//dotnet/src/webdriver:webdriver-net8.0",
-        nuget_package("NUnit"),
-        nuget_package("Runfiles"),
+        tests_nuget_package("NUnit"),
+        tests_nuget_package("Runfiles"),
     ],
 )
 
@@ -89,8 +90,8 @@ dotnet_nunit_test_suite(
     deps = [
         ":fixtures",
         "//dotnet/src/webdriver:webdriver-net8.0",
-        nuget_package("BenderProxy"),
-        nuget_package("NUnit"),
-        nuget_package("Runfiles"),
+        tests_nuget_package("BenderProxy"),
+        tests_nuget_package("NUnit"),
+        tests_nuget_package("Runfiles"),
     ],
 )
