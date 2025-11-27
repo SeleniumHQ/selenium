@@ -18,7 +18,7 @@
 import datetime
 import math
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.common import command_builder
@@ -53,8 +53,8 @@ class RealmInfo:
     realm: str
     origin: str
     type: str
-    context: Optional[str] = None
-    sandbox: Optional[str] = None
+    context: str | None = None
+    sandbox: str | None = None
 
     @classmethod
     def from_json(cls, json: dict[str, Any]) -> "RealmInfo":
@@ -87,7 +87,7 @@ class Source:
     """Represents the source of a script message."""
 
     realm: str
-    context: Optional[str] = None
+    context: str | None = None
 
     @classmethod
     def from_json(cls, json: dict[str, Any]) -> "Source":
@@ -114,8 +114,8 @@ class EvaluateResult:
 
     type: str
     realm: str
-    result: Optional[dict] = None
-    exception_details: Optional[dict] = None
+    result: dict | None = None
+    exception_details: dict | None = None
 
     @classmethod
     def from_json(cls, json: dict[str, Any]) -> "EvaluateResult":
@@ -283,7 +283,6 @@ class Script:
         Raises:
             WebDriverException: If the script execution fails.
         """
-
         if self.driver is None:
             raise WebDriverException("Driver reference is required for script execution")
         browsing_context_id = self.driver.current_window_handle
@@ -312,9 +311,7 @@ class Script:
             raise WebDriverException(error_message)
 
     def __convert_to_local_value(self, value) -> dict:
-        """
-        Converts a Python value to BiDi LocalValue format.
-        """
+        """Converts a Python value to BiDi LocalValue format."""
         if value is None:
             return {"type": "null"}
         elif isinstance(value, bool):
@@ -365,10 +362,10 @@ class Script:
     def _add_preload_script(
         self,
         function_declaration: str,
-        arguments: Optional[list[dict[str, Any]]] = None,
-        contexts: Optional[list[str]] = None,
-        user_contexts: Optional[list[str]] = None,
-        sandbox: Optional[str] = None,
+        arguments: list[dict[str, Any]] | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+        sandbox: str | None = None,
     ) -> str:
         """Adds a preload script.
 
@@ -429,10 +426,10 @@ class Script:
         function_declaration: str,
         await_promise: bool,
         target: dict,
-        arguments: Optional[list[dict]] = None,
-        result_ownership: Optional[str] = None,
-        serialization_options: Optional[dict] = None,
-        this: Optional[dict] = None,
+        arguments: list[dict] | None = None,
+        result_ownership: str | None = None,
+        serialization_options: dict | None = None,
+        this: dict | None = None,
         user_activation: bool = False,
     ) -> EvaluateResult:
         """Calls a provided function with given arguments in a given realm.
@@ -474,8 +471,8 @@ class Script:
         expression: str,
         target: dict,
         await_promise: bool,
-        result_ownership: Optional[str] = None,
-        serialization_options: Optional[dict] = None,
+        result_ownership: str | None = None,
+        serialization_options: dict | None = None,
         user_activation: bool = False,
     ) -> EvaluateResult:
         """Evaluates a provided script in a given realm.
@@ -508,8 +505,8 @@ class Script:
 
     def _get_realms(
         self,
-        context: Optional[str] = None,
-        type: Optional[str] = None,
+        context: str | None = None,
+        type: str | None = None,
     ) -> list[RealmInfo]:
         """Returns a list of all realms, optionally filtered.
 

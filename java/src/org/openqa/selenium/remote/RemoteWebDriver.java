@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
+import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import java.io.IOException;
@@ -672,19 +673,46 @@ public class RemoteWebDriver
   }
 
   /**
-   * Retrieves the names of the downloadable files.
+   * Retrieves the names of the files downloaded by browser.
    *
-   * @return A list containing the names of the downloadable files.
+   * @return A list containing the names of the downloaded files.
    * @throws WebDriverException if capability to enable downloads is not set
+   * @deprecated Use method {@link #getDownloadedFiles()} instead
    */
   @Override
   @SuppressWarnings("unchecked")
+  @Deprecated
   public List<String> getDownloadableFiles() {
     requireDownloadsEnabled(capabilities);
 
     Response response = execute(DriverCommand.GET_DOWNLOADABLE_FILES);
-    Map<String, List<String>> value = (Map<String, List<String>>) response.getValue();
-    return value.get("names");
+    Map<String, Object> value = (Map<String, Object>) response.getValue();
+    return (List<String>) value.get("names");
+  }
+
+  /**
+   * Retrieves the list of files downloaded by browser.
+   *
+   * @return A list containing the names, size etc. of the downloaded files.
+   * @throws WebDriverException if capability to enable downloads is not set
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<DownloadedFile> getDownloadedFiles() {
+    requireDownloadsEnabled(capabilities);
+
+    Response response = execute(DriverCommand.GET_DOWNLOADABLE_FILES);
+    Map<String, Object> value = (Map<String, Object>) response.getValue();
+    List<Map<String, Object>> files = (List<Map<String, Object>>) value.get("files");
+    return files.stream()
+        .map(
+            file ->
+                new DownloadedFile(
+                    (String) file.get("name"),
+                    (Long) file.get("creationTime"),
+                    (Long) file.get("lastModifiedTime"),
+                    (Long) file.get("size")))
+        .collect(Collectors.toUnmodifiableList());
   }
 
   /**

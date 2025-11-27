@@ -14,5 +14,6 @@ java_export(
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
+        "@maven//:org_jspecify_jspecify",
     ],
 )

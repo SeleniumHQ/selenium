@@ -19,6 +19,7 @@
 
 using OpenQA.Selenium.Internal.Logging;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -209,11 +210,7 @@ internal static class FileUtilities
     /// <param name="directoryPattern">The pattern to use in creating the directory name, following standard
     /// .NET string replacement tokens.</param>
     /// <returns>The full path to the random directory name in the temporary directory.</returns>
-    public static string GenerateRandomTempDirectoryName(
-#if NET8_0_OR_GREATER
-        [System.Diagnostics.CodeAnalysis.StringSyntax(System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.CompositeFormat)]
-#endif
-    string directoryPattern)
+    public static string GenerateRandomTempDirectoryName([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string directoryPattern)
     {
         string directoryName = string.Format(CultureInfo.InvariantCulture, directoryPattern, Guid.NewGuid().ToString("N"));
         return Path.Combine(Path.GetTempPath(), directoryName);
