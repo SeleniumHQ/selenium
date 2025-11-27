@@ -1,12 +1,14 @@
 <Solution>
   <Project Path="src/support/Selenium.WebDriver.Support.csproj" />
   <Project Path="src/webdriver/Selenium.WebDriver.csproj" />
-  <Project Path="test/chrome/Selenium.WebDriver.Chrome.Tests.csproj" />
-  <Project Path="test/common/Selenium.WebDriver.Common.Tests.csproj" />
-  <Project Path="test/edge/Selenium.WebDriver.Edge.Tests.csproj" />
-  <Project Path="test/firefox/Selenium.WebDriver.Firefox.Tests.csproj" />
-  <Project Path="test/ie/Selenium.WebDriver.IE.Tests.csproj" />
-  <Project Path="test/remote/Selenium.WebDriver.Remote.Tests.csproj" />
-  <Project Path="test/safari/Selenium.WebDriver.Safari.Tests.csproj" />
-  <Project Path="test/support/Selenium.WebDriver.Support.Tests.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="test/chrome/Selenium.WebDriver.Chrome.Tests.csproj" />
+    <Project Path="test/common/Selenium.WebDriver.Common.Tests.csproj" />
+    <Project Path="test/edge/Selenium.WebDriver.Edge.Tests.csproj" />
+    <Project Path="test/firefox/Selenium.WebDriver.Firefox.Tests.csproj" />
+    <Project Path="test/ie/Selenium.WebDriver.IE.Tests.csproj" />
+    <Project Path="test/remote/Selenium.WebDriver.Remote.Tests.csproj" />
+    <Project Path="test/safari/Selenium.WebDriver.Safari.Tests.csproj" />
+    <Project Path="test/support/Selenium.WebDriver.Support.Tests.csproj" />
+  </Folder>
 </Solution>
