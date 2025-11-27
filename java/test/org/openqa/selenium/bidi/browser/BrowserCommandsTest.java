@@ -139,6 +139,7 @@ class BrowserCommandsTest extends JupiterTestBase {
       assertThat(fileNames).contains("file_1.txt");
     } finally {
       browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null, (Path) null));
+      TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
     }
   }
 
@@ -178,6 +179,7 @@ class BrowserCommandsTest extends JupiterTestBase {
       }
     } finally {
       browser.setDownloadBehavior(new SetDownloadBehaviorParameters(null, (Path) null));
+      TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
     }
   }
 
@@ -257,6 +259,7 @@ class BrowserCommandsTest extends JupiterTestBase {
       }
     } finally {
       browser.removeUserContext(userContext);
+      TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tmpDir.toFile());
     }
   }
 }
