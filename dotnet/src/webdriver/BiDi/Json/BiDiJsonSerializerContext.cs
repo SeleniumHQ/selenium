@@ -121,6 +121,7 @@ namespace OpenQA.Selenium.BiDi.Json;
 [JsonSerializable(typeof(BrowsingContext.SetViewportResult))]
 [JsonSerializable(typeof(BrowsingContext.TraverseHistoryCommand))]
 [JsonSerializable(typeof(BrowsingContext.TraverseHistoryResult))]
+[JsonSerializable(typeof(BrowsingContext.Viewport?))]
 
 [JsonSerializable(typeof(BrowsingContext.BrowsingContextInfo))]
 [JsonSerializable(typeof(BrowsingContext.DownloadWillBeginEventArgs))]
