@@ -82,9 +82,4 @@ public sealed class BrowserModule : Module
     {
         _jsonContext = new BiDiJsonSerializerContext(options);
     }
-
-    protected override void Initialize(JsonSerializerOptions options)
-    {
-        _jsonContext = new BiDiJsonSerializerContext(options);
-    }
 }
