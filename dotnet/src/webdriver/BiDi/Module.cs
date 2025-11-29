@@ -27,15 +27,15 @@ public abstract class Module
 
     protected abstract void Initialize(JsonSerializerOptions options);
 
-    public static TModule Create<TModule>(BiDi bidi)
+    public static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
         where TModule : Module, new()
     {
         TModule module = new()
         {
-            Broker = bidi.Broker,
+            Broker = broker
         };
 
-        module.Initialize(bidi.GetJsonOptions());
+        module.Initialize(jsonSerializerOptions);
 
         return module;
     }

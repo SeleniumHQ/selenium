@@ -19,6 +19,7 @@
 
 using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
+using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -28,22 +29,24 @@ namespace OpenQA.Selenium.BiDi;
 
 public sealed class BiDi : IAsyncDisposable
 {
+    private readonly ConcurrentDictionary<Type, Module> _modules = new();
+
     private BiDi(string url)
     {
         var uri = new Uri(url);
 
         Broker = new Broker(this, uri);
 
-        SessionModule = Module.Create<Session.SessionModule>(this);
-        BrowsingContext = Module.Create<BrowsingContext.BrowsingContextModule>(this);
-        Browser = Module.Create<Browser.BrowserModule>(this);
-        Network = Module.Create<Network.NetworkModule>(this);
-        InputModule = Module.Create<Input.InputModule>(this);
-        Script = Module.Create<Script.ScriptModule>(this);
-        Log = Module.Create<Log.LogModule>(this);
-        Storage = Module.Create<Storage.StorageModule>(this);
-        WebExtension = Module.Create<WebExtension.WebExtensionModule>(this);
-        Emulation = Module.Create<Emulation.EmulationModule>(this);
+        SessionModule = AsModule<Session.SessionModule>();
+        BrowsingContext = AsModule<BrowsingContext.BrowsingContextModule>();
+        Browser = AsModule<Browser.BrowserModule>();
+        Network = AsModule<Network.NetworkModule>();
+        InputModule = AsModule<Input.InputModule>();
+        Script = AsModule<Script.ScriptModule>();
+        Log = AsModule<Log.LogModule>();
+        Storage = AsModule<Storage.StorageModule>();
+        WebExtension = AsModule<WebExtension.WebExtensionModule>();
+        Emulation = AsModule<Emulation.EmulationModule>();
     }
 
     internal Session.SessionModule SessionModule { get; }
@@ -91,9 +94,14 @@ public sealed class BiDi : IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    internal Broker Broker { get; }
+    public T AsModule<T>() where T : Module, new()
+    {
+        return (T)_modules.GetOrAdd(typeof(T), Module.Create<T>(this, Broker, GetJsonOptions()));
+    }
 
-    internal JsonSerializerOptions GetJsonOptions()
+    private Broker Broker { get; }
+
+    private JsonSerializerOptions GetJsonOptions()
     {
         return new JsonSerializerOptions
         {

@@ -31,6 +31,6 @@ public static class PermissionsBiDiExtensions
             throw new ArgumentNullException(nameof(bidi));
         }
 
-        return Module.Create<PermissionsModule>(bidi);
+        return bidi.AsModule<PermissionsModule>();
     }
 }
