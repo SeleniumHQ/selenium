@@ -17,7 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

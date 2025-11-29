@@ -37,8 +37,9 @@ logger = logging.getLogger(__name__)
 
 
 class Service(ABC):
-    """The abstract base class for all service objects.  Services typically
-    launch a child program in a new process as an interim process to
+    """Abstract base class for all service objects that manage driver processes.
+
+    Services typically launch a child program in a new process as an interim process to
     communicate with a browser.
 
     Args:
@@ -51,14 +52,14 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        log_output: Optional[SubprocessStdAlias] = None,
-        env: Optional[Mapping[Any, Any]] = None,
-        driver_path_env_key: Optional[str] = None,
+        log_output: SubprocessStdAlias | None = None,
+        env: Mapping[Any, Any] | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
-        self.log_output: Optional[Union[int, IOBase]]
+        self.log_output: int | IOBase | None
         if isinstance(log_output, str):
             self.log_output = cast(IOBase, open(log_output, "a+", encoding="utf-8"))
         elif log_output == subprocess.STDOUT:
@@ -123,13 +124,15 @@ class Service(ABC):
             raise WebDriverException(f"Service {self._path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
-        """Establishes a socket connection to determine if the service running
-        on the port is accessible."""
+        """Establish a socket connection to determine if the service is accessible.
+
+        Returns:
+            True if the service is connectable on the configured port, False otherwise.
+        """
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
-        """Dispatch an HTTP request to the shutdown endpoint for the service in
-        an attempt to stop it."""
+        """Dispatch an HTTP request to the shutdown endpoint to stop the service."""
         try:
             request.urlopen(f"{self.service_url}/shutdown")
         except URLError:
@@ -142,7 +145,6 @@ class Service(ABC):
 
     def stop(self) -> None:
         """Stops the service."""
-
         if self.log_output not in {PIPE, subprocess.DEVNULL}:
             if isinstance(self.log_output, IOBase):
                 self.log_output.close()
@@ -244,7 +246,7 @@ class Service(ABC):
                 ) from err
             raise
 
-    def env_path(self) -> Optional[str]:
+    def env_path(self) -> str | None:
         if self.DRIVER_PATH_ENV_KEY:
             return os.getenv(self.DRIVER_PATH_ENV_KEY, None)
         return None

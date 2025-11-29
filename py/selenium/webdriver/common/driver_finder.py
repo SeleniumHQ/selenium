@@ -26,8 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class DriverFinder:
-    """A Driver finding class responsible for obtaining the correct driver and
-    associated browser.
+    """Find and obtain the correct driver and associated browser.
 
     Args:
         service: instance of the driver service class.

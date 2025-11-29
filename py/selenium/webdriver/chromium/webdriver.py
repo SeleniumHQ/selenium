@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
@@ -26,19 +25,17 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
 class ChromiumDriver(RemoteWebDriver):
-    """Controls the WebDriver instance of ChromiumDriver and allows you to
-    drive the browser."""
+    """Control the WebDriver instance of ChromiumDriver and drive the browser."""
 
     def __init__(
         self,
-        browser_name: Optional[str] = None,
-        vendor_prefix: Optional[str] = None,
-        options: Optional[ChromiumOptions] = None,
-        service: Optional[ChromiumService] = None,
+        browser_name: str | None = None,
+        vendor_prefix: str | None = None,
+        options: ChromiumOptions | None = None,
+        service: ChromiumService | None = None,
         keep_alive: bool = True,
     ) -> None:
-        """Creates a new WebDriver instance of the ChromiumDriver. Starts the
-        service and then creates new WebDriver instance of ChromiumDriver.
+        """Create a new WebDriver instance, start the service, and create new ChromiumDriver instance.
 
         Args:
             browser_name: Browser name used when matching capabilities.
@@ -47,7 +44,6 @@ class ChromiumDriver(RemoteWebDriver):
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-
         self.service = service if service else ChromiumService()
         options = options if options else ChromiumOptions()
 
@@ -105,7 +101,7 @@ class ChromiumDriver(RemoteWebDriver):
                 upload_throughput=500 * 1024,
             )  # maximal throughput
 
-            Note: 'throughput' can be used to set both (for download and upload).
+            Note: `throughput` can be used to set both (for download and upload).
         """
         self.execute("setNetworkConditions", {"network_conditions": network_conditions})
 
@@ -126,17 +122,19 @@ class ChromiumDriver(RemoteWebDriver):
         self.execute("setPermissions", {"descriptor": {"name": name}, "state": value})
 
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
-        """Execute Chrome Devtools Protocol command and get returned result The
-        command and command args should follow chrome devtools protocol
-        domains/commands, refer to link
-        https://chromedevtools.github.io/devtools-protocol/
+        """Execute Chrome Devtools Protocol command and get returned result.
+
+        The command and command args should follow chrome devtools protocol domains/commands
+
+        See:
+          - https://chromedevtools.github.io/devtools-protocol/
 
         Args:
             cmd: A str, command name
             cmd_args: A dict, command args. empty dict {} if there is no command args
 
         Example:
-            driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})
+            `driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})`
 
         Returns:
             A dict, empty dict {} if there is no result to return.
@@ -146,17 +144,11 @@ class ChromiumDriver(RemoteWebDriver):
         return super().execute_cdp_cmd(cmd, cmd_args)
 
     def get_sinks(self) -> list:
-        """
-        Returns:
-            A list of sinks available for Cast.
-        """
+        """Get a list of sinks available for Cast."""
         return self.execute("getSinks")["value"]
 
     def get_issue_message(self):
-        """
-        Returns:
-            An error message when there is any issue in a Cast session.
-        """
+        """Returns an error message when there is any issue in a Cast session."""
         return self.execute("getIssueMessage")["value"]
 
     @property
@@ -184,8 +176,7 @@ class ChromiumDriver(RemoteWebDriver):
         return self.execute(Command.GET_LOG, {"type": log_type})["value"]
 
     def set_sink_to_use(self, sink_name: str) -> dict:
-        """Sets a specific sink, using its name, as a Cast session receiver
-        target.
+        """Set a specific sink as a Cast session receiver target.
 
         Args:
             sink_name: Name of the sink to use as the target.
