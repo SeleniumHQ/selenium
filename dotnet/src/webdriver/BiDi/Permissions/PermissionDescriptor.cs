@@ -19,4 +19,4 @@
 
 namespace OpenQA.Selenium.BiDi.Permissions;
 
-internal record PermissionDescriptor(string Name);
+public record PermissionDescriptor(string Name);
