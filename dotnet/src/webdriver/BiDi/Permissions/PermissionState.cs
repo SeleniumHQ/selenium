@@ -1,4 +1,4 @@
-// <copyright file="Module.cs" company="Selenium Committers">
+// <copyright file="PermissionState.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,29 +17,15 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
+using OpenQA.Selenium.BiDi.Json.Converters;
+using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.BiDi;
+namespace OpenQA.Selenium.BiDi.Permissions;
 
-public abstract class Module
+[JsonConverter(typeof(CamelCaseEnumConverter<PermissionState>))]
+public enum PermissionState
 {
-    protected BiDi BiDi { get; private set; }
-
-    protected Broker Broker { get; private set; }
-
-    protected abstract void Initialize(JsonSerializerOptions options);
-
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
-        where TModule : Module, new()
-    {
-        TModule module = new()
-        {
-            BiDi = bidi,
-            Broker = broker
-        };
-
-        module.Initialize(jsonSerializerOptions);
-
-        return module;
-    }
+    Granted,
+    Denied,
+    Prompt
 }
