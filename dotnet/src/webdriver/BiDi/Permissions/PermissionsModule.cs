@@ -29,11 +29,11 @@ public class PermissionsModule : Module
 {
     private PermissionsJsonSerializerContext JsonContext => (PermissionsJsonSerializerContext)base.JsonContext;
 
-    public async Task SetPermissionAsync(string permissionName, PermissionState state, string origin, UserContext? userContext, SetPermissionOptions? options = null)
+    public async Task SetPermissionAsync(PermissionDescriptor permissionName, PermissionState state, string origin, string? embeddedOrigin, UserContext? userContext, SetPermissionOptions? options = null)
     {
-        var @params = new SetPermissionCommandParameters(new PermissionDescriptor(permissionName), state, origin, userContext);
+        var @params = new SetPermissionCommandParameters(permissionName, state, origin, embeddedOrigin, userContext);
 
-        await Broker.ExecuteCommandAsync(new SetPermissionCommand(@params), options, JsonContext.Permissions_SetPermissionCommand, JsonContext.Permissions_SetPermissionResult).ConfigureAwait(false);
+        await Broker.ExecuteCommandAsync(new SetPermissionCommand(@params), options, JsonContext.SetPermissionCommand, JsonContext.SetPermissionResult).ConfigureAwait(false);
     }
 
     protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
@@ -42,6 +42,6 @@ public class PermissionsModule : Module
     }
 }
 
-[JsonSerializable(typeof(SetPermissionCommand), TypeInfoPropertyName = "Permissions_SetPermissionCommand")]
-[JsonSerializable(typeof(SetPermissionResult), TypeInfoPropertyName = "Permissions_SetPermissionResult")]
+[JsonSerializable(typeof(SetPermissionCommand))]
+[JsonSerializable(typeof(SetPermissionResult))]
 internal partial class PermissionsJsonSerializerContext : JsonSerializerContext;
