@@ -1,4 +1,4 @@
-// <copyright file="BiDiExtensions.cs" company="Selenium Committers">
+// <copyright file="WebDriver.Extensions.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
-public static class BiDiExtensions
+public static class WebDriverExtensions
 {
     public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null)
     {
