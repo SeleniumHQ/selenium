@@ -17,9 +17,9 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
+using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -29,56 +29,24 @@ namespace OpenQA.Selenium.BiDi;
 
 public sealed class BiDi : IAsyncDisposable
 {
-    internal Broker Broker { get; }
-    internal JsonSerializerOptions JsonOptions { get; }
-    private readonly BiDiJsonSerializerContext _jsonContext;
-
-    public JsonSerializerOptions DefaultBiDiOptions()
-    {
-        return new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-
-            // BiDi returns special numbers such as "NaN" as strings
-            // Additionally, -0 is returned as a string "-0"
-            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
-            Converters =
-            {
-                new BrowsingContextConverter(this),
-                new BrowserUserContextConverter(this),
-                new CollectorConverter(this),
-                new InterceptConverter(this),
-                new HandleConverter(this),
-                new InternalIdConverter(this),
-                new PreloadScriptConverter(this),
-                new RealmConverter(this),
-                new DateTimeOffsetConverter(),
-                new WebExtensionConverter(this),
-            }
-        };
-    }
+    private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
     private BiDi(string url)
     {
         var uri = new Uri(url);
 
-        JsonOptions = DefaultBiDiOptions();
+        Broker = new Broker(this, uri);
 
-        _jsonContext = new BiDiJsonSerializerContext(JsonOptions);
-
-        Broker = new Broker(this, uri, JsonOptions);
-        SessionModule = Module.Create<Session.SessionModule>(this, JsonOptions, _jsonContext);
-        BrowsingContext = Module.Create<BrowsingContext.BrowsingContextModule>(this, JsonOptions, _jsonContext);
-        Browser = Module.Create<Browser.BrowserModule>(this, JsonOptions, _jsonContext);
-        Network = Module.Create<Network.NetworkModule>(this, JsonOptions, _jsonContext);
-        InputModule = Module.Create<Input.InputModule>(this, JsonOptions, _jsonContext);
-        Script = Module.Create<Script.ScriptModule>(this, JsonOptions, _jsonContext);
-        Log = Module.Create<Log.LogModule>(this, JsonOptions, _jsonContext);
-        Storage = Module.Create<Storage.StorageModule>(this, JsonOptions, _jsonContext);
-        WebExtension = Module.Create<WebExtension.WebExtensionModule>(this, JsonOptions, _jsonContext);
-        Emulation = Module.Create<Emulation.EmulationModule>(this, JsonOptions, _jsonContext);
+        SessionModule = AsModule<Session.SessionModule>();
+        BrowsingContext = AsModule<BrowsingContext.BrowsingContextModule>();
+        Browser = AsModule<Browser.BrowserModule>();
+        Network = AsModule<Network.NetworkModule>();
+        InputModule = AsModule<Input.InputModule>();
+        Script = AsModule<Script.ScriptModule>();
+        Log = AsModule<Log.LogModule>();
+        Storage = AsModule<Storage.StorageModule>();
+        WebExtension = AsModule<WebExtension.WebExtensionModule>();
+        Emulation = AsModule<Emulation.EmulationModule>();
     }
 
     internal Session.SessionModule SessionModule { get; }
@@ -124,5 +92,39 @@ public sealed class BiDi : IAsyncDisposable
     {
         await Broker.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
+    }
+
+    public T AsModule<T>() where T : Module, new()
+    {
+        return (T)_modules.GetOrAdd(typeof(T), Module.Create<T>(this, Broker, GetJsonOptions()));
+    }
+
+    private Broker Broker { get; }
+
+    private JsonSerializerOptions GetJsonOptions()
+    {
+        return new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+
+            // BiDi returns special numbers such as "NaN" as strings
+            // Additionally, -0 is returned as a string "-0"
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
+            Converters =
+            {
+                new BrowsingContextConverter(this),
+                new BrowserUserContextConverter(this),
+                new CollectorConverter(this),
+                new InterceptConverter(this),
+                new HandleConverter(this),
+                new InternalIdConverter(this),
+                new PreloadScriptConverter(this),
+                new RealmConverter(this),
+                new DateTimeOffsetConverter(),
+                new WebExtensionConverter(this),
+            }
+        };
     }
 }

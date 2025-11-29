@@ -18,27 +18,27 @@
 // </copyright>
 
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
 {
+    protected BiDi BiDi { get; private set; }
+
     protected Broker Broker { get; private set; }
 
-    internal JsonSerializerContext JsonContext { get; private set; }
+    protected abstract void Initialize(JsonSerializerOptions options);
 
-    protected abstract JsonSerializerContext CreateJsonContext(JsonSerializerOptions options);
-
-    public static TModule Create<TModule>(BiDi bidi, JsonSerializerOptions jsonOptions, JsonSerializerContext? cachedContext = null)
+    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
         where TModule : Module, new()
     {
         TModule module = new()
         {
-            Broker = bidi.Broker,
+            BiDi = bidi,
+            Broker = broker
         };
 
-        module.JsonContext = cachedContext ?? module.CreateJsonContext(jsonOptions);
+        module.Initialize(jsonSerializerOptions);
 
         return module;
     }

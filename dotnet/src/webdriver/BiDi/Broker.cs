@@ -50,7 +50,7 @@ public sealed class Broker : IAsyncDisposable
     private Task? _eventEmitterTask;
     private CancellationTokenSource? _receiveMessagesCancellationTokenSource;
 
-    internal Broker(BiDi bidi, Uri url, JsonSerializerOptions jsonOptions)
+    internal Broker(BiDi bidi, Uri url)
     {
         _bidi = bidi;
         _transport = new WebSocketTransport(url);

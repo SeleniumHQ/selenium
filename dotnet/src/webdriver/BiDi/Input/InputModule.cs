@@ -20,37 +20,37 @@
 using OpenQA.Selenium.BiDi.Json;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
 public sealed class InputModule : Module
 {
-    internal new BiDiJsonSerializerContext JsonContext => (BiDiJsonSerializerContext)base.JsonContext;
+    private BiDiJsonSerializerContext _jsonContext = null!;
 
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options, JsonContext.PerformActionsCommand, JsonContext.PerformActionsResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult).ConfigureAwait(false);
     }
 
     public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, JsonContext.ReleaseActionsCommand, JsonContext.ReleaseActionsResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult).ConfigureAwait(false);
     }
 
     public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, JsonContext.SetFilesCommand, JsonContext.SetFilesResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult).ConfigureAwait(false);
     }
-    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
+
+    protected override void Initialize(JsonSerializerOptions options)
     {
-        return new BiDiJsonSerializerContext(options);
+        _jsonContext = new BiDiJsonSerializerContext(options);
     }
 }

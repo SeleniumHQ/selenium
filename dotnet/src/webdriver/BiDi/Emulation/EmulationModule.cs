@@ -19,55 +19,54 @@
 
 using OpenQA.Selenium.BiDi.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 public sealed class EmulationModule : Module
 {
-    internal new BiDiJsonSerializerContext JsonContext => (BiDiJsonSerializerContext)base.JsonContext;
+    private BiDiJsonSerializerContext _jsonContext = null!;
 
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null)
     {
         var @params = new SetTimezoneOverrideParameters(timezone, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetTimezoneOverrideCommand(@params), options, JsonContext.SetTimezoneOverrideCommand, JsonContext.SetTimezoneOverrideResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetTimezoneOverrideCommand(@params), options, _jsonContext.SetTimezoneOverrideCommand, _jsonContext.SetTimezoneOverrideResult).ConfigureAwait(false);
     }
 
     public async Task<SetUserAgentOverrideResult> SetUserAgentOverrideAsync(string? userAgent, SetUserAgentOverrideOptions? options = null)
     {
         var @params = new SetUserAgentOverrideParameters(userAgent, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetUserAgentOverrideCommand(@params), options, JsonContext.SetUserAgentOverrideCommand, JsonContext.SetUserAgentOverrideResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetUserAgentOverrideCommand(@params), options, _jsonContext.SetUserAgentOverrideCommand, _jsonContext.SetUserAgentOverrideResult).ConfigureAwait(false);
     }
 
     public async Task<SetLocaleOverrideResult> SetLocaleOverrideAsync(string? locale, SetLocaleOverrideOptions? options = null)
     {
         var @params = new SetLocaleOverrideParameters(locale, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetLocaleOverrideCommand(@params), options, JsonContext.SetLocaleOverrideCommand, JsonContext.SetLocaleOverrideResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetLocaleOverrideCommand(@params), options, _jsonContext.SetLocaleOverrideCommand, _jsonContext.SetLocaleOverrideResult).ConfigureAwait(false);
     }
 
     public async Task<SetForcedColorsModeThemeOverrideResult> SetForcedColorsModeThemeOverrideAsync(ForcedColorsModeTheme? theme, SetForcedColorsModeThemeOverrideOptions? options = null)
     {
         var @params = new SetForcedColorsModeThemeOverrideParameters(theme, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetForcedColorsModeThemeOverrideCommand(@params), options, JsonContext.SetForcedColorsModeThemeOverrideCommand, JsonContext.SetForcedColorsModeThemeOverrideResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetForcedColorsModeThemeOverrideCommand(@params), options, _jsonContext.SetForcedColorsModeThemeOverrideCommand, _jsonContext.SetForcedColorsModeThemeOverrideResult).ConfigureAwait(false);
     }
 
     public async Task<SetScriptingEnabledResult> SetScriptingEnabledAsync(bool? enabled, SetScriptingEnabledOptions? options = null)
     {
         var @params = new SetScriptingEnabledParameters(enabled, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetScriptingEnabledCommand(@params), options, JsonContext.SetScriptingEnabledCommand, JsonContext.SetScriptingEnabledResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetScriptingEnabledCommand(@params), options, _jsonContext.SetScriptingEnabledCommand, _jsonContext.SetScriptingEnabledResult).ConfigureAwait(false);
     }
 
     public async Task<SetScreenOrientationOverrideResult> SetScreenOrientationOverrideAsync(ScreenOrientation? screenOrientation, SetScreenOrientationOverrideOptions? options = null)
     {
         var @params = new SetScreenOrientationOverrideParameters(screenOrientation, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetScreenOrientationOverrideCommand(@params), options, JsonContext.SetScreenOrientationOverrideCommand, JsonContext.SetScreenOrientationOverrideResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetScreenOrientationOverrideCommand(@params), options, _jsonContext.SetScreenOrientationOverrideCommand, _jsonContext.SetScreenOrientationOverrideResult).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null)
@@ -76,24 +75,25 @@ public sealed class EmulationModule : Module
 
         var @params = new SetGeolocationOverrideCoordinatesParameters(coordinates, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, JsonContext.SetGeolocationOverrideCommand, JsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, _jsonContext.SetGeolocationOverrideCommand, _jsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(SetGeolocationOverrideOptions? options = null)
     {
         var @params = new SetGeolocationOverrideCoordinatesParameters(null, options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, JsonContext.SetGeolocationOverrideCommand, JsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, _jsonContext.SetGeolocationOverrideCommand, _jsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
     }
 
     public async Task<SetGeolocationOverrideResult> SetGeolocationPositionErrorOverrideAsync(SetGeolocationPositionErrorOverrideOptions? options = null)
     {
         var @params = new SetGeolocationOverridePositionErrorParameters(new GeolocationPositionError(), options?.Contexts, options?.UserContexts);
 
-        return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, JsonContext.SetGeolocationOverrideCommand, JsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, _jsonContext.SetGeolocationOverrideCommand, _jsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
     }
-    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
+
+    protected override void Initialize(JsonSerializerOptions options)
     {
-        return new BiDiJsonSerializerContext(options);
+        _jsonContext = new BiDiJsonSerializerContext(options);
     }
 }
