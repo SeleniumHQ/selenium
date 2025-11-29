@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Browser;
 using OpenQA.Selenium.BiDi.Permissions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -29,11 +28,11 @@ public class PermissionsModule : Module
 {
     private PermissionsJsonSerializerContext JsonContext => (PermissionsJsonSerializerContext)base.JsonContext;
 
-    public async Task SetPermissionAsync(PermissionDescriptor permissionName, PermissionState state, string origin, string? embeddedOrigin, UserContext? userContext, SetPermissionOptions? options = null)
+    public async Task<SetPermissionResult> SetPermissionAsync(PermissionDescriptor permissionName, PermissionState state, string origin, SetPermissionOptions? options = null)
     {
-        var @params = new SetPermissionCommandParameters(permissionName, state, origin, embeddedOrigin, userContext);
+        var @params = new SetPermissionCommandParameters(permissionName, state, origin, options?.EmbeddedOrigin, options?.UserContext);
 
-        await Broker.ExecuteCommandAsync(new SetPermissionCommand(@params), options, JsonContext.SetPermissionCommand, JsonContext.SetPermissionResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetPermissionCommand(@params), options, JsonContext.SetPermissionCommand, JsonContext.SetPermissionResult).ConfigureAwait(false);
     }
 
     protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
