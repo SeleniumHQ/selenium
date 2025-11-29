@@ -81,22 +81,6 @@ namespace OpenQA.Selenium.BiDi.Json;
 [JsonSerializable(typeof(Session.UnsubscribeByIdCommand))]
 [JsonSerializable(typeof(Session.UnsubscribeResult))]
 
-[JsonSerializable(typeof(Browser.CloseCommand), TypeInfoPropertyName = "Browser_CloseCommand")]
-[JsonSerializable(typeof(Browser.CloseResult), TypeInfoPropertyName = "Browser_CloseResult")]
-[JsonSerializable(typeof(Browser.CreateUserContextCommand))]
-[JsonSerializable(typeof(Browser.CreateUserContextResult))]
-[JsonSerializable(typeof(Browser.GetUserContextsCommand))]
-[JsonSerializable(typeof(Browser.GetUserContextsResult))]
-[JsonSerializable(typeof(Browser.RemoveUserContextCommand))]
-[JsonSerializable(typeof(Browser.RemoveUserContextResult))]
-[JsonSerializable(typeof(Browser.GetClientWindowsCommand))]
-[JsonSerializable(typeof(Browser.GetClientWindowsResult))]
-[JsonSerializable(typeof(Browser.SetDownloadBehaviorCommand))]
-[JsonSerializable(typeof(Browser.SetDownloadBehaviorResult))]
-[JsonSerializable(typeof(IReadOnlyList<Browser.UserContextInfo>))]
-[JsonSerializable(typeof(IReadOnlyList<Browser.ClientWindowInfo>))]
-
-
 [JsonSerializable(typeof(BrowsingContext.ActivateCommand))]
 [JsonSerializable(typeof(BrowsingContext.ActivateResult))]
 [JsonSerializable(typeof(BrowsingContext.CaptureScreenshotCommand))]
