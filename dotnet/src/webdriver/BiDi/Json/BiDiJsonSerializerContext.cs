@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json;
@@ -69,104 +68,4 @@ namespace OpenQA.Selenium.BiDi.Json;
 
 [JsonSerializable(typeof(Command))]
 [JsonSerializable(typeof(EmptyResult))]
-
-[JsonSerializable(typeof(Session.StatusCommand))]
-[JsonSerializable(typeof(Session.StatusResult))]
-[JsonSerializable(typeof(Session.NewCommand))]
-[JsonSerializable(typeof(Session.NewResult))]
-[JsonSerializable(typeof(Session.EndCommand))]
-[JsonSerializable(typeof(Session.EndResult))]
-[JsonSerializable(typeof(Session.SubscribeCommand))]
-[JsonSerializable(typeof(Session.SubscribeResult))]
-[JsonSerializable(typeof(Session.UnsubscribeByIdCommand))]
-[JsonSerializable(typeof(Session.UnsubscribeResult))]
-
-[JsonSerializable(typeof(Network.AddDataCollectorCommand))]
-[JsonSerializable(typeof(Network.AddDataCollectorResult))]
-[JsonSerializable(typeof(Network.AddInterceptCommand))]
-[JsonSerializable(typeof(Network.AddInterceptResult))]
-[JsonSerializable(typeof(Network.ContinueRequestCommand))]
-[JsonSerializable(typeof(Network.ContinueRequestResult))]
-[JsonSerializable(typeof(Network.ContinueResponseCommand))]
-[JsonSerializable(typeof(Network.ContinueResponseResult))]
-[JsonSerializable(typeof(Network.ContinueWithAuthCommand))]
-[JsonSerializable(typeof(Network.ContinueWithAuthResult))]
-[JsonSerializable(typeof(Network.FailRequestCommand))]
-[JsonSerializable(typeof(Network.FailRequestResult))]
-[JsonSerializable(typeof(Network.GetDataCommand))]
-[JsonSerializable(typeof(Network.GetDataResult))]
-[JsonSerializable(typeof(Network.ProvideResponseCommand))]
-[JsonSerializable(typeof(Network.ProvideResponseResult))]
-[JsonSerializable(typeof(Network.RemoveDataCollectorCommand))]
-[JsonSerializable(typeof(Network.RemoveDataCollectorResult))]
-[JsonSerializable(typeof(Network.RemoveInterceptCommand))]
-[JsonSerializable(typeof(Network.RemoveInterceptResult))]
-[JsonSerializable(typeof(Network.SetCacheBehaviorCommand))]
-[JsonSerializable(typeof(Network.SetCacheBehaviorResult))]
-[JsonSerializable(typeof(Network.SetExtraHeadersCommand))]
-[JsonSerializable(typeof(Network.SetExtraHeadersResult))]
-
-[JsonSerializable(typeof(Network.BeforeRequestSentEventArgs))]
-[JsonSerializable(typeof(Network.ResponseStartedEventArgs))]
-[JsonSerializable(typeof(Network.ResponseCompletedEventArgs))]
-[JsonSerializable(typeof(Network.FetchErrorEventArgs))]
-[JsonSerializable(typeof(Network.AuthRequiredEventArgs))]
-
-[JsonSerializable(typeof(Script.AddPreloadScriptCommand))]
-[JsonSerializable(typeof(Script.AddPreloadScriptResult))]
-[JsonSerializable(typeof(Script.DisownCommand))]
-[JsonSerializable(typeof(Script.DisownResult))]
-[JsonSerializable(typeof(Script.CallFunctionCommand))]
-[JsonSerializable(typeof(Script.EvaluateResult))]
-[JsonSerializable(typeof(Script.EvaluateCommand))]
-[JsonSerializable(typeof(Script.EvaluateResult))]
-[JsonSerializable(typeof(Script.GetRealmsCommand))]
-[JsonSerializable(typeof(Script.GetRealmsResult))]
-[JsonSerializable(typeof(Script.RemovePreloadScriptCommand))]
-[JsonSerializable(typeof(Script.RemovePreloadScriptResult))]
-
-[JsonSerializable(typeof(Script.MessageEventArgs))]
-[JsonSerializable(typeof(Script.RealmDestroyedEventArgs))]
-[JsonSerializable(typeof(IReadOnlyList<Script.RealmInfo>))]
-
-[JsonSerializable(typeof(Log.LogEntry))]
-
-[JsonSerializable(typeof(Storage.GetCookiesCommand))]
-[JsonSerializable(typeof(Storage.GetCookiesResult))]
-[JsonSerializable(typeof(Storage.SetCookieCommand))]
-[JsonSerializable(typeof(Storage.SetCookieResult))]
-[JsonSerializable(typeof(Storage.DeleteCookiesCommand))]
-[JsonSerializable(typeof(Storage.DeleteCookiesResult))]
-
-[JsonSerializable(typeof(Input.PerformActionsCommand))]
-[JsonSerializable(typeof(Input.PerformActionsResult))]
-[JsonSerializable(typeof(Input.ReleaseActionsCommand))]
-[JsonSerializable(typeof(Input.ReleaseActionsResult))]
-[JsonSerializable(typeof(Input.SetFilesCommand))]
-[JsonSerializable(typeof(Input.SetFilesResult))]
-[JsonSerializable(typeof(IEnumerable<Input.IPointerSourceAction>))]
-[JsonSerializable(typeof(IEnumerable<Input.IKeySourceAction>))]
-[JsonSerializable(typeof(IEnumerable<Input.INoneSourceAction>))]
-[JsonSerializable(typeof(IEnumerable<Input.IWheelSourceAction>))]
-
-[JsonSerializable(typeof(WebExtension.InstallCommand))]
-[JsonSerializable(typeof(WebExtension.InstallResult))]
-[JsonSerializable(typeof(WebExtension.UninstallCommand))]
-[JsonSerializable(typeof(WebExtension.UninstallResult))]
-
-[JsonSerializable(typeof(Emulation.SetTimezoneOverrideCommand))]
-[JsonSerializable(typeof(Emulation.SetTimezoneOverrideResult))]
-[JsonSerializable(typeof(Emulation.SetUserAgentOverrideCommand))]
-[JsonSerializable(typeof(Emulation.SetUserAgentOverrideResult))]
-[JsonSerializable(typeof(Emulation.SetLocaleOverrideCommand))]
-[JsonSerializable(typeof(Emulation.SetLocaleOverrideResult))]
-[JsonSerializable(typeof(Emulation.SetForcedColorsModeThemeOverrideCommand))]
-[JsonSerializable(typeof(Emulation.SetForcedColorsModeThemeOverrideResult))]
-[JsonSerializable(typeof(Emulation.SetScriptingEnabledCommand))]
-[JsonSerializable(typeof(Emulation.SetScriptingEnabledResult))]
-[JsonSerializable(typeof(Emulation.SetScreenOrientationOverrideCommand))]
-[JsonSerializable(typeof(Emulation.SetScreenOrientationOverrideResult))]
-[JsonSerializable(typeof(Emulation.SetGeolocationOverrideCommand))]
-[JsonSerializable(typeof(Emulation.SetGeolocationOverrideResult))]
-
 internal partial class BiDiJsonSerializerContext : JsonSerializerContext;

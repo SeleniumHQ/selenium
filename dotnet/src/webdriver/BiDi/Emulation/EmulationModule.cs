@@ -17,15 +17,15 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 public sealed class EmulationModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private EmulationJsonSerializerContext _jsonContext = null!;
 
     public async Task<SetTimezoneOverrideResult> SetTimezoneOverrideAsync(string? timezone, SetTimezoneOverrideOptions? options = null)
     {
@@ -94,6 +94,22 @@ public sealed class EmulationModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new EmulationJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(SetTimezoneOverrideCommand))]
+[JsonSerializable(typeof(SetTimezoneOverrideResult))]
+[JsonSerializable(typeof(SetUserAgentOverrideCommand))]
+[JsonSerializable(typeof(SetUserAgentOverrideResult))]
+[JsonSerializable(typeof(SetLocaleOverrideCommand))]
+[JsonSerializable(typeof(SetLocaleOverrideResult))]
+[JsonSerializable(typeof(SetForcedColorsModeThemeOverrideCommand))]
+[JsonSerializable(typeof(SetForcedColorsModeThemeOverrideResult))]
+[JsonSerializable(typeof(SetScriptingEnabledCommand))]
+[JsonSerializable(typeof(SetScriptingEnabledResult))]
+[JsonSerializable(typeof(SetScreenOrientationOverrideCommand))]
+[JsonSerializable(typeof(SetScreenOrientationOverrideResult))]
+[JsonSerializable(typeof(SetGeolocationOverrideCommand))]
+[JsonSerializable(typeof(SetGeolocationOverrideResult))]
+internal partial class EmulationJsonSerializerContext : JsonSerializerContext;

@@ -17,16 +17,16 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
 public sealed class LogModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private LogJsonSerializerContext _jsonContext = null!;
 
     public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null)
     {
@@ -40,6 +40,9 @@ public sealed class LogModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new LogJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(LogEntry))]
+internal partial class LogJsonSerializerContext : JsonSerializerContext;

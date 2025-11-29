@@ -17,17 +17,17 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed class ScriptModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private ScriptJsonSerializerContext _jsonContext = null!;
 
     public async Task<EvaluateResult> EvaluateAsync(string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
     {
@@ -117,6 +117,24 @@ public sealed class ScriptModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new ScriptJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(AddPreloadScriptCommand))]
+[JsonSerializable(typeof(AddPreloadScriptResult))]
+[JsonSerializable(typeof(DisownCommand))]
+[JsonSerializable(typeof(DisownResult))]
+[JsonSerializable(typeof(CallFunctionCommand))]
+[JsonSerializable(typeof(EvaluateResult))]
+[JsonSerializable(typeof(EvaluateCommand))]
+[JsonSerializable(typeof(EvaluateResult))]
+[JsonSerializable(typeof(GetRealmsCommand))]
+[JsonSerializable(typeof(GetRealmsResult))]
+[JsonSerializable(typeof(RemovePreloadScriptCommand))]
+[JsonSerializable(typeof(RemovePreloadScriptResult))]
+
+[JsonSerializable(typeof(MessageEventArgs))]
+[JsonSerializable(typeof(RealmDestroyedEventArgs))]
+[JsonSerializable(typeof(IReadOnlyList<RealmInfo>))]
+internal partial class ScriptJsonSerializerContext : JsonSerializerContext;
