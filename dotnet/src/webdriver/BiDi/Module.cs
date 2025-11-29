@@ -23,15 +23,18 @@ namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
 {
+    protected BiDi BiDi { get; private set; }
+
     protected Broker Broker { get; private set; }
 
     protected abstract void Initialize(JsonSerializerOptions options);
 
-    public static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
+    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
         where TModule : Module, new()
     {
         TModule module = new()
         {
+            BiDi = bidi,
             Broker = broker
         };
 
