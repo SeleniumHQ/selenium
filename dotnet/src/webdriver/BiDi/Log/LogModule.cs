@@ -20,26 +20,26 @@
 using OpenQA.Selenium.BiDi.Json;
 using System;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
 public sealed class LogModule : Module
 {
-    internal new BiDiJsonSerializerContext JsonContext => (BiDiJsonSerializerContext)base.JsonContext;
+    private BiDiJsonSerializerContext _jsonContext = null!;
 
     public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext.LogEntry).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry).ConfigureAwait(false);
     }
 
     public async Task<Subscription> OnEntryAddedAsync(Action<LogEntry> handler, SubscriptionOptions? options = null)
     {
-        return await Broker.SubscribeAsync("log.entryAdded", handler, options, JsonContext.LogEntry).ConfigureAwait(false);
+        return await Broker.SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry).ConfigureAwait(false);
     }
-    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
+
+    protected override void Initialize(JsonSerializerOptions options)
     {
-        return new BiDiJsonSerializerContext(options);
+        _jsonContext = new BiDiJsonSerializerContext(options);
     }
 }

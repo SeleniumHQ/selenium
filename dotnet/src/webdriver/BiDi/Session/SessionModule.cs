@@ -20,47 +20,47 @@
 using OpenQA.Selenium.BiDi.Json;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class SessionModule : Module
 {
-    internal new BiDiJsonSerializerContext JsonContext => (BiDiJsonSerializerContext)base.JsonContext;
+    private BiDiJsonSerializerContext _jsonContext = null!;
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync(new StatusCommand(), options, JsonContext.StatusCommand, JsonContext.StatusResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new StatusCommand(), options, _jsonContext.StatusCommand, _jsonContext.StatusResult).ConfigureAwait(false);
     }
 
     public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null)
     {
         var @params = new SubscribeParameters(events, options?.Contexts);
 
-        return await Broker.ExecuteCommandAsync(new(@params), options, JsonContext.SubscribeCommand, JsonContext.SubscribeResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new(@params), options, _jsonContext.SubscribeCommand, _jsonContext.SubscribeResult).ConfigureAwait(false);
     }
 
     public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
     {
         var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        return await Broker.ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options, JsonContext.UnsubscribeByIdCommand, JsonContext.UnsubscribeResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options, _jsonContext.UnsubscribeByIdCommand, _jsonContext.UnsubscribeResult).ConfigureAwait(false);
     }
 
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilitiesRequest, NewOptions? options = null)
     {
         var @params = new NewParameters(capabilitiesRequest);
 
-        return await Broker.ExecuteCommandAsync(new NewCommand(@params), options, JsonContext.NewCommand, JsonContext.NewResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new NewCommand(@params), options, _jsonContext.NewCommand, _jsonContext.NewResult).ConfigureAwait(false);
     }
 
     public async Task<EndResult> EndAsync(EndOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync(new EndCommand(), options, JsonContext.EndCommand, JsonContext.EndResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new EndCommand(), options, _jsonContext.EndCommand, _jsonContext.EndResult).ConfigureAwait(false);
     }
-    protected override JsonSerializerContext CreateJsonContext(JsonSerializerOptions options)
+
+    protected override void Initialize(JsonSerializerOptions options)
     {
-        return new BiDiJsonSerializerContext(options);
+        _jsonContext = new BiDiJsonSerializerContext(options);
     }
 }
