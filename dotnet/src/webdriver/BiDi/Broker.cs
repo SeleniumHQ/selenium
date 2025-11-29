@@ -272,10 +272,22 @@ public sealed class Broker : IAsyncDisposable
             case "success":
                 if (id is null) throw new JsonException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
-                if (_pendingCommands.TryGetValue(id.Value, out var successCommand))
+                if (_pendingCommands.TryGetValue(id.Value, out var command))
                 {
-                    successCommand.TaskCompletionSource.SetResult((EmptyResult)JsonSerializer.Deserialize(ref resultReader, successCommand.JsonResultTypeInfo)!);
-                    _pendingCommands.TryRemove(id.Value, out _);
+                    try
+                    {
+                        var commandResult = (EmptyResult)JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)!;
+
+                        command.TaskCompletionSource.SetResult(commandResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        command.TaskCompletionSource.SetException(ex);
+                    }
+                    finally
+                    {
+                        _pendingCommands.TryRemove(id.Value, out _);
+                    }
                 }
                 else
                 {
