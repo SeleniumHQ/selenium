@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -82,8 +81,6 @@ public sealed class BrowserModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        options.TypeInfoResolverChain.Add(new BiDiJsonSerializerContext());
-
         _jsonContext = new BrowserJsonSerializerContext(options);
     }
 }

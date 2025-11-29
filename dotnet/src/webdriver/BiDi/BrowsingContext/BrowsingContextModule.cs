@@ -17,16 +17,16 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private BrowsingContextJsonSerializerContext _jsonContext = null!;
 
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null)
     {
@@ -67,7 +67,7 @@ public sealed class BrowsingContextModule : Module
     {
         var @params = new CloseParameters(context, options?.PromptUnload);
 
-        return await Broker.ExecuteCommandAsync(new CloseCommand(@params), options, _jsonContext.BrowsingContext_CloseCommand, _jsonContext.BrowsingContext_CloseResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new CloseCommand(@params), options, _jsonContext.CloseCommand, _jsonContext.CloseResult).ConfigureAwait(false);
     }
 
     public async Task<TraverseHistoryResult> TraverseHistoryAsync(BrowsingContext context, int delta, TraverseHistoryOptions? options = null)
@@ -254,6 +254,42 @@ public sealed class BrowsingContextModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new BrowsingContextJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(ActivateCommand))]
+[JsonSerializable(typeof(ActivateResult))]
+[JsonSerializable(typeof(CaptureScreenshotCommand))]
+[JsonSerializable(typeof(CaptureScreenshotResult))]
+[JsonSerializable(typeof(CloseCommand))]
+[JsonSerializable(typeof(CloseResult))]
+[JsonSerializable(typeof(CreateCommand))]
+[JsonSerializable(typeof(CreateResult))]
+[JsonSerializable(typeof(GetTreeCommand))]
+[JsonSerializable(typeof(GetTreeResult))]
+[JsonSerializable(typeof(HandleUserPromptCommand))]
+[JsonSerializable(typeof(HandleUserPromptResult))]
+[JsonSerializable(typeof(LocateNodesCommand))]
+[JsonSerializable(typeof(LocateNodesResult))]
+[JsonSerializable(typeof(NavigateCommand))]
+[JsonSerializable(typeof(NavigateResult))]
+[JsonSerializable(typeof(PrintCommand))]
+[JsonSerializable(typeof(PrintResult))]
+[JsonSerializable(typeof(ReloadCommand))]
+[JsonSerializable(typeof(ReloadResult))]
+[JsonSerializable(typeof(SetViewportCommand))]
+[JsonSerializable(typeof(SetViewportResult))]
+[JsonSerializable(typeof(TraverseHistoryCommand))]
+[JsonSerializable(typeof(TraverseHistoryResult))]
+
+[JsonSerializable(typeof(BrowsingContextInfo))]
+[JsonSerializable(typeof(DownloadWillBeginEventArgs))]
+[JsonSerializable(typeof(DownloadEndEventArgs))]
+[JsonSerializable(typeof(DownloadCanceledEventArgs))]
+[JsonSerializable(typeof(DownloadCompleteEventArgs))]
+[JsonSerializable(typeof(HistoryUpdatedEventArgs))]
+[JsonSerializable(typeof(NavigationInfo))]
+[JsonSerializable(typeof(UserPromptOpenedEventArgs))]
+[JsonSerializable(typeof(UserPromptClosedEventArgs))]
+internal partial class BrowsingContextJsonSerializerContext : JsonSerializerContext;
