@@ -59,9 +59,9 @@ public static class SeleniumManager
             return binaryFullPath;
         }
 
+#if NET8_0_OR_GREATER
         SupportedPlatform? platform = null;
 
-#if NET8_0_OR_GREATER
         if (OperatingSystem.IsWindows())
         {
             platform = SupportedPlatform.Windows;
@@ -74,7 +74,9 @@ public static class SeleniumManager
         {
             platform = SupportedPlatform.MacOS;
         }
-#else
+#elif NETSTANDARD2_0
+        SupportedPlatform? platform = null;
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             platform = SupportedPlatform.Windows;
@@ -87,6 +89,8 @@ public static class SeleniumManager
         {
             platform = SupportedPlatform.MacOS;
         }
+#elif NET462
+        var platform = SupportedPlatform.Windows;
 #endif
 
         var seleniumManagerFileName = platform switch
@@ -95,7 +99,7 @@ public static class SeleniumManager
             SupportedPlatform.Linux => "selenium-manager",
             SupportedPlatform.MacOS => "selenium-manager",
             _ => throw new PlatformNotSupportedException(
-                $"Selenium Manager doesn't support your runtime platform: {RuntimeInformation.OSDescription}"),
+                $"Selenium Manager doesn't support your runtime platform: {Environment.OSVersion.Platform}"),
         };
 
         var baseDirectory = AppContext.BaseDirectory;
@@ -120,6 +124,7 @@ public static class SeleniumManager
             }
         }
 
+#if !NET462
         // Supporting .NET5+ applications deployed as bundled applications (single file or AOT).
         // In this case bootstrapper extracts the native libraries into a temporary directory.
         // Most interesting build properties: "IncludeNativeLibrariesForSelfExtract" and "IncludeAllContentForSelfExtract".
@@ -129,6 +134,7 @@ public static class SeleniumManager
         {
             probingPaths.AddRange(nativeDllSearchDirectories.Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries).Select(path => Path.Combine(path, seleniumManagerFileName)));
         }
+#endif
 
         // Covering the case when the application is hosted by another application, most likely
         // we can find Selenium Manager in the assembly location, because "AppContext.BaseDirectory"

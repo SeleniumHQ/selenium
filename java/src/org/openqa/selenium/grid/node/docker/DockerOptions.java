@@ -30,14 +30,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
@@ -115,6 +118,10 @@ public class DockerOptions {
         config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
   }
 
+  private String getApiVersion() {
+    return config.get(DOCKER_SECTION, "api-version").orElse(null);
+  }
+
   private boolean isEnabled(Docker docker) {
     if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
       return false;
@@ -129,7 +136,8 @@ public class DockerOptions {
 
     HttpClient client =
         clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
-    Docker docker = new Docker(client);
+    String apiVersion = getApiVersion();
+    Docker docker = new Docker(client, apiVersion);
 
     if (!isEnabled(docker)) {
       throw new DockerException("Unable to reach the Docker daemon at " + getDockerUri());
@@ -168,6 +176,7 @@ public class DockerOptions {
     DockerAssetsPath assetsPath = getAssetsPath(info);
     String networkName = getDockerNetworkName(info);
     Map<String, Object> hostConfig = getDockerHostConfig(info);
+    Map<String, String> groupingLabels = getGroupingLabels(info);
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
@@ -203,7 +212,8 @@ public class DockerOptions {
                     info.isPresent(),
                     capabilities -> options.getSlotMatcher().matches(caps, capabilities),
                     hostConfig,
-                    hostConfigKeys));
+                    hostConfigKeys,
+                    groupingLabels));
           }
           LOG.info(
               String.format(
@@ -250,6 +260,27 @@ public class DockerOptions {
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private Map<String, Object> getDockerHostConfig(Optional<ContainerInfo> info) {
     return info.map(ContainerInfo::getHostConfig).orElse(Collections.emptyMap());
+  }
+
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private Map<String, String> getGroupingLabels(Optional<ContainerInfo> info) {
+    if (info.isEmpty()) {
+      return Collections.emptyMap();
+    }
+
+    // Get custom grouping labels from configuration
+    List<String> customLabelKeys =
+        config.getAll(DOCKER_SECTION, "grouping-labels").orElseGet(Collections::emptyList);
+
+    Set<String> groupingKeys = new HashSet<>(customLabelKeys);
+    groupingKeys.add("com.docker.compose.project");
+    groupingKeys.add("io.podman.compose.project");
+
+    Map<String, String> allLabels = info.get().getLabels();
+    // Filter for grouping labels that work across orchestration systems
+    return allLabels.entrySet().stream()
+        .filter(entry -> groupingKeys.contains(entry.getKey()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

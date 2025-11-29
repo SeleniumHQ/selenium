@@ -30,6 +30,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -261,7 +262,8 @@ public abstract class HttpClientTestBase {
                     executing.countDown();
                     return handler.execute(request);
                   } catch (WebDriverException ex) {
-                    if (ex.getCause() instanceof InterruptedException) {
+                    if (ex.getCause() instanceof InterruptedException
+                        || ex.getCause() instanceof HttpTimeoutException) {
                       interrupted.countDown();
                     }
 
