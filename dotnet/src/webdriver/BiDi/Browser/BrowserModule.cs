@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -97,6 +96,4 @@ public sealed class BrowserModule : Module
 [JsonSerializable(typeof(GetClientWindowsResult))]
 [JsonSerializable(typeof(SetDownloadBehaviorCommand))]
 [JsonSerializable(typeof(SetDownloadBehaviorResult))]
-[JsonSerializable(typeof(IReadOnlyList<UserContextInfo>))]
-[JsonSerializable(typeof(IReadOnlyList<ClientWindowInfo>))]
 internal partial class BrowserJsonSerializerContext : JsonSerializerContext;

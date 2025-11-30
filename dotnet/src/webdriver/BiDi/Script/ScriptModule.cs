@@ -177,5 +177,4 @@ public sealed class ScriptModule : Module
 
 [JsonSerializable(typeof(MessageEventArgs))]
 [JsonSerializable(typeof(RealmDestroyedEventArgs))]
-[JsonSerializable(typeof(IReadOnlyList<RealmInfo>))]
 internal partial class ScriptJsonSerializerContext : JsonSerializerContext;
