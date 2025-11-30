@@ -100,7 +100,20 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
         _webSocket.Dispose();
         _sharedMemoryStream.Dispose();
         _socketSendSemaphoreSlim.Dispose();
-        ArrayPool<byte>.Shared.Return(_receiveBuffer);
+        ReleaseBuffer();
         _disposed = true;
+    }
+
+    ~WebSocketTransport()
+    {
+        ReleaseBuffer();
+    }
+
+    private void ReleaseBuffer()
+    {
+        if (_receiveBuffer is not null)
+        {
+            ArrayPool<byte>.Shared.Return(_receiveBuffer);
+        }
     }
 }
