@@ -48,7 +48,6 @@ def write_atom_literal(out, name, contents, lang, utf8):
     name = get_atom_name(name)
 
     if "cc" == lang or "hh" == lang:
-        string_type = "std::string" if utf8 else "std::wstring"
         char_type = "char" if utf8 else "wchar_t"
         out.write("const %s* const %s[] = {\n" % (char_type, name))
     elif "java" == lang:

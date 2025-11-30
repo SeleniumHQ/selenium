@@ -5,7 +5,7 @@ set -eufo pipefail
 set -x
 
 # Define heap size for GitHub Actions runner
-HEAP_SIZE="-Xmx4g"
+HEAP_SIZE="-Xmx8g"
 
 # Default to auto if no parameter is provided
 CACHE_RESULTS="auto"

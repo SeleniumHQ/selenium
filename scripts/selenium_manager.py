@@ -15,7 +15,7 @@ http = urllib3.PoolManager()
 def get_url():
     r = http.request(
         "GET",
-        f"https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/latest",
+        "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/latest",
     )
     return r.url.replace("tag", "download")
 
@@ -23,7 +23,7 @@ def get_url():
 def get_sha_json():
     r = http.request(
         "GET",
-        f"https://raw.githubusercontent.com/SeleniumHQ/selenium_manager_artifacts/trunk/latest.json",
+        "https://raw.githubusercontent.com/SeleniumHQ/selenium_manager_artifacts/trunk/latest.json",
     )
     return json.loads(r.data)
 

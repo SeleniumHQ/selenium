@@ -93,7 +93,7 @@ jobs:
       - name: Update browser versions
         run: ./go update_browsers ${{ github.event.inputs.chrome_channel }}
       - name: Commit browser updates
-        run: git commit -m "update pinned browser versions"
+        run: git commit -m "update pinned browser versions" || true
       - name: Update devtools versions
         run: ./go all:update_cdp ${{ github.event.inputs.chrome_channel }}
       - name: Commit DevTools updates

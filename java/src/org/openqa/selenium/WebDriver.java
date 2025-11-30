@@ -21,7 +21,6 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -327,38 +326,6 @@ public interface WebDriver extends SearchContext {
     }
 
     /**
-     * @deprecated Use {@link #scriptTimeout(Duration)}
-     *     <p>Sets the amount of time to wait for an asynchronous script to finish execution before
-     *     throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
-     *     error code with invalid argument will be returned.
-     * @param time The timeout value.
-     * @param unit The unit of time.
-     * @return A self reference.
-     * @see JavascriptExecutor#executeAsyncScript(String, Object...)
-     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
-     */
-    @Deprecated
-    Timeouts setScriptTimeout(long time, TimeUnit unit);
-
-    /**
-     * Sets the amount of time to wait for an asynchronous script to finish execution before
-     * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an error
-     * code with invalid argument will be returned.
-     *
-     * @param duration The timeout value.
-     * @deprecated Use {@link #scriptTimeout(Duration)}
-     * @return A self reference.
-     * @see JavascriptExecutor#executeAsyncScript(String, Object...)
-     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
-     */
-    @Deprecated
-    default Timeouts setScriptTimeout(Duration duration) {
-      return setScriptTimeout(duration.toMillis(), TimeUnit.MILLISECONDS);
-    }
-
-    /**
      * Sets the amount of time to wait for an asynchronous script to finish execution before
      * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an error
      * code with invalid argument will be returned.
@@ -369,9 +336,7 @@ public interface WebDriver extends SearchContext {
      * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
      * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
-    default Timeouts scriptTimeout(Duration duration) {
-      return setScriptTimeout(duration);
-    }
+    Timeouts scriptTimeout(Duration duration);
 
     /**
      * Gets the amount of time to wait for an asynchronous script to finish execution before
@@ -387,20 +352,6 @@ public interface WebDriver extends SearchContext {
     }
 
     /**
-     * @param time The timeout value.
-     * @param unit The unit of time.
-     * @return A Timeouts interface.
-     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
-     * @deprecated Use {@link #pageLoadTimeout(Duration)}
-     *     <p>Sets the amount of time to wait for a page load to complete before throwing an error.
-     *     If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
-     *     invalid argument will be returned.
-     */
-    @Deprecated
-    Timeouts pageLoadTimeout(long time, TimeUnit unit);
-
-    /**
      * Sets the amount of time to wait for a page load to complete before throwing an error. If the
      * timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid argument
      * will be returned.
@@ -410,9 +361,7 @@ public interface WebDriver extends SearchContext {
      * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
      * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
-    default Timeouts pageLoadTimeout(Duration duration) {
-      return pageLoadTimeout(duration.toMillis(), TimeUnit.MILLISECONDS);
-    }
+    Timeouts pageLoadTimeout(Duration duration);
 
     /**
      * Gets the amount of time to wait for a page load to complete before throwing an error. If the

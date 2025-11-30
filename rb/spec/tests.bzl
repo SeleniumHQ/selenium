@@ -2,6 +2,7 @@ load("@rules_ruby//ruby:defs.bzl", "rb_library", "rb_test")
 load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
+    "chrome_beta_data",
     "chrome_data",
     "edge_data",
     "firefox_beta_data",
@@ -25,6 +26,30 @@ BROWSERS = {
             "@selenium//common:use_pinned_macos_chrome": {
                 "CHROME_BINARY": "$(location @mac_chrome//:Chrome.app)/Contents/MacOS/Chrome",
                 "CHROMEDRIVER_BINARY": "$(location @mac_chromedriver//:chromedriver)",
+            },
+            "//conditions:default": {},
+        }) | select({
+            "@selenium//common:use_headless_browser": {"HEADLESS": "true"},
+            "//conditions:default": {},
+        }),
+    },
+    "chrome-beta": {
+        "data": chrome_beta_data,
+        "deps": ["//rb/lib/selenium/webdriver:chrome"],
+        "tags": [],
+        "target_compatible_with": [],
+        "env": {
+            "WD_REMOTE_BROWSER": "chrome",
+            "WD_SPEC_DRIVER": "chrome",
+            "WD_BROWSER_VERSION": "beta",
+        } | select({
+            "@selenium//common:use_pinned_linux_chrome": {
+                "CHROME_BINARY": "$(location @linux_beta_chrome//:chrome-linux64/chrome)",
+                "CHROMEDRIVER_BINARY": "$(location @linux_beta_chromedriver//:chromedriver)",
+            },
+            "@selenium//common:use_pinned_macos_chrome": {
+                "CHROME_BINARY": "$(location @mac_beta_chrome//:Chrome.app)/Contents/MacOS/Chrome",
+                "CHROMEDRIVER_BINARY": "$(location @mac_beta_chromedriver//:chromedriver)",
             },
             "//conditions:default": {},
         }) | select({
@@ -86,6 +111,7 @@ BROWSERS = {
         "env": {
             "WD_REMOTE_BROWSER": "firefox",
             "WD_SPEC_DRIVER": "firefox",
+            "WD_BROWSER_VERSION": "beta",
         } | select({
             "@selenium//common:use_pinned_linux_firefox": {
                 "FIREFOX_BINARY": "$(location @linux_beta_firefox//:firefox/firefox)",
@@ -188,24 +214,25 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
             target_compatible_with = BROWSERS[browser]["target_compatible_with"],
         )
 
-        # Generate a test target for bidi browser execution.
-        rb_test(
-            name = "{}-{}-bidi".format(name, browser),
-            size = "large",
-            srcs = srcs,
-            args = ["rb/spec/"],
-            data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
-            env = BROWSERS[browser]["env"] | {"WEBDRIVER_BIDI": "true"},
-            main = "@bundle//bin:rspec",
-            tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-bidi".format(browser)],
-            deps = depset(
-                ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
-                BROWSERS[browser]["deps"] +
-                deps,
-            ),
-            visibility = ["//rb:__subpackages__"],
-            target_compatible_with = BROWSERS[browser]["target_compatible_with"],
-        )
+        # Generate a test target for bidi browser execution if there is a matching tag
+        if "bidi" in tags:
+            rb_test(
+                name = "{}-{}-bidi".format(name, browser),
+                size = "large",
+                srcs = srcs,
+                args = ["rb/spec/"],
+                data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
+                env = BROWSERS[browser]["env"] | {"WEBDRIVER_BIDI": "true"},
+                main = "@bundle//bin:rspec",
+                tags = COMMON_TAGS + BROWSERS[browser]["tags"] + tags + ["{}-bidi".format(browser)],
+                deps = depset(
+                    ["//rb/spec/integration/selenium/webdriver:spec_helper", "//rb/lib/selenium/webdriver:bidi"] +
+                    BROWSERS[browser]["deps"] +
+                    deps,
+                ),
+                visibility = ["//rb:__subpackages__"],
+                target_compatible_with = BROWSERS[browser]["target_compatible_with"],
+            )
 
 def rb_unit_test(name, srcs, deps, data = []):
     rb_test(

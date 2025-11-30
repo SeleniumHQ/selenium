@@ -165,6 +165,23 @@ public class BasicWheelInterfaceTest : DriverTestFixture
             Throws.InstanceOf<MoveTargetOutOfBoundsException>());
     }
 
+    [Test]
+    [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
+    public void ShouldAllowScrollingToADoubleWrappedElement()
+    {
+        driver.Url = scrollFrameOutOfViewport;
+        IWebElement iframe = driver.FindElement(By.TagName("iframe"));
+
+        Assert.That(IsInViewport(iframe), Is.False);
+
+        var wrappedFrame = new WebElementWrapper(iframe);
+        wrappedFrame = new WebElementWrapper(wrappedFrame);
+
+        new Actions(driver).ScrollToElement(wrappedFrame).Build().Perform();
+
+        Assert.That(IsInViewport(iframe), Is.True);
+    }
+
     private bool IsInViewport(IWebElement element)
     {
         String script =

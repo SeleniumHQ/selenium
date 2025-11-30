@@ -15,7 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Dict, Type
+import json
+from typing import Any
 
 from selenium.common.exceptions import (
     DetachedShadowRootException,
@@ -52,9 +53,9 @@ from selenium.common.exceptions import (
 
 
 class ExceptionMapping:
-    """
-    :Maps each errorcode in ErrorCode object to corresponding exception
-    Please refer to https://www.w3.org/TR/webdriver2/#errors for w3c specification
+    """Maps each errorcode in ErrorCode object to corresponding exception.
+
+    Please refer to https://www.w3.org/TR/webdriver2/#errors for w3c specification.
     """
 
     NO_SUCH_ELEMENT = NoSuchElementException
@@ -141,15 +142,15 @@ class ErrorCode:
 class ErrorHandler:
     """Handles errors returned by the WebDriver server."""
 
-    def check_response(self, response: Dict[str, Any]) -> None:
-        """Checks that a JSON response from the WebDriver does not have an
-        error.
+    def check_response(self, response: dict[str, Any]) -> None:
+        """Check that a JSON response from the WebDriver does not have an error.
 
-        :Args:
-         - response - The JSON response from the WebDriver server as a dictionary
-           object.
+        Args:
+            response: The JSON response from the WebDriver server as a dictionary
+                object.
 
-        :Raises: If the response contains an error message.
+        Raises:
+            WebDriverException: If the response contains an error message.
         """
         status = response.get("status", None)
         if not status or status == ErrorCode.SUCCESS:
@@ -161,25 +162,24 @@ class ErrorHandler:
         if isinstance(status, int):
             value_json = response.get("value", None)
             if value_json and isinstance(value_json, str):
-                import json
-
                 try:
                     value = json.loads(value_json)
-                    if len(value) == 1:
-                        value = value["value"]
-                    status = value.get("error", None)
-                    if not status:
-                        status = value.get("status", ErrorCode.UNKNOWN_ERROR)
-                        message = value.get("value") or value.get("message")
-                        if not isinstance(message, str):
-                            value = message
-                            message = message.get("message")
-                    else:
-                        message = value.get("message", None)
+                    if isinstance(value, dict):
+                        if len(value) == 1:
+                            value = value["value"]
+                        status = value.get("error", None)
+                        if not status:
+                            status = value.get("status", ErrorCode.UNKNOWN_ERROR)
+                            message = value.get("value") or value.get("message")
+                            if not isinstance(message, str):
+                                value = message
+                                message = message.get("message") if isinstance(message, dict) else None
+                        else:
+                            message = value.get("message", None)
                 except ValueError:
                     pass
 
-        exception_class: Type[WebDriverException]
+        exception_class: type[WebDriverException]
         e = ErrorCode()
         error_codes = [item for item in dir(e) if not item.startswith("__")]
         for error_code in error_codes:

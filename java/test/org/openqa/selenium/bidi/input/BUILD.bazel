@@ -24,6 +24,7 @@ java_selenium_test_suite(
         "//java/src/org/openqa/selenium/bidi/network",
         "//java/src/org/openqa/selenium/bidi/permissions",
         "//java/src/org/openqa/selenium/bidi/script",
+        "//java/src/org/openqa/selenium/bidi/webextension",
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/json",

@@ -156,6 +156,9 @@ function direct() {
  * @return {!ManualConfig} A new proxy configuration object.
  */
 function manual({ ftp, http, https, bypass }) {
+  if (ftp !== undefined) {
+    console.warn('ftpProxy is deprecated and will be removed in the future')
+  }
   return {
     proxyType: Type.MANUAL,
     ftpProxy: ftp,

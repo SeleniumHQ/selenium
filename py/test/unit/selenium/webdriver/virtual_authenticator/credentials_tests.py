@@ -16,7 +16,6 @@
 # under the License.
 
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from typing import Tuple
 
 import pytest
 
@@ -45,7 +44,7 @@ BYGpI8g==
 
 
 @pytest.fixture()
-def data() -> Tuple:
+def data() -> tuple:
     _id = bytearray({1, 2, 3, 4})
     rp_id = "localhost"
     user_handle = bytearray({1})

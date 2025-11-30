@@ -153,7 +153,8 @@ public class RelayOptions {
                 () -> new ConfigException("Unable to find configs for " + getServiceUri()));
 
     Multimap<Integer, Capabilities> parsedConfigs = HashMultimap.create();
-    for (int i = 0; i < allConfigs.size(); i++) {
+    int configsCount = allConfigs.size();
+    for (int i = 0; i < configsCount; i++) {
       int maxSessions;
       try {
         maxSessions = Integer.parseInt(extractConfiguredValue(allConfigs.get(i)));
@@ -161,7 +162,7 @@ public class RelayOptions {
         throw new ConfigException("Unable parse value as number. " + allConfigs.get(i));
       }
       i++;
-      if (i == allConfigs.size()) {
+      if (i == configsCount) {
         throw new ConfigException("Unable to find stereotype config. " + allConfigs);
       }
       Capabilities stereotype =

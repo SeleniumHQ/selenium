@@ -1,4 +1,5 @@
 exports_files([
-    "README.md",
-    "Selenium.WebDriver.targets",
+    "nuget/README.md",
+    "nuget/build/Selenium.WebDriver.targets",
+    "nuget/buildTransitive/Selenium.WebDriver.targets",
 ])

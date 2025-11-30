@@ -15,6 +15,8 @@ Gemspec/DevelopmentDependencies:
 Layout/LineLength:
   AllowedPatterns:
     - '^\s*#'
+  Exclude:
+    - '../Rakefile*'
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
@@ -93,6 +95,11 @@ Naming/MethodParameterName:
     - id
     - io
 
+Naming/PredicateMethod:
+  Exclude:
+    - 'lib/selenium/webdriver/common/file_reaper.rb'
+    - 'lib/selenium/webdriver/common/socket_poller.rb'
+
 RSpec/AnyInstance:
   Enabled: false
 
@@ -112,7 +119,7 @@ RSpec/MultipleExpectations:
 
 RSpec/NoExpectationExample:
   Exclude:
-    - 'spec/integration/selenium/webdriver/guard_spec.rb'
+    - 'spec/unit/selenium/webdriver/guards_spec.rb'
     - 'spec/integration/selenium/webdriver/takes_screenshot_spec.rb'
 
 RSpec/MultipleMemoizedHelpers:

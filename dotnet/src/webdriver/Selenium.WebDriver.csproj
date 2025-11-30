@@ -1,0 +1,103 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net462;netstandard2.0;net8.0;</TargetFrameworks>
+    <AssemblyName>WebDriver</AssemblyName>
+    <RootNamespace>OpenQA.Selenium</RootNamespace>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyTitle>WebDriver</AssemblyTitle>
+    <Company>Selenium Committers</Company>
+    <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
+    <Product>Selenium</Product>
+    <Version>4.0.0</Version>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
+
+    <PackageId>Selenium.WebDriver</PackageId>
+    <Authors>Selenium Committers</Authors>
+
+    <Title>Selenium WebDriver</Title>
+
+    <PackageProjectUrl>https://selenium.dev</PackageProjectUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <RepositoryUrl>https://github.com/SeleniumHQ/selenium</RepositoryUrl>
+    <Description>
+      Selenium is a set of different software tools each with a different approach
+      to supporting browser automation. These tools are highly flexible, allowing
+      many options for locating and manipulating elements within a browser, and one
+      of its key features is the support for automating multiple browser platforms.
+      This package contains the .NET bindings for the concise and object-based
+      Selenium WebDriver API, which uses native OS-level events to manipulate the
+      browser, bypassing the JavaScript sandbox, and does not require the Selenium
+      Server to automate the browser.
+    </Description>
+    <PackageTags>selenium webdriver browser automation</PackageTags>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageIconUrl>https://selenium.dev/images/selenium_logo_square_green.png</PackageIconUrl>
+    <PackageIcon>logo.png</PackageIcon>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BaseSeleniumManagerPath>$(MSBuildThisFileDirectory)..\..\..\bazel-bin\dotnet\src\webdriver\manager</BaseSeleniumManagerPath>
+  </PropertyGroup>
+
+  <!--TODO when AOT is ready https://github.com/SeleniumHQ/selenium/issues/14480-->
+  <!--<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>-->
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="WebDriver.Common.Tests" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="assets\nuget\build\Selenium.WebDriver.targets" Pack="true" PackagePath="build\" />
+    <None Include="assets\nuget\buildTransitive\Selenium.WebDriver.targets" Pack="true" PackagePath="buildTransitive\" />
+  </ItemGroup>
+
+  <Target Name="GenerateSeleniumManagerBinaries" BeforeTargets="BeforeBuild">
+    <Exec Command="bazel build //dotnet/src/webdriver:manager-linux //dotnet/src/webdriver:manager-windows //dotnet/src/webdriver:manager-macos" WorkingDirectory="../../.." />
+  </Target>
+
+  <ItemGroup>
+    <None Include="$(BaseSeleniumManagerPath)\linux\selenium-manager" Pack="true" PackagePath="runtimes\linux\native\" Visible="false" CopyToOutputDirectory="PreserveNewest" Link="runtimes\linux\native\selenium-manager" />
+    <None Include="$(BaseSeleniumManagerPath)\macos\selenium-manager" Pack="true" PackagePath="runtimes\osx\native\" Visible="false" CopyToOutputDirectory="PreserveNewest" Link="runtimes\osx\native\selenium-manager" />
+    <None Include="$(BaseSeleniumManagerPath)\windows\selenium-manager.exe" Pack="true" PackagePath="runtimes\win\native\" Visible="false" CopyToOutputDirectory="PreserveNewest" Link="runtimes\win\native\selenium-manager.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\common\images\selenium_logo_small.png" Pack="true" PackagePath="logo.png" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <Target Name="GenerateResources" BeforeTargets="CoreCompile">
+    <Exec Command="bazel build //dotnet/src/webdriver:resource-utilities" WorkingDirectory="../../.." />
+
+    <ItemGroup>
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\ResourceUtilities.g.cs" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateCdp" BeforeTargets="CoreCompile">
+    <Exec Command="bazel build //dotnet/src/webdriver/cdp/..." WorkingDirectory="../../.." />
+
+    <ItemGroup>
+      <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\**\*.cs" LinkBase="DevTools\generated" />
+    </ItemGroup>
+  </Target>
+
+</Project>

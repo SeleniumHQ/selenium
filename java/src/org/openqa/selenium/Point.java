@@ -21,11 +21,11 @@ import java.util.Objects;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-/** A copy of java.awt.Point, to remove dependency on awt. */
+/** Represents a point in a two-dimensional space with x and y coordinates. */
 @NullMarked
 public class Point {
-  public int x;
-  public int y;
+  public final int x;
+  public final int y;
 
   public Point(int x, int y) {
     this.x = x;

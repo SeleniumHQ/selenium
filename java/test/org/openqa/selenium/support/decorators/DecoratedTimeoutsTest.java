@@ -24,7 +24,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -60,28 +59,13 @@ class DecoratedTimeoutsTest {
   }
 
   @Test
-  void implicitlyWaitLegacy() {
-    verifyFunction($ -> $.implicitlyWait(Duration.ofSeconds(10)));
-  }
-
-  @Test
   void implicitlyWait() {
     verifyFunction($ -> $.implicitlyWait(Duration.ofSeconds(10)));
   }
 
   @Test
-  void setScriptTimeoutLegacy() {
-    verifyFunction($ -> $.setScriptTimeout(10, TimeUnit.SECONDS));
-  }
-
-  @Test
   void setScriptTimeout() {
-    verifyFunction($ -> $.setScriptTimeout(Duration.ofSeconds(10)));
-  }
-
-  @Test
-  void pageLoadTimeoutLegacy() {
-    verifyFunction($ -> $.pageLoadTimeout(10, TimeUnit.SECONDS));
+    verifyFunction($ -> $.scriptTimeout(Duration.ofSeconds(10)));
   }
 
   @Test

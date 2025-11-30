@@ -20,9 +20,12 @@ package org.openqa.selenium.remote;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonException;
 
+@NullMarked
 public class SessionId implements Serializable {
 
   private final String opaqueKey;
@@ -46,7 +49,7 @@ public class SessionId implements Serializable {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
     return obj instanceof SessionId && opaqueKey.equals(((SessionId) obj).opaqueKey);
   }
 

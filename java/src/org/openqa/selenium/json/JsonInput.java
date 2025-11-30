@@ -507,7 +507,8 @@ public class JsonInput implements Closeable {
   private <X> X read(String toCompare, Function<String, X> mapper) {
     skipWhitespace(input);
 
-    for (int i = 0; i < toCompare.length(); i++) {
+    int toCompareLength = toCompare.length();
+    for (int i = 0; i < toCompareLength; i++) {
       char read = input.read();
       if (read != toCompare.charAt(i)) {
         throw new JsonException(

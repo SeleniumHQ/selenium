@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 
 
@@ -23,6 +25,8 @@ class LocatorConverter:
         if by == By.ID:
             return By.CSS_SELECTOR, f'[id="{value}"]'
         elif by == By.CLASS_NAME:
+            if value and any(char.isspace() for char in value.strip()):
+                raise InvalidSelectorException("Compound class names are not allowed.")
             return By.CSS_SELECTOR, f".{value}"
         elif by == By.NAME:
             return By.CSS_SELECTOR, f'[name="{value}"]'

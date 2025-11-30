@@ -2,6 +2,7 @@ package(default_visibility = ["//rb/spec/integration:__subpackages__"])
 
 BROWSERS = [
     "chrome",
+    "chrome-beta",
     "edge",
     "firefox",
     "ie",

@@ -116,7 +116,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canSetPermissionHeadless() {
     EdgeOptions options = new EdgeOptions();
-    options.addArguments("--headless=new");
+    options.addArguments("--headless");
 
     localDriver = new WebDriverBuilder().get(options);
     HasPermissions permissions = (HasPermissions) localDriver;

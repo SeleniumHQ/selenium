@@ -21,8 +21,8 @@ module Selenium
   module WebDriver
     class BiDi
       autoload :Session, 'selenium/webdriver/bidi/session'
-      autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
       autoload :LogHandler, 'selenium/webdriver/bidi/log_handler'
+      autoload :Browser, 'selenium/webdriver/bidi/browser'
       autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
       autoload :Struct, 'selenium/webdriver/bidi/struct'
       autoload :Network, 'selenium/webdriver/bidi/network'

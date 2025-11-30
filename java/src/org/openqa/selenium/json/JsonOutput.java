@@ -264,7 +264,7 @@ public class JsonOutput implements Closeable {
   }
 
   /**
-   * Specify whether the serialized JSON object should br formatted with line breaks and indention
+   * Specify whether the serialized JSON object should be formatted with line breaks and indentation
    * ("pretty printed").
    *
    * @param enablePrettyPrinting {@code false} for compact format; {@code true} for "pretty

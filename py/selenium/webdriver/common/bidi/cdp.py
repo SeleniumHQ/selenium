@@ -35,9 +35,9 @@ from contextlib import asynccontextmanager
 from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any
-from typing import AsyncGenerator
-from typing import AsyncIterator
-from typing import Generator
+from collections.abc import AsyncGenerator
+from collections.abc import AsyncIterator
+from collections.abc import Generator
 from typing import Type
 from typing import TypeVar
 
@@ -166,8 +166,8 @@ class CdpConnectionClosed(WsConnectionClosed):
     def __init__(self, reason):
         """Constructor.
 
-        :param reason:
-        :type reason: wsproto.frame_protocol.CloseReason
+        Args:
+            reason: wsproto.frame_protocol.CloseReason
         """
         self.reason = reason
 
@@ -205,8 +205,11 @@ class CdpBase:
     async def execute(self, cmd: Generator[dict, T, Any]) -> T:
         """Execute a command on the server and wait for the result.
 
-        :param cmd: any CDP command
-        :returns: a CDP result
+        Args:
+            cmd: any CDP command
+
+        Returns:
+            a CDP result
         """
         cmd_id = next(self.id_iter)
         cmd_event = trio.Event()
@@ -241,7 +244,7 @@ class CdpBase:
         return receiver
 
     @asynccontextmanager
-    async def wait_for(self, event_type: Type[T], buffer_size=10) -> AsyncGenerator[CmEventProxy, None]:
+    async def wait_for(self, event_type: type[T], buffer_size=10) -> AsyncGenerator[CmEventProxy, None]:
         """Wait for an event of the given type and return it.
 
         This is an async context manager, so you should open it inside
@@ -261,18 +264,20 @@ class CdpBase:
     def _handle_data(self, data):
         """Handle incoming WebSocket data.
 
-        :param dict data: a JSON dictionary
+        Args:
+            data: a JSON dictionary
         """
         if "id" in data:
             self._handle_cmd_response(data)
         else:
             self._handle_event(data)
 
-    def _handle_cmd_response(self, data):
+    def _handle_cmd_response(self, data: dict):
         """Handle a response to a command. This will set an event flag that
         will return control to the task that called the command.
 
-        :param dict data: response as a JSON dictionary
+        Args:
+            data: response as a JSON dictionary
         """
         cmd_id = data["id"]
         try:
@@ -295,10 +300,11 @@ class CdpBase:
             self.inflight_result[cmd_id] = return_
         event.set()
 
-    def _handle_event(self, data):
+    def _handle_event(self, data: dict):
         """Handle an event.
 
-        :param dict data: event as a JSON dictionary
+        Args:
+            data: event as a JSON dictionary
         """
         global devtools
         event = devtools.util.parse_json_event(data)
@@ -325,9 +331,10 @@ class CdpSession(CdpBase):
     def __init__(self, ws, session_id, target_id):
         """Constructor.
 
-        :param trio_websocket.WebSocketConnection ws:
-        :param devtools.target.SessionID session_id:
-        :param devtools.target.TargetID target_id:
+        Args:
+            ws: trio_websocket.WebSocketConnection
+            session_id: devtools.target.SessionID
+            target_id: devtools.target.TargetID
         """
         super().__init__(ws, session_id, target_id)
 
@@ -394,7 +401,8 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
     def __init__(self, ws):
         """Constructor.
 
-        :param trio_websocket.WebSocketConnection ws:
+        Args:
+            ws: trio_websocket.WebSocketConnection
         """
         super().__init__(ws, session_id=None, target_id=None)
         self.sessions = {}

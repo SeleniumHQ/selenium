@@ -41,9 +41,15 @@ import browserVersion from '../../util/browser-version'
 import Capabilities from '../../models/capabilities'
 import { GridConfig } from '../../config'
 import { NODES_QUERY } from '../../graphql/nodes'
+import { GRID_SESSIONS_QUERY } from '../../graphql/sessions'
 
 function Overview (): JSX.Element {
   const { loading, error, data } = useQuery(NODES_QUERY, {
+    pollInterval: GridConfig.status.xhrPollingIntervalMillis,
+    fetchPolicy: 'network-only'
+  })
+
+  const { data: sessionsData } = useQuery(GRID_SESSIONS_QUERY, {
     pollInterval: GridConfig.status.xhrPollingIntervalMillis,
     fetchPolicy: 'network-only'
   })
@@ -60,7 +66,8 @@ function Overview (): JSX.Element {
 
   const sortProperties = {
     'platformName': (a, b) => compareSlotStereotypes(a, b, 'platformName'),
-    'status': (a, b) => a.status.localeCompare(b.status),
+    'status': (a, b) => (a.status ?? '').localeCompare(b.status ?? ''),
+    'uri': (a, b) => (a.uri ?? '').localeCompare(b.uri ?? ''),
     'browserName': (a, b) => compareSlotStereotypes(a, b, 'browserName'),
     'browserVersion': (a, b) => compareSlotStereotypes(a, b, 'browserVersion'),
     'slotCount': (a, b) => {
@@ -74,6 +81,7 @@ function Overview (): JSX.Element {
   const sortPropertiesLabel = {
     'platformName': 'Platform Name',
     'status': 'Status',
+    'uri': 'URI',
     'browserName': 'Browser Name',
     'browserVersion': 'Browser Version',
     'slotCount': 'Slot Count',
@@ -184,7 +192,7 @@ function Overview (): JSX.Element {
             <Select value={sortOption} onChange={handleSortChange}
                     label="Sort By" style={{ minWidth: '170px' }}>
               {Object.keys(sortProperties).map((key) => (
-                <MenuItem value={key}>
+                <MenuItem key={key} value={key}>
                   {sortPropertiesLabel[key]}
                 </MenuItem>
               ))}
@@ -217,7 +225,13 @@ function Overview (): JSX.Element {
                 flexDirection: 'column'
               }}
             >
-              <Node node={node}/>
+              <Node
+                node={node}
+                sessions={sessionsData?.sessionsInfo?.sessions?.filter(
+                  session => session.nodeId === node.id
+                ) || []}
+                origin={window.location.origin}
+              />
             </Paper>
           </Grid>
         )

@@ -29,10 +29,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-@NullMarked
 public class NetworkInterface {
   private static final Logger LOG = Logger.getLogger(NetworkInterface.class.getName());
 

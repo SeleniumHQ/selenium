@@ -34,79 +34,80 @@ module Selenium
 
         context 'with single guard' do
           describe '#exclude' do
-            it 'ignores an unrecognized guard parameter', invalid: { condition: :guarded } do
+            it 'ignores an unrecognized guard parameter', invalid: {condition: :guarded} do
               # pass
             end
 
-            it 'skips without running', exclude: { condition: :guarded } do
+            it 'skips without running', exclude: {condition: :guarded} do
               raise 'This code will not get executed so it will not fail'
             end
           end
 
           describe '#flaky' do
-            it 'skips without running', flaky: { condition: :guarded } do
+            it 'skips without running', flaky: {condition: :guarded} do
               raise 'This code will not get executed so it will not fail'
             end
           end
 
           describe '#exclusive' do
-            it 'skips without running if it does not match', exclusive: { condition: :not_guarded } do
+            it 'skips without running if it does not match', exclusive: {condition: :not_guarded} do
               raise 'This code will not get executed so it will not fail'
             end
 
-            it 'does not guard if it does match', exclusive: { condition: :guarded } do
+            it 'does not guard if it does match', exclusive: {condition: :guarded} do
               # pass
             end
           end
 
           describe '#only' do
-            it 'guards when value does not match', only: { condition: :not_guarded } do
+            it 'guards when value does not match', only: {condition: :not_guarded} do
               raise 'This code is executed but expected to fail'
             end
 
-            it 'does not guard when value matches', only: { condition: :guarded } do
+            it 'does not guard when value matches', only: {condition: :guarded} do
               # pass
             end
           end
 
           describe '#except' do
-            it 'guards when value matches and test fails', except: { condition: :guarded } do
+            it 'guards when value matches and test fails', except: {condition: :guarded} do
               raise 'This code is executed but expected to fail'
             end
 
-            it 'does not guard when value does not match and test passes', except: { condition: :not_guarded } do
+            it 'does not guard when value does not match and test passes', except: {condition: :not_guarded} do
               # pass
             end
           end
         end
 
         context 'when multiple guards' do
-          it 'guards if neither only nor except match and test fails', except: { condition: :not_guarded },
-             only: { condition: :not_guarded } do
+          it 'guards if neither only nor except match and test fails', except: {condition: :not_guarded},
+                                                                       only: {condition: :not_guarded} do
             raise 'This code is executed but expected to fail'
           end
 
-          it 'guards if both only and except match', except: { condition: :guarded }, only: { condition: :guarded } do
+          it 'guards if both only and except match', except: {condition: :guarded}, only: {condition: :guarded} do
             raise 'This code is executed but expected to fail'
           end
 
-          it 'guards if except matches and only does not', except: { condition: :guarded }, only: { condition: :not_guarded } do
+          it 'guards if except matches and only does not', except: {condition: :guarded},
+                                                           only: {condition: :not_guarded} do
             raise 'This code is executed but expected to fail'
           end
 
-          it 'does not guard if only matches and except does not', except: { condition: :not_guarded },
-             only: { condition: :guarded } do
+          it 'does not guard if only matches and except does not', except: {condition: :not_guarded},
+                                                                   only: {condition: :guarded} do
             # pass
           end
 
-          it 'gives correct reason', except: [{ condition: :guarded, reason: 'bug1' },
-                                              { condition: :not_guarded, reason: 'bug2' }] do
+          it 'gives correct reason', except: [{condition: :guarded, reason: 'bug1'},
+                                              {condition: :not_guarded, reason: 'bug2'}] do
             raise 'This code is executed but expected to fail'
           end
         end
 
         context 'when array of hashes' do
-          it 'guards if any Hash value is satisfied', only: [{ condition: :guarded }, { condition: :not_guarded }] do
+          it 'guards if any Hash value is satisfied', only: [{condition: :guarded}, {condition: :not_guarded}] do
             raise 'This code is executed but expected to fail'
           end
         end

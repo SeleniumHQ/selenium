@@ -57,6 +57,10 @@ module Selenium
           end
         end
 
+        def browser_version
+          ENV.fetch('WD_BROWSER_VERSION', 'stable')
+        end
+
         def driver_instance(...)
           @driver_instance || create_driver!(...)
         end
@@ -204,7 +208,7 @@ module Selenium
           {
             browser: browser,
             driver: driver,
-            version: driver_instance.capabilities.browser_version,
+            version: browser_version,
             platform: Platform.os,
             ci: Platform.ci,
             rbe: rbe?
@@ -270,20 +274,22 @@ module Selenium
           opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
-          args << '--headless=chrome' if ENV['HEADLESS']
+          args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
-          args << '--disable-gpu'
-          WebDriver::Options.chrome(args: args, **opts)
+          args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
+          opts[:args] = args
+          WebDriver::Options.chrome(**opts)
         end
 
         def edge_options(args: [], **opts)
           opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
-          args << '--headless=chrome' if ENV['HEADLESS']
+          args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
-          args << '--disable-gpu'
-          WebDriver::Options.edge(args: args, **opts)
+          args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
+          opts[:args] = args
+          WebDriver::Options.edge(**opts)
         end
 
         def firefox_options(args: [], **opts)

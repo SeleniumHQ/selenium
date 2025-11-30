@@ -14,20 +14,21 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from __future__ import annotations
 
-from ..utils import keys_to_typing
-from .interaction import KEY, Interaction
-from .key_input import KeyInput
-from .pointer_input import PointerInput
-from .wheel_input import WheelInput
+from selenium.webdriver.common.actions.interaction import KEY, Interaction
+from selenium.webdriver.common.actions.key_input import KeyInput
+from selenium.webdriver.common.actions.pointer_input import PointerInput
+from selenium.webdriver.common.actions.wheel_input import WheelInput
+from selenium.webdriver.common.utils import keys_to_typing
 
 
 class KeyActions(Interaction):
     def __init__(self, source: KeyInput | PointerInput | WheelInput | None = None) -> None:
         if source is None:
             source = KeyInput(KEY)
-        self.source = source
+        self.input_source = source
         super().__init__(source)
 
     def key_down(self, letter: str) -> KeyActions:
