@@ -21,51 +21,6 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json;
 
-#region https://github.com/dotnet/runtime/issues/72604
-[JsonSerializable(typeof(Script.EvaluateResultSuccess))]
-[JsonSerializable(typeof(Script.EvaluateResultException))]
-
-[JsonSerializable(typeof(Script.NumberRemoteValue))]
-[JsonSerializable(typeof(Script.BooleanRemoteValue))]
-[JsonSerializable(typeof(Script.BigIntRemoteValue))]
-[JsonSerializable(typeof(Script.StringRemoteValue))]
-[JsonSerializable(typeof(Script.NullRemoteValue))]
-[JsonSerializable(typeof(Script.UndefinedRemoteValue))]
-[JsonSerializable(typeof(Script.SymbolRemoteValue))]
-[JsonSerializable(typeof(Script.ArrayRemoteValue))]
-[JsonSerializable(typeof(Script.ObjectRemoteValue))]
-[JsonSerializable(typeof(Script.FunctionRemoteValue))]
-[JsonSerializable(typeof(Script.RegExpRemoteValue))]
-[JsonSerializable(typeof(Script.DateRemoteValue))]
-[JsonSerializable(typeof(Script.MapRemoteValue))]
-[JsonSerializable(typeof(Script.SetRemoteValue))]
-[JsonSerializable(typeof(Script.WeakMapRemoteValue))]
-[JsonSerializable(typeof(Script.WeakSetRemoteValue))]
-[JsonSerializable(typeof(Script.GeneratorRemoteValue))]
-[JsonSerializable(typeof(Script.ErrorRemoteValue))]
-[JsonSerializable(typeof(Script.ProxyRemoteValue))]
-[JsonSerializable(typeof(Script.PromiseRemoteValue))]
-[JsonSerializable(typeof(Script.TypedArrayRemoteValue))]
-[JsonSerializable(typeof(Script.ArrayBufferRemoteValue))]
-[JsonSerializable(typeof(Script.NodeListRemoteValue))]
-[JsonSerializable(typeof(Script.HtmlCollectionRemoteValue))]
-[JsonSerializable(typeof(Script.NodeRemoteValue))]
-[JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
-
-[JsonSerializable(typeof(Script.WindowRealmInfo))]
-[JsonSerializable(typeof(Script.DedicatedWorkerRealmInfo))]
-[JsonSerializable(typeof(Script.SharedWorkerRealmInfo))]
-[JsonSerializable(typeof(Script.ServiceWorkerRealmInfo))]
-[JsonSerializable(typeof(Script.WorkerRealmInfo))]
-[JsonSerializable(typeof(Script.PaintWorkletRealmInfo))]
-[JsonSerializable(typeof(Script.AudioWorkletRealmInfo))]
-[JsonSerializable(typeof(Script.WorkletRealmInfo))]
-
-[JsonSerializable(typeof(Log.GenericLogEntry))]
-[JsonSerializable(typeof(Log.ConsoleLogEntry))]
-[JsonSerializable(typeof(Log.JavascriptLogEntry))]
-#endregion
-
 [JsonSerializable(typeof(Command))]
 [JsonSerializable(typeof(EmptyResult))]
 internal partial class BiDiJsonSerializerContext : JsonSerializerContext;

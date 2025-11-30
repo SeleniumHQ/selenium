@@ -44,5 +44,11 @@ public sealed class LogModule : Module
     }
 }
 
+#region https://github.com/dotnet/runtime/issues/72604
+[JsonSerializable(typeof(GenericLogEntry))]
+[JsonSerializable(typeof(ConsoleLogEntry))]
+[JsonSerializable(typeof(JavascriptLogEntry))]
+#endregion
+
 [JsonSerializable(typeof(LogEntry))]
 internal partial class LogJsonSerializerContext : JsonSerializerContext;
