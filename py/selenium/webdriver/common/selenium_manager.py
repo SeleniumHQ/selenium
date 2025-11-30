@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import json
 import logging
 import os
@@ -24,6 +25,8 @@ import sysconfig
 from pathlib import Path
 
 from selenium.common import WebDriverException
+from selenium.webdriver import __version__ as VERSION
+
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +38,7 @@ class SeleniumManager:
     """
 
     def binary_paths(self, args: list) -> dict:
-        """Determines the locations of the requested assets.
+        """Builds the Selenium Manager command line argument list and runs it.
 
         Args:
             args: the commands to send to the selenium manager binary.
@@ -48,6 +51,8 @@ class SeleniumManager:
             args.append("--debug")
         args.append("--language-binding")
         args.append("python")
+        args.append("--selenium-version")
+        args.append(VERSION)
         args.append("--output")
         args.append("json")
 
