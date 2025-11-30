@@ -276,9 +276,10 @@ public sealed class Broker : IAsyncDisposable
                 {
                     try
                     {
-                        var commandResult = (EmptyResult)JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)!;
+                        var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
+                            ?? throw new JsonException("Remote end returned null command result in the 'result' property.");
 
-                        command.TaskCompletionSource.SetResult(commandResult);
+                        command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
                     }
                     catch (Exception ex)
                     {
