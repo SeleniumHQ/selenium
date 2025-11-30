@@ -20,14 +20,13 @@ use clap::Parser;
 use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
+use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_SEC;
 use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey};
 use selenium_manager::grid::GridManager;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
 use selenium_manager::metadata::clear_metadata;
-use selenium_manager::REQUEST_TIMEOUT_SEC;
-use selenium_manager::TTL_SEC;
 use selenium_manager::{
     SeleniumManager, clear_cache, get_manager_by_browser, get_manager_by_driver,
 };
