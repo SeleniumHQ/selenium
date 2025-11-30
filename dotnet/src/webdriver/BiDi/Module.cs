@@ -23,9 +23,9 @@ namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
 {
-    protected BiDi BiDi { get; private set; }
+    protected BiDi BiDi { get; private set; } = null!;
 
-    protected Broker Broker { get; private set; }
+    protected Broker Broker { get; private set; } = null!;
 
     protected abstract void Initialize(JsonSerializerOptions options);
 
