@@ -44,7 +44,7 @@ public sealed class LogModule : Module
     }
 }
 
-#region https://github.com/dotnet/runtime/issues/72604 Script dependencies
+#region https://github.com/dotnet/runtime/issues/72604 Script.RemoteValue type dependency
 [JsonSerializable(typeof(Script.NumberRemoteValue))]
 [JsonSerializable(typeof(Script.BooleanRemoteValue))]
 [JsonSerializable(typeof(Script.BigIntRemoteValue))]
