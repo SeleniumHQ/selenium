@@ -85,7 +85,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public T AsModule<T>() where T : Module, new()
     {
-        return (T)_modules.GetOrAdd(typeof(T), Module.Create<T>(this, Broker, GetJsonOptions()));
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, GetJsonOptions()));
     }
 
     private Broker Broker { get; }
