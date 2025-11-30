@@ -31,10 +31,8 @@ internal sealed record SetViewportParameters(
 
 public sealed class SetViewportOptions : CommandOptions
 {
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<Viewport?> Viewport { get; set; }
 
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public Optional<double?> DevicePixelRatio { get; set; }
 }
 
