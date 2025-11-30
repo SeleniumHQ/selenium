@@ -1,4 +1,4 @@
-// <copyright file="IsExternalInit.cs" company="Selenium Committers">
+// <copyright file="StringSyntaxConstants.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,6 +17,11 @@
 // under the License.
 // </copyright>
 
-namespace System.Runtime.CompilerServices;
+#pragma warning disable IDE0130 // Namespace does not match folder structure
+namespace OpenQA.Selenium;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
-internal static class IsExternalInit;
+internal static class StringSyntaxConstants
+{
+    public const string JavaScript = "javascript";
+}

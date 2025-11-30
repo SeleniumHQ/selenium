@@ -30,8 +30,8 @@ pkg_zip(
 filegroup(
     name = "source_files_support_needs_from_core",
     srcs = [
-        "//dotnet/src/webdriver:Internal/StringSyntaxAttribute.cs",
-        "//dotnet/src/webdriver:Internal/StringSyntaxConstants.cs",
+        "//dotnet/src/webdriver:Properties/StringSyntaxAttribute.cs",
+        "//dotnet/src/webdriver:Properties/StringSyntaxConstants.cs",
     ],
     visibility = ["__subpackages__"],
 )

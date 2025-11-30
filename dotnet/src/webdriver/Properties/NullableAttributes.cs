@@ -17,13 +17,14 @@
 // under the License.
 // </copyright>
 
-
 #if !NET8_0_OR_GREATER
 
 // Following polyfill guidance explained here https://devblogs.microsoft.com/dotnet/creating-aot-compatible-libraries/#targetframeworks
 // Original code in https://github.com/dotnet/runtime/blob/419e949d258ecee4c40a460fb09c66d974229623/src/libraries/System.Private.CoreLib/src/System/Diagnostics/CodeAnalysis/NullableAttributes.cs
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace System.Diagnostics.CodeAnalysis;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 /// <summary>Specifies that null is allowed as an input even if the corresponding type disallows it.</summary>
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false)]

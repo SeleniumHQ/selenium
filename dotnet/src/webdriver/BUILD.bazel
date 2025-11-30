@@ -12,8 +12,8 @@ load(
 
 exports_files([
     "WebDriver.csproj",
-    "Internal/StringSyntaxAttribute.cs",
-    "Internal/StringSyntaxConstants.cs",
+    "Properties/StringSyntaxAttribute.cs",
+    "Properties/StringSyntaxConstants.cs",
 ])
 
 generated_assembly_info(
