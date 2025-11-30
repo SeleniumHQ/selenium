@@ -17,14 +17,16 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Script;
+using OpenQA.Selenium.Internal;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptModule scriptModule)
 {
-    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync(string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
+    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
     {
         AddPreloadScriptOptions addPreloadScriptOptions = new(options)
         {
@@ -43,7 +45,7 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
         return await scriptModule.GetRealmsAsync(options).ConfigureAwait(false);
     }
 
-    public Task<EvaluateResult> EvaluateAsync(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
     {
         var contextTarget = new ContextTarget(context);
 
@@ -55,14 +57,14 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
         return scriptModule.EvaluateAsync(expression, awaitPromise, contextTarget, options);
     }
 
-    public async Task<TResult?> EvaluateAsync<TResult>(string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public async Task<TResult?> EvaluateAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, EvaluateOptions? options = null, ContextTargetOptions? targetOptions = null)
     {
         var result = await EvaluateAsync(expression, awaitPromise, options, targetOptions).ConfigureAwait(false);
 
         return result.AsSuccessResult().ConvertTo<TResult>();
     }
 
-    public Task<EvaluateResult> CallFunctionAsync(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public Task<EvaluateResult> CallFunctionAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
     {
         var contextTarget = new ContextTarget(context);
 
@@ -74,7 +76,7 @@ public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptM
         return scriptModule.CallFunctionAsync(functionDeclaration, awaitPromise, contextTarget, options);
     }
 
-    public async Task<TResult?> CallFunctionAsync<TResult>(string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
+    public async Task<TResult?> CallFunctionAsync<TResult>([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, bool awaitPromise, CallFunctionOptions? options = null, ContextTargetOptions? targetOptions = null)
     {
         var result = await CallFunctionAsync(functionDeclaration, awaitPromise, options, targetOptions).ConfigureAwait(false);
 
