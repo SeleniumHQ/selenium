@@ -1,0 +1,4 @@
+py_binary(
+    name = "generate_resources_tool",
+    srcs = ["generate_resources_tool.py"],
+)

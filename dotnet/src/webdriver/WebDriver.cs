@@ -234,7 +234,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="script">The JavaScript code to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    public object? ExecuteAsyncScript(string script, params object?[]? args)
+    public object? ExecuteAsyncScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[]? args)
     {
         return this.ExecuteScriptCommand(script, DriverCommand.ExecuteAsyncScript, args);
     }
@@ -245,7 +245,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="script">The JavaScript code to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    public object? ExecuteScript(string script, params object?[]? args)
+    public object? ExecuteScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[]? args)
     {
         return this.ExecuteScriptCommand(script, DriverCommand.ExecuteScript, args);
     }
@@ -834,7 +834,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// <param name="commandName">The name of the command to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    protected object? ExecuteScriptCommand(string script, string commandName, params object?[]? args)
+    protected object? ExecuteScriptCommand([StringSyntax(StringSyntaxConstants.JavaScript)] string script, string commandName, params object?[]? args)
     {
         object?[] convertedArgs = ConvertArgumentsToJavaScriptObjects(args);
 
