@@ -44,6 +44,35 @@ public sealed class LogModule : Module
     }
 }
 
+#region https://github.com/dotnet/runtime/issues/72604 Script dependencies
+[JsonSerializable(typeof(Script.NumberRemoteValue))]
+[JsonSerializable(typeof(Script.BooleanRemoteValue))]
+[JsonSerializable(typeof(Script.BigIntRemoteValue))]
+[JsonSerializable(typeof(Script.StringRemoteValue))]
+[JsonSerializable(typeof(Script.NullRemoteValue))]
+[JsonSerializable(typeof(Script.UndefinedRemoteValue))]
+[JsonSerializable(typeof(Script.SymbolRemoteValue))]
+[JsonSerializable(typeof(Script.ArrayRemoteValue))]
+[JsonSerializable(typeof(Script.ObjectRemoteValue))]
+[JsonSerializable(typeof(Script.FunctionRemoteValue))]
+[JsonSerializable(typeof(Script.RegExpRemoteValue))]
+[JsonSerializable(typeof(Script.DateRemoteValue))]
+[JsonSerializable(typeof(Script.MapRemoteValue))]
+[JsonSerializable(typeof(Script.SetRemoteValue))]
+[JsonSerializable(typeof(Script.WeakMapRemoteValue))]
+[JsonSerializable(typeof(Script.WeakSetRemoteValue))]
+[JsonSerializable(typeof(Script.GeneratorRemoteValue))]
+[JsonSerializable(typeof(Script.ErrorRemoteValue))]
+[JsonSerializable(typeof(Script.ProxyRemoteValue))]
+[JsonSerializable(typeof(Script.PromiseRemoteValue))]
+[JsonSerializable(typeof(Script.TypedArrayRemoteValue))]
+[JsonSerializable(typeof(Script.ArrayBufferRemoteValue))]
+[JsonSerializable(typeof(Script.NodeListRemoteValue))]
+[JsonSerializable(typeof(Script.HtmlCollectionRemoteValue))]
+[JsonSerializable(typeof(Script.NodeRemoteValue))]
+[JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
+#endregion
+
 #region https://github.com/dotnet/runtime/issues/72604
 [JsonSerializable(typeof(GenericLogEntry))]
 [JsonSerializable(typeof(ConsoleLogEntry))]
