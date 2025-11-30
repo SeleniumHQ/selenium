@@ -88,11 +88,19 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
         }
     }
 
+    private bool _disposed;
+
     public void Dispose()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _webSocket.Dispose();
         _sharedMemoryStream.Dispose();
         _socketSendSemaphoreSlim.Dispose();
         ArrayPool<byte>.Shared.Return(_receiveBuffer);
+        _disposed = true;
     }
 }
