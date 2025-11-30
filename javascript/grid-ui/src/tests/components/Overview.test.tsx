@@ -255,6 +255,54 @@ describe('Overview component', () => {
     }
   })
 
+  it('sorts nodes by URI when selected', async () => {
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Overview />
+      </MockedProvider>
+    )
+
+    await screen.findByText('http://192.168.1.10:4444')
+
+    const user = userEvent.setup()
+    const selectElement = screen.getByRole('combobox')
+    await user.click(selectElement)
+    await user.click(screen.getByText('URI'))
+
+    // After sorting by URI, node1 should appear before node2
+    const nodeUris = screen.getAllByText(/http:\/\/192\.168\.1\.\d+:4444/)
+    expect(nodeUris[0]).toHaveTextContent('http://192.168.1.10:4444')
+    expect(nodeUris[1]).toHaveTextContent('http://192.168.1.11:4444')
+  })
+
+  it('sorts nodes by URI in descending order when selected', async () => {
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Overview />
+      </MockedProvider>
+    )
+
+    await screen.findByText('http://192.168.1.10:4444')
+
+    const user = userEvent.setup()
+    const selectElement = screen.getByRole('combobox')
+    await user.click(selectElement)
+    await user.click(screen.getByText('URI'))
+
+    const descendingLabel = screen.getByText('Descending')
+    const checkbox = descendingLabel.closest('label')?.querySelector('input[type="checkbox"]')
+    expect(checkbox).not.toBeNull()
+    if (checkbox) {
+      await user.click(checkbox)
+      expect(checkbox).toBeChecked()
+    }
+
+    // After sorting by URI descending, node2 should appear before node1
+    const nodeUris = screen.getAllByText(/http:\/\/192\.168\.1\.\d+:4444/)
+    expect(nodeUris[0]).toHaveTextContent('http://192.168.1.11:4444')
+    expect(nodeUris[1]).toHaveTextContent('http://192.168.1.10:4444')
+  })
+
   it('renders live view icon for node with VNC session', async () => {
     render(
       <MockedProvider mocks={mocks} addTypename={false}>

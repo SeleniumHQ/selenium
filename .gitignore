@@ -26,10 +26,14 @@ javascript/selenium-webdriver/lib/atoms/is-displayed.js
 javascript/selenium-webdriver/lib/atoms/mutation-listener.js
 javascript/safari-driver/node_modules/
 javascript/webdriver/devtools/types/
+.idea/bazelVersionCache.xml
+.idea/GitLink.xml
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/dictionaries/
+.idea/runConfigurations.xml
 .idea/scopes/
+.idea/shelf
 .idea/sonarlint/
 .idea/qaplug_profiles.xml
 out
@@ -78,7 +82,6 @@ py/docs/source/**/*
 !py/docs/source/conf.py
 !py/docs/source/*.rst
 py/build/
-py/LICENSE
 py/pytestdebug.log
 py/python.iml
 selenium.egg-info/

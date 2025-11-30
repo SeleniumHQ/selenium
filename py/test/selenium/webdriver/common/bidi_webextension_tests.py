@@ -70,7 +70,6 @@ class TestFirefoxWebExtension:
 
     def test_install_extension_path(self, driver, pages):
         """Test installing an extension from a directory path."""
-
         path = os.path.join(extensions, EXTENSION_PATH)
         ext_info = install_extension(driver, path=path)
         verify_extension_injection(driver, pages)
@@ -78,7 +77,6 @@ class TestFirefoxWebExtension:
 
     def test_install_archive_extension_path(self, driver, pages):
         """Test installing an extension from an archive path."""
-
         path = os.path.join(extensions, EXTENSION_ARCHIVE_PATH)
         ext_info = install_extension(driver, archive_path=path)
         verify_extension_injection(driver, pages)
@@ -86,7 +84,6 @@ class TestFirefoxWebExtension:
 
     def test_install_base64_extension_path(self, driver, pages):
         """Test installing an extension from a base64 encoded string."""
-
         path = os.path.join(extensions, EXTENSION_ARCHIVE_PATH)
         with open(path, "rb") as file:
             base64_encoded = base64.b64encode(file.read()).decode("utf-8")
@@ -97,7 +94,6 @@ class TestFirefoxWebExtension:
 
     def test_install_unsigned_extension(self, driver, pages):
         """Test installing an unsigned extension."""
-
         path = os.path.join(extensions, "webextensions-selenium-example")
         ext_info = install_extension(driver, path=path)
         verify_extension_injection(driver, pages)
@@ -105,7 +101,6 @@ class TestFirefoxWebExtension:
 
     def test_install_with_extension_id_uninstall(self, driver, pages):
         """Test uninstalling an extension using just the extension ID."""
-
         path = os.path.join(extensions, EXTENSION_PATH)
         ext_info = install_extension(driver, path=path)
         extension_id = ext_info.get("extension")
@@ -132,10 +127,12 @@ class TestChromiumWebExtension:
 
         if driver_option == "chrome":
             browser_class = webdriver.Chrome
+            browser_service = webdriver.ChromeService
         elif driver_option == "edge":
             browser_class = webdriver.Edge
+            browser_service = webdriver.EdgeService
 
-        temp_dir = tempfile.mkdtemp(prefix="chrome-profile-")
+        temp_dir = tempfile.mkdtemp(prefix="chromium-profile-")
 
         chromium_options.enable_bidi = True
         chromium_options.enable_webextensions = True
@@ -143,7 +140,17 @@ class TestChromiumWebExtension:
         chromium_options.add_argument("--no-sandbox")
         chromium_options.add_argument("--disable-dev-shm-usage")
 
-        chromium_driver = browser_class(options=chromium_options)
+        binary = request.config.option.binary
+        if binary:
+            chromium_options.binary_location = binary
+
+        executable = request.config.option.executable
+        if executable:
+            service = browser_service(executable_path=executable)
+        else:
+            service = browser_service()
+
+        chromium_driver = browser_class(options=chromium_options, service=service)
 
         yield chromium_driver
         chromium_driver.quit()

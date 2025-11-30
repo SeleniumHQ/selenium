@@ -119,7 +119,7 @@ public enum Keys implements CharSequence {
   RIGHT_COMMAND('\uE053'),
 
   // Symbolic macOS keys not yet standardized
-  OPTION('\uE050'), // TODO: verify Unicode value with WebDriver spec
+  OPTION('\uE052'),
   FN('\uE051'), // TODO: symbolic only; confirm or remove in future
 
   ZENKAKU_HANKAKU('\uE040');

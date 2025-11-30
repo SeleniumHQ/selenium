@@ -58,7 +58,7 @@ module Selenium
         end
 
         def browser_version
-          driver_instance.capabilities.browser_version
+          ENV.fetch('WD_BROWSER_VERSION', 'stable')
         end
 
         def driver_instance(...)
@@ -193,18 +193,6 @@ module Selenium
           raise e
         end
 
-        def beta_chrome_version
-          chrome_beta_url = 'https://chromereleases.googleblog.com/search/label/Beta%20updates'
-
-          uri = URI.parse(chrome_beta_url)
-
-          response = Net::HTTP.get_response(uri)
-
-          return "Failed to fetch Chrome Beta page: #{response&.code}" unless response.is_a?(Net::HTTPSuccess)
-
-          response.body.match(/\d+\.\d+\.\d+\.\d+/).to_s
-        end
-
         private
 
         def build_options(**)
@@ -286,20 +274,22 @@ module Selenium
           opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
-          args << '--headless=chrome' if ENV['HEADLESS']
+          args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
-          args << '--disable-gpu'
-          WebDriver::Options.chrome(args: args, **opts)
+          args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
+          opts[:args] = args
+          WebDriver::Options.chrome(**opts)
         end
 
         def edge_options(args: [], **opts)
           opts[:browser_version] = 'stable' if WebDriver::Platform.windows?
           opts[:web_socket_url] = true if ENV['WEBDRIVER_BIDI'] && !opts.key?(:web_socket_url)
           opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
-          args << '--headless=chrome' if ENV['HEADLESS']
+          args << '--headless' if ENV['HEADLESS']
           args << '--no-sandbox' unless Platform.windows?
-          args << '--disable-gpu'
-          WebDriver::Options.edge(args: args, **opts)
+          args << '--disable-dev-shm-usage' if GlobalTestEnv.rbe?
+          opts[:args] = args
+          WebDriver::Options.edge(**opts)
         end
 
         def firefox_options(args: [], **opts)

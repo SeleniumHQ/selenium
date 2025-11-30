@@ -51,6 +51,11 @@ on:
         required: false
         type: string
         default: ''
+      python-version:
+        description: Custom Python version to use
+        required: false
+        type: string
+        default: ''
       ruby-version:
         description: Custom Ruby version to use
         required: false
@@ -101,6 +106,9 @@ jobs:
         if: inputs.os != 'windows'
         run: |
           sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
+      - name: Set Python version
+        if: inputs.python-version != ''
+        run: echo '${{ inputs.python-version }}' > py/.python-version
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
@@ -126,6 +134,8 @@ jobs:
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
+          # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
+          output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           cache-version: 2
           disk-cache: ${{ inputs.cache-key }}
           external-cache: |
@@ -175,6 +185,14 @@ jobs:
         if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         run: |
           git diff > changes.patch
+      - name: "Upload test logs"
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          retention-days: 7
+          path: |
+            **/*.log
       - name: "Upload changes"
         if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         uses: actions/upload-artifact@v4

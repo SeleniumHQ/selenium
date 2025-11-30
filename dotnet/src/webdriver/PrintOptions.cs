@@ -98,7 +98,7 @@ public class PrintOptions
     }
 
     /// <summary>
-    /// Gets or sets the margins for each page in the doucment.
+    /// Gets or sets the margins for each page in the document.
     /// </summary>
     /// <exception cref="ArgumentNullException">If the value is set to <see langword="null"/>.</exception>
     public Margins PageMargins

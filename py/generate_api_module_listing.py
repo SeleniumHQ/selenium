@@ -16,12 +16,14 @@
 # under the License.
 
 
-"""This script recursively scans the `selenium` package directory
-to find all modules, then generates the `py/docs/source/api.rst`
-file containing a listing of all modules in separate sections.
-The `api.rst` file is later used by `sphinx-autogen` to generate
-sphinx autodoc stub pages used in the Python API documentation.
-See `py/tox.ini` for how it is invoked."""
+"""This script recursively scans the `selenium` package directory and generates an API listing.
+
+Recursively scans the `selenium` package directory to find all modules,
+then generates the `py/docs/source/api.rst` file containing a listing of all
+modules in separate sections. The `api.rst` file is later used by
+`sphinx-autogen` to generate sphinx autodoc stub pages used in the Python API
+documentation. See `py/tox.ini` for how it is invoked.
+"""
 
 import os
 import site
@@ -82,7 +84,8 @@ Selenium Documentation
             )
             for module in modules:
                 if base_module in module:
-                    f.write(f"   {module}\n")
+                    if len(module.split(".")) - len(base_module.split(".")) == 1:
+                        f.write(f"   {module}\n")
         f.write(
             """
 Indices and tables

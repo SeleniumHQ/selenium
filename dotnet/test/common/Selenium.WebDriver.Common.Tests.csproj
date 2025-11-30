@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
@@ -10,7 +10,6 @@
     <PackageReference Include="BenderProxy" Version="1.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="Runfiles" Version="0.14.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0">
@@ -27,16 +26,14 @@
     <None Update="appconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\common\extensions\**">
+      <Link>common\extensions\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="BuildTestWebServer" AfterTargets="AfterBuild">
     <Exec Command="bazel build //java/test/org/openqa/selenium/environment:appserver" WorkingDirectory="../../.." />
   </Target>
-
-  <!-- It is automatically imported when Selenium.WebDriver consumed via nuget package -->
-  <PropertyGroup>
-    <Selenium_Manager_BinariesRootPath>..\..\..\bazel-bin\dotnet\src\webdriver\manager</Selenium_Manager_BinariesRootPath>
-  </PropertyGroup>
-  <Import Project="..\..\src\webdriver\assets\Selenium.WebDriver.targets" />
 
 </Project>

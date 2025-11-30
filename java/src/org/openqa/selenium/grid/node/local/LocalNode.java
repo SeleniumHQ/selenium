@@ -18,11 +18,19 @@
 package org.openqa.selenium.grid.node.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.nio.file.Files.readAttributes;
+import static java.time.ZoneOffset.UTC;
+import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+import static java.util.Arrays.asList;
+import static java.util.Locale.US;
+import static java.util.Objects.requireNonNullElseGet;
+import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
+import static org.openqa.selenium.net.Urls.urlDecode;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -31,15 +39,13 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
+import com.github.benmanes.caffeine.cache.Ticker;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Ticker;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalCause;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.net.MediaType;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -47,9 +53,12 @@ import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +66,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -108,6 +116,7 @@ import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -124,6 +133,7 @@ public class LocalNode extends Node implements Closeable {
 
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
+  private static final DateTimeFormatter HTTP_DATE_FORMAT = RFC_1123_DATE_TIME.withLocale(US);
 
   private final EventBus bus;
   private final URI externalUri;
@@ -201,35 +211,35 @@ public class LocalNode extends Node implements Closeable {
     // Do not clear this cache automatically using a timer.
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.uploadsTempFileSystem =
-        CacheBuilder.newBuilder()
+        Caffeine.newBuilder()
             .removalListener(
-                (RemovalListener<SessionId, TemporaryFilesystem>)
-                    notification ->
-                        Optional.ofNullable(notification.getValue())
-                            .ifPresent(
-                                tempFS -> {
-                                  tempFS.deleteTemporaryFiles();
-                                  tempFS.deleteBaseDir();
-                                }))
+                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+                  Optional.ofNullable(tempFS)
+                      .ifPresent(
+                          fs -> {
+                            fs.deleteTemporaryFiles();
+                            fs.deleteBaseDir();
+                          });
+                })
             .build();
 
     // Do not clear this cache automatically using a timer.
     // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.downloadsTempFileSystem =
-        CacheBuilder.newBuilder()
+        Caffeine.newBuilder()
             .removalListener(
-                (RemovalListener<SessionId, TemporaryFilesystem>)
-                    notification ->
-                        Optional.ofNullable(notification.getValue())
-                            .ifPresent(
-                                fs -> {
-                                  fs.deleteTemporaryFiles();
-                                  fs.deleteBaseDir();
-                                }))
+                (SessionId key, TemporaryFilesystem tempFS, RemovalCause cause) -> {
+                  Optional.ofNullable(tempFS)
+                      .ifPresent(
+                          fs -> {
+                            fs.deleteTemporaryFiles();
+                            fs.deleteBaseDir();
+                          });
+                })
             .build();
 
     this.currentSessions =
-        CacheBuilder.newBuilder()
+        Caffeine.newBuilder()
             .expireAfterAccess(sessionTimeout)
             .ticker(ticker)
             .removalListener(this::stopTimedOutSession)
@@ -314,19 +324,17 @@ public class LocalNode extends Node implements Closeable {
     shutdown.run();
   }
 
-  private void stopTimedOutSession(RemovalNotification<SessionId, SessionSlot> notification) {
+  private void stopTimedOutSession(SessionId id, SessionSlot slot, RemovalCause cause) {
     try (Span span = tracer.getCurrentContext().createSpan("node.stop_session")) {
       AttributeMap attributeMap = tracer.createAttributeMap();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), getClass().getName());
-      if (notification.getKey() != null && notification.getValue() != null) {
-        SessionSlot slot = notification.getValue();
-        SessionId id = notification.getKey();
+      if (id != null && slot != null) {
         attributeMap.put("node.id", getId().toString());
         attributeMap.put("session.slotId", slot.getId().toString());
         attributeMap.put("session.id", id.toString());
         attributeMap.put("session.timeout_in_seconds", getSessionTimeout().toSeconds());
-        attributeMap.put("session.remove.cause", notification.getCause().name());
-        if (notification.wasEvicted() && notification.getCause() == RemovalCause.EXPIRED) {
+        attributeMap.put("session.remove.cause", cause.name());
+        if (cause == RemovalCause.EXPIRED) {
           // Session is timing out, stopping it by sending a DELETE
           LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
           span.setStatus(Status.CANCELLED);
@@ -335,7 +343,7 @@ public class LocalNode extends Node implements Closeable {
           LOG.log(Level.INFO, () -> String.format("Session id %s is stopping on demand...", id));
           span.addEvent(String.format("Stopping the session %s on demand", id), attributeMap);
         }
-        if (notification.wasEvicted()) {
+        if (cause == RemovalCause.EXPIRED) {
           try {
             slot.execute(new HttpRequest(DELETE, "/session/" + id));
           } catch (Exception e) {
@@ -585,8 +593,8 @@ public class LocalNode extends Node implements Closeable {
   private Capabilities setDownloadsDirectory(TemporaryFilesystem downloadsTfs, Capabilities caps) {
     File tempDir = downloadsTfs.createTempDir("download", "");
     if (Browser.CHROME.is(caps) || Browser.EDGE.is(caps)) {
-      ImmutableMap<String, Serializable> map =
-          ImmutableMap.of(
+      Map<String, Serializable> map =
+          Map.of(
               "download.prompt_for_download",
               false,
               "download.default_directory",
@@ -597,8 +605,8 @@ public class LocalNode extends Node implements Closeable {
       return appendPrefs(caps, optionsKey, map);
     }
     if (Browser.FIREFOX.is(caps)) {
-      ImmutableMap<String, Serializable> map =
-          ImmutableMap.of(
+      Map<String, Serializable> map =
+          Map.of(
               "browser.download.folderList", 2, "browser.download.dir", tempDir.getAbsolutePath());
       return appendPrefs(caps, "moz:firefoxOptions", map);
     }
@@ -687,15 +695,11 @@ public class LocalNode extends Node implements Closeable {
 
   @Override
   public TemporaryFilesystem getUploadsFilesystem(SessionId id) throws IOException {
-    try {
-      return uploadsTempFileSystem.get(
-          id,
-          () ->
-              TemporaryFilesystem.getTmpFsBasedOn(
-                  TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
-    } catch (ExecutionException e) {
-      throw new IOException(e);
-    }
+    return uploadsTempFileSystem.get(
+        id,
+        key ->
+            TemporaryFilesystem.getTmpFsBasedOn(
+                TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
   }
 
   @Override
@@ -747,25 +751,66 @@ public class LocalNode extends Node implements Closeable {
     }
     File downloadsDirectory =
         Optional.ofNullable(tempFS.getBaseDir().listFiles()).orElse(new File[] {})[0];
-    if (req.getMethod().equals(HttpMethod.GET)) {
-      // User wants to list files that can be downloaded
-      List<String> collected =
-          Arrays.stream(Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {}))
-              .map(File::getName)
-              .collect(Collectors.toList());
-      ImmutableMap<String, Object> data = ImmutableMap.of("names", collected);
-      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
-      return new HttpResponse().setContent(asJson(result));
-    }
-    if (req.getMethod().equals(HttpMethod.DELETE)) {
-      File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
-      for (File file : files) {
-        FileHandler.delete(file);
+
+    try {
+      if (req.getMethod().equals(HttpMethod.GET) && req.getUri().endsWith("/se/files")) {
+        return listDownloadedFiles(downloadsDirectory);
       }
-      Map<String, Object> toReturn = new HashMap<>();
-      toReturn.put("value", null);
-      return new HttpResponse().setContent(asJson(toReturn));
+      if (req.getMethod().equals(HttpMethod.GET)) {
+        return getDownloadedFile(downloadsDirectory, extractFileName(req));
+      }
+      if (req.getMethod().equals(HttpMethod.DELETE)) {
+        return deleteDownloadedFile(downloadsDirectory);
+      }
+      return getDownloadedFile(req, downloadsDirectory);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
+  }
+
+  private String extractFileName(HttpRequest req) {
+    return extractFileName(req.getUri());
+  }
+
+  String extractFileName(String uri) {
+    String prefix = "/se/files/";
+    int index = uri.lastIndexOf(prefix);
+    if (index < 0) {
+      throw new IllegalArgumentException("Unexpected URL for downloading a file: " + uri);
+    }
+    return urlDecode(uri.substring(index + prefix.length())).replace(' ', '+');
+  }
+
+  /** User wants to list files that can be downloaded */
+  private HttpResponse listDownloadedFiles(File downloadsDirectory) {
+    File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
+    List<String> fileNames = Arrays.stream(files).map(File::getName).collect(Collectors.toList());
+    List<DownloadedFile> fileInfos =
+        Arrays.stream(files).map(this::getFileInfo).collect(Collectors.toList());
+
+    Map<String, Object> data =
+        Map.of(
+            "names", fileNames,
+            "files", fileInfos);
+    Map<String, Map<String, Object>> result = Map.of("value", data);
+    return new HttpResponse().setContent(asJson(result));
+  }
+
+  private DownloadedFile getFileInfo(File file) {
+    try {
+      BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
+      return new DownloadedFile(
+          file.getName(),
+          attributes.creationTime().toMillis(),
+          attributes.lastModifiedTime().toMillis(),
+          attributes.size());
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to get file attributes: " + file.getAbsolutePath(), e);
+    }
+  }
+
+  private HttpResponse getDownloadedFile(HttpRequest req, File downloadsDirectory)
+      throws IOException {
     String raw = string(req);
     if (raw.isEmpty()) {
       throw new WebDriverException(
@@ -780,30 +825,71 @@ public class LocalNode extends Node implements Closeable {
                     new WebDriverException(
                         "Please specify file to download in payload as {\"name\":"
                             + " \"fileToDownload\"}"));
-    try {
-      File[] allFiles =
-          Optional.ofNullable(downloadsDirectory.listFiles((dir, name) -> name.equals(filename)))
-              .orElse(new File[] {});
-      if (allFiles.length == 0) {
-        throw new WebDriverException(
-            String.format(
-                "Cannot find file [%s] in directory %s.",
-                filename, downloadsDirectory.getAbsolutePath()));
-      }
-      if (allFiles.length != 1) {
-        throw new WebDriverException(
-            String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
-      }
-      String content = Zip.zip(allFiles[0]);
-      ImmutableMap<String, Object> data =
-          ImmutableMap.of(
-              "filename", filename,
-              "contents", content);
-      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
-      return new HttpResponse().setContent(asJson(result));
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+    File file = findDownloadedFile(downloadsDirectory, filename);
+    String content = Zip.zip(file);
+    Map<String, Object> data =
+        Map.of(
+            "filename", filename,
+            "file", getFileInfo(file),
+            "contents", content);
+    Map<String, Map<String, Object>> result = Map.of("value", data);
+    return new HttpResponse().setContent(asJson(result));
+  }
+
+  private HttpResponse getDownloadedFile(File downloadsDirectory, String fileName)
+      throws IOException {
+    if (fileName.isEmpty()) {
+      throw new WebDriverException("Please specify file to download in URL");
     }
+    File file = findDownloadedFile(downloadsDirectory, fileName);
+    BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
+    return new HttpResponse()
+        .setHeader("Content-Type", MediaType.OCTET_STREAM.toString())
+        .setHeader("Content-Length", String.valueOf(attributes.size()))
+        .setHeader("Last-Modified", lastModifiedHeader(attributes.lastModifiedTime()))
+        .setContent(Contents.file(file));
+  }
+
+  private String lastModifiedHeader(FileTime fileTime) {
+    return HTTP_DATE_FORMAT.format(fileTime.toInstant().atZone(UTC));
+  }
+
+  private File findDownloadedFile(File downloadsDirectory, String filename)
+      throws WebDriverException {
+    List<File> matchingFiles =
+        asList(
+            requireNonNullElseGet(
+                downloadsDirectory.listFiles((dir, name) -> name.equals(filename)),
+                () -> new File[0]));
+    if (matchingFiles.isEmpty()) {
+      List<File> files = downloadedFiles(downloadsDirectory);
+      throw new WebDriverException(
+          String.format(
+              "Cannot find file [%s] in directory %s. Found %s files: %s.",
+              filename, downloadsDirectory.getAbsolutePath(), files.size(), files));
+    }
+    if (matchingFiles.size() != 1) {
+      throw new WebDriverException(
+          String.format(
+              "Expected there to be only 1 file. Found %s files: %s.",
+              matchingFiles.size(), matchingFiles));
+    }
+    return matchingFiles.get(0);
+  }
+
+  private static List<File> downloadedFiles(File downloadsDirectory) {
+    File[] files = requireNonNullElseGet(downloadsDirectory.listFiles(), () -> new File[0]);
+    return asList(files);
+  }
+
+  private HttpResponse deleteDownloadedFile(File downloadsDirectory) {
+    File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
+    for (File file : files) {
+      FileHandler.delete(file);
+    }
+    Map<String, Object> toReturn = new HashMap<>();
+    toReturn.put("value", null);
+    return new HttpResponse().setContent(asJson(toReturn));
   }
 
   @Override
@@ -838,7 +924,7 @@ public class LocalNode extends Node implements Closeable {
           String.format("Expected there to be only 1 file. There were: %s", allFiles.length));
     }
 
-    ImmutableMap<String, Object> result = ImmutableMap.of("value", allFiles[0].getAbsolutePath());
+    Map<String, Object> result = Map.of("value", allFiles[0].getAbsolutePath());
 
     return new HttpResponse().setContent(asJson(result));
   }
@@ -863,10 +949,8 @@ public class LocalNode extends Node implements Closeable {
   }
 
   private void stopAllSessions() {
-    if (currentSessions.size() > 0) {
-      LOG.info("Trying to stop all running sessions before shutting down...");
-      currentSessions.invalidateAll();
-    }
+    LOG.info("Trying to stop all running sessions before shutting down...");
+    currentSessions.invalidateAll();
   }
 
   private Session createExternalSession(
@@ -1074,13 +1158,17 @@ public class LocalNode extends Node implements Closeable {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
-        "id", getId(),
-        "uri", externalUri,
-        "maxSessions", maxSessionCount,
-        "draining", isDraining(),
+    return Map.of(
+        "id",
+        getId(),
+        "uri",
+        externalUri,
+        "maxSessions",
+        maxSessionCount,
+        "draining",
+        isDraining(),
         "capabilities",
-            factories.stream().map(SessionSlot::getStereotype).collect(Collectors.toSet()));
+        factories.stream().map(SessionSlot::getStereotype).collect(Collectors.toSet()));
   }
 
   public static class Builder {

@@ -17,32 +17,52 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed class InputModule(Broker broker) : Module(broker)
+public sealed class InputModule : Module
 {
-    public async Task PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
-    {
-        var @params = new PerformActionsCommandParameters(context, actions);
+    private InputJsonSerializerContext _jsonContext = null!;
 
-        await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options).ConfigureAwait(false);
+    public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
+    {
+        var @params = new PerformActionsParameters(context, actions);
+
+        return await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult).ConfigureAwait(false);
     }
 
-    public async Task ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
+    public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
     {
-        var @params = new ReleaseActionsCommandParameters(context);
+        var @params = new ReleaseActionsParameters(context);
 
-        await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult).ConfigureAwait(false);
     }
 
-    public async Task SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
+    public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
-        var @params = new SetFilesCommandParameters(context, element, files);
+        var @params = new SetFilesParameters(context, element, files);
 
-        await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult).ConfigureAwait(false);
+    }
+
+    protected override void Initialize(JsonSerializerOptions options)
+    {
+        _jsonContext = new InputJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(PerformActionsCommand))]
+[JsonSerializable(typeof(PerformActionsResult))]
+[JsonSerializable(typeof(ReleaseActionsCommand))]
+[JsonSerializable(typeof(ReleaseActionsResult))]
+[JsonSerializable(typeof(SetFilesCommand))]
+[JsonSerializable(typeof(SetFilesResult))]
+[JsonSerializable(typeof(IEnumerable<IPointerSourceAction>))]
+[JsonSerializable(typeof(IEnumerable<IKeySourceAction>))]
+[JsonSerializable(typeof(IEnumerable<INoneSourceAction>))]
+[JsonSerializable(typeof(IEnumerable<IWheelSourceAction>))]
+internal partial class InputJsonSerializerContext : JsonSerializerContext;

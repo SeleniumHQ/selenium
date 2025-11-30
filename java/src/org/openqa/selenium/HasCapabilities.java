@@ -17,10 +17,13 @@
 
 package org.openqa.selenium;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Used by classes to indicate that they can describe the {@link org.openqa.selenium.Capabilities}
  * they possess. This can be used for run-time detection of features.
  */
+@NullMarked
 public interface HasCapabilities {
   /**
    * @return The capabilities of the current driver.

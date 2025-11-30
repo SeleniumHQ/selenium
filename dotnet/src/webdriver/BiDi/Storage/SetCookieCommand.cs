@@ -17,15 +17,16 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Storage;
 
-internal sealed class SetCookieCommand(SetCookieCommandParameters @params)
-    : Command<SetCookieCommandParameters, SetCookieResult>(@params, "storage.setCookie");
+internal sealed class SetCookieCommand(SetCookieParameters @params)
+    : Command<SetCookieParameters, SetCookieResult>(@params, "storage.setCookie");
 
-internal sealed record SetCookieCommandParameters(PartialCookie Cookie, PartitionDescriptor? Partition) : CommandParameters;
+internal sealed record SetCookieParameters(PartialCookie Cookie, PartitionDescriptor? Partition) : Parameters;
 
 public sealed record PartialCookie(string Name, Network.BytesValue Value, string Domain)
 {
@@ -37,6 +38,7 @@ public sealed record PartialCookie(string Name, Network.BytesValue Value, string
 
     public Network.SameSite? SameSite { get; set; }
 
+    [JsonConverter(typeof(DateTimeOffsetSecondsConverter))]
     public DateTimeOffset? Expiry { get; set; }
 }
 

@@ -46,6 +46,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
 import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADABLE_FILES;
+import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADED_FILE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
@@ -199,6 +200,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     defineCommand(GET_DOWNLOADABLE_FILES, get(sessionId + "/se/files"));
     defineCommand(DOWNLOAD_FILE, post(sessionId + "/se/files"));
+    defineCommand(GET_DOWNLOADED_FILE, get(sessionId + "/se/files/:name"));
     defineCommand(DELETE_DOWNLOADABLE_FILES, delete(sessionId + "/se/files"));
   }
 
