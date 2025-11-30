@@ -100,4 +100,9 @@
     </ItemGroup>
   </Target>
 
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+
 </Project>

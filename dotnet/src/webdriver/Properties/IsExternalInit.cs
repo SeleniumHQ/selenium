@@ -1,4 +1,4 @@
-// <copyright file="Module.cs" company="Selenium Committers">
+// <copyright file="IsExternalInit.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,29 +17,12 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
+#if !NET8_0_OR_GREATER
 
-namespace OpenQA.Selenium.BiDi;
+#pragma warning disable IDE0130 // Namespace does not match folder structure
+namespace System.Runtime.CompilerServices;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public abstract class Module
-{
-    protected BiDi BiDi { get; private set; } = null!;
+internal static class IsExternalInit;
 
-    protected Broker Broker { get; private set; } = null!;
-
-    protected abstract void Initialize(JsonSerializerOptions options);
-
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
-        where TModule : Module, new()
-    {
-        TModule module = new()
-        {
-            BiDi = bidi,
-            Broker = broker
-        };
-
-        module.Initialize(jsonSerializerOptions);
-
-        return module;
-    }
-}
+#endif

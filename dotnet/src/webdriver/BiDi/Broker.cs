@@ -50,7 +50,7 @@ public sealed class Broker : IAsyncDisposable
     private Task? _eventEmitterTask;
     private CancellationTokenSource? _receiveMessagesCancellationTokenSource;
 
-    internal Broker(BiDi bidi, Uri url, JsonSerializerOptions jsonOptions)
+    internal Broker(BiDi bidi, Uri url)
     {
         _bidi = bidi;
         _transport = new WebSocketTransport(url);
@@ -61,7 +61,7 @@ public sealed class Broker : IAsyncDisposable
         await _transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token)).Unwrap();
+        _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token), TaskCreationOptions.LongRunning).Unwrap();
         _eventEmitterTask = _myTaskFactory.StartNew(ProcessEventsAwaiterAsync).Unwrap();
     }
 
@@ -272,10 +272,23 @@ public sealed class Broker : IAsyncDisposable
             case "success":
                 if (id is null) throw new JsonException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
-                if (_pendingCommands.TryGetValue(id.Value, out var successCommand))
+                if (_pendingCommands.TryGetValue(id.Value, out var command))
                 {
-                    successCommand.TaskCompletionSource.SetResult((EmptyResult)JsonSerializer.Deserialize(ref resultReader, successCommand.JsonResultTypeInfo)!);
-                    _pendingCommands.TryRemove(id.Value, out _);
+                    try
+                    {
+                        var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
+                            ?? throw new JsonException("Remote end returned null command result in the 'result' property.");
+
+                        command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        command.TaskCompletionSource.SetException(ex);
+                    }
+                    finally
+                    {
+                        _pendingCommands.TryRemove(id.Value, out _);
+                    }
                 }
                 else
                 {

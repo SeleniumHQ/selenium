@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
@@ -44,16 +45,22 @@ public sealed class BrowsingContext
 
     internal string Id { get; }
 
+    [JsonIgnore]
     public BiDi BiDi { get; }
 
+    [JsonIgnore]
     public BrowsingContextLogModule Log => _logModule.Value;
 
+    [JsonIgnore]
     public BrowsingContextNetworkModule Network => _networkModule.Value;
 
+    [JsonIgnore]
     public BrowsingContextScriptModule Script => _scriptModule.Value;
 
+    [JsonIgnore]
     public BrowsingContextStorageModule Storage => _storageModule.Value;
 
+    [JsonIgnore]
     public BrowsingContextInputModule Input => _inputModule.Value;
 
     public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null)

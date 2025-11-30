@@ -19,7 +19,9 @@
 
 #if !NET8_0_OR_GREATER
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace System.Diagnostics.CodeAnalysis;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 /// <summary>Specifies the syntax used in a string.</summary>
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
@@ -86,4 +88,3 @@ internal sealed class StringSyntaxAttribute : Attribute
 }
 
 #endif
-

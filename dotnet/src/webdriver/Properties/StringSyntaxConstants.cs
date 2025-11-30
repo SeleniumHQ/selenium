@@ -1,4 +1,4 @@
-// <copyright file="Module.cs" company="Selenium Committers">
+// <copyright file="StringSyntaxConstants.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,29 +17,11 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
+#pragma warning disable IDE0130 // Namespace does not match folder structure
+namespace OpenQA.Selenium;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
-namespace OpenQA.Selenium.BiDi;
-
-public abstract class Module
+internal static class StringSyntaxConstants
 {
-    protected BiDi BiDi { get; private set; } = null!;
-
-    protected Broker Broker { get; private set; } = null!;
-
-    protected abstract void Initialize(JsonSerializerOptions options);
-
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
-        where TModule : Module, new()
-    {
-        TModule module = new()
-        {
-            BiDi = bidi,
-            Broker = broker
-        };
-
-        module.Initialize(jsonSerializerOptions);
-
-        return module;
-    }
+    public const string JavaScript = "javascript";
 }

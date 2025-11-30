@@ -19,12 +19,18 @@ package org.openqa.selenium.grid.node.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.nio.file.Files.readAttributes;
+import static java.time.ZoneOffset.UTC;
+import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+import static java.util.Arrays.asList;
+import static java.util.Locale.US;
+import static java.util.Objects.requireNonNullElseGet;
 import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
+import static org.openqa.selenium.net.Urls.urlDecode;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -39,6 +45,7 @@ import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.Ticker;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.net.MediaType;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -47,9 +54,11 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -107,6 +116,7 @@ import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -123,6 +133,7 @@ public class LocalNode extends Node implements Closeable {
 
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
+  private static final DateTimeFormatter HTTP_DATE_FORMAT = RFC_1123_DATE_TIME.withLocale(US);
 
   private final EventBus bus;
   private final URI externalUri;
@@ -742,8 +753,11 @@ public class LocalNode extends Node implements Closeable {
         Optional.ofNullable(tempFS.getBaseDir().listFiles()).orElse(new File[] {})[0];
 
     try {
-      if (req.getMethod().equals(HttpMethod.GET)) {
+      if (req.getMethod().equals(HttpMethod.GET) && req.getUri().endsWith("/se/files")) {
         return listDownloadedFiles(downloadsDirectory);
+      }
+      if (req.getMethod().equals(HttpMethod.GET)) {
+        return getDownloadedFile(downloadsDirectory, extractFileName(req));
       }
       if (req.getMethod().equals(HttpMethod.DELETE)) {
         return deleteDownloadedFile(downloadsDirectory);
@@ -752,6 +766,19 @@ public class LocalNode extends Node implements Closeable {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  private String extractFileName(HttpRequest req) {
+    return extractFileName(req.getUri());
+  }
+
+  String extractFileName(String uri) {
+    String prefix = "/se/files/";
+    int index = uri.lastIndexOf(prefix);
+    if (index < 0) {
+      throw new IllegalArgumentException("Unexpected URL for downloading a file: " + uri);
+    }
+    return urlDecode(uri.substring(index + prefix.length())).replace(' ', '+');
   }
 
   /** User wants to list files that can be downloaded */
@@ -798,27 +825,61 @@ public class LocalNode extends Node implements Closeable {
                     new WebDriverException(
                         "Please specify file to download in payload as {\"name\":"
                             + " \"fileToDownload\"}"));
-    File[] allFiles =
-        Optional.ofNullable(downloadsDirectory.listFiles((dir, name) -> name.equals(filename)))
-            .orElse(new File[] {});
-    if (allFiles.length == 0) {
-      throw new WebDriverException(
-          String.format(
-              "Cannot find file [%s] in directory %s.",
-              filename, downloadsDirectory.getAbsolutePath()));
-    }
-    if (allFiles.length != 1) {
-      throw new WebDriverException(
-          String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
-    }
-    String content = Zip.zip(allFiles[0]);
+    File file = findDownloadedFile(downloadsDirectory, filename);
+    String content = Zip.zip(file);
     Map<String, Object> data =
         Map.of(
             "filename", filename,
-            "file", getFileInfo(allFiles[0]),
+            "file", getFileInfo(file),
             "contents", content);
     Map<String, Map<String, Object>> result = Map.of("value", data);
     return new HttpResponse().setContent(asJson(result));
+  }
+
+  private HttpResponse getDownloadedFile(File downloadsDirectory, String fileName)
+      throws IOException {
+    if (fileName.isEmpty()) {
+      throw new WebDriverException("Please specify file to download in URL");
+    }
+    File file = findDownloadedFile(downloadsDirectory, fileName);
+    BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
+    return new HttpResponse()
+        .setHeader("Content-Type", MediaType.OCTET_STREAM.toString())
+        .setHeader("Content-Length", String.valueOf(attributes.size()))
+        .setHeader("Last-Modified", lastModifiedHeader(attributes.lastModifiedTime()))
+        .setContent(Contents.file(file));
+  }
+
+  private String lastModifiedHeader(FileTime fileTime) {
+    return HTTP_DATE_FORMAT.format(fileTime.toInstant().atZone(UTC));
+  }
+
+  private File findDownloadedFile(File downloadsDirectory, String filename)
+      throws WebDriverException {
+    List<File> matchingFiles =
+        asList(
+            requireNonNullElseGet(
+                downloadsDirectory.listFiles((dir, name) -> name.equals(filename)),
+                () -> new File[0]));
+    if (matchingFiles.isEmpty()) {
+      List<File> files = downloadedFiles(downloadsDirectory);
+      throw new WebDriverException(
+          String.format(
+              "Cannot find file [%s] in directory %s. Found %s files: %s.",
+              filename, downloadsDirectory.getAbsolutePath(), files.size(), files));
+    }
+    if (matchingFiles.size() != 1) {
+      throw new WebDriverException(
+          String.format(
+              "Expected there to be only 1 file. Found %s files: %s.",
+              matchingFiles.size(), matchingFiles));
+    }
+    return matchingFiles.get(0);
+  }
+
+  private static List<File> downloadedFiles(File downloadsDirectory) {
+    File[] files = requireNonNullElseGet(downloadsDirectory.listFiles(), () -> new File[0]);
+    return asList(files);
   }
 
   private HttpResponse deleteDownloadedFile(File downloadsDirectory) {

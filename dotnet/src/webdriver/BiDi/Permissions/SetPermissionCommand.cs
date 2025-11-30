@@ -1,4 +1,4 @@
-// <copyright file="IsExternalInit.cs" company="Selenium Committers">
+// <copyright file="SetPermissionCommand.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,6 +17,20 @@
 // under the License.
 // </copyright>
 
-namespace System.Runtime.CompilerServices;
+using OpenQA.Selenium.BiDi.Browser;
 
-internal static class IsExternalInit;
+namespace OpenQA.Selenium.BiDi.Permissions;
+
+internal class SetPermissionCommand(SetPermissionCommandParameters @params)
+    : Command<SetPermissionCommandParameters, SetPermissionResult>(@params, "permissions.setPermission");
+
+internal record SetPermissionCommandParameters(PermissionDescriptor Descriptor, PermissionState State, string Origin, string? EmbeddedOrigin, UserContext? UserContext) : Parameters;
+
+public class SetPermissionOptions : CommandOptions
+{
+    public string? EmbeddedOrigin { get; set; }
+
+    public UserContext? UserContext { get; set; }
+}
+
+public sealed record SetPermissionResult : EmptyResult;

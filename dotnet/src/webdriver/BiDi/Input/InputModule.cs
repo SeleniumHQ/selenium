@@ -18,30 +18,51 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
 public sealed class InputModule : Module
 {
+    private InputJsonSerializerContext _jsonContext = null!;
+
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
         var @params = new PerformActionsParameters(context, actions);
 
-        return await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options, JsonContext.PerformActionsCommand, JsonContext.PerformActionsResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new PerformActionsCommand(@params), options, _jsonContext.PerformActionsCommand, _jsonContext.PerformActionsResult).ConfigureAwait(false);
     }
 
     public async Task<ReleaseActionsResult> ReleaseActionsAsync(BrowsingContext.BrowsingContext context, ReleaseActionsOptions? options = null)
     {
         var @params = new ReleaseActionsParameters(context);
 
-        return await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, JsonContext.ReleaseActionsCommand, JsonContext.ReleaseActionsResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new ReleaseActionsCommand(@params), options, _jsonContext.ReleaseActionsCommand, _jsonContext.ReleaseActionsResult).ConfigureAwait(false);
     }
 
     public async Task<SetFilesResult> SetFilesAsync(BrowsingContext.BrowsingContext context, Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
         var @params = new SetFilesParameters(context, element, files);
 
-        return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, JsonContext.SetFilesCommand, JsonContext.SetFilesResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult).ConfigureAwait(false);
+    }
+
+    protected override void Initialize(JsonSerializerOptions options)
+    {
+        _jsonContext = new InputJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(PerformActionsCommand))]
+[JsonSerializable(typeof(PerformActionsResult))]
+[JsonSerializable(typeof(ReleaseActionsCommand))]
+[JsonSerializable(typeof(ReleaseActionsResult))]
+[JsonSerializable(typeof(SetFilesCommand))]
+[JsonSerializable(typeof(SetFilesResult))]
+[JsonSerializable(typeof(IEnumerable<IPointerSourceAction>))]
+[JsonSerializable(typeof(IEnumerable<IKeySourceAction>))]
+[JsonSerializable(typeof(IEnumerable<INoneSourceAction>))]
+[JsonSerializable(typeof(IEnumerable<IWheelSourceAction>))]
+internal partial class InputJsonSerializerContext : JsonSerializerContext;
