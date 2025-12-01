@@ -43,4 +43,16 @@ public class Emulation {
     return bidi.send(
         new Command<>("emulation.setGeolocationOverride", parameters.toMap(), Map.class));
   }
+
+  public Map<String, Object> setTimezoneOverride(SetTimezoneOverrideParameters parameters) {
+    Require.nonNull("SetTimezoneOverride parameters", parameters);
+
+    return bidi.send(new Command<>("emulation.setTimezoneOverride", parameters.toMap(), Map.class));
+  }
+
+  public Map<String, Object> setScriptingEnabled(SetScriptingEnabledParameters parameters) {
+    Require.nonNull("SetScriptingEnabled parameters", parameters);
+
+    return bidi.send(new Command<>("emulation.setScriptingEnabled", parameters.toMap(), Map.class));
+  }
 }
