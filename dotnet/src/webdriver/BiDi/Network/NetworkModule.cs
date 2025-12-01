@@ -17,17 +17,17 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed partial class NetworkModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private NetworkJsonSerializerContext _jsonContext = null!;
 
     public async Task<Collector> AddDataCollectorAsync(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, AddDataCollectorOptions? options = null)
     {
@@ -179,6 +179,38 @@ public sealed partial class NetworkModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new NetworkJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(AddDataCollectorCommand))]
+[JsonSerializable(typeof(AddDataCollectorResult))]
+[JsonSerializable(typeof(AddInterceptCommand))]
+[JsonSerializable(typeof(AddInterceptResult))]
+[JsonSerializable(typeof(ContinueRequestCommand))]
+[JsonSerializable(typeof(ContinueRequestResult))]
+[JsonSerializable(typeof(ContinueResponseCommand))]
+[JsonSerializable(typeof(ContinueResponseResult))]
+[JsonSerializable(typeof(ContinueWithAuthCommand))]
+[JsonSerializable(typeof(ContinueWithAuthResult))]
+[JsonSerializable(typeof(FailRequestCommand))]
+[JsonSerializable(typeof(FailRequestResult))]
+[JsonSerializable(typeof(GetDataCommand))]
+[JsonSerializable(typeof(GetDataResult))]
+[JsonSerializable(typeof(ProvideResponseCommand))]
+[JsonSerializable(typeof(ProvideResponseResult))]
+[JsonSerializable(typeof(RemoveDataCollectorCommand))]
+[JsonSerializable(typeof(RemoveDataCollectorResult))]
+[JsonSerializable(typeof(RemoveInterceptCommand))]
+[JsonSerializable(typeof(RemoveInterceptResult))]
+[JsonSerializable(typeof(SetCacheBehaviorCommand))]
+[JsonSerializable(typeof(SetCacheBehaviorResult))]
+[JsonSerializable(typeof(SetExtraHeadersCommand))]
+[JsonSerializable(typeof(SetExtraHeadersResult))]
+
+[JsonSerializable(typeof(BeforeRequestSentEventArgs))]
+[JsonSerializable(typeof(ResponseStartedEventArgs))]
+[JsonSerializable(typeof(ResponseCompletedEventArgs))]
+[JsonSerializable(typeof(FetchErrorEventArgs))]
+[JsonSerializable(typeof(AuthRequiredEventArgs))]
+internal partial class NetworkJsonSerializerContext : JsonSerializerContext;

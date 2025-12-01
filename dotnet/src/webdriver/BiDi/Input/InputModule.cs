@@ -17,16 +17,16 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
 public sealed class InputModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private InputJsonSerializerContext _jsonContext = null!;
 
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
@@ -51,6 +51,18 @@ public sealed class InputModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new InputJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(PerformActionsCommand))]
+[JsonSerializable(typeof(PerformActionsResult))]
+[JsonSerializable(typeof(ReleaseActionsCommand))]
+[JsonSerializable(typeof(ReleaseActionsResult))]
+[JsonSerializable(typeof(SetFilesCommand))]
+[JsonSerializable(typeof(SetFilesResult))]
+[JsonSerializable(typeof(IEnumerable<IPointerSourceAction>))]
+[JsonSerializable(typeof(IEnumerable<IKeySourceAction>))]
+[JsonSerializable(typeof(IEnumerable<INoneSourceAction>))]
+[JsonSerializable(typeof(IEnumerable<IWheelSourceAction>))]
+internal partial class InputJsonSerializerContext : JsonSerializerContext;

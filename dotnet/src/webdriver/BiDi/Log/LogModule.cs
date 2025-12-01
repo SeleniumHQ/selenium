@@ -17,16 +17,16 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
 public sealed class LogModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private LogJsonSerializerContext _jsonContext = null!;
 
     public async Task<Subscription> OnEntryAddedAsync(Func<LogEntry, Task> handler, SubscriptionOptions? options = null)
     {
@@ -40,6 +40,44 @@ public sealed class LogModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new LogJsonSerializerContext(options);
     }
 }
+
+#region https://github.com/dotnet/runtime/issues/72604 Script.RemoteValue type dependency
+[JsonSerializable(typeof(Script.NumberRemoteValue))]
+[JsonSerializable(typeof(Script.BooleanRemoteValue))]
+[JsonSerializable(typeof(Script.BigIntRemoteValue))]
+[JsonSerializable(typeof(Script.StringRemoteValue))]
+[JsonSerializable(typeof(Script.NullRemoteValue))]
+[JsonSerializable(typeof(Script.UndefinedRemoteValue))]
+[JsonSerializable(typeof(Script.SymbolRemoteValue))]
+[JsonSerializable(typeof(Script.ArrayRemoteValue))]
+[JsonSerializable(typeof(Script.ObjectRemoteValue))]
+[JsonSerializable(typeof(Script.FunctionRemoteValue))]
+[JsonSerializable(typeof(Script.RegExpRemoteValue))]
+[JsonSerializable(typeof(Script.DateRemoteValue))]
+[JsonSerializable(typeof(Script.MapRemoteValue))]
+[JsonSerializable(typeof(Script.SetRemoteValue))]
+[JsonSerializable(typeof(Script.WeakMapRemoteValue))]
+[JsonSerializable(typeof(Script.WeakSetRemoteValue))]
+[JsonSerializable(typeof(Script.GeneratorRemoteValue))]
+[JsonSerializable(typeof(Script.ErrorRemoteValue))]
+[JsonSerializable(typeof(Script.ProxyRemoteValue))]
+[JsonSerializable(typeof(Script.PromiseRemoteValue))]
+[JsonSerializable(typeof(Script.TypedArrayRemoteValue))]
+[JsonSerializable(typeof(Script.ArrayBufferRemoteValue))]
+[JsonSerializable(typeof(Script.NodeListRemoteValue))]
+[JsonSerializable(typeof(Script.HtmlCollectionRemoteValue))]
+[JsonSerializable(typeof(Script.NodeRemoteValue))]
+[JsonSerializable(typeof(Script.WindowProxyRemoteValue))]
+#endregion
+
+#region https://github.com/dotnet/runtime/issues/72604
+[JsonSerializable(typeof(GenericLogEntry))]
+[JsonSerializable(typeof(ConsoleLogEntry))]
+[JsonSerializable(typeof(JavascriptLogEntry))]
+#endregion
+
+[JsonSerializable(typeof(LogEntry))]
+internal partial class LogJsonSerializerContext : JsonSerializerContext;

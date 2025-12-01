@@ -21,7 +21,9 @@
 
 #if !NET8_0_OR_GREATER
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace System.Diagnostics.CodeAnalysis;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 /// <summary>
 /// Indicates that the specified method requires the ability to generate new code at runtime,

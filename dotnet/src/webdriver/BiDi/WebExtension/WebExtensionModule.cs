@@ -17,15 +17,15 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
 public sealed class WebExtensionModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private WebExtensionJsonSerializerContext _jsonContext = null!;
 
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
     {
@@ -43,6 +43,12 @@ public sealed class WebExtensionModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new WebExtensionJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(InstallCommand))]
+[JsonSerializable(typeof(InstallResult))]
+[JsonSerializable(typeof(UninstallCommand))]
+[JsonSerializable(typeof(UninstallResult))]
+internal partial class WebExtensionJsonSerializerContext : JsonSerializerContext;

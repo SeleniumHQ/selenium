@@ -17,16 +17,16 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class SessionModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private SessionJsonSerializerContext _jsonContext = null!;
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {
@@ -61,6 +61,18 @@ internal sealed class SessionModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new SessionJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(StatusCommand))]
+[JsonSerializable(typeof(StatusResult))]
+[JsonSerializable(typeof(NewCommand))]
+[JsonSerializable(typeof(NewResult))]
+[JsonSerializable(typeof(EndCommand))]
+[JsonSerializable(typeof(EndResult))]
+[JsonSerializable(typeof(SubscribeCommand))]
+[JsonSerializable(typeof(SubscribeResult))]
+[JsonSerializable(typeof(UnsubscribeByIdCommand))]
+[JsonSerializable(typeof(UnsubscribeResult))]
+internal partial class SessionJsonSerializerContext : JsonSerializerContext;

@@ -17,19 +17,19 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
 public sealed class BrowserModule : Module
 {
-    private BiDiJsonSerializerContext _jsonContext = null!;
+    private BrowserJsonSerializerContext _jsonContext = null!;
 
     public async Task<CloseResult> CloseAsync(CloseOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync(new CloseCommand(), options, _jsonContext.Browser_CloseCommand, _jsonContext.Browser_CloseResult).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new CloseCommand(), options, _jsonContext.CloseCommand, _jsonContext.CloseResult).ConfigureAwait(false);
     }
 
     public async Task<CreateUserContextResult> CreateUserContextAsync(CreateUserContextOptions? options = null)
@@ -80,6 +80,20 @@ public sealed class BrowserModule : Module
 
     protected override void Initialize(JsonSerializerOptions options)
     {
-        _jsonContext = new BiDiJsonSerializerContext(options);
+        _jsonContext = new BrowserJsonSerializerContext(options);
     }
 }
+
+[JsonSerializable(typeof(CloseCommand))]
+[JsonSerializable(typeof(CloseResult))]
+[JsonSerializable(typeof(CreateUserContextCommand))]
+[JsonSerializable(typeof(CreateUserContextResult))]
+[JsonSerializable(typeof(GetUserContextsCommand))]
+[JsonSerializable(typeof(GetUserContextsResult))]
+[JsonSerializable(typeof(RemoveUserContextCommand))]
+[JsonSerializable(typeof(RemoveUserContextResult))]
+[JsonSerializable(typeof(GetClientWindowsCommand))]
+[JsonSerializable(typeof(GetClientWindowsResult))]
+[JsonSerializable(typeof(SetDownloadBehaviorCommand))]
+[JsonSerializable(typeof(SetDownloadBehaviorResult))]
+internal partial class BrowserJsonSerializerContext : JsonSerializerContext;

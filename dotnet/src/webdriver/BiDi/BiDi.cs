@@ -36,38 +36,27 @@ public sealed class BiDi : IAsyncDisposable
         var uri = new Uri(url);
 
         Broker = new Broker(this, uri);
-
-        SessionModule = AsModule<Session.SessionModule>();
-        BrowsingContext = AsModule<BrowsingContext.BrowsingContextModule>();
-        Browser = AsModule<Browser.BrowserModule>();
-        Network = AsModule<Network.NetworkModule>();
-        InputModule = AsModule<Input.InputModule>();
-        Script = AsModule<Script.ScriptModule>();
-        Log = AsModule<Log.LogModule>();
-        Storage = AsModule<Storage.StorageModule>();
-        WebExtension = AsModule<WebExtension.WebExtensionModule>();
-        Emulation = AsModule<Emulation.EmulationModule>();
     }
 
-    internal Session.SessionModule SessionModule { get; }
+    internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
 
-    public BrowsingContext.BrowsingContextModule BrowsingContext { get; }
+    public BrowsingContext.BrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
 
-    public Browser.BrowserModule Browser { get; }
+    public Browser.BrowserModule Browser => AsModule<Browser.BrowserModule>();
 
-    public Network.NetworkModule Network { get; }
+    public Network.NetworkModule Network => AsModule<Network.NetworkModule>();
 
-    internal Input.InputModule InputModule { get; }
+    internal Input.InputModule InputModule => AsModule<Input.InputModule>();
 
-    public Script.ScriptModule Script { get; }
+    public Script.ScriptModule Script => AsModule<Script.ScriptModule>();
 
-    public Log.LogModule Log { get; }
+    public Log.LogModule Log => AsModule<Log.LogModule>();
 
-    public Storage.StorageModule Storage { get; }
+    public Storage.StorageModule Storage => AsModule<Storage.StorageModule>();
 
-    public WebExtension.WebExtensionModule WebExtension { get; }
+    public WebExtension.WebExtensionModule WebExtension => AsModule<WebExtension.WebExtensionModule>();
 
-    public Emulation.EmulationModule Emulation { get; }
+    public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
 
     public Task<Session.StatusResult> StatusAsync()
     {
@@ -96,7 +85,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public T AsModule<T>() where T : Module, new()
     {
-        return (T)_modules.GetOrAdd(typeof(T), Module.Create<T>(this, Broker, GetJsonOptions()));
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, GetJsonOptions()));
     }
 
     private Broker Broker { get; }
