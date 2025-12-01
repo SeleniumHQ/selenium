@@ -320,6 +320,20 @@ public class Cookie : IEquatable<Cookie>
     }
 
     /// <summary>
+    /// Determines whether the specified <see cref="object">Object</see> is equal
+    /// to the current <see cref="object">Object</see>.
+    /// </summary>
+    /// <param name="obj">The <see cref="object">Object</see> to compare with the
+    /// current <see cref="object">Object</see>.</param>
+    /// <returns><see langword="true"/> if the specified <see cref="object">Object</see>
+    /// is equal to the current <see cref="object">Object</see>; otherwise,
+    /// <see langword="false"/>.</returns>
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Cookie);
+    }
+
+    /// <summary>
     /// Indicates whether the current <see cref="Cookie"/> is equal to another <see cref="Cookie"/>.
     /// </summary>
     /// <param name="other">A <see cref="Cookie"/> to compare with this <see cref="Cookie"/>.</param>
@@ -339,20 +353,6 @@ public class Cookie : IEquatable<Cookie>
 
         return string.Equals(this.cookieName, other.cookieName)
             && string.Equals(this.cookieValue, other.cookieValue);
-    }
-
-    /// <summary>
-    /// Determines whether the specified <see cref="object">Object</see> is equal
-    /// to the current <see cref="object">Object</see>.
-    /// </summary>
-    /// <param name="obj">The <see cref="object">Object</see> to compare with the
-    /// current <see cref="object">Object</see>.</param>
-    /// <returns><see langword="true"/> if the specified <see cref="object">Object</see>
-    /// is equal to the current <see cref="object">Object</see>; otherwise,
-    /// <see langword="false"/>.</returns>
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as Cookie);
     }
 
     /// <summary>

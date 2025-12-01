@@ -110,14 +110,14 @@ public sealed class Intercept : IEquatable<Intercept>, IAsyncDisposable
         await RemoveAsync();
     }
 
-    public bool Equals(Intercept? other)
-    {
-        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
-    }
-
     public override bool Equals(object? obj)
     {
         return Equals(obj as Intercept);
+    }
+
+    public bool Equals(Intercept? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()

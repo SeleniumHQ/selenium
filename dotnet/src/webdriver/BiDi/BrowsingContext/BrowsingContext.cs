@@ -223,14 +223,14 @@ public sealed class BrowsingContext : IEquatable<BrowsingContext>
         return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, options.WithContext(this));
     }
 
-    public bool Equals(BrowsingContext? other)
-    {
-        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
-    }
-
     public override bool Equals(object? obj)
     {
         return Equals(obj as BrowsingContext);
+    }
+
+    public bool Equals(BrowsingContext? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()

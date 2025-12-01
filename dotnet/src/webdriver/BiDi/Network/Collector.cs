@@ -44,14 +44,14 @@ public sealed class Collector : IEquatable<Collector>, IAsyncDisposable
         await RemoveAsync();
     }
 
-    public bool Equals(Collector? other)
-    {
-        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
-    }
-
     public override bool Equals(object? obj)
     {
         return Equals(obj as Collector);
+    }
+
+    public bool Equals(Collector? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()

@@ -1760,6 +1760,21 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
             return screenshotDriver.GetScreenshot();
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="EventFiringWebElement"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="object"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
+        /// <returns><see langword="true"/> if the current <see cref="EventFiringWebElement"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as IWebElement);
+        }
+
+        /// <summary>
+        /// Indicates whether the current <see cref="EventFiringWebElement"/> is equal to another <see cref="IWebElement"/>.
+        /// </summary>
+        /// <param name="other">An <see cref="IWebElement"/> to compare with this <see cref="EventFiringWebElement"/>.</param>
+        /// <returns><see langword="true"/> if the current <see cref="EventFiringWebElement"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
         public bool Equals(IWebElement? other)
         {
             if (other is IWrapsElement otherWrapper)
@@ -1768,16 +1783,6 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
             }
 
             return WrappedElement.Equals(other);
-        }
-
-        /// <summary>
-        /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>.
-        /// </summary>
-        /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as IWebElement);
         }
 
         /// <summary>
@@ -1873,19 +1878,24 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
             }
         }
 
-        public bool Equals(ISearchContext? other)
+        /// <summary>
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="EventFiringShadowRoot"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="object"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
+        /// <returns><see langword="true"/> if the current <see cref="EventFiringShadowRoot"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object? obj)
         {
-            return WrappedSearchContext.Equals(other);
+            return Equals(obj as ISearchContext);
         }
 
         /// <summary>
         /// Determines whether the specified <see cref="EventFiringShadowRoot"/> is equal to the current <see cref="EventFiringShadowRoot"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="EventFiringShadowRoot"/> is equal to the current <see cref="EventFiringShadowRoot"/>; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object? obj)
+        /// <param name="other">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
+        /// <returns><see langword="true"/> if the current <see cref="EventFiringShadowRoot"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
+        public bool Equals(ISearchContext? other)
         {
-            return Equals(obj as ISearchContext);
+            return WrappedSearchContext.Equals(other);
         }
 
         /// <summary>

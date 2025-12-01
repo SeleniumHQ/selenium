@@ -57,16 +57,6 @@ public class SessionId : IEquatable<SessionId>
     }
 
     /// <summary>
-    /// Indicates whether the current session ID value is the same as <paramref name="other"/>.
-    /// </summary>
-    /// <param name="other">The session to compare to.</param>
-    /// <returns><see langword="true"/> if the values are equal; otherwise, <see langword="false"/>.</returns>
-    public bool Equals(SessionId? other)
-    {
-        return other is not null && string.Equals(this.sessionOpaqueKey, other.sessionOpaqueKey);
-    }
-
-    /// <summary>
     /// Indicates whether the current session ID value is the same as <paramref name="obj"/>.
     /// </summary>
     /// <param name="obj">The session to compare to.</param>
@@ -74,5 +64,15 @@ public class SessionId : IEquatable<SessionId>
     public override bool Equals(object? obj)
     {
         return Equals(obj as SessionId);
+    }
+
+    /// <summary>
+    /// Indicates whether the current session ID value is the same as <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">The session to compare to.</param>
+    /// <returns><see langword="true"/> if the values are equal; otherwise, <see langword="false"/>.</returns>
+    public bool Equals(SessionId? other)
+    {
+        return other is not null && string.Equals(this.sessionOpaqueKey, other.sessionOpaqueKey);
     }
 }

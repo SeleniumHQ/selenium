@@ -244,6 +244,21 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
         return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, Platform={1}, Version={2}]", this.BrowserName, this.Platform.PlatformType.ToString(), this.Version);
     }
 
+    /// <summary>
+    /// Indicates whether the current <see cref="DesiredCapabilities"/> is equal to another <see cref="object"/>.
+    /// </summary>
+    /// <param name="obj"><see cref="DesiredCapabilities"/> you wish to compare.</param>
+    /// <returns><see langword="true"/> if the current <see cref="DesiredCapabilities"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as DesiredCapabilities);
+    }
+
+    /// <summary>
+    /// Indicates whether the current <see cref="DesiredCapabilities"/> is equal to another <see cref="DesiredCapabilities"/>.
+    /// </summary>
+    /// <param name="other">An <see cref="DesiredCapabilities"/> to compare with this <see cref="DesiredCapabilities"/>.</param>
+    /// <returns><see langword="true"/> if the current <see cref="DesiredCapabilities"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
     public bool Equals(DesiredCapabilities? other)
     {
         if (other is null)
@@ -272,16 +287,6 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
         }
 
         return true;
-    }
-
-    /// <summary>
-    /// Compare two DesiredCapabilities and will return either true or false
-    /// </summary>
-    /// <param name="obj">DesiredCapabilities you wish to compare</param>
-    /// <returns>true if they are the same or false if they are not</returns>
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as DesiredCapabilities);
     }
 
     /// <summary>
