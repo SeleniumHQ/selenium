@@ -20,6 +20,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
@@ -40,13 +41,9 @@ internal sealed class OptionalConverterFactory : JsonConverterFactory
 
         public override Optional<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonTokenType.Null)
-            {
-                reader.Read(); // consume null
-                return new Optional<T>(default!);
-            }
+            var converter = (JsonTypeInfo<T>)options.GetTypeInfo(typeof(T));
 
-            T value = JsonSerializer.Deserialize<T>(ref reader, options)!;
+            T? value = JsonSerializer.Deserialize<T>(ref reader, converter);
             return new Optional<T>(value);
         }
 
@@ -54,7 +51,9 @@ internal sealed class OptionalConverterFactory : JsonConverterFactory
         {
             if (value.TryGetValue(out var optionalValue))
             {
-                JsonSerializer.Serialize(writer, optionalValue, options);
+                var converter = (JsonTypeInfo<T?>)options.GetTypeInfo(typeof(T?));
+
+                JsonSerializer.Serialize(writer, optionalValue, converter);
             }
             else
             {

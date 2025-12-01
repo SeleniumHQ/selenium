@@ -39,7 +39,7 @@ public readonly record struct Optional<T>
         HasValue = true;
     }
 
-    public bool TryGetValue(out T value)
+    public bool TryGetValue(out T? value)
     {
         value = _value;
         return HasValue;

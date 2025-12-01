@@ -292,4 +292,6 @@ public sealed class BrowsingContextModule : Module
 [JsonSerializable(typeof(NavigationInfo))]
 [JsonSerializable(typeof(UserPromptOpenedEventArgs))]
 [JsonSerializable(typeof(UserPromptClosedEventArgs))]
+[JsonSerializable(typeof(Viewport?))]
+[JsonSerializable(typeof(double?))]
 internal partial class BrowsingContextJsonSerializerContext : JsonSerializerContext;
