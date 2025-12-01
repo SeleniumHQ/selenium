@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Script;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;

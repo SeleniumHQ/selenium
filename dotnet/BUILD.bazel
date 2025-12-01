@@ -2,7 +2,7 @@ load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
 
 exports_files([
     "AssemblyInfo.cs.template",
-    "WebDriver.snk",
+    "Selenium.snk",
 ])
 
 pkg_zip(
@@ -25,4 +25,13 @@ pkg_zip(
     tags = [
         "release-artifact",
     ],
+)
+
+filegroup(
+    name = "source_files_support_needs_from_core",
+    srcs = [
+        "//dotnet/src/webdriver:Properties/StringSyntaxAttribute.cs",
+        "//dotnet/src/webdriver:Properties/StringSyntaxConstants.cs",
+    ],
+    visibility = ["__subpackages__"],
 )

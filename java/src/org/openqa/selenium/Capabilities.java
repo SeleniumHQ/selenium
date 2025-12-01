@@ -24,15 +24,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /** Describes a series of key/value pairs that encapsulate aspects of a browser. */
+@NullMarked
 public interface Capabilities extends Serializable {
 
   default String getBrowserName() {
     return String.valueOf(Optional.ofNullable(getCapability("browserName")).orElse(""));
   }
 
-  default Platform getPlatformName() {
+  default @Nullable Platform getPlatformName() {
     return Stream.of("platformName")
         .map(this::getCapability)
         .filter(Objects::nonNull)
@@ -67,7 +70,7 @@ public interface Capabilities extends Serializable {
    * @return The value, or null if not set.
    * @see org.openqa.selenium.remote.CapabilityType
    */
-  Object getCapability(String capabilityName);
+  @Nullable Object getCapability(String capabilityName);
 
   /**
    * @param capabilityName The capability to check.

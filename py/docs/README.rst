@@ -49,21 +49,13 @@ and develop the Python docs.
 To clean up the build assets and tox cache
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Although there is a Sphinx Makefile option, to clean up using the tox environment above, one can
-manually clean the build assets by deleting the ``build`` directory on the root (``selenium/build``
-using the default directory on git clone). Note that tox caches parts of the build and recognizes
-changes to speed up the build. To start fresh, delete the aformentioned directory to clean the
-Sphinx build assets and delete the ``selenium/py/.tox`` directory to clean the tox environment.
+After using the tox environment above, you can clean up the build assets by deleting the ``build``
+directory in the root of the repo. Note that tox caches parts of the build and recognizes changes
+to speed up the build. To start fresh, delete the ``py/.tox`` directory to clean the tox environment.
 
 
 Known documentation issues
 ==========================
-
-The API Reference primarily builds from the source code. But currently the initial template stating
-which modules to document is hard coded within ``py/docs/source/api.rst``. So if modules are added or
-removed, then the generated docs will be inaccurate. It would be preferred that the API docs generate
-soley from the code if possible. This is being tracked in
-`#14178 <https://github.com/SeleniumHQ/selenium/issues/14178>`_
 
 We are working through the Sphinx build warnings and errors, trying to clean up both the syntax and
 the build.
@@ -74,7 +66,7 @@ Contributing to Python docs
 
 First it is recommended that you read the main `CONTRIBUTING.md <https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md>`_.
 
-Some steps for contibuting to the Python documentation ...
+Some steps for contributing to the Python documentation ...
 
 - Check out changes locally using instructions above.
 - Try to resolve any warnings/errors.

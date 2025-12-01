@@ -93,7 +93,7 @@ const RemoteType = {
 }
 
 /**
- * Represents a speacial number type.
+ * Represents a special number type.
  * @enum
  * Described in https://w3c.github.io/webdriver-bidi/#type-script-PrimitiveProtocolValue.
  */

@@ -263,7 +263,6 @@ class TestBidiStorage:
         assert key.user_context is not None
         assert key.user_context == "default"
 
-    @pytest.mark.xfail_edge
     def test_get_all_cookies(self, driver, pages, webserver):
         """Test getting all cookies."""
         assert_no_cookies_are_present(driver)

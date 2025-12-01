@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Script;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -113,15 +112,15 @@ class EvaluateParametersTest : BiDiTestFixture
     [Test]
     public async Task CanEvaluateInARealm()
     {
-        await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Tab);
+        await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
-        var realms = await bidi.Script.GetRealmsAsync();
+        var realmsResult = await bidi.Script.GetRealmsAsync();
 
-        await bidi.Script.EvaluateAsync("window.foo = 3", true, new RealmTarget(realms[0].Realm));
-        await bidi.Script.EvaluateAsync("window.foo = 5", true, new RealmTarget(realms[1].Realm));
+        await bidi.Script.EvaluateAsync("window.foo = 3", true, new RealmTarget(realmsResult.Realms[0].Realm));
+        await bidi.Script.EvaluateAsync("window.foo = 5", true, new RealmTarget(realmsResult.Realms[1].Realm));
 
-        var res1 = await bidi.Script.EvaluateAsync<int>("window.foo", true, new RealmTarget(realms[0].Realm));
-        var res2 = await bidi.Script.EvaluateAsync<int>("window.foo", true, new RealmTarget(realms[1].Realm));
+        var res1 = await bidi.Script.EvaluateAsync<int>("window.foo", true, new RealmTarget(realmsResult.Realms[0].Realm));
+        var res2 = await bidi.Script.EvaluateAsync<int>("window.foo", true, new RealmTarget(realmsResult.Realms[1].Realm));
 
         Assert.That(res1, Is.EqualTo(3));
         Assert.That(res2, Is.EqualTo(5));

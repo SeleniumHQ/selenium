@@ -50,7 +50,7 @@ public enum Browser {
       }
 
       if (Boolean.getBoolean("webdriver.headless")) {
-        options.addArguments("--headless=new");
+        options.addArguments("--headless");
       }
 
       options.addArguments(
@@ -59,6 +59,9 @@ public enum Browser {
           "disable-dev-shm-usage",
           "no-sandbox",
           "disable-search-engine-choice-screen");
+
+      // Accept self-signed and invalid certificates for HTTPS testing
+      options.setAcceptInsecureCerts(true);
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");
@@ -84,7 +87,7 @@ public enum Browser {
       }
 
       if (Boolean.getBoolean("webdriver.headless")) {
-        options.addArguments("--headless=new");
+        options.addArguments("--headless");
       }
 
       options.addArguments(
@@ -93,6 +96,9 @@ public enum Browser {
           "disable-breakpad",
           "disable-dev-shm-usage",
           "no-sandbox");
+
+      // Accept self-signed and invalid certificates for HTTPS testing
+      options.setAcceptInsecureCerts(true);
 
       Map<String, Object> prefs = new HashMap<>();
       prefs.put("exit_type", "None");

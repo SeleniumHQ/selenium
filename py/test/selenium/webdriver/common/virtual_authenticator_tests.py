@@ -16,7 +16,6 @@
 # under the License.
 
 from base64 import b64decode, urlsafe_b64decode
-from typing import List
 
 import pytest
 
@@ -90,7 +89,7 @@ def create_rk_disabled_ctap2_authenticator(driver) -> WebDriver:
     return driver
 
 
-def get_assertion_for(webdriver: WebDriver, credential_id: List[int]):
+def get_assertion_for(webdriver: WebDriver, credential_id: list[int]):
     return webdriver.execute_async_script(GET_CREDENTIAL, credential_id)
 
 

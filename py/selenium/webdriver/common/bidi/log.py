@@ -16,7 +16,6 @@
 # under the License.
 
 from dataclasses import dataclass
-from typing import List
 
 
 class LogEntryAdded:
@@ -36,7 +35,7 @@ class ConsoleLogEntry:
     text: str
     timestamp: str
     method: str
-    args: List[dict]
+    args: list[dict]
     type_: str
 
     @classmethod

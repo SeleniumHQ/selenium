@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>$packageid$</id>
+    <version>$version$</version>
+    <authors>Selenium Committers</authors>
+    <copyright>Copyright © 2024 Software Freedom Conservancy</copyright>
+    <owners>selenium</owners>
+    <title>Selenium WebDriver</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>.NET bindings for the Selenium WebDriver API</summary>
+    <description>
+      Selenium is a set of different software tools each with a different approach to supporting browser automation. These tools are highly flexible, allowing many options for locating and manipulating elements within a browser, and one of its key features is the support for automating multiple browser platforms. This package contains the .NET bindings for the concise and object-based Selenium WebDriver API, which uses native OS-level events to manipulate the browser, bypassing the JavaScript sandbox, and does not require the Selenium Server to automate the browser.
+    </description>
+    <projectUrl>https://selenium.dev</projectUrl>
+    <repository type="GitHub" url="https://github.com/SeleniumHQ/selenium" />
+    <license type="expression">Apache-2.0</license>
+    <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
+    <icon>icon.png</icon>
+    <tags>selenium webdriver browser automation</tags>
+    <readme>README.md</readme>
+    <releaseNotes>
+      See the latest changes, included in this release, at https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/CHANGELOG.
+    </releaseNotes>
+    <dependencies>
+      <group targetFramework="net462">
+        <dependency id="System.Text.Json" version="8.0.5" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="netstandard2.0">
+        <dependency id="System.Text.Json" version="8.0.5" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net8.0">
+        
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.IO.Compression" />
+      <frameworkAssembly assemblyName="System.Drawing" />
+      <frameworkAssembly assemblyName="System.Net.Http" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="lib/net462/WebDriver.StrongNamed.dll" target="lib/net462/WebDriver.StrongNamed.dll" />
+    <file src="lib/net462/WebDriver.StrongNamed.pdb" target="lib/net462/WebDriver.StrongNamed.pdb" />
+    <file src="lib/net462/WebDriver.StrongNamed.xml" target="lib/net462/WebDriver.StrongNamed.xml" />
+
+    <file src="lib/netstandard2.0/WebDriver.StrongNamed.dll" target="lib/netstandard2.0/WebDriver.StrongNamed.dll" />
+    <file src="lib/netstandard2.0/WebDriver.StrongNamed.pdb" target="lib/netstandard2.0/WebDriver.StrongNamed.pdb" />
+    <file src="lib/netstandard2.0/WebDriver.StrongNamed.xml" target="lib/netstandard2.0/WebDriver.StrongNamed.xml" />
+
+    <file src="lib/net8.0/WebDriver.StrongNamed.dll" target="lib/net8.0/WebDriver.StrongNamed.dll" />
+    <file src="lib/net8.0/WebDriver.StrongNamed.pdb" target="lib/net8.0/WebDriver.StrongNamed.pdb" />
+    <file src="lib/net8.0/WebDriver.StrongNamed.xml" target="lib/net8.0/WebDriver.StrongNamed.xml" />
+
+    <file src="build/Selenium.WebDriver.StrongNamed.targets" target="build/Selenium.WebDriver.StrongNamed.targets"/>
+    <file src="buildTransitive/Selenium.WebDriver.StrongNamed.targets" target="buildTransitive/Selenium.WebDriver.StrongNamed.targets"/>
+
+    <file src="manager/linux/selenium-manager" target="runtimes/linux/native/selenium-manager" />
+    <file src="manager/macos/selenium-manager" target="runtimes/osx/native/selenium-manager" />
+    <file src="manager/windows/selenium-manager.exe" target="runtimes/win/native/selenium-manager.exe" />
+
+    <file src="icon.png" />
+    <file src="README.md" />
+  </files>
+</package>

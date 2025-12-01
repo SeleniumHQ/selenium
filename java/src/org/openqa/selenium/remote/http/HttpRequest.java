@@ -74,7 +74,11 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
     return queryParameters.get(name);
   }
 
+  @Override
   public String toString() {
-    return "(" + getMethod() + ") " + getUri();
+    String content = super.toString();
+    return content.isEmpty()
+        ? String.format("(%s) %s", getMethod(), getUri())
+        : String.format("(%s) %s %s", getMethod(), getUri(), content);
   }
 }

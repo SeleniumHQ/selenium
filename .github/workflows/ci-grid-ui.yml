@@ -1,0 +1,38 @@
+name: CI - Grid UI
+
+on:
+  pull_request:
+    paths:
+      - 'javascript/grid-ui/**'
+  push:
+    branches:
+      - trunk
+    paths:
+      - 'javascript/grid-ui/**'
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  grid-ui-tests:
+    runs-on: ubuntu-latest
+    name: Grid UI Component Tests
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'javascript/grid-ui/package.json'
+
+      - name: Install dependencies
+        working-directory: javascript/grid-ui
+        run: npm install
+
+      - name: Run component tests
+        working-directory: javascript/grid-ui
+        run: npm test

@@ -46,6 +46,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
 import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADABLE_FILES;
+import static org.openqa.selenium.remote.DriverCommand.GET_DOWNLOADED_FILE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
@@ -199,6 +200,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     defineCommand(GET_DOWNLOADABLE_FILES, get(sessionId + "/se/files"));
     defineCommand(DOWNLOAD_FILE, post(sessionId + "/se/files"));
+    defineCommand(GET_DOWNLOADED_FILE, get(sessionId + "/se/files/:name"));
     defineCommand(DELETE_DOWNLOADABLE_FILES, delete(sessionId + "/se/files"));
   }
 
@@ -387,11 +389,12 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
         return false;
       }
 
-      if (parts.size() != this.pathSegments.size()) {
+      int partsCount = parts.size();
+      if (partsCount != this.pathSegments.size()) {
         return false;
       }
 
-      for (int i = 0; i < parts.size(); ++i) {
+      for (int i = 0; i < partsCount; ++i) {
         String reqPart = parts.get(i);
         String specPart = pathSegments.get(i);
         if (!(specPart.startsWith(":") || specPart.equals(reqPart))) {
@@ -403,7 +406,8 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     }
 
     void parsePathParameters(List<String> parts, Map<String, Object> parameters) {
-      for (int i = 0; i < parts.size(); ++i) {
+      int partsCount = parts.size();
+      for (int i = 0; i < partsCount; ++i) {
         if (pathSegments.get(i).startsWith(":")) {
           parameters.put(pathSegments.get(i).substring(1), parts.get(i));
         }

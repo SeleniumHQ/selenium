@@ -16,13 +16,9 @@
 # under the License.
 from __future__ import annotations
 
-import sys
-from typing import TYPE_CHECKING, Any, Sequence
-
-if sys.version_info >= (3, 9):
-    from re import Match
-else:
-    from typing import Match
+from collections.abc import Sequence
+from re import Match
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from typing import SupportsFloat, SupportsIndex, SupportsInt, Union
@@ -52,7 +48,6 @@ class Color:
     """Color conversion support class.
 
     Example:
-
     ::
 
         from selenium.webdriver.support.color import Color

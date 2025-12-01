@@ -18,7 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.Script;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -105,7 +105,10 @@ class CallFunctionParameterTest : BiDiTestFixture
 
         Assert.That(res, Is.Not.Null);
         Assert.That(res.AsSuccessResult(), Is.AssignableFrom<NodeRemoteValue>());
-        Assert.That((res.AsSuccessResult() as NodeRemoteValue).Value, Is.Not.Null);
+
+        var node = (NodeRemoteValue)res.AsSuccessResult();
+        Assert.That(node.Value, Is.Not.Null);
+        Assert.That(node.SharedId, Is.EqualTo(GetElementId(By.Id("consoleLog"))));
     }
 
     [Test]
@@ -207,17 +210,26 @@ class CallFunctionParameterTest : BiDiTestFixture
     [Test]
     public async Task CanCallFunctionInARealm()
     {
-        await bidi.BrowsingContext.CreateAsync(Modules.BrowsingContext.ContextType.Tab);
+        await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
-        var realms = await bidi.Script.GetRealmsAsync();
+        var realmsResult = await bidi.Script.GetRealmsAsync();
 
-        await bidi.Script.CallFunctionAsync("() => { window.foo = 3; }", true, new RealmTarget(realms[0].Realm));
-        await bidi.Script.CallFunctionAsync("() => { window.foo = 5; }", true, new RealmTarget(realms[1].Realm));
+        await bidi.Script.CallFunctionAsync("() => { window.foo = 3; }", true, new RealmTarget(realmsResult.Realms[0].Realm));
+        await bidi.Script.CallFunctionAsync("() => { window.foo = 5; }", true, new RealmTarget(realmsResult.Realms[1].Realm));
 
-        var res1 = await bidi.Script.CallFunctionAsync<int>("() => window.foo", true, new RealmTarget(realms[0].Realm));
-        var res2 = await bidi.Script.CallFunctionAsync<int>("() => window.foo", true, new RealmTarget(realms[1].Realm));
+        var res1 = await bidi.Script.CallFunctionAsync<int>("() => window.foo", true, new RealmTarget(realmsResult.Realms[0].Realm));
+        var res2 = await bidi.Script.CallFunctionAsync<int>("() => window.foo", true, new RealmTarget(realmsResult.Realms[1].Realm));
 
         Assert.That(res1, Is.EqualTo(3));
         Assert.That(res2, Is.EqualTo(5));
+    }
+
+    private string GetElementId(By selector)
+    {
+        var element = (WebElement)driver.FindElement(selector);
+        return ReflectElementId(element);
+
+        [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "get_Id")]
+        static extern string ReflectElementId(WebElement element);
     }
 }

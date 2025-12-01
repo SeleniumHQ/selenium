@@ -254,10 +254,11 @@ public abstract class Route implements HttpHandler, Routable {
 
     private boolean hasPrefix(HttpRequest request) {
       String[] parts = request.getUri().split("/");
-      if (parts.length < prefixPaths.length) {
+      int prefixPathCount = prefixPaths.length;
+      if (parts.length < prefixPathCount) {
         return false;
       }
-      for (int i = 0; i < prefixPaths.length; i++) {
+      for (int i = 0; i < prefixPathCount; i++) {
         if (!prefixPaths[i].equals(parts[i])) {
           return false;
         }

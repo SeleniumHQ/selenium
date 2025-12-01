@@ -17,12 +17,17 @@
 
 package org.openqa.selenium.bidi;
 
+import static java.util.logging.Level.INFO;
+import static org.openqa.selenium.concurrent.Lazy.lazy;
+
 import com.google.auto.service.AutoService;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.concurrent.Lazy;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -31,6 +36,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 @SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService(AugmenterProvider.class)
 public class BiDiProvider implements AugmenterProvider<HasBiDi> {
+  private static final Logger LOG = Logger.getLogger(BiDiProvider.class.getName());
 
   @Override
   public Predicate<Capabilities> isApplicable() {
@@ -44,7 +50,27 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
 
   @Override
   public HasBiDi getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
+    final Lazy<BiDi> biDi = lazy(() -> establishBiDiConnection(caps));
 
+    LOG.log(
+        INFO,
+        "WebDriver augmented with BiDi interface; connection will not be verified until first"
+            + " use.");
+
+    return new HasBiDi() {
+      @Override
+      public Optional<BiDi> maybeGetBiDi() {
+        return biDi.getIfInitialized();
+      }
+
+      @Override
+      public BiDi getBiDi() {
+        return biDi.get();
+      }
+    };
+  }
+
+  private BiDi establishBiDiConnection(Capabilities caps) {
     URI wsUri = getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
@@ -52,7 +78,7 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
     HttpClient wsClient = clientFactory.createClient(wsConfig);
     Connection connection = new Connection(wsClient, wsUri.toString());
 
-    return () -> Optional.of(new BiDi(connection));
+    return new BiDi(connection);
   }
 
   private Optional<URI> getBiDiUrl(Capabilities caps) {

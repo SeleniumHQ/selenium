@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
 import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
@@ -814,7 +815,7 @@ class RemoteWebDriverUnitTest {
 
     WebDriverFixture fixture =
         new WebDriverFixture(
-            new ImmutableCapabilities("se:downloadsEnabled", true),
+            new ImmutableCapabilities(ENABLE_DOWNLOADS, true),
             echoCapabilities,
             valueResponder(ImmutableMap.of("names", expectedFiles)));
 

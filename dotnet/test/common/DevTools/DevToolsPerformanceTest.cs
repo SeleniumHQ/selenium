@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools;
 
-using CurrentCdpVersion = V136;
+using CurrentCdpVersion = V142;
 
 [TestFixture]
 public class DevToolsPerformanceTest : DevToolsTestFixture
@@ -31,6 +31,7 @@ public class DevToolsPerformanceTest : DevToolsTestFixture
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task EnableAndDisablePerformance()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -43,6 +44,7 @@ public class DevToolsPerformanceTest : DevToolsTestFixture
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task DisablePerformance()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -55,6 +57,7 @@ public class DevToolsPerformanceTest : DevToolsTestFixture
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task SetTimeDomainTimeTickPerformance()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -73,6 +76,7 @@ public class DevToolsPerformanceTest : DevToolsTestFixture
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task SetTimeDomainsThreadTicksPerformance()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -90,6 +94,7 @@ public class DevToolsPerformanceTest : DevToolsTestFixture
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task GetMetricsByTimeTicks()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();
@@ -111,6 +116,7 @@ public class DevToolsPerformanceTest : DevToolsTestFixture
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "We run it in Chrome and Edge releases are usually late.")]
     public async Task GetMetricsByThreadTicks()
     {
         var domains = session.GetVersionSpecificDomains<CurrentCdpVersion.DevToolsSessionDomains>();

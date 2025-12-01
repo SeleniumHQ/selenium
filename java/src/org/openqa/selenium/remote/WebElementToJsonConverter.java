@@ -85,7 +85,8 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
 
   private static List<Object> arrayToList(Object array) {
     List<Object> list = new ArrayList<>();
-    for (int i = 0; i < Array.getLength(array); i++) {
+    int arrayLength = Array.getLength(array);
+    for (int i = 0; i < arrayLength; i++) {
       list.add(Array.get(array, i));
     }
     return list;

@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -198,7 +199,7 @@ class DefaultSlotMatcherTest {
             "firefox",
             CapabilityType.PLATFORM_NAME,
             Platform.WINDOWS,
-            "se:downloadsEnabled",
+            ENABLE_DOWNLOADS,
             true);
     Capabilities capabilities =
         new ImmutableCapabilities(
@@ -206,7 +207,7 @@ class DefaultSlotMatcherTest {
             "firefox",
             CapabilityType.PLATFORM_NAME,
             Platform.WINDOWS,
-            "se:downloadsEnabled",
+            ENABLE_DOWNLOADS,
             true);
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
@@ -307,8 +308,7 @@ class DefaultSlotMatcherTest {
   @Test
   void matchDownloadsForRegularTestMatchingAgainstADownloadAwareNode() {
     Capabilities stereotype =
-        new ImmutableCapabilities(
-            CapabilityType.BROWSER_NAME, "chrome", "se:downloadsEnabled", true);
+        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "chrome", ENABLE_DOWNLOADS, true);
     Capabilities capabilities = new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "chrome");
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
@@ -316,11 +316,9 @@ class DefaultSlotMatcherTest {
   @Test
   void matchDownloadsForAutoDownloadTestMatchingAgainstADownloadAwareNode() {
     Capabilities stereotype =
-        new ImmutableCapabilities(
-            CapabilityType.BROWSER_NAME, "chrome", "se:downloadsEnabled", true);
+        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "chrome", ENABLE_DOWNLOADS, true);
     Capabilities capabilities =
-        new ImmutableCapabilities(
-            CapabilityType.BROWSER_NAME, "chrome", "se:downloadsEnabled", true);
+        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "chrome", ENABLE_DOWNLOADS, true);
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
 
@@ -328,8 +326,7 @@ class DefaultSlotMatcherTest {
   void ensureNoMatchFOrDownloadAwareTestMatchingAgainstOrdinaryNode() {
     Capabilities stereotype = new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "chrome");
     Capabilities capabilities =
-        new ImmutableCapabilities(
-            CapabilityType.BROWSER_NAME, "chrome", "se:downloadsEnabled", true);
+        new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "chrome", ENABLE_DOWNLOADS, true);
     assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 

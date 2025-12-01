@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.data;
 
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -129,13 +131,13 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
 
   private Boolean managedDownloadsEnabled(Capabilities stereotype, Capabilities capabilities) {
     // First lets check if user wanted a Node with managed downloads enabled
-    Object raw = capabilities.getCapability("se:downloadsEnabled");
+    Object raw = capabilities.getCapability(ENABLE_DOWNLOADS);
     if (raw == null || !Boolean.parseBoolean(raw.toString())) {
       // User didn't ask. So lets move on to the next matching criteria
       return true;
     }
     // User wants managed downloads enabled to be done on this Node, let's check the stereotype
-    raw = stereotype.getCapability("se:downloadsEnabled");
+    raw = stereotype.getCapability(ENABLE_DOWNLOADS);
     // Try to match what the user requested
     return raw != null && Boolean.parseBoolean(raw.toString());
   }

@@ -6,7 +6,7 @@ section() {
     echo "- $*" >&2
 }
 
-WORKSPACE_ROOT="$(bazel info workspace 2>/dev/null)"
+WORKSPACE_ROOT="$(bazel info workspace)"
 
 GOOGLE_JAVA_FORMAT="$(bazel run --run_under=echo //scripts:google-java-format)"
 
@@ -33,7 +33,8 @@ bazel run @rules_rust//:rustfmt
 
 section "Python"
 echo "    python - ruff" >&2
-bazel run //py:format
+bazel run @multitool//tools/ruff:cwd -- check --fix --show-fixes
+bazel run @multitool//tools/ruff:cwd -- format
 
 section "Copyright"
 bazel run //scripts:update_copyright

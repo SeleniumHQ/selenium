@@ -79,6 +79,8 @@ module Selenium
       #
 
       def delete_cookie(name)
+        raise ArgumentError, 'Cookie name cannot be null or empty' if name.nil? || name.to_s.strip.empty?
+
         @bridge.delete_cookie name
       end
 

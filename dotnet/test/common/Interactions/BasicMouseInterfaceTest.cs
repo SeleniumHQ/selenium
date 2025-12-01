@@ -163,6 +163,24 @@ public class BasicMouseInterfaceTest : DriverTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
+    public void ShouldAllowMoveAndClickDoubleWrappedElement()
+    {
+        driver.Url = javascriptPage;
+
+        IWebElement toClick = driver.FindElement(By.Id("clickField"));
+
+        toClick = new WebElementWrapper(toClick);
+        toClick = new WebElementWrapper(toClick);
+
+        Actions actionProvider = new Actions(driver);
+        IAction contextClick = actionProvider.MoveToElement(toClick).Click().Build();
+
+        contextClick.Perform();
+        Assert.That(toClick.GetAttribute("value"), Is.EqualTo("Clicked"), "Value should change to Clicked.");
+    }
+
+    [Test]
     [IgnoreBrowser(Browser.Chrome, "Not working properly in RBE, works locally with pinned browsers")]
     [IgnoreBrowser(Browser.Edge, "Not working properly in RBE, works locally with pinned browsers")]
     [IgnoreBrowser(Browser.Firefox, "Not working properly in RBE, works locally with pinned browsers")]

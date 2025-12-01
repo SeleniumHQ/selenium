@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
+
 import pytest
 
 from selenium.common import exceptions
@@ -249,20 +251,15 @@ def test_raises_exception_for_detached_shadow_root(handler, code):
 
 @pytest.mark.parametrize("key", ["stackTrace", "stacktrace"])
 def test_relays_exception_stacktrace(handler, key):
-    import json
-
     stacktrace = {"lineNumber": 100, "fileName": "egg", "methodName": "ham", "className": "Spam"}
     value = {key: [stacktrace], "message": "very bad", "error": ErrorCode.UNKNOWN_METHOD[0]}
     response = {"status": 400, "value": json.dumps({"value": value})}
     with pytest.raises(exceptions.UnknownMethodException) as e:
         handler.check_response(response)
-
     assert "Spam.ham" in e.value.stacktrace[0]
 
 
-def test_handle_errors_better(handler):
-    import json
-
+def test_handle_json_error_with_message(handler):
     response = {
         "status": 500,
         "value": json.dumps(
@@ -281,5 +278,24 @@ def test_handle_errors_better(handler):
     }
     with pytest.raises(exceptions.WebDriverException) as e:
         handler.check_response(response)
-
     assert "Could not start a new session." in e.value.msg
+
+
+def test_handle_string_error(handler):
+    response = {
+        "status": 407,
+        "value": "Proxy Authentication Required",
+    }
+    with pytest.raises(exceptions.WebDriverException) as e:
+        handler.check_response(response)
+    assert e.value.msg == "Proxy Authentication Required"
+
+
+def test_handle_numeric_error(handler):
+    response = {
+        "status": 999,
+        "value": "0",
+    }
+    with pytest.raises(exceptions.WebDriverException) as e:
+        handler.check_response(response)
+    assert e.value.msg == "0"
