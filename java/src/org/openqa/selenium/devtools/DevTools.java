@@ -222,7 +222,7 @@ public class DevTools implements Closeable {
     return infos.stream()
         .filter(info -> "page".equals(info.getType()))
         .map(TargetInfo::getTargetId)
-        .filter(id -> windowHandle == null || windowHandle.contains(id.toString()))
+        .filter(id -> windowHandle == null || windowHandle.endsWith(id.toString()))
         .findAny()
         .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
   }
