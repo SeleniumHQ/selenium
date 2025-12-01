@@ -29,19 +29,13 @@ public sealed class BrowsingContext
     {
         BiDi = bidi;
         Id = id;
-
-        _logModule = new Lazy<BrowsingContextLogModule>(() => new BrowsingContextLogModule(this, BiDi.Log));
-        _networkModule = new Lazy<BrowsingContextNetworkModule>(() => new BrowsingContextNetworkModule(this, BiDi.Network));
-        _scriptModule = new Lazy<BrowsingContextScriptModule>(() => new BrowsingContextScriptModule(this, BiDi.Script));
-        _storageModule = new Lazy<BrowsingContextStorageModule>(() => new BrowsingContextStorageModule(this, BiDi.Storage));
-        _inputModule = new Lazy<BrowsingContextInputModule>(() => new BrowsingContextInputModule(this, BiDi.InputModule));
     }
 
-    private readonly Lazy<BrowsingContextLogModule> _logModule;
-    private readonly Lazy<BrowsingContextNetworkModule> _networkModule;
-    private readonly Lazy<BrowsingContextScriptModule> _scriptModule;
-    private readonly Lazy<BrowsingContextStorageModule> _storageModule;
-    private readonly Lazy<BrowsingContextInputModule> _inputModule;
+    private BrowsingContextLogModule? _logModule;
+    private BrowsingContextNetworkModule? _networkModule;
+    private BrowsingContextScriptModule? _scriptModule;
+    private BrowsingContextStorageModule? _storageModule;
+    private BrowsingContextInputModule? _inputModule;
 
     internal string Id { get; }
 
@@ -49,19 +43,19 @@ public sealed class BrowsingContext
     public BiDi BiDi { get; }
 
     [JsonIgnore]
-    public BrowsingContextLogModule Log => _logModule.Value;
+    public BrowsingContextLogModule Log => _logModule ??= new BrowsingContextLogModule(this, BiDi.Log);
 
     [JsonIgnore]
-    public BrowsingContextNetworkModule Network => _networkModule.Value;
+    public BrowsingContextNetworkModule Network => _networkModule ??= new BrowsingContextNetworkModule(this, BiDi.Network);
 
     [JsonIgnore]
-    public BrowsingContextScriptModule Script => _scriptModule.Value;
+    public BrowsingContextScriptModule Script => _scriptModule ??= new BrowsingContextScriptModule(this, BiDi.Script);
 
     [JsonIgnore]
-    public BrowsingContextStorageModule Storage => _storageModule.Value;
+    public BrowsingContextStorageModule Storage => _storageModule ??= new BrowsingContextStorageModule(this, BiDi.Storage);
 
     [JsonIgnore]
-    public BrowsingContextInputModule Input => _inputModule.Value;
+    public BrowsingContextInputModule Input => _inputModule ??= new BrowsingContextInputModule(this, BiDi.InputModule);
 
     public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null)
     {
