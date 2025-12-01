@@ -149,7 +149,7 @@ class NodeTest {
             .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
             .maximumConcurrentSessions(2);
     if (isDownloadsTestCase) {
-      builder = builder.enableManagedDownloads(true).sessionTimeout(Duration.ofSeconds(1));
+      builder = builder.enableManagedDownloads(true).sessionTimeout(ofSeconds(1));
     }
     local = builder.build();
     local2 = builder.build();
@@ -568,7 +568,7 @@ class NodeTest {
     assertThat(new String(Files.readAllBytes(uploadDir.listFiles()[0].toPath()))).isEqualTo(hello);
 
     node.stop(session.getId());
-    assertThat(baseDir).doesNotExist();
+    waitUntilDirGetsDeleted(baseDir);
   }
 
   @Test
@@ -644,7 +644,7 @@ class NodeTest {
       TemporaryFilesystem downloadsTfs = local.getDownloadsFilesystem(session.getId());
       File someDir = getTemporaryFilesystemBaseDir(downloadsTfs);
       node.stop(session.getId());
-      assertThat(someDir).doesNotExist();
+      waitUntilDirGetsDeleted(someDir);
     }
   }
 
@@ -973,6 +973,10 @@ class NodeTest {
             .map(data -> (Map<String, Object>) data)
             .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
     return (List<String>) map.get("names");
+  }
+
+  private void waitUntilDirGetsDeleted(File dir) {
+    new FluentWait<>(dir).withTimeout(ofSeconds(2)).until(file -> !file.exists());
   }
 
   private static class MyClock extends Clock {

@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class NewCommand(NewParameters @params)

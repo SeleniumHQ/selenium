@@ -622,7 +622,6 @@ fix: iedriver download with selenium-manager #11579
 
 - Rolling back native support for Opera Browser
 - Added new ieOptions capabilities:
-
   - fileUploadDialogTimeout
   - setEdgePath
   - setEdgeChromium
