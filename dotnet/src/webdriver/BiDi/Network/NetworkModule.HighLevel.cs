@@ -61,10 +61,10 @@ public sealed class InterceptAuthOptions : AddInterceptOptions;
 
 public sealed record InterceptedRequest : BeforeRequestSentEventArgs
 {
-    internal InterceptedRequest(BiDi biDi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, Initiator initiator, IReadOnlyList<Intercept>? intercepts)
+    internal InterceptedRequest(BiDi bidi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, Initiator initiator, IReadOnlyList<Intercept>? intercepts)
         : base(context, isBlocked, navigation, redirectCount, request, timestamp, initiator, intercepts)
     {
-        BiDi = biDi;
+        BiDi = bidi;
     }
 
     public Task ContinueAsync(ContinueRequestOptions? options = null)
@@ -85,10 +85,10 @@ public sealed record InterceptedRequest : BeforeRequestSentEventArgs
 
 public sealed record InterceptedResponse : ResponseStartedEventArgs
 {
-    internal InterceptedResponse(BiDi biDi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
+    internal InterceptedResponse(BiDi bidi, BrowsingContext.BrowsingContext? context, bool isBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
         : base(context, isBlocked, navigation, redirectCount, request, timestamp, response, intercepts)
     {
-        BiDi = biDi;
+        BiDi = bidi;
     }
 
     public Task ContinueAsync(ContinueResponseOptions? options = null)
@@ -99,10 +99,10 @@ public sealed record InterceptedResponse : ResponseStartedEventArgs
 
 public sealed record InterceptedAuth : AuthRequiredEventArgs
 {
-    internal InterceptedAuth(BiDi biDi, BrowsingContext.BrowsingContext? context, bool IsBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
+    internal InterceptedAuth(BiDi bidi, BrowsingContext.BrowsingContext? context, bool IsBlocked, BrowsingContext.Navigation? navigation, long redirectCount, RequestData request, DateTimeOffset timestamp, ResponseData response, IReadOnlyList<Intercept>? intercepts)
         : base(context, IsBlocked, navigation, redirectCount, request, timestamp, response, intercepts)
     {
-        BiDi = biDi;
+        BiDi = bidi;
     }
 
     public Task ContinueAsync(AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null)
