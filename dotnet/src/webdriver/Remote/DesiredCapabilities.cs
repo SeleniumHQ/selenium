@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Remote;
 /// <summary>
 /// Internal class to specify the requested capabilities of the browser for <see cref="IWebDriver"/>.
 /// </summary>
-internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDictionary
+internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDictionary, IEquatable<DesiredCapabilities>
 {
     private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
 
@@ -229,9 +229,9 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
     public override int GetHashCode()
     {
         int result;
-        result = this.BrowserName != null ? this.BrowserName.GetHashCode() : 0;
-        result = (31 * result) + (this.Version != null ? this.Version.GetHashCode() : 0);
-        result = (31 * result) + (this.Platform != null ? this.Platform.GetHashCode() : 0);
+        result = this.BrowserName?.GetHashCode() ?? 0;
+        result = (31 * result) + (this.Version?.GetHashCode() ?? 0);
+        result = (31 * result) + (this.Platform?.GetHashCode() ?? 0);
         return result;
     }
 
@@ -244,24 +244,19 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
         return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, Platform={1}, Version={2}]", this.BrowserName, this.Platform.PlatformType.ToString(), this.Version);
     }
 
-    /// <summary>
-    /// Compare two DesiredCapabilities and will return either true or false
-    /// </summary>
-    /// <param name="obj">DesiredCapabilities you wish to compare</param>
-    /// <returns>true if they are the same or false if they are not</returns>
-    public override bool Equals(object? obj)
+    public bool Equals(DesiredCapabilities? other)
     {
-        if (this == obj)
-        {
-            return true;
-        }
-
-        if (obj is not DesiredCapabilities other)
+        if (other is null)
         {
             return false;
         }
 
-        if (this.BrowserName != null ? this.BrowserName != other.BrowserName : other.BrowserName != null)
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        if (this.BrowserName != other.BrowserName)
         {
             return false;
         }
@@ -271,12 +266,22 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
             return false;
         }
 
-        if (this.Version != null ? this.Version != other.Version : other.Version != null)
+        if (this.Version != other.Version)
         {
             return false;
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Compare two DesiredCapabilities and will return either true or false
+    /// </summary>
+    /// <param name="obj">DesiredCapabilities you wish to compare</param>
+    /// <returns>true if they are the same or false if they are not</returns>
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as DesiredCapabilities);
     }
 
     /// <summary>

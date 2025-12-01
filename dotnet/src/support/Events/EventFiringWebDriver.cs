@@ -1322,7 +1322,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// EventFiringWebElement allows you to have access to specific items that are found on the page
     /// </summary>
-    private class EventFiringWebElement : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver
+    private class EventFiringWebElement : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver, IEquatable<IWebElement>
     {
         private readonly EventFiringWebDriver parentDriver;
 
@@ -1760,24 +1760,24 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
             return screenshotDriver.GetScreenshot();
         }
 
-        /// <summary>
-        /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>.
-        /// </summary>
-        /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
-        /// <returns><see langword="true"/> if the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object obj)
+        public bool Equals(IWebElement? other)
         {
-            if (obj is not IWebElement other)
-            {
-                return false;
-            }
-
             if (other is IWrapsElement otherWrapper)
             {
                 other = otherWrapper.WrappedElement;
             }
 
             return WrappedElement.Equals(other);
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
+        /// <returns><see langword="true"/> if the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as IWebElement);
         }
 
         /// <summary>
@@ -1793,7 +1793,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <summary>
     /// EventFiringShadowElement allows you to have access to specific shadow elements
     /// </summary>
-    private class EventFiringShadowRoot : ISearchContext, IWrapsDriver
+    private class EventFiringShadowRoot : ISearchContext, IWrapsDriver, IEquatable<ISearchContext>
     {
         private readonly EventFiringWebDriver parentDriver;
 
@@ -1871,7 +1871,11 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
                 this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
                 throw;
             }
+        }
 
+        public bool Equals(ISearchContext? other)
+        {
+            return WrappedSearchContext.Equals(other);
         }
 
         /// <summary>
@@ -1879,14 +1883,9 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         /// </summary>
         /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
         /// <returns><see langword="true"/> if the specified <see cref="EventFiringShadowRoot"/> is equal to the current <see cref="EventFiringShadowRoot"/>; otherwise, <see langword="false"/>.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if (obj is not ISearchContext other)
-            {
-                return false;
-            }
-
-            return WrappedSearchContext.Equals(other);
+            return Equals(obj as ISearchContext);
         }
 
         /// <summary>
