@@ -34,23 +34,23 @@ namespace OpenQA.Selenium.BiDi.Script;
 //[JsonDerivedType(typeof(AudioWorkletRealmInfo), "audio-worklet")]
 //[JsonDerivedType(typeof(WorkletRealmInfo), "worklet")]
 [JsonConverter(typeof(RealmInfoConverter))]
-public abstract record RealmInfo(BiDi BiDi, Realm Realm, string Origin) : EventArgs(BiDi);
+public abstract record RealmInfo(Realm Realm, string Origin) : EventArgs;
 
-public sealed record WindowRealmInfo(BiDi BiDi, Realm Realm, string Origin, BrowsingContext.BrowsingContext Context) : RealmInfo(BiDi, Realm, Origin)
+public sealed record WindowRealmInfo(Realm Realm, string Origin, BrowsingContext.BrowsingContext Context) : RealmInfo(Realm, Origin)
 {
     public string? Sandbox { get; set; }
 }
 
-public sealed record DedicatedWorkerRealmInfo(BiDi BiDi, Realm Realm, string Origin, IReadOnlyList<Realm> Owners) : RealmInfo(BiDi, Realm, Origin);
+public sealed record DedicatedWorkerRealmInfo(Realm Realm, string Origin, IReadOnlyList<Realm> Owners) : RealmInfo(Realm, Origin);
 
-public sealed record SharedWorkerRealmInfo(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+public sealed record SharedWorkerRealmInfo(Realm Realm, string Origin) : RealmInfo(Realm, Origin);
 
-public sealed record ServiceWorkerRealmInfo(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+public sealed record ServiceWorkerRealmInfo(Realm Realm, string Origin) : RealmInfo(Realm, Origin);
 
-public sealed record WorkerRealmInfo(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+public sealed record WorkerRealmInfo(Realm Realm, string Origin) : RealmInfo(Realm, Origin);
 
-public sealed record PaintWorkletRealmInfo(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+public sealed record PaintWorkletRealmInfo(Realm Realm, string Origin) : RealmInfo(Realm, Origin);
 
-public sealed record AudioWorkletRealmInfo(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+public sealed record AudioWorkletRealmInfo(Realm Realm, string Origin) : RealmInfo(Realm, Origin);
 
-public sealed record WorkletRealmInfo(BiDi BiDi, Realm Realm, string Origin) : RealmInfo(BiDi, Realm, Origin);
+public sealed record WorkletRealmInfo(Realm Realm, string Origin) : RealmInfo(Realm, Origin);
