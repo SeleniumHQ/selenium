@@ -16,10 +16,9 @@
 # under the License.
 
 from collections.abc import Generator
-from typing import Optional
 
 
-def command_builder(method: str, params: Optional[dict] = None) -> Generator[dict, dict, dict]:
+def command_builder(method: str, params: dict | None = None) -> Generator[dict, dict, dict]:
     """Build a command iterator to send to the BiDi protocol.
 
     Args:

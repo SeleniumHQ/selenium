@@ -28,13 +28,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class NetworkUtils {
 
   private static @Nullable InetAddress cachedIp4NonLoopbackAddressOfThisMachine;
