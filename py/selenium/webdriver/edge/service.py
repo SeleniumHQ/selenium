@@ -16,34 +16,34 @@
 # under the License.
 
 from collections.abc import Mapping, Sequence
-from typing import Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
 
 class Service(service.ChromiumService):
-    """A Service class that is responsible for the starting and stopping of
-    `msedgedriver`.
+    """Service class responsible for starting and stopping msedgedriver.
 
-    :param executable_path: install path of the msedgedriver executable, defaults to `msedgedriver`.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+    Args:
+        executable_path: Install path of the msedgedriver executable, defaults to `msedgedriver`.
+        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        log_output: Optional[SubprocessStdAlias] = None,
-        service_args: Optional[Sequence[str]] = None,
-        env: Optional[Mapping[str, str]] = None,
-        driver_path_env_key: Optional[str] = None,
+        log_output: SubprocessStdAlias | None = None,
+        service_args: Sequence[str] | None = None,
+        env: Mapping[str, str] | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
+        """Initialize Edge service with the specified parameters."""
         self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_EDGEDRIVER"
 
@@ -59,10 +59,19 @@ class Service(service.ChromiumService):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter
     def service_args(self, value: Sequence[str]):
+        """Sets the service arguments for the Edge driver.
+
+        Args:
+            value: A sequence of strings representing service arguments.
+
+        Raises:
+            TypeError: If value is not a sequence or is a string.
+        """
         if isinstance(value, str) or not isinstance(value, Sequence):
             raise TypeError("service_args must be a sequence")
         self._service_args = list(value)

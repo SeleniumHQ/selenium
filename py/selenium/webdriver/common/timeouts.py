@@ -54,73 +54,35 @@ class Timeouts:
 
         This implements https://w3c.github.io/webdriver/#timeouts.
 
-        :Args:
-         - implicit_wait - Either an int or a float. Set how many
-            seconds to wait when searching for elements before
-            throwing an error.
-         - page_load - Either an int or a float. Set how many seconds
-            to wait for a page load to complete before throwing
-            an error.
-         - script - Either an int or a float. Set how many seconds to
-            wait for an asynchronous script to finish execution
-            before throwing an error.
+        Args:
+            implicit_wait: Number of seconds to wait when searching for elements
+                before throwing an error.
+            page_load: Number of seconds to wait for a page load to complete
+                before throwing an error.
+            script: Number of seconds to wait for an asynchronous script to
+                finish execution before throwing an error.
         """
-
         self._implicit_wait = self._convert(implicit_wait)
         self._page_load = self._convert(page_load)
         self._script = self._convert(script)
 
     # Creating descriptor objects
     implicit_wait = _TimeoutsDescriptor("_implicit_wait")
-    """Get or set how many seconds to wait when searching for elements.
+    """Number of seconds to wait when searching for elements.
 
-    This does not set the value on the remote end.
-
-    Usage:
-    ------
-    - Get
-        - `self.implicit_wait`
-    - Set
-        - `self.implicit_wait` = `value`
-
-    Parameters:
-    -----------
-    `value`: `float`
+    Note: This does not set the value on the remote end.
     """
 
     page_load = _TimeoutsDescriptor("_page_load")
-    """Get or set how many seconds to wait for the page to load.
+    """Number of seconds to wait for the page to load.
 
-    This does not set the value on the remote end.
-
-    Usage:
-    ------
-    - Get
-        - `self.page_load`
-    - Set
-        - `self.page_load` = `value`
-
-    Parameters:
-    -----------
-    `value`: `float`
+    Note: This does not set the value on the remote end.
     """
 
     script = _TimeoutsDescriptor("_script")
-    """Get or set how many seconds to wait for an asynchronous script to finish
-    execution.
+    """Number of seconds to wait for an asynchronous script to finish execution.
 
-    This does not set the value on the remote end.
-
-    Usage:
-    ------
-    - Get
-        - `self.script`
-    - Set
-        - `self.script` = `value`
-
-    Parameters:
-    -----------
-    `value`: `float`
+    Note: This does not set the value on the remote end.
     """
 
     def _convert(self, timeout: float) -> int:

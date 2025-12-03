@@ -17,7 +17,7 @@
 
 use crate::common::{get_selenium_manager, get_stderr, get_stdout, is_linux_arm64};
 
-use selenium_manager::logger::{JsonOutput, MinimalJson, DRIVER_PATH};
+use selenium_manager::logger::{DRIVER_PATH, JsonOutput, MinimalJson};
 use std::path::Path;
 
 mod common;

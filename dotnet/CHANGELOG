@@ -1,3 +1,53 @@
+v4.38.0
+======
+* [bidi] Avoid using JsonInclude attribute to include optional property for DTO (#16413)
+* update devtools versions
+
+v4.37.0
+======
+* Add CDP for Chrome 141 and remove 138
+* [bidi] Emulation module (#16380)
+* [bidi] Implement browsing context download events (#16382)
+* [bidi] Support browser SetDownloadBehaviour command (#16383)
+* [bidi] Support network SetExtraHeaders command (#16384)
+* [bidi] AOT safe enums serialization (#16386)
+* Handle negative zero BiDi response (#15898)
+* Move JSON converter attributes from centralized options into their respective types (#16393)
+* [bidi] Modules as extensions (#16392)
+* [bidi] Provide type info immediately when serializing (#16397)
+* [bidi] Use events JsonTypeInfo for deserialization (#16402)
+* Replace lazy caching mechanism in BiDi's constructor with simple initialization (#16399)
+* Help more .NETFramework projects to copy SM binaries to output (#16406)
+* [bidi] Specific result type for any command (#16405)
+* [bidi] Deserialize message fast instead of defer it (#16403)
+* [bidi] Remove IEnumerable of command results (#16219)
+* Remove obsoleted FtpProxy (#16411)
+* [bidi] Add Request data type in Network module (#16453)
+
+v4.36.0
+======
+* Add CDP for Chrome 140 and remove 137
+* [bidi] Simplify type naming of internal command parameters (#16188)
+* [bidi] Support WebExtension module (#15850)
+* [bidi] Propagate BiDiOptions in Connect method
+* [bidi] Pass the bidi options from main entry point
+* Adding flag to enable SafariDriver logging. (#16196)
+* [bidi] Serialize base64 encoded string directly to bytes (#16203)
+* [bidi] Make cookie expiry as TimeSpan (#16204)
+* Update dependency System.Text.Json to 8.0.6 (#16171)
+* Help .NET Framework copy selenium manager to output (#16228)
+* Clean docs for OnDriverProcessDataReceived handler
+* Revert "Update dependency System.Text.Json to 8.0.6 (#16171)"
+* Fix find port for IPv4 only environments (#16216)
+* [bidi] Adjust cookie expiry type according spec (unix seconds) (#16218)
+* Fix links to exception documentation on website (#16305)
+* [bidi] Support network collectors and get response body (#16192)
+* [bidi] Enable WebExtension tests at least for Firefox (#16333)
+* Suppress unwanted messages from browser via redirecting streams (#16265)
+* [bidi] Remove obsolete unsubscribing by attributes (#16205)
+* Conditionally enable driver service process output redirection (#16353)
+* Begin reading of driver service output to fix Firefox disposing
+
 v4.35.0
 ======
 * Add CDP for Chrome 139 and remove 136
