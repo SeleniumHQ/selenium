@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -52,4 +51,10 @@ public sealed record BrowsingContextAddPreloadScriptOptions
     public string? Sandbox { get; set; }
 }
 
-public sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;
+public sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult, IBiDiHydratable
+{
+    void IBiDiHydratable.Hydrate(BiDi bidi)
+    {
+        Script.BiDi = bidi;
+    }
+}
