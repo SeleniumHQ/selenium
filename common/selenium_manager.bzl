@@ -20,7 +20,7 @@ def selenium_manager():
     http_file(
         name = "download_sm_windows",
         executable = True,
-        sha256 = "06fbe30e2c5b996b0dde361ccebf4fdae395afd73ee291987b2875084c826b06",
+        sha256 = "c65ab06d504e11fcf3a3cffcb6a5457334b45d1ec1ec6dab3f9026247ae1dfee",
         url = "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/download/selenium-manager-3edce44/selenium-manager-windows.exe",
     )
 
