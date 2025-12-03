@@ -1,4 +1,4 @@
-// <copyright file="EventArgs.cs" company="Selenium Committers">
+// <copyright file="IBiDiHydratable.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,20 +17,9 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
-
 namespace OpenQA.Selenium.BiDi;
 
-public abstract record EventArgs : IBiDiHydratable
+public interface IBiDiHydratable
 {
-    [JsonIgnore]
-    public BiDi BiDi { get; internal set; }
-
-    void IBiDiHydratable.Hydrate(BiDi bidi)
-    {
-        BiDi = bidi;
-    }
+    internal void Hydrate(BiDi bidi);
 }
-
-public abstract record BrowsingContextEventArgs(BrowsingContext.BrowsingContext Context)
-    : EventArgs;
