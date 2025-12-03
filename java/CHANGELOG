@@ -1,3 +1,76 @@
+v4.39.0
+======
+* [BiDi] implement `browsingContext.downloadEnd` event (#16347)
+* [BiDi] implement `emulation.setTimezoneOverride` (#16530)
+* [grid] Minimum Docker API 1.44 for Docker Engine v29+ in Dynamic Grid (#16591)
+* Show file modification time (#16589)
+    > * split method LocalNode.downloadFile() to 3 smaller methods
+    > * GET /se/files -> list all downloaded files
+    > * POST /se/files -> get specific file by name
+    > * DELETE /se/files -> delete downloaded files
+    > * replace `ImmutableMap.of` by `Map.of`
+    > It's available from Java 9, and it also returns an immutable map.
+    > * add method to get downloaded files with meta-info from Grid
+    > To track the downloading progress and wait for the full download completion,
+    > we need to know this info about downloaded files:
+    > 1. File modification time
+    > 2. File size
+* [grid] Improve Docker client for Dynamic Grid (#16596)
+* [grid] Improve browser container labels and naming in Dynamic Grid (#16599)
+* [BiDi] emulation: allow passing null to GeolocationOverride (#16594)
+* [grid] Update container label `compose.oneoff` in Dynamic Grid (#16613)
+* [grid] Dynamic Grid group dynamic containers in compose stack (#16620)
+* [BiDi] implement `emulation.setScriptingEnabled` (#16631)
+* Avoid logging debug logs with INFO level (either in RUN or DEBUG mode) (#16584)
+    > avoid logging debug logs with INFO level
+    > ... either in RUN or DEBUG mode.
+    > People do debug their tests, and they don't want to see Selenium own debug logs. Especially DevTools/BiDi logs which are huge (encoded Base64 data, incl. screenshots etc).
+* Add JSpecify nullable annotations to exception classes (#16026)
+    > * Add JSpecify nullable annotations to exception classes
+    > * fix dependencies on jspecify
+    > * add dependency jspecify to build bazel
+* annotate with `@NullMarked` the whole package `org.openqa.selenium.net` (#16494)
+    > annotation with @NullMarked the whole package `org.openqa.selenium.net`
+    > So it's not needed to duplicate @NullMarked in every file.
+* [bidi]: add BiDi method `BrowsingContext.setViewport(null, null)` to reset the mobile emulation mode (#16524)
+    > add BiDi method "BrowsingContext.setViewport(null, null, null)" for resetting mobile emulation mode
+    > Implementation detail: according to BiDi spec (https://www.w3.org/TR/webdriver-bidi/#command-browsingContext-setViewport), we have to call method "setViewport" with "viewport" parameter equal to "null".
+* Replace Maven dependency references with artifact() for org.jspecify.jspecify (#16635)
+    > * Replace Maven dependency references with artifact() for org.jspecify:jspecify in multiple BUILD.bazel files
+    > Update BUILD.bazel to load artifact() alongside java_export
+    > Update BUILD.bazel to load artifact() for java_library and java_export
+    > * Refactor BUILD.bazel files to consolidate artifact loading in multiple modules
+    > * applied formatting for build files
+    > * applied formatting for build files for building files leftover
+* 16612 download large files (#16627)
+    > * #16612 support downloading large files from Grid
+    > I added a new Grid endpoint "/se/files/:name" which allows downloading the file directly, without encoding it to Base64 and adding to Json. This transformation kills the performance and causes OutOfMemory errors for large files (e.g. 256+ MB).
+    > NB! Be sure that `toString()` method of objects (HttpRequest, HttpResponse, Contents.Supplier) never returns too long string - it spam debug logs and can cause OOM during debugging.
+    > * #16612 extract anonymous implementations of `Contents.Supplier` to separate classes
+    > It makes debugging easier. You can easily see what instances they are and where they come from.
+    > * #16612 optimize method `RemoteWebDriver.downloadFile()`
+    > Instead of reading the whole file to a byte array, just save given InputStream directly to the file.
+    > Now it can download large files (I tried 4GB) while consuming very low memory.
+    > * #16612 just in case, return `Contents.fromStream` only when downloading files.
+    > For json responses, still return `Contents.bytes` which allows re-reading its content multiple times. Just in case.
+    > * #16612 fix flaky test: wait until the downloads folder gets deleted
+    > After stopping a Grid node, the folder is deleted asynchronously (by cache removal listener). So we need to wait for it in test.
+    > * #16612 fix flaky test: wait until the grid node is fully stopped
+    > At least on my machine, stopping the node takes some time, and any checks right after `node.stop(sessionId)` often can fail.
+    > * #16612 fix flaky test LocalNewSessionQueueTest
+    > Gr... This is extremely hard to debug test.
+    > After hours of debugging, I came to a conclusion that we just need to increase the timeout. On my machine, `latch` gets decreased after ~1.2 seconds. So 1 second was not enough.
+    > * #16612 fix flaky test JdkHttpClientTest
+    > I don't know why, but sometimes we receive `HttpTimeoutException` instead of `InterruptedException`. Seems reasonable to consider execution as interrupted in both cases. (?)
+    > * #16612 remove unneeded code
+    > None of `is.readNBytes` implementations returns -1. It always returns 0 or positive number.
+    > * #16612 upload logs in case of test failure
+    > * ignore few more IDEA files
+    > * #16612 slightly improve logging in `W3CHttpResponseCodec.decode`
+    > Don't log the entire response body - just content type and length.
+* #16573 unwrap double-wrapped webdriver (#16575)
+* update devtools versions
+
 v4.38.0
 ======
 * JSpecify annotations for `ExecuteMethod` (#16464)

@@ -1,3 +1,12 @@
+4.39.0 (2025-12-03)
+=========================
+* bump versions to nightly
+* add mutable and immutable record objects to manage serialization
+* Revert "add mutable and immutable record objects to manage serialization"
+    > This reverts commit 9f20834ddf8c84126f7ac44cd8b5fd3c595c1043.
+* update devtools versions
+* bump versions in preparation for release
+
 4.38.0 (2025-10-24)
 =========================
 * Fix BiDi Network issue by removing nil values on network requests (#16442)

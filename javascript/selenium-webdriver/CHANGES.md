@@ -1,3 +1,20 @@
+## 4.39.0
+
+- bump versions to nightly
+- [nodejs] Update dev dependencies to fix vulnerabilities (#16610)
+    > * [nodejs] Update dev dependencies to fix vulnerabilities
+    > * Update aspect_rules_js
+    > * Fix lockfile version
+    > * Fix aspect_rules_js version
+    > * Re-generate lockfile
+    > * Upgrade aspect_rules_*
+    > * Revert bazel changes
+    > * Update dependencies and lockfile again
+    > * Update dependencies and lockfile again
+    > * Fix formatting
+- update devtools versions
+- bump versions in preparation for release
+
 ## 4.38.0
 
 - update devtools versions
