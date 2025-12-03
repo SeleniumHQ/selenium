@@ -38,7 +38,7 @@ public sealed class InternalId
     [JsonIgnore]
     public BiDi BiDi
     {
-        get => _bidi ?? throw new InvalidOperationException("BiDi instance has not been hydrated.");
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
         internal set => _bidi = value;
     }
 }
