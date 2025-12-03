@@ -26,18 +26,12 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class InterceptConverter : JsonConverter<Intercept>
 {
-    private readonly BiDi _bidi;
-
-    public InterceptConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override Intercept? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
+        var bidi = Broker.ThreadStaticBiDi ?? throw new InvalidOperationException("No BiDi set");
 
-        return new Intercept(_bidi, id!);
+        return new Intercept(bidi, id!);
     }
 
     public override void Write(Utf8JsonWriter writer, Intercept value, JsonSerializerOptions options)

@@ -17,10 +17,13 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
+[JsonConverter(typeof(WebExtensionConverter))]
 public sealed class Extension
 {
     private readonly BiDi _bidi;

@@ -103,16 +103,7 @@ public sealed class BiDi : IAsyncDisposable
             NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
             Converters =
             {
-                new BrowsingContextConverter(this),
-                new BrowserUserContextConverter(this),
-                new CollectorConverter(this),
-                new InterceptConverter(this),
-                new HandleConverter(this),
-                new InternalIdConverter(this),
-                new PreloadScriptConverter(this),
-                new RealmConverter(this),
                 new DateTimeOffsetConverter(),
-                new WebExtensionConverter(this),
             }
         };
     }

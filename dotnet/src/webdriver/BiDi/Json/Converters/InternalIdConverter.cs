@@ -26,18 +26,12 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class InternalIdConverter : JsonConverter<InternalId>
 {
-    private readonly BiDi _bidi;
-
-    public InternalIdConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override InternalId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
+        var bidi = Broker.ThreadStaticBiDi ?? throw new InvalidOperationException("No BiDi set");
 
-        return new InternalId(_bidi, id!);
+        return new InternalId(bidi, id!);
     }
 
     public override void Write(Utf8JsonWriter writer, InternalId value, JsonSerializerOptions options)

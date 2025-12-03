@@ -26,18 +26,12 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class HandleConverter : JsonConverter<Handle>
 {
-    private readonly BiDi _bidi;
-
-    public HandleConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override Handle? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
+        var bidi = Broker.ThreadStaticBiDi ?? throw new InvalidOperationException("No BiDi set");
 
-        return new Handle(_bidi, id!);
+        return new Handle(bidi, id!);
     }
 
     public override void Write(Utf8JsonWriter writer, Handle value, JsonSerializerOptions options)

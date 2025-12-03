@@ -26,18 +26,12 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class CollectorConverter : JsonConverter<Collector>
 {
-    private readonly BiDi _bidi;
-
-    public CollectorConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override Collector? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
+        var bidi = Broker.ThreadStaticBiDi ?? throw new InvalidOperationException("No BiDi set");
 
-        return new Collector(_bidi, id!);
+        return new Collector(bidi, id!);
     }
 
     public override void Write(Utf8JsonWriter writer, Collector value, JsonSerializerOptions options)

@@ -17,11 +17,14 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
+[JsonConverter(typeof(PreloadScriptConverter))]
 public sealed class PreloadScript : IAsyncDisposable
 {
     private readonly BiDi _bidi;

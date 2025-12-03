@@ -50,6 +50,12 @@ public sealed class Broker : IAsyncDisposable
     private Task? _eventEmitterTask;
     private CancellationTokenSource? _receiveMessagesCancellationTokenSource;
 
+
+    internal static BiDi? ThreadStaticBiDi => _threadStaticBiDi;
+
+    [ThreadStatic]
+    private static BiDi? _threadStaticBiDi;
+
     internal Broker(BiDi bidi, Uri url)
     {
         _bidi = bidi;
@@ -276,8 +282,10 @@ public sealed class Broker : IAsyncDisposable
                 {
                     try
                     {
+                        _threadStaticBiDi = _bidi;
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new JsonException("Remote end returned null command result in the 'result' property.");
+                        _threadStaticBiDi = null;
 
                         command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
                     }
