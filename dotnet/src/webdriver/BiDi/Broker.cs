@@ -279,6 +279,11 @@ public sealed class Broker : IAsyncDisposable
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new JsonException("Remote end returned null command result in the 'result' property.");
 
+                        if (commandResult is IBiDiHidrable bidiHidrable)
+                        {
+                            bidiHidrable.Hidrate(_bidi);
+                        }
+
                         command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
                     }
                     catch (Exception ex)

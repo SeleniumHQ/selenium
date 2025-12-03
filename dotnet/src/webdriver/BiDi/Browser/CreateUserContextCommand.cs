@@ -33,4 +33,10 @@ public sealed class CreateUserContextOptions : CommandOptions
     public Session.UserPromptHandler? UnhandledPromptBehavior { get; set; }
 }
 
-public sealed record CreateUserContextResult(UserContext UserContext) : UserContextInfo(UserContext);
+public sealed record CreateUserContextResult(UserContext UserContext) : UserContextInfo(UserContext), IBiDiHidrable
+{
+    void IBiDiHidrable.Hidrate(BiDi bidi)
+    {
+        UserContext.BiDi = bidi;
+    }
+}

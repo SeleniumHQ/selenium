@@ -21,10 +21,15 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract record EventArgs
+public abstract record EventArgs : IBiDiHidrable
 {
     [JsonIgnore]
     public BiDi BiDi { get; internal set; }
+
+    void IBiDiHidrable.Hidrate(BiDi bidi)
+    {
+        BiDi = bidi;
+    }
 }
 
 public abstract record BrowsingContextEventArgs(BrowsingContext.BrowsingContext Context)

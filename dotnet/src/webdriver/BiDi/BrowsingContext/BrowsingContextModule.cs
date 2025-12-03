@@ -95,15 +95,7 @@ public sealed class BrowsingContextModule : Module
     {
         var @params = new GetTreeParameters(options?.MaxDepth, options?.Root);
 
-        var result = await Broker.ExecuteCommandAsync(new GetTreeCommand(@params), options, _jsonContext.GetTreeCommand, _jsonContext.GetTreeResult).ConfigureAwait(false);
-
-        // Hidrate the BrowsingContext property of each BrowsingContextInfo
-        foreach (var contextInfo in result.Contexts)
-        {
-            contextInfo.Context.BiDi = BiDi;
-        }
-
-        return result;
+        return await Broker.ExecuteCommandAsync(new GetTreeCommand(@params), options, _jsonContext.GetTreeCommand, _jsonContext.GetTreeResult).ConfigureAwait(false);
     }
 
     public async Task<PrintResult> PrintAsync(BrowsingContext context, PrintOptions? options = null)
