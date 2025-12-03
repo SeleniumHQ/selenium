@@ -23,20 +23,30 @@ class Options(ChromiumOptions):
     KEY = "ms:edgeOptions"
 
     def __init__(self) -> None:
+        """Initialize EdgeOptions with default settings."""
         super().__init__()
         self._use_webview = False
 
     @property
     def use_webview(self) -> bool:
+        """Returns Whether WebView2 is enabled for Edge browser."""
         return self._use_webview
 
     @use_webview.setter
     def use_webview(self, value: bool) -> None:
+        """Enables or disables WebView2 support for Edge browser.
+
+        Args:
+            value: True to enable WebView2 support, False to disable.
+        """
         self._use_webview = bool(value)
 
     def to_capabilities(self) -> dict:
-        """Creates a capabilities with all the options that have been set and
-        :Returns: A dictionary with everything."""
+        """Creates a capabilities with all the options that have been set.
+
+        Returns:
+            A dictionary with all set options for Edge browser.
+        """
         caps = super().to_capabilities()
         if self._use_webview:
             caps["browserName"] = "webview2"
@@ -45,4 +55,5 @@ class Options(ChromiumOptions):
 
     @property
     def default_capabilities(self) -> dict:
+        """Returns the default capabilities for Edge browser."""
         return DesiredCapabilities.EDGE.copy()

@@ -16,33 +16,34 @@
 # under the License.
 
 from collections.abc import Mapping, Sequence
-from typing import Optional
 
 from selenium.webdriver.common import service
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of
-    `safaridriver`  This is only supported on MAC OSX.
+    """Manage the safaridriver service lifecycle (start/stop).
 
-    :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
-    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param enable_logging: (Optional) Enable logging of the service. Logs can be located at
-        `~/Library/Logs/com.apple.WebDriver/`
-    :param driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+    This service is only supported on macOS.
+
+    Args:
+        executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
+        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+        enable_logging: (Optional) Enable logging of the service. Logs can be located at
+            `~/Library/Logs/com.apple.WebDriver/`
+        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
     """
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        service_args: Optional[Sequence[str]] = None,
-        env: Optional[Mapping[str, str]] = None,
+        service_args: Sequence[str] | None = None,
+        env: Mapping[str, str] | None = None,
         reuse_service=False,
         enable_logging: bool = False,
-        driver_path_env_key: Optional[str] = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
         self._service_args = list(service_args or [])
@@ -80,6 +81,7 @@ class Service(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

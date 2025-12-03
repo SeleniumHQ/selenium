@@ -17,7 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Json.Converters;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -35,6 +36,7 @@ public sealed class CreateOptions : CommandOptions
     public Browser.UserContext? UserContext { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<ContextType>))]
 public enum ContextType
 {
     Tab,

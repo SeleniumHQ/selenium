@@ -46,12 +46,12 @@ class FirefoxProfile:
     def __init__(self, profile_directory=None):
         """Initialises a new instance of a Firefox Profile.
 
-        :args:
-         - profile_directory: Directory of profile that you want to use. If a
-           directory is passed in it will be cloned and the cloned directory
-           will be used by the driver when instantiated.
-           This defaults to None and will create a new
-           directory when object is created.
+        Args:
+            profile_directory: Directory of profile that you want to use. If a
+                directory is passed in it will be cloned and the cloned directory
+                will be used by the driver when instantiated.
+                This defaults to None and will create a new
+                directory when object is created.
         """
         self._desired_preferences = {}
         if profile_directory:
@@ -147,8 +147,7 @@ class FirefoxProfile:
 
     @property
     def encoded(self) -> str:
-        """Updates preferences and creates a zipped, base64 encoded string of
-        profile directory."""
+        """Update preferences and create a zipped, base64-encoded profile directory string."""
         if self._desired_preferences:
             self.update_preferences()
         fp = BytesIO()
@@ -161,8 +160,7 @@ class FirefoxProfile:
         return base64.b64encode(fp.getvalue()).decode("UTF-8")
 
     def _read_existing_userjs(self, userjs):
-        """Reads existing preferences and adds them to desired preference
-        dictionary."""
+        """Read existing preferences and add them to the desired preference dictionary."""
         pref_pattern = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         with open(userjs, encoding="utf-8") as f:
             for usr in f:
@@ -176,11 +174,11 @@ class FirefoxProfile:
 
     @deprecated("Addons must be added after starting the session")
     def _install_extension(self, addon, unpack=True):
-        """Installs addon from a filepath, url or directory of addons in the
-        profile.
+        """Install addon from a filepath, URL, or directory of addons in the profile.
 
-        - path: url, absolute path to .xpi, or directory of addons
-        - unpack: whether to unpack unless specified otherwise in the install.rdf
+        Args:
+            addon: url, absolute path to .xpi, or directory of addons
+            unpack: whether to unpack unless specified otherwise in the install.rdf
         """
         tmpdir = None
         xpifile = None
@@ -225,9 +223,11 @@ class FirefoxProfile:
     def _addon_details(self, addon_path):
         """Returns a dictionary of details about the addon.
 
-        :param addon_path: path to the add-on directory or XPI
+        Args:
+            addon_path: path to the add-on directory or XPI
 
-        Returns::
+        Returns:
+            A dictionary containing:
 
             {
                 "id": "rainbow@colors.org",  # id of the addon
@@ -236,7 +236,6 @@ class FirefoxProfile:
                 "unpack": False,
             }  # whether to unpack the addon
         """
-
         details = {"id": None, "unpack": False, "name": None, "version": None}
 
         def get_namespace_id(doc, url):
@@ -259,8 +258,7 @@ class FirefoxProfile:
             return "".join(rc).strip()
 
         def parse_manifest_json(content):
-            """Extracts the details from the contents of a WebExtensions
-            `manifest.json` file."""
+            """Extract details from the contents of a WebExtensions manifest.json file."""
             manifest = json.loads(content)
             try:
                 id = manifest["applications"]["gecko"]["id"]

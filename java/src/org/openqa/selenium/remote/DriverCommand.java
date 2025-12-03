@@ -154,11 +154,12 @@ public interface DriverCommand {
   String RESET_COOLDOWN = "resetCooldown";
   String GET_DOWNLOADABLE_FILES = "getDownloadableFiles";
   String DOWNLOAD_FILE = "downloadFile";
+  String GET_DOWNLOADED_FILE = "getDownloadedFile";
   String DELETE_DOWNLOADABLE_FILES = "deleteDownloadableFiles";
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {
     Require.nonNull("Capabilities", capabilities);
-    return new CommandPayload(NEW_SESSION, Map.of("capabilities", singleton(capabilities)));
+    return NEW_SESSION(singleton(capabilities));
   }
 
   static CommandPayload NEW_SESSION(Collection<Capabilities> capabilities) {

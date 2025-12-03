@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters.Enumerable;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +26,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
+[JsonConverter(typeof(InputSourceActionsConverter))]
 public abstract record SourceActions
 {
     public string Id { get; } = Guid.NewGuid().ToString();
@@ -144,6 +147,7 @@ public sealed record PointerParameters
     public PointerType? PointerType { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<PointerType>))]
 public enum PointerType
 {
     Mouse,

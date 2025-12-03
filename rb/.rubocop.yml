@@ -119,7 +119,7 @@ RSpec/MultipleExpectations:
 
 RSpec/NoExpectationExample:
   Exclude:
-    - 'spec/integration/selenium/webdriver/guard_spec.rb'
+    - 'spec/unit/selenium/webdriver/guards_spec.rb'
     - 'spec/integration/selenium/webdriver/takes_screenshot_spec.rb'
 
 RSpec/MultipleMemoizedHelpers:

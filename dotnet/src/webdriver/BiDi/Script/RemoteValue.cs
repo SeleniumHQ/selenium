@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -53,6 +55,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 //[JsonDerivedType(typeof(HtmlCollectionRemoteValue), "htmlcollection")]
 //[JsonDerivedType(typeof(NodeRemoteValue), "node")]
 //[JsonDerivedType(typeof(WindowProxyRemoteValue), "window")]
+[JsonConverter(typeof(RemoteValueConverter))]
 public abstract record RemoteValue
 {
     public static implicit operator double(RemoteValue remoteValue) => (double)((NumberRemoteValue)remoteValue).Value;
@@ -99,7 +102,7 @@ public abstract record RemoteValue
 
 public abstract record PrimitiveProtocolRemoteValue : RemoteValue;
 
-public sealed record NumberRemoteValue(double Value) : PrimitiveProtocolRemoteValue;
+public sealed record NumberRemoteValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolRemoteValue;
 
 public sealed record BooleanRemoteValue(bool Value) : PrimitiveProtocolRemoteValue;
 
@@ -249,17 +252,11 @@ public sealed record HtmlCollectionRemoteValue : RemoteValue
     public IReadOnlyList<RemoteValue>? Value { get; set; }
 }
 
-public sealed record NodeRemoteValue : RemoteValue, ISharedReference
+public sealed record NodeRemoteValue(string SharedId, NodeProperties? Value) : RemoteValue, ISharedReference
 {
-    [JsonInclude]
-    public string? SharedId { get; internal set; }
-
     public Handle? Handle { get; set; }
 
     public InternalId? InternalId { get; set; }
-
-    [JsonInclude]
-    public NodeProperties? Value { get; internal set; }
 }
 
 public sealed record WindowProxyRemoteValue(WindowProxyProperties Value) : RemoteValue
@@ -269,6 +266,7 @@ public sealed record WindowProxyRemoteValue(WindowProxyProperties Value) : Remot
     public InternalId? InternalId { get; set; }
 }
 
+[JsonConverter(typeof(CamelCaseEnumConverter<Mode>))]
 public enum Mode
 {
     Open,
