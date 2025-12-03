@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -24,6 +25,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
+[JsonConverter(typeof(BrowsingContextConverter))]
 public sealed class BrowsingContext
 {
     internal BrowsingContext(string id)

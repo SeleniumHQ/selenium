@@ -17,10 +17,12 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
+[JsonConverter(typeof(HandleConverter))]
 public sealed class Handle
 {
     public Handle(string id)
