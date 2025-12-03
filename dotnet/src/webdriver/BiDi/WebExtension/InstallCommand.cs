@@ -41,4 +41,10 @@ public sealed record ExtensionPath(string Path) : ExtensionData;
 
 public sealed class InstallOptions : CommandOptions;
 
-public sealed record InstallResult(Extension Extension) : EmptyResult;
+public sealed record InstallResult(Extension Extension) : EmptyResult, IBiDiHydratable
+{
+    void IBiDiHydratable.Hydrate(BiDi bidi)
+    {
+        Extension.BiDi = bidi;
+    }
+}
