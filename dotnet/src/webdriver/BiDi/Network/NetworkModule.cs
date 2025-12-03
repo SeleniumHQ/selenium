@@ -38,13 +38,11 @@ public sealed partial class NetworkModule : Module
         return result.Collector;
     }
 
-    public async Task<Intercept> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null)
+    public async Task<AddInterceptResult> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null)
     {
         var @params = new AddInterceptParameters(phases, options?.Contexts, options?.UrlPatterns);
 
-        var result = await Broker.ExecuteCommandAsync(new AddInterceptCommand(@params), options, _jsonContext.AddInterceptCommand, _jsonContext.AddInterceptResult).ConfigureAwait(false);
-
-        return result.Intercept;
+        return await Broker.ExecuteCommandAsync(new AddInterceptCommand(@params), options, _jsonContext.AddInterceptCommand, _jsonContext.AddInterceptResult).ConfigureAwait(false);
     }
 
     public async Task<RemoveDataCollectorResult> RemoveDataCollectorAsync(Collector collector, RemoveDataCollectorOptions? options = null)
