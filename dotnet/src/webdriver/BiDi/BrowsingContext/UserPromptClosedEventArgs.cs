@@ -19,5 +19,5 @@
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record UserPromptClosedEventArgs(BiDi BiDi, BrowsingContext Context, bool Accepted, string? UserText)
-    : BrowsingContextEventArgs(BiDi, Context);
+public sealed record UserPromptClosedEventArgs(BrowsingContext Context, bool Accepted, string? UserText)
+    : BrowsingContextEventArgs(Context);
