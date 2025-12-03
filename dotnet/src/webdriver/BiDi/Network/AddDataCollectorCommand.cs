@@ -37,7 +37,13 @@ public class AddDataCollectorOptions : CommandOptions
     public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
 
-public sealed record AddDataCollectorResult(Collector Collector) : EmptyResult;
+public sealed record AddDataCollectorResult(Collector Collector) : EmptyResult, IBiDiHydratable
+{
+    void IBiDiHydratable.Hydrate(BiDi bidi)
+    {
+        Collector.BiDi = bidi;
+    }
+}
 
 [JsonConverter(typeof(CamelCaseEnumConverter<DataType>))]
 public enum DataType
