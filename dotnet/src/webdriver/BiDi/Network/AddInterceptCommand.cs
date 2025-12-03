@@ -47,7 +47,13 @@ public record BrowsingContextAddInterceptOptions
     public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
 }
 
-public sealed record AddInterceptResult(Intercept Intercept) : EmptyResult;
+public sealed record AddInterceptResult(Intercept Intercept) : EmptyResult, IBiDiHydratable
+{
+    void IBiDiHydratable.Hydrate(BiDi bidi)
+    {
+        Intercept.BiDi = bidi;
+    }
+}
 
 [JsonConverter(typeof(CamelCaseEnumConverter<InterceptPhase>))]
 public enum InterceptPhase
