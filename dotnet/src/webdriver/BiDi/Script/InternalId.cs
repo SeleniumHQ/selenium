@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Json.Converters;
+using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -32,6 +33,12 @@ public sealed class InternalId
 
     public string Id { get; }
 
+    private BiDi? _bidi;
+
     [JsonIgnore]
-    public BiDi BiDi { get; internal set; }
+    public BiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException("BiDi instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
 }

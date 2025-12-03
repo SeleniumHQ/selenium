@@ -41,8 +41,14 @@ public sealed class BrowsingContext
 
     internal string Id { get; }
 
+    private BiDi? _bidi;
+
     [JsonIgnore]
-    public BiDi BiDi { get; internal set; }
+    public BiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException("BiDi instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
 
     [JsonIgnore]
     public BrowsingContextLogModule Log => _logModule ?? Interlocked.CompareExchange(ref _logModule, new BrowsingContextLogModule(this, BiDi.Log), null) ?? _logModule;

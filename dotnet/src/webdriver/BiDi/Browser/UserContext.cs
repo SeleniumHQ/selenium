@@ -27,6 +27,8 @@ namespace OpenQA.Selenium.BiDi.Browser;
 [JsonConverter(typeof(BrowserUserContextConverter))]
 public sealed class UserContext : IEquatable<UserContext>, IAsyncDisposable
 {
+    private BiDi? _bidi;
+
     internal UserContext(string id)
     {
         Id = id;
@@ -35,7 +37,11 @@ public sealed class UserContext : IEquatable<UserContext>, IAsyncDisposable
     internal string Id { get; }
 
     [JsonIgnore]
-    public BiDi BiDi { get; internal set; }
+    public BiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
 
     public Task RemoveAsync()
     {
