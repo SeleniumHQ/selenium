@@ -36,7 +36,12 @@ public sealed class BrowserModule : Module
     {
         var @params = new CreateUserContextParameters(options?.AcceptInsecureCerts, options?.Proxy, options?.UnhandledPromptBehavior);
 
-        return await Broker.ExecuteCommandAsync(new CreateUserContextCommand(@params), options, _jsonContext.CreateUserContextCommand, _jsonContext.CreateUserContextResult).ConfigureAwait(false);
+        var result = await Broker.ExecuteCommandAsync(new CreateUserContextCommand(@params), options, _jsonContext.CreateUserContextCommand, _jsonContext.CreateUserContextResult).ConfigureAwait(false);
+
+        // Hidrate the BiDi property
+        result.UserContext.BiDi = BiDi;
+
+        return result;
     }
 
     public async Task<GetUserContextsResult> GetUserContextsAsync(GetUserContextsOptions? options = null)
