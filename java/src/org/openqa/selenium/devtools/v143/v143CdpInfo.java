@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v140;
+package org.openqa.selenium.devtools.v143;
 
 import com.google.auto.service.AutoService;
 import org.openqa.selenium.devtools.CdpInfo;
 
 @AutoService(CdpInfo.class)
-public class v140CdpInfo extends CdpInfo {
+public class v143CdpInfo extends CdpInfo {
 
-  public v140CdpInfo() {
-    super(140, v140Domains::new);
+  public v143CdpInfo() {
+    super(143, v143Domains::new);
   }
 }
