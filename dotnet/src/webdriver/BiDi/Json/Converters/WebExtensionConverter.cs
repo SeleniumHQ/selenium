@@ -26,18 +26,11 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class WebExtensionConverter : JsonConverter<Extension>
 {
-    private readonly BiDi _bidi;
-
-    public WebExtensionConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override Extension? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new Extension(_bidi, id!);
+        return new Extension(id!);
     }
 
     public override void Write(Utf8JsonWriter writer, Extension value, JsonSerializerOptions options)

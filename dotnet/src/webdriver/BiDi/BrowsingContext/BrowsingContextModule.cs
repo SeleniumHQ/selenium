@@ -18,7 +18,6 @@
 // </copyright>
 
 using System;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextModule : Module
 {
-    private BrowsingContextJsonSerializerContext _jsonContext = null!;
+    private static readonly BrowsingContextJsonSerializerContext _jsonContext = BrowsingContextJsonSerializerContext.Default;
 
     public async Task<CreateResult> CreateAsync(ContextType type, CreateOptions? options = null)
     {
@@ -250,11 +249,6 @@ public sealed class BrowsingContextModule : Module
     public async Task<Subscription> OnUserPromptClosedAsync(Action<UserPromptClosedEventArgs> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options, _jsonContext.UserPromptClosedEventArgs).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(JsonSerializerOptions options)
-    {
-        _jsonContext = new BrowsingContextJsonSerializerContext(options);
     }
 }
 

@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -25,7 +24,7 @@ namespace OpenQA.Selenium.BiDi.WebExtension;
 
 public sealed class WebExtensionModule : Module
 {
-    private WebExtensionJsonSerializerContext _jsonContext = null!;
+    private static readonly WebExtensionJsonSerializerContext _jsonContext = WebExtensionJsonSerializerContext.Default;
 
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
     {
@@ -39,11 +38,6 @@ public sealed class WebExtensionModule : Module
         var @params = new UninstallParameters(extension);
 
         return await Broker.ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(JsonSerializerOptions options)
-    {
-        _jsonContext = new WebExtensionJsonSerializerContext(options);
     }
 }
 

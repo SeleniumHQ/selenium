@@ -85,7 +85,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public T AsModule<T>() where T : Module, new()
     {
-        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, GetJsonOptions()));
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker));
     }
 
     private Broker Broker { get; }
@@ -103,16 +103,16 @@ public sealed class BiDi : IAsyncDisposable
             NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
             Converters =
             {
-                new BrowsingContextConverter(this),
-                new BrowserUserContextConverter(this),
-                new CollectorConverter(this),
-                new InterceptConverter(this),
-                new HandleConverter(this),
-                new InternalIdConverter(this),
-                new PreloadScriptConverter(this),
-                new RealmConverter(this),
+                new BrowsingContextConverter(),
+                new BrowserUserContextConverter(),
+                new CollectorConverter(),
+                new InterceptConverter(),
+                new HandleConverter(),
+                new InternalIdConverter(),
+                new PreloadScriptConverter(),
+                new RealmConverter(),
                 new DateTimeOffsetConverter(),
-                new WebExtensionConverter(this),
+                new WebExtensionConverter(),
             }
         };
     }

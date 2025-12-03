@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -25,7 +24,7 @@ namespace OpenQA.Selenium.BiDi.Browser;
 
 public sealed class BrowserModule : Module
 {
-    private BrowserJsonSerializerContext _jsonContext = null!;
+    private static readonly BrowserJsonSerializerContext _jsonContext = BrowserJsonSerializerContext.Default;
 
     public async Task<CloseResult> CloseAsync(CloseOptions? options = null)
     {
@@ -76,11 +75,6 @@ public sealed class BrowserModule : Module
         var @params = new SetDownloadBehaviorParameters(new DownloadBehaviorDenied(), options?.UserContexts);
 
         return await Broker.ExecuteCommandAsync(new SetDownloadBehaviorCommand(@params), options, _jsonContext.SetDownloadBehaviorCommand, _jsonContext.SetDownloadBehaviorResult).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(JsonSerializerOptions options)
-    {
-        _jsonContext = new BrowserJsonSerializerContext(options);
     }
 }
 

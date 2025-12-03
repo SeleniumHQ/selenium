@@ -18,25 +18,26 @@
 // </copyright>
 
 using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed class PreloadScript : IAsyncDisposable
 {
-    private readonly BiDi _bidi;
-
-    public PreloadScript(BiDi bidi, string id)
+    internal PreloadScript(string id)
     {
-        _bidi = bidi;
         Id = id;
     }
 
     public string Id { get; }
 
+    [JsonIgnore]
+    public BiDi BiDi { get; internal set; }
+
     public Task RemoveAsync()
     {
-        return _bidi.Script.RemovePreloadScriptAsync(this);
+        return BiDi.Script.RemovePreloadScriptAsync(this);
     }
 
     public async ValueTask DisposeAsync()

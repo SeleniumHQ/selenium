@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ namespace OpenQA.Selenium.BiDi.Input;
 
 public sealed class InputModule : Module
 {
-    private InputJsonSerializerContext _jsonContext = null!;
+    private static readonly InputJsonSerializerContext _jsonContext = InputJsonSerializerContext.Default;
 
     public async Task<PerformActionsResult> PerformActionsAsync(BrowsingContext.BrowsingContext context, IEnumerable<SourceActions> actions, PerformActionsOptions? options = null)
     {
@@ -47,11 +46,6 @@ public sealed class InputModule : Module
         var @params = new SetFilesParameters(context, element, files);
 
         return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult).ConfigureAwait(false);
-    }
-
-    protected override void Initialize(JsonSerializerOptions options)
-    {
-        _jsonContext = new InputJsonSerializerContext(options);
     }
 }
 

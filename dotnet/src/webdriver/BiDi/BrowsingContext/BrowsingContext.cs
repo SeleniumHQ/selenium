@@ -26,9 +26,8 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContext
 {
-    internal BrowsingContext(BiDi bidi, string id)
+    internal BrowsingContext(string id)
     {
-        BiDi = bidi;
         Id = id;
     }
 
@@ -41,7 +40,7 @@ public sealed class BrowsingContext
     internal string Id { get; }
 
     [JsonIgnore]
-    public BiDi BiDi { get; }
+    public BiDi BiDi { get; internal set; }
 
     [JsonIgnore]
     public BrowsingContextLogModule Log => _logModule ?? Interlocked.CompareExchange(ref _logModule, new BrowsingContextLogModule(this, BiDi.Log), null) ?? _logModule;

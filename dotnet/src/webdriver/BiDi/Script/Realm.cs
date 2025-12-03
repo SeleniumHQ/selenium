@@ -17,17 +17,19 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed class Realm
 {
-    private readonly BiDi _bidi;
-
-    public Realm(BiDi bidi, string id)
+    public Realm(string id)
     {
-        _bidi = bidi;
         Id = id;
     }
 
     public string Id { get; }
+
+    [JsonIgnore]
+    public BiDi BiDi { get; internal set; }
 }

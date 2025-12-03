@@ -17,17 +17,19 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json.Serialization;
+
 namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed class Handle
 {
-    private readonly BiDi _bidi;
-
-    public Handle(BiDi bidi, string id)
+    public Handle(string id)
     {
-        _bidi = bidi;
         Id = id;
     }
 
     public string Id { get; }
+
+    [JsonIgnore]
+    public BiDi BiDi { get; internal set; }
 }

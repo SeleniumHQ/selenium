@@ -18,25 +18,26 @@
 // </copyright>
 
 using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
 public sealed class UserContext : IEquatable<UserContext>, IAsyncDisposable
 {
-    private readonly BiDi _bidi;
-
-    internal UserContext(BiDi bidi, string id)
+    internal UserContext(string id)
     {
-        _bidi = bidi;
         Id = id;
     }
 
     internal string Id { get; }
 
+    [JsonIgnore]
+    public BiDi BiDi { get; internal set; }
+
     public Task RemoveAsync()
     {
-        return _bidi.Browser.RemoveUserContextAsync(this);
+        return BiDi.Browser.RemoveUserContextAsync(this);
     }
 
     public async ValueTask DisposeAsync()

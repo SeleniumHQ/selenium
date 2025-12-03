@@ -20,21 +20,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed class Intercept : IAsyncDisposable
 {
-    private readonly BiDi _bidi;
-
-    internal Intercept(BiDi bidi, string id)
+    internal Intercept(string id)
     {
-        _bidi = bidi;
         Id = id;
     }
 
     internal string Id { get; }
+
+    [JsonIgnore]
+    public BiDi BiDi { get; internal set; }
 
     IList<Subscription> OnBeforeRequestSentSubscriptions { get; } = [];
     IList<Subscription> OnResponseStartedSubscriptions { get; } = [];
@@ -42,7 +43,7 @@ public sealed class Intercept : IAsyncDisposable
 
     public async Task RemoveAsync()
     {
-        await _bidi.Network.RemoveInterceptAsync(this).ConfigureAwait(false);
+        await BiDi.Network.RemoveInterceptAsync(this).ConfigureAwait(false);
 
         foreach (var subscription in OnBeforeRequestSentSubscriptions)
         {
@@ -62,21 +63,21 @@ public sealed class Intercept : IAsyncDisposable
 
     public async Task OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        var subscription = await _bidi.Network.OnBeforeRequestSentAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
+        var subscription = await BiDi.Network.OnBeforeRequestSentAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
         OnBeforeRequestSentSubscriptions.Add(subscription);
     }
 
     public async Task OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        var subscription = await _bidi.Network.OnResponseStartedAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
+        var subscription = await BiDi.Network.OnResponseStartedAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
         OnResponseStartedSubscriptions.Add(subscription);
     }
 
     public async Task OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
     {
-        var subscription = await _bidi.Network.OnAuthRequiredAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
+        var subscription = await BiDi.Network.OnAuthRequiredAsync(async args => await Filter(args, handler), options).ConfigureAwait(false);
 
         OnAuthRequiredSubscriptions.Add(subscription);
     }
