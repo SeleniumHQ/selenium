@@ -309,6 +309,11 @@ public sealed class Broker : IAsyncDisposable
                 {
                     var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
 
+                    if (eventArgs is IBiDiHydratable bidiHydratable)
+                    {
+                        bidiHydratable.Hydrate(_bidi);
+                    }
+
                     var messageEvent = (method, eventArgs);
                     _pendingEvents.Add(messageEvent);
                 }
