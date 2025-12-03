@@ -1,4 +1,4 @@
-load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "framework")
+load("//dotnet:defs.bzl", "dotnet_nunit_test_suite", "nuget_package")
 
 SMALL_TESTS = [
     "DefaultWaitTest.cs",
@@ -18,8 +18,8 @@ dotnet_nunit_test_suite(
         "//dotnet/src/support",
         "//dotnet/src/webdriver:webdriver-net8.0",
         "//dotnet/test/common:fixtures",
-        framework("nuget", "NUnit"),
-        framework("nuget", "Moq"),
+        nuget_package("NUnit"),
+        nuget_package("Moq"),
     ],
 )
 
@@ -46,6 +46,6 @@ dotnet_nunit_test_suite(
         "//dotnet/src/support",
         "//dotnet/src/webdriver:webdriver-net8.0",
         "//dotnet/test/common:fixtures",
-        framework("nuget", "NUnit"),
+        nuget_package("NUnit"),
     ],
 )

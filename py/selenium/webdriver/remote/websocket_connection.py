@@ -131,7 +131,7 @@ class WebSocketConnection:
                 self._ws.run_forever(suppress_origin=True)
 
         self._ws = WebSocketApp(self.url, on_open=on_open, on_message=on_message, on_error=on_error)
-        self._ws_thread = Thread(target=run_socket)
+        self._ws_thread = Thread(target=run_socket, daemon=True)
         self._ws_thread.start()
 
     def _process_message(self, message):
@@ -144,7 +144,7 @@ class WebSocketConnection:
         if "method" in message:
             params = message["params"]
             for callback in self.callbacks.get(message["method"], []):
-                Thread(target=callback, args=(params,)).start()
+                Thread(target=callback, args=(params,), daemon=True).start()
 
     def _wait_until(self, condition):
         timeout = self.response_wait_timeout

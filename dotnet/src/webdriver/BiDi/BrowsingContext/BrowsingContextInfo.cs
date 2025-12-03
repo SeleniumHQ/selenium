@@ -21,5 +21,5 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed record BrowsingContextInfo(BiDi BiDi, IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext, BrowsingContext? Parent)
-    : BrowsingContextEventArgs(BiDi, Context);
+public sealed record BrowsingContextInfo(IReadOnlyList<BrowsingContextInfo>? Children, Browser.ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, Browser.UserContext UserContext, BrowsingContext? Parent)
+    : BrowsingContextEventArgs(Context);

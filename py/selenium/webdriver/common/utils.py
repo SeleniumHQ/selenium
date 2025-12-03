@@ -20,7 +20,6 @@
 import socket
 import urllib.request
 from collections.abc import Iterable
-from typing import Optional, Union
 
 from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
@@ -58,7 +57,7 @@ def free_port() -> int:
     return port
 
 
-def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional[int] = None) -> Optional[str]:
+def find_connectable_ip(host: str | bytes | bytearray | None, port: int | None = None) -> str | None:
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
     We prefer IPv4 so that we don't change behavior from previous IPv4-only
@@ -110,7 +109,7 @@ def join_host_port(host: str, port: int) -> str:
     return f"{host}:{port}"
 
 
-def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
+def is_connectable(port: int, host: str | None = "localhost") -> bool:
     """Tries to connect to the server at port to see if it is running.
 
     Args:
@@ -134,12 +133,11 @@ def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
 
 
 def is_url_connectable(
-    port: Union[int, str],
-    host: Optional[str] = "127.0.0.1",
-    scheme: Optional[str] = "http",
+    port: int | str,
+    host: str | None = "127.0.0.1",
+    scheme: str | None = "http",
 ) -> bool:
-    """Sends a request to the HTTP server at the /status endpoint to see if it
-    responds successfully.
+    """Send a request to the HTTP server at the /status endpoint to verify connectivity.
 
     Args:
         port: port number

@@ -22,7 +22,6 @@ import subprocess
 import sys
 import sysconfig
 from pathlib import Path
-from typing import Optional
 
 from selenium.common import WebDriverException
 
@@ -44,7 +43,6 @@ class SeleniumManager:
         Returns:
             Dictionary of assets and their path.
         """
-
         args = [str(self._get_binary())] + args
         if logger.getEffectiveLevel() == logging.DEBUG:
             args.append("--debug")
@@ -65,13 +63,12 @@ class SeleniumManager:
         Raises:
             WebDriverException: If the platform is unsupported.
         """
-
         compiled_path = Path(__file__).parent.joinpath("selenium-manager")
         exe = sysconfig.get_config_var("EXE")
         if exe is not None:
             compiled_path = compiled_path.with_suffix(exe)
 
-        path: Optional[Path] = None
+        path: Path | None = None
 
         if (env_path := os.getenv("SE_MANAGER_PATH")) is not None:
             logger.debug("Selenium Manager set by env SE_MANAGER_PATH to: %s", env_path)

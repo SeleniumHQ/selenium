@@ -58,11 +58,9 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     HttpResponse seResponse = (HttpResponse) msg;
 
     // We may not know how large the response is, but figure it out if we can.
-    byte[] ary = CHUNK_CACHE.get();
+    byte[] buffer = CHUNK_CACHE.get();
     InputStream is = seResponse.getContent().get();
-    int byteCount = is.readNBytes(ary, 0, ary.length);
-    // If there are no bytes left to read, then -1 is returned by read, and this is bad.
-    byteCount = byteCount == -1 ? 0 : byteCount;
+    int byteCount = is.readNBytes(buffer, 0, buffer.length);
 
     DefaultHttpResponse first;
     if (byteCount < CHUNK_SIZE) {
@@ -71,7 +69,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
           new DefaultFullHttpResponse(
               HTTP_1_1,
               HttpResponseStatus.valueOf(seResponse.getStatus()),
-              Unpooled.copiedBuffer(ary, 0, byteCount));
+              Unpooled.copiedBuffer(buffer, 0, byteCount));
       first.headers().addInt(CONTENT_LENGTH, byteCount);
       copyHeaders(seResponse, first);
       ctx.write(first);
@@ -82,7 +80,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
       ctx.write(first);
 
       // We need to write the first response.
-      ctx.write(new DefaultHttpContent(Unpooled.copiedBuffer(ary)));
+      ctx.write(new DefaultHttpContent(Unpooled.copiedBuffer(buffer)));
 
       HttpChunkedInput writer = new HttpChunkedInput(new ChunkedStream(is, CHUNK_SIZE));
       ChannelFuture future = ctx.write(writer);

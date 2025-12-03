@@ -80,8 +80,7 @@ class _ProxyTypeDescriptor:
 
 
 class Proxy:
-    """Proxy contains information about proxy type and necessary proxy
-    settings."""
+    """Proxy configuration containing proxy type and necessary proxy settings."""
 
     proxyType = ProxyType.UNSPECIFIED
     autodetect = False
