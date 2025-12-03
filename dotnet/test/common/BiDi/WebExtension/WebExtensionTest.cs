@@ -81,7 +81,7 @@ class WebExtensionTest : BiDiTestFixture
 
         var result = await bidi.WebExtension.InstallAsync(new ExtensionPath(path));
 
-        await result.Extension.UninstallAsync();
+        await bidi.WebExtension.UninstallAsync(result.Extension);
     }
 
     private static string LocateRelativePath(string path)

@@ -18,27 +18,9 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Json.Converters;
-using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 [JsonConverter(typeof(HandleConverter))]
-public sealed class Handle
-{
-    private BiDi? _bidi;
-
-    public Handle(string id)
-    {
-        Id = id;
-    }
-
-    public string Id { get; }
-
-    [JsonIgnore]
-    public BiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
-}
+public sealed record Handle(string Id);

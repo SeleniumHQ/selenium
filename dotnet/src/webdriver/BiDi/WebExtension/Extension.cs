@@ -18,33 +18,9 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Json.Converters;
-using System;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
 [JsonConverter(typeof(WebExtensionConverter))]
-public sealed class Extension
-{
-    private BiDi? _bidi;
-
-    internal Extension(string id)
-    {
-        Id = id;
-    }
-
-    internal string Id { get; }
-
-    [JsonIgnore]
-    public BiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
-
-    public Task UninstallAsync(UninstallOptions? options = null)
-    {
-        return BiDi.WebExtension.UninstallAsync(this, options);
-    }
-}
+public sealed record Extension(string Id);

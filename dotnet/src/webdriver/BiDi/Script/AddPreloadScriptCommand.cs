@@ -51,10 +51,4 @@ public sealed record BrowsingContextAddPreloadScriptOptions
     public string? Sandbox { get; set; }
 }
 
-public sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult, IBiDiHydratable
-{
-    void IBiDiHydratable.Hydrate(BiDi bidi)
-    {
-        Script.BiDi = bidi;
-    }
-}
+public sealed record AddPreloadScriptResult(PreloadScript Script) : EmptyResult;

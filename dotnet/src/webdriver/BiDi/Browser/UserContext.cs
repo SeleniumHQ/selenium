@@ -18,54 +18,9 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Json.Converters;
-using System;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
 [JsonConverter(typeof(BrowserUserContextConverter))]
-public sealed class UserContext : IEquatable<UserContext>, IAsyncDisposable
-{
-    private BiDi? _bidi;
-
-    internal UserContext(string id)
-    {
-        Id = id;
-    }
-
-    internal string Id { get; }
-
-    [JsonIgnore]
-    public BiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
-
-    public Task RemoveAsync()
-    {
-        return BiDi.Browser.RemoveUserContextAsync(this);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await RemoveAsync().ConfigureAwait(false);
-    }
-
-    public bool Equals(UserContext? other)
-    {
-        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
-    }
-
-
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as UserContext);
-    }
-
-    public override int GetHashCode()
-    {
-        return StringComparer.Ordinal.GetHashCode(Id);
-    }
-}
+public sealed record UserContext(string Id);

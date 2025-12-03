@@ -18,38 +18,9 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Json.Converters;
-using System;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 [JsonConverter(typeof(PreloadScriptConverter))]
-public sealed class PreloadScript : IAsyncDisposable
-{
-    private BiDi? _bidi;
-
-    internal PreloadScript(string id)
-    {
-        Id = id;
-    }
-
-    public string Id { get; }
-
-    [JsonIgnore]
-    public BiDi BiDi
-    {
-        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
-        internal set => _bidi = value;
-    }
-
-    public Task RemoveAsync()
-    {
-        return BiDi.Script.RemovePreloadScriptAsync(this);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await RemoveAsync().ConfigureAwait(false);
-    }
-}
+public sealed record PreloadScript(string Id);
