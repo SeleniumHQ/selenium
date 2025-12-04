@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Any, Optional, Union
+from typing import Any
 
 from typing_extensions import deprecated
 
@@ -44,7 +44,7 @@ class Options(ArgOptions):
         # https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
         # Enable BiDi only
         self._preferences["remote.active-protocols"] = 1
-        self._profile: Optional[FirefoxProfile] = None
+        self._profile: FirefoxProfile | None = None
         self.log = Log()
 
     @property
@@ -55,7 +55,7 @@ class Options(ArgOptions):
 
     @binary.setter
     @deprecated("use binary_location instead")
-    def binary(self, new_binary: Union[str, FirefoxBinary]) -> None:
+    def binary(self, new_binary: str | FirefoxBinary) -> None:
         """Set location of browser binary (string or FirefoxBinary instance)."""
         if isinstance(new_binary, FirefoxBinary):
             new_binary = new_binary._start_cmd
@@ -78,24 +78,24 @@ class Options(ArgOptions):
         """Returns a dict of preferences."""
         return self._preferences
 
-    def set_preference(self, name: str, value: Union[str, int, bool]):
+    def set_preference(self, name: str, value: str | int | bool):
         """Sets a preference."""
         self._preferences[name] = value
 
     @property
-    def profile(self) -> Optional[FirefoxProfile]:
+    def profile(self) -> FirefoxProfile | None:
         """Returns the Firefox profile to use."""
         return self._profile
 
     @profile.setter
-    def profile(self, new_profile: Union[str, FirefoxProfile]) -> None:
+    def profile(self, new_profile: str | FirefoxProfile) -> None:
         """Set the location of the browser profile to use (string or FirefoxProfile object)."""
         if not isinstance(new_profile, FirefoxProfile):
             new_profile = FirefoxProfile(new_profile)
         self._profile = new_profile
 
     def enable_mobile(
-        self, android_package: Optional[str] = "org.mozilla.firefox", android_activity=None, device_serial=None
+        self, android_package: str | None = "org.mozilla.firefox", android_activity=None, device_serial=None
     ):
         super().enable_mobile(android_package, android_activity, device_serial)
 

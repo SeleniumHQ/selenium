@@ -52,14 +52,14 @@ class Service(ABC):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        log_output: Optional[SubprocessStdAlias] = None,
-        env: Optional[Mapping[Any, Any]] = None,
-        driver_path_env_key: Optional[str] = None,
+        log_output: SubprocessStdAlias | None = None,
+        env: Mapping[Any, Any] | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
-        self.log_output: Optional[Union[int, IOBase]]
+        self.log_output: int | IOBase | None
         if isinstance(log_output, str):
             self.log_output = cast(IOBase, open(log_output, "a+", encoding="utf-8"))
         elif log_output == subprocess.STDOUT:
@@ -246,7 +246,7 @@ class Service(ABC):
                 ) from err
             raise
 
-    def env_path(self) -> Optional[str]:
+    def env_path(self) -> str | None:
         if self.DRIVER_PATH_ENV_KEY:
             return os.getenv(self.DRIVER_PATH_ENV_KEY, None)
         return None

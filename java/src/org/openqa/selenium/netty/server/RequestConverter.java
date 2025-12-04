@@ -23,7 +23,6 @@ import static io.netty.handler.codec.http.HttpMethod.HEAD;
 import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
 import static io.netty.handler.codec.http.HttpMethod.POST;
 
-import com.google.common.io.ByteSource;
 import com.google.common.io.FileBackedOutputStream;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -37,11 +36,9 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.ReferenceCountUtil;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.remote.http.Contents;
@@ -56,7 +53,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
   private static final List<io.netty.handler.codec.http.HttpMethod> SUPPORTED_METHODS =
       Arrays.asList(DELETE, GET, POST, OPTIONS);
   private volatile FileBackedOutputStream buffer;
-  private volatile int length;
+  private final AtomicLong length = new AtomicLong();
   private volatile HttpRequest request;
 
   @Override
@@ -93,7 +90,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
           AttributeKey.HTTP_FLAVOR.getKey(), nettyRequest.protocolVersion().majorVersion());
 
       buffer = null;
-      length = -1;
+      length.set(-1);
     }
 
     if (request != null && msg instanceof HttpContent) {
@@ -103,12 +100,12 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       if (nBytes > 0) {
         if (buffer == null) {
           buffer = new FileBackedOutputStream(3 * 1024 * 1024, true);
-          length = 0;
+          length.set(0);
         }
 
         try {
           buf.readBytes(buffer, nBytes);
-          length += nBytes;
+          length.addAndGet(nBytes);
         } finally {
           buf.release();
         }
@@ -118,30 +115,8 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
         LOG.log(Debug.getDebugLogLevel(), "End of http request: {0}", msg);
 
         if (buffer != null) {
-          ByteSource source = buffer.asByteSource();
-          int len = length;
-
           request.setContent(
-              new Contents.Supplier() {
-                @Override
-                public InputStream get() {
-                  try {
-                    return source.openBufferedStream();
-                  } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                  }
-                }
-
-                @Override
-                public int length() {
-                  return len;
-                }
-
-                @Override
-                public void close() throws IOException {
-                  buffer.reset();
-                }
-              });
+              new FileBackedOutputStreamContentSupplier(request.toString(), buffer, length.get()));
         } else {
           request.setContent(Contents.empty());
         }

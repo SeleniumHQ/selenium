@@ -17,30 +17,28 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json;
 using System.Text.Json;
 
 namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
 {
-    protected Broker Broker { get; private set; }
+    protected BiDi BiDi { get; private set; } = null!;
 
-    internal BiDiJsonSerializerContext JsonContext { get; private set; }
+    protected Broker Broker { get; private set; } = null!;
 
-    protected virtual void Initialize(JsonSerializerOptions options) { }
+    protected abstract void Initialize(JsonSerializerOptions options);
 
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonOptions, BiDiJsonSerializerContext context)
+    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
         where TModule : Module, new()
     {
         TModule module = new()
         {
-            Broker = broker,
-            JsonContext = context
+            BiDi = bidi,
+            Broker = broker
         };
 
-        module.Initialize(jsonOptions);
+        module.Initialize(jsonSerializerOptions);
 
         return module;
     }
