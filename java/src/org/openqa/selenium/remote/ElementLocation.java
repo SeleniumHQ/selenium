@@ -27,6 +27,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Require;
 
@@ -163,7 +164,7 @@ class ElementLocation {
         CommandPayload commandPayload = createPayload.apply(params.using(), params.value());
 
         Response response = driver.execute(commandPayload);
-        WebElement element = (WebElement) response.getValue();
+        Object element = response.getValue();
         if (element == null) {
           throw new NoSuchElementException("Unable to find element with locator " + locator);
         }
@@ -181,7 +182,7 @@ class ElementLocation {
 
         Response response = driver.execute(commandPayload);
         @SuppressWarnings("unchecked")
-        List<WebElement> elements = (List<WebElement>) response.getValue();
+        List<?> elements = (List<?>) response.getValue();
 
         if (elements == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
           return Collections.emptyList();
@@ -206,9 +207,21 @@ class ElementLocation {
         By locator);
 
     protected WebElement massage(
-        RemoteWebDriver driver, SearchContext context, WebElement element, By locator) {
-      if (!(element instanceof RemoteWebElement)) {
-        return element;
+        RemoteWebDriver driver, SearchContext context, Object element, By locator) {
+      if (!(element instanceof WebElement)) {
+        String hint;
+
+        if (element instanceof Map<?, ?>) {
+          hint = ((Map<?, ?>) element).keySet().toString();
+        } else if (element != null) {
+          hint = element.getClass().getName();
+        } else {
+          hint = "null";
+        }
+
+        throw new WebDriverException("unexpected driver response: " + hint);
+      } else if (!(element instanceof RemoteWebElement)) {
+        return (WebElement) element;
       }
 
       RemoteWebElement remoteElement = (RemoteWebElement) element;
