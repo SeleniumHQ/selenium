@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigInteger;
 import java.time.Instant;

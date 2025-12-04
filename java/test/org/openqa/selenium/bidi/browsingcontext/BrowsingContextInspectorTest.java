@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
 import java.util.Optional;

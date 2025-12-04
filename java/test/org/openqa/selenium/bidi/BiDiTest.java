@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.bidi;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.util.concurrent.CompletableFuture;
