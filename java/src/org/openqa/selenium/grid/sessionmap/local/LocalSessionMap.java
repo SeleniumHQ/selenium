@@ -283,8 +283,8 @@ public class LocalSessionMap extends SessionMap {
 
     public Set<SessionId> getSessionsByUri(URI uri) {
       Set<SessionId> result = sessionsByUri.get(uri);
-      // Return a copy to prevent concurrent modification issues
-      return (result != null && !result.isEmpty()) ? new HashSet<>(result) : Set.of();
+      // Return an immutable copy to prevent concurrent modification issues
+      return (result != null && !result.isEmpty()) ? Set.copyOf(result) : Set.of();
     }
 
     public Set<Map.Entry<SessionId, Session>> entrySet() {
