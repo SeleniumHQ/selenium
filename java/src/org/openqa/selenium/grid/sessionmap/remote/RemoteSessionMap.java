@@ -88,12 +88,6 @@ public class RemoteSessionMap extends SessionMap {
 
     Session session = makeRequest(new HttpRequest(GET, "/se/grid/session/" + id), Session.class);
     if (session == null) {
-      // Check if the SessionId carries a close reason
-      String closeReason = id.getCloseReason();
-      if (closeReason != null) {
-        throw new NoSuchSessionException(
-            String.format("Unable to find session with ID: %s. %s", id, closeReason));
-      }
       throw new NoSuchSessionException("Unable to find session with ID: " + id);
     }
     return session;

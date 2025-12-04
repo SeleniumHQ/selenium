@@ -71,7 +71,10 @@ public class LocalSessionMap extends SessionMap {
 
     this.bus = Require.nonNull("Event bus", bus);
 
-    bus.addListener(SessionClosedEvent.listener(this::remove));
+    // Listen to SessionClosedEvent and extract both sessionId and reason
+    bus.addListener(
+        SessionClosedEvent.listener(
+            data -> removeWithReason(data.getSessionId(), data.getReason())));
 
     bus.addListener(
         NodeRemovedEvent.listener(
@@ -135,13 +138,6 @@ public class LocalSessionMap extends SessionMap {
             String.format("Unable to find session with ID: %s. Session was %s", id, removalInfo));
       }
 
-      // Check if the SessionId itself carries a close reason
-      String closeReason = id.getCloseReason();
-      if (closeReason != null) {
-        throw new NoSuchSessionException(
-            String.format("Unable to find session with ID: %s. Reason: %s", id, closeReason));
-      }
-
       throw new NoSuchSessionException("Unable to find session with ID: " + id);
     }
     return session;
@@ -149,23 +145,19 @@ public class LocalSessionMap extends SessionMap {
 
   @Override
   public void remove(SessionId id) {
+    removeWithReason(id, SessionClosedReason.QUIT_COMMAND);
+  }
+
+  private void removeWithReason(SessionId id, SessionClosedReason reason) {
     Require.nonNull("Session ID", id);
+    Require.nonNull("Reason", reason);
 
     Session removedSession = knownSessions.remove(id);
 
-    // The SessionId carries its close reason, track it in the cache
-    String closeReason = id.getCloseReason();
+    String reasonText = reason.getReasonText();
     if (removedSession != null) {
-      String reasonText = closeReason != null ? closeReason : "session closed (reason unknown)";
       recentlyRemovedSessions.put(id, new SessionRemovalInfo(reasonText, removedSession.getUri()));
       LOG.fine(String.format("Tracked removal for session %s with reason: %s", id, reasonText));
-    } else if (closeReason != null) {
-      // Session wasn't in knownSessions, but track it anyway since we know the reason
-      recentlyRemovedSessions.put(id, new SessionRemovalInfo(closeReason, null));
-      LOG.fine(
-          String.format(
-              "Session %s not found in knownSessions, but tracked removal with reason: %s",
-              id, closeReason));
     }
 
     try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.remove")) {
@@ -179,7 +171,7 @@ public class LocalSessionMap extends SessionMap {
               "Deleted session from local Session Map, Id: %s, Node: %s, Reason: %s",
               id,
               removedSession != null ? String.valueOf(removedSession.getUri()) : "unidentified",
-              closeReason != null ? closeReason : "unknown");
+              reasonText);
       span.addEvent(sessionDeletedMessage, attributeMap);
       LOG.info(sessionDeletedMessage);
     }
@@ -194,9 +186,8 @@ public class LocalSessionMap extends SessionMap {
 
     knownSessions.batchRemove(sessionsToRemove);
 
-    // Mark each SessionId with the close reason and track removal info
+    // Track removal info for each session
     for (SessionId sessionId : sessionsToRemove) {
-      sessionId.setCloseReason(closeReason.getReasonText());
       recentlyRemovedSessions.put(
           sessionId, new SessionRemovalInfo(closeReason.getReasonText(), externalUri));
     }

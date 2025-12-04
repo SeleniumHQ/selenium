@@ -34,21 +34,23 @@ public class SessionClosedEvent extends Event {
   }
 
   public SessionClosedEvent(SessionId id, SessionClosedReason reason) {
-    super(SESSION_CLOSED, markSessionId(id, reason));
+    super(SESSION_CLOSED, new SessionClosedData(id, reason));
     Require.nonNull("Session ID", id);
     Require.nonNull("Reason", reason);
   }
 
-  // Helper method to mark the SessionId before passing to Event constructor
-  private static SessionId markSessionId(SessionId id, SessionClosedReason reason) {
-    id.setCloseReason(reason.getReasonText());
-    return id;
-  }
-
-  // Standard listener method following the Event pattern
-  public static EventListener<SessionId> listener(Consumer<SessionId> handler) {
+  // Standard listener method that provides access to both SessionId and reason
+  public static EventListener<SessionClosedData> listener(Consumer<SessionClosedData> handler) {
     Require.nonNull("Handler", handler);
 
-    return new EventListener<>(SESSION_CLOSED, SessionId.class, handler);
+    return new EventListener<>(SESSION_CLOSED, SessionClosedData.class, handler);
+  }
+
+  // Convenience method for listeners that only care about the SessionId
+  public static EventListener<SessionClosedData> sessionListener(Consumer<SessionId> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(
+        SESSION_CLOSED, SessionClosedData.class, data -> handler.accept(data.getSessionId()));
   }
 }

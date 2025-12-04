@@ -45,6 +45,7 @@ import org.openqa.selenium.grid.data.NodeRestartedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.SessionClosedReason;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.remote.SessionId;
@@ -121,8 +122,7 @@ class LocalSessionMapTest {
     Session session = createSession(sessionId, nodeUri);
     sessionMap.add(session);
 
-    eventBus.fire(
-        new SessionClosedEvent(sessionId, SessionClosedEvent.SessionClosedReason.TIMEOUT));
+    eventBus.fire(new SessionClosedEvent(sessionId, SessionClosedReason.TIMEOUT));
 
     assertThatThrownBy(() -> sessionMap.get(sessionId))
         .isInstanceOf(NoSuchSessionException.class)

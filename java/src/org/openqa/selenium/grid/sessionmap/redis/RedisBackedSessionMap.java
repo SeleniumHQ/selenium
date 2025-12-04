@@ -76,7 +76,7 @@ public class RedisBackedSessionMap extends SessionMap {
     this.bus = Require.nonNull("Event bus", bus);
     this.connection = new GridRedisClient(serverUri);
     this.serverUri = serverUri;
-    this.bus.addListener(SessionClosedEvent.listener(this::remove));
+    this.bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
     this.bus.addListener(
         NodeRemovedEvent.listener(
