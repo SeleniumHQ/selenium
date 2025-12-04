@@ -17,14 +17,16 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params)
     : Command<AddPreloadScriptParameters, AddPreloadScriptResult>(@params, "script.addPreloadScript");
 
-internal sealed record AddPreloadScriptParameters(string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : Parameters;
+internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : Parameters;
 
 public sealed class AddPreloadScriptOptions : CommandOptions
 {

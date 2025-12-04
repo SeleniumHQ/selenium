@@ -1,4 +1,4 @@
-// <copyright file="StringSyntaxConstants.cs" company="Selenium Committers">
+// <copyright file="PermissionState.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,9 +17,15 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Internal;
+using OpenQA.Selenium.BiDi.Json.Converters;
+using System.Text.Json.Serialization;
 
-internal static class StringSyntaxConstants
+namespace OpenQA.Selenium.BiDi.Permissions;
+
+[JsonConverter(typeof(CamelCaseEnumConverter<PermissionState>))]
+public enum PermissionState
 {
-    public const string JavaScript = "javascript";
+    Granted,
+    Denied,
+    Prompt
 }

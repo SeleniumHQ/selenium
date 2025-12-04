@@ -28,11 +28,11 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 //[JsonDerivedType(typeof(DownloadCanceledEventArgs), "canceled")]
 //[JsonDerivedType(typeof(DownloadCompleteEventArgs), "complete")]
 [JsonConverter(typeof(DownloadEndEventArgsConverter))]
-public abstract record DownloadEndEventArgs(BiDi BiDi, BrowsingContext Context)
-    : BrowsingContextEventArgs(BiDi, Context);
+public abstract record DownloadEndEventArgs(BrowsingContext Context)
+    : BrowsingContextEventArgs(Context);
 
-public sealed record DownloadCanceledEventArgs(BiDi BiDi, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : DownloadEndEventArgs(BiDi, Context), IBaseNavigationInfo;
+public sealed record DownloadCanceledEventArgs(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
+    : DownloadEndEventArgs(Context), IBaseNavigationInfo;
 
-public sealed record DownloadCompleteEventArgs(BiDi BiDi, string? Filepath, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
-    : DownloadEndEventArgs(BiDi, Context), IBaseNavigationInfo;
+public sealed record DownloadCompleteEventArgs(string? Filepath, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
+    : DownloadEndEventArgs(Context), IBaseNavigationInfo;

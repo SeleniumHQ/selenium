@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,9 +31,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 abstract class HttpMessage<M extends HttpMessage<M>> {
@@ -92,7 +95,13 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    */
   public Iterable<String> getHeaders(String name) {
     return Collections.unmodifiableCollection(
-        headers.getOrDefault(name.toLowerCase(Locale.ENGLISH), Collections.emptyList()));
+        headers.getOrDefault(name.toLowerCase(Locale.ENGLISH), emptyList()));
+  }
+
+  /** See {@link #getHeader(String)} */
+  @Nullable
+  public String getHeader(HttpHeader name) {
+    return getHeader(name.getName());
   }
 
   /**
@@ -101,9 +110,10 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
    * @param name the name of the header, case-insensitive
    * @return the value
    */
+  @Nullable
   public String getHeader(String name) {
     String lcName = name.toLowerCase(Locale.ENGLISH);
-    List<String> values = headers.getOrDefault(lcName, Collections.emptyList());
+    List<String> values = headers.getOrDefault(lcName, emptyList());
     return !values.isEmpty() ? values.get(0) : null;
   }
 
@@ -118,6 +128,11 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
   public M setHeader(String name, String value) {
     String lcName = name.toLowerCase(Locale.ENGLISH);
     return removeHeader(lcName).addHeader(lcName, value);
+  }
+
+  /** See {@link #addHeader(String, String)} */
+  public M addHeader(HttpHeader name, String value) {
+    return addHeader(name.getName(), value);
   }
 
   /**
@@ -147,9 +162,26 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
     return self();
   }
 
+  /**
+   * Get the value of "Content-Length" header
+   *
+   * @return Content length or -1 if the message has no header "Content-Length"
+   */
+  @Nullable
+  public Long getContentLength() {
+    return Optional.ofNullable(getHeader(HttpHeader.ContentLength))
+        .map(Long::parseLong)
+        .orElse(-1L);
+  }
+
+  @Nullable
+  public String getContentType() {
+    return getHeader(HttpHeader.ContentType);
+  }
+
   public Charset getContentEncoding() {
     try {
-      String contentType = getHeader(HttpHeader.ContentType.getName());
+      String contentType = getContentType();
       if (contentType != null) {
         return Arrays.stream(contentType.split(";"))
             .map((e) -> e.trim().toLowerCase(Locale.ENGLISH))
@@ -181,6 +213,15 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
 
   public Contents.Supplier getContent() {
     return content;
+  }
+
+  @Override
+  public String toString() {
+    return getContent().toString();
+  }
+
+  public String contentAsString() {
+    return getContent().contentAsString(getContentEncoding());
   }
 
   @SuppressWarnings("unchecked")
