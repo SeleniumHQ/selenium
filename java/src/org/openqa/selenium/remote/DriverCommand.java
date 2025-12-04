@@ -24,6 +24,8 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
@@ -39,6 +41,7 @@ import org.openqa.selenium.print.PrintOptions;
  *
  * @author jmleyba@gmail.com (Jason Leyba)
  */
+@NullMarked
 public interface DriverCommand {
   String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";
@@ -254,7 +257,7 @@ public interface DriverCommand {
     return new CommandPayload(SWITCH_TO_NEW_WINDOW, Map.of("type", typeHint.toString()));
   }
 
-  static CommandPayload SWITCH_TO_FRAME(Object frame) {
+  static CommandPayload SWITCH_TO_FRAME(@Nullable Object frame) {
     return new CommandPayload(SWITCH_TO_FRAME, singletonMap("id", frame));
   }
 
