@@ -17,13 +17,13 @@
 // under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json.Nodes;
 
 namespace OpenQA.Selenium.Environment;
 
@@ -125,12 +125,12 @@ public class UrlBuilder
     {
         Uri createPageUri = new Uri(new Uri(WhereIs(string.Empty)), "createPage");
 
-        Dictionary<string, object> payloadDictionary = new Dictionary<string, object>
+        var payloadDictionary = new JsonObject
         {
             ["content"] = page.ToString()
         };
 
-        string commandPayload = JsonConvert.SerializeObject(payloadDictionary);
+        string commandPayload = payloadDictionary.ToJsonString();
 
         using var httpClient = new HttpClient();
 

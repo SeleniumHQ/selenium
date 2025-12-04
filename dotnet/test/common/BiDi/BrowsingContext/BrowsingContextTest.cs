@@ -298,13 +298,40 @@ class BrowsingContextTest : BiDiTestFixture
     [Test]
     public async Task CanSetViewport()
     {
-        await context.SetViewportAsync(new() { Viewport = new(250, 300) });
+        Task<int> GetWidthAsync() => context.Script.EvaluateAsync<int>("window.innerWidth", false);
+        Task<int> GetHeightAsync() => context.Script.EvaluateAsync<int>("window.innerHeight", false);
+
+        var defaultWidth = await GetWidthAsync();
+        var defaultHeight = await GetHeightAsync();
+
+        await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300) });
+
+        Assert.That(await GetWidthAsync(), Is.EqualTo(250));
+        Assert.That(await GetHeightAsync(), Is.EqualTo(300));
+
+        await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300) });
+        await context.SetViewportAsync(); // Sends nothing
+
+        Assert.That(await GetWidthAsync(), Is.EqualTo(250));
+        Assert.That(await GetHeightAsync(), Is.EqualTo(300));
+
+        await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300) });
+        await context.SetViewportAsync(new() { Viewport = default }); // Sends nothing
+
+        Assert.That(await GetWidthAsync(), Is.EqualTo(250));
+        Assert.That(await GetHeightAsync(), Is.EqualTo(300));
+
+        await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300) });
+        await context.SetViewportAsync(new() { Viewport = default(Viewport?) }); // Explicitly sends "null", resetting to default
+
+        Assert.That(await GetWidthAsync(), Is.EqualTo(defaultWidth));
+        Assert.That(await GetHeightAsync(), Is.EqualTo(defaultHeight));
     }
 
     [Test]
     public async Task CanSetViewportWithDevicePixelRatio()
     {
-        await context.SetViewportAsync(new() { Viewport = new(250, 300), DevicePixelRatio = 5 });
+        await context.SetViewportAsync(new() { Viewport = new Viewport(250, 300), DevicePixelRatio = 5 });
     }
 
     [Test]

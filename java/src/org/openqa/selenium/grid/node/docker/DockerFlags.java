@@ -57,9 +57,9 @@ public class DockerFlags implements HasRoles {
   @Parameter(
       names = {"--docker-api-version"},
       description =
-          "Docker API version to use. Only supported values are 1.41 (for Docker Engine"
-              + " older than v25) and 1.44 (for Docker Engine v29+). Default is 1.44.")
-  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "api-version", example = "1.41")
+          "Docker API version to use. Pin an API version instead of auto-detecting by"
+              + " implementation")
+  @ConfigValue(section = DockerOptions.DOCKER_SECTION, name = "api-version", example = "1.40")
   private String apiVersion;
 
   @Parameter(
@@ -114,6 +114,17 @@ public class DockerFlags implements HasRoles {
       name = "devices",
       example = "[\"/dev/kvm:/dev/kvm\"]")
   private List<String> devices;
+
+  @Parameter(
+      names = {"--docker-grouping-labels"},
+      description =
+          "Users to specify custom labels for grouping dynamic containers. This will make the"
+              + " system more flexible for different platforms and use cases")
+  @ConfigValue(
+      section = DockerOptions.DOCKER_SECTION,
+      name = "grouping-labels",
+      example = "[\"azure.container.group\", \"aws.ecs.cluster\"]")
+  private List<String> groupingLabels;
 
   @Parameter(
       names = {"--docker-video-image"},

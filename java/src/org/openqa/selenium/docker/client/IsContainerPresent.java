@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.docker.client;
 
-import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.openqa.selenium.docker.ContainerId;
@@ -29,10 +28,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 class IsContainerPresent {
   private final HttpHandler client;
   private final String apiVersion;
-
-  public IsContainerPresent(HttpHandler client) {
-    this(client, DOCKER_API_VERSION);
-  }
 
   public IsContainerPresent(HttpHandler client, String apiVersion) {
     this.client = Require.nonNull("Http client", client);

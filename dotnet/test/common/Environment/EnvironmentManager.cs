@@ -18,13 +18,13 @@
 // </copyright>
 
 using Bazel;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using OpenQA.Selenium.Internal;
 using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace OpenQA.Selenium.Environment;
 
@@ -56,7 +56,10 @@ public class EnvironmentManager
         string currentDirectory = this.CurrentDirectory;
 
         string content = File.ReadAllText(dataFilePath);
-        TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
+        TestEnvironment env = JsonSerializer.Deserialize<TestEnvironment>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
 
         string activeDriverConfig = System.Environment.GetEnvironmentVariable("ACTIVE_DRIVER_CONFIG") ?? TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
         string driverServiceLocation = System.Environment.GetEnvironmentVariable("DRIVER_SERVICE_LOCATION") ?? TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
