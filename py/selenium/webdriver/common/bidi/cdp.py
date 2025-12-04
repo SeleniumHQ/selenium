@@ -228,7 +228,6 @@ class CdpBase:
 
         Returns:
             An async iterator that iterates over events matching the indicated types.
-
         """
         sender, receiver = trio.open_memory_channel(buffer_size)
         for event_type in event_types:
