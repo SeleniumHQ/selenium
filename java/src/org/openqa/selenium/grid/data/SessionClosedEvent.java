@@ -28,10 +28,24 @@ public class SessionClosedEvent extends Event {
 
   private static final EventName SESSION_CLOSED = new EventName("session-closed");
 
+  // Backward compatible constructor
   public SessionClosedEvent(SessionId id) {
-    super(SESSION_CLOSED, id);
+    this(id, SessionClosedReason.QUIT_COMMAND);
   }
 
+  public SessionClosedEvent(SessionId id, SessionClosedReason reason) {
+    super(SESSION_CLOSED, markSessionId(id, reason));
+    Require.nonNull("Session ID", id);
+    Require.nonNull("Reason", reason);
+  }
+
+  // Helper method to mark the SessionId before passing to Event constructor
+  private static SessionId markSessionId(SessionId id, SessionClosedReason reason) {
+    id.setCloseReason(reason.getReasonText());
+    return id;
+  }
+
+  // Standard listener method following the Event pattern
   public static EventListener<SessionId> listener(Consumer<SessionId> handler) {
     Require.nonNull("Handler", handler);
 

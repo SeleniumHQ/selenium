@@ -109,7 +109,24 @@ class LocalSessionMapTest {
 
     eventBus.fire(new SessionClosedEvent(sessionId));
 
-    assertThatThrownBy(() -> sessionMap.get(sessionId)).isInstanceOf(NoSuchSessionException.class);
+    assertThatThrownBy(() -> sessionMap.get(sessionId))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageContaining("session closed normally (QUIT command)");
+  }
+
+  @Test
+  void shouldIncludeCloseReasonInExceptionForTimeout() {
+    SessionId sessionId = new SessionId("test-session-timeout");
+    URI nodeUri = URI.create("http://localhost:5555");
+    Session session = createSession(sessionId, nodeUri);
+    sessionMap.add(session);
+
+    eventBus.fire(
+        new SessionClosedEvent(sessionId, SessionClosedEvent.SessionClosedReason.TIMEOUT));
+
+    assertThatThrownBy(() -> sessionMap.get(sessionId))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageContaining("session timed out due to inactivity");
   }
 
   @Test
@@ -131,8 +148,12 @@ class LocalSessionMapTest {
 
     eventBus.fire(new NodeRemovedEvent(nodeStatus));
 
-    assertThatThrownBy(() -> sessionMap.get(session1Id)).isInstanceOf(NoSuchSessionException.class);
-    assertThatThrownBy(() -> sessionMap.get(session2Id)).isInstanceOf(NoSuchSessionException.class);
+    assertThatThrownBy(() -> sessionMap.get(session1Id))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageContaining("node was removed from the grid");
+    assertThatThrownBy(() -> sessionMap.get(session2Id))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageContaining("node was removed from the grid");
 
     assertThat(sessionMap.get(session3Id)).isEqualTo(session3);
   }
@@ -156,8 +177,12 @@ class LocalSessionMapTest {
 
     eventBus.fire(new NodeRestartedEvent(previousNodeStatus));
 
-    assertThatThrownBy(() -> sessionMap.get(session1Id)).isInstanceOf(NoSuchSessionException.class);
-    assertThatThrownBy(() -> sessionMap.get(session2Id)).isInstanceOf(NoSuchSessionException.class);
+    assertThatThrownBy(() -> sessionMap.get(session1Id))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageContaining("node was restarted");
+    assertThatThrownBy(() -> sessionMap.get(session2Id))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageContaining("node was restarted");
 
     assertThat(sessionMap.get(session3Id)).isEqualTo(session3);
   }
