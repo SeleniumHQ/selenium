@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.bidi.log;
 
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.bidi.script.Source;
 
 // @see <a
@@ -24,10 +25,10 @@ import org.openqa.selenium.bidi.script.Source;
 public class BaseLogEntry {
 
   private final LogLevel level;
-  private Source source;
+  private final Source source;
   private final String text;
   private final long timestamp;
-  private final StackTrace stackTrace;
+  @Nullable private final StackTrace stackTrace;
 
   public LogLevel getLevel() {
     return level;
@@ -41,6 +42,7 @@ public class BaseLogEntry {
     return timestamp;
   }
 
+  @Nullable
   public StackTrace getStackTrace() {
     return stackTrace;
   }
@@ -50,7 +52,7 @@ public class BaseLogEntry {
   }
 
   public BaseLogEntry(
-      LogLevel level, Source source, String text, long timestamp, StackTrace stackTrace) {
+      LogLevel level, Source source, String text, long timestamp, @Nullable StackTrace stackTrace) {
     this.level = level;
     this.source = source;
     this.text = text;
