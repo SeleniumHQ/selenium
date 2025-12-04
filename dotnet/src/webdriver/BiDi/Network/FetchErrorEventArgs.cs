@@ -23,5 +23,5 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record FetchErrorEventArgs(BiDi BiDi, BrowsingContext.BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, string ErrorText, IReadOnlyList<Intercept>? Intercepts)
-    : BaseParametersEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);
+public sealed record FetchErrorEventArgs(BrowsingContext.BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, string ErrorText, IReadOnlyList<Intercept>? Intercepts)
+    : BaseParametersEventArgs(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);

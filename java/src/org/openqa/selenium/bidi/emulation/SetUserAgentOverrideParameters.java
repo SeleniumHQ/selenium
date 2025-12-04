@@ -1,4 +1,3 @@
-// <copyright file="EventArgs.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,17 +14,23 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-using System.Text.Json.Serialization;
+package org.openqa.selenium.bidi.emulation;
 
-namespace OpenQA.Selenium.BiDi;
+public class SetUserAgentOverrideParameters extends AbstractOverrideParameters {
+  public SetUserAgentOverrideParameters(String userAgent) {
+    map.put("userAgent", userAgent);
+  }
 
-public abstract record EventArgs
-{
-    [JsonIgnore]
-    public BiDi BiDi { get; internal set; }
+  @Override
+  public SetUserAgentOverrideParameters contexts(java.util.List<String> contexts) {
+    super.contexts(contexts);
+    return this;
+  }
+
+  @Override
+  public SetUserAgentOverrideParameters userContexts(java.util.List<String> userContexts) {
+    super.userContexts(userContexts);
+    return this;
+  }
 }
-
-public abstract record BrowsingContextEventArgs(BrowsingContext.BrowsingContext Context)
-    : EventArgs;
