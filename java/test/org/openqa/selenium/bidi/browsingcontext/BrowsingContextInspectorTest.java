@@ -252,7 +252,29 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
       DownloadInfo downloadInfo = future.get(5, TimeUnit.SECONDS);
       assertThat(downloadInfo.getBrowsingContextId()).isEqualTo(context.getId());
       assertThat(downloadInfo.getUrl()).contains("/downloads/file_1.txt");
-      assertThat(downloadInfo.getSuggestedFilename()).isEqualTo("file_1.txt");
+      // actual filename depends on no. of downloads tried - file_1.txt, file_1(1).txt, etc
+      assertThat(downloadInfo.getSuggestedFilename()).contains("file_1");
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canListenToDownloadEnd() throws ExecutionException, InterruptedException, TimeoutException {
+    try (BrowsingContextInspector inspector = new BrowsingContextInspector(driver)) {
+      CompletableFuture<DownloadEnded> future = new CompletableFuture<>();
+
+      inspector.onDownloadEnd(future::complete);
+
+      BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+      context.navigate(appServer.whereIs("/downloads/download.html"), ReadinessState.COMPLETE);
+
+      driver.findElement(By.id("file-1")).click();
+
+      DownloadEnded downloadEnded = future.get(5, TimeUnit.SECONDS);
+      assertThat(downloadEnded.getDownloadParams().getBrowsingContextId())
+          .isEqualTo(context.getId());
+      assertThat(downloadEnded.isCompleted()).isTrue();
+      assertThat(downloadEnded.getDownloadParams().getUrl()).contains("/downloads/file_1.txt");
     }
   }
 

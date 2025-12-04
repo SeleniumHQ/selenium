@@ -20,7 +20,6 @@ import string
 import sys
 import warnings
 from base64 import b64encode
-from typing import Optional
 from urllib import parse
 from urllib.parse import unquote, urlparse
 
@@ -144,7 +143,7 @@ class RemoteConnection:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
     """
 
-    browser_name: Optional[str] = None
+    browser_name: str | None = None
     # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
     import os
     import socket
@@ -153,7 +152,7 @@ class RemoteConnection:
 
     _timeout = socket.getdefaulttimeout()
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
-    _client_config: Optional[ClientConfig] = None
+    _client_config: ClientConfig | None = None
 
     system = sys.platform
     if system == "darwin":
@@ -224,9 +223,9 @@ class RemoteConnection:
 
     @classmethod
     def set_certificate_bundle_path(cls, path):
-        """Set the path to the certificate bundle to verify connection to
-        command executor. Can also be set to None to disable certificate
-        validation.
+        """Set the path to the certificate bundle for verifying command executor connection.
+
+        Can also be set to None to disable certificate validation.
 
         Args:
             path: path of a .pem encoded certificate chain.
@@ -246,7 +245,6 @@ class RemoteConnection:
             parsed_url: The parsed url
             keep_alive: Is this a keep-alive connection (default: False)
         """
-
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json;charset=UTF-8",
@@ -308,12 +306,12 @@ class RemoteConnection:
 
     def __init__(
         self,
-        remote_server_addr: Optional[str] = None,
-        keep_alive: Optional[bool] = True,
-        ignore_proxy: Optional[bool] = False,
-        ignore_certificates: Optional[bool] = False,
-        init_args_for_pool_manager: Optional[dict] = None,
-        client_config: Optional[ClientConfig] = None,
+        remote_server_addr: str | None = None,
+        keep_alive: bool | None = True,
+        ignore_proxy: bool | None = False,
+        ignore_certificates: bool | None = False,
+        init_args_for_pool_manager: dict | None = None,
+        client_config: ClientConfig | None = None,
     ):
         self._client_config = client_config or ClientConfig(
             remote_server_addr=remote_server_addr,

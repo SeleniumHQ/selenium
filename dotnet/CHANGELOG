@@ -1,3 +1,8 @@
+v4.38.0
+======
+* [bidi] Avoid using JsonInclude attribute to include optional property for DTO (#16413)
+* update devtools versions
+
 v4.37.0
 ======
 * Add CDP for Chrome 141 and remove 138

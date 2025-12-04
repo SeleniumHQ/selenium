@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed class UserContext : IAsyncDisposable
+public sealed class UserContext : IEquatable<UserContext>, IAsyncDisposable
 {
     private readonly BiDi _bidi;
 
@@ -44,15 +44,19 @@ public sealed class UserContext : IAsyncDisposable
         await RemoveAsync().ConfigureAwait(false);
     }
 
+    public bool Equals(UserContext? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+
     public override bool Equals(object? obj)
     {
-        if (obj is UserContext userContextObj) return userContextObj.Id == Id;
-
-        return false;
+        return Equals(obj as UserContext);
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return StringComparer.Ordinal.GetHashCode(Id);
     }
 }
