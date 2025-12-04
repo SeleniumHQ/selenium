@@ -15,26 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium.support.events;
 
-import org.jspecify.annotations.NullMarked;
-import org.openqa.selenium.remote.http.HttpMethod;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
-@NullMarked
-public class CommandInfo {
-  private final String url;
-  private final HttpMethod method;
+public class WebDriverListenerException extends RuntimeException {
 
-  public CommandInfo(String url, HttpMethod method) {
-    this.url = url;
-    this.method = method;
+  public WebDriverListenerException(String message, Throwable cause) {
+    super(message, cause);
   }
 
-  String getUrl() {
-    return url;
-  }
-
-  HttpMethod getMethod() {
-    return method;
+  public WebDriverListenerException(Method method, Throwable cause) {
+    super(
+        "Exception executing listener method "
+            + method.getDeclaringClass().getSimpleName()
+            + "#"
+            + method.getName()
+            + " with parameter types "
+            + Arrays.toString(
+                Arrays.stream(method.getParameterTypes()).map(Class::getSimpleName).toArray()),
+        cause);
   }
 }

@@ -15,26 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium.bidi.emulation;
 
-import org.jspecify.annotations.NullMarked;
-import org.openqa.selenium.remote.http.HttpMethod;
-
-@NullMarked
-public class CommandInfo {
-  private final String url;
-  private final HttpMethod method;
-
-  public CommandInfo(String url, HttpMethod method) {
-    this.url = url;
-    this.method = method;
+public class SetUserAgentOverrideParameters extends AbstractOverrideParameters {
+  public SetUserAgentOverrideParameters(String userAgent) {
+    map.put("userAgent", userAgent);
   }
 
-  String getUrl() {
-    return url;
+  @Override
+  public SetUserAgentOverrideParameters contexts(java.util.List<String> contexts) {
+    super.contexts(contexts);
+    return this;
   }
 
-  HttpMethod getMethod() {
-    return method;
+  @Override
+  public SetUserAgentOverrideParameters userContexts(java.util.List<String> userContexts) {
+    super.userContexts(userContexts);
+    return this;
   }
 }
