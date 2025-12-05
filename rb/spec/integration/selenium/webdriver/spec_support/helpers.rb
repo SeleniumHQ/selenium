@@ -113,6 +113,13 @@ module Selenium
 
           [width, height]
         end
+
+        def create_tempfile
+          Tempfile.new.tap do |file|
+            file.write('This is a dummy test file')
+            file.close
+          end
+        end
       end # Helpers
     end # SpecSupport
   end # WebDriver

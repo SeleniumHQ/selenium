@@ -21,117 +21,116 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Gives properties to get a stack trace
+/// </summary>
+public class StackTraceElement
 {
+    private string fileName = string.Empty;
+    private string className = string.Empty;
+    private int lineNumber;
+    private string methodName = string.Empty;
+
     /// <summary>
-    /// Gives properties to get a stack trace
+    /// Initializes a new instance of the <see cref="StackTraceElement"/> class.
     /// </summary>
-    public class StackTraceElement
+    public StackTraceElement()
     {
-        private string fileName = string.Empty;
-        private string className = string.Empty;
-        private int lineNumber;
-        private string methodName = string.Empty;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StackTraceElement"/> class.
-        /// </summary>
-        public StackTraceElement()
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StackTraceElement"/> class using the given property values.
+    /// </summary>
+    /// <param name="elementAttributes">A <see cref="Dictionary{K, V}"/> containing the names and values for the properties of this <see cref="StackTraceElement"/>.</param>
+    public StackTraceElement(Dictionary<string, object?>? elementAttributes)
+    {
+        if (elementAttributes != null)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StackTraceElement"/> class using the given property values.
-        /// </summary>
-        /// <param name="elementAttributes">A <see cref="Dictionary{K, V}"/> containing the names and values for the properties of this <see cref="StackTraceElement"/>.</param>
-        public StackTraceElement(Dictionary<string, object?>? elementAttributes)
-        {
-            if (elementAttributes != null)
+            if (elementAttributes.TryGetValue("className", out object? classNameObj))
             {
-                if (elementAttributes.TryGetValue("className", out object? classNameObj))
+                string? className = classNameObj?.ToString();
+                if (className is not null)
                 {
-                    string? className = classNameObj?.ToString();
-                    if (className is not null)
-                    {
-                        this.className = className;
-                    }
+                    this.className = className;
                 }
+            }
 
-                if (elementAttributes.TryGetValue("methodName", out object? methodNameObj))
+            if (elementAttributes.TryGetValue("methodName", out object? methodNameObj))
+            {
+                string? methodName = methodNameObj?.ToString();
+                if (methodName is not null)
                 {
-                    string? methodName = methodNameObj?.ToString();
-                    if (methodName is not null)
-                    {
-                        this.methodName = methodName;
-                    }
+                    this.methodName = methodName;
                 }
+            }
 
-                if (elementAttributes.TryGetValue("lineNumber", out object? lineNumberObj))
+            if (elementAttributes.TryGetValue("lineNumber", out object? lineNumberObj))
+            {
+                if (int.TryParse(lineNumberObj?.ToString(), out int line))
                 {
-                    if (int.TryParse(lineNumberObj?.ToString(), out int line))
-                    {
-                        this.lineNumber = line;
-                    }
+                    this.lineNumber = line;
                 }
+            }
 
-                if (elementAttributes.TryGetValue("fileName", out object? fileNameObj))
+            if (elementAttributes.TryGetValue("fileName", out object? fileNameObj))
+            {
+                string? fileName = fileNameObj?.ToString();
+                if (fileName is not null)
                 {
-                    string? fileName = fileNameObj?.ToString();
-                    if (fileName is not null)
-                    {
-                        this.fileName = fileName;
-                    }
+                    this.fileName = fileName;
                 }
             }
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the value of the filename in the stack
-        /// </summary>
-        [JsonPropertyName("fileName")]
-        public string FileName
-        {
-            get { return this.fileName; }
-            set { this.fileName = value; }
-        }
+    /// <summary>
+    /// Gets or sets the value of the filename in the stack
+    /// </summary>
+    [JsonPropertyName("fileName")]
+    public string FileName
+    {
+        get { return this.fileName; }
+        set { this.fileName = value; }
+    }
 
-        /// <summary>
-        /// Gets or sets the value of the Class name in the stack trace
-        /// </summary>
-        [JsonPropertyName("className")]
-        public string ClassName
-        {
-            get { return this.className; }
-            set { this.className = value; }
-        }
+    /// <summary>
+    /// Gets or sets the value of the Class name in the stack trace
+    /// </summary>
+    [JsonPropertyName("className")]
+    public string ClassName
+    {
+        get { return this.className; }
+        set { this.className = value; }
+    }
 
-        /// <summary>
-        /// Gets or sets the line number
-        /// </summary>
-        [JsonPropertyName("lineNumber")]
-        public int LineNumber
-        {
-            get { return this.lineNumber; }
-            set { this.lineNumber = value; }
-        }
+    /// <summary>
+    /// Gets or sets the line number
+    /// </summary>
+    [JsonPropertyName("lineNumber")]
+    public int LineNumber
+    {
+        get { return this.lineNumber; }
+        set { this.lineNumber = value; }
+    }
 
-        /// <summary>
-        /// Gets or sets the Method name in the stack trace
-        /// </summary>
-        [JsonPropertyName("methodName")]
-        public string MethodName
-        {
-            get { return this.methodName; }
-            set { this.methodName = value; }
-        }
+    /// <summary>
+    /// Gets or sets the Method name in the stack trace
+    /// </summary>
+    [JsonPropertyName("methodName")]
+    public string MethodName
+    {
+        get { return this.methodName; }
+        set { this.methodName = value; }
+    }
 
-        /// <summary>
-        /// Gets a string representation of the object.
-        /// </summary>
-        /// <returns>A string representation of the object.</returns>
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "at {0}.{1} ({2}, {3})", this.className, this.methodName, this.fileName, this.lineNumber);
-        }
+    /// <summary>
+    /// Gets a string representation of the object.
+    /// </summary>
+    /// <returns>A string representation of the object.</returns>
+    public override string ToString()
+    {
+        return string.Format(CultureInfo.InvariantCulture, "at {0}.{1} ({2}, {3})", this.className, this.methodName, this.fileName, this.lineNumber);
     }
 }

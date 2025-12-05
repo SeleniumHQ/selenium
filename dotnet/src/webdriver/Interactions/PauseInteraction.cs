@@ -21,69 +21,68 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace OpenQA.Selenium.Interactions
+namespace OpenQA.Selenium.Interactions;
+
+/// <summary>
+/// Represents a pause action.
+/// </summary>
+internal class PauseInteraction : Interaction
 {
+    private readonly TimeSpan duration = TimeSpan.Zero;
+
     /// <summary>
-    /// Represents a pause action.
+    /// Initializes a new instance of the <see cref="PauseInteraction"/> class.
     /// </summary>
-    internal class PauseInteraction : Interaction
+    /// <param name="sourceDevice">The input device on which to execute the pause.</param>
+    public PauseInteraction(InputDevice sourceDevice)
+        : this(sourceDevice, TimeSpan.Zero)
     {
-        private readonly TimeSpan duration = TimeSpan.Zero;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PauseInteraction"/> class.
-        /// </summary>
-        /// <param name="sourceDevice">The input device on which to execute the pause.</param>
-        public PauseInteraction(InputDevice sourceDevice)
-            : this(sourceDevice, TimeSpan.Zero)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PauseInteraction"/> class.
+    /// </summary>
+    /// <param name="sourceDevice">The input device on which to execute the pause.</param>
+    /// <param name="duration">The length of time to pause for.</param>
+    /// <exception cref="ArgumentException">If <paramref name="duration"/> is negative.</exception>
+    public PauseInteraction(InputDevice sourceDevice, TimeSpan duration)
+        : base(sourceDevice)
+    {
+        if (duration < TimeSpan.Zero)
         {
+            throw new ArgumentException("Duration must be greater than or equal to zero", nameof(duration));
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PauseInteraction"/> class.
-        /// </summary>
-        /// <param name="sourceDevice">The input device on which to execute the pause.</param>
-        /// <param name="duration">The length of time to pause for.</param>
-        /// <exception cref="ArgumentException">If <paramref name="duration"/> is negative.</exception>
-        public PauseInteraction(InputDevice sourceDevice, TimeSpan duration)
-            : base(sourceDevice)
-        {
-            if (duration < TimeSpan.Zero)
-            {
-                throw new ArgumentException("Duration must be greater than or equal to zero", nameof(duration));
-            }
+        this.duration = duration;
+    }
 
-            this.duration = duration;
-        }
+    /// <summary>
+    /// Returns a value for this action that can be transmitted across the wire to a remote end.
+    /// </summary>
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representing this action.</returns>
+    public override Dictionary<string, object> ToDictionary()
+    {
+        Dictionary<string, object> toReturn = new Dictionary<string, object>();
 
-        /// <summary>
-        /// Returns a value for this action that can be transmitted across the wire to a remote end.
-        /// </summary>
-        /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representing this action.</returns>
-        public override Dictionary<string, object> ToDictionary()
-        {
-            Dictionary<string, object> toReturn = new Dictionary<string, object>();
+        toReturn["type"] = "pause";
+        toReturn["duration"] = Convert.ToInt64(this.duration.TotalMilliseconds);
 
-            toReturn["type"] = "pause";
-            toReturn["duration"] = Convert.ToInt64(this.duration.TotalMilliseconds);
+        return toReturn;
+    }
 
-            return toReturn;
-        }
+    /// <summary>
+    /// Gets a value indicating whether this action is valid for the specified type of input device.
+    /// </summary>
+    /// <param name="sourceDeviceKind">The type of device to check.</param>
+    /// <returns><see langword="true"/> if the action is valid for the specified type of input device;
+    /// otherwise, <see langword="false"/>.</returns>
+    public override bool IsValidFor(InputDeviceKind sourceDeviceKind)
+    {
+        return true;
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether this action is valid for the specified type of input device.
-        /// </summary>
-        /// <param name="sourceDeviceKind">The type of device to check.</param>
-        /// <returns><see langword="true"/> if the action is valid for the specified type of input device;
-        /// otherwise, <see langword="false"/>.</returns>
-        public override bool IsValidFor(InputDeviceKind sourceDeviceKind)
-        {
-            return true;
-        }
-
-        public override string ToString()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "Pause [duration: {0} ms]", this.duration.TotalMilliseconds);
-        }
+    public override string ToString()
+    {
+        return string.Format(CultureInfo.InvariantCulture, "Pause [duration: {0} ms]", this.duration.TotalMilliseconds);
     }
 }

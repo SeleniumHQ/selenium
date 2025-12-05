@@ -17,29 +17,28 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Provides an abstract base class for version-specific domain implementations.
+/// </summary>
+public abstract class DevToolsSessionDomains
 {
     /// <summary>
-    /// Provides an abstract base class for version-specific domain implementations.
+    /// Initializes a new instance of the <see cref="DevToolsSessionDomains"/> class.
     /// </summary>
-    public abstract class DevToolsSessionDomains
+    protected DevToolsSessionDomains()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DevToolsSessionDomains"/> class.
-        /// </summary>
-        protected DevToolsSessionDomains()
-        {
-            this.PopulateCommandResponseTypeMap();
-        }
-
-        /// <summary>
-        /// Gets the <see cref="CommandResponseTypeMap"/> containing information about the types returned by DevTools Protocol commands.,
-        /// </summary>
-        internal CommandResponseTypeMap ResponseTypeMap { get; } = new CommandResponseTypeMap();
-
-        /// <summary>
-        /// Populates the command response type map.
-        /// </summary>
-        protected abstract void PopulateCommandResponseTypeMap();
+        this.PopulateCommandResponseTypeMap();
     }
+
+    /// <summary>
+    /// Gets the <see cref="CommandResponseTypeMap"/> containing information about the types returned by DevTools Protocol commands.,
+    /// </summary>
+    internal CommandResponseTypeMap ResponseTypeMap { get; } = new CommandResponseTypeMap();
+
+    /// <summary>
+    /// Populates the command response type map.
+    /// </summary>
+    protected abstract void PopulateCommandResponseTypeMap();
 }

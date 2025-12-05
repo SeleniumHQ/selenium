@@ -19,29 +19,28 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Exception that is thrown when the requested command matched a known URL but did not match any method for that URL.
+/// </summary>
+[Serializable]
+public class UnknownMethodException : WebDriverException
 {
     /// <summary>
-    /// Exception that is thrown when the requested command matched a known URL but did not match any method for that URL.
+    /// Initializes a new instance of the <see cref="UnknownMethodException"/> class with the specified message.
     /// </summary>
-    [Serializable]
-    public class UnknownMethodException : WebDriverException
+    /// <param name="message">The message of the exception.</param>
+    public UnknownMethodException(string? message) : base(message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnknownMethodException"/> class with the specified message.
-        /// </summary>
-        /// <param name="message">The message of the exception.</param>
-        public UnknownMethodException(string? message) : base(message)
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnknownMethodException"/> class with the specified message and inner exception.
-        /// </summary>
-        /// <param name="message">The message of the exception.</param>
-        /// <param name="innerException">The inner exception for this exception.</param>
-        public UnknownMethodException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnknownMethodException"/> class with the specified message and inner exception.
+    /// </summary>
+    /// <param name="message">The message of the exception.</param>
+    /// <param name="innerException">The inner exception for this exception.</param>
+    public UnknownMethodException(string? message, Exception? innerException) : base(message, innerException)
+    {
     }
 }

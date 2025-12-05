@@ -20,26 +20,25 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Allows a user to handle a returned network, potentially modifying it before processing by the browser.
+/// </summary>
+public class NetworkResponseHandler
 {
     /// <summary>
-    /// Allows a user to handle a returned network, potentially modifying it before processing by the browser.
+    /// Gets or sets a function that evaluates returned response data in an <see cref="HttpResponseData"/> object,
+    /// and returns a value indicating whether the data matches the specified criteria.
     /// </summary>
-    public class NetworkResponseHandler
-    {
-        /// <summary>
-        /// Gets or sets a function that evaluates returned response data in an <see cref="HttpResponseData"/> object,
-        /// and returns a value indicating whether the data matches the specified criteria.
-        /// </summary>
-        [DisallowNull]
-        public Func<HttpResponseData, bool>? ResponseMatcher { get; set; }
+    [DisallowNull]
+    public Func<HttpResponseData, bool>? ResponseMatcher { get; set; }
 
-        /// <summary>
-        /// Gets or sets a function that accepts an <see cref="HttpResponseData"/> object describing a network
-        /// response received by the browser, and returns a modified <see cref="HttpResponseData"/> object to used
-        /// as the actual network response.
-        /// </summary>
-        [DisallowNull]
-        public Func<HttpResponseData, HttpResponseData>? ResponseTransformer { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets a function that accepts an <see cref="HttpResponseData"/> object describing a network
+    /// response received by the browser, and returns a modified <see cref="HttpResponseData"/> object to used
+    /// as the actual network response.
+    /// </summary>
+    [DisallowNull]
+    public Func<HttpResponseData, HttpResponseData>? ResponseTransformer { get; set; }
 }

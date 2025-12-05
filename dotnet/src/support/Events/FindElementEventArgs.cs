@@ -19,51 +19,50 @@
 
 using System;
 
-namespace OpenQA.Selenium.Support.Events
+namespace OpenQA.Selenium.Support.Events;
+
+/// <summary>
+/// Provides data for events related to finding elements.
+/// </summary>
+public class FindElementEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for events related to finding elements.
+    /// Initializes a new instance of the <see cref="FindElementEventArgs"/> class.
     /// </summary>
-    public class FindElementEventArgs : EventArgs
+    /// <param name="driver">The WebDriver instance used in finding elements.</param>
+    /// <param name="method">The <see cref="By"/> object containing the method used to find elements.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="method"/> are <see langword="null"/>.</exception>
+    public FindElementEventArgs(IWebDriver driver, By method)
+        : this(driver, null, method)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FindElementEventArgs"/> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used in finding elements.</param>
-        /// <param name="method">The <see cref="By"/> object containing the method used to find elements.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="method"/> are <see langword="null"/>.</exception>
-        public FindElementEventArgs(IWebDriver driver, By method)
-            : this(driver, null, method)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FindElementEventArgs"/> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used in finding elements.</param>
-        /// <param name="element">The parent element used as the context for the search, or <see langword="null"/> if none exists.</param>
-        /// <param name="method">The <see cref="By"/> object containing the method used to find elements.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="method"/> are <see langword="null"/>.</exception>
-        public FindElementEventArgs(IWebDriver driver, IWebElement? element, By method)
-        {
-            this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-            this.Element = element;
-            this.FindMethod = method ?? throw new ArgumentNullException(nameof(method));
-        }
-
-        /// <summary>
-        /// Gets the WebDriver instance used in finding elements.
-        /// </summary>
-        public IWebDriver Driver { get; }
-
-        /// <summary>
-        /// Gets the parent element used as the context for the search, or <see langword="null"/> if no element is associated.
-        /// </summary>
-        public IWebElement? Element { get; }
-
-        /// <summary>
-        /// Gets the <see cref="By"/> object containing the method used to find elements.
-        /// </summary>
-        public By FindMethod { get; }
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FindElementEventArgs"/> class.
+    /// </summary>
+    /// <param name="driver">The WebDriver instance used in finding elements.</param>
+    /// <param name="element">The parent element used as the context for the search, or <see langword="null"/> if none exists.</param>
+    /// <param name="method">The <see cref="By"/> object containing the method used to find elements.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="method"/> are <see langword="null"/>.</exception>
+    public FindElementEventArgs(IWebDriver driver, IWebElement? element, By method)
+    {
+        this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        this.Element = element;
+        this.FindMethod = method ?? throw new ArgumentNullException(nameof(method));
+    }
+
+    /// <summary>
+    /// Gets the WebDriver instance used in finding elements.
+    /// </summary>
+    public IWebDriver Driver { get; }
+
+    /// <summary>
+    /// Gets the parent element used as the context for the search, or <see langword="null"/> if no element is associated.
+    /// </summary>
+    public IWebElement? Element { get; }
+
+    /// <summary>
+    /// Gets the <see cref="By"/> object containing the method used to find elements.
+    /// </summary>
+    public By FindMethod { get; }
 }

@@ -19,19 +19,18 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Interface allowing a driver implementation to generate a print representation of the page.
+/// </summary>
+public interface ISupportsPrint
 {
     /// <summary>
-    /// Interface allowing a driver implementation to generate a print representation of the page.
+    /// Gets a <see cref="PrintDocument"/> object representing a PDF-formatted print representation of the page.
     /// </summary>
-    public interface ISupportsPrint
-    {
-        /// <summary>
-        /// Gets a <see cref="PrintDocument"/> object representing a PDF-formatted print representation of the page.
-        /// </summary>
-        /// <param name="options">A <see cref="PrintOptions"/> object describing the options of the printed document.</param>
-        /// <returns>The <see cref="PrintDocument"/> object containing the PDF-formatted print representation of the page.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
-        PrintDocument Print(PrintOptions options);
-    }
+    /// <param name="options">A <see cref="PrintOptions"/> object describing the options of the printed document.</param>
+    /// <returns>The <see cref="PrintDocument"/> object containing the PDF-formatted print representation of the page.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
+    PrintDocument Print(PrintOptions options);
 }

@@ -17,14 +17,14 @@
 
 import pytest
 
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import UnexpectedTagNameException
+from selenium.common.exceptions import NoSuchElementException, UnexpectedTagNameException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
 disabledSelect = {"name": "no-select", "values": ["Foo"]}
 disabledSingleSelect = {"name": "single_disabled", "values": ["Enabled", "Disabled"]}
 disabledMultiSelect = {"name": "multi_disabled", "values": ["Enabled", "Disabled"]}
+invisibleMultiSelect = {"id": "invisible_multi_select", "values": ["Apples", "Pears", "Oranges", "Lemons"]}
 singleSelectValues1 = {
     "name": "selectomatic",
     "values": ["One", "Two", "Four", "Still learning how to count, apparently"],
@@ -159,6 +159,15 @@ def test_raises_exception_select_by_text_multiple_disabled(driver, pages):
     sel = Select(driver.find_element(By.NAME, disabledMultiSelect["name"]))
     with pytest.raises(NotImplementedError):
         sel.select_by_visible_text(disabledMultiSelect["values"][1])
+
+
+def test_raises_exception_select_by_text_multiple_hidden(driver, pages):
+    pages.load("formPage.html")
+
+    sel = Select(driver.find_element(By.ID, invisibleMultiSelect["id"]))
+    for option in invisibleMultiSelect["values"]:
+        with pytest.raises(NoSuchElementException):
+            sel.select_by_visible_text(option)
 
 
 def test_deselect_all_single(driver, pages):

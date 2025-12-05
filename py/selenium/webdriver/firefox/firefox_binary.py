@@ -17,11 +17,9 @@
 
 
 import os
+import sys
 import time
-from platform import system
-from subprocess import DEVNULL
-from subprocess import STDOUT
-from subprocess import Popen
+from subprocess import DEVNULL, STDOUT, Popen
 
 from typing_extensions import deprecated
 
@@ -36,18 +34,18 @@ class FirefoxBinary:
     def __init__(self, firefox_path=None, log_file=None):
         """Creates a new instance of Firefox binary.
 
-        :Args:
-         - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.
-         - log_file - A file object to redirect the firefox process output to. It can be sys.stdout.
-                      Please note that with parallel run the output won't be synchronous.
-                      By default, it will be redirected to /dev/null.
+        Args:
+            firefox_path: Path to the Firefox executable. By default, it will be detected from the standard locations.
+            log_file: A file object to redirect the firefox process output to. It can be sys.stdout.
+                Please note that with parallel run the output won't be synchronous.
+                By default, it will be redirected to /dev/null.
         """
         self._start_cmd = firefox_path
         # We used to default to subprocess.PIPE instead of /dev/null, but after
         # a while the pipe would fill up and Firefox would freeze.
         self._log_file = log_file or DEVNULL
         self.command_line = None
-        self.platform = system().lower()
+        self.platform = sys.platform
         if not self._start_cmd:
             self._start_cmd = self._get_firefox_start_cmd()
         if not self._start_cmd.strip():
@@ -124,12 +122,9 @@ class FirefoxBinary:
 
     def _find_exe_in_registry(self):
         try:
-            from _winreg import HKEY_CURRENT_USER
-            from _winreg import HKEY_LOCAL_MACHINE
-            from _winreg import OpenKey
-            from _winreg import QueryValue
+            from _winreg import HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, OpenKey, QueryValue
         except ImportError:
-            from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
+            from winreg import HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, OpenKey, QueryValue
         import shlex
 
         keys = (
@@ -222,8 +217,7 @@ class FirefoxBinary:
         return built_path
 
     def which(self, fname):
-        """Returns the fully qualified path by searching Path of the given
-        name."""
+        """Return the fully qualified path by searching PATH for the given name."""
         for pe in os.environ["PATH"].split(os.pathsep):
             checkname = os.path.join(pe, fname)
             if os.access(checkname, os.X_OK) and not os.path.isdir(checkname):

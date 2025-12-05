@@ -15,8 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::assert::AssertResult;
 use assert_cmd::Command;
+use assert_cmd::assert::AssertResult;
 use is_executable::is_executable;
 use selenium_manager::files::path_to_string;
 use selenium_manager::logger::JsonOutput;
@@ -24,17 +24,24 @@ use selenium_manager::shell;
 use selenium_manager::shell::run_shell_command_by_os;
 use std::borrow::BorrowMut;
 use std::env::consts::OS;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 #[allow(dead_code)]
 pub fn get_selenium_manager() -> Command {
-    let path = env!("CARGO_BIN_EXE_selenium-manager");
+    let path = PathBuf::from(env!("CARGO_BIN_EXE_selenium-manager"));
 
-    if Path::new(path).exists() {
+    if path.exists() {
         return Command::new(path);
     }
 
-    panic!("Binary not found {}", path)
+    if cfg!(windows) {
+        let exe_path = path.with_extension("exe");
+        if exe_path.exists() {
+            return Command::new(exe_path);
+        }
+    }
+
+    panic!("Binary not found {}", path_to_string(&path));
 }
 
 #[allow(dead_code)]
@@ -105,10 +112,12 @@ pub fn assert_output(
             .iter()
             .for_each(|o| assert!(output.contains(o)));
     } else {
-        assert!(assert_result
-            .err()
-            .unwrap()
-            .to_string()
-            .contains(&error_code.to_string()));
+        assert!(
+            assert_result
+                .err()
+                .unwrap()
+                .to_string()
+                .contains(&error_code.to_string())
+        );
     }
 }

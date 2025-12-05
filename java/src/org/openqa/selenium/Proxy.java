@@ -67,7 +67,7 @@ public class Proxy {
   }
 
   private static final String PROXY_TYPE = "proxyType";
-  private static final String FTP_PROXY = "ftpProxy";
+  @Deprecated private static final String FTP_PROXY = "ftpProxy";
   private static final String HTTP_PROXY = "httpProxy";
   private static final String NO_PROXY = "noProxy";
   private static final String SSL_PROXY = "sslProxy";
@@ -80,7 +80,7 @@ public class Proxy {
 
   private ProxyType proxyType = ProxyType.UNSPECIFIED;
   private boolean autodetect = false;
-  private @Nullable String ftpProxy;
+  @Deprecated private @Nullable String ftpProxy;
   private @Nullable String httpProxy;
   private @Nullable String noProxy;
   private @Nullable String sslProxy;
@@ -225,7 +225,9 @@ public class Proxy {
    * Gets the FTP proxy.
    *
    * @return the FTP proxy hostname if present, or null if not set
+   * @deprecated getFtpProxy is deprecated and will be removed in a future release.
    */
+  @Deprecated
   public @Nullable String getFtpProxy() {
     return ftpProxy;
   }
@@ -235,7 +237,9 @@ public class Proxy {
    *
    * @param ftpProxy the proxy host, expected format is <code>hostname.com:1234</code>
    * @return reference to self
+   * @deprecated setFtpProxy is deprecated and will be removed in a future release.
    */
+  @Deprecated
   public Proxy setFtpProxy(String ftpProxy) {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;

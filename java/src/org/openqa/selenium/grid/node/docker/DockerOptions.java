@@ -30,14 +30,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
@@ -68,6 +71,10 @@ public class DockerOptions {
   private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
+  private static final Pattern LINUX_DEVICE_MAPPING_WITH_DEFAULT_PERMISSIONS =
+      Pattern.compile("^([\\w/-]+):([\\w/-]+)$");
+  private static final Pattern LINUX_DEVICE_MAPPING_WITH_PERMISSIONS =
+      Pattern.compile("^([\\w/-]+):([\\w/-]+):(\\w+)$");
   private final Config config;
 
   public DockerOptions(Config config) {
@@ -111,6 +118,10 @@ public class DockerOptions {
         config.getInt(DOCKER_SECTION, "server-start-timeout").orElse(DEFAULT_SERVER_START_TIMEOUT));
   }
 
+  private String getApiVersion() {
+    return config.get(DOCKER_SECTION, "api-version").orElse(null);
+  }
+
   private boolean isEnabled(Docker docker) {
     if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
       return false;
@@ -125,7 +136,8 @@ public class DockerOptions {
 
     HttpClient client =
         clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
-    Docker docker = new Docker(client);
+    String apiVersion = getApiVersion();
+    Docker docker = new Docker(client, apiVersion);
 
     if (!isEnabled(docker)) {
       throw new DockerException("Unable to reach the Docker daemon at " + getDockerUri());
@@ -140,10 +152,11 @@ public class DockerOptions {
         config.getAll(DOCKER_SECTION, "host-config-keys").orElseGet(Collections::emptyList);
 
     Multimap<String, Capabilities> kinds = HashMultimap.create();
-    for (int i = 0; i < allConfigs.size(); i++) {
+    int configsCount = allConfigs.size();
+    for (int i = 0; i < configsCount; i++) {
       String imageName = allConfigs.get(i);
       i++;
-      if (i == allConfigs.size()) {
+      if (i == configsCount) {
         throw new DockerException("Unable to find JSON config");
       }
       Capabilities stereotype =
@@ -163,6 +176,7 @@ public class DockerOptions {
     DockerAssetsPath assetsPath = getAssetsPath(info);
     String networkName = getDockerNetworkName(info);
     Map<String, Object> hostConfig = getDockerHostConfig(info);
+    Map<String, String> groupingLabels = getGroupingLabels(info);
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
@@ -198,7 +212,8 @@ public class DockerOptions {
                     info.isPresent(),
                     capabilities -> options.getSlotMatcher().matches(caps, capabilities),
                     hostConfig,
-                    hostConfigKeys));
+                    hostConfigKeys,
+                    groupingLabels));
           }
           LOG.info(
               String.format(
@@ -208,23 +223,17 @@ public class DockerOptions {
   }
 
   protected List<Device> getDevicesMapping() {
-    Pattern linuxDeviceMappingWithDefaultPermissionsPattern =
-        Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+)$");
-    Pattern linuxDeviceMappingWithPermissionsPattern =
-        Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+):([\\w]+)$");
-
     List<String> devices =
         config.getAll(DOCKER_SECTION, "devices").orElseGet(Collections::emptyList);
 
     List<Device> deviceMapping = new ArrayList<>();
     for (String device : devices) {
       String deviceMappingDefined = device.trim();
-      Matcher matcher =
-          linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+      Matcher matcher = LINUX_DEVICE_MAPPING_WITH_DEFAULT_PERMISSIONS.matcher(deviceMappingDefined);
 
       if (matcher.matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), null));
-      } else if ((matcher = linuxDeviceMappingWithPermissionsPattern.matcher(deviceMappingDefined))
+      } else if ((matcher = LINUX_DEVICE_MAPPING_WITH_PERMISSIONS.matcher(deviceMappingDefined))
           .matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), matcher.group(3)));
       }
@@ -251,6 +260,27 @@ public class DockerOptions {
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   private Map<String, Object> getDockerHostConfig(Optional<ContainerInfo> info) {
     return info.map(ContainerInfo::getHostConfig).orElse(Collections.emptyMap());
+  }
+
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private Map<String, String> getGroupingLabels(Optional<ContainerInfo> info) {
+    if (info.isEmpty()) {
+      return Collections.emptyMap();
+    }
+
+    // Get custom grouping labels from configuration
+    List<String> customLabelKeys =
+        config.getAll(DOCKER_SECTION, "grouping-labels").orElseGet(Collections::emptyList);
+
+    Set<String> groupingKeys = new HashSet<>(customLabelKeys);
+    groupingKeys.add("com.docker.compose.project");
+    groupingKeys.add("io.podman.compose.project");
+
+    Map<String, String> allLabels = info.get().getLabels();
+    // Filter for grouping labels that work across orchestration systems
+    return allLabels.entrySet().stream()
+        .filter(entry -> groupingKeys.contains(entry.getKey()))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

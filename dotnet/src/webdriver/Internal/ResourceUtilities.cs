@@ -17,119 +17,155 @@
 // under the License.
 // </copyright>
 
+using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium.Internal;
+
+/// <summary>
+/// Encapsulates methods for finding and extracting WebDriver resources.
+/// </summary>
+internal static partial class ResourceUtilities
 {
+    private static string? productVersion;
+    private static string? platformFamily;
+
     /// <summary>
-    /// Encapsulates methods for finding and extracting WebDriver resources.
+    /// Gets a string representing the informational version of the Selenium product.
     /// </summary>
-    internal static class ResourceUtilities
+    public static string ProductVersion
     {
-        private static string? productVersion;
-        private static string? platformFamily;
-
-        /// <summary>
-        /// Gets a string representing the informational version of the Selenium product.
-        /// </summary>
-        public static string ProductVersion
+        get
         {
-            get
+            if (productVersion == null)
             {
-                if (productVersion == null)
-                {
-                    Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                    var assemblyInformationalVersionAttribute = executingAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-                    if (assemblyInformationalVersionAttribute == null)
-                    {
-                        productVersion = "Unknown";
-                    }
-                    else
-                    {
-                        productVersion = assemblyInformationalVersionAttribute.InformationalVersion;
-                    }
-                }
-
-                return productVersion;
-            }
-        }
-
-        /// <summary>
-        /// Gets a string representing the platform family on which the Selenium assembly is executing.
-        /// </summary>
-        public static string PlatformFamily => platformFamily ??= GetPlatformString();
-
-        /// <summary>
-        /// Gets a <see cref="Stream"/> that contains the resource to use.
-        /// </summary>
-        /// <param name="fileName">A file name in the file system containing the resource to use.</param>
-        /// <param name="resourceId">A string representing the resource name embedded in the
-        /// executing assembly, if it is not found in the file system.</param>
-        /// <returns>A Stream from which the resource can be read.</returns>
-        /// <exception cref="WebDriverException">Thrown if neither the file nor the embedded resource can be found.</exception>
-        /// <remarks>
-        /// The GetResourceStream method searches for the specified resource using the following
-        /// algorithm:
-        /// <para>
-        /// <list type="numbered">
-        /// <item>In the same directory as the calling assembly.</item>
-        /// <item>In the full path specified by the <paramref name="fileName"/> argument.</item>
-        /// <item>Inside the calling assembly as an embedded resource.</item>
-        /// </list>
-        /// </para>
-        /// </remarks>
-        public static Stream GetResourceStream(string fileName, string resourceId)
-        {
-            Stream? resourceStream;
-            string resourceFilePath = Path.Combine(FileUtilities.GetCurrentDirectory(), Path.GetFileName(fileName));
-            if (File.Exists(resourceFilePath))
-            {
-                resourceStream = new FileStream(resourceFilePath, FileMode.Open, FileAccess.Read);
-            }
-            else if (File.Exists(fileName))
-            {
-                resourceStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(resourceId))
-                {
-                    throw new WebDriverException("The file specified does not exist, and you have specified no internal resource ID");
-                }
-
                 Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                resourceStream = executingAssembly.GetManifestResourceStream(resourceId);
+                var assemblyInformationalVersionAttribute = executingAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+                if (assemblyInformationalVersionAttribute == null)
+                {
+                    productVersion = "Unknown";
+                }
+                else
+                {
+                    productVersion = assemblyInformationalVersionAttribute.InformationalVersion;
+                }
             }
 
-            if (resourceStream == null)
-            {
-                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot find a file named '{0}' or an embedded resource with the id '{1}'.", resourceFilePath, resourceId));
-            }
-
-            return resourceStream;
+            return productVersion;
         }
+    }
 
-        private static string GetPlatformString()
+    /// <summary>
+    /// Gets a string representing the platform family on which the Selenium assembly is executing.
+    /// </summary>
+    public static string PlatformFamily => platformFamily ??= GetPlatformString();
+
+    /// <summary>
+    /// Gets a <see cref="Stream"/> that contains the resource to use.
+    /// </summary>
+    /// <param name="fileName">A file name in the file system containing the resource to use.</param>
+    /// <param name="resourceId">A string representing the resource name embedded in the
+    /// executing assembly, if it is not found in the file system.</param>
+    /// <returns>A Stream from which the resource can be read.</returns>
+    /// <exception cref="WebDriverException">Thrown if neither the file nor the embedded resource can be found.</exception>
+    /// <remarks>
+    /// The GetResourceStream method searches for the specified resource using the following
+    /// algorithm:
+    /// <para>
+    /// <list type="numbered">
+    /// <item>In the same directory as the calling assembly.</item>
+    /// <item>In the full path specified by the <paramref name="fileName"/> argument.</item>
+    /// <item>Inside the calling assembly as an embedded resource.</item>
+    /// </list>
+    /// </para>
+    /// </remarks>
+    public static Stream GetResourceStream(string fileName, string resourceId)
+    {
+        Stream? resourceStream;
+        string resourceFilePath = Path.Combine(FileUtilities.GetCurrentDirectory(), Path.GetFileName(fileName));
+        if (File.Exists(resourceFilePath))
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            resourceStream = new FileStream(resourceFilePath, FileMode.Open, FileAccess.Read);
+        }
+        else if (File.Exists(fileName))
+        {
+            resourceStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(resourceId))
             {
-                return "windows";
+                throw new WebDriverException("The file specified does not exist, and you have specified no internal resource ID");
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            resourceStream = executingAssembly.GetManifestResourceStream(resourceId);
+        }
+
+        if (resourceStream == null)
+        {
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot find a file named '{0}' or an embedded resource with the id '{1}'.", resourceFilePath, resourceId));
+        }
+
+        return resourceStream;
+    }
+
+    private static string GetPlatformString()
+    {
+#if NET462
+        // Unfortunately, detecting the currently running platform isn't as
+        // straightforward as you might hope.
+        // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
+        // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
+        string platformName = "unknown";
+        const int PlatformMonoUnixValue = 128;
+        PlatformID platformId = Environment.OSVersion.Platform;
+        if (platformId == PlatformID.Unix || platformId == PlatformID.MacOSX || (int)platformId == PlatformMonoUnixValue)
+        {
+            using (Process unameProcess = new Process())
             {
-                return "linux";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return "mac";
-            }
-            else
-            {
-                return "unknown";
+                unameProcess.StartInfo.FileName = "uname";
+                unameProcess.StartInfo.UseShellExecute = false;
+                unameProcess.StartInfo.RedirectStandardOutput = true;
+                unameProcess.Start();
+                unameProcess.WaitForExit(1000);
+                string output = unameProcess.StandardOutput.ReadToEnd();
+                if (output.ToLowerInvariant().StartsWith("darwin"))
+                {
+                    platformName = "mac";
+                }
+                else
+                {
+                    platformName = "linux";
+                }
             }
         }
+        else if (platformId == PlatformID.Win32NT || platformId == PlatformID.Win32S || platformId == PlatformID.Win32Windows || platformId == PlatformID.WinCE)
+        {
+            platformName = "windows";
+        }
+        return platformName;
+#else
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return "windows";
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            return "linux";
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            return "mac";
+        }
+        else
+        {
+            return "unknown";
+        }
+#endif
     }
 }

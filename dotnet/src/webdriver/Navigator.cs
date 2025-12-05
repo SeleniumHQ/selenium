@@ -21,146 +21,145 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides a mechanism for Navigating with the driver.
+/// </summary>
+internal sealed class Navigator : INavigation
 {
+    private readonly WebDriver driver;
+
     /// <summary>
-    /// Provides a mechanism for Navigating with the driver.
+    /// Initializes a new instance of the <see cref="Navigator"/> class
     /// </summary>
-    internal sealed class Navigator : INavigation
+    /// <param name="driver">Driver in use</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is null.</exception>
+    public Navigator(WebDriver driver)
     {
-        private readonly WebDriver driver;
+        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Navigator"/> class
-        /// </summary>
-        /// <param name="driver">Driver in use</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="driver"/> is null.</exception>
-        public Navigator(WebDriver driver)
+    /// <summary>
+    /// Move back a single entry in the browser's history.
+    /// </summary>
+    public void Back()
+    {
+        Task.Run(async delegate
         {
-            this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+            await this.BackAsync();
+        }).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Move back a single entry in the browser's history as an asynchronous task.
+    /// </summary>
+    /// <returns>A task object representing the asynchronous operation.</returns>
+    public async Task BackAsync()
+    {
+        await this.driver.ExecuteAsync(DriverCommand.GoBack, null).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Move a single "item" forward in the browser's history.
+    /// </summary>
+    public void Forward()
+    {
+        Task.Run(async delegate
+        {
+            await this.ForwardAsync();
+        }).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Move a single "item" forward in the browser's history as an asynchronous task.
+    /// </summary>
+    /// <returns>A task object representing the asynchronous operation.</returns>
+    public async Task ForwardAsync()
+    {
+        await this.driver.ExecuteAsync(DriverCommand.GoForward, null).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Navigate to a url.
+    /// </summary>
+    /// <param name="url">String of where you want the browser to go to</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
+    public void GoToUrl(string url)
+    {
+        Task.Run(async delegate
+        {
+            await this.GoToUrlAsync(url);
+        }).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Navigate to a url as an asynchronous task.
+    /// </summary>
+    /// <param name="url">String of where you want the browser to go.</param>
+    /// <returns>A task object representing the asynchronous operation.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
+    public async Task GoToUrlAsync(string url)
+    {
+        if (url == null)
+        {
+            throw new ArgumentNullException(nameof(url), "URL cannot be null.");
         }
 
-        /// <summary>
-        /// Move back a single entry in the browser's history.
-        /// </summary>
-        public void Back()
+        Dictionary<string, object> parameters = new Dictionary<string, object>
         {
-            Task.Run(async delegate
-            {
-                await this.BackAsync();
-            }).GetAwaiter().GetResult();
+            { "url", url }
+        };
+        await this.driver.ExecuteAsync(DriverCommand.Get, parameters).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Navigate to a url.
+    /// </summary>
+    /// <param name="url">Uri object of where you want the browser to go.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
+    public void GoToUrl(Uri url)
+    {
+        Task.Run(async delegate
+        {
+            await this.GoToUrlAsync(url);
+        }).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Navigate to a url as an asynchronous task.
+    /// </summary>
+    /// <param name="url">Uri object of where you want the browser to go.</param>
+    /// <returns>A task object representing the asynchronous operation.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
+    public async Task GoToUrlAsync(Uri url)
+    {
+        if (url == null)
+        {
+            throw new ArgumentNullException(nameof(url), "URL cannot be null.");
         }
 
-        /// <summary>
-        /// Move back a single entry in the browser's history as an asynchronous task.
-        /// </summary>
-        /// <returns>A task object representing the asynchronous operation.</returns>
-        public async Task BackAsync()
+        await this.GoToUrlAsync(url.ToString()).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Reload the current page.
+    /// </summary>
+    public void Refresh()
+    {
+        Task.Run(async delegate
         {
-            await this.driver.ExecuteAsync(DriverCommand.GoBack, null).ConfigureAwait(false);
-        }
+            await this.RefreshAsync();
+        }).GetAwaiter().GetResult();
+    }
 
-        /// <summary>
-        /// Move a single "item" forward in the browser's history.
-        /// </summary>
-        public void Forward()
-        {
-            Task.Run(async delegate
-            {
-                await this.ForwardAsync();
-            }).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Move a single "item" forward in the browser's history as an asynchronous task.
-        /// </summary>
-        /// <returns>A task object representing the asynchronous operation.</returns>
-        public async Task ForwardAsync()
-        {
-            await this.driver.ExecuteAsync(DriverCommand.GoForward, null).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Navigate to a url.
-        /// </summary>
-        /// <param name="url">String of where you want the browser to go to</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
-        public void GoToUrl(string url)
-        {
-            Task.Run(async delegate
-            {
-                await this.GoToUrlAsync(url);
-            }).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Navigate to a url as an asynchronous task.
-        /// </summary>
-        /// <param name="url">String of where you want the browser to go.</param>
-        /// <returns>A task object representing the asynchronous operation.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
-        public async Task GoToUrlAsync(string url)
-        {
-            if (url == null)
-            {
-                throw new ArgumentNullException(nameof(url), "URL cannot be null.");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>
-            {
-                { "url", url }
-            };
-            await this.driver.ExecuteAsync(DriverCommand.Get, parameters).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Navigate to a url.
-        /// </summary>
-        /// <param name="url">Uri object of where you want the browser to go.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
-        public void GoToUrl(Uri url)
-        {
-            Task.Run(async delegate
-            {
-                await this.GoToUrlAsync(url);
-            }).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Navigate to a url as an asynchronous task.
-        /// </summary>
-        /// <param name="url">Uri object of where you want the browser to go.</param>
-        /// <returns>A task object representing the asynchronous operation.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="url"/> is <see langword="null"/>.</exception>
-        public async Task GoToUrlAsync(Uri url)
-        {
-            if (url == null)
-            {
-                throw new ArgumentNullException(nameof(url), "URL cannot be null.");
-            }
-
-            await this.GoToUrlAsync(url.ToString()).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Reload the current page.
-        /// </summary>
-        public void Refresh()
-        {
-            Task.Run(async delegate
-            {
-                await this.RefreshAsync();
-            }).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Reload the current page as an asynchronous task.
-        /// </summary>
-        /// <returns>A task object representing the asynchronous operation.</returns>
-        public async Task RefreshAsync()
-        {
-            // driver.SwitchTo().DefaultContent();
-            await this.driver.ExecuteAsync(DriverCommand.Refresh, null).ConfigureAwait(false);
-        }
+    /// <summary>
+    /// Reload the current page as an asynchronous task.
+    /// </summary>
+    /// <returns>A task object representing the asynchronous operation.</returns>
+    public async Task RefreshAsync()
+    {
+        // driver.SwitchTo().DefaultContent();
+        await this.driver.ExecuteAsync(DriverCommand.Refresh, null).ConfigureAwait(false);
     }
 }

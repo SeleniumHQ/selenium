@@ -39,7 +39,6 @@ class NetworkEventsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(EDGE)
   void canListenToBeforeRequestSentEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
@@ -60,7 +59,6 @@ class NetworkEventsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(EDGE)
   void canListenToResponseStartedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
@@ -83,7 +81,6 @@ class NetworkEventsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(EDGE)
   void canListenToResponseCompletedEvent()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
@@ -106,7 +103,6 @@ class NetworkEventsTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  @NotYetImplemented(EDGE)
   void canListenToResponseCompletedEventWithCookie()
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {

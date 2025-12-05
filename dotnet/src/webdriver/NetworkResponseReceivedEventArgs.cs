@@ -20,68 +20,67 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides data for the NetworkResponseReceived event of an object implementing the <see cref="INetwork"/> interface.
+/// </summary>
+public class NetworkResponseReceivedEventArgs : EventArgs
 {
+    private readonly Dictionary<string, string> responseHeaders = new Dictionary<string, string>();
+
     /// <summary>
-    /// Provides data for the NetworkResponseReceived event of an object implementing the <see cref="INetwork"/> interface.
+    /// Initializes a new instance of the <see cref="NetworkResponseReceivedEventArgs"/> class.
     /// </summary>
-    public class NetworkResponseReceivedEventArgs : EventArgs
+    /// <param name="responseData">The <see cref="HttpResponseData"/> that describes the network response.</param>
+    public NetworkResponseReceivedEventArgs(HttpResponseData responseData)
     {
-        private readonly Dictionary<string, string> responseHeaders = new Dictionary<string, string>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NetworkResponseReceivedEventArgs"/> class.
-        /// </summary>
-        /// <param name="responseData">The <see cref="HttpResponseData"/> that describes the network response.</param>
-        public NetworkResponseReceivedEventArgs(HttpResponseData responseData)
+        this.RequestId = responseData.RequestId;
+        this.ResponseUrl = responseData.Url;
+        this.ResponseStatusCode = responseData.StatusCode;
+        this.ResponseContent = responseData.Content;
+        this.ResponseResourceType = responseData.ResourceType;
+        foreach (KeyValuePair<string, string> header in responseData.Headers)
         {
-            this.RequestId = responseData.RequestId;
-            this.ResponseUrl = responseData.Url;
-            this.ResponseStatusCode = responseData.StatusCode;
-            this.ResponseContent = responseData.Content;
-            this.ResponseResourceType = responseData.ResourceType;
-            foreach (KeyValuePair<string, string> header in responseData.Headers)
-            {
-                this.responseHeaders[header.Key] = header.Value;
-            }
+            this.responseHeaders[header.Key] = header.Value;
         }
-
-        /// <summary>
-        /// Gets the request ID of the network request that generated this response.
-        /// </summary>
-        public string? RequestId { get; }
-
-        /// <summary>
-        /// Gets the URL of the network response.
-        /// </summary>
-        public string? ResponseUrl { get; }
-
-        /// <summary>
-        /// Gets the HTTP status code of the network response.
-        /// </summary>
-        public long ResponseStatusCode { get; }
-
-        /// <summary>
-        /// Gets the body of the network response.
-        /// </summary>
-        /// <remarks>
-        /// This property is an alias for <see cref="ResponseContent"/>.ReadAsString() to keep backward compatibility.
-        /// </remarks>
-        public string? ResponseBody => this.ResponseContent?.ReadAsString();
-
-        /// <summary>
-        /// Gets the content of the network response, if any.
-        /// </summary>
-        public HttpResponseContent? ResponseContent { get; }
-
-        /// <summary>
-        /// Gets the type of resource of the network response.
-        /// </summary>
-        public string? ResponseResourceType { get; }
-
-        /// <summary>
-        /// Gets the headers associated with this network response.
-        /// </summary>
-        public IReadOnlyDictionary<string, string> ResponseHeaders => this.responseHeaders;
     }
+
+    /// <summary>
+    /// Gets the request ID of the network request that generated this response.
+    /// </summary>
+    public string? RequestId { get; }
+
+    /// <summary>
+    /// Gets the URL of the network response.
+    /// </summary>
+    public string? ResponseUrl { get; }
+
+    /// <summary>
+    /// Gets the HTTP status code of the network response.
+    /// </summary>
+    public long ResponseStatusCode { get; }
+
+    /// <summary>
+    /// Gets the body of the network response.
+    /// </summary>
+    /// <remarks>
+    /// This property is an alias for <see cref="ResponseContent"/>.ReadAsString() to keep backward compatibility.
+    /// </remarks>
+    public string? ResponseBody => this.ResponseContent?.ReadAsString();
+
+    /// <summary>
+    /// Gets the content of the network response, if any.
+    /// </summary>
+    public HttpResponseContent? ResponseContent { get; }
+
+    /// <summary>
+    /// Gets the type of resource of the network response.
+    /// </summary>
+    public string? ResponseResourceType { get; }
+
+    /// <summary>
+    /// Gets the headers associated with this network response.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> ResponseHeaders => this.responseHeaders;
 }

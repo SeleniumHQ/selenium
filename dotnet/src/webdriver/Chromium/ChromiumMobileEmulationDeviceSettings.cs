@@ -17,59 +17,58 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Chromium
+namespace OpenQA.Selenium.Chromium;
+
+/// <summary>
+/// Represents the type-safe options for setting settings for emulating a
+/// mobile device in the Chromium browser.
+/// </summary>
+public class ChromiumMobileEmulationDeviceSettings
 {
     /// <summary>
-    /// Represents the type-safe options for setting settings for emulating a
-    /// mobile device in the Chromium browser.
+    /// Initializes a new instance of the <see cref="ChromiumMobileEmulationDeviceSettings"/> class.
     /// </summary>
-    public class ChromiumMobileEmulationDeviceSettings
+    public ChromiumMobileEmulationDeviceSettings()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChromiumMobileEmulationDeviceSettings"/> class.
-        /// </summary>
-        public ChromiumMobileEmulationDeviceSettings()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChromiumMobileEmulationDeviceSettings"/> class.
-        /// </summary>
-        /// <param name="userAgent">The user agent string to be used by the browser when emulating
-        /// a mobile device.</param>
-        public ChromiumMobileEmulationDeviceSettings(string? userAgent)
-        {
-            this.UserAgent = userAgent;
-        }
-
-        /// <summary>
-        /// Gets or sets the user agent string to be used by the browser when emulating
-        /// a mobile device.
-        /// </summary>
-        public string? UserAgent { get; set; }
-
-        /// <summary>
-        /// Gets or sets the width in pixels to be used by the browser when emulating
-        /// a mobile device.
-        /// </summary>
-        public long Width { get; set; }
-
-        /// <summary>
-        /// Gets or sets the height in pixels to be used by the browser when emulating
-        /// a mobile device.
-        /// </summary>
-        public long Height { get; set; }
-
-        /// <summary>
-        /// Gets or sets the pixel ratio to be used by the browser when emulating
-        /// a mobile device.
-        /// </summary>
-        public double PixelRatio { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether touch events should be enabled by
-        /// the browser when emulating a mobile device. Defaults to <see langword="true"/>.
-        /// </summary>
-        public bool EnableTouchEvents { get; set; } = true;
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChromiumMobileEmulationDeviceSettings"/> class.
+    /// </summary>
+    /// <param name="userAgent">The user agent string to be used by the browser when emulating
+    /// a mobile device.</param>
+    public ChromiumMobileEmulationDeviceSettings(string? userAgent)
+    {
+        this.UserAgent = userAgent;
+    }
+
+    /// <summary>
+    /// Gets or sets the user agent string to be used by the browser when emulating
+    /// a mobile device.
+    /// </summary>
+    public string? UserAgent { get; set; }
+
+    /// <summary>
+    /// Gets or sets the width in pixels to be used by the browser when emulating
+    /// a mobile device.
+    /// </summary>
+    public long Width { get; set; }
+
+    /// <summary>
+    /// Gets or sets the height in pixels to be used by the browser when emulating
+    /// a mobile device.
+    /// </summary>
+    public long Height { get; set; }
+
+    /// <summary>
+    /// Gets or sets the pixel ratio to be used by the browser when emulating
+    /// a mobile device.
+    /// </summary>
+    public double PixelRatio { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether touch events should be enabled by
+    /// the browser when emulating a mobile device. Defaults to <see langword="true"/>.
+    /// </summary>
+    public bool EnableTouchEvents { get; set; } = true;
 }

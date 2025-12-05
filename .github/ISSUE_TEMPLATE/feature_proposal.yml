@@ -1,31 +1,53 @@
 name: 🚀 Feature Proposal
-description: Propose a feature
+description: Suggest a new feature or improvement to Selenium
 title: "[🚀 Feature]: "
-labels: [ I-enhancement, needs-triaging ]
+labels: [ I-enhancement, A-needs-triaging ]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to propose a feature!
   - type: textarea
-    id: feature-description
+    id: description
     attributes:
-      label: Feature and motivation
-      description: |
-        Describe clearly and concisely the feature you are proposing, what is the motivation
-        behind it.
+      label: Description
       placeholder: |
-        Help us to understand your proposal by adding as many details as possible, we will look into
-        it and give you feedback as soon as possible.
+        What would you like Selenium to support or do differently?
+        Please include:
+        - The problem this would solve
+        - How you expect the feature would work
+        - Any relevant context or use cases
+        - Links to related issues, discussions, or external tools (if applicable)
     validations:
       required: true
+
   - type: textarea
-    id: feature-example
+    id: alternatives
     attributes:
-      label: Usage example
-      description: |
-        How would you use this feature?
+      label: Have you considered any alternatives or workarounds?
       placeholder: |
-        A clear example showing how this feature is useful for you and the Selenium community.
+        If you've tried other ways to solve this problem, describe them here.
+        If not, you can leave this blank.
     validations:
-      required: true
+      required: false
+
+  - type: dropdown
+    id: bindings
+    attributes:
+      label: Does this apply to specific language bindings?
+      multiple: true
+      options:
+        - Java
+        - Python
+        - C#/.NET
+        - JavaScript/Node.js
+        - Ruby
+
+  - type: dropdown
+    id: components
+    attributes:
+      label: What part(s) of Selenium does this relate to?
+      multiple: true
+      options:
+        - Atoms
+        - Build (CI or Bazel)
+        - DevTools (CDP or BiDi)
+        - Documentation
+        - Grid
+        - Selenium Manager

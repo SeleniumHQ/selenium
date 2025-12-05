@@ -16,22 +16,20 @@
 # under the License.
 
 import logging
-import platform
 import string
+import sys
 import warnings
 from base64 import b64encode
-from typing import Optional
 from urllib import parse
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 import urllib3
 
 from selenium import __version__
-
-from . import utils
-from .client_config import ClientConfig
-from .command import Command
-from .errorhandler import ErrorCode
+from selenium.webdriver.remote import utils
+from selenium.webdriver.remote.client_config import ClientConfig
+from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.errorhandler import ErrorCode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -145,22 +143,18 @@ class RemoteConnection:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
     """
 
-    browser_name = None
+    browser_name: str | None = None
     # Keep backward compatibility for AppiumConnection - https://github.com/SeleniumHQ/selenium/issues/14694
     import os
     import socket
 
     import certifi
 
-    _timeout = (
-        float(os.getenv("GLOBAL_DEFAULT_TIMEOUT", str(socket.getdefaulttimeout())))
-        if os.getenv("GLOBAL_DEFAULT_TIMEOUT") is not None
-        else socket.getdefaulttimeout()
-    )
+    _timeout = socket.getdefaulttimeout()
     _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
-    _client_config: ClientConfig = None
+    _client_config: ClientConfig | None = None
 
-    system = platform.system().lower()
+    system = sys.platform
     if system == "darwin":
         system = "mac"
 
@@ -168,15 +162,20 @@ class RemoteConnection:
     extra_headers = None
     user_agent = f"selenium/{__version__} (python {system})"
 
+    @property
+    def client_config(self):
+        return self._client_config
+
     @classmethod
     def get_timeout(cls):
-        """:Returns:
+        """Returns timeout value in seconds for all http requests made to the Remote Connection.
 
-        Timeout value in seconds for all http requests made to the
-        Remote Connection
+        Returns:
+            Timeout value in seconds for all http requests made to the
+            Remote Connection
         """
         warnings.warn(
-            "get_timeout() in RemoteConnection is deprecated, get timeout from ClientConfig instance instead",
+            "get_timeout() in RemoteConnection is deprecated, get timeout from client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -186,11 +185,11 @@ class RemoteConnection:
     def set_timeout(cls, timeout):
         """Override the default timeout.
 
-        :Args:
-            - timeout - timeout value for http requests in seconds
+        Args:
+            timeout: timeout value for http requests in seconds
         """
         warnings.warn(
-            "set_timeout() in RemoteConnection is deprecated, set timeout to ClientConfig instance in constructor instead",
+            "set_timeout() in RemoteConnection is deprecated, set timeout in client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -200,7 +199,7 @@ class RemoteConnection:
     def reset_timeout(cls):
         """Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT."""
         warnings.warn(
-            "reset_timeout() in RemoteConnection is deprecated, use reset_timeout() in ClientConfig instance instead",
+            "reset_timeout() in RemoteConnection is deprecated, use reset_timeout() in client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -208,14 +207,15 @@ class RemoteConnection:
 
     @classmethod
     def get_certificate_bundle_path(cls):
-        """:Returns:
+        """Returns paths of the .pem encoded certificate to verify connection to command executor.
 
-        Paths of the .pem encoded certificate to verify connection to
-        command executor. Defaults to certifi.where() or
-        REQUESTS_CA_BUNDLE env variable if set.
+        Returns:
+            Paths of the .pem encoded certificate to verify connection to
+            command executor. Defaults to certifi.where() or
+            REQUESTS_CA_BUNDLE env variable if set.
         """
         warnings.warn(
-            "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from ClientConfig instance instead",
+            "get_certificate_bundle_path() in RemoteConnection is deprecated, get ca_certs from client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -223,15 +223,15 @@ class RemoteConnection:
 
     @classmethod
     def set_certificate_bundle_path(cls, path):
-        """Set the path to the certificate bundle to verify connection to
-        command executor. Can also be set to None to disable certificate
-        validation.
+        """Set the path to the certificate bundle for verifying command executor connection.
 
-        :Args:
-            - path - path of a .pem encoded certificate chain.
+        Can also be set to None to disable certificate validation.
+
+        Args:
+            path: path of a .pem encoded certificate chain.
         """
         warnings.warn(
-            "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs to ClientConfig instance in constructor instead",
+            "set_certificate_bundle_path() in RemoteConnection is deprecated, set ca_certs in client_config instead",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -241,11 +241,10 @@ class RemoteConnection:
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
         """Get headers for remote request.
 
-        :Args:
-         - parsed_url - The parsed url
-         - keep_alive (Boolean) - Is this a keep-alive connection (default: False)
+        Args:
+            parsed_url: The parsed url
+            keep_alive: Is this a keep-alive connection (default: False)
         """
-
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json;charset=UTF-8",
@@ -298,19 +297,21 @@ class RemoteConnection:
                 return SOCKSProxyManager(self._proxy_url, **pool_manager_init_args)
             if self._identify_http_proxy_auth():
                 self._proxy_url, self._basic_proxy_auth = self._separate_http_proxy_auth()
-                pool_manager_init_args["proxy_headers"] = urllib3.make_headers(proxy_basic_auth=self._basic_proxy_auth)
+                pool_manager_init_args["proxy_headers"] = urllib3.make_headers(
+                    proxy_basic_auth=unquote(self._basic_proxy_auth)
+                )
             return urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
     def __init__(
         self,
-        remote_server_addr: Optional[str] = None,
-        keep_alive: Optional[bool] = True,
-        ignore_proxy: Optional[bool] = False,
-        ignore_certificates: Optional[bool] = False,
-        init_args_for_pool_manager: Optional[dict] = None,
-        client_config: Optional[ClientConfig] = None,
+        remote_server_addr: str | None = None,
+        keep_alive: bool | None = True,
+        ignore_proxy: bool | None = False,
+        ignore_certificates: bool | None = False,
+        init_args_for_pool_manager: dict | None = None,
+        client_config: ClientConfig | None = None,
     ):
         self._client_config = client_config or ClientConfig(
             remote_server_addr=remote_server_addr,
@@ -328,35 +329,35 @@ class RemoteConnection:
 
         if remote_server_addr:
             warnings.warn(
-                "setting remote_server_addr in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting remote_server_addr in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if not keep_alive:
             warnings.warn(
-                "setting keep_alive in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting keep_alive in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if ignore_certificates:
             warnings.warn(
-                "setting ignore_certificates in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting ignore_certificates in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if init_args_for_pool_manager:
             warnings.warn(
-                "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting init_args_for_pool_manager in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
 
         if ignore_proxy:
             warnings.warn(
-                "setting ignore_proxy in RemoteConnection() is deprecated, set in ClientConfig instance instead",
+                "setting ignore_proxy in RemoteConnection() is deprecated, set in client_config instead",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -384,10 +385,10 @@ class RemoteConnection:
         Any path substitutions required for the URL mapped to the command should be
         included in the command parameters.
 
-        :Args:
-         - command - A string specifying the command to execute.
-         - params - A dictionary of named parameters to send with the command as
-           its JSON payload.
+        Args:
+            command: A string specifying the command to execute.
+            params: A dictionary of named parameters to send with the command as
+                its JSON payload.
         """
         command_info = self._commands.get(command) or self.extra_commands.get(command)
         assert command_info is not None, f"Unrecognised command {command}"
@@ -403,16 +404,16 @@ class RemoteConnection:
         LOGGER.debug("%s %s %s", command_info[0], url, str(trimmed))
         return self._request(command_info[0], url, body=data)
 
-    def _request(self, method, url, body=None):
+    def _request(self, method, url, body=None) -> dict:
         """Send an HTTP request to the remote server.
 
-        :Args:
-         - method - A string for the HTTP method to send the request with.
-         - url - A string for the URL to send the request to.
-         - body - A string for request body. Ignored unless method is POST or PUT.
+        Args:
+            method: A string for the HTTP method to send the request with.
+            url: A string for the URL to send the request to.
+            body: A string for request body. Ignored unless method is POST or PUT.
 
-        :Returns:
-          A dictionary with the server's parsed JSON response.
+        Returns:
+            A dictionary with the server's parsed JSON response.
         """
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self._client_config.keep_alive)
@@ -437,10 +438,10 @@ class RemoteConnection:
         try:
             if 300 <= statuscode < 304:
                 return self._request("GET", response.headers.get("location", None))
-            if 399 < statuscode <= 500:
-                if statuscode == 401:
-                    return {"status": statuscode, "value": "Authorization Required"}
-                return {"status": statuscode, "value": str(statuscode) if not data else data.strip()}
+            if statuscode == 401:
+                return {"status": statuscode, "value": "Authorization Required"}
+            if statuscode >= 400:
+                return {"status": statuscode, "value": response.reason if not data else data.strip()}
             content_type = []
             if response.headers.get("Content-Type", None):
                 content_type = response.headers.get("Content-Type", None).split(";")
@@ -470,12 +471,15 @@ class RemoteConnection:
         if hasattr(self, "_conn"):
             self._conn.clear()
 
-    def _trim_large_entries(self, input_dict, max_length=100):
+    def _trim_large_entries(self, input_dict, max_length=100) -> dict:
         """Truncate string values in a dictionary if they exceed max_length.
 
-        :param dict: Dictionary with potentially large values
-        :param max_length: Maximum allowed length of string values
-        :return: Dictionary with truncated string values
+        Args:
+            input_dict: Dictionary with potentially large values
+            max_length: Maximum allowed length of string values
+
+        Returns:
+            Dictionary with truncated string values
         """
         output_dictionary = {}
         for key, value in input_dict.items():

@@ -18,18 +18,25 @@
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::shell::run_shell_command_by_os;
 use crate::{
-    default_cache_folder, format_one_arg, path_to_string, Command, ENV_PROCESSOR_ARCHITECTURE,
-    REQUEST_TIMEOUT_SEC, UNAME_COMMAND,
+    ARCH_ARM7L, Command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC, UNAME_COMMAND,
+    default_cache_folder, format_one_arg, path_to_string,
 };
-use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_SEC, WMIC_COMMAND_OS};
-use anyhow::anyhow;
+use crate::{ARCH_ARM64, ARCH_X64, ARCH_X86, TTL_SEC};
 use anyhow::Error;
+use anyhow::anyhow;
 use std::cell::RefCell;
 use std::env;
 use std::env::consts::OS;
 use std::fs::read_to_string;
 use std::path::Path;
 use toml::Table;
+#[cfg(windows)]
+use winapi::um::sysinfoapi::{GetNativeSystemInfo, SYSTEM_INFO};
+#[cfg(windows)]
+use winapi::um::winnt::{
+    PROCESSOR_ARCHITECTURE_AMD64, PROCESSOR_ARCHITECTURE_ARM, PROCESSOR_ARCHITECTURE_ARM64,
+    PROCESSOR_ARCHITECTURE_IA64, PROCESSOR_ARCHITECTURE_INTEL,
+};
 
 thread_local!(static CACHE_PATH: RefCell<String> = RefCell::new(path_to_string(&default_cache_folder())));
 
@@ -69,17 +76,19 @@ impl ManagerConfig {
 
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
-            let mut architecture = env::var(ENV_PROCESSOR_ARCHITECTURE).unwrap_or_default();
-            if architecture.is_empty() {
-                let get_os_command = Command::new_single(WMIC_COMMAND_OS.to_string());
-                architecture = run_shell_command_by_os(self_os, get_os_command).unwrap_or_default();
+            let mut _architecture = env::var(ENV_PROCESSOR_ARCHITECTURE).unwrap_or_default();
+            #[cfg(windows)]
+            {
+                if _architecture.is_empty() {
+                    _architecture = get_win_os_architecture();
+                }
             }
-            if architecture.contains("32") {
+            if _architecture.contains("32") {
                 ARCH_X86.to_string()
-            } else if architecture.contains("ARM") {
+            } else if _architecture.contains("ARM") {
                 ARCH_ARM64.to_string()
             } else {
-                ARCH_AMD64.to_string()
+                ARCH_X64.to_string()
             }
         } else {
             let uname_a_command = Command::new_single(format_one_arg(UNAME_COMMAND, "a"));
@@ -172,14 +181,16 @@ pub enum ARCH {
     X32,
     X64,
     ARM64,
+    ARMV7,
 }
 
 impl ARCH {
     pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
             ARCH::X32 => vec![ARCH_X86, "i386", "x32"],
-            ARCH::X64 => vec![ARCH_AMD64, "x86_64", "x64", "i686", "ia64"],
-            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm", "arm64"],
+            ARCH::X64 => vec![ARCH_X64, "amd64", "x64", "i686", "ia64"],
+            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
+            ARCH::ARMV7 => vec![ARCH_ARM7L, "armv7l"],
         }
     }
 
@@ -296,4 +307,22 @@ fn read_cache_path() -> String {
         }
     });
     cache_path
+}
+
+#[cfg(windows)]
+fn get_win_os_architecture() -> String {
+    unsafe {
+        let mut system_info: SYSTEM_INFO = std::mem::zeroed();
+        GetNativeSystemInfo(&mut system_info);
+
+        match system_info.u.s() {
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 => "64-bit",
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL => "32-bit",
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM => "ARM",
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64 => "ARM64",
+            si if si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64 => "Itanium-based",
+            _ => "Unknown",
+        }
+        .to_string()
+    }
 }

@@ -19,23 +19,22 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Represents the default file detector for determining whether a file
+/// must be uploaded to a remote server.
+/// </summary>
+public class DefaultFileDetector : IFileDetector
 {
     /// <summary>
-    /// Represents the default file detector for determining whether a file
-    /// must be uploaded to a remote server.
+    /// Returns a value indicating whether a specified key sequence represents
+    /// a file name and path.
     /// </summary>
-    public class DefaultFileDetector : IFileDetector
+    /// <param name="keySequence">The sequence to test for file existence.</param>
+    /// <returns>This method always returns <see langword="false"/> in this implementation.</returns>
+    public bool IsFile([NotNullWhen(true)] string? keySequence)
     {
-        /// <summary>
-        /// Returns a value indicating whether a specified key sequence represents
-        /// a file name and path.
-        /// </summary>
-        /// <param name="keySequence">The sequence to test for file existence.</param>
-        /// <returns>This method always returns <see langword="false"/> in this implementation.</returns>
-        public bool IsFile([NotNullWhen(true)] string? keySequence)
-        {
-            return false;
-        }
+        return false;
     }
 }

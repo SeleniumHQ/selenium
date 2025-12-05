@@ -19,29 +19,28 @@
 
 using System;
 
-namespace OpenQA.Selenium.Support.Events
+namespace OpenQA.Selenium.Support.Events;
+
+/// <summary>
+/// Provides data for events related to finding elements.
+/// </summary>
+public class WebElementValueEventArgs : WebElementEventArgs
 {
     /// <summary>
-    /// Provides data for events related to finding elements.
+    /// Initializes a new instance of the <see cref="WebElementValueEventArgs"/> class.
     /// </summary>
-    public class WebElementValueEventArgs : WebElementEventArgs
+    /// <param name="driver">The WebDriver instance used for the action.</param>
+    /// <param name="element">The element used for the action.</param>
+    /// <param name="value">The new value for the element.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="element"/> are <see langword="null"/>.</exception>
+    public WebElementValueEventArgs(IWebDriver driver, IWebElement element, string? value)
+        : base(driver, element)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebElementValueEventArgs"/> class.
-        /// </summary>
-        /// <param name="driver">The WebDriver instance used for the action.</param>
-        /// <param name="element">The element used for the action.</param>
-        /// <param name="value">The new value for the element.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="driver"/> or <paramref name="element"/> are <see langword="null"/>.</exception>
-        public WebElementValueEventArgs(IWebDriver driver, IWebElement element, string? value)
-            : base(driver, element)
-        {
-            this.Value = value;
-        }
-
-        /// <summary>
-        /// Gets the Value that is written to the element.
-        /// </summary>
-        public string? Value { get; }
+        this.Value = value;
     }
+
+    /// <summary>
+    /// Gets the Value that is written to the element.
+    /// </summary>
+    public string? Value { get; }
 }

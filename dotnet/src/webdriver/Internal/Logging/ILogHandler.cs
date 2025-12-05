@@ -17,17 +17,16 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Internal.Logging
+namespace OpenQA.Selenium.Internal.Logging;
+
+/// <summary>
+/// Represents a log handler that handles log events.
+/// </summary>
+public interface ILogHandler
 {
     /// <summary>
-    /// Represents a log handler that handles log events.
+    /// Handles a log event.
     /// </summary>
-    public interface ILogHandler
-    {
-        /// <summary>
-        /// Handles a log event.
-        /// </summary>
-        /// <param name="logEvent">The log event to handle.</param>
-        void Handle(LogEvent logEvent);
-    }
+    /// <param name="logEvent">The log event to handle.</param>
+    void Handle(LogEvent logEvent);
 }

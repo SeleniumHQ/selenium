@@ -14,10 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Union
 
 from typing_extensions import deprecated
 
@@ -44,10 +42,10 @@ class Options(ArgOptions):
         super().__init__()
         self._binary_location = ""
         self._preferences: dict = {}
-        # Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
         # https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
-        self._preferences["remote.active-protocols"] = 3
-        self._profile: Optional[FirefoxProfile] = None
+        # Enable BiDi only
+        self._preferences["remote.active-protocols"] = 1
+        self._profile: FirefoxProfile | None = None
         self.log = Log()
 
     @property
@@ -58,19 +56,18 @@ class Options(ArgOptions):
 
     @binary.setter
     @deprecated("use binary_location instead")
-    def binary(self, new_binary: Union[str, FirefoxBinary]) -> None:
-        """Sets location of the browser binary, either by string or
-        ``FirefoxBinary`` instance."""
+    def binary(self, new_binary: str | FirefoxBinary) -> None:
+        """Set location of browser binary (string or FirefoxBinary instance)."""
         if isinstance(new_binary, FirefoxBinary):
             new_binary = new_binary._start_cmd
         self.binary_location = str(new_binary)
 
     @property
     def binary_location(self) -> str:
-        """:Returns: The location of the binary."""
+        """Returns the location of the binary."""
         return self._binary_location
 
-    @binary_location.setter  # noqa
+    @binary_location.setter
     def binary_location(self, value: str) -> None:
         """Sets the location of the browser binary by string."""
         if not isinstance(value, str):
@@ -79,28 +76,27 @@ class Options(ArgOptions):
 
     @property
     def preferences(self) -> dict:
-        """:Returns: A dict of preferences."""
+        """Returns a dict of preferences."""
         return self._preferences
 
-    def set_preference(self, name: str, value: Union[str, int, bool]):
+    def set_preference(self, name: str, value: str | int | bool):
         """Sets a preference."""
         self._preferences[name] = value
 
     @property
-    def profile(self) -> Optional[FirefoxProfile]:
-        """:Returns: The Firefox profile to use."""
+    def profile(self) -> FirefoxProfile | None:
+        """Returns the Firefox profile to use."""
         return self._profile
 
     @profile.setter
-    def profile(self, new_profile: Union[str, FirefoxProfile]) -> None:
-        """Sets location of the browser profile to use, either by string or
-        ``FirefoxProfile``."""
+    def profile(self, new_profile: str | FirefoxProfile) -> None:
+        """Set the location of the browser profile to use (string or FirefoxProfile object)."""
         if not isinstance(new_profile, FirefoxProfile):
             new_profile = FirefoxProfile(new_profile)
         self._profile = new_profile
 
     def enable_mobile(
-        self, android_package: Optional[str] = "org.mozilla.firefox", android_activity=None, device_serial=None
+        self, android_package: str | None = "org.mozilla.firefox", android_activity=None, device_serial=None
     ):
         super().enable_mobile(android_package, android_activity, device_serial)
 
@@ -111,7 +107,7 @@ class Options(ArgOptions):
         # it will defer to geckodriver to find the system Firefox
         # and generate a fresh profile.
         caps = self._caps
-        opts: Dict[str, Any] = {}
+        opts: dict[str, Any] = {}
 
         if self._binary_location:
             opts["binary"] = self._binary_location

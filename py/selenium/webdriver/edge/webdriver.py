@@ -15,11 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-from .options import Options
-from .service import Service
+from selenium.webdriver.edge.options import Options
+from selenium.webdriver.edge.service import Service
 
 
 class WebDriver(ChromiumDriver):
@@ -27,17 +27,20 @@ class WebDriver(ChromiumDriver):
 
     def __init__(
         self,
-        options: Options = None,
-        service: Service = None,
+        options: Options | None = None,
+        service: Service | None = None,
         keep_alive: bool = True,
     ) -> None:
-        """Creates a new instance of the edge driver. Starts the service and
-        then creates new instance of edge driver.
+        """Creates a new instance of the edge driver.
 
-        :Args:
-         - options - this takes an instance of EdgeOptions
-         - service - Service object for handling the browser driver if you need to pass extra details
-         - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
+        Starts the service and then creates new instance of edge driver.
+
+        Args:
+            options: An instance of EdgeOptions.
+            service: Service object for handling the browser driver if you need
+                to pass extra details.
+            keep_alive: Whether to configure EdgeRemoteConnection to use HTTP
+                keep-alive.
         """
         service = service if service else Service()
         options = options if options else Options()

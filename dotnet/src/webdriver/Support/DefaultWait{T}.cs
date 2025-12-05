@@ -24,195 +24,194 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 
-namespace OpenQA.Selenium.Support.UI
+namespace OpenQA.Selenium.Support.UI;
+
+/// <summary>
+/// An implementation of the <see cref="IWait&lt;T&gt;"/> interface that may have its timeout and polling interval
+/// configured on the fly.
+/// </summary>
+/// <typeparam name="T">The type of object on which the wait it to be applied.</typeparam>
+public class DefaultWait<T> : IWait<T>
 {
+    private readonly T input;
+    private readonly IClock clock;
+    private readonly List<Type> ignoredExceptions = new List<Type>();
+
     /// <summary>
-    /// An implementation of the <see cref="IWait&lt;T&gt;"/> interface that may have its timeout and polling interval
-    /// configured on the fly.
+    /// Initializes a new instance of the <see cref="DefaultWait&lt;T&gt;"/> class.
     /// </summary>
-    /// <typeparam name="T">The type of object on which the wait it to be applied.</typeparam>
-    public class DefaultWait<T> : IWait<T>
+    /// <param name="input">The input value to pass to the evaluated conditions.</param>
+    public DefaultWait(T input)
+        : this(input, SystemClock.Instance)
     {
-        private readonly T input;
-        private readonly IClock clock;
-        private readonly List<Type> ignoredExceptions = new List<Type>();
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultWait&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="input">The input value to pass to the evaluated conditions.</param>
-        public DefaultWait(T input)
-            : this(input, SystemClock.Instance)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DefaultWait&lt;T&gt;"/> class.
+    /// </summary>
+    /// <param name="input">The input value to pass to the evaluated conditions.</param>
+    /// <param name="clock">The clock to use when measuring the timeout.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="clock"/> or <paramref name="input"/> are <see langword="null"/>.</exception>
+    public DefaultWait(T input, IClock clock)
+    {
+        this.input = input ?? throw new ArgumentNullException(nameof(input), "input cannot be null"); ;
+        this.clock = clock ?? throw new ArgumentNullException(nameof(clock), "clock cannot be null"); ;
+    }
+
+    /// <summary>
+    /// Gets or sets how long to wait for the evaluated condition to be true. The default timeout is 500 milliseconds.
+    /// </summary>
+    public TimeSpan Timeout { get; set; } = DefaultSleepTimeout;
+
+    /// <summary>
+    /// Gets or sets how often the condition should be evaluated. The default timeout is 500 milliseconds.
+    /// </summary>
+    public TimeSpan PollingInterval { get; set; } = DefaultSleepTimeout;
+
+    /// <summary>
+    /// Gets or sets the message to be displayed when time expires.
+    /// </summary>
+    public string Message { get; set; } = string.Empty;
+
+    private static TimeSpan DefaultSleepTimeout => TimeSpan.FromMilliseconds(500);
+
+    /// <summary>
+    /// Configures this instance to ignore specific types of exceptions while waiting for a condition.
+    /// Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
+    /// </summary>
+    /// <param name="exceptionTypes">The types of exceptions to ignore.</param>
+    public void IgnoreExceptionTypes(params Type[] exceptionTypes)
+    {
+        if (exceptionTypes == null)
         {
+            throw new ArgumentNullException(nameof(exceptionTypes), "exceptionTypes cannot be null");
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultWait&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="input">The input value to pass to the evaluated conditions.</param>
-        /// <param name="clock">The clock to use when measuring the timeout.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="clock"/> or <paramref name="input"/> are <see langword="null"/>.</exception>
-        public DefaultWait(T input, IClock clock)
+        foreach (Type exceptionType in exceptionTypes)
         {
-            this.input = input ?? throw new ArgumentNullException(nameof(input), "input cannot be null"); ;
-            this.clock = clock ?? throw new ArgumentNullException(nameof(clock), "clock cannot be null"); ;
-        }
-
-        /// <summary>
-        /// Gets or sets how long to wait for the evaluated condition to be true. The default timeout is 500 milliseconds.
-        /// </summary>
-        public TimeSpan Timeout { get; set; } = DefaultSleepTimeout;
-
-        /// <summary>
-        /// Gets or sets how often the condition should be evaluated. The default timeout is 500 milliseconds.
-        /// </summary>
-        public TimeSpan PollingInterval { get; set; } = DefaultSleepTimeout;
-
-        /// <summary>
-        /// Gets or sets the message to be displayed when time expires.
-        /// </summary>
-        public string Message { get; set; } = string.Empty;
-
-        private static TimeSpan DefaultSleepTimeout => TimeSpan.FromMilliseconds(500);
-
-        /// <summary>
-        /// Configures this instance to ignore specific types of exceptions while waiting for a condition.
-        /// Any exceptions not whitelisted will be allowed to propagate, terminating the wait.
-        /// </summary>
-        /// <param name="exceptionTypes">The types of exceptions to ignore.</param>
-        public void IgnoreExceptionTypes(params Type[] exceptionTypes)
-        {
-            if (exceptionTypes == null)
+            if (!typeof(Exception).IsAssignableFrom(exceptionType))
             {
-                throw new ArgumentNullException(nameof(exceptionTypes), "exceptionTypes cannot be null");
+                throw new ArgumentException("All types to be ignored must derive from System.Exception", nameof(exceptionTypes));
             }
+        }
 
-            foreach (Type exceptionType in exceptionTypes)
+        this.ignoredExceptions.AddRange(exceptionTypes);
+    }
+
+    /// <summary>
+    /// Repeatedly applies this instance's input value to the given function until one of the following
+    /// occurs:
+    /// <para>
+    /// <list type="bullet">
+    /// <item>the function returns neither null nor false</item>
+    /// <item>the function throws an exception that is not in the list of ignored exception types</item>
+    /// <item>the timeout expires</item>
+    /// </list>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
+    /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
+    /// <returns>The delegate's return value.</returns>
+    [return: NotNull]
+    public virtual TResult Until<TResult>(Func<T, TResult?> condition)
+    {
+        return Until(condition, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Repeatedly applies this instance's input value to the given function until one of the following
+    /// occurs:
+    /// <para>
+    /// <list type="bullet">
+    /// <item>the function returns neither null nor false</item>
+    /// <item>the function throws an exception that is not in the list of ignored exception types</item>
+    /// <item>the timeout expires</item>
+    /// </list>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
+    /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
+    /// <param name="token">A cancellation token that can be used to cancel the wait.</param>
+    /// <returns>The delegate's return value.</returns>
+    [return: NotNull]
+    public virtual TResult Until<TResult>(Func<T, TResult?> condition, CancellationToken token)
+    {
+        if (condition == null)
+        {
+            throw new ArgumentNullException(nameof(condition), "condition cannot be null");
+        }
+
+        var resultType = typeof(TResult);
+        if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
+        {
+            throw new ArgumentException($"Can only wait on an object or boolean response, tried to use type: {resultType}", nameof(condition));
+        }
+
+        Exception? lastException = null;
+        var endTime = this.clock.LaterBy(this.Timeout);
+        while (true)
+        {
+            token.ThrowIfCancellationRequested();
+
+            try
             {
-                if (!typeof(Exception).IsAssignableFrom(exceptionType))
+                var result = condition(this.input);
+                if (resultType == typeof(bool))
                 {
-                    throw new ArgumentException("All types to be ignored must derive from System.Exception", nameof(exceptionTypes));
-                }
-            }
-
-            this.ignoredExceptions.AddRange(exceptionTypes);
-        }
-
-        /// <summary>
-        /// Repeatedly applies this instance's input value to the given function until one of the following
-        /// occurs:
-        /// <para>
-        /// <list type="bullet">
-        /// <item>the function returns neither null nor false</item>
-        /// <item>the function throws an exception that is not in the list of ignored exception types</item>
-        /// <item>the timeout expires</item>
-        /// </list>
-        /// </para>
-        /// </summary>
-        /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
-        /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
-        /// <returns>The delegate's return value.</returns>
-        [return: NotNull]
-        public virtual TResult Until<TResult>(Func<T, TResult?> condition)
-        {
-            return Until(condition, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Repeatedly applies this instance's input value to the given function until one of the following
-        /// occurs:
-        /// <para>
-        /// <list type="bullet">
-        /// <item>the function returns neither null nor false</item>
-        /// <item>the function throws an exception that is not in the list of ignored exception types</item>
-        /// <item>the timeout expires</item>
-        /// </list>
-        /// </para>
-        /// </summary>
-        /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
-        /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
-        /// <param name="token">A cancellation token that can be used to cancel the wait.</param>
-        /// <returns>The delegate's return value.</returns>
-        [return: NotNull]
-        public virtual TResult Until<TResult>(Func<T, TResult?> condition, CancellationToken token)
-        {
-            if (condition == null)
-            {
-                throw new ArgumentNullException(nameof(condition), "condition cannot be null");
-            }
-
-            var resultType = typeof(TResult);
-            if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
-            {
-                throw new ArgumentException($"Can only wait on an object or boolean response, tried to use type: {resultType}", nameof(condition));
-            }
-
-            Exception? lastException = null;
-            var endTime = this.clock.LaterBy(this.Timeout);
-            while (true)
-            {
-                token.ThrowIfCancellationRequested();
-
-                try
-                {
-                    var result = condition(this.input);
-                    if (resultType == typeof(bool))
+                    if (result is true)
                     {
-                        if (result is true)
-                        {
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        if (result != null)
-                        {
-                            return result;
-                        }
+                        return result;
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    if (!this.IsIgnoredException(ex))
+                    if (result != null)
                     {
-                        throw;
+                        return result;
                     }
-
-                    lastException = ex;
                 }
-
-                // Check the timeout after evaluating the function to ensure conditions
-                // with a zero timeout can succeed.
-                if (!this.clock.IsNowBefore(endTime))
-                {
-                    string timeoutMessage = string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds", this.Timeout.TotalSeconds);
-                    if (!string.IsNullOrEmpty(this.Message))
-                    {
-                        timeoutMessage += ": " + this.Message;
-                    }
-
-                    this.ThrowTimeoutException(timeoutMessage, lastException);
-                }
-
-                Thread.Sleep(this.PollingInterval);
             }
-        }
+            catch (Exception ex)
+            {
+                if (!this.IsIgnoredException(ex))
+                {
+                    throw;
+                }
 
-        /// <summary>
-        /// Throws a <see cref="WebDriverTimeoutException"/> with the given message.
-        /// </summary>
-        /// <param name="exceptionMessage">The message of the exception.</param>
-        /// <param name="lastException">The last exception thrown by the condition.</param>
-        /// <remarks>This method may be overridden to throw an exception that is
-        /// idiomatic for a particular test infrastructure.</remarks>
-        protected virtual void ThrowTimeoutException(string exceptionMessage, Exception? lastException)
-        {
-            throw new WebDriverTimeoutException(exceptionMessage, lastException);
-        }
+                lastException = ex;
+            }
 
-        private bool IsIgnoredException(Exception exception)
-        {
-            return this.ignoredExceptions.Any(type => type.IsAssignableFrom(exception.GetType()));
+            // Check the timeout after evaluating the function to ensure conditions
+            // with a zero timeout can succeed.
+            if (!this.clock.IsNowBefore(endTime))
+            {
+                string timeoutMessage = string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds", this.Timeout.TotalSeconds);
+                if (!string.IsNullOrEmpty(this.Message))
+                {
+                    timeoutMessage += ": " + this.Message;
+                }
+
+                this.ThrowTimeoutException(timeoutMessage, lastException);
+            }
+
+            Thread.Sleep(this.PollingInterval);
         }
+    }
+
+    /// <summary>
+    /// Throws a <see cref="WebDriverTimeoutException"/> with the given message.
+    /// </summary>
+    /// <param name="exceptionMessage">The message of the exception.</param>
+    /// <param name="lastException">The last exception thrown by the condition.</param>
+    /// <remarks>This method may be overridden to throw an exception that is
+    /// idiomatic for a particular test infrastructure.</remarks>
+    protected virtual void ThrowTimeoutException(string exceptionMessage, Exception? lastException)
+    {
+        throw new WebDriverTimeoutException(exceptionMessage, lastException);
+    }
+
+    private bool IsIgnoredException(Exception exception)
+    {
+        return this.ignoredExceptions.Any(type => type.IsAssignableFrom(exception.GetType()));
     }
 }

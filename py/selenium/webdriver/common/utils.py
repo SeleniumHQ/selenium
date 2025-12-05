@@ -14,13 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-"""The Utils methods."""
+
+"""Utility functions."""
 
 import socket
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Union
+import urllib.request
+from collections.abc import Iterable
 
 from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
@@ -29,16 +28,36 @@ _is_connectable_exceptions = (socket.error, ConnectionResetError)
 
 
 def free_port() -> int:
-    """Determines a free port using sockets."""
-    free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    free_socket.bind(("127.0.0.1", 0))
-    free_socket.listen(5)
-    port: int = free_socket.getsockname()[1]
-    free_socket.close()
+    """Determines a free port using sockets.
+
+    First try IPv4, but use IPv6 if it can't bind (IPv6-only system).
+    """
+    free_socket = None
+    try:
+        # IPv4
+        free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        free_socket.bind(("127.0.0.1", 0))
+    except OSError:
+        if free_socket:
+            free_socket.close()
+        # IPv6
+        try:
+            free_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+            free_socket.bind(("::1", 0))
+        except OSError:
+            if free_socket:
+                free_socket.close()
+            raise RuntimeError("Can't find free port (Unable to bind to IPv4 or IPv6)")
+    try:
+        port: int = free_socket.getsockname()[1]
+    except Exception as e:
+        raise RuntimeError(f"Can't find free port: ({e})")
+    finally:
+        free_socket.close()
     return port
 
 
-def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional[int] = None) -> Optional[str]:
+def find_connectable_ip(host: str | bytes | bytearray | None, port: int | None = None) -> str | None:
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
     We prefer IPv4 so that we don't change behavior from previous IPv4-only
@@ -48,11 +67,11 @@ def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional
     If the optional port number is provided, only IPs that listen on the given
     port are considered.
 
-    :Args:
-        - host - A hostname.
-        - port - Optional port number.
+    Args:
+        host: hostname
+        port: port number
 
-    :Returns:
+    Returns:
         A single IP address, as a string. If any IPv4 address is found, one is
         returned. Otherwise, if any IPv6 address is found, one is returned. If
         neither, then None is returned.
@@ -66,12 +85,12 @@ def find_connectable_ip(host: Union[str, bytes, bytearray, None], port: Optional
     for family, _, _, _, sockaddr in addrinfos:
         connectable = True
         if port:
-            connectable = is_connectable(port, sockaddr[0])
+            connectable = is_connectable(port, str(sockaddr[0]))
 
         if connectable and family == socket.AF_INET:
-            return sockaddr[0]
+            return str(sockaddr[0])
         if connectable and not ip and family == socket.AF_INET6:
-            ip = sockaddr[0]
+            ip = str(sockaddr[0])
     return ip
 
 
@@ -81,20 +100,21 @@ def join_host_port(host: str, port: int) -> str:
     This is a minimal implementation intended to cope with IPv6 literals. For
     example, _join_host_port('::1', 80) == '[::1]:80'.
 
-    :Args:
-        - host - A hostname.
-        - port - An integer port.
+    Args:
+        host: hostname or IP
+        port: port number
     """
     if ":" in host and not host.startswith("["):
         return f"[{host}]:{port}"
     return f"{host}:{port}"
 
 
-def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
+def is_connectable(port: int, host: str | None = "localhost") -> bool:
     """Tries to connect to the server at port to see if it is running.
 
-    :Args:
-     - port - The port to connect.
+    Args:
+        port: port number
+        host: hostname or IP
     """
     socket_ = None
     try:
@@ -112,29 +132,32 @@ def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
     return result
 
 
-def is_url_connectable(port: Union[int, str]) -> bool:
-    """Tries to connect to the HTTP server at /status path and specified port
-    to see if it responds successfully.
+def is_url_connectable(
+    port: int | str,
+    host: str | None = "127.0.0.1",
+    scheme: str | None = "http",
+) -> bool:
+    """Send a request to the HTTP server at the /status endpoint to verify connectivity.
 
-    :Args:
-     - port - The port to connect.
+    Args:
+        port: port number
+        host: hostname or IP
+        scheme: URL scheme
     """
-    from urllib import request as url_request
-
     try:
-        res = url_request.urlopen(f"http://127.0.0.1:{port}/status")
-        return res.getcode() == 200
+        with urllib.request.urlopen(f"{scheme}://{host}:{port}/status") as res:
+            return res.getcode() == 200
     except Exception:
         return False
 
 
-def keys_to_typing(value: Iterable[AnyKey]) -> List[str]:
+def keys_to_typing(value: Iterable[AnyKey]) -> list[str]:
     """Processes the values that will be typed in the element."""
-    characters: List[str] = []
+    characters: list[str] = []
     for val in value:
         if isinstance(val, Keys):
             # Todo: Does this even work?
-            characters.append(val)
+            characters.append(str(val))
         elif isinstance(val, (int, float)):
             characters.extend(str(val))
         else:

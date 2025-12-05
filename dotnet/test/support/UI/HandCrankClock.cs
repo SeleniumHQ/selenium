@@ -19,27 +19,26 @@
 
 using System;
 
-namespace OpenQA.Selenium.Support.UI
+namespace OpenQA.Selenium.Support.UI;
+
+public class HandCrankClock : IClock
 {
-    public class HandCrankClock : IClock
+    private DateTime fakeNow = new DateTime(50000);
+    public DateTime Now => fakeNow;
+
+    public DateTime LaterBy(TimeSpan delay)
     {
-        private DateTime fakeNow = new DateTime(50000);
-        public DateTime Now => fakeNow;
+        return Now + delay;
 
-        public DateTime LaterBy(TimeSpan delay)
-        {
-            return Now + delay;
+    }
 
-        }
+    public bool IsNowBefore(DateTime otherDateTime)
+    {
+        return Now < otherDateTime;
+    }
 
-        public bool IsNowBefore(DateTime otherDateTime)
-        {
-            return Now < otherDateTime;
-        }
-
-        public void MoveTime(TimeSpan timespan)
-        {
-            fakeNow = fakeNow + timespan;
-        }
+    public void MoveTime(TimeSpan timespan)
+    {
+        fakeNow = fakeNow + timespan;
     }
 }

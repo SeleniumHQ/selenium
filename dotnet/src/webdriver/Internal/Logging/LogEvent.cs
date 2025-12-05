@@ -19,47 +19,46 @@
 
 using System;
 
-namespace OpenQA.Selenium.Internal.Logging
+namespace OpenQA.Selenium.Internal.Logging;
+
+/// <summary>
+/// Represents a log event in the Selenium WebDriver internal logging system.
+/// </summary>
+public sealed class LogEvent
 {
     /// <summary>
-    /// Represents a log event in the Selenium WebDriver internal logging system.
+    /// Initializes a new instance of the <see cref="LogEvent"/> class.
     /// </summary>
-    public sealed class LogEvent
+    /// <param name="issuedBy">The type that issued the log event.</param>
+    /// <param name="timestamp">The timestamp of the log event.</param>
+    /// <param name="level">The level of the log event.</param>
+    /// <param name="message">The message of the log event.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="issuedBy"/> is <see langword="null"/>.</exception>
+    public LogEvent(Type issuedBy, DateTimeOffset timestamp, LogEventLevel level, string message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LogEvent"/> class.
-        /// </summary>
-        /// <param name="issuedBy">The type that issued the log event.</param>
-        /// <param name="timestamp">The timestamp of the log event.</param>
-        /// <param name="level">The level of the log event.</param>
-        /// <param name="message">The message of the log event.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="issuedBy"/> is <see langword="null"/>.</exception>
-        public LogEvent(Type issuedBy, DateTimeOffset timestamp, LogEventLevel level, string message)
-        {
-            IssuedBy = issuedBy ?? throw new ArgumentNullException(nameof(issuedBy));
-            Timestamp = timestamp;
-            Level = level;
-            Message = message;
-        }
-
-        /// <summary>
-        /// Gets the type that issued the log event.
-        /// </summary>
-        public Type IssuedBy { get; }
-
-        /// <summary>
-        /// Gets the timestamp of the log event.
-        /// </summary>
-        public DateTimeOffset Timestamp { get; }
-
-        /// <summary>
-        /// Gets the level of the log event.
-        /// </summary>
-        public LogEventLevel Level { get; }
-
-        /// <summary>
-        /// Gets the message of the log event.
-        /// </summary>
-        public string Message { get; }
+        IssuedBy = issuedBy ?? throw new ArgumentNullException(nameof(issuedBy));
+        Timestamp = timestamp;
+        Level = level;
+        Message = message;
     }
+
+    /// <summary>
+    /// Gets the type that issued the log event.
+    /// </summary>
+    public Type IssuedBy { get; }
+
+    /// <summary>
+    /// Gets the timestamp of the log event.
+    /// </summary>
+    public DateTimeOffset Timestamp { get; }
+
+    /// <summary>
+    /// Gets the level of the log event.
+    /// </summary>
+    public LogEventLevel Level { get; }
+
+    /// <summary>
+    /// Gets the message of the log event.
+    /// </summary>
+    public string Message { get; }
 }

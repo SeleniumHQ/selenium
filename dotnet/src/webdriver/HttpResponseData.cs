@@ -20,68 +20,67 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Represents the response data for an intercepted HTTP call.
+/// </summary>
+public class HttpResponseData
 {
     /// <summary>
-    /// Represents the response data for an intercepted HTTP call.
+    /// Initializes a new instance of the <see cref="HttpResponseData"/> type.
     /// </summary>
-    public class HttpResponseData
+    public HttpResponseData()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HttpResponseData"/> type.
-        /// </summary>
-        public HttpResponseData()
-        {
-        }
-
-        /// <summary>
-        /// Gets or sets the ID of the request that generated this response.
-        /// </summary>
-        public string? RequestId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the URL of the HTTP response.
-        /// </summary>
-        public string? Url { get; set; }
-
-        /// <summary>
-        /// Gets or sets the numeric status code of the HTTP response.
-        /// </summary>
-        public long StatusCode { get; set; }
-
-        /// <summary>
-        /// Gets or sets the body of the HTTP response.
-        /// </summary>
-        [DisallowNull]
-        public string? Body
-        {
-            get => this.Content?.ReadAsString();
-            set => this.Content = new HttpResponseContent(value);
-        }
-
-        /// <summary>
-        /// Gets or sets the content of the HTTP response.
-        /// </summary>
-        public HttpResponseContent? Content { get; set; }
-
-        /// <summary>
-        /// Gets or sets the type of resource for this response.
-        /// </summary>
-        public string? ResourceType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the reason for an error response.
-        /// </summary>
-        public string? ErrorReason { get; set; }
-
-        /// <summary>
-        /// Gets the headers of the HTTP response.
-        /// </summary>
-        public Dictionary<string, string> Headers { get; } = new Dictionary<string, string>();
-
-        /// <summary>
-        /// Gets the cookie headers of the HTTP response.
-        /// </summary>
-        public List<string> CookieHeaders { get; } = new List<string>();
     }
+
+    /// <summary>
+    /// Gets or sets the ID of the request that generated this response.
+    /// </summary>
+    public string? RequestId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the URL of the HTTP response.
+    /// </summary>
+    public string? Url { get; set; }
+
+    /// <summary>
+    /// Gets or sets the numeric status code of the HTTP response.
+    /// </summary>
+    public long StatusCode { get; set; }
+
+    /// <summary>
+    /// Gets or sets the body of the HTTP response.
+    /// </summary>
+    [DisallowNull]
+    public string? Body
+    {
+        get => this.Content?.ReadAsString();
+        set => this.Content = new HttpResponseContent(value);
+    }
+
+    /// <summary>
+    /// Gets or sets the content of the HTTP response.
+    /// </summary>
+    public HttpResponseContent? Content { get; set; }
+
+    /// <summary>
+    /// Gets or sets the type of resource for this response.
+    /// </summary>
+    public string? ResourceType { get; set; }
+
+    /// <summary>
+    /// Gets or sets the reason for an error response.
+    /// </summary>
+    public string? ErrorReason { get; set; }
+
+    /// <summary>
+    /// Gets the headers of the HTTP response.
+    /// </summary>
+    public Dictionary<string, string> Headers { get; } = new Dictionary<string, string>();
+
+    /// <summary>
+    /// Gets the cookie headers of the HTTP response.
+    /// </summary>
+    public List<string> CookieHeaders { get; } = new List<string>();
 }

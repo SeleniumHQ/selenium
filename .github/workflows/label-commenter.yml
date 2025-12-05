@@ -1,4 +1,4 @@
-# Configuration for Label Commenter - https://github.com/peaceiris/actions-label-commenter
+# Configuration for Label Commenter - ./.github/label-commenter-config.yml
 name: Label Commenter
 
 on:
@@ -16,6 +16,13 @@ jobs:
     if: github.repository_owner == 'seleniumhq'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout base repo to get config file
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          repository: seleniumhq/selenium
       - name: Label Commenter
         uses: peaceiris/actions-label-commenter@v1
+        with:
+          github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
+          config_file: .github/label-commenter-config.yml

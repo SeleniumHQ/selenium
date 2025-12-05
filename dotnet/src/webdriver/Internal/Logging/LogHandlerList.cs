@@ -19,46 +19,45 @@
 
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium.Internal.Logging
+namespace OpenQA.Selenium.Internal.Logging;
+
+/// <summary>
+/// Represents a list of log handlers.
+/// </summary>
+/// <inheritdoc cref="ILogHandlerList"/>
+internal sealed class LogHandlerList : List<ILogHandler>, ILogHandlerList
 {
-    /// <summary>
-    /// Represents a list of log handlers.
-    /// </summary>
-    /// <inheritdoc cref="ILogHandlerList"/>
-    internal sealed class LogHandlerList : List<ILogHandler>, ILogHandlerList
+    private readonly ILogContext _logContext;
+
+    public LogHandlerList(ILogContext logContext)
     {
-        private readonly ILogContext _logContext;
+        _logContext = logContext;
+    }
 
-        public LogHandlerList(ILogContext logContext)
-        {
-            _logContext = logContext;
-        }
+    public LogHandlerList(ILogContext logContext, IEnumerable<ILogHandler> handlers)
+        : base(handlers)
+    {
+        _logContext = logContext;
+    }
 
-        public LogHandlerList(ILogContext logContext, IEnumerable<ILogHandler> handlers)
-            : base(handlers)
-        {
-            _logContext = logContext;
-        }
+    public new ILogContext Add(ILogHandler handler)
+    {
+        base.Add(handler);
 
-        public new ILogContext Add(ILogHandler handler)
-        {
-            base.Add(handler);
+        return _logContext;
+    }
 
-            return _logContext;
-        }
+    public new ILogContext Remove(ILogHandler handler)
+    {
+        base.Remove(handler);
 
-        public new ILogContext Remove(ILogHandler handler)
-        {
-            base.Remove(handler);
+        return _logContext;
+    }
 
-            return _logContext;
-        }
+    public new ILogContext Clear()
+    {
+        base.Clear();
 
-        public new ILogContext Clear()
-        {
-            base.Clear();
-
-            return _logContext;
-        }
+        return _logContext;
     }
 }

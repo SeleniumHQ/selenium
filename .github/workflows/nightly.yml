@@ -21,10 +21,16 @@ on:
           - grid
           - dotnet
           - javascript
+  workflow_call:
+    inputs:
+      language:
+        required: false
+        type: string
+        default: "all"
 
 jobs:
   ruby:
-    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'ruby' || github.event_name == 'schedule')
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'ruby' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Ruby
     uses: ./.github/workflows/bazel.yml
     strategy:
@@ -57,7 +63,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   python:
-    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'python' || github.event_name == 'schedule')
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'python' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Python
     uses: ./.github/workflows/bazel.yml
     with:
@@ -84,7 +90,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   java:
-    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'java' || github.event_name == 'schedule')
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'java' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Java
     uses: ./.github/workflows/bazel.yml
     with:
@@ -111,7 +117,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   dotnet:
-    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'dotnet' || github.event_name == 'schedule')
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'dotnet' || inputs.language == 'all' || github.event_name == 'schedule')
     name: DotNet
     uses: ./.github/workflows/bazel.yml
     with:
@@ -139,7 +145,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   grid:
-    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'grid' || github.event_name == 'schedule')
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'grid' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Grid
     uses: ./.github/workflows/bazel.yml
     with:
@@ -166,7 +172,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   javascript:
-    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'javascript' || github.event_name == 'schedule')
+    if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'javascript' || inputs.language == 'all' || github.event_name == 'schedule')
     name: JavaScript
     uses: ./.github/workflows/bazel.yml
     with:

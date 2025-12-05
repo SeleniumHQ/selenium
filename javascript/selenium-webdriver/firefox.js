@@ -121,6 +121,7 @@ const zip = require('./io/zip')
 const { Browser, Capabilities, Capability } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 const { getBinaryPaths } = require('./common/driverFinder')
+const { findFreePort } = require('./net/portprober')
 const FIREFOX_CAPABILITY_KEY = 'moz:firefoxOptions'
 
 /**
@@ -246,9 +247,9 @@ class Options extends Capabilities {
   constructor(other) {
     super(other)
     this.setBrowserName(Browser.FIREFOX)
-    // Firefox 129 onwards the CDP protocol will not be enabled by default. Setting this preference will enable it.
     // https://fxdx.dev/deprecating-cdp-support-in-firefox-embracing-the-future-with-webdriver-bidi/.
-    this.setPreference('remote.active-protocols', 3)
+    // Enable BiDi only
+    this.setPreference('remote.active-protocols', 1)
   }
 
   /**
@@ -504,6 +505,31 @@ class ServiceBuilder extends remote.DriverService.Builder {
    */
   enableVerboseLogging(opt_trace) {
     return this.addArguments(opt_trace ? '-vv' : '-v')
+  }
+
+  /**
+   * Overrides the parent build() method to add the websocket port argument
+   * for Firefox when not connecting to an existing instance.
+   *
+   * @return {!DriverService} A new driver service instance.
+   */
+  build() {
+    let port = this.options_.port || findFreePort()
+    let argsPromise = Promise.resolve(port).then((port) => {
+      // Start with the default --port argument.
+      let args = this.options_.args.concat(`--port=${port}`)
+      // If the "--connect-existing" flag is not set, add the websocket port.
+      if (!this.options_.args.some((arg) => arg === '--connect-existing')) {
+        return findFreePort().then((wsPort) => {
+          args.push(`--websocket-port=${wsPort}`)
+          return args
+        })
+      }
+      return args
+    })
+
+    let options = Object.assign({}, this.options_, { args: argsPromise, port })
+    return new remote.DriverService(this.exe_, options)
   }
 }
 

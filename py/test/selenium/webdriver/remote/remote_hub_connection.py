@@ -19,10 +19,14 @@ import pytest
 import urllib3
 
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 
 
 def test_command_executor_ssl_certificate_is_verified():
+    options = Options()
+    site = "wrong.host.badssl.com"
     with pytest.raises(urllib3.exceptions.MaxRetryError) as excinfo:
-        webdriver.Remote(command_executor="https://wrong.host.badssl.com/")
+        webdriver.Remote(command_executor="https://wrong.host.badssl.com/", options=options)
     assert isinstance(excinfo.value.reason, urllib3.exceptions.SSLError)
-    assert "doesn't match" in str(excinfo.value)
+    assert site in str(excinfo.value)
+    assert "certificate is not valid" in str(excinfo.value).lower()

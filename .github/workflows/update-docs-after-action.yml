@@ -1,0 +1,30 @@
+name: Update Version After Docs Merge
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches:
+      - gh-pages
+    paths:
+      - 'docs/api/**'
+
+jobs:
+  parse-pr-title:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.title, 'Update documentation for Selenium')
+    outputs:
+      language: ${{ steps.extract-language.outputs.language }}
+    steps:
+      - name: Extract language from PR title
+        id: extract-language
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          LANGUAGE=$(echo "$PR_TITLE" | grep -o '[^-]*$')
+          echo "language=$LANGUAGE" >> $GITHUB_OUTPUT
+  update-version:
+    needs: parse-pr-title
+    uses: ./.github/workflows/nightly.yml
+    with:
+      language: ${{ needs.parse-pr-title.outputs.language }}
+    secrets: inherit
+

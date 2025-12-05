@@ -17,93 +17,92 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Safari
+namespace OpenQA.Selenium.Safari;
+
+/// <summary>
+/// Class to manage options specific to <see cref="SafariDriver"/>
+/// </summary>
+/// <example>
+/// <code>
+/// SafariOptions options = new SafariOptions();
+/// options.SkipExtensionInstallation = true;
+/// </code>
+/// <para></para>
+/// <para>For use with SafariDriver:</para>
+/// <para></para>
+/// <code>
+/// SafariDriver driver = new SafariDriver(options);
+/// </code>
+/// <para></para>
+/// <para>For use with RemoteWebDriver:</para>
+/// <para></para>
+/// <code>
+/// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
+/// </code>
+/// </example>
+public class SafariOptions : DriverOptions
 {
+    private const string BrowserNameValue = "safari";
+    private const string EnableAutomaticInspectionSafariOption = "safari:automaticInspection";
+    private const string EnableAutomaticProfilingSafariOption = "safari:automaticProfiling";
+
     /// <summary>
-    /// Class to manage options specific to <see cref="SafariDriver"/>
+    /// Initializes a new instance of the <see cref="SafariOptions"/> class.
     /// </summary>
-    /// <example>
-    /// <code>
-    /// SafariOptions options = new SafariOptions();
-    /// options.SkipExtensionInstallation = true;
-    /// </code>
-    /// <para></para>
-    /// <para>For use with SafariDriver:</para>
-    /// <para></para>
-    /// <code>
-    /// SafariDriver driver = new SafariDriver(options);
-    /// </code>
-    /// <para></para>
-    /// <para>For use with RemoteWebDriver:</para>
-    /// <para></para>
-    /// <code>
-    /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
-    /// </code>
-    /// </example>
-    public class SafariOptions : DriverOptions
+    public SafariOptions() : base()
     {
-        private const string BrowserNameValue = "safari";
-        private const string EnableAutomaticInspectionSafariOption = "safari:automaticInspection";
-        private const string EnableAutomaticProfilingSafariOption = "safari:automaticProfiling";
+        this.BrowserName = BrowserNameValue;
+        this.TechnologyPreview = false;
+        this.AddKnownCapabilityName(SafariOptions.EnableAutomaticInspectionSafariOption, "EnableAutomaticInspection property");
+        this.AddKnownCapabilityName(SafariOptions.EnableAutomaticProfilingSafariOption, "EnableAutomaticProfiling property");
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SafariOptions"/> class.
-        /// </summary>
-        public SafariOptions() : base()
+    /// <summary>
+    /// Allows the Options class to be used with a Safari Technology Preview driver
+    /// </summary>
+    public void UseTechnologyPreview()
+    {
+        this.TechnologyPreview = true;
+        this.BrowserName = "Safari Technology Preview";
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to have the driver preload the
+    /// Web Inspector and JavaScript debugger in the background.
+    /// </summary>
+    public bool TechnologyPreview { get; private set; } = false;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to have the driver preload the
+    /// Web Inspector and JavaScript debugger in the background.
+    /// </summary>
+    public bool EnableAutomaticInspection { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to have the driver preload the
+    /// Web Inspector and start a timeline recording in the background.
+    /// </summary>
+    public bool EnableAutomaticProfiling { get; set; } = false;
+
+    /// <summary>
+    /// Returns ICapabilities for Safari with these options included as
+    /// capabilities. This copies the options. Further changes will not be
+    /// reflected in the returned capabilities.
+    /// </summary>
+    /// <returns>The ICapabilities for Safari with these options.</returns>
+    public override ICapabilities ToCapabilities()
+    {
+        IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
+        if (this.EnableAutomaticInspection)
         {
-            this.BrowserName = BrowserNameValue;
-            this.TechnologyPreview = false;
-            this.AddKnownCapabilityName(SafariOptions.EnableAutomaticInspectionSafariOption, "EnableAutomaticInspection property");
-            this.AddKnownCapabilityName(SafariOptions.EnableAutomaticProfilingSafariOption, "EnableAutomaticProfiling property");
+            capabilities.SetCapability(EnableAutomaticInspectionSafariOption, true);
         }
 
-        /// <summary>
-        /// Allows the Options class to be used with a Safari Technology Preview driver
-        /// </summary>
-        public void UseTechnologyPreview()
+        if (this.EnableAutomaticProfiling)
         {
-            this.TechnologyPreview = true;
-            this.BrowserName = "Safari Technology Preview";
+            capabilities.SetCapability(EnableAutomaticProfilingSafariOption, true);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether to have the driver preload the
-        /// Web Inspector and JavaScript debugger in the background.
-        /// </summary>
-        public bool TechnologyPreview { get; private set; } = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to have the driver preload the
-        /// Web Inspector and JavaScript debugger in the background.
-        /// </summary>
-        public bool EnableAutomaticInspection { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to have the driver preload the
-        /// Web Inspector and start a timeline recording in the background.
-        /// </summary>
-        public bool EnableAutomaticProfiling { get; set; } = false;
-
-        /// <summary>
-        /// Returns ICapabilities for Safari with these options included as
-        /// capabilities. This copies the options. Further changes will not be
-        /// reflected in the returned capabilities.
-        /// </summary>
-        /// <returns>The ICapabilities for Safari with these options.</returns>
-        public override ICapabilities ToCapabilities()
-        {
-            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
-            if (this.EnableAutomaticInspection)
-            {
-                capabilities.SetCapability(EnableAutomaticInspectionSafariOption, true);
-            }
-
-            if (this.EnableAutomaticProfiling)
-            {
-                capabilities.SetCapability(EnableAutomaticProfilingSafariOption, true);
-            }
-
-            return capabilities.AsReadOnly();
-        }
+        return capabilities.AsReadOnly();
     }
 }

@@ -17,36 +17,25 @@
 // under the License.
 // </copyright>
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium.Environment
+namespace OpenQA.Selenium.Environment;
+
+class TestEnvironment
 {
-    [JsonObject]
-    class TestEnvironment
-    {
-        [JsonProperty]
-        public bool CaptureWebServerOutput { get; set; }
+    public bool CaptureWebServerOutput { get; set; }
 
-        [JsonProperty]
-        public string DriverServiceLocation { get; set; }
+    public string DriverServiceLocation { get; set; }
 
-        [JsonProperty]
-        public bool HideWebServerCommandPrompt { get; set; }
+    public bool HideWebServerCommandPrompt { get; set; }
 
-        [JsonProperty]
-        public string ActiveDriverConfig { get; set; }
+    public string ActiveDriverConfig { get; set; }
 
-        [JsonProperty]
-        public string ActiveWebsiteConfig { get; set; }
+    public string ActiveWebsiteConfig { get; set; }
 
-        [JsonProperty]
-        public Dictionary<string, WebsiteConfig> WebSiteConfigs { get; set; }
+    public Dictionary<string, WebsiteConfig> WebSiteConfigs { get; set; }
 
-        [JsonProperty]
-        public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
+    public Dictionary<string, DriverConfig> DriverConfigs { get; set; }
 
-        [JsonProperty]
-        public TestWebServerConfig TestWebServerConfig { get; set; }
-    }
+    public TestWebServerConfig TestWebServerConfig { get; set; }
 }

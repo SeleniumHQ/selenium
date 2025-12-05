@@ -35,18 +35,25 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.manager.SeleniumManagerOutput.Result;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 @Tag("UnitTests")
+@ExtendWith(SystemStubsExtension.class)
 class DriverFinderTest {
   private final DriverService service = mock(DriverService.class);
   private final SeleniumManager seleniumManager = mock(SeleniumManager.class);
   Path driverFile;
   Path browserFile;
+
+  @SystemStub private EnvironmentVariables environment;
 
   @BeforeEach
   void createMocks() {
@@ -73,6 +80,8 @@ class DriverFinderTest {
   void systemPropertyIgnoresSeleniumManager() throws IOException {
     when(service.getExecutable()).thenReturn(null);
     when(service.getDriverProperty()).thenReturn("property.ignores.selenium.manager");
+    when(service.getDriverEnvironmentVariable())
+        .thenReturn("ENVIRONMENT_VARIABLE_IGNORES_SELENIUM_MANAGER");
     System.setProperty("property.ignores.selenium.manager", driverFile.toString());
 
     Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
@@ -86,9 +95,67 @@ class DriverFinderTest {
   }
 
   @Test
+  void environmentVariableIgnoresSeleniumManager() throws IOException {
+    environment.set("ENVIRONMENT_VARIABLE_DRIVER_PATH", driverFile.toString());
+    when(service.getExecutable()).thenReturn(null);
+    when(service.getDriverProperty()).thenReturn("property.ignores.selenium.manager");
+    when(service.getDriverEnvironmentVariable()).thenReturn("ENVIRONMENT_VARIABLE_DRIVER_PATH");
+
+    Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+    DriverFinder finder = new DriverFinder(service, capabilities);
+
+    assertThat(finder.getDriverPath()).isEqualTo(driverFile.toString());
+    assertThat(finder.getBrowserPath()).isNull();
+    verify(service, times(1)).getExecutable();
+    verify(service, times(1)).getDriverName();
+    verify(service, times(1)).getDriverEnvironmentVariable();
+  }
+
+  @Test
+  void environmentVariableTakePriorityOverSystemProperty() throws IOException {
+    environment.set("ENVIRONMENT_VARIABLE_DRIVER_PATH", driverFile.toString());
+    when(service.getExecutable()).thenReturn(null);
+    when(service.getDriverProperty()).thenReturn("property.ignores.selenium.manager");
+    when(service.getDriverEnvironmentVariable()).thenReturn("ENVIRONMENT_VARIABLE_DRIVER_PATH");
+
+    System.setProperty("property.ignores.selenium.manager", "path");
+
+    Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+    DriverFinder finder = new DriverFinder(service, capabilities);
+
+    assertThat(finder.getDriverPath()).isEqualTo(driverFile.toString());
+    assertThat(finder.getBrowserPath()).isNull();
+    verify(service, times(1)).getExecutable();
+    verify(service, times(1)).getDriverName();
+    verify(service, times(1)).getDriverEnvironmentVariable();
+  }
+
+  @Test
+  void systemPropertyIsUsedIfEnvironmentVariableIsNotSet() throws IOException {
+    when(service.getExecutable()).thenReturn(null);
+    when(service.getDriverProperty()).thenReturn("property.ignores.selenium.manager");
+    when(service.getDriverEnvironmentVariable())
+        .thenReturn("ENVIRONMENT_VARIABLE_IGNORES_SELENIUM_MANAGER");
+
+    System.setProperty("property.ignores.selenium.manager", driverFile.toString());
+
+    Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+    DriverFinder finder = new DriverFinder(service, capabilities);
+
+    assertThat(finder.getDriverPath()).isEqualTo(driverFile.toString());
+    assertThat(finder.getBrowserPath()).isNull();
+    verify(service, times(1)).getExecutable();
+    verify(service, times(1)).getDriverName();
+    verify(service, times(1)).getDriverEnvironmentVariable();
+    verify(service, times(1)).getDriverProperty();
+  }
+
+  @Test
   void createsArgumentsForSeleniumManager() throws IOException {
     when(service.getExecutable()).thenReturn(null);
     when(service.getDriverProperty()).thenReturn("property.selenium.manager.empty");
+    when(service.getDriverEnvironmentVariable())
+        .thenReturn("ENVIRONMENT_VARIABLE_IGNORES_SELENIUM_MANAGER");
 
     Proxy proxy = new Proxy().setHttpProxy("https://localhost:1234");
     Capabilities capabilities =
@@ -120,6 +187,7 @@ class DriverFinderTest {
     verify(service, times(1)).getExecutable();
     verify(service, times(1)).getDriverName();
     verify(service, times(1)).getDriverProperty();
+    verify(service, times(1)).getDriverEnvironmentVariable();
     verifyNoMoreInteractions(service);
     verify(seleniumManager, times(1)).getBinaryPaths(arguments);
     verifyNoMoreInteractions(seleniumManager);

@@ -17,31 +17,30 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Support.UI
+namespace OpenQA.Selenium.Support.UI;
+
+/// <summary>
+/// Interface allows for the component to be used in Nested Component scenarios such that the
+/// child component class does not have to declare the generic type of the parent explicitly.
+/// </summary>
+/// <example>
+/// public class HypotheticalLoadableComponent : LoadableComponent&lt;T&gt; {
+///   ILoadableComponent parent;
+///   public HypotheticalLoadableComponent(ILoadableComponent parent) {
+///     this.parent = parent;
+///   }
+///   protected void EvaluateLoadedStatus() { //code to determine loaded state }
+///   protected void ExecuteLoad() {
+///     parent.Load();  //loads the parent
+///     //code to load this component
+///   }
+/// }
+/// </example>
+public interface ILoadableComponent
 {
     /// <summary>
-    /// Interface allows for the component to be used in Nested Component scenarios such that the
-    /// child component class does not have to declare the generic type of the parent explicitly.
+    /// Loads the component.
     /// </summary>
-    /// <example>
-    /// public class HypotheticalLoadableComponent : LoadableComponent&lt;T&gt; {
-    ///   ILoadableComponent parent;
-    ///   public HypotheticalLoadableComponent(ILoadableComponent parent) {
-    ///     this.parent = parent;
-    ///   }
-    ///   protected void EvaluateLoadedStatus() { //code to determine loaded state }
-    ///   protected void ExecuteLoad() {
-    ///     parent.Load();  //loads the parent
-    ///     //code to load this component
-    ///   }
-    /// }
-    /// </example>
-    public interface ILoadableComponent
-    {
-        /// <summary>
-        /// Loads the component.
-        /// </summary>
-        /// <returns>A reference to this <see cref="ILoadableComponent"/>.</returns>
-        ILoadableComponent Load();
-    }
+    /// <returns>A reference to this <see cref="ILoadableComponent"/>.</returns>
+    ILoadableComponent Load();
 }

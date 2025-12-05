@@ -19,32 +19,31 @@
 
 using System;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides data for the JavaScriptCallbackExecuted event.
+/// </summary>
+public class JavaScriptCallbackExecutedEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for the JavaScriptCallbackExecuted event.
+    /// Initializes a new instance of the <see cref="JavaScriptCallbackExecutedEventArgs"/> type.
     /// </summary>
-    public class JavaScriptCallbackExecutedEventArgs : EventArgs
+    /// <param name="scriptPayload">The payload sent from the JavaScript callback.</param>
+    /// <param name="bindingName">The binding name of the JavaScript callback that was execute.</param>
+    public JavaScriptCallbackExecutedEventArgs(string scriptPayload, string bindingName)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JavaScriptCallbackExecutedEventArgs"/> type.
-        /// </summary>
-        /// <param name="scriptPayload">The payload sent from the JavaScript callback.</param>
-        /// <param name="bindingName">The binding name of the JavaScript callback that was execute.</param>
-        public JavaScriptCallbackExecutedEventArgs(string scriptPayload, string bindingName)
-        {
-            this.ScriptPayload = scriptPayload;
-            this.BindingName = bindingName;
-        }
-
-        /// <summary>
-        /// Gets or sets the payload sent from the JavaScript callback.
-        /// </summary>
-        public string ScriptPayload { get; set; }
-
-        /// <summary>
-        /// Gets or sets the binding name of the JavaScript callback that was execute.
-        /// </summary>
-        public string BindingName { get; set; }
+        this.ScriptPayload = scriptPayload;
+        this.BindingName = bindingName;
     }
+
+    /// <summary>
+    /// Gets or sets the payload sent from the JavaScript callback.
+    /// </summary>
+    public string ScriptPayload { get; set; }
+
+    /// <summary>
+    /// Gets or sets the binding name of the JavaScript callback that was execute.
+    /// </summary>
+    public string BindingName { get; set; }
 }

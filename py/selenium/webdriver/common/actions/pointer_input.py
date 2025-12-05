@@ -16,16 +16,11 @@
 # under the License.
 
 from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Union
 
 from selenium.common.exceptions import InvalidArgumentException
+from selenium.webdriver.common.actions.input_device import InputDevice
+from selenium.webdriver.common.actions.interaction import POINTER, POINTER_KINDS
 from selenium.webdriver.remote.webelement import WebElement
-
-from .input_device import InputDevice
-from .interaction import POINTER
-from .interaction import POINTER_KINDS
 
 
 class PointerInput(InputDevice):
@@ -44,7 +39,7 @@ class PointerInput(InputDevice):
         duration=DEFAULT_MOVE_DURATION,
         x: float = 0,
         y: float = 0,
-        origin: Optional[WebElement] = None,
+        origin: WebElement | None = None,
         **kwargs,
     ):
         action = {"type": "pointerMove", "duration": duration, "x": x, "y": y, **kwargs}
@@ -64,13 +59,13 @@ class PointerInput(InputDevice):
     def create_pointer_cancel(self):
         self.add_action({"type": "pointerCancel"})
 
-    def create_pause(self, pause_duration: Union[int, float] = 0) -> None:
+    def create_pause(self, pause_duration: int | float = 0) -> None:
         self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})
 
     def encode(self):
         return {"type": self.type, "parameters": {"pointerType": self.kind}, "id": self.name, "actions": self.actions}
 
-    def _convert_keys(self, actions: Dict[str, Any]):
+    def _convert_keys(self, actions: dict[str, Any]):
         out = {}
         for k, v in actions.items():
             if v is None:

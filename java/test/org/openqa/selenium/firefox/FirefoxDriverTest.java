@@ -21,11 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.firefox.FirefoxAssumptions.assumeDefaultBrowserLocationUsed;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
@@ -43,7 +40,6 @@ import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -94,17 +90,6 @@ class FirefoxDriverTest extends JupiterTestBase {
     localDriver = new WebDriverBuilder().get();
     assertThat(((HasCapabilities) localDriver).getCapabilities().getBrowserName())
         .isEqualTo("firefox");
-  }
-
-  @Test
-  @NoDriverBeforeTest
-  public void canStartDriverWithSpecifiedBinary() {
-    FirefoxBinary binary = spy(new FirefoxBinary());
-    FirefoxOptions options = new FirefoxOptions().setBinary(binary);
-
-    localDriver = new WebDriverBuilder().get(options);
-
-    verify(binary, atLeastOnce()).getPath();
   }
 
   @Test
@@ -173,20 +158,6 @@ class FirefoxDriverTest extends JupiterTestBase {
             .build();
 
     new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities()).quit();
-  }
-
-  @Test
-  @NoDriverBeforeTest
-  public void shouldBeAbleToPassCommandLineOptions() {
-    FirefoxBinary binary = new FirefoxBinary();
-    binary.addCommandLineOptions("-width", "800", "-height", "600");
-
-    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setBinary(binary));
-    Dimension size = localDriver.manage().window().getSize();
-    assertThat(size.width).isGreaterThanOrEqualTo(800);
-    assertThat(size.width).isLessThan(850);
-    assertThat(size.height).isGreaterThanOrEqualTo(600);
-    assertThat(size.height).isLessThan(650);
   }
 
   @Test
@@ -263,7 +234,9 @@ class FirefoxDriverTest extends JupiterTestBase {
   @NoDriverAfterTest
   @Test
   void canSetContext() {
-    HasContext context = (HasContext) driver;
+    localDriver =
+        new FirefoxDriver(getDefaultOptions().addArguments("-remote-allow-system-access"));
+    HasContext context = (HasContext) localDriver;
 
     assertThat(context.getContext()).isEqualTo(FirefoxCommandContext.CONTENT);
     context.setContext(FirefoxCommandContext.CHROME);

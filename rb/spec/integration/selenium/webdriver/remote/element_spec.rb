@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     describe Element, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       before do
-        driver.file_detector = ->(filename) { File.join(__dir__, filename) }
+        driver.file_detector = lambda(&:first)
       end
 
       after { driver.file_detector = nil }
@@ -35,7 +35,7 @@ module Selenium
                                                       reason: 'unreliable with downloads'} do
           driver.navigate.to url_for('upload.html')
 
-          driver.find_element(id: 'upload').send_keys('element_spec.rb')
+          driver.find_element(id: 'upload').send_keys(create_tempfile.path)
           driver.find_element(id: 'go').click
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
@@ -43,7 +43,7 @@ module Selenium
           wait.until { !driver.find_element(xpath: '//body').text.empty? }
 
           body = driver.find_element(xpath: '//body')
-          expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(3)
+          expect(body.text.scan('This is a dummy test file').count).to eq(1)
         end
       end
 
@@ -53,8 +53,10 @@ module Selenium
                                                       ci: :github,
                                                       reason: 'unreliable with downloads'} do
           driver.navigate.to url_for('upload_multiple.html')
+          file1 = create_tempfile
+          file2 = create_tempfile
 
-          driver.find_element(id: 'upload').send_keys("driver_spec.rb\nelement_spec.rb")
+          driver.find_element(id: 'upload').send_keys("#{file1.path}\n#{file2.path}")
           driver.find_element(id: 'go').click
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
@@ -62,7 +64,7 @@ module Selenium
           wait.until { !driver.find_element(xpath: '//body').text.empty? }
 
           body = driver.find_element(xpath: '//body')
-          expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(5)
+          expect(body.text.scan('This is a dummy test file').count).to eq(2)
         end
       end
     end

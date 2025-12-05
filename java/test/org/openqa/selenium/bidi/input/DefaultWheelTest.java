@@ -146,6 +146,8 @@ class DefaultWheelTest extends JupiterTestBase {
             .pause(3000)
             .getSequences());
 
+    wait.until(driver -> driver.findElement(By.name("nested_scrolling_frame")).isDisplayed());
+
     assertTrue(inViewport(footer));
   }
 

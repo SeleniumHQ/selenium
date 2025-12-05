@@ -14,52 +14,50 @@ http = urllib3.PoolManager()
 
 def get_url():
     r = http.request(
-        "GET", f"https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/latest"
+        "GET",
+        "https://github.com/SeleniumHQ/selenium_manager_artifacts/releases/latest",
     )
     return r.url.replace("tag", "download")
 
 
 def get_sha_json():
-    r = http.request("GET", f"https://raw.githubusercontent.com/SeleniumHQ/selenium_manager_artifacts/trunk/latest.json")
+    r = http.request(
+        "GET",
+        "https://raw.githubusercontent.com/SeleniumHQ/selenium_manager_artifacts/trunk/latest.json",
+    )
     return json.loads(r.data)
 
 
 def print_linux(base_url, sha):
-    return ("""    http_file(
+    return """    http_file(
         name = "download_sm_linux",
         executable = True,
         sha256 = "%s",
         url = "%s",
     )
 
-"""
-            % (sha, base_url + "/selenium-manager-linux")
-            )
+""" % (sha, base_url + "/selenium-manager-linux")
 
 
 def print_macos(base_url, sha):
-    return ("""    http_file(
+    return """    http_file(
         name = "download_sm_macos",
         executable = True,
         sha256 = "%s",
         url = "%s",
     )
 
-"""
-            % (sha, base_url + "/selenium-manager-macos")
-            )
+""" % (sha, base_url + "/selenium-manager-macos")
 
 
 def print_windows(base_url, sha):
-    return ("""    http_file(
+    return """    http_file(
         name = "download_sm_windows",
         executable = True,
         sha256 = "%s",
         url = "%s",
     )
-"""
-            % (sha, base_url + "/selenium-manager-windows.exe")
-            )
+""" % (sha, base_url + "/selenium-manager-windows.exe")
 
 
 if __name__ == "__main__":
@@ -71,9 +69,9 @@ def selenium_manager():
 """
     base_url = get_url()
     sha_dict = get_sha_json()
-    content = content + print_linux(base_url, sha_dict['linux'])
-    content = content + print_macos(base_url, sha_dict['macos'])
-    content = content + print_windows(base_url, sha_dict['windows'])
+    content = content + print_linux(base_url, sha_dict["linux"])
+    content = content + print_macos(base_url, sha_dict["macos"])
+    content = content + print_windows(base_url, sha_dict["windows"])
     content += """
 def _selenium_manager_artifacts_impl(_ctx):
     selenium_manager()

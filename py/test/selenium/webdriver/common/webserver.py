@@ -16,24 +16,27 @@
 # under the License.
 
 """A simple web server for testing purpose.
-It serves the testing html pages that are needed by the webdriver unit tests."""
+
+It serves the testing html pages that are needed by the webdriver unit tests.
+"""
+
 import contextlib
 import logging
 import os
 import re
 import threading
 
+import filetype
+
 try:
     from urllib import request as urllib_request
 except ImportError:
     import urllib as urllib_request
 try:
-    from http.server import BaseHTTPRequestHandler
-    from http.server import HTTPServer
+    from http.server import BaseHTTPRequestHandler, HTTPServer
     from socketserver import ThreadingMixIn
 except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler
-    from BaseHTTPServer import HTTPServer
+    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
     from SocketServer import ThreadingMixIn
 
 
@@ -71,8 +74,20 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
     def _serve_file(self, file_path):
         """Serve a file from the HTML root directory."""
-        with open(file_path, encoding="latin-1") as f:
-            return f.read().encode("utf-8")
+        with open(file_path, "rb") as f:
+            content = f.read()
+
+        kind = filetype.guess(content)
+        if kind is not None:
+            return content, kind.mime
+
+        # fallback for text files that filetype can't detect
+        if file_path.endswith(".txt"):
+            return content, "text/plain"
+        elif file_path.endswith(".json"):
+            return content, "application/json"
+        else:
+            return content, "text/html"
 
     def _send_response(self, content_type="text/html"):
         """Send a response."""
@@ -90,8 +105,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 self._send_response("text/html")
                 self.wfile.write(html)
             elif os.path.isfile(file_path):
-                content_type = "application/json" if file_path.endswith(".json") else "text/html"
-                content = self._serve_file(file_path)
+                content, content_type = self._serve_file(file_path)
                 self._send_response(content_type)
                 self.wfile.write(content)
             else:
@@ -119,7 +133,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
             self.send_error(500, f"Error found: {e}")
 
     def log_message(self, format, *args):
-        """Override default to avoid trashing stderr"""
+        """Override default to avoid trashing stderr."""
         pass
 
 

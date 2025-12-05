@@ -1,7 +1,7 @@
 CDP_VERSIONS = [
-    "v134",
-    "v132",
-    "v133",
+    "v140",
+    "v141",
+    "v142",
 ]
 
 CDP_DEPS = ["//java/src/org/openqa/selenium/devtools/%s" % v for v in CDP_VERSIONS]

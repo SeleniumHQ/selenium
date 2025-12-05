@@ -15,10 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List
-from typing import Optional
 
-from .account import Account
+from selenium.webdriver.common.fedcm.account import Account
 
 
 class Dialog:
@@ -31,7 +29,7 @@ class Dialog:
         self._driver = driver
 
     @property
-    def type(self) -> Optional[str]:
+    def type(self) -> str | None:
         """Gets the type of the dialog currently being shown."""
         return self._driver.fedcm.dialog_type
 
@@ -41,12 +39,12 @@ class Dialog:
         return self._driver.fedcm.title
 
     @property
-    def subtitle(self) -> Optional[str]:
+    def subtitle(self) -> str | None:
         """Gets the subtitle of the dialog."""
         result = self._driver.fedcm.subtitle
         return result.get("subtitle") if result else None
 
-    def get_accounts(self) -> List[Account]:
+    def get_accounts(self) -> list[Account]:
         """Gets the list of accounts shown in the dialog."""
         accounts = self._driver.fedcm.account_list
         return [Account(account) for account in accounts]

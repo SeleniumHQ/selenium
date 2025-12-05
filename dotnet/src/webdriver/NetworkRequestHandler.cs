@@ -20,32 +20,31 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Allows a user to handle a network request, potentially modifying the request or providing a known response.
+/// </summary>
+public class NetworkRequestHandler
 {
     /// <summary>
-    /// Allows a user to handle a network request, potentially modifying the request or providing a known response.
+    /// Gets or sets a function that evaluates request data in an <see cref="HttpRequestData"/> object,
+    /// and returns a value indicating whether the data matches the specified criteria.
     /// </summary>
-    public class NetworkRequestHandler
-    {
-        /// <summary>
-        /// Gets or sets a function that evaluates request data in an <see cref="HttpRequestData"/> object,
-        /// and returns a value indicating whether the data matches the specified criteria.
-        /// </summary>
-        [DisallowNull]
-        public Func<HttpRequestData, bool>? RequestMatcher { get; set; }
+    [DisallowNull]
+    public Func<HttpRequestData, bool>? RequestMatcher { get; set; }
 
-        /// <summary>
-        /// Gets or sets a function that accepts an <see cref="HttpRequestData"/> object describing a network
-        /// request to be sent, and returns a modified <see cref="HttpRequestData"/> object to use in the actual
-        /// network request.
-        /// </summary>
-        public Func<HttpRequestData, HttpRequestData>? RequestTransformer { get; set; }
+    /// <summary>
+    /// Gets or sets a function that accepts an <see cref="HttpRequestData"/> object describing a network
+    /// request to be sent, and returns a modified <see cref="HttpRequestData"/> object to use in the actual
+    /// network request.
+    /// </summary>
+    public Func<HttpRequestData, HttpRequestData>? RequestTransformer { get; set; }
 
-        /// <summary>
-        /// Gets or sets a function that accepts an <see cref="HttpRequestData"/> object describing a network
-        /// request to be sent, and returns an <see cref="HttpResponseData"/> object as the response for the
-        /// request, bypassing the actual network request.
-        /// </summary>
-        public Func<HttpRequestData, HttpResponseData>? ResponseSupplier { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets a function that accepts an <see cref="HttpRequestData"/> object describing a network
+    /// request to be sent, and returns an <see cref="HttpResponseData"/> object as the response for the
+    /// request, bypassing the actual network request.
+    /// </summary>
+    public Func<HttpRequestData, HttpResponseData>? ResponseSupplier { get; set; }
 }

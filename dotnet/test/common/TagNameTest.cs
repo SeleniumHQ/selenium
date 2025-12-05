@@ -19,17 +19,16 @@
 
 using NUnit.Framework;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+[TestFixture]
+public class TagNameTest : DriverTestFixture
 {
-    [TestFixture]
-    public class TagNameTest : DriverTestFixture
+    [Test]
+    public void ShouldReturnInput()
     {
-        [Test]
-        public void ShouldReturnInput()
-        {
-            driver.Url = formsPage;
-            IWebElement selectBox = driver.FindElement(By.Id("cheese"));
-            Assert.That(selectBox.TagName, Is.EqualTo("input").IgnoreCase);
-        }
+        driver.Url = formsPage;
+        IWebElement selectBox = driver.FindElement(By.Id("cheese"));
+        Assert.That(selectBox.TagName, Is.EqualTo("input").IgnoreCase);
     }
 }

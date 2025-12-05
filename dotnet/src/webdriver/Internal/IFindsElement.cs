@@ -19,27 +19,26 @@
 
 using System.Collections.ObjectModel;
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium.Internal;
+
+/// <summary>
+/// Defines the interface through which the user finds elements by a strategy and value.
+/// </summary>
+public interface IFindsElement
 {
     /// <summary>
-    /// Defines the interface through which the user finds elements by a strategy and value.
+    /// Finds the first element matching the specified value using the specified mechanism.
     /// </summary>
-    public interface IFindsElement
-    {
-        /// <summary>
-        /// Finds the first element matching the specified value using the specified mechanism.
-        /// </summary>
-        /// <param name="mechanism">The mechanism to use when matching.</param>
-        /// <param name="value">The value to match.</param>
-        /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
-        IWebElement FindElement(string mechanism, string value);
+    /// <param name="mechanism">The mechanism to use when matching.</param>
+    /// <param name="value">The value to match.</param>
+    /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
+    IWebElement FindElement(string mechanism, string value);
 
-        /// <summary>
-        /// Finds all elements matching the specified value using the specified mechanism.
-        /// </summary>
-        /// <param name="mechanism">The mechanism to use when matching.</param>
-        /// <param name="value">The value to match.</param>
-        /// <returns><see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
-        ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value);
-    }
+    /// <summary>
+    /// Finds all elements matching the specified value using the specified mechanism.
+    /// </summary>
+    /// <param name="mechanism">The mechanism to use when matching.</param>
+    /// <param name="value">The value to match.</param>
+    /// <returns><see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
+    ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value);
 }

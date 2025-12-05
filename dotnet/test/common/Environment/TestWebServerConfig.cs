@@ -17,22 +17,18 @@
 // under the License.
 // </copyright>
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.Environment
+namespace OpenQA.Selenium.Environment;
+
+public class TestWebServerConfig
 {
-    [JsonObject]
-    public class TestWebServerConfig
-    {
-        [JsonProperty]
-        public bool CaptureConsoleOutput { get; set; }
+    public bool CaptureConsoleOutput { get; set; }
 
-        [JsonProperty]
-        public bool HideCommandPromptWindow { get; set; }
+    public bool HideCommandPromptWindow { get; set; }
 
-        [JsonProperty]
-        public string JavaHomeDirectory { get; set; }
+    public string JavaHomeDirectory { get; set; }
 
-        public string Port { get; set; }
-    }
+    [JsonIgnore]
+    public string Port { get; set; }
 }

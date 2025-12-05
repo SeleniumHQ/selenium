@@ -7,6 +7,7 @@ filegroup(
         "**/*",
     ]),
     visibility = [
+        "//dotnet/test/common:__pkg__",
         "//java/test/org/openqa/selenium/chrome:__pkg__",
         "//java/test/org/openqa/selenium/edge:__pkg__",
         "//java/test/org/openqa/selenium/environment:__pkg__",
@@ -32,6 +33,9 @@ exports_files(
         "webextensions-selenium-example.xpi",
         "webextensions-selenium-example.zip",
         "webextensions-selenium-example-unsigned.zip",
+        "webextensions-selenium-example.crx",
+        "webextensions-selenium-example",
+        "webextensions-selenium-example-signed",
     ],
     visibility = [
         "//java/test/org/openqa/selenium/firefox:__pkg__",

@@ -19,32 +19,31 @@
 
 using System;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Event arguments present when the RequestPaused event is raised.
+/// </summary>
+public class RequestPausedEventArgs : EventArgs
 {
     /// <summary>
-    /// Event arguments present when the RequestPaused event is raised.
+    /// Initializes a new instance of the <see cref="RequestPausedEventArgs"/> type.
     /// </summary>
-    public class RequestPausedEventArgs : EventArgs
+    /// <param name="requestId">The request ID.</param>
+    /// <param name="requestData">The <see cref="HttpRequestData"/> object for this request.</param>
+    public RequestPausedEventArgs(string? requestId, HttpRequestData requestData)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequestPausedEventArgs"/> type.
-        /// </summary>
-        /// <param name="requestId">The request ID.</param>
-        /// <param name="requestData">The <see cref="HttpRequestData"/> object for this request.</param>
-        public RequestPausedEventArgs(string? requestId, HttpRequestData requestData)
-        {
-            RequestId = requestId;
-            RequestData = requestData;
-        }
-
-        /// <summary>
-        /// Gets the request ID.
-        /// </summary>
-        public string? RequestId { get; }
-
-        /// <summary>
-        /// Gets the <see cref="HttpRequestData"/> object for this request.
-        /// </summary>
-        public HttpRequestData RequestData { get; }
+        RequestId = requestId;
+        RequestData = requestData;
     }
+
+    /// <summary>
+    /// Gets the request ID.
+    /// </summary>
+    public string? RequestId { get; }
+
+    /// <summary>
+    /// Gets the <see cref="HttpRequestData"/> object for this request.
+    /// </summary>
+    public HttpRequestData RequestData { get; }
 }

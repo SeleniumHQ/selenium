@@ -247,7 +247,7 @@ module Selenium
 
             expect {
               options.as_json
-            }.to raise_error(Error::WebDriverError, 'These options are not w3c compliant: {:foo=>"bar"}')
+            }.to raise_error(Error::WebDriverError, /These options are not w3c compliant: \{:?foo[:=][ >]"bar"\}/)
           end
 
           it 'returns added options' do
@@ -265,6 +265,26 @@ module Selenium
             expect(opts.as_json).to eq('browserName' => 'chrome',
                                        'goog:chromeOptions' =>
                                          {'args' => ["--user-data-dir=#{directory}"]})
+          end
+
+          it 'processes unhandled_prompt_behavior hash values' do
+            opts = described_class.new(unhandled_prompt_behavior: {
+                                         alert: :accept_and_notify,
+                                         confirm: 'dismiss_and_notify',
+                                         prompt: :ignore,
+                                         before_unload: 'accept',
+                                         default: :dismiss
+                                       })
+
+            expect(opts.as_json).to eq('browserName' => 'chrome',
+                                       'unhandledPromptBehavior' => {
+                                         'alert' => 'accept and notify',
+                                         'confirm' => 'dismiss and notify',
+                                         'prompt' => 'ignore',
+                                         'beforeUnload' => 'accept',
+                                         'default' => 'dismiss'
+                                       },
+                                       'goog:chromeOptions' => {})
           end
 
           it 'returns a JSON hash' do

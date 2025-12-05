@@ -20,28 +20,27 @@
 using System;
 using System.Diagnostics;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides data for the DriverProcessStarting event of a <see cref="DriverService"/> object.
+/// </summary>
+public class DriverProcessStartingEventArgs : EventArgs
 {
     /// <summary>
-    /// Provides data for the DriverProcessStarting event of a <see cref="DriverService"/> object.
+    /// Initializes a new instance of the <see cref="DriverProcessStartingEventArgs"/> class.
     /// </summary>
-    public class DriverProcessStartingEventArgs : EventArgs
+    /// <param name="startInfo">The <see cref="ProcessStartInfo"/> of the
+    /// driver process to be started.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="startInfo"/> is <see langword="null"/>.</exception>
+    public DriverProcessStartingEventArgs(ProcessStartInfo startInfo)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DriverProcessStartingEventArgs"/> class.
-        /// </summary>
-        /// <param name="startInfo">The <see cref="ProcessStartInfo"/> of the
-        /// driver process to be started.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="startInfo"/> is <see langword="null"/>.</exception>
-        public DriverProcessStartingEventArgs(ProcessStartInfo startInfo)
-        {
-            this.DriverServiceProcessStartInfo = startInfo ?? throw new ArgumentNullException(nameof(startInfo));
-        }
-
-        /// <summary>
-        /// Gets the <see cref="ProcessStartInfo"/> object with which the
-        /// driver service process will be started.
-        /// </summary>
-        public ProcessStartInfo DriverServiceProcessStartInfo { get; }
+        this.DriverServiceProcessStartInfo = startInfo ?? throw new ArgumentNullException(nameof(startInfo));
     }
+
+    /// <summary>
+    /// Gets the <see cref="ProcessStartInfo"/> object with which the
+    /// driver service process will be started.
+    /// </summary>
+    public ProcessStartInfo DriverServiceProcessStartInfo { get; }
 }

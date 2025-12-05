@@ -17,31 +17,30 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Interactions
+namespace OpenQA.Selenium.Interactions;
+
+/// <summary>
+/// Enumerated values for the kinds of devices available.
+/// </summary>
+public enum InputDeviceKind
 {
     /// <summary>
-    /// Enumerated values for the kinds of devices available.
+    /// Represents the null device.
     /// </summary>
-    public enum InputDeviceKind
-    {
-        /// <summary>
-        /// Represents the null device.
-        /// </summary>
-        None,
+    None,
 
-        /// <summary>
-        /// Represents a key-based device, primarily for entering text.
-        /// </summary>
-        Key,
+    /// <summary>
+    /// Represents a key-based device, primarily for entering text.
+    /// </summary>
+    Key,
 
-        /// <summary>
-        /// Represents a pointer-based device, such as a mouse, pen, or stylus.
-        /// </summary>
-        Pointer,
+    /// <summary>
+    /// Represents a pointer-based device, such as a mouse, pen, or stylus.
+    /// </summary>
+    Pointer,
 
-        /// <summary>
-        /// Represents a wheel device.
-        /// </summary>
-        Wheel
-    }
+    /// <summary>
+    /// Represents a wheel device.
+    /// </summary>
+    Wheel
 }

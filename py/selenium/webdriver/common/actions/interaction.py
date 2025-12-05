@@ -14,14 +14,14 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Dict
-from typing import Union
+
+from selenium.webdriver.common.actions.input_device import InputDevice
 
 KEY = "key"
 POINTER = "pointer"
 NONE = "none"
 WHEEL = "wheel"
-SOURCE_TYPES = {KEY, POINTER, NONE}
+SOURCE_TYPES = {KEY, POINTER, WHEEL, NONE}
 
 POINTER_MOUSE = "mouse"
 POINTER_TOUCH = "touch"
@@ -33,7 +33,7 @@ POINTER_KINDS = {POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN}
 class Interaction:
     PAUSE = "pause"
 
-    def __init__(self, source: str) -> None:
+    def __init__(self, source: InputDevice) -> None:
         self.source = source
 
 
@@ -42,5 +42,5 @@ class Pause(Interaction):
         super().__init__(source)
         self.duration = duration
 
-    def encode(self) -> Dict[str, Union[str, int]]:
+    def encode(self) -> dict[str, str | int]:
         return {"type": self.PAUSE, "duration": int(self.duration * 1000)}

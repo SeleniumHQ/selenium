@@ -20,57 +20,56 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium
-{
-    /// <summary>
-    /// Provides data for the NetworkRequestSent event of an object implementing the <see cref="INetwork"/> interface.
-    /// </summary>
-    public class NetworkRequestSentEventArgs : EventArgs
-    {
-        private readonly Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
+namespace OpenQA.Selenium;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NetworkRequestSentEventArgs"/> class.
-        /// </summary>
-        /// <param name="requestData">The <see cref="HttpRequestData"/> that describes the network request.</param>
-        public NetworkRequestSentEventArgs(HttpRequestData requestData)
+/// <summary>
+/// Provides data for the NetworkRequestSent event of an object implementing the <see cref="INetwork"/> interface.
+/// </summary>
+public class NetworkRequestSentEventArgs : EventArgs
+{
+    private readonly Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NetworkRequestSentEventArgs"/> class.
+    /// </summary>
+    /// <param name="requestData">The <see cref="HttpRequestData"/> that describes the network request.</param>
+    public NetworkRequestSentEventArgs(HttpRequestData requestData)
+    {
+        this.RequestId = requestData.RequestId;
+        this.RequestUrl = requestData.Url;
+        this.RequestMethod = requestData.Method;
+        this.RequestPostData = requestData.PostData;
+        if (requestData.Headers != null)
         {
-            this.RequestId = requestData.RequestId;
-            this.RequestUrl = requestData.Url;
-            this.RequestMethod = requestData.Method;
-            this.RequestPostData = requestData.PostData;
-            if (requestData.Headers != null)
+            foreach (KeyValuePair<string, string> header in requestData.Headers)
             {
-                foreach (KeyValuePair<string, string> header in requestData.Headers)
-                {
-                    this.requestHeaders[header.Key] = header.Value;
-                }
+                this.requestHeaders[header.Key] = header.Value;
             }
         }
-
-        /// <summary>
-        /// Gets the internal request ID of the network request.
-        /// </summary>
-        public string? RequestId { get; }
-
-        /// <summary>
-        /// Gets the URL of the network request.
-        /// </summary>
-        public string? RequestUrl { get; }
-
-        /// <summary>
-        /// Gets the HTTP method of the network request.
-        /// </summary>
-        public string? RequestMethod { get; }
-
-        /// <summary>
-        /// Gets the post data of the network request, if any.
-        /// </summary>
-        public string? RequestPostData { get; }
-
-        /// <summary>
-        /// Gets the collection of headers associated with the network request.
-        /// </summary>
-        public IReadOnlyDictionary<string, string> RequestHeaders => requestHeaders;
     }
+
+    /// <summary>
+    /// Gets the internal request ID of the network request.
+    /// </summary>
+    public string? RequestId { get; }
+
+    /// <summary>
+    /// Gets the URL of the network request.
+    /// </summary>
+    public string? RequestUrl { get; }
+
+    /// <summary>
+    /// Gets the HTTP method of the network request.
+    /// </summary>
+    public string? RequestMethod { get; }
+
+    /// <summary>
+    /// Gets the post data of the network request, if any.
+    /// </summary>
+    public string? RequestPostData { get; }
+
+    /// <summary>
+    /// Gets the collection of headers associated with the network request.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> RequestHeaders => requestHeaders;
 }

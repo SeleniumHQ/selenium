@@ -32,6 +32,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -130,7 +131,8 @@ public abstract class Node implements HasReadyState, Routable {
   private final URI uri;
   private final Duration sessionTimeout;
   private final Route routes;
-  protected boolean draining;
+  protected final AtomicBoolean draining = new AtomicBoolean(false);
+  protected final AtomicBoolean registered = new AtomicBoolean(false);
 
   protected Node(
       Tracer tracer, NodeId id, URI uri, Secret registrationSecret, Duration sessionTimeout) {
@@ -167,6 +169,9 @@ public abstract class Node implements HasReadyState, Routable {
                 .to(params -> new UploadFile(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.upload_file")),
             get("/session/{sessionId}/se/files")
+                .to(params -> new DownloadFile(this, sessionIdFrom(params)))
+                .with(spanDecorator("node.download_file")),
+            get("/session/{sessionId}/se/files/{fileName}")
                 .to(params -> new DownloadFile(this, sessionIdFrom(params)))
                 .with(spanDecorator("node.download_file")),
             post("/session/{sessionId}/se/files")
@@ -271,7 +276,15 @@ public abstract class Node implements HasReadyState, Routable {
   }
 
   public boolean isDraining() {
-    return draining;
+    return draining.get();
+  }
+
+  public boolean isRegistered() {
+    return registered.get();
+  }
+
+  public void register() {
+    registered.set(true);
   }
 
   public abstract void drain();

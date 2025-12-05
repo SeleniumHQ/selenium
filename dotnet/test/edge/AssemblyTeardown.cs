@@ -21,23 +21,22 @@ using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.Edge
-{
-    [SetUpFixture]
-    // Outside a namespace to affect the entire assembly
-    public class MySetUpClass
-    {
-        [OneTimeSetUp]
-        public async Task RunBeforeAnyTestAsync()
-        {
-            await EnvironmentManager.Instance.WebServer.StartAsync();
-        }
+namespace OpenQA.Selenium.Edge;
 
-        [OneTimeTearDown]
-        public async Task RunAfterAnyTestsAsync()
-        {
-            EnvironmentManager.Instance.CloseCurrentDriver();
-            await EnvironmentManager.Instance.WebServer.StopAsync();
-        }
+[SetUpFixture]
+// Outside a namespace to affect the entire assembly
+public class MySetUpClass
+{
+    [OneTimeSetUp]
+    public async Task RunBeforeAnyTestAsync()
+    {
+        await EnvironmentManager.Instance.WebServer.StartAsync();
+    }
+
+    [OneTimeTearDown]
+    public async Task RunAfterAnyTestsAsync()
+    {
+        EnvironmentManager.Instance.CloseCurrentDriver();
+        await EnvironmentManager.Instance.WebServer.StopAsync();
     }
 }

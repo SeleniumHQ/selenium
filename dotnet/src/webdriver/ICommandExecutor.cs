@@ -21,36 +21,35 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Provides a way to send commands to the remote server
+/// </summary>
+public interface ICommandExecutor : IDisposable
 {
     /// <summary>
-    /// Provides a way to send commands to the remote server
+    /// Attempts to add a command to the repository of commands known to this executor.
     /// </summary>
-    public interface ICommandExecutor : IDisposable
-    {
-        /// <summary>
-        /// Attempts to add a command to the repository of commands known to this executor.
-        /// </summary>
-        /// <param name="commandName">The name of the command to attempt to add.</param>
-        /// <param name="info">The <see cref="CommandInfo"/> describing the command to add.</param>
-        /// <returns><see langword="true"/> if the new command has been added successfully; otherwise, <see langword="false"/>.</returns>
-        bool TryAddCommand(string commandName, [NotNullWhen(true)] CommandInfo? info);
+    /// <param name="commandName">The name of the command to attempt to add.</param>
+    /// <param name="info">The <see cref="CommandInfo"/> describing the command to add.</param>
+    /// <returns><see langword="true"/> if the new command has been added successfully; otherwise, <see langword="false"/>.</returns>
+    bool TryAddCommand(string commandName, [NotNullWhen(true)] CommandInfo? info);
 
-        /// <summary>
-        /// Executes a command
-        /// </summary>
-        /// <param name="commandToExecute">The command you wish to execute</param>
-        /// <returns>A response from the browser</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="commandToExecute"/> is <see langword="null"/>.</exception>
-        Response Execute(Command commandToExecute);
+    /// <summary>
+    /// Executes a command
+    /// </summary>
+    /// <param name="commandToExecute">The command you wish to execute</param>
+    /// <returns>A response from the browser</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="commandToExecute"/> is <see langword="null"/>.</exception>
+    Response Execute(Command commandToExecute);
 
 
-        /// <summary>
-        /// Executes a command as an asynchronous task.
-        /// </summary>
-        /// <param name="commandToExecute">The command you wish to execute</param>
-        /// <returns>A task object representing the asynchronous operation</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="commandToExecute"/> is <see langword="null"/>.</exception>
-        Task<Response> ExecuteAsync(Command commandToExecute);
-    }
+    /// <summary>
+    /// Executes a command as an asynchronous task.
+    /// </summary>
+    /// <param name="commandToExecute">The command you wish to execute</param>
+    /// <returns>A task object representing the asynchronous operation</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="commandToExecute"/> is <see langword="null"/>.</exception>
+    Task<Response> ExecuteAsync(Command commandToExecute);
 }

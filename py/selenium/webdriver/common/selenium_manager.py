@@ -22,8 +22,6 @@ import subprocess
 import sys
 import sysconfig
 from pathlib import Path
-from typing import List
-from typing import Optional
 
 from selenium.common import WebDriverException
 
@@ -36,14 +34,15 @@ class SeleniumManager:
     This implementation is still in beta, and may change.
     """
 
-    def binary_paths(self, args: List) -> dict:
+    def binary_paths(self, args: list) -> dict:
         """Determines the locations of the requested assets.
 
-        :Args:
-         - args: the commands to send to the selenium manager binary.
-        :Returns: dictionary of assets and their path
-        """
+        Args:
+            args: the commands to send to the selenium manager binary.
 
+        Returns:
+            Dictionary of assets and their path.
+        """
         args = [str(self._get_binary())] + args
         if logger.getEffectiveLevel() == logging.DEBUG:
             args.append("--debug")
@@ -58,17 +57,18 @@ class SeleniumManager:
     def _get_binary() -> Path:
         """Determines the path of the correct Selenium Manager binary.
 
-        :Returns: The Selenium Manager executable location
+        Returns:
+            The Selenium Manager executable location.
 
-        :Raises: WebDriverException if the platform is unsupported
+        Raises:
+            WebDriverException: If the platform is unsupported.
         """
-
         compiled_path = Path(__file__).parent.joinpath("selenium-manager")
         exe = sysconfig.get_config_var("EXE")
         if exe is not None:
             compiled_path = compiled_path.with_suffix(exe)
 
-        path: Optional[Path] = None
+        path: Path | None = None
 
         if (env_path := os.getenv("SE_MANAGER_PATH")) is not None:
             logger.debug("Selenium Manager set by env SE_MANAGER_PATH to: %s", env_path)
@@ -103,12 +103,14 @@ class SeleniumManager:
         return path
 
     @staticmethod
-    def _run(args: List[str]) -> dict:
+    def _run(args: list[str]) -> dict:
         """Executes the Selenium Manager Binary.
 
-        :Args:
-         - args: the components of the command being executed.
-        :Returns: The log string containing the driver location.
+        Args:
+            args: the components of the command being executed.
+
+        Returns:
+            The log string containing the driver location.
         """
         command = " ".join(args)
         logger.debug("Executing process: %s", command)
@@ -132,7 +134,7 @@ class SeleniumManager:
         return result
 
     @staticmethod
-    def _process_logs(log_items: List[dict]):
+    def _process_logs(log_items: list[dict]):
         for item in log_items:
             if item["level"] == "WARN":
                 logger.warning(item["message"])

@@ -1,0 +1,61 @@
+policy:
+  - section:
+      - id: [operating-system]
+        label:
+          - name: OS-windows
+            keys: [ Windows ]
+          - name: OS-mac
+            keys: [ macOS ]
+          - name: OS-linux
+            keys: [ Linux (specify in the description) ]
+
+      - id: [bindings]
+        label:
+          - name: C-java
+            keys: [ Java ]
+          - name: C-py
+            keys: [ Python ]
+          - name: C-dotnet
+            keys: [ C#/.NET ]
+          - name: C-rb
+            keys: [ Ruby ]
+          - name: C-nodejs
+            keys: [ JavaScript/Node.js ]
+
+      - id: [regression]
+        label:
+          - name: I-regression
+            keys: [ Yes this is a regression ]
+
+      - id: [components]
+        label:
+          - name: B-grid
+            keys: [ Grid ]
+          - name: B-docs
+            keys: [ Documentation ]
+          - name: B-devtools
+            keys: [ DevTools (CDP or BiDi) ]
+          - name: B-manager
+            keys: [ Selenium Manager ]
+          - name: B-build
+            keys: [ Build (CI or Bazel) ]
+          - name: B-atoms
+            keys: [ Atoms ]
+
+      - id: [browsers]
+        label:
+          - name: D-chrome
+            keys: [ Chrome ]
+          - name: D-firefox
+            keys: [ Firefox ]
+          - name: D-safari
+            keys: [ Safari ]
+          - name: D-edge
+            keys: [ Edge ]
+          - name: D-IE
+            keys: [ IE ]
+
+      - id: [grid]
+        label:
+          - name: B-grid
+            keys: [ "Yes" ]

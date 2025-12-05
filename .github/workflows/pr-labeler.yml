@@ -1,7 +1,8 @@
+# Configuration for Label Generation - ./.github/pr-labeler-config.yml
 name: Label pull requests based on file paths
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened]
 
 permissions:
@@ -12,9 +13,13 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout base repo to get config file
         uses: actions/checkout@v4
-      - uses: actions/labeler@v5
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.base.ref }}
+          repository: seleniumhq/selenium
+      - name: Auto label Pull Requests
+        uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.SELENIUM_CI_TOKEN }}
           configuration-path: .github/pr-labeler-config.yml

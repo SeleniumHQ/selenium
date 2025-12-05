@@ -30,12 +30,12 @@ module Selenium
         include DriverExtensions::HasSessionId
         include DriverExtensions::HasFileDownloads
 
-        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **)
           raise ArgumentError, "Can not set :service object on #{self.class}" if service
 
           url ||= "http://#{Platform.localhost}:4444/wd/hub"
           caps = process_options(options, capabilities)
-          super(caps: caps, url: url, **opts)
+          super(caps: caps, url: url, **)
           @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
           command_list = @bridge.command_list
           @bridge.extend(WebDriver::Remote::Features)

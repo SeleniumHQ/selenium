@@ -123,7 +123,8 @@ test.suite(
 
     describe('Chrome options', function () {
       it('can start Chrome with custom args', async function () {
-        const options = new chrome.Options().addArguments('user-agent=foo;bar')
+        const options = env.builder().getChromeOptions() || new chrome.Options()
+        options.addArguments('user-agent=foo;bar')
 
         driver = await env.builder().setChromeOptions(options).build()
 
@@ -152,7 +153,8 @@ test.suite(
       })
 
       it('can install an extension from path', async function () {
-        let options = new chrome.Options().addExtensions(WEBEXTENSION_CRX)
+        let options = env.builder().getChromeOptions() || new chrome.Options()
+        options.addExtensions(WEBEXTENSION_CRX)
 
         driver = await env.builder().forBrowser('chrome').setChromeOptions(options).build()
 
@@ -161,7 +163,8 @@ test.suite(
       })
 
       it('can install an extension from Buffer', async function () {
-        let options = new chrome.Options().addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
+        let options = env.builder().getChromeOptions() || new chrome.Options()
+        options.addExtensions(fs.readFileSync(WEBEXTENSION_CRX))
 
         driver = await env.builder().forBrowser('chrome').setChromeOptions(options).build()
 

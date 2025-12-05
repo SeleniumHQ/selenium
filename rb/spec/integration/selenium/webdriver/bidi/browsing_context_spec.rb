@@ -74,19 +74,21 @@ module Selenium
           expect(handles).not_to include(window2)
         end
 
-        it 'sets the viewport' do
+        it 'sets the viewport', except: {rbe: true, reason: 'unknown, returns value of 1 instead of 2.0'} do
           browsing_context = described_class.new(bridge)
           browsing_context.set_viewport(width: 800, height: 600, device_pixel_ratio: 2.0)
           expect(driver.execute_script('return [window.innerWidth, window.innerHeight]')).to eq([800, 600])
           expect(driver.execute_script('return window.devicePixelRatio')).to eq(2.0)
         end
 
-        it 'accepts users prompts without text' do
+        it 'accepts users prompts without text',
+           except: {browser: %i[edge chrome],
+                    reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
 
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'alert').click
-          wait.until { driver.switch_to.alert }
+          wait_for_alert
           window = driver.window_handles.first
           browsing_context.handle_user_prompt(window, accept: true)
           wait_for_no_alert
@@ -94,7 +96,9 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'accepts users prompts with text' do
+        it 'accepts users prompts with text',
+           except: {browser: %i[edge chrome],
+                    reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'prompt').click
@@ -106,7 +110,8 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'rejects users prompts' do
+        it 'rejects users prompts', except: {browser: %i[edge chrome],
+                                             reason: 'https://github.com/GoogleChromeLabs/chromium-bidi/issues/3281'} do
           browsing_context = described_class.new(bridge)
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'alert').click

@@ -17,16 +17,15 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// An interface indicating that the implementing class has a command executor.
+/// </summary>
+public interface IHasCommandExecutor
 {
     /// <summary>
-    /// An interface indicating that the implementing class has a command executor.
+    /// Gets the command executor.
     /// </summary>
-    public interface IHasCommandExecutor
-    {
-        /// <summary>
-        /// Gets the command executor.
-        /// </summary>
-        ICommandExecutor CommandExecutor { get; }
-    }
+    ICommandExecutor CommandExecutor { get; }
 }

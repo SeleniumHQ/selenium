@@ -17,28 +17,20 @@
 // under the License.
 // </copyright>
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 
-namespace OpenQA.Selenium.Environment
+namespace OpenQA.Selenium.Environment;
+
+public class DriverConfig
 {
-    [JsonObject]
-    public class DriverConfig
-    {
-        [JsonProperty]
-        public string DriverTypeName { get; set; }
+    public string DriverTypeName { get; set; }
 
-        [JsonProperty]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public Browser BrowserValue { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter<Browser>))]
+    public Browser BrowserValue { get; set; }
 
-        [JsonProperty]
-        public string RemoteCapabilities { get; set; }
+    public string RemoteCapabilities { get; set; }
 
-        [JsonProperty]
-        public bool AutoStartRemoteServer { get; set; }
+    public bool AutoStartRemoteServer { get; set; }
 
-        [JsonProperty]
-        public bool Logging { get; set; }
-    }
+    public bool Logging { get; set; }
 }

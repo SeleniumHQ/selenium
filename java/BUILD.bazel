@@ -1,4 +1,5 @@
-load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_config")
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
+load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_binary", "spotbugs_config")
 load(":defs.bzl", "artifact")
 
 exports_files(
@@ -21,6 +22,16 @@ java_plugin(
     ],
 )
 
+java_plugin(
+    name = "nullaway",
+    visibility = [
+        "//java:__subpackages__",
+    ],
+    deps = [
+        artifact("com.uber.nullaway:nullaway"),
+    ],
+)
+
 java_library(
     name = "auto-service",
     exported_plugins = [
@@ -34,12 +45,45 @@ java_library(
     ],
 )
 
+spotbugs_binary(
+    name = "spotbugs-cli",
+    runtime_deps = [
+        artifact("com.github.spotbugs:spotbugs"),
+        artifact("org.slf4j:slf4j-jdk14"),
+    ],
+)
+
 spotbugs_config(
     name = "spotbugs-config",
     effort = "default",
     exclude_filter = "spotbugs-excludes.xml",
     fail_on_warning = True,
+    spotbugs_binary = ":spotbugs-cli",
     visibility = [
         "//visibility:public",
     ],
+)
+
+string_flag(
+    name = "nullaway_level",
+    build_setting_default = "NONE",
+    values = [
+        "NONE",
+        "WARN",
+        "ERROR",
+    ],
+)
+
+config_setting(
+    name = "use_nullaway_level_warn",
+    flag_values = {
+        ":nullaway_level": "WARN",
+    },
+)
+
+config_setting(
+    name = "use_nullaway_level_error",
+    flag_values = {
+        ":nullaway_level": "ERROR",
+    },
 )

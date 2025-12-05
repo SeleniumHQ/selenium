@@ -17,77 +17,103 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
+using System.Collections.Concurrent;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
-using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi;
 
-public class BiDi : IAsyncDisposable
+public sealed class BiDi : IAsyncDisposable
 {
-    private readonly Broker _broker;
+    private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
-    private readonly Lazy<Modules.Session.SessionModule> _sessionModule;
-    private readonly Lazy<Modules.BrowsingContext.BrowsingContextModule> _browsingContextModule;
-    private readonly Lazy<Modules.Browser.BrowserModule> _browserModule;
-    private readonly Lazy<Modules.Network.NetworkModule> _networkModule;
-    private readonly Lazy<Modules.Input.InputModule> _inputModule;
-    private readonly Lazy<Modules.Script.ScriptModule> _scriptModule;
-    private readonly Lazy<Modules.Log.LogModule> _logModule;
-    private readonly Lazy<Modules.Storage.StorageModule> _storageModule;
-
-    internal BiDi(string url)
+    private BiDi(string url)
     {
         var uri = new Uri(url);
 
-        _broker = new Broker(this, uri);
-
-        _sessionModule = new Lazy<Modules.Session.SessionModule>(() => new Modules.Session.SessionModule(_broker));
-        _browsingContextModule = new Lazy<Modules.BrowsingContext.BrowsingContextModule>(() => new Modules.BrowsingContext.BrowsingContextModule(_broker));
-        _browserModule = new Lazy<Modules.Browser.BrowserModule>(() => new Modules.Browser.BrowserModule(_broker));
-        _networkModule = new Lazy<Modules.Network.NetworkModule>(() => new Modules.Network.NetworkModule(_broker));
-        _inputModule = new Lazy<Modules.Input.InputModule>(() => new Modules.Input.InputModule(_broker));
-        _scriptModule = new Lazy<Modules.Script.ScriptModule>(() => new Modules.Script.ScriptModule(_broker));
-        _logModule = new Lazy<Modules.Log.LogModule>(() => new Modules.Log.LogModule(_broker));
-        _storageModule = new Lazy<Modules.Storage.StorageModule>(() => new Modules.Storage.StorageModule(_broker));
+        Broker = new Broker(this, uri);
     }
 
-    internal Modules.Session.SessionModule SessionModule => _sessionModule.Value;
-    public Modules.BrowsingContext.BrowsingContextModule BrowsingContext => _browsingContextModule.Value;
-    public Modules.Browser.BrowserModule Browser => _browserModule.Value;
-    public Modules.Network.NetworkModule Network => _networkModule.Value;
-    internal Modules.Input.InputModule InputModule => _inputModule.Value;
-    public Modules.Script.ScriptModule Script => _scriptModule.Value;
-    public Modules.Log.LogModule Log => _logModule.Value;
-    public Modules.Storage.StorageModule Storage => _storageModule.Value;
+    internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
 
-    public Task<Modules.Session.StatusResult> StatusAsync()
+    public BrowsingContext.BrowsingContextModule BrowsingContext => AsModule<BrowsingContext.BrowsingContextModule>();
+
+    public Browser.BrowserModule Browser => AsModule<Browser.BrowserModule>();
+
+    public Network.NetworkModule Network => AsModule<Network.NetworkModule>();
+
+    internal Input.InputModule InputModule => AsModule<Input.InputModule>();
+
+    public Script.ScriptModule Script => AsModule<Script.ScriptModule>();
+
+    public Log.LogModule Log => AsModule<Log.LogModule>();
+
+    public Storage.StorageModule Storage => AsModule<Storage.StorageModule>();
+
+    public WebExtension.WebExtensionModule WebExtension => AsModule<WebExtension.WebExtensionModule>();
+
+    public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
+
+    public Task<Session.StatusResult> StatusAsync()
     {
         return SessionModule.StatusAsync();
     }
 
-    public static async Task<BiDi> ConnectAsync(string url)
+    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
     {
         var bidi = new BiDi(url);
 
-        await bidi._broker.ConnectAsync(default).ConfigureAwait(false);
+        await bidi.Broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
 
         return bidi;
     }
 
-    public Task EndAsync(Modules.Session.EndOptions? options = null)
+    public Task EndAsync(Session.EndOptions? options = null)
     {
         return SessionModule.EndAsync(options);
     }
 
     public async ValueTask DisposeAsync()
     {
-        await DisposeAsyncCore();
+        await Broker.DisposeAsync().ConfigureAwait(false);
         GC.SuppressFinalize(this);
     }
 
-    protected virtual async ValueTask DisposeAsyncCore()
+    public T AsModule<T>() where T : Module, new()
     {
-        await _broker.DisposeAsync().ConfigureAwait(false);
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, GetJsonOptions()));
+    }
+
+    private Broker Broker { get; }
+
+    private JsonSerializerOptions GetJsonOptions()
+    {
+        return new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+
+            // BiDi returns special numbers such as "NaN" as strings
+            // Additionally, -0 is returned as a string "-0"
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
+            Converters =
+            {
+                new BrowsingContextConverter(this),
+                new BrowserUserContextConverter(this),
+                new CollectorConverter(this),
+                new InterceptConverter(this),
+                new HandleConverter(this),
+                new InternalIdConverter(this),
+                new PreloadScriptConverter(this),
+                new RealmConverter(this),
+                new DateTimeOffsetConverter(),
+                new WebExtensionConverter(this),
+            }
+        };
     }
 }

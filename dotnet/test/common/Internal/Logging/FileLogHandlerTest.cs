@@ -22,127 +22,126 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace OpenQA.Selenium.Internal.Logging
+namespace OpenQA.Selenium.Internal.Logging;
+
+public class FileLogHandlerTest
 {
-    public class FileLogHandlerTest
+    [TestCase(null)]
+    [TestCase("")]
+    public void ShouldNotAcceptIncorrectPath(string path)
     {
-        [TestCase(null)]
-        [TestCase("")]
-        public void ShouldNotAcceptIncorrectPath(string path)
-        {
-            var act = () => new FileLogHandler(path);
+        var act = () => new FileLogHandler(path);
 
-            Assert.That(act, Throws.ArgumentException);
+        Assert.That(act, Throws.ArgumentException);
+    }
+
+    [Test]
+    public void ShouldHandleLogEvent()
+    {
+        var tempFile = Path.GetTempFileName();
+
+        try
+        {
+            using (var fileLogHandler = new FileLogHandler(tempFile))
+            {
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+            }
+
+            Assert.That(File.ReadAllText(tempFile), Does.Contain("test message"));
         }
-
-        [Test]
-        public void ShouldHandleLogEvent()
+        finally
         {
-            var tempFile = Path.GetTempFileName();
-
-            try
-            {
-                using (var fileLogHandler = new FileLogHandler(tempFile))
-                {
-                    fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
-
-                Assert.That(File.ReadAllText(tempFile), Does.Contain("test message"));
-            }
-            finally
-            {
-                File.Delete(tempFile);
-            }
+            File.Delete(tempFile);
         }
+    }
 
-        [Test]
-        public void ShouldCreateFileIfDoesNotExist()
+    [Test]
+    public void ShouldCreateFileIfDoesNotExist()
+    {
+        var tempFile = Path.GetTempFileName();
+
+        try
         {
-            var tempFile = Path.GetTempFileName();
-
-            try
+            using (var fileLogHandler = new FileLogHandler(tempFile))
             {
-                using (var fileLogHandler = new FileLogHandler(tempFile))
-                {
-                    fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
-
-                using (var fileLogHandler2 = new FileLogHandler(tempFile))
-                {
-                    fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
-
-                Assert.That(Regex.Matches(File.ReadAllText(tempFile), "test message"), Has.Count.EqualTo(1));
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
-            finally
+
+            using (var fileLogHandler2 = new FileLogHandler(tempFile))
             {
-                File.Delete(tempFile);
+                fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
+
+            Assert.That(Regex.Matches(File.ReadAllText(tempFile), "test message"), Has.Count.EqualTo(1));
         }
-
-        [Test]
-        public void ShouldAppendFileIfExists()
+        finally
         {
-            var tempFilePath = Path.GetTempPath() + "somefile.log";
-
-            try
-            {
-                using (var fileLogHandler = new FileLogHandler(tempFilePath))
-                {
-                    fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
-
-                using (var fileLogHandler2 = new FileLogHandler(tempFilePath, overwrite: false))
-                {
-                    fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
-
-                Assert.That(Regex.Matches(File.ReadAllText(tempFilePath), "test message"), Has.Count.EqualTo(2));
-            }
-            finally
-            {
-                File.Delete(tempFilePath);
-            }
+            File.Delete(tempFile);
         }
+    }
 
-        [Test]
-        public void ShouldOverwriteFileIfExists()
+    [Test]
+    public void ShouldAppendFileIfExists()
+    {
+        var tempFilePath = Path.GetTempPath() + "somefile.log";
+
+        try
         {
-            var tempFile = Path.GetTempFileName();
-
-            try
+            using (var fileLogHandler = new FileLogHandler(tempFilePath))
             {
-                using (var fileLogHandler = new FileLogHandler(tempFile, overwrite: true))
-                {
-                    fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+            }
 
-                Assert.That(Regex.Matches(File.ReadAllText(tempFile), "test message"), Has.Count.EqualTo(1));
-            }
-            finally
+            using (var fileLogHandler2 = new FileLogHandler(tempFilePath, overwrite: false))
             {
-                File.Delete(tempFile);
+                fileLogHandler2.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
+
+            Assert.That(Regex.Matches(File.ReadAllText(tempFilePath), "test message"), Has.Count.EqualTo(2));
         }
-
-        [Test]
-        public void ShouldAppendFileIfDoesNotExist()
+        finally
         {
-            var tempFilePath = Path.GetTempPath() + "somefile.log";
+            File.Delete(tempFilePath);
+        }
+    }
 
-            try
-            {
-                using (var fileLogHandler = new FileLogHandler(tempFilePath, overwrite: true))
-                {
-                    fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
-                }
+    [Test]
+    public void ShouldOverwriteFileIfExists()
+    {
+        var tempFile = Path.GetTempFileName();
 
-                Assert.That(Regex.Matches(File.ReadAllText(tempFilePath), "test message"), Has.Count.EqualTo(1));
-            }
-            finally
+        try
+        {
+            using (var fileLogHandler = new FileLogHandler(tempFile, overwrite: true))
             {
-                File.Delete(tempFilePath);
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
             }
+
+            Assert.That(Regex.Matches(File.ReadAllText(tempFile), "test message"), Has.Count.EqualTo(1));
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    [Test]
+    public void ShouldAppendFileIfDoesNotExist()
+    {
+        var tempFilePath = Path.GetTempPath() + "somefile.log";
+
+        try
+        {
+            using (var fileLogHandler = new FileLogHandler(tempFilePath, overwrite: true))
+            {
+                fileLogHandler.Handle(new LogEvent(typeof(FileLogHandlerTest), DateTimeOffset.Now, LogEventLevel.Info, "test message"));
+            }
+
+            Assert.That(Regex.Matches(File.ReadAllText(tempFilePath), "test message"), Has.Count.EqualTo(1));
+        }
+        finally
+        {
+            File.Delete(tempFilePath);
         }
     }
 }

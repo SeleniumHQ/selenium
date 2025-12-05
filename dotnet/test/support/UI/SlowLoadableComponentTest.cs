@@ -20,180 +20,179 @@
 using NUnit.Framework;
 using System;
 
-namespace OpenQA.Selenium.Support.UI
+namespace OpenQA.Selenium.Support.UI;
+
+[TestFixture]
+public class SlowLoadableComponentTest
 {
-    [TestFixture]
-    public class SlowLoadableComponentTest
+
+    [Test]
+    public void TestShouldDoNothingIfComponentIsAlreadyLoaded()
+    {
+        try
+        {
+            new DetonatingSlowLoader().Load();
+        }
+        catch (Exception)
+        {
+            Assert.Fail("Did not expect load to be called");
+        }
+    }
+
+    [Test]
+    public void TestShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded()
+    {
+        int numberOfTimesThroughLoop = 1;
+        SlowLoading slowLoading = new SlowLoading(TimeSpan.FromSeconds(1), SystemClock.Instance, numberOfTimesThroughLoop).Load();
+
+        Assert.That(slowLoading.GetLoopCount(), Is.EqualTo(numberOfTimesThroughLoop));
+    }
+
+    [Test]
+    public void TestTheLoadMethodShouldOnlyBeCalledOnceIfTheComponentTakesALongTimeToLoad()
+    {
+        try
+        {
+            new OnlyOneLoad(TimeSpan.FromSeconds(5), SystemClock.Instance, 5).Load();
+        }
+        catch (Exception)
+        {
+            Assert.Fail("Did not expect load to be called more than once");
+        }
+    }
+
+    [Test]
+    public void TestShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoadBeforeTimeout()
+    {
+        HandCrankClock clock = new HandCrankClock();
+
+        Assert.That(
+            () => new BasicSlowLoader(TimeSpan.FromSeconds(2), clock).Load(),
+            Throws.InstanceOf<WebDriverTimeoutException>());
+    }
+
+    [Test]
+    public void TestShouldCancelLoadingIfAnErrorIsDetected()
+    {
+        HasError error = new HasError();
+
+        Assert.That(
+           () => error.Load(),
+           Throws.InstanceOf<CustomException>());
+    }
+
+
+    private class DetonatingSlowLoader : SlowLoadableComponent<DetonatingSlowLoader>
     {
 
-        [Test]
-        public void TestShouldDoNothingIfComponentIsAlreadyLoaded()
+        public DetonatingSlowLoader() : base(TimeSpan.FromSeconds(1), SystemClock.Instance) { }
+
+        protected override void ExecuteLoad()
         {
-            try
-            {
-                new DetonatingSlowLoader().Load();
-            }
-            catch (Exception)
-            {
-                Assert.Fail("Did not expect load to be called");
-            }
+            throw new Exception("Should never be called");
         }
 
-        [Test]
-        public void TestShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded()
+        protected override bool EvaluateLoadedStatus()
         {
-            int numberOfTimesThroughLoop = 1;
-            SlowLoading slowLoading = new SlowLoading(TimeSpan.FromSeconds(1), SystemClock.Instance, numberOfTimesThroughLoop).Load();
-
-            Assert.That(slowLoading.GetLoopCount(), Is.EqualTo(numberOfTimesThroughLoop));
+            return true;
         }
-
-        [Test]
-        public void TestTheLoadMethodShouldOnlyBeCalledOnceIfTheComponentTakesALongTimeToLoad()
-        {
-            try
-            {
-                new OnlyOneLoad(TimeSpan.FromSeconds(5), SystemClock.Instance, 5).Load();
-            }
-            catch (Exception)
-            {
-                Assert.Fail("Did not expect load to be called more than once");
-            }
-        }
-
-        [Test]
-        public void TestShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoadBeforeTimeout()
-        {
-            HandCrankClock clock = new HandCrankClock();
-
-            Assert.That(
-                () => new BasicSlowLoader(TimeSpan.FromSeconds(2), clock).Load(),
-                Throws.InstanceOf<WebDriverTimeoutException>());
-        }
-
-        [Test]
-        public void TestShouldCancelLoadingIfAnErrorIsDetected()
-        {
-            HasError error = new HasError();
-
-            Assert.That(
-               () => error.Load(),
-               Throws.InstanceOf<CustomException>());
-        }
-
-
-        private class DetonatingSlowLoader : SlowLoadableComponent<DetonatingSlowLoader>
-        {
-
-            public DetonatingSlowLoader() : base(TimeSpan.FromSeconds(1), SystemClock.Instance) { }
-
-            protected override void ExecuteLoad()
-            {
-                throw new Exception("Should never be called");
-            }
-
-            protected override bool EvaluateLoadedStatus()
-            {
-                return true;
-            }
-        }
-
-        private class SlowLoading : SlowLoadableComponent<SlowLoading>
-        {
-
-            private readonly int counts;
-            private long loopCount;
-
-            public SlowLoading(TimeSpan timeOut, SystemClock clock, int counts)
-                : base(timeOut, clock)
-            {
-                this.counts = counts;
-            }
-
-            protected override void ExecuteLoad()
-            {
-                // Does nothing
-            }
-
-            protected override bool EvaluateLoadedStatus()
-            {
-                if (loopCount > counts)
-                {
-                    throw new Exception();
-                }
-
-                loopCount++;
-                return true;
-            }
-
-            public long GetLoopCount()
-            {
-                return loopCount;
-            }
-        }
-
-        private class OnlyOneLoad : SlowLoading
-        {
-
-            private bool loadAlreadyCalled;
-
-            public OnlyOneLoad(TimeSpan timeout, SystemClock clock, int counts) : base(timeout, clock, counts) { }
-
-            protected override void ExecuteLoad()
-            {
-                if (loadAlreadyCalled)
-                {
-                    throw new Exception();
-                }
-                loadAlreadyCalled = true;
-            }
-        }
-
-        private class BasicSlowLoader : SlowLoadableComponent<BasicSlowLoader>
-        {
-
-            private readonly HandCrankClock handCrankClock;
-            public BasicSlowLoader(TimeSpan timeOut, HandCrankClock clock)
-                : base(timeOut, clock)
-            {
-                this.handCrankClock = clock;
-            }
-
-            protected override void ExecuteLoad()
-            {
-                // Does nothing
-            }
-
-            protected override bool EvaluateLoadedStatus()
-            {
-                // Cheat and increment the clock here, because otherwise it's hard to
-                // get to.
-                handCrankClock.MoveTime(TimeSpan.FromSeconds(1));
-                return false; // Never loads
-            }
-        }
-
-        private class HasError : SlowLoadableComponent<HasError>
-        {
-
-            public HasError() : base(TimeSpan.FromSeconds(1000), new HandCrankClock()) { }
-
-            protected override void ExecuteLoad()
-            {
-                // does nothing
-            }
-
-            protected override bool EvaluateLoadedStatus()
-            {
-                return false;       //never loads
-            }
-
-            protected override void HandleErrors()
-            {
-                throw new CustomException();
-            }
-        }
-
-        private class CustomException : Exception;
     }
+
+    private class SlowLoading : SlowLoadableComponent<SlowLoading>
+    {
+
+        private readonly int counts;
+        private long loopCount;
+
+        public SlowLoading(TimeSpan timeOut, SystemClock clock, int counts)
+            : base(timeOut, clock)
+        {
+            this.counts = counts;
+        }
+
+        protected override void ExecuteLoad()
+        {
+            // Does nothing
+        }
+
+        protected override bool EvaluateLoadedStatus()
+        {
+            if (loopCount > counts)
+            {
+                throw new Exception();
+            }
+
+            loopCount++;
+            return true;
+        }
+
+        public long GetLoopCount()
+        {
+            return loopCount;
+        }
+    }
+
+    private class OnlyOneLoad : SlowLoading
+    {
+
+        private bool loadAlreadyCalled;
+
+        public OnlyOneLoad(TimeSpan timeout, SystemClock clock, int counts) : base(timeout, clock, counts) { }
+
+        protected override void ExecuteLoad()
+        {
+            if (loadAlreadyCalled)
+            {
+                throw new Exception();
+            }
+            loadAlreadyCalled = true;
+        }
+    }
+
+    private class BasicSlowLoader : SlowLoadableComponent<BasicSlowLoader>
+    {
+
+        private readonly HandCrankClock handCrankClock;
+        public BasicSlowLoader(TimeSpan timeOut, HandCrankClock clock)
+            : base(timeOut, clock)
+        {
+            this.handCrankClock = clock;
+        }
+
+        protected override void ExecuteLoad()
+        {
+            // Does nothing
+        }
+
+        protected override bool EvaluateLoadedStatus()
+        {
+            // Cheat and increment the clock here, because otherwise it's hard to
+            // get to.
+            handCrankClock.MoveTime(TimeSpan.FromSeconds(1));
+            return false; // Never loads
+        }
+    }
+
+    private class HasError : SlowLoadableComponent<HasError>
+    {
+
+        public HasError() : base(TimeSpan.FromSeconds(1000), new HandCrankClock()) { }
+
+        protected override void ExecuteLoad()
+        {
+            // does nothing
+        }
+
+        protected override bool EvaluateLoadedStatus()
+        {
+            return false;       //never loads
+        }
+
+        protected override void HandleErrors()
+        {
+            throw new CustomException();
+        }
+    }
+
+    private class CustomException : Exception;
 }

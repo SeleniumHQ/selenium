@@ -17,12 +17,10 @@
 
 import json
 import pkgutil
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from importlib import import_module
 from typing import Any
-from typing import AsyncGenerator
-from typing import Dict
-from typing import Optional
 
 from selenium.webdriver.common.by import By
 
@@ -36,8 +34,7 @@ def import_cdp():
 
 
 class Log:
-    """This class allows access to logging APIs that use the new WebDriver Bidi
-    protocol.
+    """Class for accessing logging APIs using the WebDriver Bidi protocol.
 
     This class is not to be used directly and should be used from the
     webdriver base classes.
@@ -50,18 +47,16 @@ class Log:
         self.devtools = bidi_session.devtools
         _pkg = ".".join(__name__.split(".")[:-1])
         # Ensure _mutation_listener_js is not None before decoding
-        _mutation_listener_js_bytes: Optional[bytes] = pkgutil.get_data(_pkg, "mutation-listener.js")
+        _mutation_listener_js_bytes: bytes | None = pkgutil.get_data(_pkg, "mutation-listener.js")
         if _mutation_listener_js_bytes is None:
             raise ValueError("Failed to load mutation-listener.js")
         self._mutation_listener_js = _mutation_listener_js_bytes.decode("utf8").strip()
 
     @asynccontextmanager
-    async def mutation_events(self) -> AsyncGenerator[Dict[str, Any], None]:
+    async def mutation_events(self) -> AsyncGenerator[dict[str, Any], None]:
         """Listen for mutation events and emit them as they are found.
 
-        :Usage:
-             ::
-
+        Example:
                async with driver.log.mutation_events() as event:
                     pages.load("dynamic.html")
                     driver.find_element(By.ID, "reveal").click()
@@ -72,7 +67,6 @@ class Log:
                 assert event["current_value"] == ""
                 assert event["old_value"] == "display:none;"
         """
-
         page = self.cdp.get_session_context("page.enable")
         await page.execute(self.devtools.page.enable())
         runtime = self.cdp.get_session_context("runtime.enable")
@@ -85,12 +79,12 @@ class Log:
         self.driver.pin_script(self._mutation_listener_js, script_key)
         self.driver.execute_script(f"return {self._mutation_listener_js}")
 
-        event: Dict[str, Any] = {}
+        event: dict[str, Any] = {}
         async with runtime.wait_for(self.devtools.runtime.BindingCalled) as evnt:
             yield event
 
         payload = json.loads(evnt.value.payload)
-        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f"*[data-__webdriver_id=\"{payload['target']}\"]")
+        elements: list = self.driver.find_elements(By.CSS_SELECTOR, f'*[data-__webdriver_id="{payload["target"]}"]')
         if not elements:
             elements.append(None)
         event["element"] = elements[0]
@@ -99,19 +93,15 @@ class Log:
         event["old_value"] = payload["oldValue"]
 
     @asynccontextmanager
-    async def add_js_error_listener(self) -> AsyncGenerator[Dict[str, Any], None]:
-        """Listen for JS errors and when the contextmanager exits check if
-        there were JS Errors.
+    async def add_js_error_listener(self) -> AsyncGenerator[dict[str, Any], None]:
+        """Listen for JS errors and check if they occurred when the context manager exits.
 
-        :Usage:
-             ::
-
+        Example:
                 async with driver.log.add_js_error_listener() as error:
                     driver.find_element(By.ID, "throwing-mouseover").click()
                 assert bool(error)
                 assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
         """
-
         session = self.cdp.get_session_context("page.enable")
         await session.execute(self.devtools.page.enable())
         session = self.cdp.get_session_context("runtime.enable")
@@ -123,27 +113,24 @@ class Log:
         js_exception.exception_details = exception.value.exception_details
 
     @asynccontextmanager
-    async def add_listener(self, event_type) -> AsyncGenerator[Dict[str, Any], None]:
+    async def add_listener(self, event_type) -> AsyncGenerator[dict[str, Any], None]:
         """Listen for certain events that are passed in.
 
-        :Args:
-         - event_type: The type of event that we want to look at.
+        Args:
+            event_type: The type of event that we want to look at.
 
-        :Usage:
-             ::
-
+        Example:
                 async with driver.log.add_listener(Console.log) as messages:
                     driver.execute_script("console.log('I like cheese')")
                 assert messages["message"] == "I love cheese"
         """
-
         from selenium.webdriver.common.bidi.console import Console
 
         session = self.cdp.get_session_context("page.enable")
         await session.execute(self.devtools.page.enable())
         session = self.cdp.get_session_context("runtime.enable")
         await session.execute(self.devtools.runtime.enable())
-        console: Dict[str, Any] = {"message": None, "level": None}
+        console: dict[str, Any] = {"message": None, "level": None}
         async with session.wait_for(self.devtools.runtime.ConsoleAPICalled) as messages:
             yield console
 

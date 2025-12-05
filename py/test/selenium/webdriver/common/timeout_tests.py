@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 import pytest
 
 from selenium.webdriver.common.timeouts import Timeouts

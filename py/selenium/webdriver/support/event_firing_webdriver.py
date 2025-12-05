@@ -16,15 +16,12 @@
 # under the License.
 
 from typing import Any
-from typing import List
-from typing import Tuple
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-
-from .abstract_event_listener import AbstractEventListener
+from selenium.webdriver.support.abstract_event_listener import AbstractEventListener
 
 
 def _wrap_elements(result, ef_driver):
@@ -39,28 +36,32 @@ def _wrap_elements(result, ef_driver):
 
 
 class EventFiringWebDriver:
-    """A wrapper around an arbitrary WebDriver instance which supports firing
-    events."""
+    """Wrap an arbitrary WebDriver instance and support firing events.
+
+    This wrapper allows you to hook into various WebDriver events through an
+    AbstractEventListener implementation.
+    """
 
     def __init__(self, driver: WebDriver, event_listener: AbstractEventListener) -> None:
         """Creates a new instance of the EventFiringWebDriver.
 
-        :Args:
-         - driver : A WebDriver instance
-         - event_listener : Instance of a class that subclasses AbstractEventListener and implements it fully or partially
+        Args:
+            driver: A WebDriver instance
+            event_listener: Instance of a class that subclasses AbstractEventListener and implements it fully
+                           or partially
 
         Example:
-
-        ::
-
             from selenium.webdriver import Firefox
             from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
+
 
             class MyListener(AbstractEventListener):
                 def before_navigate_to(self, url, driver):
                     print("Before navigate to %s" % url)
+
                 def after_navigate_to(self, url, driver):
                     print("After navigate to %s" % url)
+
 
             driver = Firefox()
             ef_driver = EventFiringWebDriver(driver, MyListener())
@@ -76,8 +77,7 @@ class EventFiringWebDriver:
 
     @property
     def wrapped_driver(self) -> WebDriver:
-        """Returns the WebDriver instance wrapped by this
-        EventsFiringWebDriver."""
+        """Returns the WebDriver instance wrapped by this EventsFiringWebDriver."""
         return self._driver
 
     def get(self, url: str) -> None:
@@ -89,7 +89,7 @@ class EventFiringWebDriver:
     def forward(self) -> None:
         self._dispatch("navigate_forward", (self._driver,), "forward", ())
 
-    def execute_script(self, script, *args):
+    def execute_script(self, script: str, *args):
         unwrapped_args = (script,) + self._unwrap_element_args(args)
         return self._dispatch("execute_script", (script, self._driver), "execute_script", unwrapped_args)
 
@@ -106,10 +106,10 @@ class EventFiringWebDriver:
     def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
-    def _dispatch(self, l_call: str, l_args: Tuple[Any, ...], d_call: str, d_args: Tuple[Any, ...]):
+    def _dispatch(self, l_call: str, l_args: tuple[Any, ...], d_call: str, d_args: tuple[Any, ...]):
         getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._driver, d_call)(*d_args)
@@ -172,8 +172,7 @@ class EventFiringWebElement:
 
     @property
     def wrapped_element(self) -> WebElement:
-        """Returns the WebElement wrapped by this EventFiringWebElement
-        instance."""
+        """Returns the WebElement wrapped by this EventFiringWebElement instance."""
         return self._webelement
 
     def click(self) -> None:
@@ -188,7 +187,7 @@ class EventFiringWebElement:
     def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def _dispatch(self, l_call, l_args, d_call, d_args):

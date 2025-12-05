@@ -17,16 +17,15 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+public enum Browser
 {
-    public enum Browser
-    {
-        All,
-        IE,
-        Edge,
-        Firefox,
-        Safari,
-        Chrome,
-        Remote,
-    }
+    All,
+    IE,
+    Edge,
+    Firefox,
+    Safari,
+    Chrome,
+    Remote,
 }

@@ -26,486 +26,472 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.Chromium
+namespace OpenQA.Selenium.Chromium;
+
+/// <summary>
+/// Provides an abstract way to access Chromium-based browsers to run tests.
+/// </summary>
+public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
 {
     /// <summary>
-    /// Provides an abstract way to access Chromium-based browsers to run tests.
+    /// Accept untrusted SSL Certificates
     /// </summary>
-    public class ChromiumDriver : WebDriver, ISupportsLogs, IDevTools
+    public static readonly bool AcceptUntrustedCertificates = true;
+
+    /// <summary>
+    /// Command for executing a Chrome DevTools Protocol command in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string ExecuteCdp = "executeCdpCommand";
+
+    /// <summary>
+    /// Command for getting cast sinks in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string GetCastSinksCommand = "getCastSinks";
+
+    /// <summary>
+    /// Command for selecting a cast sink in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string SelectCastSinkCommand = "selectCastSink";
+
+    /// <summary>
+    /// Command for starting cast tab mirroring in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string StartCastTabMirroringCommand = "startCastTabMirroring";
+
+    /// <summary>
+    /// Command for starting cast desktop mirroring in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string StartCastDesktopMirroringCommand = "startCastDesktopMirroring";
+
+    /// <summary>
+    /// Command for getting a cast issued message in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string GetCastIssueMessageCommand = "getCastIssueMessage";
+
+    /// <summary>
+    /// Command for stopping casting in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string StopCastingCommand = "stopCasting";
+
+    /// <summary>
+    /// Command for getting the simulated network conditions in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string GetNetworkConditionsCommand = "getNetworkConditions";
+
+    /// <summary>
+    /// Command for setting the simulated network conditions in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string SetNetworkConditionsCommand = "setNetworkConditions";
+
+    /// <summary>
+    /// Command for deleting the simulated network conditions in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
+
+    /// <summary>
+    /// Command for executing a Chrome DevTools Protocol command in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string SendChromeCommand = "sendChromeCommand";
+
+    /// <summary>
+    /// Command for executing a Chrome DevTools Protocol command that returns a result in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string SendChromeCommandWithResult = "sendChromeCommandWithResult";
+
+    /// <summary>
+    /// Command for launching an app in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string LaunchAppCommand = "launchAppCommand";
+
+    /// <summary>
+    /// Command for setting permissions in a driver for a Chromium-based browser.
+    /// </summary>
+    public static readonly string SetPermissionCommand = "setPermission";
+
+    private readonly string optionsCapabilityName;
+    private DevToolsSession? devToolsSession;
+
+    private static readonly Dictionary<string, CommandInfo> chromiumCustomCommands = new Dictionary<string, CommandInfo>()
     {
-        /// <summary>
-        /// Accept untrusted SSL Certificates
-        /// </summary>
-        public static readonly bool AcceptUntrustedCertificates = true;
+        { GetNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions") },
+        { SetNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions") },
+        { DeleteNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions") },
+        { SendChromeCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command") },
+        { SendChromeCommandWithResult, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result") },
+        { LaunchAppCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/launch_app") },
+        { SetPermissionCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/permissions") }
+    };
 
-        /// <summary>
-        /// Command for executing a Chrome DevTools Protocol command in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string ExecuteCdp = "executeCdpCommand";
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified <see cref="ChromiumDriverService"/>.
+    /// </summary>
+    /// <param name="service">The <see cref="ChromiumDriverService"/> to use.</param>
+    /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the ChromiumDriver.</param>
+    /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">If the Chromium options capability name is <see langword="null"/>.</exception>
+    protected ChromiumDriver(ChromiumDriverService service, ChromiumOptions options, TimeSpan commandTimeout)
+        : base(GenerateDriverServiceCommandExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
+    {
+        this.optionsCapabilityName = options.CapabilityName ?? throw new ArgumentException("No chromium options capability name specified", nameof(options));
+    }
 
-        /// <summary>
-        /// Command for getting cast sinks in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string GetCastSinksCommand = "getCastSinks";
+    /// <summary>
+    /// Gets the dictionary of custom Chromium commands registered with the driver.
+    /// </summary>
+    protected static IReadOnlyDictionary<string, CommandInfo> ChromiumCustomCommands => new ReadOnlyDictionary<string, CommandInfo>(chromiumCustomCommands);
 
-        /// <summary>
-        /// Command for selecting a cast sink in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string SelectCastSinkCommand = "selectCastSink";
-
-        /// <summary>
-        /// Command for starting cast tab mirroring in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string StartCastTabMirroringCommand = "startCastTabMirroring";
-
-        /// <summary>
-        /// Command for starting cast desktop mirroring in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string StartCastDesktopMirroringCommand = "startCastDesktopMirroring";
-
-        /// <summary>
-        /// Command for getting a cast issued message in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string GetCastIssueMessageCommand = "getCastIssueMessage";
-
-        /// <summary>
-        /// Command for stopping casting in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string StopCastingCommand = "stopCasting";
-
-        /// <summary>
-        /// Command for getting the simulated network conditions in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string GetNetworkConditionsCommand = "getNetworkConditions";
-
-        /// <summary>
-        /// Command for setting the simulated network conditions in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string SetNetworkConditionsCommand = "setNetworkConditions";
-
-        /// <summary>
-        /// Command for deleting the simulated network conditions in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string DeleteNetworkConditionsCommand = "deleteNetworkConditions";
-
-        /// <summary>
-        /// Command for executing a Chrome DevTools Protocol command in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string SendChromeCommand = "sendChromeCommand";
-
-        /// <summary>
-        /// Command for executing a Chrome DevTools Protocol command that returns a result in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string SendChromeCommandWithResult = "sendChromeCommandWithResult";
-
-        /// <summary>
-        /// Command for launching an app in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string LaunchAppCommand = "launchAppCommand";
-
-        /// <summary>
-        /// Command for setting permissions in a driver for a Chromium-based browser.
-        /// </summary>
-        public static readonly string SetPermissionCommand = "setPermission";
-
-        private readonly string optionsCapabilityName;
-        private DevToolsSession? devToolsSession;
-
-        private static readonly Dictionary<string, CommandInfo> chromiumCustomCommands = new Dictionary<string, CommandInfo>()
+    /// <summary>
+    /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
+    /// </summary>
+    /// <param name="service"></param>
+    /// <param name="commandTimeout"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+    {
+        if (service is null)
         {
-            { GetNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions") },
-            { SetNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions") },
-            { DeleteNetworkConditionsCommand, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions") },
-            { SendChromeCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command") },
-            { SendChromeCommandWithResult, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result") },
-            { LaunchAppCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/chromium/launch_app") },
-            { SetPermissionCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/permissions") }
-        };
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified <see cref="ChromiumDriverService"/>.
-        /// </summary>
-        /// <param name="service">The <see cref="ChromiumDriverService"/> to use.</param>
-        /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the ChromiumDriver.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="service"/> or <paramref name="options"/> are <see langword="null"/>.</exception>
-        /// <exception cref="ArgumentException">If the Chromium options capability name is <see langword="null"/>.</exception>
-        protected ChromiumDriver(ChromiumDriverService service, ChromiumOptions options, TimeSpan commandTimeout)
-            : base(GenerateDriverServiceCommandExecutor(service, options, commandTimeout), ConvertOptionsToCapabilities(options))
-        {
-            this.optionsCapabilityName = options.CapabilityName ?? throw new ArgumentException("No chromium options capability name specified", nameof(options));
+            throw new ArgumentNullException(nameof(service));
         }
 
-        /// <summary>
-        /// Gets the dictionary of custom Chromium commands registered with the driver.
-        /// </summary>
-        protected static IReadOnlyDictionary<string, CommandInfo> ChromiumCustomCommands => new ReadOnlyDictionary<string, CommandInfo>(chromiumCustomCommands);
-
-        /// <summary>
-        /// Uses DriverFinder to set Service attributes if necessary when creating the command executor
-        /// </summary>
-        /// <param name="service"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
+        if (options is null)
         {
-            if (service is null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
-
-            if (options is null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
-            if (service.DriverServicePath == null)
-            {
-                DriverFinder finder = new DriverFinder(options);
-                string fullServicePath = finder.GetDriverPath();
-                service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
-                service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
-                if (finder.TryGetBrowserPath(out string? browserPath))
-                {
-                    options.BinaryLocation = browserPath;
-                    options.BrowserVersion = null;
-                }
-            }
-            return new DriverServiceCommandExecutor(service, commandTimeout);
+            throw new ArgumentNullException(nameof(options));
         }
 
-        /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
-        /// sequences of keystrokes representing file paths and names.
-        /// </summary>
-        /// <remarks>The Chromium driver does not allow a file detector to be set,
-        /// as the server component of the Chromium driver only
-        /// allows uploads from the local computer environment. Attempting to set
-        /// this property has no effect, but does not throw an exception. If you
-        /// are attempting to run the Chromium driver remotely, use <see cref="RemoteWebDriver"/>
-        /// in conjunction with a standalone WebDriver server.</remarks>
-        public override IFileDetector FileDetector
+        if (service.DriverServicePath == null)
         {
-            get => base.FileDetector;
-            set { }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether a DevTools session is active.
-        /// </summary>
-        [MemberNotNullWhen(true, nameof(devToolsSession))]
-        public bool HasActiveDevToolsSession => this.devToolsSession != null;
-
-        /// <summary>
-        /// Gets or sets the network condition emulation for Chromium.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">If the value is set to <see langword="null"/>.</exception>
-        public ChromiumNetworkConditions NetworkConditions
-        {
-            get
+            DriverFinder finder = new DriverFinder(options);
+            string fullServicePath = finder.GetDriverPath();
+            service.DriverServicePath = Path.GetDirectoryName(fullServicePath);
+            service.DriverServiceExecutableName = Path.GetFileName(fullServicePath);
+            if (finder.TryGetBrowserPath(out string? browserPath))
             {
-                Response response = this.Execute(GetNetworkConditionsCommand, null);
-                if (response.Value is not Dictionary<string, object?> responseDictionary)
-                {
-                    throw new WebDriverException($"GetNetworkConditions command returned successfully, but data was not an object: {response.Value}");
-                }
-
-                return ChromiumNetworkConditions.FromDictionary(responseDictionary);
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value), "value must not be null");
-                }
-
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters["network_conditions"] = value;
-
-                this.Execute(SetNetworkConditionsCommand, parameters);
+                options.BinaryLocation = browserPath;
+                options.BrowserVersion = null;
             }
         }
+        return new DriverServiceCommandExecutor(service, commandTimeout);
+    }
 
-        /// <summary>
-        /// Launches a Chromium based application.
-        /// </summary>
-        /// <param name="id">ID of the chromium app to launch.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="id"/> is <see langword="null"/>.</exception>
-        public void LaunchApp(string id)
+    /// <summary>
+    /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+    /// sequences of keystrokes representing file paths and names.
+    /// </summary>
+    /// <remarks>The Chromium driver does not allow a file detector to be set,
+    /// as the server component of the Chromium driver only
+    /// allows uploads from the local computer environment. Attempting to set
+    /// this property has no effect, but does not throw an exception. If you
+    /// are attempting to run the Chromium driver remotely, use <see cref="RemoteWebDriver"/>
+    /// in conjunction with a standalone WebDriver server.</remarks>
+    public override IFileDetector FileDetector
+    {
+        get => base.FileDetector;
+        set { }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether a DevTools session is active.
+    /// </summary>
+    [MemberNotNullWhen(true, nameof(devToolsSession))]
+    public bool HasActiveDevToolsSession => this.devToolsSession != null;
+
+    /// <summary>
+    /// Gets or sets the network condition emulation for Chromium.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">If the value is set to <see langword="null"/>.</exception>
+    public ChromiumNetworkConditions NetworkConditions
+    {
+        get
         {
-            if (id == null)
+            Response response = this.Execute(GetNetworkConditionsCommand, null);
+            if (response.Value is not Dictionary<string, object?> responseDictionary)
             {
-                throw new ArgumentNullException(nameof(id), "id must not be null");
+                throw new WebDriverException($"GetNetworkConditions command returned successfully, but data was not an object: {response.Value}");
+            }
+
+            return ChromiumNetworkConditions.FromDictionary(responseDictionary);
+        }
+
+        set
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value), "value must not be null");
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["id"] = id;
+            parameters["network_conditions"] = value;
 
-            this.Execute(LaunchAppCommand, parameters);
+            this.Execute(SetNetworkConditionsCommand, parameters);
+        }
+    }
+
+    /// <summary>
+    /// Launches a Chromium based application.
+    /// </summary>
+    /// <param name="id">ID of the chromium app to launch.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="id"/> is <see langword="null"/>.</exception>
+    public void LaunchApp(string id)
+    {
+        if (id == null)
+        {
+            throw new ArgumentNullException(nameof(id), "id must not be null");
         }
 
-        /// <summary>
-        /// Set supported permission on browser.
-        /// </summary>
-        /// <param name="permissionName">Name of item to set the permission on.</param>
-        /// <param name="permissionValue">Value to set the permission to.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="permissionName"/> or <paramref name="permissionValue"/> are <see langword="null"/>.</exception>
-        public void SetPermission(string permissionName, string permissionValue)
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["id"] = id;
+
+        this.Execute(LaunchAppCommand, parameters);
+    }
+
+    /// <summary>
+    /// Set supported permission on browser.
+    /// </summary>
+    /// <param name="permissionName">Name of item to set the permission on.</param>
+    /// <param name="permissionValue">Value to set the permission to.</param>
+    /// <exception cref="ArgumentNullException">If <paramref name="permissionName"/> or <paramref name="permissionValue"/> are <see langword="null"/>.</exception>
+    public void SetPermission(string permissionName, string permissionValue)
+    {
+        if (permissionName == null)
         {
-            if (permissionName == null)
+            throw new ArgumentNullException(nameof(permissionName), "name must not be null");
+        }
+
+        if (permissionValue == null)
+        {
+            throw new ArgumentNullException(nameof(permissionValue), "value must not be null");
+        }
+
+        Dictionary<string, object> nameParameter = new Dictionary<string, object>();
+        nameParameter["name"] = permissionName;
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["descriptor"] = nameParameter;
+        parameters["state"] = permissionValue;
+        this.Execute(SetPermissionCommand, parameters);
+    }
+
+    /// <summary>
+    /// Executes a custom Chrome Dev Tools Protocol Command.
+    /// </summary>
+    /// <param name="commandName">Name of the command to execute.</param>
+    /// <param name="commandParameters">Parameters of the command to execute.</param>
+    /// <returns>An object representing the result of the command, if applicable.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="commandName"/> is <see langword="null"/>.</exception>
+    public object? ExecuteCdpCommand(string commandName, Dictionary<string, object> commandParameters)
+    {
+        if (commandName == null)
+        {
+            throw new ArgumentNullException(nameof(commandName), "commandName must not be null");
+        }
+
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["cmd"] = commandName;
+        parameters["params"] = commandParameters;
+        Response response = this.Execute(ExecuteCdp, parameters);
+        return response.Value;
+    }
+
+    /// <summary>
+    /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+    /// </summary>
+    /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+    [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
+    [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
+    public DevToolsSession GetDevToolsSession()
+    {
+        return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = DevToolsSession.AutoDetectDevToolsProtocolVersion });
+    }
+
+    /// <summary>
+    /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+    /// </summary>
+    /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+    [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
+    [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
+    public DevToolsSession GetDevToolsSession(DevToolsOptions options)
+    {
+        if (this.devToolsSession == null)
+        {
+            if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
             {
-                throw new ArgumentNullException(nameof(permissionName), "name must not be null");
+                throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
             }
 
-            if (permissionValue == null)
+            object? optionsCapabilityObject = this.Capabilities.GetCapability(this.optionsCapabilityName);
+            if (optionsCapabilityObject is not Dictionary<string, object?> optionsCapability)
             {
-                throw new ArgumentNullException(nameof(permissionValue), "value must not be null");
+                throw new WebDriverException($"Found {this.optionsCapabilityName} capability, but is not an object: {optionsCapabilityObject}");
             }
 
-            Dictionary<string, object> nameParameter = new Dictionary<string, object>();
-            nameParameter["name"] = permissionName;
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["descriptor"] = nameParameter;
-            parameters["state"] = permissionValue;
-            this.Execute(SetPermissionCommand, parameters);
-        }
-
-        /// <summary>
-        /// Executes a custom Chrome Dev Tools Protocol Command.
-        /// </summary>
-        /// <param name="commandName">Name of the command to execute.</param>
-        /// <param name="commandParameters">Parameters of the command to execute.</param>
-        /// <returns>An object representing the result of the command, if applicable.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="commandName"/> is <see langword="null"/>.</exception>
-        public object? ExecuteCdpCommand(string commandName, Dictionary<string, object> commandParameters)
-        {
-            if (commandName == null)
+            if (!optionsCapability.TryGetValue("debuggerAddress", out object? debuggerAddress))
             {
-                throw new ArgumentNullException(nameof(commandName), "commandName must not be null");
+                throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["cmd"] = commandName;
-            parameters["params"] = commandParameters;
-            Response response = this.Execute(ExecuteCdp, parameters);
-            return response.Value;
-        }
-
-        /// <summary>
-        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
-        /// </summary>
-        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-        [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-        public DevToolsSession GetDevToolsSession()
-        {
-            return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = DevToolsSession.AutoDetectDevToolsProtocolVersion });
-        }
-
-        /// <summary>
-        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
-        /// </summary>
-        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-        [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-        public DevToolsSession GetDevToolsSession(DevToolsOptions options)
-        {
-            if (this.devToolsSession == null)
+            try
             {
-                if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
-                {
-                    throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
-                }
+                DevToolsSession session = new DevToolsSession(debuggerAddress?.ToString()!, options);
+                Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
+                this.devToolsSession = session;
+            }
+            catch (Exception e)
+            {
+                throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+            }
+        }
 
-                object? optionsCapabilityObject = this.Capabilities.GetCapability(this.optionsCapabilityName);
-                if (optionsCapabilityObject is not Dictionary<string, object?> optionsCapability)
-                {
-                    throw new WebDriverException($"Found {this.optionsCapabilityName} capability, but is not an object: {optionsCapabilityObject}");
-                }
+        return this.devToolsSession;
+    }
 
-                if (!optionsCapability.TryGetValue("debuggerAddress", out object? debuggerAddress))
-                {
-                    throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
-                }
+    /// <summary>
+    /// Closes a DevTools session.
+    /// </summary>
+    [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
+    [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
+    public void CloseDevToolsSession()
+    {
+        if (this.devToolsSession != null)
+        {
+            Task.Run(async () => await this.devToolsSession.StopSession(manualDetach: true)).GetAwaiter().GetResult();
+        }
+    }
 
-                try
+    /// <summary>
+    /// Clears simulated network conditions.
+    /// </summary>
+    public void ClearNetworkConditions()
+    {
+        this.Execute(DeleteNetworkConditionsCommand, null);
+    }
+
+    /// <summary>
+    /// Returns the list of cast sinks (Cast devices) available to the Chrome media router.
+    /// </summary>
+    /// <returns>The list of available sinks.</returns>
+    public List<Dictionary<string, string>> GetCastSinks()
+    {
+        List<Dictionary<string, string>> returnValue = new List<Dictionary<string, string>>();
+        Response response = this.Execute(GetCastSinksCommand, null);
+        if (response.Value is object?[] responseValue)
+        {
+            foreach (object? entry in responseValue)
+            {
+                if (entry is Dictionary<string, object?> entryValue)
                 {
-                    DevToolsSession session = new DevToolsSession(debuggerAddress?.ToString()!, options);
-                    Task.Run(async () => await session.StartSession()).GetAwaiter().GetResult();
-                    this.devToolsSession = session;
-                }
-                catch (Exception e)
-                {
-                    throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                    Dictionary<string, string> sink = new Dictionary<string, string>();
+                    foreach (KeyValuePair<string, object?> pair in entryValue)
+                    {
+                        sink[pair.Key] = pair.Value!.ToString()!;
+                    }
+
+                    returnValue.Add(sink);
                 }
             }
-
-            return this.devToolsSession;
         }
+        return returnValue;
+    }
 
-        /// <summary>
-        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
-        /// </summary>
-        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
-        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        [Obsolete("Use GetDevToolsSession(DevToolsOptions options)")]
-        [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-        [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+    /// <summary>
+    /// Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
+    /// </summary>
+    /// <param name="deviceName">Name of the target sink (device).</param>
+    public void SelectCastSink(string deviceName)
+    {
+        if (deviceName == null)
         {
-            return GetDevToolsSession(new DevToolsOptions() { ProtocolVersion = devToolsProtocolVersion });
+            throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
         }
 
-        /// <summary>
-        /// Closes a DevTools session.
-        /// </summary>
-        [RequiresUnreferencedCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-        [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
-        public void CloseDevToolsSession()
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["sinkName"] = deviceName;
+        this.Execute(SelectCastSinkCommand, parameters);
+    }
+
+    /// <summary>
+    /// Initiates tab mirroring for the current browser tab on the specified device.
+    /// </summary>
+    /// <param name="deviceName">Name of the target sink (device).</param>
+    public void StartTabMirroring(string deviceName)
+    {
+        if (deviceName == null)
+        {
+            throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
+        }
+
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["sinkName"] = deviceName;
+        this.Execute(StartCastTabMirroringCommand, parameters);
+    }
+
+    /// <summary>
+    /// Initiates mirroring of the desktop on the specified device.
+    /// </summary>
+    /// <param name="deviceName">Name of the target sink (device).</param>
+    public void StartDesktopMirroring(string deviceName)
+    {
+        if (deviceName == null)
+        {
+            throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
+        }
+
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["sinkName"] = deviceName;
+        this.Execute(StartCastDesktopMirroringCommand, parameters);
+    }
+
+    /// <summary>
+    /// Returns the error message if there is any issue in a Cast session.
+    /// </summary>
+    /// <returns>An error message.</returns>
+    public string? GetCastIssueMessage()
+    {
+        Response response = this.Execute(GetCastIssueMessageCommand, null);
+        return (string?)response.Value;
+    }
+
+    /// <summary>
+    /// Stops casting from media router to the specified device, if connected.
+    /// </summary>
+    /// <param name="deviceName">Name of the target sink (device).</param>
+    public void StopCasting(string deviceName)
+    {
+        if (deviceName == null)
+        {
+            throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
+        }
+
+        Dictionary<string, object> parameters = new Dictionary<string, object>();
+        parameters["sinkName"] = deviceName;
+        this.Execute(StopCastingCommand, parameters);
+    }
+
+    /// <summary>
+    /// Stops the driver from running
+    /// </summary>
+    /// <param name="disposing">if its in the process of disposing</param>
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
         {
             if (this.devToolsSession != null)
             {
-                Task.Run(async () => await this.devToolsSession.StopSession(manualDetach: true)).GetAwaiter().GetResult();
+                this.devToolsSession.Dispose();
+                this.devToolsSession = null;
             }
         }
 
-        /// <summary>
-        /// Clears simulated network conditions.
-        /// </summary>
-        public void ClearNetworkConditions()
+        base.Dispose(disposing);
+    }
+
+    private static ICapabilities ConvertOptionsToCapabilities(ChromiumOptions options)
+    {
+        if (options == null)
         {
-            this.Execute(DeleteNetworkConditionsCommand, null);
+            throw new ArgumentNullException(nameof(options), "options must not be null");
         }
 
-        /// <summary>
-        /// Returns the list of cast sinks (Cast devices) available to the Chrome media router.
-        /// </summary>
-        /// <returns>The list of available sinks.</returns>
-        public List<Dictionary<string, string>> GetCastSinks()
-        {
-            List<Dictionary<string, string>> returnValue = new List<Dictionary<string, string>>();
-            Response response = this.Execute(GetCastSinksCommand, null);
-            if (response.Value is object?[] responseValue)
-            {
-                foreach (object? entry in responseValue)
-                {
-                    if (entry is Dictionary<string, object?> entryValue)
-                    {
-                        Dictionary<string, string> sink = new Dictionary<string, string>();
-                        foreach (KeyValuePair<string, object?> pair in entryValue)
-                        {
-                            sink[pair.Key] = pair.Value!.ToString()!;
-                        }
-
-                        returnValue.Add(sink);
-                    }
-                }
-            }
-            return returnValue;
-        }
-
-        /// <summary>
-        /// Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
-        /// </summary>
-        /// <param name="deviceName">Name of the target sink (device).</param>
-        public void SelectCastSink(string deviceName)
-        {
-            if (deviceName == null)
-            {
-                throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["sinkName"] = deviceName;
-            this.Execute(SelectCastSinkCommand, parameters);
-        }
-
-        /// <summary>
-        /// Initiates tab mirroring for the current browser tab on the specified device.
-        /// </summary>
-        /// <param name="deviceName">Name of the target sink (device).</param>
-        public void StartTabMirroring(string deviceName)
-        {
-            if (deviceName == null)
-            {
-                throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["sinkName"] = deviceName;
-            this.Execute(StartCastTabMirroringCommand, parameters);
-        }
-
-        /// <summary>
-        /// Initiates mirroring of the desktop on the specified device.
-        /// </summary>
-        /// <param name="deviceName">Name of the target sink (device).</param>
-        public void StartDesktopMirroring(string deviceName)
-        {
-            if (deviceName == null)
-            {
-                throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["sinkName"] = deviceName;
-            this.Execute(StartCastDesktopMirroringCommand, parameters);
-        }
-
-        /// <summary>
-        /// Returns the error message if there is any issue in a Cast session.
-        /// </summary>
-        /// <returns>An error message.</returns>
-        public string? GetCastIssueMessage()
-        {
-            Response response = this.Execute(GetCastIssueMessageCommand, null);
-            return (string?)response.Value;
-        }
-
-        /// <summary>
-        /// Stops casting from media router to the specified device, if connected.
-        /// </summary>
-        /// <param name="deviceName">Name of the target sink (device).</param>
-        public void StopCasting(string deviceName)
-        {
-            if (deviceName == null)
-            {
-                throw new ArgumentNullException(nameof(deviceName), "deviceName must not be null");
-            }
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["sinkName"] = deviceName;
-            this.Execute(StopCastingCommand, parameters);
-        }
-
-        /// <summary>
-        /// Stops the driver from running
-        /// </summary>
-        /// <param name="disposing">if its in the process of disposing</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (this.devToolsSession != null)
-                {
-                    this.devToolsSession.Dispose();
-                    this.devToolsSession = null;
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
-        private static ICapabilities ConvertOptionsToCapabilities(ChromiumOptions options)
-        {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options), "options must not be null");
-            }
-
-            return options.ToCapabilities();
-        }
+        return options.ToCapabilities();
     }
 }

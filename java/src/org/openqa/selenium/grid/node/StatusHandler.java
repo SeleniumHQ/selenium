@@ -47,6 +47,8 @@ class StatusHandler implements HttpHandler {
                 status.hasCapacity(),
                 "message",
                 status.hasCapacity() ? "Ready" : "No free slots available",
+                "registered",
+                node.isRegistered(),
                 "node",
                 status));
 

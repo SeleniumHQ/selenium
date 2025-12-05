@@ -19,22 +19,21 @@
 
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium.Internal;
+
+/// <summary>
+/// Defines the interface through which the framework can serialize an element to the wire protocol.
+/// </summary>
+internal interface IWebDriverObjectReference
 {
     /// <summary>
-    /// Defines the interface through which the framework can serialize an element to the wire protocol.
+    /// Gets the internal ID of the WebDriver object.
     /// </summary>
-    internal interface IWebDriverObjectReference
-    {
-        /// <summary>
-        /// Gets the internal ID of the WebDriver object.
-        /// </summary>
-        string ObjectReferenceId { get; }
+    string ObjectReferenceId { get; }
 
-        /// <summary>
-        /// Converts an object into an object that represents an element for the wire protocol.
-        /// </summary>
-        /// <returns>A <see cref="Dictionary{TKey, TValue}"/> that represents an element in the wire protocol.</returns>
-        Dictionary<string, object> ToDictionary();
-    }
+    /// <summary>
+    /// Converts an object into an object that represents an element for the wire protocol.
+    /// </summary>
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> that represents an element in the wire protocol.</returns>
+    Dictionary<string, object> ToDictionary();
 }

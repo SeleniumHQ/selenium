@@ -17,68 +17,70 @@
 // under the License.
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using OpenQA.Selenium.Internal;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// A class representing a pinned JavaScript function that can be repeatedly called
+/// without sending the entire script across the wire for every execution.
+/// </summary>
+public sealed class PinnedScript
 {
     /// <summary>
-    /// A class representing a pinned JavaScript function that can be repeatedly called
-    /// without sending the entire script across the wire for every execution.
+    /// Initializes a new instance of the <see cref="PinnedScript"/> class.
     /// </summary>
-    public sealed class PinnedScript
+    /// <param name="script">The body of the JavaScript function to pin.</param>
+    /// <param name="stringHandle">The unique handle for this pinned script.</param>
+    /// <param name="scriptId">The internal ID of this script.</param>
+    /// <remarks>
+    /// This constructor is explicitly internal. Creation of pinned script objects
+    /// is strictly the purview of Selenium, and should not be required by external
+    /// libraries.
+    /// </remarks>
+    internal PinnedScript(string script, string stringHandle, string scriptId)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PinnedScript"/> class.
-        /// </summary>
-        /// <param name="script">The body of the JavaScript function to pin.</param>
-        /// <param name="stringHandle">The unique handle for this pinned script.</param>
-        /// <param name="scriptId">The internal ID of this script.</param>
-        /// <remarks>
-        /// This constructor is explicitly internal. Creation of pinned script objects
-        /// is strictly the perview of Selenium, and should not be required by external
-        /// libraries.
-        /// </remarks>
-        internal PinnedScript(string script, string stringHandle, string scriptId)
-        {
-            this.Source = script;
-            this.Handle = stringHandle;
-            this.ScriptId = scriptId;
-        }
-
-        /// <summary>
-        /// Gets the unique handle for this pinned script.
-        /// </summary>
-        public string Handle { get; }
-
-        /// <summary>
-        /// Gets the source representing the body of the function in the pinned script.
-        /// </summary>
-        public string Source { get; }
-
-        internal static string MakeCreationScript(string scriptHandle, string scriptSource)
-        {
-            return string.Format(CultureInfo.InvariantCulture, "function __webdriver_{0}(arguments) {{ {1} }}", scriptHandle, scriptSource);
-        }
-
-        /// <summary>
-        /// Gets the script used to execute the pinned script in the browser.
-        /// </summary>
-        internal string MakeExecutionScript()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "return __webdriver_{0}(arguments)", this.Handle);
-        }
-
-        /// <summary>
-        /// Gets the script used to remove the pinned script from the browser.
-        /// </summary>
-        internal string MakeRemovalScript()
-        {
-            return string.Format(CultureInfo.InvariantCulture, "__webdriver_{0} = undefined", this.Handle);
-        }
-
-        /// <summary>
-        /// Gets or sets the ID of this script.
-        /// </summary>
-        internal string ScriptId { get; }
+        this.Source = script;
+        this.Handle = stringHandle;
+        this.ScriptId = scriptId;
     }
+
+    /// <summary>
+    /// Gets the unique handle for this pinned script.
+    /// </summary>
+    public string Handle { get; }
+
+    /// <summary>
+    /// Gets the source representing the body of the function in the pinned script.
+    /// </summary>
+    [StringSyntax(StringSyntaxConstants.JavaScript)]
+    public string Source { get; }
+
+    internal static string MakeCreationScript(string scriptHandle, string scriptSource)
+    {
+        return string.Format(CultureInfo.InvariantCulture, "function __webdriver_{0}(arguments) {{ {1} }}", scriptHandle, scriptSource);
+    }
+
+    /// <summary>
+    /// Gets the script used to execute the pinned script in the browser.
+    /// </summary>
+    internal string MakeExecutionScript()
+    {
+        return string.Format(CultureInfo.InvariantCulture, "return __webdriver_{0}(arguments)", this.Handle);
+    }
+
+    /// <summary>
+    /// Gets the script used to remove the pinned script from the browser.
+    /// </summary>
+    internal string MakeRemovalScript()
+    {
+        return string.Format(CultureInfo.InvariantCulture, "__webdriver_{0} = undefined", this.Handle);
+    }
+
+    /// <summary>
+    /// Gets or sets the ID of this script.
+    /// </summary>
+    internal string ScriptId { get; }
 }

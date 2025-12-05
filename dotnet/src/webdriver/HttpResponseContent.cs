@@ -20,49 +20,48 @@
 using System;
 using System.Text;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Represents the content of an HTTP response.
+/// </summary>
+public class HttpResponseContent
 {
+    private readonly byte[] content;
+
     /// <summary>
-    /// Represents the content of an HTTP response.
+    /// Initializes a new instance of the <see cref="HttpResponseContent"/> class.
     /// </summary>
-    public class HttpResponseContent
+    /// <param name="content">The byte array representing the content of the response.</param>
+    public HttpResponseContent(byte[] content)
     {
-        private readonly byte[] content;
+        this.content = content ?? throw new ArgumentNullException(nameof(content));
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HttpResponseContent"/> class.
-        /// </summary>
-        /// <param name="content">The byte array representing the content of the response.</param>
-        public HttpResponseContent(byte[] content)
-        {
-            this.content = content ?? throw new ArgumentNullException(nameof(content));
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpResponseContent"/> class.
+    /// </summary>
+    /// <param name="content">The UTF8 encoded string representing the content of the response.</param>
+    public HttpResponseContent(string content)
+    {
+        this.content = Encoding.UTF8.GetBytes(content);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HttpResponseContent"/> class.
-        /// </summary>
-        /// <param name="content">The UTF8 encoded string representing the content of the response.</param>
-        public HttpResponseContent(string content)
-        {
-            this.content = Encoding.UTF8.GetBytes(content);
-        }
+    /// <summary>
+    /// Reads the content of the response as a UTF8 encoded string.
+    /// </summary>
+    /// <returns>The content of the response as a string.</returns>
+    public string ReadAsString()
+    {
+        return Encoding.UTF8.GetString(content);
+    }
 
-        /// <summary>
-        /// Reads the content of the response as a UTF8 encoded string.
-        /// </summary>
-        /// <returns>The content of the response as a string.</returns>
-        public string ReadAsString()
-        {
-            return Encoding.UTF8.GetString(content);
-        }
-
-        /// <summary>
-        /// Reads the content of the response as a byte array.
-        /// </summary>
-        /// <returns>The content of the response as a byte array.</returns>
-        public byte[] ReadAsByteArray()
-        {
-            return content;
-        }
+    /// <summary>
+    /// Reads the content of the response as a byte array.
+    /// </summary>
+    /// <returns>The content of the response as a byte array.</returns>
+    public byte[] ReadAsByteArray()
+    {
+        return content;
     }
 }

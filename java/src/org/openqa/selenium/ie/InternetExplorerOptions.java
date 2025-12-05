@@ -28,7 +28,6 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.IE_USE_PER_PROCESS_P
 import static org.openqa.selenium.ie.InternetExplorerDriver.IGNORE_ZOOM_SETTING;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
-import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
 import static org.openqa.selenium.remote.Browser.IE;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
@@ -85,7 +84,6 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
           INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
           REQUIRE_WINDOW_FOCUS,
           UPLOAD_DIALOG_TIMEOUT,
-          NATIVE_EVENTS,
           LEGACY_FILE_UPLOAD_DIALOG_HANDLING,
           ATTACH_TO_EDGE_CHROME,
           EDGE_EXECUTABLE_PATH,
@@ -200,16 +198,6 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   public InternetExplorerOptions introduceFlakinessByIgnoringSecurityDomains() {
     return amend(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-  }
-
-  /**
-   * Method that defines to use whether to use native or javascript events during operations.
-   *
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  public InternetExplorerOptions disableNativeEvents() {
-    return amend(NATIVE_EVENTS, false);
   }
 
   public InternetExplorerOptions ignoreZoomSettings() {

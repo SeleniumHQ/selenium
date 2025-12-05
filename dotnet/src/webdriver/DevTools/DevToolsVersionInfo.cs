@@ -21,125 +21,124 @@ using System;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Provides information about the version of DevTools components being automated.
+/// </summary>
+public class DevToolsVersionInfo
 {
     /// <summary>
-    /// Provides information about the version of DevTools components being automated.
+    /// Gets or sets the browser name, usually expressed as "Browser/Version" (e.g., "Chrome/86.0.0.1234".
     /// </summary>
-    public class DevToolsVersionInfo
+    [JsonPropertyName("Browser")]
+    [JsonInclude]
+    public string? Browser { get; internal set; }
+
+    /// <summary>
+    /// Gets the browser version without the preceding browser name.
+    /// </summary>
+    [JsonIgnore]
+    public string BrowserVersion
     {
-        /// <summary>
-        /// Gets or sets the browser name, usually expressed as "Browser/Version" (e.g., "Chrome/86.0.0.1234".
-        /// </summary>
-        [JsonPropertyName("Browser")]
-        [JsonInclude]
-        public string? Browser { get; internal set; }
-
-        /// <summary>
-        /// Gets the browser version without the preceding browser name.
-        /// </summary>
-        [JsonIgnore]
-        public string BrowserVersion
+        get
         {
-            get
+            if (Browser is null)
             {
-                if (Browser is null)
-                {
-                    throw new InvalidOperationException("Browser value is null");
-                }
-
-                return Regex.Match(Browser, ".*/(.*)").Groups[1].Value;
+                throw new InvalidOperationException("Browser value is null");
             }
+
+            return Regex.Match(Browser, ".*/(.*)").Groups[1].Value;
         }
+    }
 
-        /// <summary>
-        /// Gets the browser major version number without the preceding browser name.
-        /// </summary>
-        [JsonIgnore]
-        public string BrowserMajorVersion
+    /// <summary>
+    /// Gets the browser major version number without the preceding browser name.
+    /// </summary>
+    [JsonIgnore]
+    public string BrowserMajorVersion
+    {
+        get
         {
-            get
+            if (Browser is null)
             {
-                if (Browser is null)
-                {
-                    throw new InvalidOperationException("Browser value is null");
-                }
-
-                return Regex.Match(Browser, ".*/(\\d+)\\..*").Groups[1].Value;
+                throw new InvalidOperationException("Browser value is null");
             }
+
+            return Regex.Match(Browser, ".*/(\\d+)\\..*").Groups[1].Value;
         }
+    }
 
-        /// <summary>
-        /// Gets the version of the Developer Tools Protocol.
-        /// </summary>
-        [JsonPropertyName("Protocol-Version")]
-        [JsonInclude]
-        public string? ProtocolVersion { get; internal set; }
+    /// <summary>
+    /// Gets the version of the Developer Tools Protocol.
+    /// </summary>
+    [JsonPropertyName("Protocol-Version")]
+    [JsonInclude]
+    public string? ProtocolVersion { get; internal set; }
 
-        /// <summary>
-        /// Gets the user agent string.
-        /// </summary>
-        [JsonPropertyName("User-Agent")]
-        [JsonInclude]
-        public string? UserAgent { get; internal set; }
+    /// <summary>
+    /// Gets the user agent string.
+    /// </summary>
+    [JsonPropertyName("User-Agent")]
+    [JsonInclude]
+    public string? UserAgent { get; internal set; }
 
-        /// <summary>
-        /// Gets the version string for the V8 script engine in use by this version of the browser.
-        /// </summary>
-        [JsonPropertyName("V8-Version")]
-        [JsonInclude]
-        public string? V8Version { get; internal set; }
+    /// <summary>
+    /// Gets the version string for the V8 script engine in use by this version of the browser.
+    /// </summary>
+    [JsonPropertyName("V8-Version")]
+    [JsonInclude]
+    public string? V8Version { get; internal set; }
 
-        /// <summary>
-        /// Gets the URL for the WebSocket connection used for communicating via the DevTools Protocol.
-        /// </summary>
-        [JsonPropertyName("webSocketDebuggerUrl")]
-        [JsonInclude]
-        public string? WebSocketDebuggerUrl { get; internal set; }
+    /// <summary>
+    /// Gets the URL for the WebSocket connection used for communicating via the DevTools Protocol.
+    /// </summary>
+    [JsonPropertyName("webSocketDebuggerUrl")]
+    [JsonInclude]
+    public string? WebSocketDebuggerUrl { get; internal set; }
 
-        /// <summary>
-        /// Gets the version number of the V8 script engine, stripping values other than the version number.
-        /// </summary>
-        [JsonIgnore]
-        public string V8VersionNumber
+    /// <summary>
+    /// Gets the version number of the V8 script engine, stripping values other than the version number.
+    /// </summary>
+    [JsonIgnore]
+    public string V8VersionNumber
+    {
+        get
         {
-            get
+            //Get the v8 version
+            Match? v8VersionMatch = V8Version is null ? null : Regex.Match(V8Version, @"^(\d+)\.(\d+)\.(\d+)(\.\d+.*)?");
+            if (v8VersionMatch is null || v8VersionMatch.Success == false || v8VersionMatch.Groups.Count < 4)
             {
-                //Get the v8 version
-                Match? v8VersionMatch = V8Version is null ? null : Regex.Match(V8Version, @"^(\d+)\.(\d+)\.(\d+)(\.\d+.*)?");
-                if (v8VersionMatch is null || v8VersionMatch.Success == false || v8VersionMatch.Groups.Count < 4)
-                {
-                    throw new InvalidOperationException($"Unable to determine v8 version number from v8 version string ({V8Version})");
-                }
-
-                return $"{v8VersionMatch.Groups[1].Value}.{v8VersionMatch.Groups[2].Value}.{v8VersionMatch.Groups[3].Value}";
+                throw new InvalidOperationException($"Unable to determine v8 version number from v8 version string ({V8Version})");
             }
+
+            return $"{v8VersionMatch.Groups[1].Value}.{v8VersionMatch.Groups[2].Value}.{v8VersionMatch.Groups[3].Value}";
         }
+    }
 
-        /// <summary>
-        /// Gets the version string for the version of WebKit used to build this version of the browser.
-        /// </summary>
-        [JsonPropertyName("WebKit-Version")]
-        [JsonInclude]
-        public string? WebKitVersion { get; internal set; }
+    /// <summary>
+    /// Gets the version string for the version of WebKit used to build this version of the browser.
+    /// </summary>
+    [JsonPropertyName("WebKit-Version")]
+    [JsonInclude]
+    public string? WebKitVersion { get; internal set; }
 
-        /// <summary>
-        /// Gets the hash of the version of WebKit, stripping values other than the hash.
-        /// </summary>
-        [JsonIgnore]
-        public string WebKitVersionHash
+    /// <summary>
+    /// Gets the hash of the version of WebKit, stripping values other than the hash.
+    /// </summary>
+    [JsonIgnore]
+    public string WebKitVersionHash
+    {
+        get
         {
-            get
+            //Get the webkit version hash.
+            var webkitVersionMatch = WebKitVersion is null ? null : Regex.Match(WebKitVersion, @"\s\(@(\b[0-9a-f]{5,40}\b)");
+            if (webkitVersionMatch is null || webkitVersionMatch.Success == false || webkitVersionMatch.Groups.Count != 2)
             {
-                //Get the webkit version hash.
-                var webkitVersionMatch = WebKitVersion is null ? null : Regex.Match(WebKitVersion, @"\s\(@(\b[0-9a-f]{5,40}\b)");
-                if (webkitVersionMatch is null || webkitVersionMatch.Success == false || webkitVersionMatch.Groups.Count != 2)
-                {
-                    throw new InvalidOperationException($"Unable to determine webkit version hash from webkit version string ({WebKitVersion})");
-                }
-
-                return webkitVersionMatch.Groups[1].Value;
+                throw new InvalidOperationException($"Unable to determine webkit version hash from webkit version string ({WebKitVersion})");
             }
+
+            return webkitVersionMatch.Groups[1].Value;
         }
     }
 }

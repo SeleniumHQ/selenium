@@ -22,8 +22,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.firefox.options import Log
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.options import Log, Options
 
 
 @pytest.fixture
@@ -42,7 +41,7 @@ class TestUnit:
     def test_ctor(self):
         opts = Options()
         assert opts.binary_location == ""
-        assert opts._preferences == {"remote.active-protocols": 3}
+        assert opts._preferences == {"remote.active-protocols": 1}
         assert opts._profile is None
         assert not opts._arguments
         assert isinstance(opts.log, Log)
@@ -72,7 +71,7 @@ class TestUnit:
         assert len(opts.preferences) == 3
         opts.set_preference("spam", "spam")
         assert len(opts.preferences) == 3
-        assert opts.preferences == {"eggs": True, "remote.active-protocols": 3, "spam": "spam"}
+        assert opts.preferences == {"eggs": True, "remote.active-protocols": 1, "spam": "spam"}
 
     def test_profile(self, tmpdir_factory):
         opts = Options()
@@ -102,7 +101,7 @@ class TestUnit:
         firefox_caps.update(
             {
                 "pageLoadStrategy": PageLoadStrategy.normal,
-                "moz:firefoxOptions": {"prefs": {"remote.active-protocols": 3}},
+                "moz:firefoxOptions": {"prefs": {"remote.active-protocols": 1}},
             }
         )
         assert opts.to_capabilities() == firefox_caps

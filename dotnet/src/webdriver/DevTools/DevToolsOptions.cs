@@ -17,22 +17,21 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium.DevTools;
+
+/// <summary>
+/// Contains options configuring the DevTools session.
+/// </summary>
+public class DevToolsOptions
 {
     /// <summary>
-    /// Contains options configuring the DevTools session.
+    /// Enables or disables waiting for the debugger when creating a new target. By default WaitForDebuggerOnStart is disabled.
+    /// If enabled, all targets will be halted until the runtime.runIfWaitingForDebugger is invoked.
     /// </summary>
-    public class DevToolsOptions
-    {
-        /// <summary>
-        /// Enables or disables waiting for the debugger when creating a new target. By default WaitForDebuggerOnStart is disabled.
-        /// If enabled, all targets will be halted until the runtime.runIfWaitingForDebugger is invoked.
-        /// </summary>
-        public bool WaitForDebuggerOnStart { get; set; }
-        /// <summary>
-        /// The specific version of the Developer Tools debugging protocol to use.
-        /// If left NULL the protocol version will be determined automatically based on the browser version.
-        /// </summary>
-        public int? ProtocolVersion { get; set; }
-    }
+    public bool WaitForDebuggerOnStart { get; set; }
+    /// <summary>
+    /// The specific version of the Developer Tools debugging protocol to use.
+    /// If left NULL the protocol version will be determined automatically based on the browser version.
+    /// </summary>
+    public int? ProtocolVersion { get; set; }
 }

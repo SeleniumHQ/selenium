@@ -19,43 +19,42 @@
 
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium;
+
+/// <summary>
+/// Represents the response data for an intercepted HTTP call.
+/// </summary>
+public class HttpRequestData
 {
     /// <summary>
-    /// Represents the response data for an intercepted HTTP call.
+    /// Initializes a new instance of the <see cref="HttpRequestData"/> type.
     /// </summary>
-    public class HttpRequestData
+    public HttpRequestData()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HttpRequestData"/> type.
-        /// </summary>
-        public HttpRequestData()
-        {
-        }
-
-        /// <summary>
-        /// Gets the method of the HTTP request.
-        /// </summary>
-        public string? Method { get; set; }
-
-        /// <summary>
-        /// Gets the URL of the HTTP request.
-        /// </summary>
-        public string? Url { get; set; }
-
-        /// <summary>
-        /// Gets the POST data of the HTTP request, if any.
-        /// </summary>
-        public string? PostData { get; set; }
-
-        /// <summary>
-        /// Gets the headers of the HTTP request.
-        /// </summary>
-        public Dictionary<string, string>? Headers { get; set; }
-
-        /// <summary>
-        /// Gets the ID of the HTTP request.
-        /// </summary>
-        public string? RequestId { get; internal set; }
     }
+
+    /// <summary>
+    /// Gets the method of the HTTP request.
+    /// </summary>
+    public string? Method { get; set; }
+
+    /// <summary>
+    /// Gets the URL of the HTTP request.
+    /// </summary>
+    public string? Url { get; set; }
+
+    /// <summary>
+    /// Gets the POST data of the HTTP request, if any.
+    /// </summary>
+    public string? PostData { get; set; }
+
+    /// <summary>
+    /// Gets the headers of the HTTP request.
+    /// </summary>
+    public Dictionary<string, string>? Headers { get; set; }
+
+    /// <summary>
+    /// Gets the ID of the HTTP request.
+    /// </summary>
+    public string? RequestId { get; internal set; }
 }

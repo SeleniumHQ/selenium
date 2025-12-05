@@ -17,41 +17,40 @@
 // under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Internal.Logging
+namespace OpenQA.Selenium.Internal.Logging;
+
+/// <summary>
+/// Defines the levels of logging events.
+/// </summary>
+public enum LogEventLevel
 {
     /// <summary>
-    /// Defines the levels of logging events.
+    /// The most detailed log events.
     /// </summary>
-    public enum LogEventLevel
-    {
-        /// <summary>
-        /// The most detailed log events.
-        /// </summary>
-        Trace = 0,
+    Trace = 0,
 
-        /// <summary>
-        /// Log events that are useful for debugging purposes.
-        /// </summary>
-        Debug = 1,
+    /// <summary>
+    /// Log events that are useful for debugging purposes.
+    /// </summary>
+    Debug = 1,
 
-        /// <summary>
-        /// Log events that provide general information about the application's operation.
-        /// </summary>
-        Info = 2,
+    /// <summary>
+    /// Log events that provide general information about the application's operation.
+    /// </summary>
+    Info = 2,
 
-        /// <summary>
-        /// Log events that indicate a potential problem or a non-critical error.
-        /// </summary>
-        Warn = 3,
+    /// <summary>
+    /// Log events that indicate a potential problem or a non-critical error.
+    /// </summary>
+    Warn = 3,
 
-        /// <summary>
-        /// Log events that indicate a serious error or a failure that requires immediate attention.
-        /// </summary>
-        Error = 4,
+    /// <summary>
+    /// Log events that indicate a serious error or a failure that requires immediate attention.
+    /// </summary>
+    Error = 4,
 
-        /// <summary>
-        /// No log events.
-        /// </summary>
-        None = 5
-    }
+    /// <summary>
+    /// No log events.
+    /// </summary>
+    None = 5
 }

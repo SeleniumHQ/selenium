@@ -18,14 +18,24 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Modules.BrowsingContext;
-using OpenQA.Selenium.BiDi.Modules.Network;
+using OpenQA.Selenium.BiDi.BrowsingContext;
+using System;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 class NetworkTest : BiDiTestFixture
 {
+    [Test]
+    public async Task CanAddDataCollector()
+    {
+        // Firefox doesn't like int.MaxValue as max encoded data size
+        // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
+        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+
+        Assert.That(collector, Is.Not.Null);
+    }
+
     [Test]
     public async Task CanAddIntercept()
     {
@@ -51,7 +61,7 @@ class NetworkTest : BiDiTestFixture
     [Test]
     public async Task CanAddInterceptUrlPattern()
     {
-        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, interceptOptions: new()
+        await using var intercept = await bidi.Network.InterceptRequestAsync(e => Task.CompletedTask, options: new()
         {
             UrlPatterns = [new PatternUrlPattern()
             {
@@ -67,11 +77,11 @@ class NetworkTest : BiDiTestFixture
     public async Task CanContinueRequest()
     {
         int times = 0;
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
         {
             times++;
 
-            await e.Request.Request.ContinueAsync();
+            await req.ContinueAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
@@ -85,11 +95,11 @@ class NetworkTest : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptResponseAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptResponseAsync(async res =>
         {
             times++;
 
-            await e.Request.Request.ContinueResponseAsync();
+            await res.ContinueAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
@@ -103,11 +113,11 @@ class NetworkTest : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
         {
             times++;
 
-            await e.Request.Request.ProvideResponseAsync();
+            await req.ProvideResponseAsync();
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("bidi/logEntryAdded.html"), new() { Wait = ReadinessState.Complete });
@@ -121,11 +131,11 @@ class NetworkTest : BiDiTestFixture
     {
         int times = 0;
 
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
         {
             times++;
 
-            await e.Request.Request.ProvideResponseAsync(new() { Body = """
+            await req.ProvideResponseAsync(new() { Body = """
                 <html>
                     <head>
                         <title>Hello</title>
@@ -160,10 +170,9 @@ class NetworkTest : BiDiTestFixture
     [Test]
     public async Task CanContinueWithAuthCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
         {
-            //TODO Seems it would be better to have method which takes abstract options
-            await e.Request.Request.ContinueWithAuthAsync(new AuthCredentials("test", "test"));
+            await auth.ContinueAsync(new AuthCredentials("test", "test"));
         });
 
         await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
@@ -175,9 +184,9 @@ class NetworkTest : BiDiTestFixture
     [IgnoreBrowser(Selenium.Browser.Firefox)]
     public async Task CanContinueWithDefaultCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
         {
-            await e.Request.Request.ContinueWithAuthAsync(new ContinueWithDefaultAuthOptions());
+            await auth.ContinueAsync(new ContinueWithAuthDefaultCredentialsOptions());
         });
 
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
@@ -189,9 +198,9 @@ class NetworkTest : BiDiTestFixture
     [IgnoreBrowser(Selenium.Browser.Firefox)]
     public async Task CanContinueWithCanceledCredentials()
     {
-        await using var intercept = await bidi.Network.InterceptAuthAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptAuthAsync(async auth =>
         {
-            await e.Request.Request.ContinueWithAuthAsync(new ContinueWithCancelledAuthOptions());
+            await auth.ContinueAsync(new ContinueWithAuthCancelCredentialsOptions());
         });
 
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
@@ -202,9 +211,9 @@ class NetworkTest : BiDiTestFixture
     [Test]
     public async Task CanFailRequest()
     {
-        await using var intercept = await bidi.Network.InterceptRequestAsync(async e =>
+        await using var intercept = await bidi.Network.InterceptRequestAsync(async req =>
         {
-            await e.Request.Request.FailAsync();
+            await req.FailAsync();
         });
 
         var action = async () => await context.NavigateAsync(UrlBuilder.WhereIs("basicAuth"), new() { Wait = ReadinessState.Complete });
@@ -213,9 +222,44 @@ class NetworkTest : BiDiTestFixture
     }
 
     [Test]
+    public async Task CanGetData()
+    {
+        // Firefox doesn't like int.MaxValue as max encoded data size
+        // invalid argument: Expected "maxEncodedDataSize" to be less than the max total data size available (200000000), got 2147483647
+        await using var collector = await bidi.Network.AddDataCollectorAsync([DataType.Response], 200000000);
+
+        TaskCompletionSource<string> responseBodyCompletionSource = new();
+
+        await using var _ = await bidi.Network.OnResponseCompletedAsync(async e =>
+        {
+            if (e.Response.Url.Contains("simpleTest.html"))
+            {
+                responseBodyCompletionSource.SetResult((string)await bidi.Network.GetDataAsync(DataType.Response, e.Request.Request));
+            }
+        });
+
+        await context.NavigateAsync(UrlBuilder.WhereIs("simpleTest.html"), new() { Wait = ReadinessState.Complete });
+
+        var responseBody = await responseBodyCompletionSource.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.That(responseBody, Contains.Substring("Hello WebDriver"));
+    }
+
+    [Test]
     public void CanSetCacheBehavior()
     {
         Assert.That(async () => await bidi.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
         Assert.That(async () => await context.Network.SetCacheBehaviorAsync(CacheBehavior.Default), Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public async Task CanSetExtraHeaders()
+    {
+        var result = await bidi.Network.SetExtraHeadersAsync([new Header("x-test-header", "test-value")]);
+
+        Assert.That(result, Is.Not.Null);
     }
 }

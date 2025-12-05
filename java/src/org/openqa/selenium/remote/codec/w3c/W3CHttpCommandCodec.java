@@ -86,6 +86,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.WebElementToJsonConverter;
@@ -96,11 +97,13 @@ import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
  *
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
+@NullMarked
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
   private static final ConcurrentHashMap<String, String> ATOM_SCRIPTS = new ConcurrentHashMap<>();
   private static final Pattern CSS_ESCAPE =
-      Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])");
+      Pattern.compile("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]()])");
+  private static final Pattern AT_LEAST_ONE_WHITESPACE = Pattern.compile(".*\\s.*");
 
   public W3CHttpCommandCodec() {
     String sessionId = "/session/:sessionId";
@@ -174,6 +177,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       case FIND_CHILD_ELEMENTS:
       case FIND_ELEMENT:
       case FIND_ELEMENTS:
+      case FIND_ELEMENT_FROM_SHADOW_ROOT:
+      case FIND_ELEMENTS_FROM_SHADOW_ROOT:
         String using = (String) parameters.get("using");
         Object value = parameters.get("value");
 
@@ -181,7 +186,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           String stringValue = (String) value;
           switch (using) {
             case "class name":
-              if (stringValue.matches(".*\\s.*")) {
+              if (AT_LEAST_ONE_WHITESPACE.matcher(stringValue).matches()) {
                 throw new InvalidSelectorException("Compound class names not permitted");
               }
               return amendLocatorToCssSelector(parameters, "." + cssEscape(stringValue));

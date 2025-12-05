@@ -37,6 +37,7 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.SessionClosedReason;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.relay.RelaySessionFactory;
@@ -104,6 +105,10 @@ public class SessionSlot
   }
 
   public void stop() {
+    stop(SessionClosedReason.QUIT_COMMAND);
+  }
+
+  public void stop(SessionClosedReason reason) {
     if (isAvailable()) {
       return;
     }
@@ -117,8 +122,8 @@ public class SessionSlot
     currentSession = null;
     connectionCounter.set(0);
     release();
-    bus.fire(new SessionClosedEvent(id));
-    LOG.info(String.format("Stopping session %s", id));
+    bus.fire(new SessionClosedEvent(id, reason));
+    LOG.info(String.format("Stopping session %s (reason: %s)", id, reason));
   }
 
   @Override

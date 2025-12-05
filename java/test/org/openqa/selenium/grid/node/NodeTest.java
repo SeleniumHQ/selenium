@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -124,8 +125,8 @@ class NodeTest {
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
     if (isDownloadsTestCase) {
-      stereotype = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
-      caps = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
+      stereotype = new ImmutableCapabilities("browserName", "chrome", ENABLE_DOWNLOADS, true);
+      caps = new ImmutableCapabilities("browserName", "chrome", ENABLE_DOWNLOADS, true);
     }
 
     uri = new URI("http://localhost:1234");
@@ -148,7 +149,7 @@ class NodeTest {
             .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
             .maximumConcurrentSessions(2);
     if (isDownloadsTestCase) {
-      builder = builder.enableManagedDownloads(true).sessionTimeout(Duration.ofSeconds(1));
+      builder = builder.enableManagedDownloads(true).sessionTimeout(ofSeconds(1));
     }
     local = builder.build();
     local2 = builder.build();
@@ -475,8 +476,8 @@ class NodeTest {
 
   @Test
   void quittingASessionShouldCauseASessionClosedEventToBeFired() {
-    AtomicReference<Object> obj = new AtomicReference<>();
-    bus.addListener(SessionClosedEvent.listener(obj::set));
+    AtomicReference<SessionId> obj = new AtomicReference<>();
+    bus.addListener(SessionClosedEvent.sessionListener(obj::set));
 
     Either<WebDriverException, CreateSessionResponse> response =
         node.newSession(createSessionRequest(caps));
@@ -487,7 +488,7 @@ class NodeTest {
     // Because we're using the event bus, we can't expect the event to fire instantly. We're using
     // an inproc bus, so in reality it's reasonable to expect the event to fire synchronously, but
     // let's play it safe.
-    Wait<AtomicReference<Object>> wait = new FluentWait<>(obj).withTimeout(ofSeconds(2));
+    Wait<AtomicReference<SessionId>> wait = new FluentWait<>(obj).withTimeout(ofSeconds(2));
     wait.until(ref -> ref.get() != null);
   }
 
@@ -567,7 +568,7 @@ class NodeTest {
     assertThat(new String(Files.readAllBytes(uploadDir.listFiles()[0].toPath()))).isEqualTo(hello);
 
     node.stop(session.getId());
-    assertThat(baseDir).doesNotExist();
+    waitUntilDirGetsDeleted(baseDir);
   }
 
   @Test
@@ -643,7 +644,7 @@ class NodeTest {
       TemporaryFilesystem downloadsTfs = local.getDownloadsFilesystem(session.getId());
       File someDir = getTemporaryFilesystemBaseDir(downloadsTfs);
       node.stop(session.getId());
-      assertThat(someDir).doesNotExist();
+      waitUntilDirGetsDeleted(someDir);
     }
   }
 
@@ -972,6 +973,10 @@ class NodeTest {
             .map(data -> (Map<String, Object>) data)
             .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
     return (List<String>) map.get("names");
+  }
+
+  private void waitUntilDirGetsDeleted(File dir) {
+    new FluentWait<>(dir).withTimeout(ofSeconds(2)).until(file -> !file.exists());
   }
 
   private static class MyClock extends Clock {
