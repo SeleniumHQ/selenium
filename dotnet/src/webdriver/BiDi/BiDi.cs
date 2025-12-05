@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json;
 using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections.Concurrent;
@@ -29,6 +30,8 @@ namespace OpenQA.Selenium.BiDi;
 
 public sealed class BiDi : IAsyncDisposable
 {
+    private readonly BiDiJsonSerializerContext _jsonContext;
+
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
     private BiDi(string url)
@@ -36,6 +39,8 @@ public sealed class BiDi : IAsyncDisposable
         var uri = new Uri(url);
 
         Broker = new Broker(this, uri);
+
+        _jsonContext = new BiDiJsonSerializerContext(GetJsonOptions());
     }
 
     internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
@@ -85,7 +90,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public T AsModule<T>() where T : Module, new()
     {
-        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, GetJsonOptions()));
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, _jsonContext));
     }
 
     private Broker Broker { get; }
