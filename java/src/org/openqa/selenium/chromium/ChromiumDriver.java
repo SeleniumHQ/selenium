@@ -20,9 +20,6 @@ package org.openqa.selenium.chromium;
 import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.OPERA;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
-
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,6 +32,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -94,8 +93,12 @@ public class ChromiumDriver extends RemoteWebDriver
   private final Optional<DevTools> devTools;
   private final Optional<URI> biDiUri;
   private final Optional<BiDi> biDi;
-  /** May be null when the driver does not support casting; initialized during setup if available. */
+
+  /**
+   * May be null when the driver does not support casting; initialized during setup if available.
+   */
   protected @Nullable HasCasting casting;
+
   /** May be null when CDP is unavailable for the current browser/session. */
   protected @Nullable HasCdp cdp;
 
