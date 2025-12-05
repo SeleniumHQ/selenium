@@ -34,11 +34,11 @@ class FirefoxBinary:
     def __init__(self, firefox_path=None, log_file=None):
         """Creates a new instance of Firefox binary.
 
-        :Args:
-         - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.
-         - log_file - A file object to redirect the firefox process output to. It can be sys.stdout.
-                      Please note that with parallel run the output won't be synchronous.
-                      By default, it will be redirected to /dev/null.
+        Args:
+            firefox_path: Path to the Firefox executable. By default, it will be detected from the standard locations.
+            log_file: A file object to redirect the firefox process output to. It can be sys.stdout.
+                Please note that with parallel run the output won't be synchronous.
+                By default, it will be redirected to /dev/null.
         """
         self._start_cmd = firefox_path
         # We used to default to subprocess.PIPE instead of /dev/null, but after
@@ -217,8 +217,7 @@ class FirefoxBinary:
         return built_path
 
     def which(self, fname):
-        """Returns the fully qualified path by searching Path of the given
-        name."""
+        """Return the fully qualified path by searching PATH for the given name."""
         for pe in os.environ["PATH"].split(os.pathsep):
             checkname = os.path.join(pe, fname)
             if os.access(checkname, os.X_OK) and not os.path.isdir(checkname):

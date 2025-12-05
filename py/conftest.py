@@ -131,7 +131,7 @@ class SupportedOptions(ContainerProtocol):
     edge: str = "EdgeOptions"
     safari: str = "SafariOptions"
     ie: str = "IeOptions"
-    remote: str = "FirefoxOptions"
+    remote: str = "ChromeOptions"
     webkitgtk: str = "WebKitGTKOptions"
     wpewebkit: str = "WPEWebKitOptions"
 
@@ -249,8 +249,8 @@ class Driver:
                 # under Wayland, so we use XWayland instead.
                 os.environ["MOZ_ENABLE_WAYLAND"] = "0"
         elif self.driver_class == self.supported_drivers.remote:
-            self._options = getattr(webdriver, self.supported_options.firefox)()
-            self._options.set_capability("moz:firefoxOptions", {})
+            self._options = getattr(webdriver, self.supported_options.chrome)()
+            self._options.set_capability("goog:chromeOptions", {})
             self._options.enable_downloads = True
         else:
             opts_cls = getattr(self.supported_options, cls_name.lower())
@@ -343,12 +343,28 @@ def driver(request):
 
         request.addfinalizer(selenium_driver.stop_driver)
 
-    # Close the browser after BiDi tests. Those make event subscriptions
-    # and doesn't seems to be stable enough, causing the flakiness of the
-    # subsequent tests.
-    # Remove this when BiDi implementation and API is stable.
+    # For BiDi tests, only restart driver when explicitly marked as needing fresh driver.
+    # Tests marked with @pytest.mark.needs_fresh_driver get full driver restart for test isolation.
+    # Cleanup after every test is recommended.
     if selenium_driver is not None and selenium_driver.bidi:
-        request.addfinalizer(selenium_driver.stop_driver)
+        if request.node.get_closest_marker("needs_fresh_driver"):
+            request.addfinalizer(selenium_driver.stop_driver)
+        else:
+
+            def ensure_valid_window():
+                try:
+                    driver = selenium_driver._driver
+                    if driver:
+                        try:
+                            # Check if current window is still valid
+                            driver.current_window_handle
+                        except Exception:
+                            # restart driver
+                            selenium_driver.stop_driver()
+                except Exception:
+                    pass
+
+            request.addfinalizer(ensure_valid_window)
 
     yield selenium_driver.driver
 
@@ -467,6 +483,7 @@ def clean_driver(request):
         pytest.xfail(**marker.kwargs)
 
     yield driver_reference
+
     if request.node.get_closest_marker("no_driver_after_test"):
         driver_reference = None
 

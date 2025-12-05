@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.remote;
 
+import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.remote.http.HttpMethod;
 
+@NullMarked
 public class CommandInfo {
   private final String url;
   private final HttpMethod method;

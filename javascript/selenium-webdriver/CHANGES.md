@@ -1,3 +1,11 @@
+## 4.38.0
+
+- update devtools versions
+
+## 4.37.0
+
+- Add CDP for Chrome 141 and remove 138
+
 ## 4.36.0
 
 - Add CDP for Chrome 140 and remove 137
@@ -614,7 +622,6 @@ fix: iedriver download with selenium-manager #11579
 
 - Rolling back native support for Opera Browser
 - Added new ieOptions capabilities:
-
   - fileUploadDialogTimeout
   - setEdgePath
   - setEdgeChromium

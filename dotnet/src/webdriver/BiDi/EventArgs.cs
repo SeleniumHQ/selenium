@@ -21,11 +21,11 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract record EventArgs(BiDi BiDi)
+public abstract record EventArgs
 {
     [JsonIgnore]
-    public BiDi BiDi { get; internal set; } = BiDi;
+    public BiDi BiDi { get; internal set; }
 }
 
-public abstract record BrowsingContextEventArgs(BiDi BiDi, BrowsingContext.BrowsingContext Context)
-    : EventArgs(BiDi);
+public abstract record BrowsingContextEventArgs(BrowsingContext.BrowsingContext Context)
+    : EventArgs;
