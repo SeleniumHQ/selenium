@@ -24,7 +24,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 

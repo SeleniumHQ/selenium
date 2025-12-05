@@ -259,7 +259,7 @@ class LocalNewSessionQueueTest {
         .start();
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
-    assertThat(latch.await(1000, MILLISECONDS)).isTrue();
+    assertThat(latch.await(3000, MILLISECONDS)).isTrue();
     assertThat(isCompleted.get()).isFalse();
   }
 

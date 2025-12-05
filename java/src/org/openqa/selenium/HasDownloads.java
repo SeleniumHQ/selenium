@@ -54,8 +54,17 @@ public interface HasDownloads {
    * Gets the downloadable files.
    *
    * @return a list of downloadable files for each key
+   * @deprecated Use method {@link #getDownloadedFiles()} instead
    */
+  @Deprecated
   List<String> getDownloadableFiles();
+
+  /**
+   * Gets all files downloaded by browser.
+   *
+   * @return a list of files with their name, size and time.
+   */
+  List<DownloadedFile> getDownloadedFiles();
 
   /**
    * Downloads a file to a given location.
@@ -68,4 +77,34 @@ public interface HasDownloads {
 
   /** Deletes the downloadable files. */
   void deleteDownloadableFiles();
+
+  class DownloadedFile {
+    private final String name;
+    private final long creationTime;
+    private final long lastModifiedTime;
+    private final long size;
+
+    public DownloadedFile(String name, long creationTime, long lastModifiedTime, long size) {
+      this.name = name;
+      this.creationTime = creationTime;
+      this.lastModifiedTime = lastModifiedTime;
+      this.size = size;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public long getCreationTime() {
+      return creationTime;
+    }
+
+    public long getLastModifiedTime() {
+      return lastModifiedTime;
+    }
+
+    public long getSize() {
+      return size;
+    }
+  }
 }

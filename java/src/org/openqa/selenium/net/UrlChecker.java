@@ -31,10 +31,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
-import org.jspecify.annotations.NullMarked;
 
 /** Polls a URL until a HTTP 200 response is received. */
-@NullMarked
 public class UrlChecker {
 
   private static final Logger LOG = Logger.getLogger(UrlChecker.class.getName());

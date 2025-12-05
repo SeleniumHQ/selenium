@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
@@ -36,6 +38,7 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.print.PrintOptions;
 
+@NullMarked
 public class BrowsingContext {
 
   private static final Json JSON = new Json();
@@ -91,6 +94,7 @@ public class BrowsingContext {
 
   public BrowsingContext(WebDriver driver, WindowType type) {
     Require.nonNull("WebDriver", driver);
+    Require.nonNull("WindowType", type);
 
     if (!(driver instanceof HasBiDi)) {
       throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
@@ -103,6 +107,7 @@ public class BrowsingContext {
 
   public BrowsingContext(WebDriver driver, CreateContextParameters parameters) {
     Require.nonNull("WebDriver", driver);
+    Require.nonNull("CreateContextParameters", parameters);
 
     if (!(driver instanceof HasBiDi)) {
       throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
@@ -302,31 +307,68 @@ public class BrowsingContext {
             }));
   }
 
-  public void setViewport(double width, double height) {
-    Require.positive("Viewport width", width);
-    Require.positive("Viewport height", height);
-
-    this.bidi.send(
-        new Command<>(
-            "browsingContext.setViewport",
-            Map.of(CONTEXT, id, "viewport", Map.of("width", width, "height", height))));
+  public void setViewport(int width, int height) {
+    setViewport((double) width, (double) height);
   }
 
-  public void setViewport(double width, double height, double devicePixelRatio) {
-    Require.positive("Viewport width", width);
-    Require.positive("Viewport height", height);
-    Require.positive("Device pixel ratio.", devicePixelRatio);
+  public void setViewport(int width, int height, double devicePixelRatio) {
+    setViewport((double) width, (double) height, devicePixelRatio);
+  }
 
-    this.bidi.send(
-        new Command<>(
-            "browsingContext.setViewport",
-            Map.of(
-                CONTEXT,
-                id,
-                "viewport",
-                Map.of("width", width, "height", height),
-                "devicePixelRatio",
-                devicePixelRatio)));
+  /**
+   * Set viewport size to given width and height (aka "mobile emulation" mode).
+   *
+   * <p>If both {@code width} and {@code height} are null, then resets viewport to the initial size
+   * (aka "desktop" mode).
+   *
+   * @param width null or positive
+   * @param height null or positive
+   */
+  public void setViewport(@Nullable Double width, @Nullable Double height) {
+    validate(width, height);
+
+    Map<String, Object> params = new HashMap<>();
+    params.put(CONTEXT, id);
+    params.put("viewport", width == null ? null : Map.of("width", width, "height", height));
+    this.bidi.send(new Command<>("browsingContext.setViewport", params));
+  }
+
+  /**
+   * Set viewport's size and pixel ratio (aka "mobile emulation" mode).
+   *
+   * <p>If both {@code width} and {@code height} are null then resets viewport to the initial size
+   * (aka "desktop" mode).
+   *
+   * <p>If {@code devicePixelRatio} is null then resets DPR to browser’s default DPR (usually 1.0 on
+   * desktop).
+   *
+   * @param width null or positive
+   * @param height null or positive
+   * @param devicePixelRatio null or positive
+   */
+  public void setViewport(
+      @Nullable Double width, @Nullable Double height, @Nullable Double devicePixelRatio) {
+    validate(width, height);
+    validate(devicePixelRatio);
+
+    Map<String, Object> params = new HashMap<>();
+    params.put(CONTEXT, id);
+    params.put("viewport", width == null ? null : Map.of("width", width, "height", height));
+    params.put("devicePixelRatio", devicePixelRatio);
+    this.bidi.send(new Command<>("browsingContext.setViewport", params));
+  }
+
+  private void validate(@Nullable Double width, @Nullable Double height) {
+    if (width != null || height != null) {
+      Require.positive("Viewport width", width);
+      Require.positive("Viewport height", height);
+    }
+  }
+
+  private void validate(@Nullable Double devicePixelRatio) {
+    if (devicePixelRatio != null) {
+      Require.positive("Device pixel ratio.", devicePixelRatio);
+    }
   }
 
   public void activate() {
