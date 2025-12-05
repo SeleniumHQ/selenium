@@ -304,7 +304,7 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
       } else if (Arrays.equals(credential.getId(), credential2Id)) {
         credential2 = credential;
       } else {
-        fail("Unrecognized credential id");
+        fail("Unrecognized credential id: " + Arrays.toString(credential.getId()));
       }
     }
 

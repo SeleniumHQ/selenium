@@ -482,7 +482,7 @@ class LocalDistributorTest {
           try {
             f.get();
           } catch (InterruptedException e) {
-            fail("Interrupted");
+            fail(e.toString(), e);
           } catch (ExecutionException e) {
             throw new RuntimeException(e);
           }

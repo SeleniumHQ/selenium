@@ -223,7 +223,8 @@ public class RedisBackedSessionMap extends SessionMap {
       attributeMap.put(REDIS_URI_KEY, uriKey);
 
       if (rawUri == null) {
-        NoSuchSessionException exception = new NoSuchSessionException("Unable to find session.");
+        NoSuchSessionException exception =
+            new NoSuchSessionException("Unable to find session with id: " + id);
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND);
         EXCEPTION.accept(attributeMap, exception);

@@ -18,8 +18,7 @@
 package org.openqa.selenium;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.time.Duration;
@@ -90,12 +89,10 @@ class WebScriptTest extends JupiterTestBase {
     ConsoleLogEntry logEntry = future1.get(5, TimeUnit.SECONDS);
     assertThat(logEntry.getText()).isEqualTo("Hello, world!");
 
-    try {
-      future2.get(5, TimeUnit.SECONDS);
-      fail("Should be able to read the console messages");
-    } catch (TimeoutException e) {
-      assertThat(e).isNotNull();
-    }
+    assertThatThrownBy(() -> future2.get(5, TimeUnit.SECONDS))
+        .as("Should be able to read the console messages")
+        .isInstanceOf(TimeoutException.class);
+
     ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id1);
   }
 
@@ -144,12 +141,9 @@ class WebScriptTest extends JupiterTestBase {
     assertThat(logEntry.getType()).isEqualTo("javascript");
     assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
 
-    try {
-      future2.get(5, TimeUnit.SECONDS);
-      fail("Should be able to read the JS errors");
-    } catch (TimeoutException e) {
-      assertThat(e).isNotNull();
-    }
+    assertThatThrownBy(() -> future2.get(5, TimeUnit.SECONDS))
+        .as("Should be able to read the JS errors")
+        .isInstanceOf(TimeoutException.class);
 
     ((RemoteWebDriver) driver).script().removeConsoleMessageHandler(id1);
   }
@@ -259,7 +253,7 @@ class WebScriptTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canUnpinScript() throws ExecutionException, InterruptedException, TimeoutException {
+  void canUnpinScript() {
     CountDownLatch latch = new CountDownLatch(2);
 
     String pinnedScript =

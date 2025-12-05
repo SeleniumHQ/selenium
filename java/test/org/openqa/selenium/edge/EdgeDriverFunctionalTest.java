@@ -20,7 +20,6 @@ package org.openqa.selenium.edge;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
@@ -176,14 +175,10 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
 
     conditions.deleteNetworkConditions();
 
-    try {
-      conditions.getNetworkConditions();
-      fail("If Network Conditions were deleted, should not be able to get Network Conditions");
-    } catch (WebDriverException e) {
-      if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
-        throw e;
-      }
-    }
+    assertThatThrownBy(() -> conditions.getNetworkConditions())
+        .as("Network Conditions were deleted")
+        .isInstanceOf(WebDriverException.class)
+        .hasMessageContaining("network conditions must be set before it can be retrieved");
   }
 
   @Test
@@ -204,12 +199,9 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
       Locale.setDefault(arabicLocale);
 
       int port = PortProber.findFreePort();
-      EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
-      builder.usingPort(port);
-      builder.build();
-
-    } catch (Exception e) {
-      throw e;
+      try (EdgeDriverService service = new EdgeDriverService.Builder().usingPort(port).build()) {
+        assertThat(service.isRunning()).isFalse();
+      }
     } finally {
       Locale.setDefault(Locale.US);
     }

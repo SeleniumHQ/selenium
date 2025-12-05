@@ -20,7 +20,6 @@ package org.openqa.selenium.chrome;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
@@ -182,14 +181,10 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
     conditions.deleteNetworkConditions();
 
-    try {
-      conditions.getNetworkConditions();
-      fail("If Network Conditions were deleted, should not be able to get Network Conditions");
-    } catch (WebDriverException e) {
-      if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
-        throw e;
-      }
-    }
+    assertThatThrownBy(() -> conditions.getNetworkConditions())
+        .as("Network Conditions were deleted")
+        .isInstanceOf(WebDriverException.class)
+        .hasMessageContaining("network conditions must be set before it can be retrieved");
   }
 
   @Test
@@ -210,12 +205,10 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
       Locale.setDefault(arabicLocale);
 
       int port = PortProber.findFreePort();
-      ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
-      builder.usingPort(port);
-      builder.build();
-
-    } catch (Exception e) {
-      throw e;
+      try (ChromeDriverService service =
+          new ChromeDriverService.Builder().usingPort(port).build()) {
+        assertThat(service.isRunning()).isFalse();
+      }
     } finally {
       Locale.setDefault(Locale.US);
     }

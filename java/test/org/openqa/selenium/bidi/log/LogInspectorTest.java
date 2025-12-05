@@ -19,7 +19,6 @@ package org.openqa.selenium.bidi.log;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -84,12 +83,12 @@ class LogInspectorTest extends JupiterTestBase {
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
 
-      CompletableFuture<ConsoleLogEntry> errorLogfuture = new CompletableFuture<>();
+      CompletableFuture<ConsoleLogEntry> errorLogFuture = new CompletableFuture<>();
 
-      logInspector.onConsoleEntry(errorLogfuture::complete, FilterBy.logLevel(LogLevel.ERROR));
+      logInspector.onConsoleEntry(errorLogFuture::complete, FilterBy.logLevel(LogLevel.ERROR));
       driver.findElement(By.id("consoleError")).click();
 
-      ConsoleLogEntry errorLogEntry = errorLogfuture.get(5, TimeUnit.SECONDS);
+      ConsoleLogEntry errorLogEntry = errorLogFuture.get(5, TimeUnit.SECONDS);
 
       assertThat(errorLogEntry.getText()).isEqualTo("I am console error");
       assertThat(errorLogEntry.getArgs().size()).isEqualTo(1);
@@ -127,7 +126,7 @@ class LogInspectorTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canFilterJavascriptLogs() throws ExecutionException, InterruptedException {
+  void canFilterJavascriptLogs() throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
       logInspector.onJavaScriptLog(future::complete, FilterBy.logLevel(LogLevel.ERROR));
@@ -136,12 +135,7 @@ class LogInspectorTest extends JupiterTestBase {
       driver.get(page);
       driver.findElement(By.id("jsException")).click();
 
-      JavascriptLogEntry logEntry = null;
-      try {
-        logEntry = future.get(5, TimeUnit.SECONDS);
-      } catch (TimeoutException e) {
-        fail("Time out exception" + e.getMessage());
-      }
+      JavascriptLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
       assertThat(logEntry.getText()).isEqualTo("Error: Not working");
       assertThat(logEntry.getType()).isEqualTo("javascript");
@@ -198,7 +192,7 @@ class LogInspectorTest extends JupiterTestBase {
 
   @Test
   @NeedsFreshDriver
-  void canFilterLogs() throws ExecutionException, InterruptedException {
+  void canFilterLogs() throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<LogEntry> future = new CompletableFuture<>();
       logInspector.onLog(future::complete, FilterBy.logLevel(LogLevel.INFO));
@@ -207,12 +201,7 @@ class LogInspectorTest extends JupiterTestBase {
       driver.get(page);
       driver.findElement(By.id("consoleLog")).click();
 
-      LogEntry logEntry = null;
-      try {
-        logEntry = future.get(5, TimeUnit.SECONDS);
-      } catch (TimeoutException e) {
-        fail("Time out exception" + e.getMessage());
-      }
+      LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
       assertThat(logEntry.getConsoleLogEntry().isPresent()).isTrue();
 
@@ -299,8 +288,7 @@ class LogInspectorTest extends JupiterTestBase {
   @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   @NeedsFreshDriver
-  void canListenToConsoleLogForMultipleBrowsingContexts()
-      throws ExecutionException, InterruptedException, TimeoutException {
+  void canListenToConsoleLogForMultipleBrowsingContexts() throws InterruptedException {
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     String firstBrowsingContextId = driver.getWindowHandle();
     String secondBrowsingContextId = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();

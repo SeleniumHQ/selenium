@@ -18,7 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.google.common.collect.Sets;
@@ -99,7 +98,7 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
   }
 
   @Test
-  void testShouldCaptureScreenshotOfCurrentViewport() {
+  void testShouldCaptureScreenshotOfCurrentViewport() throws IOException {
     driver.get(appServer.whereIs("screen/screen.html"));
 
     BufferedImage screenshot = getImage();
@@ -118,7 +117,7 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
   }
 
   @Test
-  void testShouldCaptureScreenshotOfPageWithLongY() {
+  void testShouldCaptureScreenshotOfPageWithLongY() throws IOException {
     driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
     BufferedImage screenshot = getImage();
@@ -141,16 +140,11 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
    *
    * @return Image object
    */
-  private BufferedImage getImage() {
-    BufferedImage image = null;
-    try {
-      byte[] imageData = screenshooter.getFullPageScreenshotAs(OutputType.BYTES);
-      assertThat(imageData).isNotNull().isNotEmpty();
-      image = ImageIO.read(new ByteArrayInputStream(imageData));
-      assertThat(image).isNotNull();
-    } catch (IOException e) {
-      fail("Image screenshot file is invalid: " + e.getMessage());
-    }
+  private BufferedImage getImage() throws IOException {
+    byte[] imageData = screenshooter.getFullPageScreenshotAs(OutputType.BYTES);
+    assertThat(imageData).isNotNull().isNotEmpty();
+    BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
+    assertThat(image).isNotNull();
 
     // saveImageToTmpFile(image);
     return image;
@@ -195,26 +189,22 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
   private Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
     Set<String> colors = new TreeSet<>();
 
-    try {
-      int height = image.getHeight();
-      int width = image.getWidth();
-      assertThat(width > 0).isTrue();
-      assertThat(height > 0).isTrue();
+    int height = image.getHeight();
+    int width = image.getWidth();
+    assertThat(width > 0).isTrue();
+    assertThat(height > 0).isTrue();
 
-      Raster raster = image.getRaster();
-      for (int i = 0; i < width; i = i + stepX) {
-        for (int j = 0; j < height; j = j + stepY) {
-          String hex =
-              String.format(
-                  "#%02x%02x%02x",
-                  (raster.getSample(i, j, 0)),
-                  (raster.getSample(i, j, 1)),
-                  (raster.getSample(i, j, 2)));
-          colors.add(hex);
-        }
+    Raster raster = image.getRaster();
+    for (int i = 0; i < width; i = i + stepX) {
+      for (int j = 0; j < height; j = j + stepY) {
+        String hex =
+            String.format(
+                "#%02x%02x%02x",
+                (raster.getSample(i, j, 0)),
+                (raster.getSample(i, j, 1)),
+                (raster.getSample(i, j, 2)));
+        colors.add(hex);
       }
-    } catch (Exception e) {
-      fail("Unable to get actual colors from screenshot: " + e.getMessage());
     }
 
     assertThat(colors).isNotEmpty();
@@ -237,17 +227,7 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
     cleanActualColors.remove("#000000");
     cleanActualColors.remove("#ffffff");
 
-    if (!expectedColors.containsAll(cleanActualColors)) {
-      fail(
-          "There are unexpected colors on the screenshot: "
-              + Sets.difference(cleanActualColors, expectedColors));
-    }
-
-    if (!cleanActualColors.containsAll(expectedColors)) {
-      fail(
-          "There are expected colors not present on the screenshot: "
-              + Sets.difference(expectedColors, cleanActualColors));
-    }
+    assertThat(cleanActualColors).containsExactlyInAnyOrderElementsOf(expectedColors);
   }
 
   private boolean onlyBlack(Set<String> colors) {
@@ -264,13 +244,9 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
    * @param im image
    */
   @SuppressWarnings("unused")
-  private void saveImageToTmpFile(String methodName, BufferedImage im) {
+  private void saveImageToTmpFile(String methodName, BufferedImage im) throws IOException {
 
     File outputfile = new File(methodName + "_image.png");
-    try {
-      ImageIO.write(im, "png", outputfile);
-    } catch (IOException e) {
-      fail("Unable to write image to file: " + e.getMessage());
-    }
+    ImageIO.write(im, "png", outputfile);
   }
 }

@@ -18,7 +18,6 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -108,7 +107,7 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
-  public void testShouldCaptureScreenshotOfCurrentViewport() {
+  public void testShouldCaptureScreenshotOfCurrentViewport() throws IOException {
     driver.get(appServer.whereIs("screen/screen.html"));
 
     BufferedImage screenshot = getImage();
@@ -147,7 +146,7 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
-  public void testShouldCaptureScreenshotAtFramePage() {
+  public void testShouldCaptureScreenshotAtFramePage() throws IOException {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
     wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame1")));
     wait.until(visibilityOfAllElementsLocatedBy(By.id("content")));
@@ -184,7 +183,7 @@ class TakesScreenshotTest extends JupiterTestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(EDGE)
-  public void testShouldCaptureScreenshotAtIFramePage() {
+  public void testShouldCaptureScreenshotAtIFramePage() throws IOException {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
     BufferedImage screenshot = getImage();
@@ -214,7 +213,7 @@ class TakesScreenshotTest extends JupiterTestBase {
   @Test
   @Ignore(FIREFOX)
   @Ignore(value = CHROME, gitHubActions = true)
-  public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
+  public void testShouldCaptureScreenshotAtFramePageAfterSwitching() throws IOException {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
 
     driver.switchTo().frame(driver.findElement(By.id("frame2")));
@@ -248,7 +247,7 @@ class TakesScreenshotTest extends JupiterTestBase {
   @Ignore(CHROME)
   @Ignore(EDGE)
   @Ignore(FIREFOX)
-  public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() {
+  public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws IOException {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
     driver.switchTo().frame(driver.findElement(By.id("iframe2")));
@@ -272,7 +271,7 @@ class TakesScreenshotTest extends JupiterTestBase {
             /* grid X size */ 6,
             /* grid Y size */ 6));
 
-    // expectation is that screenshot at page with Iframes after switching to a Iframe
+    // expectation is that screenshot at page with Iframes after switching to iframe
     // will be taken for full page
     compareColors(expectedColors, actualColors);
   }
@@ -282,17 +281,12 @@ class TakesScreenshotTest extends JupiterTestBase {
    *
    * @return Image object
    */
-  private BufferedImage getImage() {
-    BufferedImage image = null;
-    try {
-      byte[] imageData = screenshooter.getScreenshotAs(OutputType.BYTES);
-      assertThat(imageData).isNotNull();
-      assertThat(imageData.length).isPositive();
-      image = ImageIO.read(new ByteArrayInputStream(imageData));
-      assertThat(image).isNotNull();
-    } catch (IOException e) {
-      fail("Image screenshot file is invalid: " + e.getMessage());
-    }
+  private BufferedImage getImage() throws IOException {
+    byte[] imageData = screenshooter.getScreenshotAs(OutputType.BYTES);
+    assertThat(imageData).isNotNull();
+    assertThat(imageData.length).isPositive();
+    BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
+    assertThat(image).isNotNull();
 
     // saveImageToTmpFile(image);
     return image;
@@ -337,28 +331,23 @@ class TakesScreenshotTest extends JupiterTestBase {
   private Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
     Set<String> colors = new TreeSet<>();
 
-    try {
-      int height = image.getHeight();
-      int width = image.getWidth();
-      assertThat(width > 0).isTrue();
-      assertThat(height > 0).isTrue();
+    int height = image.getHeight();
+    int width = image.getWidth();
+    assertThat(width > 0).isTrue();
+    assertThat(height > 0).isTrue();
 
-      Raster raster = image.getRaster();
-      for (int i = 0; i < width; i = i + stepX) {
-        for (int j = 0; j < height; j = j + stepY) {
-          String hex =
-              String.format(
-                  "#%02x%02x%02x",
-                  (raster.getSample(i, j, 0)),
-                  (raster.getSample(i, j, 1)),
-                  (raster.getSample(i, j, 2)));
-          colors.add(hex);
-        }
+    Raster raster = image.getRaster();
+    for (int i = 0; i < width; i = i + stepX) {
+      for (int j = 0; j < height; j = j + stepY) {
+        String hex =
+            String.format(
+                "#%02x%02x%02x",
+                (raster.getSample(i, j, 0)),
+                (raster.getSample(i, j, 1)),
+                (raster.getSample(i, j, 2)));
+        colors.add(hex);
       }
-    } catch (Exception e) {
-      fail("Unable to get actual colors from screenshot: " + e.getMessage());
     }
-
     assertThat(colors).isNotEmpty();
 
     return colors;
@@ -379,17 +368,7 @@ class TakesScreenshotTest extends JupiterTestBase {
     cleanActualColors.remove("#000000");
     cleanActualColors.remove("#ffffff");
 
-    if (!expectedColors.containsAll(cleanActualColors)) {
-      fail(
-          "There are unexpected colors on the screenshot: "
-              + Sets.difference(cleanActualColors, expectedColors));
-    }
-
-    if (!cleanActualColors.containsAll(expectedColors)) {
-      fail(
-          "There are expected colors not present on the screenshot: "
-              + Sets.difference(expectedColors, cleanActualColors));
-    }
+    assertThat(cleanActualColors).containsExactlyInAnyOrderElementsOf(expectedColors);
   }
 
   private boolean onlyBlack(Set<String> colors) {
@@ -406,13 +385,8 @@ class TakesScreenshotTest extends JupiterTestBase {
    * @param im image
    */
   @SuppressWarnings("unused")
-  private void saveImageToTmpFile(String testMethodName, BufferedImage im) {
-
+  private void saveImageToTmpFile(String testMethodName, BufferedImage im) throws IOException {
     File outputfile = new File(testMethodName + "_image.png");
-    try {
-      ImageIO.write(im, "png", outputfile);
-    } catch (IOException e) {
-      fail("Unable to write image to file: " + e.getMessage());
-    }
+    ImageIO.write(im, "png", outputfile);
   }
 }

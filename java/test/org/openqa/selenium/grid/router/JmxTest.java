@@ -18,26 +18,14 @@
 package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import com.google.common.collect.ImmutableMap;
 import java.lang.management.ManagementFactory;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.logging.Logger;
-import javax.management.AttributeList;
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanException;
-import javax.management.MBeanInfo;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
+import javax.management.*;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -70,187 +58,139 @@ class JmxTest {
   private final MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
 
   @Test
-  void shouldBeAbleToRegisterBaseServerConfig() {
-    try {
-      ObjectName name = new ObjectName("org.seleniumhq.grid:type=Config,name=BaseServerConfig");
-      new JMXHelper().unregister(name);
+  void shouldBeAbleToRegisterBaseServerConfig() throws Exception {
+    ObjectName name = new ObjectName("org.seleniumhq.grid:type=Config,name=BaseServerConfig");
+    new JMXHelper().unregister(name);
 
-      BaseServerOptions baseServerOptions =
-          new BaseServerOptions(
-              new MapConfig(
-                  ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+    BaseServerOptions baseServerOptions =
+        new BaseServerOptions(
+            new MapConfig(
+                ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
 
-      MBeanInfo info = beanServer.getMBeanInfo(name);
-      assertThat(info).isNotNull();
+    MBeanInfo info = beanServer.getMBeanInfo(name);
+    assertThat(info).isNotNull();
 
-      MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
-      assertThat(attributeInfoArray).hasSize(3);
+    MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
+    assertThat(attributeInfoArray).hasSize(3);
 
-      AttributeList attributeList = getAttributeList(name, attributeInfoArray);
-      assertThat(attributeList).isNotNull().hasSize(3);
+    AttributeList attributeList = getAttributeList(name, attributeInfoArray);
+    assertThat(attributeList).isNotNull().hasSize(3);
 
-      String uriValue = (String) beanServer.getAttribute(name, "Uri");
-      assertThat(uriValue).isEqualTo(baseServerOptions.getExternalUri().toString());
-
-    } catch (InstanceNotFoundException
-        | IntrospectionException
-        | ReflectionException
-        | MalformedObjectNameException e) {
-      fail("Could not find the registered MBean");
-    } catch (MBeanException e) {
-      fail("MBeanServer exception");
-    } catch (AttributeNotFoundException e) {
-      fail("Could not find the registered MBean's attribute");
-    }
+    String uriValue = (String) beanServer.getAttribute(name, "Uri");
+    assertThat(uriValue).isEqualTo(baseServerOptions.getExternalUri().toString());
   }
 
   @Test
-  void shouldBeAbleToRegisterNode() throws URISyntaxException {
-    try {
-      URI nodeUri = new URI("https://example.com:1234");
-      ObjectName name = new ObjectName("org.seleniumhq.grid:type=Node,name=LocalNode");
-      new JMXHelper().unregister(name);
+  void shouldBeAbleToRegisterNode() throws Exception {
+    URI nodeUri = new URI("https://example.com:1234");
+    ObjectName name = new ObjectName("org.seleniumhq.grid:type=Node,name=LocalNode");
+    new JMXHelper().unregister(name);
 
-      Tracer tracer = DefaultTestTracer.createTracer();
-      EventBus bus = new GuavaEventBus();
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
 
-      Secret secret = new Secret("cheese");
+    Secret secret = new Secret("cheese");
 
-      LocalNode localNode =
-          LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
-              .add(
-                  CAPS,
-                  new TestSessionFactory(
-                      (id, caps) ->
-                          new Session(
-                              id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
-              .build();
+    LocalNode localNode =
+        LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
+            .add(
+                CAPS,
+                new TestSessionFactory(
+                    (id, caps) ->
+                        new Session(id, nodeUri, new ImmutableCapabilities(), caps, Instant.now())))
+            .build();
 
-      assertThat(localNode).isNotNull();
+    assertThat(localNode).isNotNull();
 
-      MBeanInfo info = beanServer.getMBeanInfo(name);
-      assertThat(info).isNotNull();
+    MBeanInfo info = beanServer.getMBeanInfo(name);
+    assertThat(info).isNotNull();
 
-      MBeanAttributeInfo[] attributeInfo = info.getAttributes();
-      assertThat(attributeInfo).hasSize(9);
+    MBeanAttributeInfo[] attributeInfo = info.getAttributes();
+    assertThat(attributeInfo).hasSize(9);
 
-      AttributeList attributeList = getAttributeList(name, attributeInfo);
-      assertThat(attributeList).isNotNull().hasSize(9);
+    AttributeList attributeList = getAttributeList(name, attributeInfo);
+    assertThat(attributeList).isNotNull().hasSize(9);
 
-      Object currentSessions = beanServer.getAttribute(name, "CurrentSessions");
-      assertNumberAttribute(currentSessions, 0);
+    Object currentSessions = beanServer.getAttribute(name, "CurrentSessions");
+    assertNumberAttribute(currentSessions, 0);
 
-      Object maxSessions = beanServer.getAttribute(name, "MaxSessions");
-      assertNumberAttribute(maxSessions, 1);
+    Object maxSessions = beanServer.getAttribute(name, "MaxSessions");
+    assertNumberAttribute(maxSessions, 1);
 
-      String status = (String) beanServer.getAttribute(name, "Status");
-      assertThat(status).isEqualTo("UP");
+    String status = (String) beanServer.getAttribute(name, "Status");
+    assertThat(status).isEqualTo("UP");
 
-      Object totalSlots = beanServer.getAttribute(name, "TotalSlots");
-      assertNumberAttribute(totalSlots, 1);
+    Object totalSlots = beanServer.getAttribute(name, "TotalSlots");
+    assertNumberAttribute(totalSlots, 1);
 
-      Object usedSlots = beanServer.getAttribute(name, "UsedSlots");
-      assertNumberAttribute(usedSlots, 0);
+    Object usedSlots = beanServer.getAttribute(name, "UsedSlots");
+    assertNumberAttribute(usedSlots, 0);
 
-      Object load = beanServer.getAttribute(name, "Load");
-      assertNumberAttribute(load, 0.0f);
+    Object load = beanServer.getAttribute(name, "Load");
+    assertNumberAttribute(load, 0.0f);
 
-      String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
-      assertThat(remoteNodeUri).isEqualTo(nodeUri.toString());
+    String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
+    assertThat(remoteNodeUri).isEqualTo(nodeUri.toString());
 
-      String gridUri = (String) beanServer.getAttribute(name, "GridUri");
-      assertThat(gridUri).isEqualTo(nodeUri.toString());
-
-    } catch (InstanceNotFoundException
-        | IntrospectionException
-        | ReflectionException
-        | MalformedObjectNameException e) {
-      fail("Could not find the registered MBean");
-    } catch (MBeanException e) {
-      fail("MBeanServer exception");
-    } catch (AttributeNotFoundException e) {
-      fail("Could not find the registered MBean's attribute");
-    }
+    String gridUri = (String) beanServer.getAttribute(name, "GridUri");
+    assertThat(gridUri).isEqualTo(nodeUri.toString());
   }
 
   @Test
-  void shouldBeAbleToRegisterSessionQueueServerConfig() {
-    try {
-      ObjectName name =
-          new ObjectName("org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
+  void shouldBeAbleToRegisterSessionQueueServerConfig() throws Exception {
+    ObjectName name = new ObjectName("org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
 
-      new JMXHelper().unregister(name);
+    new JMXHelper().unregister(name);
 
-      NewSessionQueueOptions newSessionQueueOptions =
-          new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
-      MBeanInfo info = beanServer.getMBeanInfo(name);
-      assertThat(info).isNotNull();
+    NewSessionQueueOptions newSessionQueueOptions =
+        new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
+    MBeanInfo info = beanServer.getMBeanInfo(name);
+    assertThat(info).isNotNull();
 
-      MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
-      assertThat(attributeInfoArray).hasSize(2);
+    MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
+    assertThat(attributeInfoArray).hasSize(2);
 
-      AttributeList attributeList = getAttributeList(name, attributeInfoArray);
-      assertThat(attributeList).isNotNull().hasSize(2);
+    AttributeList attributeList = getAttributeList(name, attributeInfoArray);
+    assertThat(attributeList).isNotNull().hasSize(2);
 
-      Object requestTimeout = beanServer.getAttribute(name, "RequestTimeoutSeconds");
-      assertNumberAttribute(requestTimeout, newSessionQueueOptions.getRequestTimeoutSeconds());
+    Object requestTimeout = beanServer.getAttribute(name, "RequestTimeoutSeconds");
+    assertNumberAttribute(requestTimeout, newSessionQueueOptions.getRequestTimeoutSeconds());
 
-      Object retryInterval = beanServer.getAttribute(name, "RetryIntervalMilliseconds");
-      assertNumberAttribute(retryInterval, newSessionQueueOptions.getRetryIntervalMilliseconds());
-    } catch (InstanceNotFoundException
-        | IntrospectionException
-        | ReflectionException
-        | MalformedObjectNameException e) {
-      fail("Could not find the registered MBean");
-    } catch (MBeanException e) {
-      fail("MBeanServer exception");
-    } catch (AttributeNotFoundException e) {
-      fail("Could not find the registered MBean's attribute");
-    }
+    Object retryInterval = beanServer.getAttribute(name, "RetryIntervalMilliseconds");
+    assertNumberAttribute(retryInterval, newSessionQueueOptions.getRetryIntervalMilliseconds());
   }
 
   @Test
-  void shouldBeAbleToRegisterSessionQueue() {
-    try {
-      ObjectName name =
-          new ObjectName("org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue");
+  void shouldBeAbleToRegisterSessionQueue() throws Exception {
+    ObjectName name =
+        new ObjectName("org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue");
 
-      new JMXHelper().unregister(name);
+    new JMXHelper().unregister(name);
 
-      Tracer tracer = DefaultTestTracer.createTracer();
+    Tracer tracer = DefaultTestTracer.createTracer();
 
-      NewSessionQueue sessionQueue =
-          new LocalNewSessionQueue(
-              tracer,
-              new DefaultSlotMatcher(),
-              Duration.ofSeconds(2),
-              Duration.ofSeconds(2),
-              Duration.ofSeconds(1),
-              new Secret(""),
-              5);
+    NewSessionQueue sessionQueue =
+        new LocalNewSessionQueue(
+            tracer,
+            new DefaultSlotMatcher(),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(2),
+            Duration.ofSeconds(1),
+            new Secret(""),
+            5);
 
-      assertThat(sessionQueue).isNotNull();
-      MBeanInfo info = beanServer.getMBeanInfo(name);
-      assertThat(info).isNotNull();
+    assertThat(sessionQueue).isNotNull();
+    MBeanInfo info = beanServer.getMBeanInfo(name);
+    assertThat(info).isNotNull();
 
-      MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
-      assertThat(attributeInfoArray).hasSize(1);
+    MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
+    assertThat(attributeInfoArray).hasSize(1);
 
-      AttributeList attributeList = getAttributeList(name, attributeInfoArray);
-      assertThat(attributeList).isNotNull().hasSize(1);
+    AttributeList attributeList = getAttributeList(name, attributeInfoArray);
+    assertThat(attributeList).isNotNull().hasSize(1);
 
-      Object size = beanServer.getAttribute(name, "NewSessionQueueSize");
-      assertNumberAttribute(size, 0);
-    } catch (InstanceNotFoundException
-        | IntrospectionException
-        | ReflectionException
-        | MalformedObjectNameException e) {
-      fail("Could not find the registered MBean");
-    } catch (MBeanException e) {
-      fail("MBeanServer exception");
-    } catch (AttributeNotFoundException e) {
-      fail("Could not find the registered MBean's attribute");
-    }
+    Object size = beanServer.getAttribute(name, "NewSessionQueueSize");
+    assertNumberAttribute(size, 0);
   }
 
   @Test

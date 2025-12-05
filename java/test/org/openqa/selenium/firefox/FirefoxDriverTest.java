@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -111,10 +110,9 @@ class FirefoxDriverTest extends JupiterTestBase {
 
       field.set(driver2, spoof);
 
-      driver2.get(pages.formPage);
-      fail("Should have thrown.");
-    } catch (UnreachableBrowserException e) {
-      assertThat(e.getMessage()).contains("Error communicating with the remote browser");
+      assertThatThrownBy(() -> driver2.get(pages.formPage))
+          .isInstanceOf(UnreachableBrowserException.class)
+          .hasMessageStartingWith("Error communicating with the remote browser");
     } finally {
       keptExecutor.execute(new Command(sessionId, DriverCommand.QUIT));
     }
