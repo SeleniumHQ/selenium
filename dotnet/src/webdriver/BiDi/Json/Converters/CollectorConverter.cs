@@ -37,7 +37,7 @@ internal class CollectorConverter : JsonConverter<Collector>
     {
         var id = reader.GetString();
 
-        return new Collector(_bidi, id!);
+        return new Collector(id!) { BiDi = _bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Collector value, JsonSerializerOptions options)

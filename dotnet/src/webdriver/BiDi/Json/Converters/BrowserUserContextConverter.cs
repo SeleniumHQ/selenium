@@ -37,7 +37,7 @@ internal class BrowserUserContextConverter : JsonConverter<UserContext>
     {
         var id = reader.GetString();
 
-        return new UserContext(_bidi, id!);
+        return new UserContext(id!) { BiDi = _bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, UserContext value, JsonSerializerOptions options)

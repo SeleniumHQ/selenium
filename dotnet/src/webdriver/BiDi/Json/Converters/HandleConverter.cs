@@ -37,7 +37,7 @@ internal class HandleConverter : JsonConverter<Handle>
     {
         var id = reader.GetString();
 
-        return new Handle(_bidi, id!);
+        return new Handle(id!) { BiDi = _bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Handle value, JsonSerializerOptions options)

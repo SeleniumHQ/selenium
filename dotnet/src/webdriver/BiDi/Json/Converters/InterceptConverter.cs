@@ -37,7 +37,7 @@ internal class InterceptConverter : JsonConverter<Intercept>
     {
         var id = reader.GetString();
 
-        return new Intercept(_bidi, id!);
+        return new Intercept(id!) { BiDi = _bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Intercept value, JsonSerializerOptions options)

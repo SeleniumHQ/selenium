@@ -37,7 +37,7 @@ internal class RealmConverter : JsonConverter<Realm>
     {
         var id = reader.GetString();
 
-        return new Realm(_bidi, id!);
+        return new Realm(id!) { BiDi = _bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Realm value, JsonSerializerOptions options)

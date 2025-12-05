@@ -18,25 +18,26 @@
 // </copyright>
 
 using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed class Collector : IAsyncDisposable
 {
-    private readonly BiDi _bidi;
-
-    internal Collector(BiDi bidi, string id)
+    internal Collector(string id)
     {
-        _bidi = bidi;
         Id = id;
     }
 
     internal string Id { get; }
 
+    [JsonIgnore]
+    public BiDi BiDi { get; internal set; }
+
     public async Task RemoveAsync()
     {
-        await _bidi.Network.RemoveDataCollectorAsync(this).ConfigureAwait(false);
+        await BiDi.Network.RemoveDataCollectorAsync(this).ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()

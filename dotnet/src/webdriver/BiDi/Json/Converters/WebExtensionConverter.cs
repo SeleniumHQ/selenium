@@ -37,7 +37,7 @@ internal class WebExtensionConverter : JsonConverter<Extension>
     {
         var id = reader.GetString();
 
-        return new Extension(_bidi, id!);
+        return new Extension(id!) { BiDi = _bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Extension value, JsonSerializerOptions options)

@@ -37,7 +37,7 @@ internal class PreloadScriptConverter : JsonConverter<PreloadScript>
     {
         var id = reader.GetString();
 
-        return new PreloadScript(_bidi, id!);
+        return new PreloadScript(id!) { BiDi = _bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, PreloadScript value, JsonSerializerOptions options)
