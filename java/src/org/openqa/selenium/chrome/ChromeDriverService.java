@@ -292,7 +292,6 @@ public class ChromeDriverService extends DriverService {
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
       args.add(String.format(Locale.ROOT, "--port=%d", getPort()));
-
       // Readable timestamp and append logs only work if log path is specified in args
       // Cannot use logOutput because goog:loggingPrefs requires --log-path get sent
       if (getLogFile() != null) {
@@ -316,6 +315,8 @@ public class ChromeDriverService extends DriverService {
       if (Boolean.TRUE.equals(disableBuildCheck)) {
         args.add("--disable-build-check");
       }
+      // Suppress or redirect browser I/O Streams
+      args.add("--enable-chrome-logs");
 
       return unmodifiableList(args);
     }
