@@ -1,5 +1,5 @@
 {
-  "checksum": "c2f6ce33acb9a60d2a50182bd219781cb613c02f03cb33e317ad0f9341fc4606",
+  "checksum": "31460278a19f25995a69d362d4219f06ccb015c1620e765495db5b866d42e4cd",
   "crates": {
     "addr2line 0.25.1": {
       "name": "addr2line",
@@ -12004,9 +12004,9 @@
       ],
       "license_file": "LICENSE"
     },
-    "selenium-manager 0.4.39-nightly": {
+    "selenium-manager 0.4.39": {
       "name": "selenium-manager",
-      "version": "0.4.39-nightly",
+      "version": "0.4.39",
       "package_url": "https://github.com/SeleniumHQ/selenium",
       "repository": null,
       "targets": [
@@ -12162,7 +12162,7 @@
           "selects": {}
         },
         "edition": "2024",
-        "version": "0.4.39-nightly"
+        "version": "0.4.39"
       },
       "license": "Apache-2.0",
       "license_ids": [
@@ -20613,7 +20613,7 @@
   },
   "binary_crates": [],
   "workspace_members": {
-    "selenium-manager 0.4.39-nightly": "rust"
+    "selenium-manager 0.4.39": "rust"
   },
   "conditions": {
     "aarch64-apple-darwin": [
