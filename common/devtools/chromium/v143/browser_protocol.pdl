@@ -8331,7 +8331,7 @@ domain Network
   experimental type BlockPattern extends object
     properties
       # URL pattern to match. Patterns use the URLPattern constructor string syntax
-      # (https://urlpattern.spec.whatwg.org/) and must be absolute. Example: `*://*:*/*.css`.
+      # (https://urlpattern.spec.whatwg.org/) and must be absolute.
       string urlPattern
       # Whether or not to block the pattern. If false, a matching request will not be blocked even if it matches a later
       # `BlockPattern`.
