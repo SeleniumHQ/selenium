@@ -22,7 +22,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi;
 
-public abstract record EventArgs : IBiDiHydratable
+public abstract record EventArgs
 {
     private BiDi? _bidi;
 
@@ -31,11 +31,6 @@ public abstract record EventArgs : IBiDiHydratable
     {
         get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
         internal set => _bidi = value;
-    }
-
-    void IBiDiHydratable.Hydrate(BiDi bidi)
-    {
-        BiDi = bidi;
     }
 }
 

@@ -279,11 +279,6 @@ public sealed class Broker : IAsyncDisposable
                         var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
                             ?? throw new JsonException("Remote end returned null command result in the 'result' property.");
 
-                        if (commandResult is IBiDiHydratable bidiHydratable)
-                        {
-                            bidiHydratable.Hydrate(_bidi);
-                        }
-
                         command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
                     }
                     catch (Exception ex)
@@ -309,10 +304,7 @@ public sealed class Broker : IAsyncDisposable
                 {
                     var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
 
-                    if (eventArgs is IBiDiHydratable bidiHydratable)
-                    {
-                        bidiHydratable.Hydrate(_bidi);
-                    }
+                    eventArgs.BiDi = _bidi;
 
                     var messageEvent = (method, eventArgs);
                     _pendingEvents.Add(messageEvent);

@@ -45,13 +45,4 @@ public sealed record BrowsingContextGetTreeOptions
     public long? MaxDepth { get; set; }
 }
 
-public sealed record GetTreeResult(IReadOnlyList<BrowsingContextInfo> Contexts) : EmptyResult, IBiDiHydratable
-{
-    void IBiDiHydratable.Hydrate(BiDi bidi)
-    {
-        foreach (var contextInfo in Contexts)
-        {
-            contextInfo.Context.BiDi = bidi;
-        }
-    }
-}
+public sealed record GetTreeResult(IReadOnlyList<BrowsingContextInfo> Contexts) : EmptyResult;
