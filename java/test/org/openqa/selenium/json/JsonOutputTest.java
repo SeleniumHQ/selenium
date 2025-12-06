@@ -619,7 +619,7 @@ class JsonOutputTest {
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
-    assertThat(converted).hasSize(1);
+    assertThat(converted.size()).isEqualTo(1);
     assertThat(converted.getAsJsonPrimitive("thing").getAsString())
         .isEqualTo(SimpleBean.class.getName());
   }

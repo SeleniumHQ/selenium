@@ -392,7 +392,7 @@ class LocalValueTest extends JupiterTestBase {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("date");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat(successResult.getResult().getValue().get()).isEqualTo("2022-05-31T13:47:29.000Z");
+    assertThat(successResult.getResult().getValue()).hasValue("2022-05-31T13:47:29.000Z");
   }
 
   @Test

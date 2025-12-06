@@ -85,7 +85,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 "-0");
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo("-0");
+    assertThat(value.getValue()).hasValue("-0");
   }
 
   @Test
@@ -103,7 +103,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 "Infinity");
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo("Infinity");
+    assertThat(value.getValue()).hasValue("Infinity");
   }
 
   @Test
@@ -121,7 +121,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 "-Infinity");
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo("-Infinity");
+    assertThat(value.getValue()).hasValue("-Infinity");
   }
 
   @Test
@@ -138,7 +138,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 1.4);
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo(1.4);
+    assertThat(value.getValue()).hasValue(1.4);
   }
 
   @Test
@@ -155,7 +155,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 1);
 
     assertThat(value.getType()).isEqualTo("number");
-    assertThat(value.getValue().get()).isEqualTo(1L);
+    assertThat(value.getValue()).hasValue(1L);
   }
 
   @Test
@@ -172,7 +172,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 true);
 
     assertThat(value.getType()).isEqualTo("boolean");
-    assertThat(value.getValue().get()).isEqualTo(true);
+    assertThat(value.getValue()).hasValue(true);
   }
 
   @Test
@@ -189,7 +189,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
                 BigInteger.valueOf(42L));
 
     assertThat(value.getType()).isEqualTo("bigint");
-    assertThat(value.getValue().get()).isEqualTo("42");
+    assertThat(value.getValue()).hasValue("42");
   }
 
   @Test

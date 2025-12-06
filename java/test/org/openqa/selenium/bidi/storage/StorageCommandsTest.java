@@ -251,7 +251,7 @@ class StorageCommandsTest extends JupiterTestBase {
     assertThat(resultCookie.isSecure()).isEqualTo(false);
     assertThat(resultCookie.getSameSite())
         .isEqualTo(org.openqa.selenium.bidi.network.Cookie.SameSite.LAX);
-    assertThat(resultCookie.getExpiry().get()).isEqualTo(expiry);
+    assertThat(resultCookie.getExpiry()).hasValue(expiry);
     assertThat(key.getSourceOrigin()).isNotNull();
     assertThat(key.getUserContext()).isNotNull();
     assertThat(key.getUserContext()).isEqualTo("default");

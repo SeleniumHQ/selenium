@@ -1349,6 +1349,6 @@ class EventFiringDecoratorTest {
     RemoteWebDriver rem =
         new EventFiringDecorator<>(RemoteWebDriver.class, listener).decorate(originalDriver);
     rem.get("http://localhost:4444");
-    assertThat(invocationCount.get()).isEqualTo(1);
+    assertThat(invocationCount).hasValue(1);
   }
 }

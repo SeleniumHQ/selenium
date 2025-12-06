@@ -274,7 +274,7 @@ class NetworkCommandsTest extends JupiterTestBase {
       }
 
       latch.await(10, TimeUnit.SECONDS);
-      assertThat(status.get()).isEqualTo(401);
+      assertThat(status).hasValue(401);
     }
   }
 

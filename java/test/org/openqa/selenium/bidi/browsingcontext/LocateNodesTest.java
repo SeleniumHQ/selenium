@@ -94,7 +94,7 @@ public class LocateNodesTest extends JupiterTestBase {
     assertThat(value.getType()).isEqualTo("node");
     assertThat(value.getValue().isPresent()).isTrue();
     NodeProperties properties = (NodeProperties) value.getValue().get();
-    assertThat(properties.getLocalName().get()).isEqualTo("div");
+    assertThat(properties.getLocalName()).hasValue("div");
     assertThat(properties.getAttributes().get()).hasSize(1);
     assertThat(properties.getAttributes().get().get("class")).isEqualTo("content");
   }
@@ -117,7 +117,7 @@ public class LocateNodesTest extends JupiterTestBase {
     assertThat(value.getType()).isEqualTo("node");
     assertThat(value.getValue().isPresent()).isTrue();
     NodeProperties properties = (NodeProperties) value.getValue().get();
-    assertThat(properties.getLocalName().get()).isEqualTo("div");
+    assertThat(properties.getLocalName()).hasValue("div");
     assertThat(properties.getAttributes().get()).hasSize(1);
     assertThat(properties.getAttributes().get().get("class")).isEqualTo("content");
   }

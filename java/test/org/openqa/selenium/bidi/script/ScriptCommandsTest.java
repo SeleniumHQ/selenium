@@ -826,7 +826,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.evaluateFunctionInBrowsingContext(
             driver.getWindowHandle(), "sandbox", "window.bar", true, Optional.empty());
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
-    assertThat(((EvaluateResultSuccess) result).getResult().getValue().get()).isEqualTo(2L);
+    assertThat(((EvaluateResultSuccess) result).getResult().getValue()).hasValue(2L);
   }
 
   @Test
@@ -843,7 +843,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
         script.evaluateFunctionInBrowsingContext(
             driver.getWindowHandle(), "window.bar", true, Optional.empty());
     assertThat(result.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
-    assertThat(((EvaluateResultSuccess) result).getResult().getValue().get()).isEqualTo(2L);
+    assertThat(((EvaluateResultSuccess) result).getResult().getValue()).hasValue(2L);
 
     script.removePreloadScript(id);
 
