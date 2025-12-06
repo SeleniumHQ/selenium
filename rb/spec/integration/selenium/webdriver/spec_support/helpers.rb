@@ -97,6 +97,11 @@ module Selenium
           end
         end
 
+        def wait_for_devtools_target(target_type:)
+          wait = Wait.new(timeout: 3, ignore: Error::NoSuchTargetError)
+          wait.until { driver.devtools(target_type: target_type).target }
+        end
+
         def wait(timeout = 10)
           Wait.new(timeout: timeout)
         end
