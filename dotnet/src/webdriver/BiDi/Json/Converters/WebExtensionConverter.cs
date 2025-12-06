@@ -24,13 +24,13 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class WebExtensionConverter : JsonConverter<Extension>
+internal class WebExtensionConverter(BiDi bidi) : JsonConverter<Extension>
 {
     public override Extension? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new Extension(id!);
+        return new Extension(id!) { BiDi = bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, Extension value, JsonSerializerOptions options)

@@ -24,13 +24,13 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class InternalIdConverter : JsonConverter<InternalId>
+internal class InternalIdConverter(BiDi bidi) : JsonConverter<InternalId>
 {
     public override InternalId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new InternalId(id!);
+        return new InternalId(id!) { BiDi = bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, InternalId value, JsonSerializerOptions options)

@@ -17,10 +17,26 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
+using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.WebExtension;
 
-[JsonConverter(typeof(WebExtensionConverter))]
-public sealed record Extension(string Id);
+public sealed record Extension
+{
+    internal Extension(string id)
+    {
+        Id = id;
+    }
+
+    internal string Id { get; }
+
+    private BiDi? _bidi;
+
+    [JsonIgnore]
+    public BiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
+}

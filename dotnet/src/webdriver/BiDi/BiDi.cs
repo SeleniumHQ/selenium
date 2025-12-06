@@ -57,11 +57,11 @@ public sealed class BiDi : IAsyncDisposable
                 new BrowserUserContextConverter(this),
                 new CollectorConverter(this),
                 //new InterceptConverter(),
-                //new HandleConverter(),
-                //new InternalIdConverter(),
+                new HandleConverter(this),
+                new InternalIdConverter(this),
                 //new PreloadScriptConverter(),
-                //new RealmConverter(),
-                //new WebExtensionConverter(),
+                new RealmConverter(this),
+                new WebExtensionConverter(this),
             }
         };
     }
