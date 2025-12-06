@@ -259,6 +259,7 @@ public sealed class BrowsingContextModule : Module
         {
             Converters =
             {
+                new BrowsingContextConverter(BiDi),
                 new InternalIdConverter(BiDi),
                 new HandleConverter(BiDi),
                 new BrowserUserContextConverter(BiDi),

@@ -123,10 +123,11 @@ public sealed class ScriptModule : Module
         {
             Converters =
             {
+                new BrowsingContextConverter(BiDi),
                 new PreloadScriptConverter(BiDi),
                 new RealmConverter(BiDi),
                 new InternalIdConverter(BiDi),
-                new HandleConverter(this),
+                new HandleConverter(BiDi),
             }
         };
 

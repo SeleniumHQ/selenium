@@ -99,6 +99,7 @@ public sealed class EmulationModule : Module
         {
             Converters =
             {
+                new BrowsingContextConverter(BiDi),
                 new BrowserUserContextConverter(BiDi),
             }
         };

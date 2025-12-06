@@ -45,9 +45,10 @@ public sealed class LogModule : Module
         {
             Converters =
             {
+                new BrowsingContextConverter(BiDi),
                 new RealmConverter(BiDi),
                 new InternalIdConverter(BiDi),
-                new HandleConverter(this),
+                new HandleConverter(BiDi),
             }
         };
 

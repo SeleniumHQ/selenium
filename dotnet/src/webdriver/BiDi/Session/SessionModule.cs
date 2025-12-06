@@ -66,6 +66,7 @@ internal sealed class SessionModule : Module
         {
             Converters =
             {
+                new BrowsingContextConverter(BiDi),
                 new BrowserUserContextConverter(BiDi),
             }
         };

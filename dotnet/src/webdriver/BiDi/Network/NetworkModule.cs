@@ -182,6 +182,7 @@ public sealed partial class NetworkModule : Module
         {
             Converters =
             {
+                new BrowsingContextConverter(BiDi),
                 new CollectorConverter(BiDi),
                 new InterceptConverter(BiDi),
                 new BrowserUserContextConverter(BiDi),

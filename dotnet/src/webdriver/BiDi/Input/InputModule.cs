@@ -56,6 +56,7 @@ public sealed class InputModule : Module
         {
             Converters =
             {
+                new BrowsingContextConverter(BiDi),
                 new HandleConverter(BiDi),
             }
         };

@@ -55,6 +55,7 @@ public sealed class StorageModule : Module
         {
             Converters =
             {
+                new BrowsingContextConverter(BiDi),
                 new BrowserUserContextConverter(BiDi),
             }
         };
