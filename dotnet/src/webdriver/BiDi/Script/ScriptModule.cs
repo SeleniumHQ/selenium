@@ -123,7 +123,8 @@ public sealed class ScriptModule : Module
         {
             Converters =
             {
-                new PreloadScriptConverter(BiDi)
+                new PreloadScriptConverter(BiDi),
+                new RealmConverter(BiDi),
             }
         };
 
