@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -238,5 +239,12 @@ public sealed record BrowsingContext
     public override int GetHashCode()
     {
         return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }

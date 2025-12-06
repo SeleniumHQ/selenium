@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
@@ -54,5 +55,12 @@ public sealed record Collector
     public override int GetHashCode()
     {
         return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }
