@@ -57,7 +57,6 @@ public sealed class BiDi : IAsyncDisposable
                 new BrowsingContextConverter(this),
                 new BrowserUserContextConverter(this),
                 new HandleConverter(this),
-                new InternalIdConverter(this),
             }
         };
     }

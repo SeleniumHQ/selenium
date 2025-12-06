@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -254,7 +255,13 @@ public sealed class BrowsingContextModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var browsingContextOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var browsingContextOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new InternalIdConverter(BiDi),
+            }
+        };
 
         _jsonContext = new BrowsingContextJsonSerializerContext(browsingContextOptions);
     }
