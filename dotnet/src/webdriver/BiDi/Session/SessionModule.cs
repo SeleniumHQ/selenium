@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -79,11 +78,4 @@ internal sealed class SessionModule : Module
 [JsonSerializable(typeof(UnsubscribeByIdCommand))]
 [JsonSerializable(typeof(UnsubscribeResult))]
 
-#pragma warning disable CS3016 // Arrays as attribute arguments is not CLS-compliant
-[JsonSourceGenerationOptions(
-    PropertyNameCaseInsensitive = true,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    Converters = [typeof(DateTimeOffsetConverter)])]
-#pragma warning restore CS3016 // Arrays as attribute arguments is not CLS-compliant
 internal partial class SessionJsonSerializerContext : JsonSerializerContext;

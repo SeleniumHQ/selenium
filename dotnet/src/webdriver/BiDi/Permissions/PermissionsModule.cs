@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using OpenQA.Selenium.BiDi.Permissions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -47,11 +46,4 @@ public class PermissionsModule : Module
 [JsonSerializable(typeof(SetPermissionCommand))]
 [JsonSerializable(typeof(SetPermissionResult))]
 
-#pragma warning disable CS3016 // Arrays as attribute arguments is not CLS-compliant
-[JsonSourceGenerationOptions(
-    PropertyNameCaseInsensitive = true,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    Converters = [typeof(DateTimeOffsetConverter)])]
-#pragma warning restore CS3016 // Arrays as attribute arguments is not CLS-compliant
 internal partial class PermissionsJsonSerializerContext : JsonSerializerContext;

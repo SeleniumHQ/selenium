@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -84,11 +83,4 @@ public sealed class LogModule : Module
 
 [JsonSerializable(typeof(LogEntry))]
 
-#pragma warning disable CS3016 // Arrays as attribute arguments is not CLS-compliant
-[JsonSourceGenerationOptions(
-    PropertyNameCaseInsensitive = true,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    Converters = [typeof(DateTimeOffsetConverter)])]
-#pragma warning restore CS3016 // Arrays as attribute arguments is not CLS-compliant
 internal partial class LogJsonSerializerContext : JsonSerializerContext;
