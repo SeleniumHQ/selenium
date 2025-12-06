@@ -17,10 +17,26 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Json.Converters;
+using System;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-[JsonConverter(typeof(PreloadScriptConverter))]
-public sealed record PreloadScript(string Id);
+public sealed record PreloadScript
+{
+    internal PreloadScript(string id)
+    {
+        Id = id;
+    }
+
+    internal string Id { get; }
+
+    private BiDi? _bidi;
+
+    [JsonIgnore]
+    public BiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
+}
