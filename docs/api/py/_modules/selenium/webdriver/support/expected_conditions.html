@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.support.expected_conditions &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.support.expected_conditions &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.support.expected_conditions </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -210,8 +210,8 @@
 <span class="c1"># under the License.</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.common.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">NoAlertPresentException</span><span class="p">,</span>
@@ -239,14 +239,11 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">title_is</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation for checking the title of a page.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    title : str</span>
-<span class="sd">        The expected title, which must be an exact match.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        title: The expected title, which must be an exact match.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True if the title matches, False otherwise.</span>
+<span class="sd">        True if the title matches, False otherwise.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -259,17 +256,13 @@
 <div class="viewcode-block" id="title_contains">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.title_contains">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">title_contains</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that the title contains a case-sensitive</span>
-<span class="sd">    substring.</span>
+<span class="w">    </span><span class="sd">"""Check that the title contains a case-sensitive substring.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    title : str</span>
-<span class="sd">        The fragment of title expected.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        title: The fragment of title expected.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the title matches, False otherwise.</span>
+<span class="sd">        True when the title matches, False otherwise.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -282,24 +275,19 @@
 <div class="viewcode-block" id="presence_of_element_located">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.presence_of_element_located">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">presence_of_element_located</span><span class="p">(</span><span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">WebElement</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that an element is present on the DOM of a</span>
-<span class="sd">    page. This does not necessarily mean that the element is visible.</span>
+<span class="w">    </span><span class="sd">"""Check that an element is present on the DOM (not necessarily visible).</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    WebElement : The WebElement once it is located.</span>
+<span class="sd">        The WebElement once it is located.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "q")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "q")))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -312,17 +300,13 @@
 <div class="viewcode-block" id="url_contains">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.url_contains">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">url_contains</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that the current url contains a case-</span>
-<span class="sd">    sensitive substring.</span>
+<span class="w">    </span><span class="sd">"""Check that the current url contains a case-sensitive substring.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    url : str</span>
-<span class="sd">        The fragment of url expected.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        url: The fragment of url expected.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the url matches, False otherwise.</span>
+<span class="sd">        True when the url matches, False otherwise.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -337,18 +321,14 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">url_matches</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation for checking the current url.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    pattern : str</span>
-<span class="sd">        The pattern to match with the current url.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        pattern: The pattern to match with the current url.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the pattern matches, False otherwise.</span>
+<span class="sd">        True when the pattern matches, False otherwise.</span>
 
-<span class="sd">    Notes:</span>
-<span class="sd">    ------</span>
-<span class="sd">    More powerful than url_contains, as it allows for regular expressions.</span>
+<span class="sd">    Note:</span>
+<span class="sd">        More powerful than url_contains, as it allows for regular expressions.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -363,14 +343,11 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">url_to_be</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation for checking the current url.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    url : str</span>
-<span class="sd">        The expected url, which must be an exact match.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        url: The expected url, which must be an exact match.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the url matches, False otherwise.</span>
+<span class="sd">        True when the url matches, False otherwise.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -383,17 +360,13 @@
 <div class="viewcode-block" id="url_changes">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.url_changes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">url_changes</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking the current url is different than a given</span>
-<span class="sd">    string.</span>
+<span class="w">    </span><span class="sd">"""Check that the current url differs from a given string.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    url : str</span>
-<span class="sd">        The expected url, which must not be an exact match.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        url: The expected url, which must not be an exact match.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the url does not match, False otherwise</span>
+<span class="sd">        True when the url does not match, False otherwise.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -407,26 +380,20 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.visibility_of_element_located">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">visibility_of_element_located</span><span class="p">(</span>
     <span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">WebElement</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that an element is present on the DOM of a</span>
-<span class="sd">    page and visible. Visibility means that the element is not only displayed</span>
-<span class="sd">    but also has a height and width that is greater than 0.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">|</span> <span class="n">WebElement</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Check that an element is visible (present in DOM and width/height greater than zero).</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    WebElement : The WebElement once it is located and visible.</span>
+<span class="sd">        The WebElement once it is located and visible.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; element = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.NAME, "q")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        element = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.NAME, "q")))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -441,31 +408,20 @@
 
 <div class="viewcode-block" id="visibility_of">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.visibility_of">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">visibility_of</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">WebElement</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that an element, known to be present on the</span>
-<span class="sd">    DOM of a page, is visible.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">visibility_of</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">|</span> <span class="n">WebElement</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Check that an element is visible (present in DOM and width/height greater than zero).</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    element : WebElement</span>
-<span class="sd">        The WebElement to check.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        element: The WebElement to check.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    WebElement : The WebElement once it is visible.</span>
+<span class="sd">        The WebElement once it is visible.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; element = WebDriverWait(driver, 10).until(EC.visibility_of(driver.find_element(By.NAME, "q")))</span>
-
-<span class="sd">    Notes:</span>
-<span class="sd">    ------</span>
-<span class="sd">    Visibility means that the element is not only displayed but also has</span>
-<span class="sd">    a height and width that is greater than 0. element is the WebElement</span>
-<span class="sd">    returns the (same) WebElement once it is visible</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        element = WebDriverWait(driver, 10).until(EC.visibility_of(driver.find_element(By.NAME, "q")))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
@@ -475,20 +431,15 @@
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">,</span> <span class="n">visibility</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">WebElement</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that an element, known to be present on the</span>
-<span class="sd">    DOM of a page, is of the expected visibility.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">,</span> <span class="n">visibility</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">|</span> <span class="n">WebElement</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Check if an element has the expected visibility state.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    element : WebElement</span>
-<span class="sd">        The WebElement to check.</span>
-<span class="sd">    visibility : bool</span>
-<span class="sd">        The expected visibility of the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        element: The WebElement to check.</span>
+<span class="sd">        visibility: The expected visibility of the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    WebElement : The WebElement once it is visible or not visible.</span>
+<span class="sd">        The WebElement once it is visible or not visible.</span>
 <span class="sd">    """</span>
     <span class="k">return</span> <span class="n">element</span> <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">()</span> <span class="o">==</span> <span class="n">visibility</span> <span class="k">else</span> <span class="kc">False</span>
 
@@ -496,24 +447,19 @@
 <div class="viewcode-block" id="presence_of_all_elements_located">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.presence_of_all_elements_located">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">presence_of_all_elements_located</span><span class="p">(</span><span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that there is at least one element present</span>
-<span class="sd">    on a web page.</span>
+<span class="w">    </span><span class="sd">"""Check that all elements matching the locator are present on the DOM.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    List[WebElement] : The list of WebElements once they are located.</span>
+<span class="sd">        The list of WebElements once they are located.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "foo")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "foo")))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -526,24 +472,19 @@
 <div class="viewcode-block" id="visibility_of_any_elements_located">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.visibility_of_any_elements_located">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">visibility_of_any_elements_located</span><span class="p">(</span><span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that there is at least one element visible</span>
-<span class="sd">    on a web page.</span>
+<span class="w">    </span><span class="sd">"""Check that at least one element is visible on the web page (present in DOM and width/height greater than zero).</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    List[WebElement] : The list of WebElements once they are located and visible.</span>
+<span class="sd">        The list of WebElements once they are located and visible.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; elements = WebDriverWait(driver, 10).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "foo")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        elements = WebDriverWait(driver, 10).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "foo")))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -557,26 +498,20 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.visibility_of_all_elements_located">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">visibility_of_all_elements_located</span><span class="p">(</span>
     <span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">],</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking that all elements are present on the DOM of</span>
-<span class="sd">    a page and visible. Visibility means that the elements are not only</span>
-<span class="sd">    displayed but also has a height and width that is greater than 0.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""Check that all elements are visible (present in DOM and width/height greater than zero).</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the elements.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the elements.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    List[WebElement] : The list of WebElements once they are located and visible.</span>
+<span class="sd">        The list of WebElements once they are located and visible.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "foo")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "foo")))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -596,26 +531,20 @@
 <div class="viewcode-block" id="text_to_be_present_in_element">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">text_to_be_present_in_element</span><span class="p">(</span><span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">text_</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking if the given text is present in the</span>
-<span class="sd">    specified element.</span>
+<span class="w">    </span><span class="sd">"""Check that the given text is present in the specified element.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
-<span class="sd">    text_ : str</span>
-<span class="sd">        The text to be present in the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
+<span class="sd">        text_: The text to be present in the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the text is present, False otherwise.</span>
+<span class="sd">        True when the text is present, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_text_in_element = WebDriverWait(driver, 10).until(</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_text_in_element = WebDriverWait(driver, 10).until(</span>
 <span class="sd">            EC.text_to_be_present_in_element((By.CLASS_NAME, "foo"), "bar")</span>
 <span class="sd">        )</span>
 <span class="sd">    """</span>
@@ -636,28 +565,22 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">text_to_be_present_in_element_value</span><span class="p">(</span>
     <span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">text_</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking if the given text is present in the</span>
-<span class="sd">    element's value.</span>
+<span class="w">    </span><span class="sd">"""Check that the given text is present in the element's value.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
-<span class="sd">    text_ : str</span>
-<span class="sd">        The text to be present in the element's value.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
+<span class="sd">        text_: The text to be present in the element's value.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the text is present, False otherwise.</span>
+<span class="sd">        True when the text is present, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_text_in_element_value = WebDriverWait(driver, 10).until(</span>
-<span class="sd">    ...     EC.text_to_be_present_in_element_value((By.CLASS_NAME, "foo"), "bar")</span>
-<span class="sd">    ... )</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_text_in_element_value = WebDriverWait(driver, 10).until(</span>
+<span class="sd">            EC.text_to_be_present_in_element_value((By.CLASS_NAME, "foo"), "bar")</span>
+<span class="sd">        )</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -678,30 +601,23 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">text_to_be_present_in_element_attribute</span><span class="p">(</span>
     <span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">attribute_</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text_</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking if the given text is present in the</span>
-<span class="sd">    element's attribute.</span>
+<span class="w">    </span><span class="sd">"""Check that the given text is present in the element's attribute.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
-<span class="sd">    attribute_ : str</span>
-<span class="sd">        The attribute to check the text in.</span>
-<span class="sd">    text_ : str</span>
-<span class="sd">        The text to be present in the element's attribute.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
+<span class="sd">        attribute_: The attribute to check the text in.</span>
+<span class="sd">        text_: The text to be present in the element's attribute.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the text is present, False otherwise.</span>
+<span class="sd">        True when the text is present, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_text_in_element_attribute = WebDriverWait(driver, 10).until(</span>
-<span class="sd">    ...     EC.text_to_be_present_in_element_attribute((By.CLASS_NAME, "foo"), "bar", "baz")</span>
-<span class="sd">    ... )</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_text_in_element_attribute = WebDriverWait(driver, 10).until(</span>
+<span class="sd">            EC.text_to_be_present_in_element_attribute((By.CLASS_NAME, "foo"), "bar", "baz")</span>
+<span class="sd">        )</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -720,30 +636,20 @@
 <div class="viewcode-block" id="frame_to_be_available_and_switch_to_it">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.frame_to_be_available_and_switch_to_it">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">frame_to_be_available_and_switch_to_it</span><span class="p">(</span>
-    <span class="n">locator</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="n">WebElement</span><span class="p">],</span>
+    <span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">WebElement</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking whether the given frame is available to</span>
-<span class="sd">    switch to.</span>
+<span class="w">    </span><span class="sd">"""Check that the given frame is available and switch to it.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Union[Tuple[str, str], str, WebElement]</span>
-<span class="sd">        Used to find the frame.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the frame.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the frame is available, False otherwise.</span>
+<span class="sd">        True when the frame is available, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it("frame_name"))</span>
-
-<span class="sd">    Notes:</span>
-<span class="sd">    ------</span>
-<span class="sd">    If the frame is available it switches the given driver to the</span>
-<span class="sd">    specified frame.</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it("frame_name"))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -763,34 +669,28 @@
 <div class="viewcode-block" id="invisibility_of_element_located">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.invisibility_of_element_located">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">invisibility_of_element_located</span><span class="p">(</span>
-    <span class="n">locator</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">WebElement</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">WebElement</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""An Expectation for checking that an element is either invisible or not</span>
-<span class="sd">    present on the DOM.</span>
+    <span class="n">locator</span><span class="p">:</span> <span class="n">WebElement</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">WebElement</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Check that an element is either invisible or not present on the DOM.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Union[WebElement, Tuple[str, str]]</span>
-<span class="sd">        Used to find the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the element is invisible or not present, False otherwise.</span>
+<span class="sd">        True when the element is invisible or not present, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_invisible = WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.CLASS_NAME, "foo")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_invisible = WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.CLASS_NAME, "foo")))</span>
 
-<span class="sd">    Notes:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - In the case of NoSuchElement, returns true because the element is not</span>
-<span class="sd">    present in DOM. The try block checks if the element is present but is</span>
-<span class="sd">    invisible.</span>
-<span class="sd">    - In the case of StaleElementReference, returns true because stale element</span>
-<span class="sd">    reference implies that element is no longer visible.</span>
+<span class="sd">    Note:</span>
+<span class="sd">        In the case of NoSuchElement, returns true because the element is not</span>
+<span class="sd">        present in DOM. The try block checks if the element is present but is</span>
+<span class="sd">        invisible.</span>
+<span class="sd">        In the case of StaleElementReference, returns true because stale element</span>
+<span class="sd">        reference implies that element is no longer visible.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -814,28 +714,23 @@
 <div class="viewcode-block" id="invisibility_of_element">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.invisibility_of_element">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">invisibility_of_element</span><span class="p">(</span>
-    <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">WebElement</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">WebElement</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""An Expectation for checking that an element is either invisible or not</span>
-<span class="sd">    present on the DOM.</span>
+    <span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">WebElement</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Check that an element is either invisible or not present on the DOM.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    element : Union[WebElement, Tuple[str, str]]</span>
-<span class="sd">        Used to find the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        element: Used to find the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the element is invisible or not present, False otherwise.</span>
+<span class="sd">        True when the element is invisible or not present, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_invisible_or_not_present = WebDriverWait(driver, 10).until(</span>
-<span class="sd">    ...     EC.invisibility_of_element(driver.find_element(By.CLASS_NAME, "foo"))</span>
-<span class="sd">    ... )</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_invisible_or_not_present = WebDriverWait(driver, 10).until(</span>
+<span class="sd">            EC.invisibility_of_element(driver.find_element(By.CLASS_NAME, "foo"))</span>
+<span class="sd">        )</span>
 <span class="sd">    """</span>
     <span class="k">return</span> <span class="n">invisibility_of_element_located</span><span class="p">(</span><span class="n">element</span><span class="p">)</span></div>
 
@@ -844,26 +739,21 @@
 <div class="viewcode-block" id="element_to_be_clickable">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_to_be_clickable">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">element_to_be_clickable</span><span class="p">(</span>
-    <span class="n">mark</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">WebElement</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">WebElement</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""An Expectation for checking an element is visible and enabled such that</span>
-<span class="sd">    you can click it.</span>
+    <span class="n">mark</span><span class="p">:</span> <span class="n">WebElement</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">|</span> <span class="n">WebElement</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Check that an element is visible and enabled so it can be clicked.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    mark : Union[WebElement, Tuple[str, str]]</span>
-<span class="sd">        Used to find the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        mark: Used to find the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    WebElement : The WebElement once it is located and clickable.</span>
+<span class="sd">        The WebElement once it is located and clickable.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "foo")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "foo")))</span>
 <span class="sd">    """</span>
 
     <span class="c1"># renamed argument to 'mark', to indicate that both locator</span>
@@ -886,21 +776,17 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">staleness_of</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Wait until an element is no longer attached to the DOM.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    element : WebElement</span>
-<span class="sd">        The element to wait for.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        element: The element to wait for.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : False if the element is still attached to the DOM, true otherwise.</span>
+<span class="sd">        False if the element is still attached to the DOM, true otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_element_stale = WebDriverWait(driver, 10).until(EC.staleness_of(driver.find_element(By.CLASS_NAME, "foo")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_stale = WebDriverWait(driver, 10).until(EC.staleness_of(driver.find_element(By.CLASS_NAME, "foo")))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
@@ -920,21 +806,17 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">element_to_be_selected</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation for checking the selection is selected.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    element : WebElement</span>
-<span class="sd">        The WebElement to check.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        element: The WebElement to check.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True if the element is selected, False otherwise.</span>
+<span class="sd">        True if the element is selected, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_selected = WebDriverWait(driver, 10).until(EC.element_to_be_selected(driver.find_element(</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_selected = WebDriverWait(driver, 10).until(EC.element_to_be_selected(driver.find_element(</span>
 <span class="sd">            By.CLASS_NAME, "foo"))</span>
 <span class="sd">        )</span>
 <span class="sd">    """</span>
@@ -951,21 +833,17 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">element_located_to_be_selected</span><span class="p">(</span><span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation for the element to be located is selected.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True if the element is selected, False otherwise.</span>
+<span class="sd">        True if the element is selected, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_selected = WebDriverWait(driver, 10).until(EC.element_located_to_be_selected((By.CLASS_NAME, "foo")))</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_selected = WebDriverWait(driver, 10).until(EC.element_located_to_be_selected((By.CLASS_NAME, "foo")))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -980,24 +858,20 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">element_selection_state_to_be</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">,</span> <span class="n">is_selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation for checking if the given element is selected.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    element : WebElement</span>
-<span class="sd">        The WebElement to check.</span>
-<span class="sd">    is_selected : bool</span>
+<span class="sd">    Args:</span>
+<span class="sd">        element: The WebElement to check.</span>
+<span class="sd">        is_selected: The expected selection state.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True if the element's selection state is the same as is_selected</span>
+<span class="sd">        True if the element's selection state is the same as is_selected.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_selected = WebDriverWait(driver, 10).until(</span>
-<span class="sd">    ...     EC.element_selection_state_to_be(driver.find_element(By.CLASS_NAME, "foo"), True)</span>
-<span class="sd">    ... )</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_selected = WebDriverWait(driver, 10).until(</span>
+<span class="sd">            EC.element_selection_state_to_be(driver.find_element(By.CLASS_NAME, "foo"), True)</span>
+<span class="sd">        )</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
@@ -1012,25 +886,20 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">element_located_selection_state_to_be</span><span class="p">(</span>
     <span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">is_selected</span><span class="p">:</span> <span class="nb">bool</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation to locate an element and check if the selection state</span>
-<span class="sd">    specified is in that state.</span>
+<span class="w">    </span><span class="sd">"""Check that an element's selection state matches the expected state.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
-<span class="sd">    is_selected : bool</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
+<span class="sd">        is_selected: The expected selection state.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True if the element's selection state is the same as is_selected</span>
+<span class="sd">        True if the element's selection state is the same as is_selected.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_selected = WebDriverWait(driver, 10).until(EC.element_located_selection_state_to_be(</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_selected = WebDriverWait(driver, 10).until(EC.element_located_selection_state_to_be(</span>
 <span class="sd">            (By.CLASS_NAME, "foo"), True)</span>
 <span class="sd">        )</span>
 <span class="sd">    """</span>
@@ -1051,20 +920,16 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">number_of_windows_to_be</span><span class="p">(</span><span class="n">num_windows</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation for the number of windows to be a certain value.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    num_windows : int</span>
-<span class="sd">        The expected number of windows.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        num_windows: The expected number of windows.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the number of windows matches, False otherwise.</span>
+<span class="sd">        True when the number of windows matches, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_number_of_windows = WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_number_of_windows = WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -1076,25 +941,20 @@
 
 <div class="viewcode-block" id="new_window_is_opened">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.new_window_is_opened">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">new_window_is_opened</span><span class="p">(</span><span class="n">current_handles</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation that a new window will be opened and have the number of</span>
-<span class="sd">    windows handles increase.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">new_window_is_opened</span><span class="p">(</span><span class="n">current_handles</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Check that a new window has been opened (window handles count increased).</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    current_handles : List[str]</span>
-<span class="sd">        The current window handles.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        current_handles: The current window handles.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when a new window is opened, False otherwise.</span>
+<span class="sd">        True when a new window is opened, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_new_window_opened = WebDriverWait(driver, 10).until(EC.new_window_is_opened(driver.window_handles))</span>
+<span class="sd">        from selenium.webdriver.support.ui import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_new_window_opened = WebDriverWait(driver, 10).until(EC.new_window_is_opened(driver.window_handles))</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -1106,23 +966,19 @@
 
 <div class="viewcode-block" id="alert_is_present">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.alert_is_present">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">alert_is_present</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Alert</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking if an alert is currently present and</span>
-<span class="sd">    switching to it.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">alert_is_present</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriver</span><span class="p">],</span> <span class="n">Alert</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Check that an alert is present and switch to it.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    Alert : The Alert once it is located.</span>
+<span class="sd">        The Alert once it is located.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; alert = WebDriverWait(driver, 10).until(EC.alert_is_present())</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        alert = WebDriverWait(driver, 10).until(EC.alert_is_present())</span>
 
-<span class="sd">    Notes:</span>
-<span class="sd">    ------</span>
-<span class="sd">    If the alert is present it switches the given driver to it.</span>
+<span class="sd">    Note:</span>
+<span class="sd">        If the alert is present it switches the given driver to it.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">):</span>
@@ -1138,28 +994,22 @@
 <div class="viewcode-block" id="element_attribute_to_include">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_attribute_to_include">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">element_attribute_to_include</span><span class="p">(</span><span class="n">locator</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">attribute_</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">WebDriverOrWebElement</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""An expectation for checking if the given attribute is included in the</span>
-<span class="sd">    specified element.</span>
+<span class="w">    </span><span class="sd">"""Check if the given attribute is included in the specified element.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    locator : Tuple[str, str]</span>
-<span class="sd">        Used to find the element.</span>
-<span class="sd">    attribute_ : str</span>
-<span class="sd">        The attribute to check.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        locator: Used to find the element.</span>
+<span class="sd">        attribute_: The attribute to check.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True when the attribute is included, False otherwise.</span>
+<span class="sd">        True when the attribute is included, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; is_attribute_in_element = WebDriverWait(driver, 10).until(</span>
-<span class="sd">    ...     EC.element_attribute_to_include((By.CLASS_NAME, "foo"), "bar")</span>
-<span class="sd">    ... )</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        is_attribute_in_element = WebDriverWait(driver, 10).until(</span>
+<span class="sd">            EC.element_attribute_to_include((By.CLASS_NAME, "foo"), "bar")</span>
+<span class="sd">        )</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">WebDriverOrWebElement</span><span class="p">):</span>
@@ -1175,31 +1025,26 @@
 
 <div class="viewcode-block" id="any_of">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.any_of">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">any_of</span><span class="p">(</span><span class="o">*</span><span class="n">expected_conditions</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">T</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">any_of</span><span class="p">(</span><span class="o">*</span><span class="n">expected_conditions</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">|</span> <span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation that any of multiple expected conditions is true.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    expected_conditions : Callable[[D], T]</span>
-<span class="sd">        The list of expected conditions to check.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    T : The result of the first matching condition, or False if none do.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; element = WebDriverWait(driver, 10).until(</span>
-<span class="sd">    ... EC.any_of(EC.presence_of_element_located((By.NAME, "q"),</span>
-<span class="sd">    ... EC.visibility_of_element_located((By.NAME, "q"))))</span>
-
-<span class="sd">    Notes:</span>
-<span class="sd">    ------</span>
 <span class="sd">    Equivalent to a logical 'OR'. Returns results of the first matching</span>
 <span class="sd">    condition, or False if none do.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        expected_conditions: The list of expected conditions to check.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The result of the first matching condition, or False if none do.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        element = WebDriverWait(driver, 10).until(</span>
+<span class="sd">            EC.any_of(EC.presence_of_element_located((By.NAME, "q"),</span>
+<span class="sd">            EC.visibility_of_element_located((By.NAME, "q")))</span>
+<span class="sd">        )</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">any_of_condition</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">D</span><span class="p">):</span>
@@ -1219,33 +1064,28 @@
 <div class="viewcode-block" id="all_of">
 <a class="viewcode-back" href="../../../../selenium_webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.all_of">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">all_of</span><span class="p">(</span>
-    <span class="o">*</span><span class="n">expected_conditions</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]]:</span>
+    <span class="o">*</span><span class="n">expected_conditions</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="n">T</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">"""An expectation that all of multiple expected conditions is true.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    expected_conditions : Callable[[D], Union[T, Literal[False]]]</span>
-<span class="sd">        The list of expected conditions to check.</span>
+<span class="sd">    Equivalent to a logical 'AND'. When any ExpectedCondition is not met,</span>
+<span class="sd">    returns False. When all ExpectedConditions are met, returns a List with</span>
+<span class="sd">    each ExpectedCondition's return value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        expected_conditions: The list of expected conditions to check.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    List[T] : The results of all the matching conditions, or False if any do not.</span>
+<span class="sd">        The results of all the matching conditions, or False if any do not.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; elements = WebDriverWait(driver, 10).until(</span>
-<span class="sd">    ... EC.all_of(EC.presence_of_element_located((By.NAME, "q"),</span>
-<span class="sd">    ... EC.visibility_of_element_located((By.NAME, "q"))))</span>
-
-<span class="sd">    Notes:</span>
-<span class="sd">    ------</span>
-<span class="sd">    Equivalent to a logical 'AND'.</span>
-<span class="sd">    Returns: When any ExpectedCondition is not met: False.</span>
-<span class="sd">    When all ExpectedConditions are met: A List with each ExpectedCondition's return value.</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        elements = WebDriverWait(driver, 10).until(</span>
+<span class="sd">            EC.all_of(EC.presence_of_element_located((By.NAME, "q"),</span>
+<span class="sd">            EC.visibility_of_element_located((By.NAME, "q")))</span>
+<span class="sd">        )</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">all_of_condition</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">D</span><span class="p">):</span>
@@ -1269,27 +1109,22 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">none_of</span><span class="p">(</span><span class="o">*</span><span class="n">expected_conditions</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">D</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""An expectation that none of 1 or multiple expected conditions is true.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    expected_conditions : Callable[[D], Any]</span>
-<span class="sd">        The list of expected conditions to check.</span>
+<span class="sd">    Equivalent to a logical 'NOT-OR'.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        expected_conditions: The list of expected conditions to check.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    -------</span>
-<span class="sd">    boolean : True if none of the conditions are true, False otherwise.</span>
+<span class="sd">        True if none of the conditions are true, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.common.by import By</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support.ui import WebDriverWait</span>
-<span class="sd">    &gt;&gt;&gt; from selenium.webdriver.support import expected_conditions as EC</span>
-<span class="sd">    &gt;&gt;&gt; element = WebDriverWait(driver, 10).until(</span>
-<span class="sd">    ... EC.none_of(EC.presence_of_element_located((By.NAME, "q"),</span>
-<span class="sd">    ... EC.visibility_of_element_located((By.NAME, "q"))))</span>
-
-<span class="sd">    Notes:</span>
-<span class="sd">    ------</span>
-<span class="sd">    Equivalent to a logical 'NOT-OR'. Returns a Boolean</span>
+<span class="sd">        from selenium.webdriver.common.by import By</span>
+<span class="sd">        from selenium.webdriver.support.ui import WebDriverWait</span>
+<span class="sd">        from selenium.webdriver.support import expected_conditions as EC</span>
+<span class="sd">        element = WebDriverWait(driver, 10).until(</span>
+<span class="sd">            EC.none_of(EC.presence_of_element_located((By.NAME, "q"),</span>
+<span class="sd">            EC.visibility_of_element_located((By.NAME, "q")))</span>
+<span class="sd">        )</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">none_of_condition</span><span class="p">(</span><span class="n">driver</span><span class="p">:</span> <span class="n">D</span><span class="p">):</span>

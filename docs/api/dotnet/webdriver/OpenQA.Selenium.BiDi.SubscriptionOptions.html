@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_SubscriptionOptions" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions" class="text-break">
-Class SubscriptionOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L51"><i class="bi bi-code-slash"></i></a>
+Class SubscriptionOptions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L52"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -116,21 +116,21 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
   </dl>
 
 
-  <dl class="typelist derived">
-    <dt>Derived</dt>
-    <dd>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextsSubscriptionOptions.html">BrowsingContextsSubscriptionOptions</a></div>
-    </dd>
-  </dl>
 
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
     <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
@@ -140,12 +140,6 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </dd></dl>
 
@@ -158,11 +152,42 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
 </h2>
 
 
+  <a id="OpenQA_Selenium_BiDi_SubscriptionOptions_Contexts_" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.Contexts*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_SubscriptionOptions_Contexts" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.Contexts">
+  Contexts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L54"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;BrowsingContext&gt;? Contexts { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="OpenQA_Selenium_BiDi_SubscriptionOptions_Timeout_" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.Timeout*"></a>
 
   <h3 id="OpenQA_Selenium_BiDi_SubscriptionOptions_Timeout" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.Timeout">
   Timeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L58"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -189,11 +214,42 @@ Class SubscriptionOptions  <a class="header-action link-secondary" title="View s
 
 
 
+  <a id="OpenQA_Selenium_BiDi_SubscriptionOptions_UserContexts_" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.UserContexts*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_SubscriptionOptions_UserContexts" data-uid="OpenQA.Selenium.BiDi.SubscriptionOptions.UserContexts">
+  UserContexts
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerable&lt;UserContext&gt;? UserContexts { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Browser.UserContext.html">UserContext</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L51" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Subscription.cs/#L52" class="edit-link">Edit this page</a>
         </div>
 
 

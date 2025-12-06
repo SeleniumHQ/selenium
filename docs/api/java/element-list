@@ -25,8 +25,8 @@ org.openqa.selenium.devtools.idealized.target
 org.openqa.selenium.devtools.idealized.target.model
 org.openqa.selenium.devtools.noop
 org.openqa.selenium.docker
+org.openqa.selenium.docker.client
 org.openqa.selenium.docker.internal
-org.openqa.selenium.docker.v1_41
 org.openqa.selenium.edge
 org.openqa.selenium.events
 org.openqa.selenium.events.local

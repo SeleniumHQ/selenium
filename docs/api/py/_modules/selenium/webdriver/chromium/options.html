@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.chromium.options &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.chromium.options &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.chromium.options </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -211,7 +211,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinaryIO</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinaryIO</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.desired_capabilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">DesiredCapabilities</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgOptions</span>
@@ -228,16 +228,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_extension_files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_debugger_address</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debugger_address</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_enable_webextensions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            The location of the binary, otherwise an empty string.</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns the location of the binary, otherwise an empty string."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
 
     <span class="nd">@binary_location</span><span class="o">.</span><span class="n">setter</span>
@@ -252,17 +249,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            The address of the remote devtools instance.</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Returns the address of the remote devtools instance."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debugger_address</span>
 
     <span class="nd">@debugger_address</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Allows you to set the address of the remote devtools instance that</span>
-<span class="sd">        the ChromeDriver instance will try to connect to during an active wait.</span>
+<span class="w">        </span><span class="sd">"""Set the address of the remote devtools instance for active wait connection.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: Address of remote devtools instance if any (hostname[:port]).</span>
@@ -273,10 +266,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            A list of encoded extensions that will be loaded.</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns a list of encoded extensions that will be loaded."""</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_decode</span><span class="p">(</span><span class="n">file_data</span><span class="p">:</span> <span class="n">BinaryIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="c1"># Should not use base64.encodestring() which inserts newlines every</span>
@@ -294,11 +284,10 @@
 <div class="viewcode-block" id="ChromiumOptions.add_extension">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.add_extension">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Adds the path to the extension to a list that will be used to</span>
-<span class="sd">        extract it to the ChromeDriver.</span>
+<span class="w">        </span><span class="sd">"""Add the path to an extension to be extracted to ChromeDriver.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            extension: Path to the \\*.crx file.</span>
+<span class="sd">            extension: Path to the *.crx file.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">extension</span><span class="p">:</span>
             <span class="n">extension_to_add</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">extension</span><span class="p">))</span>
@@ -313,8 +302,7 @@
 <div class="viewcode-block" id="ChromiumOptions.add_encoded_extension">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.add_encoded_extension">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_encoded_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Adds Base64 encoded string with extension data to a list that will</span>
-<span class="sd">        be used to extract it to the ChromeDriver.</span>
+<span class="w">        </span><span class="sd">"""Add Base64-encoded string with extension data to be extracted to ChromeDriver.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            extension: Base64 encoded string with extension data.</span>
@@ -327,15 +315,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">experimental_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            A dictionary of experimental options for chromium.</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns a dictionary of experimental options for chromium."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span>
 
 <div class="viewcode-block" id="ChromiumOptions.add_experimental_option">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.add_experimental_option">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_experimental_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_experimental_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Adds an experimental option which is passed to chromium.</span>
 
 <span class="sd">        Args:</span>
@@ -347,11 +332,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">enable_webextensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            Whether webextension support is enabled for Chromium-based browsers.</span>
-<span class="sd">            True if webextension support is enabled, False otherwise.</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Return whether webextension support is enabled for Chromium-based browsers."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enable_webextensions</span>
 
     <span class="nd">@enable_webextensions</span><span class="o">.</span><span class="n">setter</span>

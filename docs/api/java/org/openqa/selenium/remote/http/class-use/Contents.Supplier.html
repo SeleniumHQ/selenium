@@ -88,6 +88,15 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="org.openqa.selenium.remote.http">
 <h2>Uses of <a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a> in <a href="../package-summary.html">org.openqa.selenium.remote.http</a></h2>
+<div class="caption"><span>Classes in <a href="../package-summary.html">org.openqa.selenium.remote.http</a> that implement <a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>class&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../BytesContentSupplier.html" class="type-name-link" title="class in org.openqa.selenium.remote.http">BytesContentSupplier</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
 <div class="caption"><span>Methods in <a href="../package-summary.html">org.openqa.selenium.remote.http</a> that return <a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -101,6 +110,13 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>static <a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Contents.</span><code><a href="../Contents.html#empty()" class="member-name-link">empty</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static <a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">Contents.</span><code><a href="../Contents.html#file(java.io.File)" class="member-name-link">file</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;file)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static <a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a></code></div>
+<div class="col-second even-row-color"><span class="type-name-label">Contents.</span><code><a href="../Contents.html#fromStream(java.io.InputStream,long)" class="member-name-link">fromStream</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/InputStream.html" title="class or interface in java.io" class="external-link">InputStream</a>&nbsp;stream,
+ long&nbsp;length)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static <a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">Contents.</span><code><a href="../Contents.html#string(java.lang.CharSequence,java.nio.charset.Charset)" class="member-name-link">string</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/CharSequence.html" title="class or interface in java.lang" class="external-link">CharSequence</a>&nbsp;value,
@@ -125,7 +141,11 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Contents.</span><code><a href="../Contents.html#string(org.openqa.selenium.remote.http.Contents.Supplier,java.nio.charset.Charset)" class="member-name-link">string</a><wbr>(<a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a>&nbsp;supplier,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use method <a href="../Contents.Supplier.html#contentAsString(java.nio.charset.Charset)"><code>contentAsString(Charset)</code></a> instead.</div>
+</div>
+</div>
 <div class="col-first odd-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Reader.html" title="class or interface in java.io" class="external-link">Reader</a></code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">Contents.</span><code><a href="../Contents.html#utf8Reader(org.openqa.selenium.remote.http.Contents.Supplier)" class="member-name-link">utf8Reader</a><wbr>(<a href="../Contents.Supplier.html" title="interface in org.openqa.selenium.remote.http">Contents.Supplier</a>&nbsp;supplier)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>

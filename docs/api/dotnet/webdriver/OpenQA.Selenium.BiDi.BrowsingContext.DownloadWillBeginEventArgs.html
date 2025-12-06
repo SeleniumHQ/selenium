@@ -101,7 +101,7 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record DownloadWillBeginEventArgs : BrowsingContextEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextEventArgs&gt;, IBaseNavigationInfo, IEquatable&lt;DownloadWillBeginEventArgs&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record DownloadWillBeginEventArgs : EventArgs, IEquatable&lt;EventArgs&gt;, IBaseNavigationInfo, IEquatable&lt;DownloadWillBeginEventArgs&gt;</code></pre>
   </div>
 
 
@@ -112,7 +112,6 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a></div>
       <div><span class="xref">DownloadWillBeginEventArgs</span></div>
     </dd>
   </dl>
@@ -121,7 +120,6 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a>&gt;</div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.IBaseNavigationInfo.html">IBaseNavigationInfo</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.html">DownloadWillBeginEventArgs</a>&gt;</div>
     </dd>
@@ -132,10 +130,10 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html#OpenQA_Selenium_BiDi_BrowsingContextEventArgs_Context">BrowsingContextEventArgs.Context</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -144,16 +142,13 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
     <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </dd></dl>
 
@@ -168,8 +163,8 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_System_String_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,System.String,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String)">
-  DownloadWillBeginEventArgs(BiDi, string, BrowsingContext, Navigation?, DateTimeOffset, string)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs__ctor_System_String_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_DateTimeOffset_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.#ctor(System.String,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.DateTimeOffset,System.String)">
+  DownloadWillBeginEventArgs(string, BrowsingContext, Navigation?, DateTimeOffset, string)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -177,13 +172,11 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DownloadWillBeginEventArgs(BiDi BiDi, string SuggestedFilename, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)</code></pre>
+    <pre><code class="lang-csharp hljs">public DownloadWillBeginEventArgs(string SuggestedFilename, BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
     <dt><code>SuggestedFilename</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
@@ -209,6 +202,37 @@ Class DownloadWillBeginEventArgs  <a class="header-action link-secondary" title=
 
   <h2 class="section" id="properties">Properties
 </h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_Context_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.Context*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.Context">
+  Context
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadWillBeginEventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BrowsingContext Context { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
 
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadWillBeginEventArgs_Navigation_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.Navigation*"></a>

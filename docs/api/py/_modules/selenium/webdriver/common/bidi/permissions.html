@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.permissions &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.permissions &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.permissions </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -209,7 +209,6 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
 
@@ -244,9 +243,7 @@
 <div class="viewcode-block" id="Permissions">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.permissions.html#selenium.webdriver.common.bidi.permissions.Permissions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Permissions</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    BiDi implementation of the permissions module.</span>
-<span class="sd">    """</span>
+<span class="w">    </span><span class="sd">"""BiDi implementation of the permissions module."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
@@ -255,23 +252,21 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.permissions.html#selenium.webdriver.common.bidi.permissions.Permissions.set_permission">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_permission</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">descriptor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PermissionDescriptor</span><span class="p">],</span>
+        <span class="n">descriptor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">PermissionDescriptor</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">user_context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sets a permission state for a given permission descriptor.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Args:</span>
 <span class="sd">            descriptor: The permission name (str) or PermissionDescriptor object.</span>
-<span class="sd">                       Examples: "geolocation", "camera", "microphone"</span>
+<span class="sd">              Examples: "geolocation", "camera", "microphone".</span>
 <span class="sd">            state: The permission state (granted, denied, prompt).</span>
 <span class="sd">            origin: The origin for which the permission is set.</span>
 <span class="sd">            user_context: The user context id (optional).</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">        ------</span>
 <span class="sd">            ValueError: If the permission state is invalid.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">PermissionState</span><span class="o">.</span><span class="n">GRANTED</span><span class="p">,</span> <span class="n">PermissionState</span><span class="o">.</span><span class="n">DENIED</span><span class="p">,</span> <span class="n">PermissionState</span><span class="o">.</span><span class="n">PROMPT</span><span class="p">]:</span>

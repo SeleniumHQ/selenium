@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.remote.webelement &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.remote.webelement &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.webelement </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -288,7 +288,7 @@ performed through this interface.</p>
 <p>All method calls will do a freshness check to ensure that the element
 reference is still valid.  This essentially determines whether the
 element is still attached to the DOM.  If this test fails, then an
-<code class="docutils literal notranslate"><span class="pre">StaleElementReferenceException</span></code> is thrown, and all future calls to this
+<cite>StaleElementReferenceException</cite> is thrown, and all future calls to this
 instance will fail.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.session_id">
@@ -297,119 +297,83 @@ instance will fail.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.tag_name">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.tag_name" title="Link to this definition">¶</a></dt>
-<dd><p>This element’s <code class="docutils literal notranslate"><span class="pre">tagName</span></code> property.</p>
-<section id="returns">
-<h2 id="returns">Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
-<p>str : The tag name of the element.</p>
-</section>
-<section id="example">
-<h2 id="example">Example:<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"foo"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
+<dd><p>This element’s <cite>tagName</cite> property.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The tag name of the element.</p>
+</dd>
+<dt>Example:</dt><dd><p>element = driver.find_element(By.ID, “foo”)</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.text">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.text" title="Link to this definition">¶</a></dt>
 <dd><p>The text of the element.</p>
-<section id="id1">
-<h2 id="id1">Returns:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<p>str : The text of the element.</p>
-</section>
-<section id="id2">
-<h2 id="id2">Example:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"foo"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The text of the element.</p>
+</dd>
+<dt>Example:</dt><dd><p>element = driver.find_element(By.ID, “foo”)
+print(element.text)</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.click">
 <span class="sig-name descname"><span class="pre">click</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.click"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.click" title="Link to this definition">¶</a></dt>
 <dd><p>Clicks the element.</p>
-<section id="id3">
-<h2 id="id3">Example:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"foo"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">element</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
+<dl class="simple">
+<dt>Example:</dt><dd><p>element = driver.find_element(By.ID, “foo”)
+element.click()</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.submit">
 <span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.submit" title="Link to this definition">¶</a></dt>
 <dd><p>Submits a form.</p>
-<section id="id4">
-<h2 id="id4">Example:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">form</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="s2">"login"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">form</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
+<dl class="simple">
+<dt>Example:</dt><dd><p>form = driver.find_element(By.NAME, “login”)
+form.submit()</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.clear" title="Link to this definition">¶</a></dt>
 <dd><p>Clears the text if it’s a text entry element.</p>
-<section id="id5">
-<h2 id="id5">Example:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">text_field</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="s2">"username"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">text_field</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
+<dl class="simple">
+<dt>Example:</dt><dd><p>text_field = driver.find_element(By.NAME, “username”)
+text_field.clear()</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.get_property">
 <span class="sig-name descname"><span class="pre">get_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.get_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.get_property" title="Link to this definition">¶</a></dt>
 <dd><p>Gets the given property of the element.</p>
-<section id="parameters">
-<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
 <dl class="simple">
-<dt>name<span class="classifier">str</span></dt><dd><ul class="simple">
-<li><p>Name of the property to retrieve.</p></li>
-</ul>
+<dt>Args:</dt><dd><p>name: Name of the property to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The value of the property.</p>
+</dd>
+<dt>Example:</dt><dd><p>text_length = target_element.get_property(“text_length”)</p>
 </dd>
 </dl>
-</section>
-<section id="id6">
-<h2 id="id6">Returns:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
-<p>str | bool | WebElement | dict : The value of the property.</p>
-</section>
-<section id="id7">
-<h2 id="id7">Example:<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">text_length</span> <span class="o">=</span> <span class="n">target_element</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s2">"text_length"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.get_dom_attribute">
 <span class="sig-name descname"><span class="pre">get_dom_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.get_dom_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.get_dom_attribute" title="Link to this definition">¶</a></dt>
-<dd><p>Gets the given attribute of the element. Unlike
-<code class="xref py py-func docutils literal notranslate"><span class="pre">get_attribute()</span></code>, this
-method only returns attributes declared in the element’s HTML markup.</p>
-<section id="id8">
-<h2 id="id8">Parameters:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<dd><p>Get the HTML attribute value (not reflected properties) of the element.</p>
+<p>Returns only attributes declared in the element’s HTML markup, unlike
+<cite>selenium.webdriver.remote.BaseWebElement.get_attribute</cite>.</p>
 <dl class="simple">
-<dt>name<span class="classifier">str</span></dt><dd><ul class="simple">
-<li><p>Name of the attribute to retrieve.</p></li>
-</ul>
+<dt>Args:</dt><dd><p>name: Name of the attribute to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The value of the attribute.</p>
+</dd>
+<dt>Example:</dt><dd><p>text_length = target_element.get_dom_attribute(“class”)</p>
 </dd>
 </dl>
-</section>
-<section id="id9">
-<h2 id="id9">Returns:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
-<p>str : The value of the attribute.</p>
-</section>
-<section id="id10">
-<h2 id="id10">Example:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">text_length</span> <span class="o">=</span> <span class="n">target_element</span><span class="o">.</span><span class="n">get_dom_attribute</span><span class="p">(</span><span class="s2">"class"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.get_attribute">
@@ -426,397 +390,285 @@ is returned.</p>
 <p>To obtain the exact value of the attribute or property,
 use <code class="xref py py-func docutils literal notranslate"><span class="pre">get_dom_attribute()</span></code> or
 <code class="xref py py-func docutils literal notranslate"><span class="pre">get_property()</span></code> methods respectively.</p>
-<section id="id11">
-<h2 id="id11">Parameters:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
 <dl class="simple">
-<dt>name<span class="classifier">str</span></dt><dd><ul class="simple">
-<li><p>Name of the attribute/property to retrieve.</p></li>
-</ul>
+<dt>Args:</dt><dd><p>name: Name of the attribute/property to retrieve.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The value of the attribute/property.</p>
+</dd>
+<dt>Example:</dt><dd><p># Check if the “active” CSS class is applied to an element.
+is_active = “active” in target_element.get_attribute(“class”)</p>
 </dd>
 </dl>
-</section>
-<section id="id12">
-<h2 id="id12">Returns:<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
-<p>str | bool | None : The value of the attribute/property.</p>
-</section>
-<section id="id13">
-<h2 id="id13">Example:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check if the "active" CSS class is applied to an element.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">is_active</span> <span class="o">=</span> <span class="s2">"active"</span> <span class="ow">in</span> <span class="n">target_element</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">"class"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.is_selected">
 <span class="sig-name descname"><span class="pre">is_selected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.is_selected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.is_selected" title="Link to this definition">¶</a></dt>
 <dd><p>Returns whether the element is selected.</p>
-<section id="id14">
-<h2 id="id14">Example:<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_selected</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-<section id="notes">
-<h2 id="notes">Notes:<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p>This method is generally used on checkboxes, options in a select</p></li>
-</ul>
-<p>and radio buttons.</p>
-</div></blockquote>
-</section>
+<p>This method is generally used on checkboxes, options in a select
+and radio buttons.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>is_selected = element.is_selected()</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.is_enabled">
 <span class="sig-name descname"><span class="pre">is_enabled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.is_enabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.is_enabled" title="Link to this definition">¶</a></dt>
 <dd><p>Returns whether the element is enabled.</p>
-<section id="id15">
-<h2 id="id15">Example:<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_enabled</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
+<dl class="simple">
+<dt>Example:</dt><dd><p>is_enabled = element.is_enabled()</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.send_keys">
 <span class="sig-name descname"><span class="pre">send_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.send_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.send_keys" title="Link to this definition">¶</a></dt>
 <dd><p>Simulates typing into the element.</p>
-<section id="id16">
-<h2 id="id16">Parameters:<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<p>Use this to send simple key events or to fill out form fields.
+This can also be used to set file inputs.</p>
 <dl>
-<dt>value<span class="classifier">str</span></dt><dd><ul class="simple">
-<li><p>A string for typing, or setting form fields.  For setting</p></li>
-</ul>
-<p>file inputs, this could be a local file path.</p>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>value: A string for typing, or setting form fields. For setting</dt><dd><p>file inputs, this could be a local file path.</p>
 </dd>
 </dl>
-</section>
-<section id="id17">
-<h2 id="id17">Notes:<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p>Use this to send simple key events or to fill out form fields</p></li>
-<li><p>This can also be used to set file inputs.</p></li>
-</ul>
-</div></blockquote>
-</section>
-<section id="examples">
-<h2 id="examples">Examples:<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
-<p>To send a simple key event::
-&gt;&gt;&gt; form_textfield = driver.find_element(By.NAME, “username”)
-&gt;&gt;&gt; form_textfield.send_keys(“admin”)</p>
-<p>or to set a file input field::
-&gt;&gt;&gt; file_input = driver.find_element(By.NAME, “profilePic”)
-&gt;&gt;&gt; file_input.send_keys(“path/to/profilepic.gif”)
-&gt;&gt;&gt; # Generally it’s better to wrap the file path in one of the methods
-&gt;&gt;&gt; # in os.path to return the actual path to support cross OS testing.
-&gt;&gt;&gt; # file_input.send_keys(os.path.abspath(“path/to/profilepic.gif”))
-&gt;&gt;&gt; # When using Cygwin, the path need to be provided in Windows format.
-&gt;&gt;&gt; # file_input.send_keys(f”C:/cygwin{os.path.abspath(‘path/to/profilepic.gif’).replace(‘/’, ‘')}”)</p>
-</section>
+</dd>
+<dt>Examples:</dt><dd><p>To send a simple key event:</p>
+<p>form_textfield = driver.find_element(By.NAME, “username”)
+form_textfield.send_keys(“admin”)</p>
+<p>or to set a file input field:</p>
+<p>file_input = driver.find_element(By.NAME, “profilePic”)
+file_input.send_keys(“path/to/profilepic.gif”)
+# Generally it’s better to wrap the file path in one of the methods
+# in os.path to return the actual path to support cross OS testing.
+# file_input.send_keys(os.path.abspath(“path/to/profilepic.gif”))</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.shadow_root">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shadow_root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="selenium.webdriver.remote.shadowroot.html#selenium.webdriver.remote.shadowroot.ShadowRoot" title="selenium.webdriver.remote.shadowroot.ShadowRoot"><span class="pre">ShadowRoot</span></a></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.shadow_root" title="Link to this definition">¶</a></dt>
-<dd><p>Returns a shadow root of the element if there is one or an error.
-Only works from Chromium 96, Firefox 96, and Safari 16.4 onwards.</p>
-<section id="id18">
-<h2 id="id18">Returns:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
-<p>ShadowRoot : object</p>
-</section>
-<section id="raises">
-<h2 id="raises">Raises:<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h2>
-<p>NoSuchShadowRoot - if no shadow root was attached to element</p>
-</section>
-<section id="id19">
-<h2 id="id19">Example:<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">shadow_root</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">shadow_root</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">except</span> <span class="n">NoSuchShadowRoot</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"No shadow root attached to element"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get the shadow root attached to this element if present (Chromium, Firefox, Safari).</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The ShadowRoot object.</p>
+</dd>
+<dt>Raises:</dt><dd><p>NoSuchShadowRoot: If no shadow root was attached to element.</p>
+</dd>
+<dt>Example:</dt><dd><dl class="simple">
+<dt>try:</dt><dd><p>shadow_root = element.shadow_root</p>
+</dd>
+<dt>except NoSuchShadowRoot:</dt><dd><p>print(“No shadow root attached to element”)</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.is_displayed">
 <span class="sig-name descname"><span class="pre">is_displayed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.is_displayed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.is_displayed" title="Link to this definition">¶</a></dt>
 <dd><p>Whether the element is visible to a user.</p>
-<section id="id20">
-<h2 id="id20">Example:<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_displayed</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
+<dl class="simple">
+<dt>Example:</dt><dd><p>is_displayed = element.is_displayed()</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.location_once_scrolled_into_view">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">location_once_scrolled_into_view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.location_once_scrolled_into_view" title="Link to this definition">¶</a></dt>
-<dd><p>THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover where
-on the screen an element is so that we can click it. This method should
-cause the element to be scrolled into view.</p>
-<section id="id21">
-<h2 id="id21">Returns:<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
+<dd><p>Get the element’s location on screen after scrolling it into view.</p>
+<p>This may change without warning and scrolls the element into view
+before calculating coordinates for clicking purposes.</p>
 <dl class="simple">
-<dt>dict: the top lefthand corner location on the screen, or zero</dt><dd><p>coordinates if the element is not visible.</p>
+<dt>Returns:</dt><dd><p>The top lefthand corner location on the screen, or zero
+coordinates if the element is not visible.</p>
+</dd>
+<dt>Example:</dt><dd><p>loc = element.location_once_scrolled_into_view</p>
 </dd>
 </dl>
-</section>
-<section id="id22">
-<h2 id="id22">Example:<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">location_once_scrolled_into_view</span>
-</pre></div>
-</div>
-</section>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.size">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.size" title="Link to this definition">¶</a></dt>
-<dd><p>The size of the element.</p>
-<section id="id23">
-<h2 id="id23">Returns:<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
-<p>dict: The width and height of the element.</p>
-</section>
-<section id="id24">
-<h2 id="id24">Example:<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">size</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">size</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get the size of the element.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The width and height of the element.</p>
+</dd>
+<dt>Example:</dt><dd><p>size = element.size</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.value_of_css_property">
 <span class="sig-name descname"><span class="pre">value_of_css_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">property_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.value_of_css_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.value_of_css_property" title="Link to this definition">¶</a></dt>
-<dd><p>The value of a CSS property.</p>
-<section id="id25">
-<h2 id="id25">Parameters:<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h2>
+<dd><p>Get the value of a CSS property.</p>
 <dl class="simple">
-<dt>property_name<span class="classifier">str</span></dt><dd><ul class="simple">
-<li><p>The name of the CSS property to get the value of.</p></li>
-</ul>
+<dt>Args:</dt><dd><p>property_name: The name of the CSS property to get the value of.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The value of the CSS property.</p>
+</dd>
+<dt>Example:</dt><dd><p>value = element.value_of_css_property(“color”)</p>
 </dd>
 </dl>
-</section>
-<section id="id26">
-<h2 id="id26">Returns:<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h2>
-<p>str : The value of the CSS property.</p>
-</section>
-<section id="id27">
-<h2 id="id27">Example:<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">value</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">value_of_css_property</span><span class="p">(</span><span class="s2">"color"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.location">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.location" title="Link to this definition">¶</a></dt>
-<dd><p>The location of the element in the renderable canvas.</p>
-<section id="id28">
-<h2 id="id28">Returns:<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h2>
-<p>dict: The x and y coordinates of the element.</p>
-</section>
-<section id="id29">
-<h2 id="id29">Example:<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">location</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get the location of the element in the renderable canvas.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The x and y coordinates of the element.</p>
+</dd>
+<dt>Example:</dt><dd><p>loc = element.location</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.rect">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.rect" title="Link to this definition">¶</a></dt>
-<dd><p>A dictionary with the size and location of the element.</p>
-<section id="id30">
-<h2 id="id30">Returns:<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h2>
-<p>dict: The size and location of the element.</p>
-</section>
-<section id="id31">
-<h2 id="id31">Example:<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rect</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">rect</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get the size and location of the element.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>A dictionary with size and location of the element.</p>
+</dd>
+<dt>Example:</dt><dd><p>rect = element.rect</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.aria_role">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aria_role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.aria_role" title="Link to this definition">¶</a></dt>
-<dd><p>Returns the ARIA role of the current web element.</p>
-<section id="id32">
-<h2 id="id32">Returns:<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h2>
-<p>str : The ARIA role of the element.</p>
-</section>
-<section id="id33">
-<h2 id="id33">Example:<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">role</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">aria_role</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get the ARIA role of the current web element.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The ARIA role of the element.</p>
+</dd>
+<dt>Example:</dt><dd><p>role = element.aria_role</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.accessible_name">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accessible_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.accessible_name" title="Link to this definition">¶</a></dt>
-<dd><p>Returns the ARIA Level of the current webelement.</p>
-<section id="id34">
-<h2 id="id34">Returns:<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h2>
-<p>str : The ARIA Level of the element.</p>
-</section>
-<section id="id35">
-<h2 id="id35">Example:<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">accessible_name</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get the ARIA Level of the current webelement.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The ARIA Level of the element.</p>
+</dd>
+<dt>Example:</dt><dd><p>name = element.accessible_name</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.screenshot_as_base64">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">screenshot_as_base64</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.screenshot_as_base64" title="Link to this definition">¶</a></dt>
-<dd><p>Gets the screenshot of the current element as a base64 encoded
-string.</p>
-<section id="id36">
-<h2 id="id36">Returns:<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h2>
-<p>str : The screenshot of the element as a base64 encoded string.</p>
-</section>
-<section id="id37">
-<h2 id="id37">Example:<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">img_b64</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">screenshot_as_base64</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get a base64-encoded screenshot of the current element.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The screenshot of the element as a base64 encoded string.</p>
+</dd>
+<dt>Example:</dt><dd><p>img_b64 = element.screenshot_as_base64</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.screenshot_as_png">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">screenshot_as_png</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bytes</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.screenshot_as_png" title="Link to this definition">¶</a></dt>
-<dd><p>Gets the screenshot of the current element as a binary data.</p>
-<section id="id38">
-<h2 id="id38">Returns:<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h2>
-<p>bytes : The screenshot of the element as binary data.</p>
-</section>
-<section id="id39">
-<h2 id="id39">Example:<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">element_png</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">screenshot_as_png</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get the screenshot of the current element as a binary data.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>The screenshot of the element as binary data.</p>
+</dd>
+<dt>Example:</dt><dd><p>element_png = element.screenshot_as_png</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.screenshot">
 <span class="sig-name descname"><span class="pre">screenshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.screenshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.screenshot" title="Link to this definition">¶</a></dt>
-<dd><p>Saves a screenshot of the current element to a PNG image file.
-Returns False if there is any IOError, else returns True. Use full
-paths in your filename.</p>
-<section id="id40">
-<h2 id="id40">Returns:<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h2>
-<p>bool : True if the screenshot was saved successfully, False otherwise.</p>
-</section>
-<section id="id41">
-<h2 id="id41">Parameters:<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h2>
+<dd><p>Save a PNG screenshot of the current element to a file.</p>
+<p>Use full paths in your filename.</p>
 <dl class="simple">
-<dt>filename<span class="classifier">str</span></dt><dd><p>The full path you wish to save your screenshot to. This
-should end with a <cite>.png</cite> extension.</p>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>filename: The full path you wish to save your screenshot to. This</dt><dd><p>should end with a <cite>.png</cite> extension.</p>
 </dd>
 </dl>
-</section>
-<section id="element">
-<h2 id="element">Element:<a class="headerlink" href="#element" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">element</span><span class="o">.</span><span class="n">screenshot</span><span class="p">(</span><span class="s2">"/Screenshots/foo.png"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
+</dd>
+<dt>Returns:</dt><dd><p>True if the screenshot was saved successfully, False otherwise.</p>
+</dd>
+<dt>Example:</dt><dd><p>element.screenshot(“/Screenshots/foo.png”)</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.parent">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.parent" title="Link to this definition">¶</a></dt>
-<dd><p>Internal reference to the WebDriver instance this element was found
-from.</p>
-<section id="id42">
-<h2 id="id42">Example:<a class="headerlink" href="#id42" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"foo"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">parent_element</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">parent</span>
-</pre></div>
-</div>
-</section>
+<dd><p>Get the WebDriver instance this element was found from.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>element = driver.find_element(By.ID, “foo”)
+parent_element = element.parent</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.id">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.id" title="Link to this definition">¶</a></dt>
-<dd><p>Internal ID used by selenium.</p>
+<dd><p>Get the ID used by selenium.</p>
 <p>This is mainly for internal use. Simple use cases such as checking if 2
 webelements refer to the same element, can be done using <code class="docutils literal notranslate"><span class="pre">==</span></code>:</p>
-<section id="id43">
-<h2 id="id43">Example:<a class="headerlink" href="#id43" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">element1</span> <span class="o">==</span> <span class="n">element2</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"These 2 are equal"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
+<dl class="simple">
+<dt>Example:</dt><dd><dl class="simple">
+<dt>if element1 == element2:</dt><dd><p>print(“These 2 are equal”)</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.find_element">
 <span class="sig-name descname"><span class="pre">find_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_element" title="Link to this definition">¶</a></dt>
 <dd><p>Find an element given a By strategy and locator.</p>
-<section id="id44">
-<h2 id="id44">Parameters:<a class="headerlink" href="#id44" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>by<span class="classifier">selenium.webdriver.common.by.By</span></dt><dd><p>The locating strategy to use. Default is <cite>By.ID</cite>. Supported values include:
-- By.ID: Locate by element ID.
-- By.NAME: Locate by the <cite>name</cite> attribute.
-- By.XPATH: Locate by an XPath expression.
-- By.CSS_SELECTOR: Locate by a CSS selector.
-- By.CLASS_NAME: Locate by the <cite>class</cite> attribute.
-- By.TAG_NAME: Locate by the tag name (e.g., “input”, “button”).
-- By.LINK_TEXT: Locate a link element by its exact text.
-- By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.
-- RelativeBy: Locate elements relative to a specified root element.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>by: The locating strategy to use. Default is <cite>By.ID</cite>. Supported values include:</dt><dd><ul class="simple">
+<li><p>By.ID: Locate by element ID.</p></li>
+<li><p>By.NAME: Locate by the <cite>name</cite> attribute.</p></li>
+<li><p>By.XPATH: Locate by an XPath expression.</p></li>
+<li><p>By.CSS_SELECTOR: Locate by a CSS selector.</p></li>
+<li><p>By.CLASS_NAME: Locate by the <cite>class</cite> attribute.</p></li>
+<li><p>By.TAG_NAME: Locate by the tag name (e.g., “input”, “button”).</p></li>
+<li><p>By.LINK_TEXT: Locate a link element by its exact text.</p></li>
+<li><p>By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.</p></li>
+<li><p>RelativeBy: Locate elements relative to a specified root element.</p></li>
+</ul>
 </dd>
 </dl>
-</section>
-<section id="id45">
-<h2 id="id45">Example:<a class="headerlink" href="#id45" title="Link to this heading">¶</a></h2>
-<p>element = driver.find_element(By.ID, ‘foo’)</p>
-</section>
-<section id="id46">
-<h2 id="id46">Returns:<a class="headerlink" href="#id46" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>WebElement</dt><dd><p>The first matching <cite>WebElement</cite> found on the page.</p>
+<p>value: The locator value to use with the specified <cite>by</cite> strategy.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The first matching <cite>WebElement</cite> found on the page.</p>
+</dd>
+<dt>Example:</dt><dd><p>element = driver.find_element(By.ID, “foo”)</p>
 </dd>
 </dl>
-</section>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.remote.webelement.WebElement.find_elements">
 <span class="sig-name descname"><span class="pre">find_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.find_elements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.find_elements" title="Link to this definition">¶</a></dt>
 <dd><p>Find elements given a By strategy and locator.</p>
-<section id="id47">
-<h2 id="id47">Parameters:<a class="headerlink" href="#id47" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>by<span class="classifier">selenium.webdriver.common.by.By</span></dt><dd><p>The locating strategy to use. Default is <cite>By.ID</cite>. Supported values include:
-- By.ID: Locate by element ID.
-- By.NAME: Locate by the <cite>name</cite> attribute.
-- By.XPATH: Locate by an XPath expression.
-- By.CSS_SELECTOR: Locate by a CSS selector.
-- By.CLASS_NAME: Locate by the <cite>class</cite> attribute.
-- By.TAG_NAME: Locate by the tag name (e.g., “input”, “button”).
-- By.LINK_TEXT: Locate a link element by its exact text.
-- By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.
-- RelativeBy: Locate elements relative to a specified root element.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>by: The locating strategy to use. Default is <cite>By.ID</cite>. Supported values include:</dt><dd><ul class="simple">
+<li><p>By.ID: Locate by element ID.</p></li>
+<li><p>By.NAME: Locate by the <cite>name</cite> attribute.</p></li>
+<li><p>By.XPATH: Locate by an XPath expression.</p></li>
+<li><p>By.CSS_SELECTOR: Locate by a CSS selector.</p></li>
+<li><p>By.CLASS_NAME: Locate by the <cite>class</cite> attribute.</p></li>
+<li><p>By.TAG_NAME: Locate by the tag name (e.g., “input”, “button”).</p></li>
+<li><p>By.LINK_TEXT: Locate a link element by its exact text.</p></li>
+<li><p>By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.</p></li>
+<li><p>RelativeBy: Locate elements relative to a specified root element.</p></li>
+</ul>
 </dd>
 </dl>
-</section>
-<section id="id48">
-<h2 id="id48">Example:<a class="headerlink" href="#id48" title="Link to this heading">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">"foo"</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="id49">
-<h2 id="id49">Returns:<a class="headerlink" href="#id49" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>List[WebElement]</dt><dd><p>list of <cite>WebElements</cite> matching locator strategy found on the page.</p>
+<p>value: The locator value to use with the specified <cite>by</cite> strategy.</p>
+</dd>
+<dt>Returns:</dt><dd><p>List of <cite>WebElements</cite> matching locator strategy found on the page.</p>
+</dd>
+<dt>Example:</dt><dd><p>element = driver.find_elements(By.ID, “foo”)</p>
 </dd>
 </dl>
-</section>
 </dd></dl>
 </dd></dl>
 </section>

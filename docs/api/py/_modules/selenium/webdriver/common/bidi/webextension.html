@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.webextension &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.webextension &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.webextension </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -209,7 +209,6 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.common.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
@@ -218,9 +217,7 @@
 <div class="viewcode-block" id="WebExtension">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.webextension.html#selenium.webdriver.common.bidi.webextension.WebExtension">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WebExtension</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    BiDi implementation of the webExtension module.</span>
-<span class="sd">    """</span>
+<span class="w">    </span><span class="sd">"""BiDi implementation of the webExtension module."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
@@ -232,15 +229,13 @@
 
 <span class="sd">        You must provide exactly one of the parameters.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">            path: Path to an extension directory</span>
-<span class="sd">            archive_path: Path to an extension archive file</span>
-<span class="sd">            base64_value: Base64 encoded string of the extension archive</span>
+<span class="sd">        Args:</span>
+<span class="sd">            path: Path to an extension directory.</span>
+<span class="sd">            archive_path: Path to an extension archive file.</span>
+<span class="sd">            base64_value: Base64 encoded string of the extension archive.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            Dict: A dictionary containing the extension ID.</span>
+<span class="sd">            A dictionary containing the extension ID.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">archive_path</span><span class="p">,</span> <span class="n">base64_value</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Exactly one of path, archive_path, or base64_value must be provided"</span><span class="p">)</span>
@@ -268,13 +263,12 @@
 
 <div class="viewcode-block" id="WebExtension.uninstall">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.webextension.html#selenium.webdriver.common.bidi.webextension.WebExtension.uninstall">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">uninstall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension_id_or_result</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">uninstall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension_id_or_result</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Uninstalls a web extension from the remote end.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Args:</span>
 <span class="sd">            extension_id_or_result: Either the extension ID as a string or the result dictionary</span>
-<span class="sd">                                   from a previous install() call containing the extension ID.</span>
+<span class="sd">              from a previous install() call containing the extension ID.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extension_id_or_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">extension_id</span> <span class="o">=</span> <span class="n">extension_id_or_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"extension"</span><span class="p">)</span>

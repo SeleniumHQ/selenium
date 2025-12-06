@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.ie.options &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.ie.options &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.ie.options </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -308,258 +308,190 @@
 
     <span class="c1"># Creating descriptor objects for each of the above IE options</span>
     <span class="n">browser_attach_timeout</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">BROWSER_ATTACH_TIMEOUT</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `browser_attach_timeout`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `browser_attach_timeout`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.browser_attach_timeout`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.browser_attach_timeout` = `value`</span>
+<span class="sd">        - Get: `self.browser_attach_timeout`</span>
+<span class="sd">        - Set: `self.browser_attach_timeout = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `int` (Timeout) in milliseconds</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: int - Timeout in milliseconds.</span>
 <span class="sd">    """</span>
 
     <span class="n">element_scroll_behavior</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ELEMENT_SCROLL_BEHAVIOR</span><span class="p">,</span> <span class="n">Enum</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `element_scroll_behavior`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `element_scroll_behavior`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.element_scroll_behavior`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.element_scroll_behavior` = `value`</span>
+<span class="sd">        - Get: `self.element_scroll_behavior`</span>
+<span class="sd">        - Set: `self.element_scroll_behavior = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `int` either 0 - Top, 1 - Bottom</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: int - Either 0 (Top) or 1 (Bottom).</span>
 <span class="sd">    """</span>
 
     <span class="n">ensure_clean_session</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ENSURE_CLEAN_SESSION</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `ensure_clean_session`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `ensure_clean_session`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.ensure_clean_session`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.ensure_clean_session` = `value`</span>
+<span class="sd">        - Get: `self.ensure_clean_session`</span>
+<span class="sd">        - Set: `self.ensure_clean_session = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">file_upload_dialog_timeout</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FILE_UPLOAD_DIALOG_TIMEOUT</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `file_upload_dialog_timeout`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `file_upload_dialog_timeout`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.file_upload_dialog_timeout`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.file_upload_dialog_timeout` = `value`</span>
+<span class="sd">        - Get: `self.file_upload_dialog_timeout`</span>
+<span class="sd">        - Set: `self.file_upload_dialog_timeout = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `int` (Timeout) in milliseconds</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: int - Timeout in milliseconds.</span>
 <span class="sd">    """</span>
 
     <span class="n">force_create_process_api</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FORCE_CREATE_PROCESS_API</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `force_create_process_api`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `force_create_process_api`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.force_create_process_api`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.force_create_process_api` = `value`</span>
+<span class="sd">        - Get: `self.force_create_process_api`</span>
+<span class="sd">        - Set: `self.force_create_process_api = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">force_shell_windows_api</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FORCE_SHELL_WINDOWS_API</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `force_shell_windows_api`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `force_shell_windows_api`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.force_shell_windows_api`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.force_shell_windows_api` = `value`</span>
+<span class="sd">        - Get: `self.force_shell_windows_api`</span>
+<span class="sd">        - Set: `self.force_shell_windows_api = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">full_page_screenshot</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">FULL_PAGE_SCREENSHOT</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `full_page_screenshot`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `full_page_screenshot`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.full_page_screenshot`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.full_page_screenshot` = `value`</span>
+<span class="sd">        - Get: `self.full_page_screenshot`</span>
+<span class="sd">        - Set: `self.full_page_screenshot = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">ignore_protected_mode_settings</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">IGNORE_PROTECTED_MODE_SETTINGS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `ignore_protected_mode_settings`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `ignore_protected_mode_settings`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.ignore_protected_mode_settings`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.ignore_protected_mode_settings` = `value`</span>
+<span class="sd">        - Get: `self.ignore_protected_mode_settings`</span>
+<span class="sd">        - Set: `self.ignore_protected_mode_settings = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">ignore_zoom_level</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">IGNORE_ZOOM_LEVEL</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `ignore_zoom_level`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `ignore_zoom_level`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.ignore_zoom_level`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.ignore_zoom_level` = `value`</span>
+<span class="sd">        - Get: `self.ignore_zoom_level`</span>
+<span class="sd">        - Set: `self.ignore_zoom_level = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">initial_browser_url</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">INITIAL_BROWSER_URL</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `initial_browser_url`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `initial_browser_url`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.initial_browser_url`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.initial_browser_url` = `value`</span>
+<span class="sd">        - Get: `self.initial_browser_url`</span>
+<span class="sd">        - Set: `self.initial_browser_url = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `str`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: str</span>
 <span class="sd">    """</span>
 
     <span class="n">native_events</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">NATIVE_EVENTS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `native_events`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `native_events`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.native_events`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.native_events` = `value`</span>
+<span class="sd">        - Get: `self.native_events`</span>
+<span class="sd">        - Set: `self.native_events = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">persistent_hover</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">PERSISTENT_HOVER</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `persistent_hover`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `persistent_hover`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.persistent_hover`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.persistent_hover` = `value`</span>
+<span class="sd">        - Get: `self.persistent_hover`</span>
+<span class="sd">        - Set: `self.persistent_hover = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">require_window_focus</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">REQUIRE_WINDOW_FOCUS</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `require_window_focus`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `require_window_focus`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.require_window_focus`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.require_window_focus` = `value`</span>
+<span class="sd">        - Get: `self.require_window_focus`</span>
+<span class="sd">        - Set: `self.require_window_focus = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">use_per_process_proxy</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">USE_PER_PROCESS_PROXY</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `use_per_process_proxy`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `use_per_process_proxy`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.use_per_process_proxy`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.use_per_process_proxy` = `value`</span>
+<span class="sd">        - Get: `self.use_per_process_proxy`</span>
+<span class="sd">        - Set: `self.use_per_process_proxy = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">use_legacy_file_upload_dialog_handling</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `use_legacy_file_upload_dialog_handling`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `use_legacy_file_upload_dialog_handling`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.use_legacy_file_upload_dialog_handling`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.use_legacy_file_upload_dialog_handling` = `value`</span>
+<span class="sd">        - Get: `self.use_legacy_file_upload_dialog_handling`</span>
+<span class="sd">        - Set: `self.use_legacy_file_upload_dialog_handling = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">attach_to_edge_chrome</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">ATTACH_TO_EDGE_CHROME</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `attach_to_edge_chrome`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `attach_to_edge_chrome`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.attach_to_edge_chrome`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.attach_to_edge_chrome` = `value`</span>
+<span class="sd">        - Get: `self.attach_to_edge_chrome`</span>
+<span class="sd">        - Set: `self.attach_to_edge_chrome = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool</span>
 <span class="sd">    """</span>
 
     <span class="n">edge_executable_path</span> <span class="o">=</span> <span class="n">_IeOptionsDescriptor</span><span class="p">(</span><span class="n">EDGE_EXECUTABLE_PATH</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""Gets and Sets `edge_executable_path`</span>
+<span class="w">    </span><span class="sd">"""Gets and Sets `edge_executable_path`.</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.edge_executable_path`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.edge_executable_path` = `value`</span>
+<span class="sd">        - Get: `self.edge_executable_path`</span>
+<span class="sd">        - Set: `self.edge_executable_path = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `str`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: str</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -569,18 +501,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            A dictionary of browser options.</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns a dictionary of browser options."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">additional_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            The additional options.</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns the additional options."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional</span>
 
 <div class="viewcode-block" id="Options.add_additional_option">

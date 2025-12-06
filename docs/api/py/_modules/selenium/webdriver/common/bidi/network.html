@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.network &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.network &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.network </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -255,22 +255,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_add_intercept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="p">[],</span> <span class="n">contexts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url_patterns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_intercept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url_patterns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Add an intercept to the network.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            phases (list, optional): A list of phases to intercept.</span>
-<span class="sd">                Default is empty list.</span>
-<span class="sd">            contexts (list, optional): A list of contexts to intercept.</span>
-<span class="sd">                Default is None.</span>
-<span class="sd">            url_patterns (list, optional): A list of URL patterns to intercept.</span>
-<span class="sd">                Default is None.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            phases: A list of phases to intercept. Default is None (empty list).</span>
+<span class="sd">            contexts: A list of contexts to intercept. Default is None.</span>
+<span class="sd">            url_patterns: A list of URL patterns to intercept. Default is None.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            str : intercept id</span>
+<span class="sd">            str: intercept id</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">phases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phases</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">"contexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">contexts</span>
@@ -289,17 +286,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_remove_intercept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Remove a specific intercept, or all intercepts.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            intercept (str, optional): The intercept to remove.</span>
-<span class="sd">                Default is None.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            intercept: The intercept to remove. Default is None.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">        ------</span>
-<span class="sd">            Exception: If intercept is not found.</span>
+<span class="sd">            ValueError: If intercept is not found.</span>
 
-<span class="sd">        Notes:</span>
-<span class="sd">        -----</span>
+<span class="sd">        Note:</span>
 <span class="sd">            If intercept is None, all intercepts will be removed.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">intercept</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -317,17 +310,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Set a callback function to subscribe to a network event.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            event_name (str): The event to subscribe to.</span>
-<span class="sd">            callback (function): The callback function to execute on event.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            event_name: The event to subscribe to.</span>
+<span class="sd">            callback: The callback function to execute on event.</span>
 <span class="sd">                Takes Request object as argument.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            int : callback id</span>
+<span class="sd">            int: callback id</span>
 <span class="sd">        """</span>
-
         <span class="n">event</span> <span class="o">=</span> <span class="n">NetworkEvent</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_callback</span><span class="p">(</span><span class="n">event_data</span><span class="p">):</span>
@@ -358,21 +348,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_request_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">url_patterns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Add a request handler to the network.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            event (str): The event to subscribe to.</span>
-<span class="sd">            url_patterns (list, optional): A list of URL patterns to intercept.</span>
-<span class="sd">                Default is None.</span>
-<span class="sd">            contexts (list, optional): A list of contexts to intercept.</span>
-<span class="sd">                Default is None.</span>
-<span class="sd">            callback (function): The callback function to execute on request interception</span>
+<span class="sd">        Args:</span>
+<span class="sd">            event: The event to subscribe to.</span>
+<span class="sd">            callback: The callback function to execute on request interception.</span>
 <span class="sd">                Takes Request object as argument.</span>
+<span class="sd">            url_patterns: A list of URL patterns to intercept. Default is None.</span>
+<span class="sd">            contexts: A list of contexts to intercept. Default is None.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            int : callback id</span>
+<span class="sd">            int: callback id</span>
 <span class="sd">        """</span>
-
         <span class="k">try</span><span class="p">:</span>
             <span class="n">event_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="n">event</span><span class="p">]</span>
             <span class="n">phase_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PHASES</span><span class="p">[</span><span class="n">event</span><span class="p">]</span>
@@ -399,10 +384,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_request_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Remove a request handler from the network.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            event_name (str): The event to unsubscribe from.</span>
-<span class="sd">            callback_id (int): The callback id to remove.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            event: The event to unsubscribe from.</span>
+<span class="sd">            callback_id: The callback id to remove.</span>
 <span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">event_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">EVENTS</span><span class="p">[</span><span class="n">event</span><span class="p">]</span>
@@ -426,7 +410,6 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.clear_request_handlers">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_request_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Clear all request handlers from the network."""</span>
-
         <span class="k">for</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span>
             <span class="n">net_event</span> <span class="o">=</span> <span class="n">NetworkEvent</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">callback_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]:</span>
@@ -444,14 +427,12 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_auth_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Add an authentication handler to the network.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            username (str): The username to authenticate with.</span>
-<span class="sd">            password (str): The password to authenticate with.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            username: The username to authenticate with.</span>
+<span class="sd">            password: The password to authenticate with.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            int : callback id</span>
+<span class="sd">            int: callback id</span>
 <span class="sd">        """</span>
         <span class="n">event</span> <span class="o">=</span> <span class="s2">"auth_required"</span>
 
@@ -466,9 +447,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_auth_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Remove an authentication handler from the network.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            callback_id (int): The callback id to remove.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            callback_id: The callback id to remove.</span>
 <span class="sd">        """</span>
         <span class="n">event</span> <span class="o">=</span> <span class="s2">"auth_required"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_request_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span></div>
@@ -509,7 +489,6 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request.fail_request">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fail_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Fail this request."""</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Request not found."</span><span class="p">)</span>
 
@@ -521,7 +500,6 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request.continue_request">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">continue_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Continue after intercepting this request."""</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Request not found."</span><span class="p">)</span>
 
@@ -543,17 +521,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_continue_with_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Continue with authentication.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ----------</span>
-<span class="sd">            request (Request): The request to continue with.</span>
-<span class="sd">            username (str): The username to authenticate with.</span>
-<span class="sd">            password (str): The password to authenticate with.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            username: The username to authenticate with.</span>
+<span class="sd">            password: The password to authenticate with.</span>
 
-<span class="sd">        Notes:</span>
-<span class="sd">        -----</span>
-<span class="sd">            If username or password is None, it attempts auth with no credentials</span>
+<span class="sd">        Note:</span>
+<span class="sd">            If username or password is None, it attempts auth with no credentials.</span>
 <span class="sd">        """</span>
-
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">"request"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span>
 

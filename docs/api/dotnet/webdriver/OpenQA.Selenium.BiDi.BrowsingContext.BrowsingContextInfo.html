@@ -101,7 +101,7 @@ Class BrowsingContextInfo  <a class="header-action link-secondary" title="View s
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record BrowsingContextInfo : BrowsingContextEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextEventArgs&gt;, IEquatable&lt;BrowsingContextInfo&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record BrowsingContextInfo : EventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextInfo&gt;</code></pre>
   </div>
 
 
@@ -112,7 +112,6 @@ Class BrowsingContextInfo  <a class="header-action link-secondary" title="View s
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a></div>
       <div><span class="xref">BrowsingContextInfo</span></div>
     </dd>
   </dl>
@@ -121,7 +120,6 @@ Class BrowsingContextInfo  <a class="header-action link-secondary" title="View s
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a>&gt;</div>
     </dd>
   </dl>
@@ -131,10 +129,10 @@ Class BrowsingContextInfo  <a class="header-action link-secondary" title="View s
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html#OpenQA_Selenium_BiDi_BrowsingContextEventArgs_Context">BrowsingContextEventArgs.Context</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -143,16 +141,13 @@ Class BrowsingContextInfo  <a class="header-action link-secondary" title="View s
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
     <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </dd></dl>
 
@@ -167,8 +162,8 @@ Class BrowsingContextInfo  <a class="header-action link-secondary" title="View s
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextInfo__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextInfo__ctor_OpenQA_Selenium_BiDi_BiDi_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextInfo__OpenQA_Selenium_BiDi_Browser_ClientWindow_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_String_OpenQA_Selenium_BiDi_Browser_UserContext_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.#ctor(OpenQA.Selenium.BiDi.BiDi,System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo},OpenQA.Selenium.BiDi.Browser.ClientWindow,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.String,OpenQA.Selenium.BiDi.Browser.UserContext,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext)">
-  BrowsingContextInfo(BiDi, IReadOnlyList&lt;BrowsingContextInfo&gt;?, ClientWindow, BrowsingContext, BrowsingContext?, string, UserContext, BrowsingContext?)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextInfo__ctor_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextInfo__OpenQA_Selenium_BiDi_Browser_ClientWindow_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_String_OpenQA_Selenium_BiDi_Browser_UserContext_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.#ctor(System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo},OpenQA.Selenium.BiDi.Browser.ClientWindow,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.String,OpenQA.Selenium.BiDi.Browser.UserContext,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext)">
+  BrowsingContextInfo(IReadOnlyList&lt;BrowsingContextInfo&gt;?, ClientWindow, BrowsingContext, BrowsingContext?, string, UserContext, BrowsingContext?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -176,13 +171,11 @@ Class BrowsingContextInfo  <a class="header-action link-secondary" title="View s
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BrowsingContextInfo(BiDi BiDi, IReadOnlyList&lt;BrowsingContextInfo&gt;? Children, ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, UserContext UserContext, BrowsingContext? Parent)</code></pre>
+    <pre><code class="lang-csharp hljs">public BrowsingContextInfo(IReadOnlyList&lt;BrowsingContextInfo&gt;? Children, ClientWindow ClientWindow, BrowsingContext Context, BrowsingContext? OriginalOpener, string Url, UserContext UserContext, BrowsingContext? Parent)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
     <dt><code>Children</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a>&gt;</dt>
     <dd></dd>
     <dt><code>ClientWindow</code> <a class="xref" href="OpenQA.Selenium.BiDi.Browser.ClientWindow.html">ClientWindow</a></dt>
@@ -266,6 +259,37 @@ Class BrowsingContextInfo  <a class="header-action link-secondary" title="View s
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="OpenQA.Selenium.BiDi.Browser.ClientWindow.html">ClientWindow</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextInfo_Context_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.Context*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContextInfo_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.Context">
+  Context
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/BrowsingContextInfo.cs/#L24"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BrowsingContext Context { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
   </dl>
 

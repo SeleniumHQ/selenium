@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_EventArgs" data-uid="OpenQA.Selenium.BiDi.EventArgs" class="text-break">
-Class EventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
+Class EventArgs  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -125,8 +125,15 @@ Class EventArgs  <a class="header-action link-secondary" title="View source" hre
   <dl class="typelist derived">
     <dt>Derived</dt>
     <dd>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContextInfo.html">BrowsingContextInfo</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadWillBeginEventArgs.html">DownloadWillBeginEventArgs</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.HistoryUpdatedEventArgs.html">HistoryUpdatedEventArgs</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.NavigationInfo.html">NavigationInfo</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.html">UserPromptClosedEventArgs</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.html">UserPromptOpenedEventArgs</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Log.LogEntry.html">LogEntry</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html">BaseParametersEventArgs</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.MessageEventArgs.html">MessageEventArgs</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.RealmDestroyedEventArgs.html">RealmDestroyedEventArgs</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Script.RealmInfo.html">RealmInfo</a></div>
@@ -137,10 +144,16 @@ Class EventArgs  <a class="header-action link-secondary" title="View source" hre
     <dt>Inherited Members</dt>
     <dd>
     <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
@@ -151,48 +164,7 @@ Class EventArgs  <a class="header-action link-secondary" title="View source" hre
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
     </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
-    </div>
   </dd></dl>
-
-
-
-
-
-
-  <h2 class="section" id="constructors">Constructors
-</h2>
-
-
-  <a id="OpenQA_Selenium_BiDi_EventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.EventArgs.#ctor*"></a>
-
-  <h3 id="OpenQA_Selenium_BiDi_EventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_" data-uid="OpenQA.Selenium.BiDi.EventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi)">
-  EventArgs(BiDi)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L24"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected EventArgs(BiDi BiDi)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
 
 
 
@@ -207,7 +179,7 @@ Class EventArgs  <a class="header-action link-secondary" title="View source" hre
 
   <h3 id="OpenQA_Selenium_BiDi_EventArgs_BiDi" data-uid="OpenQA.Selenium.BiDi.EventArgs.BiDi">
   BiDi
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L26"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L29"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
@@ -239,7 +211,7 @@ public BiDi BiDi { get; }</code></pre>
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/EventArgs.cs/#L25" class="edit-link">Edit this page</a>
         </div>
 
 

@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.remote.server &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.remote.server &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.server </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -234,27 +234,20 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.remote.server.</span></span><span class="sig-name descname"><span class="pre">Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4444</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'INFO'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/server.html#Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.server.Server" title="Link to this definition">¶</a></dt>
 <dd><p>Manage a Selenium Grid (Remote) Server in standalone mode.</p>
 <p>This class contains functionality for downloading the server and starting/stopping it.</p>
-<dl class="simple">
+<dl>
 <dt>For more information on Selenium Grid, see:</dt><dd><ul class="simple">
 <li><p><a class="reference external" href="https://www.selenium.dev/documentation/grid/getting_started/">https://www.selenium.dev/documentation/grid/getting_started/</a></p></li>
 </ul>
 </dd>
-</dl>
-<section id="parameters">
-<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>host<span class="classifier">str</span></dt><dd><p>Hostname or IP address to bind to (determined automatically if not specified)</p>
-</dd>
-<dt>port<span class="classifier">int or str</span></dt><dd><p>Port to listen on (4444 if not specified)</p>
-</dd>
-<dt>path<span class="classifier">str</span></dt><dd><p>Path/filename of existing server .jar file (Selenium Manager is used if not specified)</p>
-</dd>
-<dt>version<span class="classifier">str</span></dt><dd><p>Version of server to download (latest version if not specified)</p>
-</dd>
-<dt>log_level<span class="classifier">str</span></dt><dd><p>Logging level to control logging output (“INFO” if not specified)
-Available levels: “SEVERE”, “WARNING”, “INFO”, “CONFIG”, “FINE”, “FINER”, “FINEST”</p>
-</dd>
-<dt>env: collections.abc.Mapping</dt><dd><p>Mapping that defines the environment variables for the server process</p>
+<dt>Args:</dt><dd><p>host: Hostname or IP address to bind to (determined automatically if not specified).
+port: Port to listen on (4444 if not specified).
+path: Path/filename of existing server .jar file (Selenium Manager is used if not specified).
+version: Version of server to download (latest version if not specified).
+log_level: Logging level to control logging output (“INFO” if not specified).</p>
+<blockquote>
+<div><p>Available levels: “SEVERE”, “WARNING”, “INFO”, “CONFIG”, “FINE”, “FINER”, “FINEST”.</p>
+</div></blockquote>
+<p>env: Mapping that defines the environment variables for the server process.</p>
 </dd>
 </dl>
 <dl class="py property">
@@ -299,7 +292,6 @@ unless an existing server path was specified.</p>
 <span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/server.html#Server.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.remote.server.Server.stop" title="Link to this definition">¶</a></dt>
 <dd><p>Stop the server.</p>
 </dd></dl>
-</section>
 </dd></dl>
 </section>
 

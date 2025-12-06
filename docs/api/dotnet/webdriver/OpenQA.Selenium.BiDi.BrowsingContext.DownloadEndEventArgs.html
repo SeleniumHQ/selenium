@@ -102,7 +102,7 @@ Class DownloadEndEventArgs  <a class="header-action link-secondary" title="View 
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonConverter(typeof(DownloadEndEventArgsConverter))]
-public abstract record DownloadEndEventArgs : BrowsingContextEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextEventArgs&gt;, IEquatable&lt;DownloadEndEventArgs&gt;</code></pre>
+public abstract record DownloadEndEventArgs : EventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;DownloadEndEventArgs&gt;</code></pre>
   </div>
 
 
@@ -113,7 +113,6 @@ public abstract record DownloadEndEventArgs : BrowsingContextEventArgs, IEquatab
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a></div>
       <div><span class="xref">DownloadEndEventArgs</span></div>
     </dd>
   </dl>
@@ -122,7 +121,6 @@ public abstract record DownloadEndEventArgs : BrowsingContextEventArgs, IEquatab
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.html">DownloadEndEventArgs</a>&gt;</div>
     </dd>
   </dl>
@@ -139,16 +137,19 @@ public abstract record DownloadEndEventArgs : BrowsingContextEventArgs, IEquatab
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html#OpenQA_Selenium_BiDi_BrowsingContextEventArgs_Context">BrowsingContextEventArgs.Context</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
@@ -158,12 +159,6 @@ public abstract record DownloadEndEventArgs : BrowsingContextEventArgs, IEquatab
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </dd></dl>
 
@@ -178,8 +173,8 @@ public abstract record DownloadEndEventArgs : BrowsingContextEventArgs, IEquatab
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext)">
-  DownloadEndEventArgs(BiDi, BrowsingContext)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext)">
+  DownloadEndEventArgs(BrowsingContext)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L30"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -187,13 +182,11 @@ public abstract record DownloadEndEventArgs : BrowsingContextEventArgs, IEquatab
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected DownloadEndEventArgs(BiDi BiDi, BrowsingContext Context)</code></pre>
+    <pre><code class="lang-csharp hljs">protected DownloadEndEventArgs(BrowsingContext Context)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
   </dl>
@@ -201,6 +194,41 @@ public abstract record DownloadEndEventArgs : BrowsingContextEventArgs, IEquatab
 
 
 
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_Context_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.Context*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_DownloadEndEventArgs_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.DownloadEndEventArgs.Context">
+  Context
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/DownloadEndEventArgs.cs/#L31"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BrowsingContext Context { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+  </dl>
 
 
 

@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.remote.server &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.remote.server &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.server </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -231,21 +231,14 @@
 <span class="sd">    For more information on Selenium Grid, see:</span>
 <span class="sd">        - https://www.selenium.dev/documentation/grid/getting_started/</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    host : str</span>
-<span class="sd">        Hostname or IP address to bind to (determined automatically if not specified)</span>
-<span class="sd">    port : int or str</span>
-<span class="sd">        Port to listen on (4444 if not specified)</span>
-<span class="sd">    path : str</span>
-<span class="sd">        Path/filename of existing server .jar file (Selenium Manager is used if not specified)</span>
-<span class="sd">    version : str</span>
-<span class="sd">        Version of server to download (latest version if not specified)</span>
-<span class="sd">    log_level : str</span>
-<span class="sd">        Logging level to control logging output ("INFO" if not specified)</span>
-<span class="sd">        Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST"</span>
-<span class="sd">    env: collections.abc.Mapping</span>
-<span class="sd">        Mapping that defines the environment variables for the server process</span>
+<span class="sd">    Args:</span>
+<span class="sd">        host: Hostname or IP address to bind to (determined automatically if not specified).</span>
+<span class="sd">        port: Port to listen on (4444 if not specified).</span>
+<span class="sd">        path: Path/filename of existing server .jar file (Selenium Manager is used if not specified).</span>
+<span class="sd">        version: Version of server to download (latest version if not specified).</span>
+<span class="sd">        log_level: Logging level to control logging output ("INFO" if not specified).</span>
+<span class="sd">            Available levels: "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST".</span>
+<span class="sd">        env: Mapping that defines the environment variables for the server process.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">4444</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s2">"INFO"</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

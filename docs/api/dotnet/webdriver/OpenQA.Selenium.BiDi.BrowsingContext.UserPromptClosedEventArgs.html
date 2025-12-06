@@ -101,7 +101,7 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record UserPromptClosedEventArgs : BrowsingContextEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextEventArgs&gt;, IEquatable&lt;UserPromptClosedEventArgs&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record UserPromptClosedEventArgs : EventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;UserPromptClosedEventArgs&gt;</code></pre>
   </div>
 
 
@@ -112,7 +112,6 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a></div>
       <div><span class="xref">UserPromptClosedEventArgs</span></div>
     </dd>
   </dl>
@@ -121,7 +120,6 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.html">UserPromptClosedEventArgs</a>&gt;</div>
     </dd>
   </dl>
@@ -131,10 +129,10 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html#OpenQA_Selenium_BiDi_BrowsingContextEventArgs_Context">BrowsingContextEventArgs.Context</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -143,16 +141,13 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
     <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </dd></dl>
 
@@ -167,8 +162,8 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,System.String)">
-  UserPromptClosedEventArgs(BiDi, BrowsingContext, bool, string?)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,System.String)">
+  UserPromptClosedEventArgs(BrowsingContext, bool, string?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -176,13 +171,11 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserPromptClosedEventArgs(BiDi BiDi, BrowsingContext Context, bool Accepted, string? UserText)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserPromptClosedEventArgs(BrowsingContext Context, bool Accepted, string? UserText)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
     <dt><code>Accepted</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
@@ -227,6 +220,37 @@ Class UserPromptClosedEventArgs  <a class="header-action link-secondary" title="
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_Context_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.Context*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptClosedEventArgs_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptClosedEventArgs.Context">
+  Context
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptClosedEventArgs.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BrowsingContext Context { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
   </dl>
 

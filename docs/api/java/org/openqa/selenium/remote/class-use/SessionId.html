@@ -96,23 +96,17 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code><a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
 <div class="col-second even-row-color"><span class="type-name-label">Session.</span><code><a href="../../grid/data/Session.html#getId()" class="member-name-link">getId</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-</div>
-<div class="caption"><span>Methods in <a href="../../grid/data/package-summary.html">org.openqa.selenium.grid.data</a> that return types with arguments of type <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Method</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static <a href="../../events/EventListener.html" title="class in org.openqa.selenium.events">EventListener</a><wbr>&lt;<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SessionClosedEvent.</span><code><a href="../../grid/data/SessionClosedEvent.html#listener(java.util.function.Consumer)" class="member-name-link">listener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&gt;&nbsp;handler)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SessionClosedData.</span><code><a href="../../grid/data/SessionClosedData.html#getSessionId()" class="member-name-link">getSessionId</a>()</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Method parameters in <a href="../../grid/data/package-summary.html">org.openqa.selenium.grid.data</a> with type arguments of type <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></span></div>
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static <a href="../../events/EventListener.html" title="class in org.openqa.selenium.events">EventListener</a><wbr>&lt;<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SessionClosedEvent.</span><code><a href="../../grid/data/SessionClosedEvent.html#listener(java.util.function.Consumer)" class="member-name-link">listener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&gt;&nbsp;handler)</code></div>
+<div class="col-first even-row-color"><code>static <a href="../../events/EventListener.html" title="class in org.openqa.selenium.events">EventListener</a><wbr>&lt;<a href="../../grid/data/SessionClosedData.html" title="class in org.openqa.selenium.grid.data">SessionClosedData</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SessionClosedEvent.</span><code><a href="../../grid/data/SessionClosedEvent.html#sessionListener(java.util.function.Consumer)" class="member-name-link">sessionListener</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Consumer.html" title="class or interface in java.util.function" class="external-link">Consumer</a>&lt;<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&gt;&nbsp;handler)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../../grid/data/package-summary.html">org.openqa.selenium.grid.data</a> with parameters of type <a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></span></div>
@@ -128,7 +122,15 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html" title="class or interface in java.time" class="external-link">Instant</a>&nbsp;startTime)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="../../grid/data/SessionClosedEvent.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId)" class="member-name-link">SessionClosedEvent</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
+<div class="col-second odd-row-color"><code><a href="../../grid/data/SessionClosedData.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.SessionClosedReason)" class="member-name-link">SessionClosedData</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+ <a href="../../grid/data/SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="../../grid/data/SessionClosedEvent.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId)" class="member-name-link">SessionClosedEvent</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="../../grid/data/SessionClosedEvent.html#%3Cinit%3E(org.openqa.selenium.remote.SessionId,org.openqa.selenium.grid.data.SessionClosedReason)" class="member-name-link">SessionClosedEvent</a><wbr>(<a href="../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
+ <a href="../../grid/data/SessionClosedReason.html" title="enum class in org.openqa.selenium.grid.data">SessionClosedReason</a>&nbsp;reason)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>

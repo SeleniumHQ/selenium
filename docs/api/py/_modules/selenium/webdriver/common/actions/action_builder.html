@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.actions.action_builder &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.actions.action_builder &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.actions.action_builder </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -210,7 +210,7 @@
 <span class="c1"># under the License.</span>
 
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">interaction</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.actions.key_actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyActions</span>
@@ -228,15 +228,15 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">driver</span><span class="p">,</span>
-        <span class="n">mouse</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PointerInput</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">wheel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">WheelInput</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">keyboard</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">KeyInput</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mouse</span><span class="p">:</span> <span class="n">PointerInput</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wheel</span><span class="p">:</span> <span class="n">WheelInput</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keyboard</span><span class="p">:</span> <span class="n">KeyInput</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">mouse</span> <span class="o">=</span> <span class="n">mouse</span> <span class="ow">or</span> <span class="n">PointerInput</span><span class="p">(</span><span class="n">interaction</span><span class="o">.</span><span class="n">POINTER_MOUSE</span><span class="p">,</span> <span class="s2">"mouse"</span><span class="p">)</span>
         <span class="n">keyboard</span> <span class="o">=</span> <span class="n">keyboard</span> <span class="ow">or</span> <span class="n">KeyInput</span><span class="p">(</span><span class="n">interaction</span><span class="o">.</span><span class="n">KEY</span><span class="p">)</span>
         <span class="n">wheel</span> <span class="o">=</span> <span class="n">wheel</span> <span class="ow">or</span> <span class="n">WheelInput</span><span class="p">(</span><span class="n">interaction</span><span class="o">.</span><span class="n">WHEEL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">PointerInput</span><span class="p">,</span> <span class="n">KeyInput</span><span class="p">,</span> <span class="n">WheelInput</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mouse</span><span class="p">,</span> <span class="n">keyboard</span><span class="p">,</span> <span class="n">wheel</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PointerInput</span> <span class="o">|</span> <span class="n">KeyInput</span> <span class="o">|</span> <span class="n">WheelInput</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mouse</span><span class="p">,</span> <span class="n">keyboard</span><span class="p">,</span> <span class="n">wheel</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_key_action</span> <span class="o">=</span> <span class="n">KeyActions</span><span class="p">(</span><span class="n">keyboard</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pointer_action</span> <span class="o">=</span> <span class="n">PointerActions</span><span class="p">(</span><span class="n">mouse</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wheel_action</span> <span class="o">=</span> <span class="n">WheelActions</span><span class="p">(</span><span class="n">wheel</span><span class="p">)</span>
@@ -244,17 +244,14 @@
 
 <div class="viewcode-block" id="ActionBuilder.get_device_with">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_actions/selenium.webdriver.common.actions.action_builder.html#selenium.webdriver.common.actions.action_builder.ActionBuilder.get_device_with">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_device_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s2">"WheelInput"</span><span class="p">,</span> <span class="s2">"PointerInput"</span><span class="p">,</span> <span class="s2">"KeyInput"</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_device_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">"WheelInput"</span><span class="p">,</span> <span class="s2">"PointerInput"</span><span class="p">,</span> <span class="s2">"KeyInput"</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Get the device with the given name.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        name : str</span>
-<span class="sd">            The name of the device to get.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name of the device to get.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        Optional[Union[WheelInput, PointerInput, KeyInput]] : The device with the given name.</span>
+<span class="sd">            The device with the given name, or None if not found.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
 
@@ -284,19 +281,15 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_key_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyInput</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add a new key input device to the action builder.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        name : str</span>
-<span class="sd">            The name of the key input device.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name of the key input device.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        KeyInput : The newly created key input device.</span>
+<span class="sd">            The newly created key input device.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
-<span class="sd">        &gt;&gt;&gt; action_builder.add_key_input(name="keyboard2")</span>
+<span class="sd">            &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
+<span class="sd">            &gt;&gt;&gt; action_builder.add_key_input(name="keyboard2")</span>
 <span class="sd">        """</span>
         <span class="n">new_input</span> <span class="o">=</span> <span class="n">KeyInput</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_input</span><span class="p">(</span><span class="n">new_input</span><span class="p">)</span>
@@ -308,25 +301,17 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_pointer_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PointerInput</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add a new pointer input device to the action builder.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        kind : str</span>
-<span class="sd">            The kind of pointer input device.</span>
-<span class="sd">                - "mouse"</span>
-<span class="sd">                - "touch"</span>
-<span class="sd">                - "pen"</span>
-
-<span class="sd">        name : str</span>
-<span class="sd">            The name of the pointer input device.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            kind: The kind of pointer input device. Valid values are "mouse",</span>
+<span class="sd">                "touch", or "pen".</span>
+<span class="sd">            name: The name of the pointer input device.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        PointerInput : The newly created pointer input device.</span>
+<span class="sd">            The newly created pointer input device.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
-<span class="sd">        &gt;&gt;&gt; action_builder.add_pointer_input(kind="mouse", name="mouse")</span>
+<span class="sd">            &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
+<span class="sd">            &gt;&gt;&gt; action_builder.add_pointer_input(kind="mouse", name="mouse")</span>
 <span class="sd">        """</span>
         <span class="n">new_input</span> <span class="o">=</span> <span class="n">PointerInput</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_input</span><span class="p">(</span><span class="n">new_input</span><span class="p">)</span>
@@ -338,19 +323,15 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_wheel_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WheelInput</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add a new wheel input device to the action builder.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        name : str</span>
-<span class="sd">            The name of the wheel input device.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            name: The name of the wheel input device.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        WheelInput : The newly created wheel input device.</span>
+<span class="sd">            The newly created wheel input device.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
-<span class="sd">        &gt;&gt;&gt; action_builder.add_wheel_input(name="wheel2")</span>
+<span class="sd">            &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
+<span class="sd">            &gt;&gt;&gt; action_builder.add_wheel_input(name="wheel2")</span>
 <span class="sd">        """</span>
         <span class="n">new_input</span> <span class="o">=</span> <span class="n">WheelInput</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_input</span><span class="p">(</span><span class="n">new_input</span><span class="p">)</span>
@@ -363,11 +344,10 @@
 <span class="w">        </span><span class="sd">"""Performs all stored actions.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
-<span class="sd">        &gt;&gt;&gt; keyboard = action_builder.key_input</span>
-<span class="sd">        &gt;&gt;&gt; el = driver.find_element(id: "some_id")</span>
-<span class="sd">        &gt;&gt;&gt; action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys").perform()</span>
+<span class="sd">            &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
+<span class="sd">            &gt;&gt;&gt; keyboard = action_builder.key_input</span>
+<span class="sd">            &gt;&gt;&gt; el = driver.find_element(id: "some_id")</span>
+<span class="sd">            &gt;&gt;&gt; action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys").perform()</span>
 <span class="sd">        """</span>
         <span class="n">enc</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"actions"</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span>
@@ -384,23 +364,20 @@
 <span class="w">        </span><span class="sd">"""Clears actions that are already stored on the remote end.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
-<span class="sd">        &gt;&gt;&gt; keyboard = action_builder.key_input</span>
-<span class="sd">        &gt;&gt;&gt; el = driver.find_element(By.ID, "some_id")</span>
-<span class="sd">        &gt;&gt;&gt; action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys")</span>
-<span class="sd">        &gt;&gt;&gt; action_builder.clear_actions()</span>
+<span class="sd">            &gt;&gt;&gt; action_builder = ActionBuilder(driver)</span>
+<span class="sd">            &gt;&gt;&gt; keyboard = action_builder.key_input</span>
+<span class="sd">            &gt;&gt;&gt; el = driver.find_element(By.ID, "some_id")</span>
+<span class="sd">            &gt;&gt;&gt; action_builder.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys("keys")</span>
+<span class="sd">            &gt;&gt;&gt; action_builder.clear_actions()</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_CLEAR_ACTIONS</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">KeyInput</span><span class="p">,</span> <span class="n">PointerInput</span><span class="p">,</span> <span class="n">WheelInput</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_input</span><span class="p">:</span> <span class="n">KeyInput</span> <span class="o">|</span> <span class="n">PointerInput</span> <span class="o">|</span> <span class="n">WheelInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add a new input device to the action builder.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        new_input : Union[KeyInput, PointerInput, WheelInput]</span>
-<span class="sd">            The new input device to add.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            new_input: The new input device to add.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_input</span><span class="p">)</span></div>
 
