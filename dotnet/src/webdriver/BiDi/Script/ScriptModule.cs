@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -118,7 +119,13 @@ public sealed class ScriptModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var scriptOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var scriptOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new PreloadScriptConverter(BiDi)
+            }
+        };
 
         _jsonContext = new ScriptJsonSerializerContext(scriptOptions);
     }
