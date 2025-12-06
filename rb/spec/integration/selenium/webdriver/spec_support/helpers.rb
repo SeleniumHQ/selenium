@@ -89,17 +89,21 @@ module Selenium
           wait.until { driver.find_element(locator) }
         end
 
-        def wait_for_new_url(old_url)
+        def wait_for_url(new_url)
           wait = Wait.new(timeout: 5)
           wait.until do
-            url = driver.current_url
-            !(url.empty? || url.include?(old_url))
+            driver.current_url.include?(new_url)
           end
         end
 
         def wait_for_devtools_target(target_type:)
           wait = Wait.new(timeout: 3, ignore: Error::NoSuchTargetError)
           wait.until { driver.devtools(target_type: target_type).target }
+        end
+
+        def wait_for_title(title:)
+          wait = Wait.new(timeout: 5)
+          wait.until { driver.title == title }
         end
 
         def wait(timeout = 10)

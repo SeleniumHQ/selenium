@@ -59,7 +59,7 @@ module Selenium
           driver.navigate.to url_for('formPage.html')
           wait_for_element(id: 'submitButton').submit
 
-          sleep 0.5
+          wait_for_url('resultPage.html')
           expect(driver.title).to eq('We Arrive Here')
         end
 
@@ -67,7 +67,7 @@ module Selenium
           driver.navigate.to url_for('formPage.html')
           wait_for_element(id: 'checky').submit
 
-          sleep 0.5
+          wait_for_url('resultPage.html')
           expect(driver.title).to eq('We Arrive Here')
         end
 
@@ -75,7 +75,7 @@ module Selenium
           driver.navigate.to url_for('formPage.html')
           wait_for_element(css: 'form > p').submit
 
-          sleep 0.5
+          wait_for_url('resultPage.html')
           expect(driver.title).to eq('We Arrive Here')
         end
 
@@ -83,7 +83,7 @@ module Selenium
           driver.navigate.to url_for('formPage.html')
           wait_for_element(id: 'submit').submit
 
-          sleep 0.5
+          wait_for_url('resultPage.html')
           expect(driver.title).to eq('We Arrive Here')
         end
 
@@ -91,7 +91,7 @@ module Selenium
           driver.navigate.to url_for('formPage.html')
           wait_for_element(name: 'submit').submit
 
-          sleep 0.5
+          wait_for_url('resultPage.html')
           expect(driver.title).to eq('We Arrive Here')
         end
 
