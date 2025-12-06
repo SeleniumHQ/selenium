@@ -18,6 +18,7 @@
 // </copyright>
 
 using System;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
@@ -44,5 +45,22 @@ public sealed record Collector
     {
         get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
         internal set => _bidi = value;
+    }
+
+    public bool Equals(Collector? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+    public override int GetHashCode()
+    {
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }

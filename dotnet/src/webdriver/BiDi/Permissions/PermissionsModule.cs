@@ -38,15 +38,9 @@ public class PermissionsModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var permissionsOptions = new JsonSerializerOptions(jsonSerializerOptions)
-        {
-            Converters =
-            {
-                new BrowserUserContextConverter(BiDi),
-            }
-        };
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
 
-        _jsonContext = new PermissionsJsonSerializerContext(permissionsOptions);
+        _jsonContext = new PermissionsJsonSerializerContext(jsonSerializerOptions);
     }
 }
 

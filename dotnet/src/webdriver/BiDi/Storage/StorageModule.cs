@@ -51,16 +51,10 @@ public sealed class StorageModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var storageOptions = new JsonSerializerOptions(jsonSerializerOptions)
-        {
-            Converters =
-            {
-                new BrowsingContextConverter(BiDi),
-                new BrowserUserContextConverter(BiDi),
-            }
-        };
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
 
-        _jsonContext = new StorageJsonSerializerContext(storageOptions);
+        _jsonContext = new StorageJsonSerializerContext(jsonSerializerOptions);
     }
 }
 

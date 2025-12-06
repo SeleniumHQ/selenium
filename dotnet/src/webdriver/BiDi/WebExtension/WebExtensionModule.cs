@@ -44,15 +44,9 @@ public sealed class WebExtensionModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var webExtensionOptions = new JsonSerializerOptions(jsonSerializerOptions)
-        {
-            Converters =
-            {
-                new WebExtensionConverter(BiDi)
-            }
-        };
+        jsonSerializerOptions.Converters.Add(new WebExtensionConverter(BiDi));
 
-        _jsonContext = new WebExtensionJsonSerializerContext(webExtensionOptions);
+        _jsonContext = new WebExtensionJsonSerializerContext(jsonSerializerOptions);
     }
 }
 

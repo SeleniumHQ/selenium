@@ -52,16 +52,10 @@ public sealed class InputModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var inputOptions = new JsonSerializerOptions(jsonSerializerOptions)
-        {
-            Converters =
-            {
-                new BrowsingContextConverter(BiDi),
-                new HandleConverter(BiDi),
-            }
-        };
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
 
-        _jsonContext = new InputJsonSerializerContext(inputOptions);
+        _jsonContext = new InputJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
