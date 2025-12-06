@@ -160,7 +160,7 @@ class JsonTest {
     String raw = "{\"foo\": null}";
 
     Map<?, ?> converted = new Json().toType(raw, Map.class);
-    assertThat(converted.size()).isEqualTo(1);
+    assertThat(converted).hasSize(1);
     assertThat(converted.containsKey("foo")).isTrue();
     assertThat(converted.get("foo")).isNull();
   }

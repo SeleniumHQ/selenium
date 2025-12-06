@@ -117,7 +117,7 @@ class NetworkEventsTest extends JupiterTestBase {
       BeforeRequestSent requestSent = future.get(5, TimeUnit.SECONDS);
       String windowHandle = driver.getWindowHandle();
       assertThat(requestSent.getBrowsingContextId()).isEqualTo(windowHandle);
-      assertThat(requestSent.getRequest().getCookies().size()).isEqualTo(1);
+      assertThat(requestSent.getRequest().getCookies()).hasSize(1);
       assertThat(requestSent.getRequest().getCookies().get(0).getName()).isEqualTo("foo");
       assertThat(requestSent.getRequest().getCookies().get(0).getValue().getValue())
           .isEqualTo("bar");

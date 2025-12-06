@@ -191,7 +191,7 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
     authenticator.addCredential(credential);
 
     List<Credential> credentialList = authenticator.getCredentials();
-    assertThat(credentialList.size()).isEqualTo(1);
+    assertThat(credentialList).hasSize(1);
     Credential retrievedCredential = credentialList.get(0);
     assertThat(retrievedCredential.getId()).isEqualTo(credentialId);
   }
@@ -294,7 +294,7 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
 
     // Retrieve the two credentials.
     List<Credential> credentials = authenticator.getCredentials();
-    assertThat(credentials.size()).isEqualTo(2);
+    assertThat(credentials).hasSize(2);
 
     Credential credential1 = null;
     Credential credential2 = null;

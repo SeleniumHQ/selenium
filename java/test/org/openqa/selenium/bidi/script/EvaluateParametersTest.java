@@ -119,8 +119,7 @@ public class EvaluateParametersTest extends JupiterTestBase {
       assertThat(exception.getExceptionDetails().getException().getType()).isEqualTo("error");
       assertThat(exception.getExceptionDetails().getText()).contains("SyntaxError:");
       assertThat(exception.getExceptionDetails().getLineNumber()).isGreaterThanOrEqualTo(0);
-      assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames().size())
-          .isEqualTo(0);
+      assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames()).hasSize(0);
     }
   }
 

@@ -133,7 +133,7 @@ public class CallFunctionParameterTest extends JupiterTestBase {
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("array");
       assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat(((List<Object>) successResult.getResult().getValue().get()).size()).isEqualTo(2);
+      assertThat(((List<Object>) successResult.getResult().getValue().get())).hasSize(2);
     }
   }
 
@@ -339,8 +339,7 @@ public class CallFunctionParameterTest extends JupiterTestBase {
       assertThat(exception.getExceptionDetails().getText()).contains("SyntaxError:");
       assertThat(exception.getExceptionDetails().getLineNumber()).isPositive();
       assertThat(exception.getExceptionDetails().getColumnNumber()).isPositive();
-      assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames().size())
-          .isEqualTo(0);
+      assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames()).hasSize(0);
     }
   }
 

@@ -212,7 +212,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
 
     assertThat(value.getType()).isEqualTo("array");
     List<RemoteValue> values = (List<RemoteValue>) value.getValue().get();
-    assertThat(values.size()).isEqualTo(2);
+    assertThat(values).hasSize(2);
   }
 
   @Test
@@ -235,7 +235,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
 
     assertThat(value.getType()).isEqualTo("set");
     List<RemoteValue> values = (List<RemoteValue>) value.getValue().get();
-    assertThat(values.size()).isEqualTo(2);
+    assertThat(values).hasSize(2);
   }
 
   @Test
@@ -276,7 +276,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
     assertThat(value.getType()).isEqualTo("map");
 
     Map<Object, RemoteValue> values = (Map<Object, RemoteValue>) value.getValue().get();
-    assertThat(values.size()).isEqualTo(2);
+    assertThat(values).hasSize(2);
   }
 
   @Test
@@ -299,7 +299,7 @@ class WebScriptExecuteTest extends JupiterTestBase {
     assertThat(value.getType()).isEqualTo("object");
 
     Map<Object, RemoteValue> values = (Map<Object, RemoteValue>) value.getValue().get();
-    assertThat(values.size()).isEqualTo(6);
+    assertThat(values).hasSize(6);
   }
 
   @Test

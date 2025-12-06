@@ -141,7 +141,7 @@ class LocalDistributorTest {
 
     // Check the size
     final Set<NodeStatus> nodes = status.getNodes();
-    assertThat(nodes.size()).isEqualTo(1);
+    assertThat(nodes).hasSize(1);
 
     // Check a couple attributes
     NodeStatus distributorNode = nodes.iterator().next();
@@ -182,7 +182,7 @@ class LocalDistributorTest {
     // Check the size
     DistributorStatus statusBefore = distributor.getStatus();
     final Set<NodeStatus> nodesBefore = statusBefore.getNodes();
-    assertThat(nodesBefore.size()).isEqualTo(1);
+    assertThat(nodesBefore).hasSize(1);
 
     // Recheck the status--should be zero
     distributor.remove(localNode.getId());
@@ -223,7 +223,7 @@ class LocalDistributorTest {
 
     // Should only be one node after dupe check
     final Set<NodeStatus> nodes = status.getNodes();
-    assertThat(nodes.size()).isEqualTo(1);
+    assertThat(nodes).hasSize(1);
   }
 
   @Test
@@ -353,7 +353,7 @@ class LocalDistributorTest {
     // Check the size - there should be one node
     DistributorStatus statusBefore = distributor.getStatus();
     Set<NodeStatus> nodesBefore = statusBefore.getNodes();
-    assertThat(nodesBefore.size()).isEqualTo(1);
+    assertThat(nodesBefore).hasSize(1);
     NodeStatus nodeBefore = nodesBefore.iterator().next();
     assertThat(nodeBefore.getAvailability()).isNotEqualTo(DRAINING);
 

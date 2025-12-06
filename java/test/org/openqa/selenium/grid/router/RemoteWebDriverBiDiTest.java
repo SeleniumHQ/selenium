@@ -112,7 +112,7 @@ class RemoteWebDriverBiDiTest {
       assertThat(source.getBrowsingContext().isPresent()).isTrue();
       assertThat(source.getRealm()).isNotNull();
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getArgs().size()).isEqualTo(1);
+      assertThat(logEntry.getArgs()).hasSize(1);
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");

@@ -96,7 +96,7 @@ public class DistributorDrainingTest extends DistributorTestBase {
 
     assertThat(latch.getCount()).isEqualTo(1);
 
-    assertThat(local.getStatus().getNodes().size()).isEqualTo(1);
+    assertThat(local.getStatus().getNodes()).hasSize(1);
   }
 
   @Test
@@ -153,7 +153,7 @@ public class DistributorDrainingTest extends DistributorTestBase {
 
     local.drain(node.getId());
 
-    assertThat(local.getStatus().getNodes().size()).isEqualTo(1);
+    assertThat(local.getStatus().getNodes()).hasSize(1);
 
     node.stop(firstResponse.right().getSession().getId());
     node.stop(secondResponse.right().getSession().getId());

@@ -319,7 +319,7 @@ class LocalValueTest extends JupiterTestBase {
     assertThat(successResult.getResult().getType()).isEqualTo("array");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
     List<RemoteValue> resultValue = (List<RemoteValue>) successResult.getResult().getValue().get();
-    assertThat(resultValue.size()).isEqualTo(1);
+    assertThat(resultValue).hasSize(1);
     assertThat(resultValue.get(0).getType()).isEqualTo("string");
     assertThat((String) resultValue.get(0).getValue().get()).isEqualTo("foobar");
   }
@@ -357,7 +357,7 @@ class LocalValueTest extends JupiterTestBase {
     assertThat(successResult.getResult().getType()).isEqualTo("set");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
     List<RemoteValue> resultValue = (List<RemoteValue>) successResult.getResult().getValue().get();
-    assertThat(resultValue.size()).isEqualTo(1);
+    assertThat(resultValue).hasSize(1);
     assertThat(resultValue.get(0).getType()).isEqualTo("string");
     assertThat((String) resultValue.get(0).getValue().get()).isEqualTo("foobar");
   }
@@ -431,7 +431,7 @@ class LocalValueTest extends JupiterTestBase {
 
     Map<Object, RemoteValue> resultValue =
         (Map<Object, RemoteValue>) successResult.getResult().getValue().get();
-    assertThat(resultValue.size()).isEqualTo(1);
+    assertThat(resultValue).hasSize(1);
     assertThat(resultValue.get("foobar").getType()).isEqualTo("string");
   }
 
@@ -471,7 +471,7 @@ class LocalValueTest extends JupiterTestBase {
 
     Map<Object, RemoteValue> resultValue =
         (Map<Object, RemoteValue>) successResult.getResult().getValue().get();
-    assertThat(resultValue.size()).isEqualTo(1);
+    assertThat(resultValue).hasSize(1);
     assertThat(resultValue.get("foobar").getType()).isEqualTo("string");
   }
 

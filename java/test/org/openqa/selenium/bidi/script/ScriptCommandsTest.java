@@ -90,7 +90,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("array");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat(((List<Object>) successResult.getResult().getValue().get()).size()).isEqualTo(2);
+    assertThat(((List<Object>) successResult.getResult().getValue().get())).hasSize(2);
   }
 
   @Test
@@ -308,7 +308,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(exception.getExceptionDetails().getText()).contains("SyntaxError:");
     assertThat(exception.getExceptionDetails().getLineNumber()).isPositive();
     assertThat(exception.getExceptionDetails().getColumnNumber()).isPositive();
-    assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames().size()).isEqualTo(0);
+    assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames()).hasSize(0);
   }
 
   @Test
@@ -468,7 +468,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(exception.getExceptionDetails().getException().getType()).isEqualTo("error");
     assertThat(exception.getExceptionDetails().getText()).contains("SyntaxError:");
     assertThat(exception.getExceptionDetails().getLineNumber()).isGreaterThanOrEqualTo(0);
-    assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames().size()).isEqualTo(0);
+    assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames()).hasSize(0);
   }
 
   @Test
@@ -686,7 +686,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     Script script = new Script(firstWindow, driver);
     List<RealmInfo> realms = script.getAllRealms();
 
-    assertThat(realms.size()).isEqualTo(2);
+    assertThat(realms).hasSize(2);
 
     RealmInfo firstWindowRealm = realms.get(0);
     assertThat(firstWindowRealm.getRealmType()).isEqualTo(RealmType.WINDOW);
@@ -711,7 +711,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     Script script = new Script(firstWindow, driver);
     List<RealmInfo> realms = script.getRealmsByType(RealmType.WINDOW);
 
-    assertThat(realms.size()).isEqualTo(2);
+    assertThat(realms).hasSize(2);
 
     RealmInfo firstWindowRealm = realms.get(0);
     assertThat(firstWindowRealm.getRealmType()).isEqualTo(RealmType.WINDOW);

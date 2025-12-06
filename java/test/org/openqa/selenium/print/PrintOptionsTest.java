@@ -64,7 +64,7 @@ class PrintOptionsTest {
     printOptions.setPageRanges("1-2");
 
     Map<String, Object> map = printOptions.toMap();
-    assertThat(map.size()).isEqualTo(7);
+    assertThat(map).hasSize(7);
     assertThat(map.containsKey("page")).isTrue();
     assertThat(map.containsKey("orientation")).isTrue();
     assertThat(map.containsKey("scale")).isTrue();
@@ -74,8 +74,8 @@ class PrintOptionsTest {
     assertThat(map.containsKey("margin")).isTrue();
 
     Map<String, Double> margin = (Map<String, Double>) map.get("margin");
-    assertThat(margin.size()).isEqualTo(4);
+    assertThat(margin).hasSize(4);
     Map<String, Double> page = (Map<String, Double>) map.get("page");
-    assertThat(page.size()).isEqualTo(2);
+    assertThat(page).hasSize(2);
   }
 }

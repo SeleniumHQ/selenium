@@ -49,7 +49,7 @@ public class LocateNodesTest extends JupiterTestBase {
     LocateNodeParameters parameters = new LocateNodeParameters(Locator.css("div"));
 
     List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(13);
+    assertThat(elements).hasSize(13);
   }
 
   @Test
@@ -61,7 +61,7 @@ public class LocateNodesTest extends JupiterTestBase {
     driver.get(pages.xhtmlTestPage);
 
     List<RemoteValue> elements = browsingContext.locateNodes(Locator.css("div"));
-    assertThat(elements.size()).isEqualTo(13);
+    assertThat(elements).hasSize(13);
   }
 
   @Test
@@ -95,7 +95,7 @@ public class LocateNodesTest extends JupiterTestBase {
     assertThat(value.getValue().isPresent()).isTrue();
     NodeProperties properties = (NodeProperties) value.getValue().get();
     assertThat(properties.getLocalName().get()).isEqualTo("div");
-    assertThat(properties.getAttributes().get().size()).isEqualTo(1);
+    assertThat(properties.getAttributes().get()).hasSize(1);
     assertThat(properties.getAttributes().get().get("class")).isEqualTo("content");
   }
 
@@ -118,7 +118,7 @@ public class LocateNodesTest extends JupiterTestBase {
     assertThat(value.getValue().isPresent()).isTrue();
     NodeProperties properties = (NodeProperties) value.getValue().get();
     assertThat(properties.getLocalName().get()).isEqualTo("div");
-    assertThat(properties.getAttributes().get().size()).isEqualTo(1);
+    assertThat(properties.getAttributes().get()).hasSize(1);
     assertThat(properties.getAttributes().get().get("class")).isEqualTo("content");
   }
 
@@ -154,7 +154,7 @@ public class LocateNodesTest extends JupiterTestBase {
         new LocateNodeParameters(Locator.css("div")).setMaxNodeCount(4);
 
     List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(4);
+    assertThat(elements).hasSize(4);
   }
 
   @Test
@@ -193,7 +193,7 @@ public class LocateNodesTest extends JupiterTestBase {
             .setMaxNodeCount(50);
 
     List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(35);
+    assertThat(elements).hasSize(35);
   }
 
   @Test
@@ -209,7 +209,7 @@ public class LocateNodesTest extends JupiterTestBase {
         new LocateNodeParameters(Locator.css("div")).setSandbox(sandbox).setMaxNodeCount(1);
 
     List<RemoteValue> elements = browsingContext.locateNodes(parameters);
-    assertThat(elements.size()).isEqualTo(1);
+    assertThat(elements).hasSize(1);
 
     String nodeId = elements.get(0).getSharedId().get();
 

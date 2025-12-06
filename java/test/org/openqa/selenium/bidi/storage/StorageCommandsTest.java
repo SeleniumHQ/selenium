@@ -171,7 +171,7 @@ class StorageCommandsTest extends JupiterTestBase {
 
     GetCookiesResult result1 = storage.getCookies(params1);
 
-    assertThat(result1.getCookies().size()).isEqualTo(0);
+    assertThat(result1.getCookies()).hasSize(0);
   }
 
   @Test
@@ -279,7 +279,7 @@ class StorageCommandsTest extends JupiterTestBase {
 
     openAnotherPage();
     result = storage.getCookies(params);
-    assertThat(result.getCookies().size()).isEqualTo(countBefore + 2);
+    assertThat(result.getCookies()).hasSize(countBefore + 2);
 
     assertThat(result.getCookies().get(0).getName().contains(key1)).isTrue();
     assertThat(result.getCookies().get(1).getName().contains(key2)).isTrue();

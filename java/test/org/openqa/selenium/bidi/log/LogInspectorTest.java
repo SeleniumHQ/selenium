@@ -56,7 +56,7 @@ class LogInspectorTest extends JupiterTestBase {
       assertThat(source.getBrowsingContext().isPresent()).isTrue();
       assertThat(source.getRealm()).isNotNull();
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getArgs().size()).isEqualTo(1);
+      assertThat(logEntry.getArgs()).hasSize(1);
       assertThat(logEntry.getArgs().get(0).getType()).isEqualTo("string");
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
@@ -78,7 +78,7 @@ class LogInspectorTest extends JupiterTestBase {
       ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getArgs().size()).isEqualTo(1);
+      assertThat(logEntry.getArgs()).hasSize(1);
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
@@ -91,12 +91,12 @@ class LogInspectorTest extends JupiterTestBase {
       ConsoleLogEntry errorLogEntry = errorLogFuture.get(5, TimeUnit.SECONDS);
 
       assertThat(errorLogEntry.getText()).isEqualTo("I am console error");
-      assertThat(errorLogEntry.getArgs().size()).isEqualTo(1);
+      assertThat(errorLogEntry.getArgs()).hasSize(1);
       assertThat(errorLogEntry.getType()).isEqualTo("console");
       assertThat(errorLogEntry.getLevel()).isEqualTo(LogLevel.ERROR);
       assertThat(errorLogEntry.getMethod()).isEqualTo("error");
       assertThat(errorLogEntry.getStackTrace()).isNotNull();
-      assertThat(errorLogEntry.getStackTrace().getCallFrames().size()).isEqualTo(2);
+      assertThat(errorLogEntry.getStackTrace().getCallFrames()).hasSize(2);
     }
   }
 
@@ -207,7 +207,7 @@ class LogInspectorTest extends JupiterTestBase {
 
       ConsoleLogEntry consoleLogEntry = logEntry.getConsoleLogEntry().get();
       assertThat(consoleLogEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(consoleLogEntry.getArgs().size()).isEqualTo(1);
+      assertThat(consoleLogEntry.getArgs()).hasSize(1);
       assertThat(consoleLogEntry.getType()).isEqualTo("console");
       assertThat(consoleLogEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(consoleLogEntry.getMethod()).isEqualTo("log");
@@ -232,7 +232,7 @@ class LogInspectorTest extends JupiterTestBase {
       ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getArgs().size()).isEqualTo(1);
+      assertThat(logEntry.getArgs()).hasSize(1);
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");

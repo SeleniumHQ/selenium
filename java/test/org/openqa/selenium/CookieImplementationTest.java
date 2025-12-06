@@ -119,7 +119,7 @@ class CookieImplementationTest extends JupiterTestBase {
 
     openAnotherPage();
     cookies = driver.manage().getCookies();
-    assertThat(cookies.size()).isEqualTo(countBefore + 2);
+    assertThat(cookies).hasSize(countBefore + 2);
 
     assertThat(cookies.contains(one)).isTrue();
     assertThat(cookies.contains(two)).isTrue();
