@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -92,9 +93,12 @@ public sealed class EmulationModule : Module
         return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, _jsonContext.SetGeolocationOverrideCommand, _jsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions options)
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        _jsonContext = new EmulationJsonSerializerContext(options);
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
+
+        _jsonContext = new EmulationJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
@@ -112,4 +116,5 @@ public sealed class EmulationModule : Module
 [JsonSerializable(typeof(SetScreenOrientationOverrideResult))]
 [JsonSerializable(typeof(SetGeolocationOverrideCommand))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
+
 internal partial class EmulationJsonSerializerContext : JsonSerializerContext;
