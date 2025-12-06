@@ -184,6 +184,7 @@ public sealed partial class NetworkModule : Module
             {
                 new CollectorConverter(BiDi),
                 new InterceptConverter(BiDi),
+                new BrowserUserContextConverter(BiDi),
             }
         };
 

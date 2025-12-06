@@ -261,6 +261,7 @@ public sealed class BrowsingContextModule : Module
             {
                 new InternalIdConverter(BiDi),
                 new HandleConverter(BiDi),
+                new BrowserUserContextConverter(BiDi),
             }
         };
 

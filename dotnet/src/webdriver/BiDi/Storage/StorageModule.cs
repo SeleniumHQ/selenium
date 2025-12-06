@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -50,7 +51,13 @@ public sealed class StorageModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var storageOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var storageOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new BrowserUserContextConverter(BiDi),
+            }
+        };
 
         _jsonContext = new StorageJsonSerializerContext(storageOptions);
     }

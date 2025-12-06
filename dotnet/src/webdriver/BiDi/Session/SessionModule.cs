@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -61,7 +62,13 @@ internal sealed class SessionModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var sessionOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var sessionOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new BrowserUserContextConverter(BiDi),
+            }
+        };
 
         _jsonContext = new SessionJsonSerializerContext(sessionOptions);
     }

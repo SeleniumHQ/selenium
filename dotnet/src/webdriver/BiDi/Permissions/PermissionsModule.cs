@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using OpenQA.Selenium.BiDi.Permissions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -37,7 +38,13 @@ public class PermissionsModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var permissionsOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var permissionsOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new BrowserUserContextConverter(BiDi),
+            }
+        };
 
         _jsonContext = new PermissionsJsonSerializerContext(permissionsOptions);
     }

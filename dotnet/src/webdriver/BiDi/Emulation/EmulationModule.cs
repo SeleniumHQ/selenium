@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -94,7 +95,13 @@ public sealed class EmulationModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var emulationOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var emulationOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new BrowserUserContextConverter(BiDi),
+            }
+        };
 
         _jsonContext = new EmulationJsonSerializerContext(emulationOptions);
     }
