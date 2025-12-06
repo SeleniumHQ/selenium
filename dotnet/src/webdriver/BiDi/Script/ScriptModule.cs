@@ -126,6 +126,7 @@ public sealed class ScriptModule : Module
                 new PreloadScriptConverter(BiDi),
                 new RealmConverter(BiDi),
                 new InternalIdConverter(BiDi),
+                new HandleConverter(this),
             }
         };
 

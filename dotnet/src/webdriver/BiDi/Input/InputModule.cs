@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -51,7 +52,13 @@ public sealed class InputModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var inputOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var inputOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new HandleConverter(BiDi),
+            }
+        };
 
         _jsonContext = new InputJsonSerializerContext(inputOptions);
     }

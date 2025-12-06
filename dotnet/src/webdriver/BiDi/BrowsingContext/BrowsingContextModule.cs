@@ -260,6 +260,7 @@ public sealed class BrowsingContextModule : Module
             Converters =
             {
                 new InternalIdConverter(BiDi),
+                new HandleConverter(BiDi),
             }
         };
 

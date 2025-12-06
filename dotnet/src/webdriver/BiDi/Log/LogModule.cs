@@ -47,6 +47,7 @@ public sealed class LogModule : Module
             {
                 new RealmConverter(BiDi),
                 new InternalIdConverter(BiDi),
+                new HandleConverter(this),
             }
         };
 
