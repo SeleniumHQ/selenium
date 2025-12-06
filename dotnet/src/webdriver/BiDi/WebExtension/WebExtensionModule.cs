@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -43,7 +44,13 @@ public sealed class WebExtensionModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var webExtensionOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var webExtensionOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new WebExtensionConverter(BiDi)
+            }
+        };
 
         _jsonContext = new WebExtensionJsonSerializerContext(webExtensionOptions);
     }
