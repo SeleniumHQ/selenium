@@ -56,8 +56,6 @@ public sealed class BiDi : IAsyncDisposable
                 // NOTE: Each module can declare convertes if it depends on it for better AOT trimming
                 new BrowsingContextConverter(this),
                 new BrowserUserContextConverter(this),
-                new CollectorConverter(this),
-                new InterceptConverter(this),
                 new HandleConverter(this),
                 new InternalIdConverter(this),
                 new PreloadScriptConverter(this),

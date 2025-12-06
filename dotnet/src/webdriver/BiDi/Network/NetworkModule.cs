@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -177,7 +178,14 @@ public sealed partial class NetworkModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var networkOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var networkOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new CollectorConverter(BiDi),
+                new InterceptConverter(BiDi),
+            }
+        };
 
         _jsonContext = new NetworkJsonSerializerContext(networkOptions);
     }
