@@ -46,4 +46,14 @@ public sealed record Handle
         get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
         internal set => _bidi = value;
     }
+
+    public bool Equals(Handle? other)
+    {
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+    }
+
+    public override int GetHashCode()
+    {
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
 }
