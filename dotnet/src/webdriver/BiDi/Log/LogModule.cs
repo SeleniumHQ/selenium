@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -40,7 +41,13 @@ public sealed class LogModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var logOptions = new JsonSerializerOptions(jsonSerializerOptions);
+        var logOptions = new JsonSerializerOptions(jsonSerializerOptions)
+        {
+            Converters =
+            {
+                new RealmConverter(BiDi)
+            }
+        };
 
         _jsonContext = new LogJsonSerializerContext(logOptions);
     }
