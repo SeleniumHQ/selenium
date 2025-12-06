@@ -53,6 +53,7 @@ public sealed class BiDi : IAsyncDisposable
                 new DateTimeOffsetConverter(),
 
                 // Hydratable converters which exposes BiDi instance
+                // NOTE: Each module can declare convertes if it depends on it for better AOT trimming
                 new BrowsingContextConverter(this),
                 new BrowserUserContextConverter(this),
                 new CollectorConverter(this),
