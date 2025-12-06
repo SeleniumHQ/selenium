@@ -21,7 +21,6 @@ using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
@@ -113,16 +112,7 @@ public sealed class Broker : IAsyncDisposable
 
                             args.BiDi = _bidi;
 
-                            // handle browsing context subscriber
-                            if (handler.Contexts is not null && args is BrowsingContextEventArgs browsingContextEventArgs && handler.Contexts.Contains(browsingContextEventArgs.Context))
-                            {
-                                await handler.InvokeAsync(args).ConfigureAwait(false);
-                            }
-                            // handle only session subscriber
-                            else if (handler.Contexts is null)
-                            {
-                                await handler.InvokeAsync(args).ConfigureAwait(false);
-                            }
+                            await handler.InvokeAsync(args).ConfigureAwait(false);
                         }
                     }
                 }
@@ -164,7 +154,7 @@ public sealed class Broker : IAsyncDisposable
 
         var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
 
-        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action, options?.Contexts);
+        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
 
         handlers.Add(eventHandler);
 
@@ -180,7 +170,7 @@ public sealed class Broker : IAsyncDisposable
 
         var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
 
-        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func, options?.Contexts);
+        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
 
         handlers.Add(eventHandler);
 

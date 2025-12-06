@@ -91,52 +91,112 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
 
     public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnBeforeRequestSentAsync(handler, options.WithContext(context));
+        return networkModule.OnBeforeRequestSentAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnBeforeRequestSentAsync(handler, options.WithContext(context));
+        return networkModule.OnBeforeRequestSentAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnResponseStartedAsync(handler, options.WithContext(context));
+        return networkModule.OnResponseStartedAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnResponseStartedAsync(handler, options.WithContext(context));
+        return networkModule.OnResponseStartedAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnResponseCompletedAsync(handler, options.WithContext(context));
+        return networkModule.OnResponseCompletedAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnResponseCompletedAsync(handler, options.WithContext(context));
+        return networkModule.OnResponseCompletedAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnFetchErrorAsync(handler, options.WithContext(context));
+        return networkModule.OnFetchErrorAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnFetchErrorAsync(handler, options.WithContext(context));
+        return networkModule.OnFetchErrorAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnAuthRequiredAsync(handler, options.WithContext(context));
+        return networkModule.OnAuthRequiredAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
     public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnAuthRequiredAsync(handler, options.WithContext(context));
+        return networkModule.OnAuthRequiredAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 }
 

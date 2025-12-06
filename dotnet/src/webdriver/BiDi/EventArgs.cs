@@ -33,6 +33,3 @@ public abstract record EventArgs
         internal set => _bidi = value;
     }
 }
-
-public abstract record BrowsingContextEventArgs(BrowsingContext.BrowsingContext Context)
-    : EventArgs;
