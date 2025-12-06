@@ -31,12 +31,40 @@ public sealed class BiDi : IAsyncDisposable
 {
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
+    private readonly JsonSerializerOptions _jsonOptions;
+
     private BiDi(string url)
     {
         var uri = new Uri(url);
 
         Broker = new Broker(this, uri);
+
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+
+            // BiDi returns special numbers such as "NaN" as strings
+            // Additionally, -0 is returned as a string "-0"
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
+            Converters =
+            {
+                new BrowsingContextConverter(this),
+                //new BrowserUserContextConverter(),
+                //new CollectorConverter(),
+                //new InterceptConverter(),
+                //new HandleConverter(),
+                //new InternalIdConverter(),
+                //new PreloadScriptConverter(),
+                //new RealmConverter(),
+                new DateTimeOffsetConverter(),
+                //new WebExtensionConverter(),
+            }
+        };
     }
+
+    private Broker Broker { get; }
 
     internal Session.SessionModule SessionModule => AsModule<Session.SessionModule>();
 
@@ -85,35 +113,6 @@ public sealed class BiDi : IAsyncDisposable
 
     public T AsModule<T>() where T : Module, new()
     {
-        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker));
-    }
-
-    private Broker Broker { get; }
-
-    private JsonSerializerOptions GetJsonOptions()
-    {
-        return new JsonSerializerOptions
-        {
-            //PropertyNameCaseInsensitive = true,
-            //PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            //DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-
-            // BiDi returns special numbers such as "NaN" as strings
-            // Additionally, -0 is returned as a string "-0"
-            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
-            Converters =
-            {
-                //new BrowsingContextConverter(),
-                //new BrowserUserContextConverter(),
-                //new CollectorConverter(),
-                //new InterceptConverter(),
-                //new HandleConverter(),
-                //new InternalIdConverter(),
-                //new PreloadScriptConverter(),
-                //new RealmConverter(),
-                new DateTimeOffsetConverter(),
-                //new WebExtensionConverter(),
-            }
-        };
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, _jsonOptions));
     }
 }

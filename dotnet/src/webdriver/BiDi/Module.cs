@@ -17,6 +17,8 @@
 // under the License.
 // </copyright>
 
+using System.Text.Json;
+
 namespace OpenQA.Selenium.BiDi;
 
 public abstract class Module
@@ -25,7 +27,9 @@ public abstract class Module
 
     protected Broker Broker { get; private set; } = null!;
 
-    internal static TModule Create<TModule>(BiDi bidi, Broker broker)
+    protected abstract void Initialize(JsonSerializerOptions jsonSerializerOptions);
+
+    internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
         where TModule : Module, new()
     {
         TModule module = new()
@@ -33,6 +37,8 @@ public abstract class Module
             BiDi = bidi,
             Broker = broker
         };
+
+        module.Initialize(jsonSerializerOptions);
 
         return module;
     }

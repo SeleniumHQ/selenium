@@ -21,6 +21,7 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed class ScriptModule : Module
 {
-    private static readonly ScriptJsonSerializerContext _jsonContext = ScriptJsonSerializerContext.Default;
+    private ScriptJsonSerializerContext _jsonContext = null!;
 
     public async Task<EvaluateResult> EvaluateAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string expression, bool awaitPromise, Target target, EvaluateOptions? options = null)
     {
@@ -114,6 +115,13 @@ public sealed class ScriptModule : Module
     public async Task<Subscription> OnRealmDestroyedAsync(Action<RealmDestroyedEventArgs> handler, SubscriptionOptions? options = null)
     {
         return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
+    }
+
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    {
+        var scriptOptions = new JsonSerializerOptions(jsonSerializerOptions);
+
+        _jsonContext = new ScriptJsonSerializerContext(scriptOptions);
     }
 }
 

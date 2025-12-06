@@ -18,6 +18,7 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Json.Converters;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -25,7 +26,7 @@ namespace OpenQA.Selenium.BiDi.WebExtension;
 
 public sealed class WebExtensionModule : Module
 {
-    private static readonly WebExtensionJsonSerializerContext _jsonContext = WebExtensionJsonSerializerContext.Default;
+    private WebExtensionJsonSerializerContext _jsonContext = null!;
 
     public async Task<InstallResult> InstallAsync(ExtensionData extensionData, InstallOptions? options = null)
     {
@@ -39,6 +40,13 @@ public sealed class WebExtensionModule : Module
         var @params = new UninstallParameters(extension);
 
         return await Broker.ExecuteCommandAsync(new UninstallCommand(@params), options, _jsonContext.UninstallCommand, _jsonContext.UninstallResult).ConfigureAwait(false);
+    }
+
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    {
+        var webExtensionOptions = new JsonSerializerOptions(jsonSerializerOptions);
+
+        _jsonContext = new WebExtensionJsonSerializerContext(webExtensionOptions);
     }
 }
 

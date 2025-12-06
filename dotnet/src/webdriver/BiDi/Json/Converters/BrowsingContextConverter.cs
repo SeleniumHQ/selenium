@@ -25,11 +25,18 @@ namespace OpenQA.Selenium.BiDi.Json.Converters;
 
 internal class BrowsingContextConverter : JsonConverter<BrowsingContext.BrowsingContext>
 {
+    private readonly BiDi _bidi;
+
+    public BrowsingContextConverter(BiDi bidi)
+    {
+        _bidi = bidi;
+    }
+
     public override BrowsingContext.BrowsingContext? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new BrowsingContext.BrowsingContext(id!);
+        return new BrowsingContext.BrowsingContext(id!) { BiDi = _bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, BrowsingContext.BrowsingContext value, JsonSerializerOptions options)

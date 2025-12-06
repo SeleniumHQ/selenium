@@ -19,6 +19,7 @@
 
 using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -26,7 +27,7 @@ namespace OpenQA.Selenium.BiDi.Session;
 
 internal sealed class SessionModule : Module
 {
-    private static readonly SessionJsonSerializerContext _jsonContext = SessionJsonSerializerContext.Default;
+    private SessionJsonSerializerContext _jsonContext = null!;
 
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {
@@ -57,6 +58,13 @@ internal sealed class SessionModule : Module
     public async Task<EndResult> EndAsync(EndOptions? options = null)
     {
         return await Broker.ExecuteCommandAsync(new EndCommand(), options, _jsonContext.EndCommand, _jsonContext.EndResult).ConfigureAwait(false);
+    }
+
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    {
+        var sessionOptions = new JsonSerializerOptions(jsonSerializerOptions);
+
+        _jsonContext = new SessionJsonSerializerContext(sessionOptions);
     }
 }
 
