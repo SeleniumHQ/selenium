@@ -24,6 +24,13 @@ namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed record Collector
 {
+    public Collector(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal Collector(string id)
     {
         Id = id;

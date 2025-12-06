@@ -24,6 +24,13 @@ namespace OpenQA.Selenium.BiDi.Browser;
 
 public sealed record UserContext
 {
+    public UserContext(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal UserContext(string id)
     {
         Id = id;

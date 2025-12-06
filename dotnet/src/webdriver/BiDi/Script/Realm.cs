@@ -24,6 +24,13 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed record Realm
 {
+    public Realm(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal Realm(string id)
     {
         Id = id;

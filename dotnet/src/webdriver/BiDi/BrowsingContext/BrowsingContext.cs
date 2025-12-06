@@ -26,6 +26,13 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContext
 {
+    public BrowsingContext(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal BrowsingContext(string id)
     {
         Id = id;

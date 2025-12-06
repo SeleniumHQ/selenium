@@ -24,6 +24,13 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed record PreloadScript
 {
+    public PreloadScript(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal PreloadScript(string id)
     {
         Id = id;

@@ -24,6 +24,13 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed record InternalId
 {
+    public InternalId(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal InternalId(string id)
     {
         Id = id;

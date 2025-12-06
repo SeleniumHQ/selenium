@@ -24,6 +24,13 @@ namespace OpenQA.Selenium.BiDi.WebExtension;
 
 public sealed record Extension
 {
+    public Extension(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal Extension(string id)
     {
         Id = id;

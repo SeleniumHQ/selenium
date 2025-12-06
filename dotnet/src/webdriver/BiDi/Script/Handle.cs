@@ -24,6 +24,13 @@ namespace OpenQA.Selenium.BiDi.Script;
 
 public sealed record Handle
 {
+    public Handle(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal Handle(string id)
     {
         Id = id;

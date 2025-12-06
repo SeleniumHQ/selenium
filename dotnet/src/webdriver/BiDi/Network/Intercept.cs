@@ -24,6 +24,13 @@ namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed record Intercept
 {
+    public Intercept(BiDi bidi, string id)
+        : this(id)
+    {
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
     internal Intercept(string id)
     {
         Id = id;
