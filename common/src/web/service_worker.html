@@ -3,11 +3,13 @@
 <head>
   <title>Service Worker Test Page</title>
   <script>
-    if (navigator.serviceWorker) {
-      navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
-        .then(() => navigator.serviceWorker.ready)
-        .then(() => console.debug("[Companion]", "Service worker registered!"));
-    }
+    setTimeout(() => {
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
+          .then(() => navigator.serviceWorker.ready)
+          .then(() => console.debug("[Companion]", "Service worker registered!"));
+      }
+    }, 100)
   </script>
 </head>
 <body>
