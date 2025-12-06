@@ -255,18 +255,12 @@ public sealed class BrowsingContextModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var browsingContextOptions = new JsonSerializerOptions(jsonSerializerOptions)
-        {
-            Converters =
-            {
-                new BrowsingContextConverter(BiDi),
-                new InternalIdConverter(BiDi),
-                new HandleConverter(BiDi),
-                new BrowserUserContextConverter(BiDi),
-            }
-        };
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
 
-        _jsonContext = new BrowsingContextJsonSerializerContext(browsingContextOptions);
+        _jsonContext = new BrowsingContextJsonSerializerContext(jsonSerializerOptions);
     }
 }
 

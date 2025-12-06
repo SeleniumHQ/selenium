@@ -178,18 +178,12 @@ public sealed partial class NetworkModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var networkOptions = new JsonSerializerOptions(jsonSerializerOptions)
-        {
-            Converters =
-            {
-                new BrowsingContextConverter(BiDi),
-                new CollectorConverter(BiDi),
-                new InterceptConverter(BiDi),
-                new BrowserUserContextConverter(BiDi),
-            }
-        };
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new CollectorConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new InterceptConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
 
-        _jsonContext = new NetworkJsonSerializerContext(networkOptions);
+        _jsonContext = new NetworkJsonSerializerContext(jsonSerializerOptions);
     }
 }
 

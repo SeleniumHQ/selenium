@@ -95,16 +95,10 @@ public sealed class EmulationModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var emulationOptions = new JsonSerializerOptions(jsonSerializerOptions)
-        {
-            Converters =
-            {
-                new BrowsingContextConverter(BiDi),
-                new BrowserUserContextConverter(BiDi),
-            }
-        };
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
 
-        _jsonContext = new EmulationJsonSerializerContext(emulationOptions);
+        _jsonContext = new EmulationJsonSerializerContext(jsonSerializerOptions);
     }
 }
 

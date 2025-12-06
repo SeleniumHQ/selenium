@@ -41,18 +41,12 @@ public sealed class LogModule : Module
 
     protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        var logOptions = new JsonSerializerOptions(jsonSerializerOptions)
-        {
-            Converters =
-            {
-                new BrowsingContextConverter(BiDi),
-                new RealmConverter(BiDi),
-                new InternalIdConverter(BiDi),
-                new HandleConverter(BiDi),
-            }
-        };
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new RealmConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
 
-        _jsonContext = new LogJsonSerializerContext(logOptions);
+        _jsonContext = new LogJsonSerializerContext(jsonSerializerOptions);
     }
 }
 

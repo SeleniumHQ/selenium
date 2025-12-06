@@ -31,25 +31,11 @@ public sealed class BiDi : IAsyncDisposable
 {
     private readonly ConcurrentDictionary<Type, Module> _modules = new();
 
-    private readonly JsonSerializerOptions _jsonOptions;
-
     private BiDi(string url)
     {
         var uri = new Uri(url);
 
         Broker = new Broker(this, uri);
-
-        _jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-
-            Converters =
-            {
-                new DateTimeOffsetConverter(),
-            }
-        };
     }
 
     private Broker Broker { get; }
@@ -101,6 +87,20 @@ public sealed class BiDi : IAsyncDisposable
 
     public T AsModule<T>() where T : Module, new()
     {
-        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, _jsonOptions));
+        return (T)_modules.GetOrAdd(typeof(T), _ => Module.Create<T>(this, Broker, CreateDefaultJsonOptions()));
+    }
+
+    private static JsonSerializerOptions CreateDefaultJsonOptions()
+    {
+        return new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters =
+            {
+                new DateTimeOffsetConverter(),
+            }
+        };
     }
 }
