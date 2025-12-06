@@ -24,25 +24,28 @@ module Selenium
     describe Element, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it 'clicks' do
         driver.navigate.to url_for('formPage.html')
-        expect { driver.find_element(id: 'imageButton').click }.not_to raise_error
+        element = wait_for_element(id: 'imageButton')
+        expect { element.click }.not_to raise_error
         reset_driver!(time: 1) if %i[safari safari_preview].include? GlobalTestEnv.browser
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
       it 'raises if different element receives click', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
-        expect { driver.find_element(id: 'contents').click }.to raise_error(Error::ElementClickInterceptedError)
+        element = wait_for_element(id: 'contents')
+        expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
       it 'raises if element is partially covered', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
-        expect { driver.find_element(id: 'other_contents').click }.to raise_error(Error::ElementClickInterceptedError)
+        element = wait_for_element(id: 'other_contents')
+        expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
       it 'raises if element stale' do
         driver.navigate.to url_for('formPage.html')
-        button = driver.find_element(id: 'imageButton')
+        button = wait_for_element(id: 'imageButton')
         driver.navigate.refresh
 
         expect { button.click }.to raise_exception(Error::StaleElementReferenceError,
@@ -54,7 +57,7 @@ module Selenium
       describe '#submit' do
         it 'valid submit button' do
           driver.navigate.to url_for('formPage.html')
-          driver.find_element(id: 'submitButton').submit
+          wait_for_element(id: 'submitButton').submit
 
           sleep 0.5
           expect(driver.title).to eq('We Arrive Here')
@@ -62,7 +65,7 @@ module Selenium
 
         it 'any input element in form' do
           driver.navigate.to url_for('formPage.html')
-          driver.find_element(id: 'checky').submit
+          wait_for_element(id: 'checky').submit
 
           sleep 0.5
           expect(driver.title).to eq('We Arrive Here')
@@ -70,7 +73,7 @@ module Selenium
 
         it 'any element in form' do
           driver.navigate.to url_for('formPage.html')
-          driver.find_element(css: 'form > p').submit
+          wait_for_element(css: 'form > p').submit
 
           sleep 0.5
           expect(driver.title).to eq('We Arrive Here')
@@ -78,7 +81,7 @@ module Selenium
 
         it 'button with id submit' do
           driver.navigate.to url_for('formPage.html')
-          driver.find_element(id: 'submit').submit
+          wait_for_element(id: 'submit').submit
 
           sleep 0.5
           expect(driver.title).to eq('We Arrive Here')
@@ -86,7 +89,7 @@ module Selenium
 
         it 'button with name submit' do
           driver.navigate.to url_for('formPage.html')
-          driver.find_element(name: 'submit').submit
+          wait_for_element(name: 'submit').submit
 
           sleep 0.5
           expect(driver.title).to eq('We Arrive Here')
@@ -94,7 +97,8 @@ module Selenium
 
         it 'errors with button outside form' do
           driver.navigate.to url_for('formPage.html')
-          expect { driver.find_element(name: 'SearchableText').submit }.to raise_error(Error::UnsupportedOperationError)
+          element = wait_for_element(name: 'SearchableText')
+          expect { element.submit }.to raise_error(Error::UnsupportedOperationError)
         end
       end
 
@@ -113,7 +117,7 @@ module Selenium
 
       it 'sends key presses' do
         driver.navigate.to url_for('javascriptPage.html')
-        key_reporter = driver.find_element(id: 'keyReporter')
+        key_reporter = wait_for_element(id: 'keyReporter')
 
         key_reporter.send_keys('Tet', :arrow_left, 's')
         expect(key_reporter.attribute('value')).to eq('Test')
@@ -122,7 +126,7 @@ module Selenium
       # https://github.com/mozilla/geckodriver/issues/245
       it 'sends key presses chords', except: {browser: %i[firefox safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
-        key_reporter = driver.find_element(id: 'keyReporter')
+        key_reporter = wait_for_element(id: 'keyReporter')
 
         key_reporter.send_keys([:shift, 'h'], 'ello')
         expect(key_reporter.attribute('value')).to eq('Hello')
@@ -131,7 +135,7 @@ module Selenium
       it 'handles file uploads' do
         driver.navigate.to url_for('formPage.html')
 
-        element = driver.find_element(id: 'upload')
+        element = wait_for_element(id: 'upload')
         expect(element.attribute('value')).to be_empty
 
         path = WebDriver::Platform.windows? ? WebDriver::Platform.windows_path(__FILE__) : __FILE__
@@ -145,7 +149,7 @@ module Selenium
         before { driver.navigate.to url_for('formPage.html') }
 
         context 'when string type' do
-          let(:element) { driver.find_element(id: 'checky') }
+          let(:element) { wait_for_element(id: 'checky') }
           let(:prop_or_attr) { 'type' }
 
           it '#dom_attribute returns attribute value' do
@@ -162,7 +166,7 @@ module Selenium
         end
 
         context 'when numeric type' do
-          let(:element) { driver.find_element(id: 'withText') }
+          let(:element) { wait_for_element(id: 'withText') }
           let(:prop_or_attr) { 'rows' }
 
           it '#dom_attribute String' do
@@ -179,7 +183,7 @@ module Selenium
         end
 
         context 'with boolean type of true' do
-          let(:element) { driver.find_element(id: 'checkedchecky') }
+          let(:element) { wait_for_element(id: 'checkedchecky') }
           let(:prop_or_attr) { 'checked' }
 
           it '#dom_attribute returns String', except: {browser: :safari} do
@@ -211,7 +215,7 @@ module Selenium
         end
 
         context 'with boolean type of false' do
-          let(:element) { driver.find_element(id: 'checky') }
+          let(:element) { wait_for_element(id: 'checky') }
           let(:prop_or_attr) { 'checked' }
 
           it '#dom_attribute returns nil' do
@@ -243,7 +247,7 @@ module Selenium
         end
 
         context 'when property exists but attribute does not' do
-          let(:element) { driver.find_element(id: 'withText') }
+          let(:element) { wait_for_element(id: 'withText') }
           let(:prop_or_attr) { 'value' }
 
           it '#dom_attribute returns nil' do
@@ -270,7 +274,7 @@ module Selenium
         end
 
         context 'when attribute exists but property does not' do
-          let(:element) { driver.find_element(id: 'vsearchGadget') }
+          let(:element) { wait_for_element(id: 'vsearchGadget') }
           let(:prop_or_attr) { 'accesskey' }
 
           it '#dom_attribute returns attribute' do
@@ -287,7 +291,7 @@ module Selenium
         end
 
         context 'when neither attribute nor property exists' do
-          let(:element) { driver.find_element(id: 'checky') }
+          let(:element) { wait_for_element(id: 'checky') }
           let(:prop_or_attr) { 'nonexistent' }
 
           it '#dom_attribute returns nil' do
@@ -306,7 +310,7 @@ module Selenium
         describe 'style' do
           before { driver.navigate.to url_for('clickEventPage.html') }
 
-          let(:element) { driver.find_element(id: 'result') }
+          let(:element) { wait_for_element(id: 'result') }
           let(:prop_or_attr) { 'style' }
 
           it '#dom_attribute attribute with no formatting' do
@@ -327,7 +331,7 @@ module Selenium
         end
 
         describe 'incorrect casing' do
-          let(:element) { driver.find_element(id: 'checky') }
+          let(:element) { wait_for_element(id: 'checky') }
           let(:prop_or_attr) { 'nAme' }
 
           it '#dom_attribute returns correctly cased attribute' do
@@ -344,7 +348,7 @@ module Selenium
         end
 
         describe 'property attribute case difference with attribute casing' do
-          let(:element) { driver.find_element(name: 'readonly') }
+          let(:element) { wait_for_element(name: 'readonly') }
           let(:prop_or_attr) { 'readonly' }
 
           it '#dom_attribute returns a String', except: {browser: :safari} do
@@ -361,7 +365,7 @@ module Selenium
         end
 
         describe 'property attribute case difference with property casing' do
-          let(:element) { driver.find_element(name: 'readonly') }
+          let(:element) { wait_for_element(name: 'readonly') }
           let(:prop_or_attr) { 'readOnly' }
 
           it '#dom_attribute returns a String',
@@ -381,7 +385,7 @@ module Selenium
         end
 
         describe 'property attribute name difference with attribute naming' do
-          let(:element) { driver.find_element(id: 'wallace') }
+          let(:element) { wait_for_element(id: 'wallace') }
           let(:prop_or_attr) { 'class' }
 
           it '#dom_attribute returns attribute value' do
@@ -398,7 +402,7 @@ module Selenium
         end
 
         describe 'property attribute name difference with property naming' do
-          let(:element) { driver.find_element(id: 'wallace') }
+          let(:element) { wait_for_element(id: 'wallace') }
           let(:prop_or_attr) { 'className' }
 
           it '#dom_attribute returns nil' do
@@ -415,7 +419,7 @@ module Selenium
         end
 
         describe 'property attribute value difference' do
-          let(:element) { driver.find_element(tag_name: 'form') }
+          let(:element) { wait_for_element(tag_name: 'form') }
           let(:prop_or_attr) { 'action' }
 
           it '#dom_attribute returns attribute value' do
@@ -449,14 +453,15 @@ module Selenium
 
       it 'clears' do
         driver.navigate.to url_for('formPage.html')
-        expect { driver.find_element(id: 'withText').clear }.not_to raise_error
+        element = wait_for_element(id: 'withText')
+        expect { element.clear }.not_to raise_error
       end
 
       it 'gets and set selected' do
         driver.navigate.to url_for('formPage.html')
 
-        cheese = driver.find_element(id: 'cheese')
-        peas = driver.find_element(id: 'peas')
+        cheese = wait_for_element(id: 'cheese')
+        peas = wait_for_element(id: 'peas')
 
         cheese.click
 
@@ -471,23 +476,26 @@ module Selenium
 
       it 'gets enabled' do
         driver.navigate.to url_for('formPage.html')
-        expect(driver.find_element(id: 'notWorking')).not_to be_enabled
+        element = wait_for_element(id: 'notWorking')
+        expect(element).not_to be_enabled
       end
 
       it 'gets text' do
         driver.navigate.to url_for('xhtmlTest.html')
-        expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
+        element = wait_for_element(class: 'header')
+        expect(element.text).to eq('XHTML Might Be The Future')
       end
 
       it 'gets displayed' do
         driver.navigate.to url_for('xhtmlTest.html')
-        expect(driver.find_element(class: 'header')).to be_displayed
+        element = wait_for_element(class: 'header')
+        expect(element).to be_displayed
       end
 
       describe 'size and location' do
         it 'gets current location' do
           driver.navigate.to url_for('xhtmlTest.html')
-          loc = driver.find_element(class: 'header').location
+          loc = wait_for_element(class: 'header').location
 
           expect(loc.x).to be >= 1
           expect(loc.y).to be >= 1
@@ -495,7 +503,7 @@ module Selenium
 
         it 'gets location once scrolled into view' do
           driver.navigate.to url_for('javascriptPage.html')
-          loc = driver.find_element(id: 'keyUp').location_once_scrolled_into_view
+          loc = wait_for_element(id: 'keyUp').location_once_scrolled_into_view
 
           expect(loc.x).to be >= 1
           expect(loc.y).to be >= 0 # can be 0 if scrolled to the top
@@ -503,7 +511,7 @@ module Selenium
 
         it 'gets size' do
           driver.navigate.to url_for('xhtmlTest.html')
-          size = driver.find_element(class: 'header').size
+          size = wait_for_element(class: 'header').size
 
           expect(size.width).to be_positive
           expect(size.height).to be_positive
@@ -511,7 +519,7 @@ module Selenium
 
         it 'gets rect' do
           driver.navigate.to url_for('xhtmlTest.html')
-          rect = driver.find_element(class: 'header').rect
+          rect = wait_for_element(class: 'header').rect
 
           expect(rect.x).to be_positive
           expect(rect.y).to be_positive
@@ -524,8 +532,8 @@ module Selenium
       it 'drags and drop', except: {browser: :ie} do
         driver.navigate.to url_for('dragAndDropTest.html')
 
-        img1 = driver.find_element(id: 'test1')
-        img2 = driver.find_element(id: 'test2')
+        img1 = wait_for_element(id: 'test1')
+        img2 = wait_for_element(id: 'test2')
 
         driver.action.drag_and_drop_by(img1, 100, 100)
               .drag_and_drop(img2, img1)
@@ -536,7 +544,7 @@ module Selenium
 
       it 'gets css property' do
         driver.navigate.to url_for('javascriptPage.html')
-        element = driver.find_element(id: 'green-parent')
+        element = wait_for_element(id: 'green-parent')
 
         style1 = element.css_value('background-color')
         style2 = element.style('background-color') # backwards compatibility
@@ -548,8 +556,8 @@ module Selenium
       it 'knows when two elements are equal' do
         driver.navigate.to url_for('simpleTest.html')
 
-        body = driver.find_element(tag_name: 'body')
-        xbody = driver.find_element(xpath: '//body')
+        body = wait_for_element(tag_name: 'body')
+        xbody = wait_for_element(xpath: '//body')
         jsbody = driver.execute_script('return document.getElementsByTagName("body")[0]')
 
         expect(body).to eq(xbody)
