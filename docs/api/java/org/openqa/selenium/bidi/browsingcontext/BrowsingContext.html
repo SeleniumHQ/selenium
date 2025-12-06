@@ -91,7 +91,8 @@ loadScripts(document, 'script');</script>
 </div>
 <section class="class-description" id="class-description">
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">BrowsingContext</span>
+<div class="type-signature"><span class="annotations">@NullMarked
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">BrowsingContext</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 </section>
 <section class="summary">
@@ -231,14 +232,27 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reload(org.openqa.selenium.bidi.browsingcontext.ReadinessState)" class="member-name-link">reload</a><wbr>(<a href="ReadinessState.html" title="enum class in org.openqa.selenium.bidi.browsingcontext">ReadinessState</a>&nbsp;readinessState)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setViewport(double,double)" class="member-name-link">setViewport</a><wbr>(double&nbsp;width,
- double&nbsp;height)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setViewport(int,int)" class="member-name-link">setViewport</a><wbr>(int&nbsp;width,
+ int&nbsp;height)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setViewport(double,double,double)" class="member-name-link">setViewport</a><wbr>(double&nbsp;width,
- double&nbsp;height,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setViewport(int,int,double)" class="member-name-link">setViewport</a><wbr>(int&nbsp;width,
+ int&nbsp;height,
  double&nbsp;devicePixelRatio)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setViewport(java.lang.Double,java.lang.Double)" class="member-name-link">setViewport</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;width,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;height)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Set viewport size to given width and height (aka "mobile emulation" mode).</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setViewport(java.lang.Double,java.lang.Double,java.lang.Double)" class="member-name-link">setViewport</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;width,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;height,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;devicePixelRatio)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Set viewport's size and pixel ratio (aka "mobile emulation" mode).</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#traverseHistory(long)" class="member-name-link">traverseHistory</a><wbr>(long&nbsp;delta)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -424,18 +438,55 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="setViewport(double,double)">
+<section class="detail" id="setViewport(int,int)">
 <h3>setViewport</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setViewport</span><wbr><span class="parameters">(double&nbsp;width,
- double&nbsp;height)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setViewport</span><wbr><span class="parameters">(int&nbsp;width,
+ int&nbsp;height)</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="setViewport(double,double,double)">
+<section class="detail" id="setViewport(int,int,double)">
 <h3>setViewport</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setViewport</span><wbr><span class="parameters">(double&nbsp;width,
- double&nbsp;height,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setViewport</span><wbr><span class="parameters">(int&nbsp;width,
+ int&nbsp;height,
  double&nbsp;devicePixelRatio)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="setViewport(java.lang.Double,java.lang.Double)">
+<h3>setViewport</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setViewport</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;width,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;height)</span></div>
+<div class="block">Set viewport size to given width and height (aka "mobile emulation" mode).
+
+ <p>If both <code>width</code> and <code>height</code> are null, then resets viewport to the initial size
+ (aka "desktop" mode).</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>width</code> - null or positive</dd>
+<dd><code>height</code> - null or positive</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setViewport(java.lang.Double,java.lang.Double,java.lang.Double)">
+<h3>setViewport</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setViewport</span><wbr><span class="parameters">(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;width,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;height,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Double.html" title="class or interface in java.lang" class="external-link">Double</a>&nbsp;devicePixelRatio)</span></div>
+<div class="block">Set viewport's size and pixel ratio (aka "mobile emulation" mode).
+
+ <p>If both <code>width</code> and <code>height</code> are null then resets viewport to the initial size
+ (aka "desktop" mode).
+
+ <p>If <code>devicePixelRatio</code> is null then resets DPR to browser’s default DPR (usually 1.0 on
+ desktop).</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>width</code> - null or positive</dd>
+<dd><code>height</code> - null or positive</dd>
+<dd><code>devicePixelRatio</code> - null or positive</dd>
+</dl>
 </section>
 </li>
 <li>

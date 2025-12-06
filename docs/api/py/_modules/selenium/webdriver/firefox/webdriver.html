@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.firefox.webdriver </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -214,7 +214,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.driver_finder</span><span class="w"> </span><span class="kn">import</span> <span class="n">DriverFinder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.firefox.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">Options</span>
@@ -233,19 +232,17 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Service</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">service</span><span class="p">:</span> <span class="n">Service</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Creates a new instance of the Firefox driver. Starts the service and</span>
-<span class="sd">        then creates new instance of Firefox driver.</span>
+<span class="w">        </span><span class="sd">"""Create a new instance of the Firefox driver, start the service, and create new instance.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            options: Instance of ``options.Options``.</span>
 <span class="sd">            service: (Optional) service instance for managing the starting and stopping of the driver.</span>
 <span class="sd">            keep_alive: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.</span>
 <span class="sd">        """</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">Service</span><span class="p">()</span>
         <span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">Options</span><span class="p">()</span>
 
@@ -299,9 +296,10 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.context">[docs]</a>
     <span class="nd">@contextmanager</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Sets the context that Selenium commands are running in using a</span>
-<span class="sd">        `with` statement. The state of the context on the server is saved</span>
-<span class="sd">        before entering the block, and restored upon exiting it.</span>
+<span class="w">        </span><span class="sd">"""Set the context that Selenium commands are running in using a `with` statement.</span>
+
+<span class="sd">        The state of the context on the server is saved before entering the block,</span>
+<span class="sd">        and restored upon exiting it.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: Context, may be one of the class properties</span>
@@ -338,7 +336,6 @@
 <span class="sd">        Example:</span>
 <span class="sd">            driver.install_addon("/path/to/firebug.xpi")</span>
 <span class="sd">        """</span>
-
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
             <span class="c1"># filter all trailing slash found in path</span>
@@ -376,13 +373,14 @@
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_file">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_file">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_full_page_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Saves a full document screenshot of the current window to a PNG</span>
-<span class="sd">        image file. Returns False if there is any IOError, else returns True.</span>
-<span class="sd">        Use full paths in your filename.</span>
+<span class="w">        </span><span class="sd">"""Save a full document screenshot of the current window to a PNG image file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename: The full path you wish to save your screenshot to. This</span>
 <span class="sd">                should end with a `.png` extension.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            False if there is any IOError, else returns True. Use full paths in your filename.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            driver.get_full_page_screenshot_as_file("/Screenshots/foo.png")</span>
@@ -406,13 +404,14 @@
 <div class="viewcode-block" id="WebDriver.save_full_page_screenshot">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.save_full_page_screenshot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save_full_page_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Saves a full document screenshot of the current window to a PNG</span>
-<span class="sd">        image file. Returns False if there is any IOError, else returns True.</span>
-<span class="sd">        Use full paths in your filename.</span>
+<span class="w">        </span><span class="sd">"""Save a full document screenshot of the current window to a PNG image file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename: The full path you wish to save your screenshot to. This</span>
 <span class="sd">                should end with a `.png` extension.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            False if there is any IOError, else returns True. Use full paths in your filename.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            driver.save_full_page_screenshot("/Screenshots/foo.png")</span>
@@ -423,8 +422,7 @@
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_png">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_png">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_full_page_screenshot_as_png</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Gets the full document screenshot of the current window as a binary</span>
-<span class="sd">        data.</span>
+<span class="w">        </span><span class="sd">"""Get the full document screenshot of the current window as binary data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Binary data of the screenshot.</span>
@@ -438,8 +436,7 @@
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_base64">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_base64">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_full_page_screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Gets the full document screenshot of the current window as a base64</span>
-<span class="sd">        encoded string which is useful in embedded images in HTML.</span>
+<span class="w">        </span><span class="sd">"""Get the full document screenshot of the current window as a base64-encoded string.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Base64 encoded string of the screenshot.</span>

@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.firefox.firefox_profile &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.firefox.firefox_profile &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.firefox.firefox_profile </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -355,8 +355,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">encoded</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Updates preferences and creates a zipped, base64 encoded string of</span>
-<span class="sd">        profile directory."""</span>
+<span class="w">        </span><span class="sd">"""Update preferences and create a zipped, base64-encoded profile directory string."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_desired_preferences</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_preferences</span><span class="p">()</span>
         <span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
@@ -369,8 +368,7 @@
         <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"UTF-8"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_existing_userjs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userjs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Reads existing preferences and adds them to desired preference</span>
-<span class="sd">        dictionary."""</span>
+<span class="w">        </span><span class="sd">"""Read existing preferences and add them to the desired preference dictionary."""</span>
         <span class="n">pref_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'user_pref\("(.*)",\s(.*)\)'</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">userjs</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">usr</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
@@ -384,8 +382,7 @@
 
     <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">"Addons must be added after starting the session"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_install_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addon</span><span class="p">,</span> <span class="n">unpack</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Installs addon from a filepath, url or directory of addons in the</span>
-<span class="sd">        profile.</span>
+<span class="w">        </span><span class="sd">"""Install addon from a filepath, URL, or directory of addons in the profile.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            addon: url, absolute path to .xpi, or directory of addons</span>
@@ -447,7 +444,6 @@
 <span class="sd">                "unpack": False,</span>
 <span class="sd">            }  # whether to unpack the addon</span>
 <span class="sd">        """</span>
-
         <span class="n">details</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"unpack"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"version"</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
@@ -470,8 +466,7 @@
             <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">parse_manifest_json</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">"""Extracts the details from the contents of a WebExtensions</span>
-<span class="sd">            `manifest.json` file."""</span>
+<span class="w">            </span><span class="sd">"""Extract details from the contents of a WebExtensions manifest.json file."""</span>
             <span class="n">manifest</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="nb">id</span> <span class="o">=</span> <span class="n">manifest</span><span class="p">[</span><span class="s2">"applications"</span><span class="p">][</span><span class="s2">"gecko"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">]</span>

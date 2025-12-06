@@ -11,4 +11,7 @@ selenium.webdriver.common.bidi.emulation
       Emulation
       GeolocationCoordinates
       GeolocationPositionError
+      ScreenOrientation
+      ScreenOrientationNatural
+      ScreenOrientationType
    

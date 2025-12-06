@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.print_page_options &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.print_page_options &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.print_page_options </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -210,7 +210,7 @@
 <span class="c1"># under the License.</span>
 
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TypedDict</span>
@@ -249,7 +249,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_page</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -270,7 +270,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_margin</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -285,7 +285,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -303,7 +303,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Orientation</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Orientation</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">_print_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -355,243 +355,166 @@
     <span class="n">page_height</span> <span class="o">=</span> <span class="n">_PageSettingsDescriptor</span><span class="p">(</span><span class="s2">"height"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets page_height:</span>
 
-<span class="sd">    Usage</span>
-<span class="sd">    -----</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.page_height`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.page_height` = `value`</span>
+<span class="sd">    Usage:</span>
+<span class="sd">        - Get: `self.page_height`</span>
+<span class="sd">        - Set: `self.page_height = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: float value for page height.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[float]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[float]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">page_width</span> <span class="o">=</span> <span class="n">_PageSettingsDescriptor</span><span class="p">(</span><span class="s2">"width"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets page_width:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.page_width`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.page_width` = `value`</span>
+<span class="sd">        - Get: `self.page_width`</span>
+<span class="sd">        - Set: `self.page_width = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: float value for page width.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[float]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[float]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">margin_top</span> <span class="o">=</span> <span class="n">_MarginSettingsDescriptor</span><span class="p">(</span><span class="s2">"top"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets margin_top:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.margin_top`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.margin_top` = `value`</span>
+<span class="sd">        - Get: `self.margin_top`</span>
+<span class="sd">        - Set: `self.margin_top = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: float value for top margin.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[float]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[float]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">margin_bottom</span> <span class="o">=</span> <span class="n">_MarginSettingsDescriptor</span><span class="p">(</span><span class="s2">"bottom"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets margin_bottom:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.margin_bottom`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.margin_bottom` = `value`</span>
+<span class="sd">        - Get: `self.margin_bottom`</span>
+<span class="sd">        - Set: `self.margin_bottom = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: float value for bottom margin.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[float]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[float]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">margin_left</span> <span class="o">=</span> <span class="n">_MarginSettingsDescriptor</span><span class="p">(</span><span class="s2">"left"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets margin_left:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.margin_left`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.margin_left` = `value`</span>
+<span class="sd">        - Get: `self.margin_left`</span>
+<span class="sd">        - Set: `self.margin_left = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: float value for left margin.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[float]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[float]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">margin_right</span> <span class="o">=</span> <span class="n">_MarginSettingsDescriptor</span><span class="p">(</span><span class="s2">"right"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets margin_right:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.margin_right`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.margin_right` = `value`</span>
+<span class="sd">        - Get: `self.margin_right`</span>
+<span class="sd">        - Set: `self.margin_right = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: float value for right margin.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[float]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[float]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">scale</span> <span class="o">=</span> <span class="n">_ScaleDescriptor</span><span class="p">(</span><span class="s2">"scale"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets scale:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.scale`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.scale` = `value`</span>
+<span class="sd">        - Get: `self.scale`</span>
+<span class="sd">        - Set: `self.scale = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `float`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: float value for scale (between 0.1 and 2).</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[float]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[float]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">orientation</span> <span class="o">=</span> <span class="n">_PageOrientationDescriptor</span><span class="p">(</span><span class="s2">"orientation"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets orientation:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.orientation`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.orientation` = `value`</span>
+<span class="sd">        - Get: `self.orientation`</span>
+<span class="sd">        - Set: `self.orientation = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `Orientation`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: Orientation value ("portrait" or "landscape").</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[Orientation]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[Orientation]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">background</span> <span class="o">=</span> <span class="n">_ValidateBackGround</span><span class="p">(</span><span class="s2">"background"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets background:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.background`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.background` = `value`</span>
+<span class="sd">        - Get: `self.background`</span>
+<span class="sd">        - Set: `self.background = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool value for background printing.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[bool]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[bool]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">shrink_to_fit</span> <span class="o">=</span> <span class="n">_ValidateShrinkToFit</span><span class="p">(</span><span class="s2">"shrinkToFit"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets shrink_to_fit:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.shrink_to_fit`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.shrink_to_fit` = `value`</span>
+<span class="sd">        - Get: `self.shrink_to_fit`</span>
+<span class="sd">        - Set: `self.shrink_to_fit = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: `bool`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: bool value for shrink to fit.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[bool]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[bool]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
 
     <span class="n">page_ranges</span> <span class="o">=</span> <span class="n">_ValidatePageRanges</span><span class="p">(</span><span class="s2">"pageRanges"</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Gets and Sets page_ranges:</span>
 
 <span class="sd">    Usage:</span>
-<span class="sd">    ------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `self.page_ranges`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `self.page_ranges` = `value`</span>
+<span class="sd">        - Get: `self.page_ranges`</span>
+<span class="sd">        - Set: `self.page_ranges = value`</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    `value`: ` List[str]`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        value: list of page range strings.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">    - Get</span>
-<span class="sd">        - `Optional[List[str]]`</span>
-<span class="sd">    - Set</span>
-<span class="sd">        - `None`</span>
+<span class="sd">        - Get: Optional[List[str]]</span>
+<span class="sd">        - Set: None</span>
 <span class="sd">    """</span>
     <span class="c1"># Reference for predefined page size constants: https://www.agooddaytoprint.com/page/paper-size-chart-faq</span>
     <span class="n">A4</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"height"</span><span class="p">:</span> <span class="mf">29.7</span><span class="p">,</span> <span class="s2">"width"</span><span class="p">:</span> <span class="mf">21.0</span><span class="p">}</span>  <span class="c1"># size in cm</span>
@@ -610,7 +533,7 @@
 <div class="viewcode-block" id="PrintOptions.to_dict">
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.print_page_options.html#selenium.webdriver.common.print_page_options.PrintOptions.to_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_PrintOpts</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">""":Returns: A hash of print options configured."""</span>
+<span class="w">        </span><span class="sd">"""Returns a hash of print options configured."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_options</span></div>
 
 
@@ -619,15 +542,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">set_page_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page_size</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sets the page size to predefined or custom dimensions.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        page_size: dict</span>
-<span class="sd">        A dictionary containing `height` and `width` as keys with respective values.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            page_size: A dictionary containing 'height' and 'width' keys with</span>
+<span class="sd">                respective values in cm.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        self.set_page_size(PageSize.A4)  # A4 predefined size</span>
-<span class="sd">        self.set_page_size({"height": 15.0, "width": 20.0})  # Custom size in cm</span>
+<span class="sd">            self.set_page_size(PageSize.A4)  # A4 predefined size</span>
+<span class="sd">            self.set_page_size({"height": 15.0, "width": 20.0})  # Custom size</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_num_property</span><span class="p">(</span><span class="s2">"height"</span><span class="p">,</span> <span class="n">page_size</span><span class="p">[</span><span class="s2">"height"</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_num_property</span><span class="p">(</span><span class="s2">"width"</span><span class="p">,</span> <span class="n">page_size</span><span class="p">[</span><span class="s2">"width"</span><span class="p">])</span>

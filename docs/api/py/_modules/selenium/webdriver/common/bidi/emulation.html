@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.emulation &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.emulation &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.emulation </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -209,9 +209,76 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
+
+
+<div class="viewcode-block" id="ScreenOrientationNatural">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.ScreenOrientationNatural">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScreenOrientationNatural</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Natural screen orientation."""</span>
+
+    <span class="n">PORTRAIT</span> <span class="o">=</span> <span class="s2">"portrait"</span>
+    <span class="n">LANDSCAPE</span> <span class="o">=</span> <span class="s2">"landscape"</span></div>
+
+
+
+<div class="viewcode-block" id="ScreenOrientationType">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.ScreenOrientationType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScreenOrientationType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Screen orientation type."""</span>
+
+    <span class="n">PORTRAIT_PRIMARY</span> <span class="o">=</span> <span class="s2">"portrait-primary"</span>
+    <span class="n">PORTRAIT_SECONDARY</span> <span class="o">=</span> <span class="s2">"portrait-secondary"</span>
+    <span class="n">LANDSCAPE_PRIMARY</span> <span class="o">=</span> <span class="s2">"landscape-primary"</span>
+    <span class="n">LANDSCAPE_SECONDARY</span> <span class="o">=</span> <span class="s2">"landscape-secondary"</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_convert_to_enum</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">enum_class</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">enum_class</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">enum_class</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid orientation: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ScreenOrientation">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.ScreenOrientation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScreenOrientation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Represents screen orientation configuration."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">natural</span><span class="p">:</span> <span class="n">ScreenOrientationNatural</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">ScreenOrientationType</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialize ScreenOrientation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            natural: Natural screen orientation ("portrait" or "landscape").</span>
+<span class="sd">            type: Screen orientation type ("portrait-primary", "portrait-secondary",</span>
+<span class="sd">                "landscape-primary", or "landscape-secondary").</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If natural or type values are invalid.</span>
+<span class="sd">        """</span>
+        <span class="c1"># handle string values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">natural</span> <span class="o">=</span> <span class="n">_convert_to_enum</span><span class="p">(</span><span class="n">natural</span><span class="p">,</span> <span class="n">ScreenOrientationNatural</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">_convert_to_enum</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">ScreenOrientationType</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ScreenOrientation.to_dict">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.ScreenOrientation.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"natural"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">natural</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="GeolocationCoordinates">
@@ -224,15 +291,14 @@
         <span class="n">latitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">longitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">accuracy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">altitude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">altitude_accuracy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">heading</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">speed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">altitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">altitude_accuracy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">heading</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Initialize GeolocationCoordinates.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Args:</span>
 <span class="sd">            latitude: Latitude coordinate (-90.0 to 90.0).</span>
 <span class="sd">            longitude: Longitude coordinate (-180.0 to 180.0).</span>
 <span class="sd">            accuracy: Accuracy in meters (&gt;= 0.0), defaults to 1.0.</span>
@@ -242,7 +308,6 @@
 <span class="sd">            speed: Speed in meters per second (&gt;= 0.0) or None, defaults to None.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">        ------</span>
 <span class="sd">            ValueError: If coordinates are out of valid range or if altitude_accuracy is provided without altitude.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">latitude</span> <span class="o">=</span> <span class="n">latitude</span>
@@ -325,8 +390,8 @@
 
 <div class="viewcode-block" id="GeolocationCoordinates.to_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.GeolocationCoordinates.to_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]:</span>
-        <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">"latitude"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span>
             <span class="s2">"longitude"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span>
             <span class="s2">"accuracy"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="p">,</span>
@@ -372,9 +437,7 @@
 <div class="viewcode-block" id="Emulation">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Emulation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    BiDi implementation of the emulation module.</span>
-<span class="sd">    """</span>
+<span class="w">    </span><span class="sd">"""BiDi implementation of the emulation module."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
@@ -383,25 +446,23 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation.set_geolocation_override">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_geolocation_override</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">coordinates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GeolocationCoordinates</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GeolocationPositionError</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">contexts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">user_contexts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">coordinates</span><span class="p">:</span> <span class="n">GeolocationCoordinates</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">error</span><span class="p">:</span> <span class="n">GeolocationPositionError</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Set geolocation override for the given contexts or user contexts.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Args:</span>
 <span class="sd">            coordinates: Geolocation coordinates to emulate, or None.</span>
 <span class="sd">            error: Geolocation error to emulate, or None.</span>
 <span class="sd">            contexts: List of browsing context IDs to apply the override to.</span>
 <span class="sd">            user_contexts: List of user context IDs to apply the override to.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">        ------</span>
 <span class="sd">            ValueError: If both coordinates and error are provided, or if both contexts</span>
-<span class="sd">                       and user_contexts are provided, or if neither contexts nor</span>
-<span class="sd">                       user_contexts are provided.</span>
+<span class="sd">                and user_contexts are provided, or if neither contexts nor</span>
+<span class="sd">                user_contexts are provided.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot specify both coordinates and error"</span><span class="p">)</span>
@@ -431,23 +492,21 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation.set_timezone_override">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_timezone_override</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">timezone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">contexts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">user_contexts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Set timezone override for the given contexts or user contexts.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Args:</span>
 <span class="sd">            timezone: Timezone identifier (IANA timezone name or offset string like '+01:00'),</span>
-<span class="sd">                     or None to clear the override.</span>
+<span class="sd">                or None to clear the override.</span>
 <span class="sd">            contexts: List of browsing context IDs to apply the override to.</span>
 <span class="sd">            user_contexts: List of user context IDs to apply the override to.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">        ------</span>
 <span class="sd">            ValueError: If both contexts and user_contexts are provided, or if neither</span>
-<span class="sd">                       contexts nor user_contexts are provided.</span>
+<span class="sd">                contexts nor user_contexts are provided.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot specify both contexts and user_contexts"</span><span class="p">)</span>
@@ -463,6 +522,152 @@
             <span class="n">params</span><span class="p">[</span><span class="s2">"userContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_contexts</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"emulation.setTimezoneOverride"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Emulation.set_locale_override">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation.set_locale_override">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_locale_override</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set locale override for the given contexts or user contexts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            locale: Locale string as per BCP 47, or None to clear override.</span>
+<span class="sd">            contexts: List of browsing context IDs to apply the override to.</span>
+<span class="sd">            user_contexts: List of user context IDs to apply the override to.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If both contexts and user_contexts are provided, or if neither</span>
+<span class="sd">                contexts nor user_contexts are provided, or if locale is invalid.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot specify both contexts and userContexts"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must specify either contexts or userContexts"</span><span class="p">)</span>
+
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"locale"</span><span class="p">:</span> <span class="n">locale</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"contexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">contexts</span>
+        <span class="k">elif</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"userContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_contexts</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"emulation.setLocaleOverride"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Emulation.set_scripting_enabled">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation.set_scripting_enabled">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_scripting_enabled</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set scripting enabled override for the given contexts or user contexts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            enabled: False to disable scripting, None to clear the override.</span>
+<span class="sd">                Note: Only emulation of disabled JavaScript is supported.</span>
+<span class="sd">            contexts: List of browsing context IDs to apply the override to.</span>
+<span class="sd">            user_contexts: List of user context IDs to apply the override to.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If both contexts and user_contexts are provided, or if neither</span>
+<span class="sd">                contexts nor user_contexts are provided, or if enabled is True.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">enabled</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Only emulation of disabled JavaScript is supported (enabled must be False or None)"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot specify both contexts and userContexts"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must specify either contexts or userContexts"</span><span class="p">)</span>
+
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"enabled"</span><span class="p">:</span> <span class="n">enabled</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"contexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">contexts</span>
+        <span class="k">elif</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"userContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_contexts</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"emulation.setScriptingEnabled"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Emulation.set_screen_orientation_override">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation.set_screen_orientation_override">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_screen_orientation_override</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">screen_orientation</span><span class="p">:</span> <span class="n">ScreenOrientation</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set screen orientation override for the given contexts or user contexts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            screen_orientation: ScreenOrientation object to emulate, or None to clear the override.</span>
+<span class="sd">            contexts: List of browsing context IDs to apply the override to.</span>
+<span class="sd">            user_contexts: List of user context IDs to apply the override to.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If both contexts and user_contexts are provided, or if neither</span>
+<span class="sd">                contexts nor user_contexts are provided.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot specify both contexts and userContexts"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must specify either contexts or userContexts"</span><span class="p">)</span>
+
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"screenOrientation"</span><span class="p">:</span> <span class="n">screen_orientation</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">screen_orientation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"contexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">contexts</span>
+        <span class="k">elif</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"userContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_contexts</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"emulation.setScreenOrientationOverride"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Emulation.set_user_agent_override">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation.set_user_agent_override">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_user_agent_override</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">user_agent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set user agent override for the given contexts or user contexts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            user_agent: User agent string to emulate, or None to clear the override.</span>
+<span class="sd">            contexts: List of browsing context IDs to apply the override to.</span>
+<span class="sd">            user_contexts: List of user context IDs to apply the override to.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If both contexts and user_contexts are provided, or if neither</span>
+<span class="sd">                contexts nor user_contexts are provided.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot specify both contexts and user_contexts"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must specify either contexts or user_contexts"</span><span class="p">)</span>
+
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"userAgent"</span><span class="p">:</span> <span class="n">user_agent</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"contexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">contexts</span>
+        <span class="k">elif</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"userContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_contexts</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"emulation.setUserAgentOverride"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
 </div>
 
 </pre></div>

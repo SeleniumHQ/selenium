@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.browser &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.browser &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.browser </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -224,6 +224,8 @@
         <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browser.Browser.remove_user_context" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Browser.remove_user_context()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browser.Browser.get_client_windows" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Browser.get_client_windows()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.bidi.browser.Browser.set_download_behavior" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Browser.set_download_behavior()</span></code></a>
         </li></ul>
             </nav>
         </li></ul>
@@ -292,101 +294,77 @@
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_state">
 <span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#ClientWindowInfo.get_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_state" title="Link to this definition">¶</a></dt>
 <dd><p>Gets the state of the client window.</p>
-<section id="returns">
-<h2 id="returns">Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>str: The state of the client window (one of the ClientWindowState constants).</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: The state of the client window (one of the ClientWindowState constants).</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_client_window">
 <span class="sig-name descname"><span class="pre">get_client_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#ClientWindowInfo.get_client_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_client_window" title="Link to this definition">¶</a></dt>
 <dd><p>Gets the client window identifier.</p>
-<section id="id1">
-<h2 id="id1">Returns:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>str: The client window identifier.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: The client window identifier.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_width">
 <span class="sig-name descname"><span class="pre">get_width</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#ClientWindowInfo.get_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_width" title="Link to this definition">¶</a></dt>
 <dd><p>Gets the width of the client window.</p>
-<section id="id2">
-<h2 id="id2">Returns:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>int: The width of the client window.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>int: The width of the client window.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_height">
 <span class="sig-name descname"><span class="pre">get_height</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#ClientWindowInfo.get_height"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_height" title="Link to this definition">¶</a></dt>
 <dd><p>Gets the height of the client window.</p>
-<section id="id3">
-<h2 id="id3">Returns:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>int: The height of the client window.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>int: The height of the client window.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_x">
 <span class="sig-name descname"><span class="pre">get_x</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#ClientWindowInfo.get_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_x" title="Link to this definition">¶</a></dt>
 <dd><p>Gets the x coordinate of the client window.</p>
-<section id="id4">
-<h2 id="id4">Returns:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>int: The x coordinate of the client window.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>int: The x coordinate of the client window.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_y">
 <span class="sig-name descname"><span class="pre">get_y</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#ClientWindowInfo.get_y"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo.get_y" title="Link to this definition">¶</a></dt>
 <dd><p>Gets the y coordinate of the client window.</p>
-<section id="id5">
-<h2 id="id5">Returns:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>int: The y coordinate of the client window.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>int: The y coordinate of the client window.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.ClientWindowInfo.is_active">
 <span class="sig-name descname"><span class="pre">is_active</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#ClientWindowInfo.is_active"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo.is_active" title="Link to this definition">¶</a></dt>
 <dd><p>Checks if the client window is active.</p>
-<section id="id6">
-<h2 id="id6">Returns:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>bool: True if the client window is active, False otherwise.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>bool: True if the client window is active, False otherwise.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.ClientWindowInfo.from_dict">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo" title="selenium.webdriver.common.bidi.browser.ClientWindowInfo"><span class="pre">ClientWindowInfo</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#ClientWindowInfo.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo.from_dict" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a ClientWindowInfo instance from a dictionary.</p>
-<section id="parameters">
-<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>data: A dictionary containing the client window information.</p>
-</div></blockquote>
-</section>
-<section id="id7">
-<h2 id="id7">Returns:<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>ClientWindowInfo: A new instance of ClientWindowInfo.</p>
-</div></blockquote>
-</section>
-<section id="raises">
-<h2 id="raises">Raises:<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>ValueError: If required fields are missing or have invalid types.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Args:</dt><dd><p>data: A dictionary containing the client window information.</p>
+</dd>
+<dt>Returns:</dt><dd><p>ClientWindowInfo: A new instance of ClientWindowInfo.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If required fields are missing or have invalid types.</p>
+</dd>
+</dl>
 </dd></dl>
 </dd></dl>
 <dl class="py class">
@@ -397,59 +375,64 @@
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.Browser.create_user_context">
 <span class="sig-name descname"><span class="pre">create_user_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">accept_insecure_certs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_common/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy" title="selenium.webdriver.common.proxy.Proxy"><span class="pre">Proxy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unhandled_prompt_behavior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selenium.webdriver.common.bidi.session.html#selenium.webdriver.common.bidi.session.UserPromptHandler" title="selenium.webdriver.common.bidi.session.UserPromptHandler"><span class="pre">UserPromptHandler</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#Browser.create_user_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.Browser.create_user_context" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new user context.</p>
-<section id="id8">
-<h2 id="id8">Parameters:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>accept_insecure_certs: Optional flag to accept insecure TLS certificates
-proxy: Optional proxy configuration for the user context
-unhandled_prompt_behavior: Optional configuration for handling user prompts</p>
-</div></blockquote>
-</section>
-<section id="id9">
-<h2 id="id9">Returns:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>str: The ID of the created user context.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Args:</dt><dd><p>accept_insecure_certs: Optional flag to accept insecure TLS certificates.
+proxy: Optional proxy configuration for the user context.
+unhandled_prompt_behavior: Optional configuration for handling user prompts.</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: The ID of the created user context.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.Browser.get_user_contexts">
 <span class="sig-name descname"><span class="pre">get_user_contexts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#Browser.get_user_contexts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.Browser.get_user_contexts" title="Link to this definition">¶</a></dt>
 <dd><p>Gets all user contexts.</p>
-<section id="id10">
-<h2 id="id10">Returns:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>List[str]: A list of user context IDs.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>List[str]: A list of user context IDs.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.Browser.remove_user_context">
 <span class="sig-name descname"><span class="pre">remove_user_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_context_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#Browser.remove_user_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.Browser.remove_user_context" title="Link to this definition">¶</a></dt>
 <dd><p>Removes a user context.</p>
-<section id="id11">
-<h2 id="id11">Parameters:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>user_context_id: The ID of the user context to remove.</p>
-</div></blockquote>
-</section>
-<section id="id12">
-<h2 id="id12">Raises:<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>Exception: If the user context ID is “default” or does not exist.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Args:</dt><dd><p>user_context_id: The ID of the user context to remove.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If the user context ID is “default” or does not exist.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.Browser.get_client_windows">
 <span class="sig-name descname"><span class="pre">get_client_windows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.browser.ClientWindowInfo" title="selenium.webdriver.common.bidi.browser.ClientWindowInfo"><span class="pre">ClientWindowInfo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#Browser.get_client_windows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.Browser.get_client_windows" title="Link to this definition">¶</a></dt>
 <dd><p>Gets all client windows.</p>
-<section id="id13">
-<h2 id="id13">Returns:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>List[ClientWindowInfo]: A list of client window information.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>List[ClientWindowInfo]: A list of client window information.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.bidi.browser.Browser.set_download_behavior">
+<span class="sig-name descname"><span class="pre">set_download_behavior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_contexts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/browser.html#Browser.set_download_behavior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.browser.Browser.set_download_behavior" title="Link to this definition">¶</a></dt>
+<dd><p>Set the download behavior for the browser or specific user contexts.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>allowed: True to allow downloads, False to deny downloads, or None to</dt><dd><p>clear download behavior (revert to default).</p>
+</dd>
+<dt>destination_folder: Required when allowed is True. Specifies the folder</dt><dd><p>to store downloads in.</p>
+</dd>
+<dt>user_contexts: Optional list of user context IDs to apply this</dt><dd><p>behavior to. If omitted, updates the default behavior.</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>ValueError: If allowed=True and destination_folder is missing, or if</dt><dd><p>allowed=False and destination_folder is provided.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 </dd></dl>
 </section>

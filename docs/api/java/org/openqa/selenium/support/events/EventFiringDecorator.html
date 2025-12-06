@@ -216,9 +216,10 @@ loadScripts(document, 'script');</script>
 
  <p>Just be careful to not block the current thread in a listener method!
 
- <p>Listeners can't affect driver behavior too much. They can't throw any exceptions (they can,
- but the decorator suppresses these exceptions), can't prevent execution of the decorated methods,
- can't modify parameters and results of the methods.
+ <p>Listeners can't affect driver behavior too much. They can't prevent execution of the decorated
+ methods, can't modify parameters and results of the methods. They can throw exceptions only if
+ configured to do so by overriding <a href="WebDriverListener.html#throwsExceptions()"><code>WebDriverListener.throwsExceptions()</code></a>. By default,
+ exceptions occurred in listeners execution are suppressed.
 
  <p>Decorators that modify the behaviour of the underlying drivers should be implemented by
  extending <a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators"><code>WebDriverDecorator</code></a>, not by creating sophisticated listeners.</div>

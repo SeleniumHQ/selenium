@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.browser &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.browser &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.browser </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -208,9 +208,8 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
-
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserPromptHandler</span>
@@ -260,7 +259,6 @@
 <span class="w">        </span><span class="sd">"""Gets the state of the client window.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            str: The state of the client window (one of the ClientWindowState constants).</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span></div>
@@ -272,7 +270,6 @@
 <span class="w">        </span><span class="sd">"""Gets the client window identifier.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            str: The client window identifier.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_window</span></div>
@@ -284,7 +281,6 @@
 <span class="w">        </span><span class="sd">"""Gets the width of the client window.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            int: The width of the client window.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span></div>
@@ -296,7 +292,6 @@
 <span class="w">        </span><span class="sd">"""Gets the height of the client window.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            int: The height of the client window.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span></div>
@@ -308,7 +303,6 @@
 <span class="w">        </span><span class="sd">"""Gets the x coordinate of the client window.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            int: The x coordinate of the client window.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span></div>
@@ -320,7 +314,6 @@
 <span class="w">        </span><span class="sd">"""Gets the y coordinate of the client window.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            int: The y coordinate of the client window.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span></div>
@@ -332,7 +325,6 @@
 <span class="w">        </span><span class="sd">"""Checks if the client window is active.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            bool: True if the client window is active, False otherwise.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span></div>
@@ -344,16 +336,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ClientWindowInfo"</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a ClientWindowInfo instance from a dictionary.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Args:</span>
 <span class="sd">            data: A dictionary containing the client window information.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            ClientWindowInfo: A new instance of ClientWindowInfo.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">        ------</span>
 <span class="sd">            ValueError: If required fields are missing or have invalid types.</span>
 <span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
@@ -397,7 +386,7 @@
                 <span class="n">active</span><span class="o">=</span><span class="n">active</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid data format for ClientWindowInfo: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid data format for ClientWindowInfo: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
 </div>
 
 
@@ -405,9 +394,7 @@
 <div class="viewcode-block" id="Browser">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Browser</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    BiDi implementation of the browser module.</span>
-<span class="sd">    """</span>
+<span class="w">    </span><span class="sd">"""BiDi implementation of the browser module."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
@@ -416,20 +403,18 @@
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.create_user_context">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_user_context</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">accept_insecure_certs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">proxy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Proxy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">unhandled_prompt_behavior</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UserPromptHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">accept_insecure_certs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">proxy</span><span class="p">:</span> <span class="n">Proxy</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unhandled_prompt_behavior</span><span class="p">:</span> <span class="n">UserPromptHandler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a new user context.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">            accept_insecure_certs: Optional flag to accept insecure TLS certificates</span>
-<span class="sd">            proxy: Optional proxy configuration for the user context</span>
-<span class="sd">            unhandled_prompt_behavior: Optional configuration for handling user prompts</span>
+<span class="sd">        Args:</span>
+<span class="sd">            accept_insecure_certs: Optional flag to accept insecure TLS certificates.</span>
+<span class="sd">            proxy: Optional proxy configuration for the user context.</span>
+<span class="sd">            unhandled_prompt_behavior: Optional configuration for handling user prompts.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            str: The ID of the created user context.</span>
 <span class="sd">        """</span>
         <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -453,7 +438,6 @@
 <span class="w">        </span><span class="sd">"""Gets all user contexts.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            List[str]: A list of user context IDs.</span>
 <span class="sd">        """</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"browser.getUserContexts"</span><span class="p">,</span> <span class="p">{}))</span>
@@ -465,16 +449,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_user_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_context_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Removes a user context.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
+<span class="sd">        Args:</span>
 <span class="sd">            user_context_id: The ID of the user context to remove.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">        ------</span>
-<span class="sd">            Exception: If the user context ID is "default" or does not exist.</span>
+<span class="sd">            ValueError: If the user context ID is "default" or does not exist.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">user_context_id</span> <span class="o">==</span> <span class="s2">"default"</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Cannot remove the default user context"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot remove the default user context"</span><span class="p">)</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"userContext"</span><span class="p">:</span> <span class="n">user_context_id</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"browser.removeUserContext"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
@@ -486,11 +468,56 @@
 <span class="w">        </span><span class="sd">"""Gets all client windows.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
 <span class="sd">            List[ClientWindowInfo]: A list of client window information.</span>
 <span class="sd">        """</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"browser.getClientWindows"</span><span class="p">,</span> <span class="p">{}))</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">ClientWindowInfo</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">window</span><span class="p">)</span> <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">"clientWindows"</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="Browser.set_download_behavior">
+<a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser.set_download_behavior">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_download_behavior</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">allowed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">destination_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the download behavior for the browser or specific user contexts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            allowed: True to allow downloads, False to deny downloads, or None to</span>
+<span class="sd">                clear download behavior (revert to default).</span>
+<span class="sd">            destination_folder: Required when allowed is True. Specifies the folder</span>
+<span class="sd">                to store downloads in.</span>
+<span class="sd">            user_contexts: Optional list of user context IDs to apply this</span>
+<span class="sd">                behavior to. If omitted, updates the default behavior.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If allowed=True and destination_folder is missing, or if</span>
+<span class="sd">                allowed=False and destination_folder is provided.</span>
+<span class="sd">        """</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">allowed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"downloadBehavior"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">allowed</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">destination_folder</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"destination_folder is required when allowed=True."</span><span class="p">)</span>
+                <span class="n">params</span><span class="p">[</span><span class="s2">"downloadBehavior"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"allowed"</span><span class="p">,</span>
+                    <span class="s2">"destinationFolder"</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">destination_folder</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">destination_folder</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"destination_folder should not be provided when allowed=False."</span><span class="p">)</span>
+                <span class="n">params</span><span class="p">[</span><span class="s2">"downloadBehavior"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"denied"</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">user_contexts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"userContexts"</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_contexts</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"browser.setDownloadBehavior"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
 </div>
 
 </pre></div>

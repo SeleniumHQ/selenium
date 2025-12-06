@@ -101,7 +101,7 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record UserPromptOpenedEventArgs : BrowsingContextEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextEventArgs&gt;, IEquatable&lt;UserPromptOpenedEventArgs&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record UserPromptOpenedEventArgs : EventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;UserPromptOpenedEventArgs&gt;</code></pre>
   </div>
 
 
@@ -112,7 +112,6 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a></div>
       <div><span class="xref">UserPromptOpenedEventArgs</span></div>
     </dd>
   </dl>
@@ -121,7 +120,6 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.html">UserPromptOpenedEventArgs</a>&gt;</div>
     </dd>
   </dl>
@@ -131,10 +129,10 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html#OpenQA_Selenium_BiDi_BrowsingContextEventArgs_Context">BrowsingContextEventArgs.Context</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -143,16 +141,13 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
     <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </dd></dl>
 
@@ -167,8 +162,8 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Session_UserPromptHandlerType_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptType_System_String_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Session.UserPromptHandlerType,OpenQA.Selenium.BiDi.BrowsingContext.UserPromptType,System.String,System.String)">
-  UserPromptOpenedEventArgs(BiDi, BrowsingContext, UserPromptHandlerType, UserPromptType, string, string?)
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_OpenQA_Selenium_BiDi_Session_UserPromptHandlerType_OpenQA_Selenium_BiDi_BrowsingContext_UserPromptType_System_String_System_String_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,OpenQA.Selenium.BiDi.Session.UserPromptHandlerType,OpenQA.Selenium.BiDi.BrowsingContext.UserPromptType,System.String,System.String)">
+  UserPromptOpenedEventArgs(BrowsingContext, UserPromptHandlerType, UserPromptType, string, string?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptOpenedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -176,13 +171,11 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserPromptOpenedEventArgs(BiDi BiDi, BrowsingContext Context, UserPromptHandlerType Handler, UserPromptType Type, string Message, string? DefaultValue)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserPromptOpenedEventArgs(BrowsingContext Context, UserPromptHandlerType Handler, UserPromptType Type, string Message, string? DefaultValue)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
     <dt><code>Handler</code> <a class="xref" href="OpenQA.Selenium.BiDi.Session.UserPromptHandlerType.html">UserPromptHandlerType</a></dt>
@@ -208,6 +201,37 @@ Class UserPromptOpenedEventArgs  <a class="header-action link-secondary" title="
 
   <h2 class="section" id="properties">Properties
 </h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs_Context_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.Context*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs_Context" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.Context">
+  Context
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/BrowsingContext/UserPromptOpenedEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BrowsingContext Context { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
 
 
   <a id="OpenQA_Selenium_BiDi_BrowsingContext_UserPromptOpenedEventArgs_DefaultValue_" data-uid="OpenQA.Selenium.BiDi.BrowsingContext.UserPromptOpenedEventArgs.DefaultValue*"></a>

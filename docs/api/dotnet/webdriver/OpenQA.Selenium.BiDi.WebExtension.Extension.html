@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_WebExtension_Extension" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension" class="text-break">
-Class Extension  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/Extension.cs/#L24"><i class="bi bi-code-slash"></i></a>
+Class Extension  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/Extension.cs/#L26"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class Extension  <a class="header-action link-secondary" title="View source" hre
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class Extension</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record Extension : IEquatable&lt;Extension&gt;</code></pre>
   </div>
 
 
@@ -115,11 +115,20 @@ Class Extension  <a class="header-action link-secondary" title="View source" hre
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.Extension.html">Extension</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -127,16 +136,10 @@ Class Extension  <a class="header-action link-secondary" title="View source" hre
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
     </div>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
-    </div>
-    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
     </div>
   </dd></dl>
 
@@ -182,34 +185,106 @@ Class Extension  <a class="header-action link-secondary" title="View source" hre
 
 
 
-  <h2 class="section" id="methods">Methods
+  <h2 class="section" id="properties">Properties
 </h2>
 
 
-  <a id="OpenQA_Selenium_BiDi_WebExtension_Extension_UninstallAsync_" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension.UninstallAsync*"></a>
+  <a id="OpenQA_Selenium_BiDi_WebExtension_Extension_BiDi_" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension.BiDi*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_WebExtension_Extension_UninstallAsync_OpenQA_Selenium_BiDi_WebExtension_UninstallOptions_" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension.UninstallAsync(OpenQA.Selenium.BiDi.WebExtension.UninstallOptions)">
-  UninstallAsync(UninstallOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/Extension.cs/#L36"><i class="bi bi-code-slash"></i></a>
+  <h3 id="OpenQA_Selenium_BiDi_WebExtension_Extension_BiDi" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension.BiDi">
+  BiDi
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/Extension.cs/#L44"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task UninstallAsync(UninstallOptions? options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public BiDi BiDi { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_WebExtension_Extension_Equals_" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension.Equals*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_WebExtension_Extension_Equals_OpenQA_Selenium_BiDi_WebExtension_Extension_" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension.Equals(OpenQA.Selenium.BiDi.WebExtension.Extension)">
+  Equals(Extension?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/Extension.cs/#L51"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the current object is equal to another object of the same type.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(Extension? other)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.UninstallOptions.html">UninstallOptions</a></dt>
-    <dd></dd>
+    <dt><code>other</code> <a class="xref" href="OpenQA.Selenium.BiDi.WebExtension.Extension.html">Extension</a></dt>
+    <dd><p>An object to compare with this object.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task">Task</a></dt>
-    <dd></dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>true if the current object is equal to the <code class="paramref">other</code> parameter; otherwise, false.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_BiDi_WebExtension_Extension_GetHashCode_" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension.GetHashCode*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_WebExtension_Extension_GetHashCode" data-uid="OpenQA.Selenium.BiDi.WebExtension.Extension.GetHashCode">
+  GetHashCode()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/Extension.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Serves as the default hash function.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>A hash code for the current object.</p>
+</dd>
   </dl>
 
 
@@ -226,7 +301,7 @@ Class Extension  <a class="header-action link-secondary" title="View source" hre
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/Extension.cs/#L24" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/WebExtension/Extension.cs/#L26" class="edit-link">Edit this page</a>
         </div>
 
 

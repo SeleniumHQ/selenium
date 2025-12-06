@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.virtual_authenticator </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -653,10 +653,10 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser" title="selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">required_chromium_based_browser</span></code></a>(func)</p></td>
-<td><p>A decorator to ensure that the client used is a chromium based browser.</p></td>
+<td><p>Decorator to ensure that the client used is a chromium-based browser.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator" title="selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">required_virtual_authenticator</span></code></a>(func)</p></td>
-<td><p>A decorator to ensure that the function is called with a virtual authenticator.</p></td>
+<td><p>Decorator to ensure that the function is called with a virtual authenticator.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2266,8 +2266,8 @@ must be a string, whose characters will be mapped to None in the result.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="selenium.webdriver.common.virtual_authenticator.Credential">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.virtual_authenticator.</span></span><span class="sig-name descname"><span class="pre">Credential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credential_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_resident_credential</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rp_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_handle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">private_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sign_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#Credential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential" title="Link to this definition">¶</a></dt>
-<dd><p>Constructor. A credential stored in a virtual authenticator.
-<a class="reference external" href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>.</p>
+<dd><p>Constructor. A credential stored in a virtual authenticator.</p>
+<p><a class="reference external" href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>credential_id (bytes): Unique base64 encoded string.
 is_resident_credential (bool): Whether the credential is client-side discoverable.
@@ -2287,7 +2287,7 @@ sign_count (int): initial value for a signature counter.</p>
 <dd></dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.common.virtual_authenticator.Credential.rp_id">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rp_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.rp_id" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rp_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.Credential.rp_id" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.common.virtual_authenticator.Credential.user_handle">
@@ -2342,14 +2342,12 @@ sign_count (int): initial value for a signature counter.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser">
 <span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.virtual_authenticator.</span></span><span class="sig-name descname"><span class="pre">required_chromium_based_browser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#required_chromium_based_browser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser" title="Link to this definition">¶</a></dt>
-<dd><p>A decorator to ensure that the client used is a chromium based
-browser.</p>
+<dd><p>Decorator to ensure that the client used is a chromium-based browser.</p>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator">
 <span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.virtual_authenticator.</span></span><span class="sig-name descname"><span class="pre">required_virtual_authenticator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/virtual_authenticator.html#required_virtual_authenticator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator" title="Link to this definition">¶</a></dt>
-<dd><p>A decorator to ensure that the function is called with a virtual
-authenticator.</p>
+<dd><p>Decorator to ensure that the function is called with a virtual authenticator.</p>
 </dd></dl>
 </section>
 

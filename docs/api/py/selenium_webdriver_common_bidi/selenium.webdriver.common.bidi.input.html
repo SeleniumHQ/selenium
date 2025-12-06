@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.input &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.input &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.input </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -875,18 +875,12 @@
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.input.FileDialogInfo.from_dict">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#selenium.webdriver.common.bidi.input.FileDialogInfo" title="selenium.webdriver.common.bidi.input.FileDialogInfo"><span class="pre">FileDialogInfo</span></a></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/input.html#FileDialogInfo.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.input.FileDialogInfo.from_dict" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a FileDialogInfo instance from a dictionary.</p>
-<section id="parameters">
-<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>data: A dictionary containing the file dialog information.</p>
-</div></blockquote>
-</section>
-<section id="returns">
-<h2 id="returns">Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>FileDialogInfo: A new instance of FileDialogInfo.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Args:</dt><dd><p>data: A dictionary containing the file dialog information.</p>
+</dd>
+<dt>Returns:</dt><dd><p>FileDialogInfo: A new instance of FileDialogInfo.</p>
+</dd>
+</dl>
 </dd></dl>
 </dd></dl>
 <dl class="py class">
@@ -911,65 +905,51 @@
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.input.Input.perform_actions">
 <span class="sig-name descname"><span class="pre">perform_actions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#selenium.webdriver.common.bidi.input.NoneSourceActions" title="selenium.webdriver.common.bidi.input.NoneSourceActions"><span class="pre">NoneSourceActions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#selenium.webdriver.common.bidi.input.KeySourceActions" title="selenium.webdriver.common.bidi.input.KeySourceActions"><span class="pre">KeySourceActions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#selenium.webdriver.common.bidi.input.PointerSourceActions" title="selenium.webdriver.common.bidi.input.PointerSourceActions"><span class="pre">PointerSourceActions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#selenium.webdriver.common.bidi.input.WheelSourceActions" title="selenium.webdriver.common.bidi.input.WheelSourceActions"><span class="pre">WheelSourceActions</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/input.html#Input.perform_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.input.Input.perform_actions" title="Link to this definition">¶</a></dt>
 <dd><p>Performs a sequence of user input actions.</p>
-<section id="id1">
-<h2 id="id1">Parameters:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>context: The browsing context ID where actions should be performed.
+<dl class="simple">
+<dt>Args:</dt><dd><p>context: The browsing context ID where actions should be performed.
 actions: A list of source actions to perform.</p>
-</div></blockquote>
-</section>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.input.Input.release_actions">
 <span class="sig-name descname"><span class="pre">release_actions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/input.html#Input.release_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.input.Input.release_actions" title="Link to this definition">¶</a></dt>
 <dd><p>Releases all input state for the given context.</p>
-<section id="id2">
-<h2 id="id2">Parameters:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>context: The browsing context ID to release actions for.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Args:</dt><dd><p>context: The browsing context ID to release actions for.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.input.Input.set_files">
 <span class="sig-name descname"><span class="pre">set_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/input.html#Input.set_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.input.Input.set_files" title="Link to this definition">¶</a></dt>
 <dd><p>Sets files for a file input element.</p>
-<section id="id3">
-<h2 id="id3">Parameters:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>context: The browsing context ID.
+<dl class="simple">
+<dt>Args:</dt><dd><p>context: The browsing context ID.
 element: The element reference (script.SharedReference).
 files: A list of file paths to set.</p>
-</div></blockquote>
-</section>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.input.Input.add_file_dialog_handler">
-<span class="sig-name descname"><span class="pre">add_file_dialog_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/input.html#Input.add_file_dialog_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.input.Input.add_file_dialog_handler" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_file_dialog_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/input.html#Input.add_file_dialog_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.input.Input.add_file_dialog_handler" title="Link to this definition">¶</a></dt>
 <dd><p>Add a handler for file dialog opened events.</p>
-<section id="id4">
-<h2 id="id4">Parameters:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>handler: Callback function that takes a FileDialogInfo object.</p>
-</div></blockquote>
-</section>
-<section id="id5">
-<h2 id="id5">Returns:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>int: Callback ID for removing the handler later.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Args:</dt><dd><p>handler: Callback function that takes a FileDialogInfo object.</p>
+</dd>
+<dt>Returns:</dt><dd><p>int: Callback ID for removing the handler later.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.common.bidi.input.Input.remove_file_dialog_handler">
 <span class="sig-name descname"><span class="pre">remove_file_dialog_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/bidi/input.html#Input.remove_file_dialog_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.bidi.input.Input.remove_file_dialog_handler" title="Link to this definition">¶</a></dt>
 <dd><p>Remove a file dialog handler.</p>
-<section id="id6">
-<h2 id="id6">Parameters:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>callback_id: The callback ID returned by add_file_dialog_handler.</p>
-</div></blockquote>
-</section>
+<dl class="simple">
+<dt>Args:</dt><dd><p>callback_id: The callback ID returned by add_file_dialog_handler.</p>
+</dd>
+</dl>
 </dd></dl>
 </dd></dl>
 </section>

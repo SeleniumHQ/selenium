@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.remote.webdriver </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -224,7 +224,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">base64</span><span class="w"> </span><span class="kn">import</span> <span class="n">b64decode</span><span class="p">,</span> <span class="n">urlsafe_b64encode</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">asynccontextmanager</span><span class="p">,</span> <span class="n">contextmanager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_module</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.common.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">InvalidArgumentException</span><span class="p">,</span>
@@ -274,14 +274,14 @@
 
 <div class="viewcode-block" id="import_cdp">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.import_cdp">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">import_cdp</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">import_cdp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">global</span> <span class="n">cdp</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">cdp</span><span class="p">:</span>
         <span class="n">cdp</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">"selenium.webdriver.common.bidi.cdp"</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_create_caps</span><span class="p">(</span><span class="n">caps</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_caps</span><span class="p">(</span><span class="n">caps</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Makes a W3C alwaysMatch capabilities object.</span>
 
 <span class="sd">    Filters out capability names that are not in the W3C spec. Spec-compliant</span>
@@ -290,10 +290,8 @@
 <span class="sd">    Moves the Firefox profile, if present, from the old location to the new Firefox</span>
 <span class="sd">    options object.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">    caps : dict</span>
-<span class="sd">        - A dictionary of capabilities requested by the caller.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        caps: A dictionary of capabilities requested by the caller.</span>
 <span class="sd">    """</span>
     <span class="n">caps</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">caps</span><span class="p">)</span>
     <span class="n">always_match</span> <span class="o">=</span> <span class="p">{}</span>
@@ -306,10 +304,10 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.get_remote_connection">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_remote_connection</span><span class="p">(</span>
     <span class="n">capabilities</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-    <span class="n">command_executor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RemoteConnection</span><span class="p">],</span>
+    <span class="n">command_executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">RemoteConnection</span><span class="p">,</span>
     <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">ignore_local_proxy</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-    <span class="n">client_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClientConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">client_config</span><span class="p">:</span> <span class="n">ClientConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RemoteConnection</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">command_executor</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">client_config</span> <span class="o">=</span> <span class="n">client_config</span> <span class="ow">or</span> <span class="n">ClientConfig</span><span class="p">(</span><span class="n">remote_server_addr</span><span class="o">=</span><span class="n">command_executor</span><span class="p">)</span>
@@ -388,9 +386,10 @@
 <div class="viewcode-block" id="WebDriver">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WebDriver</span><span class="p">(</span><span class="n">BaseWebDriver</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Controls a browser by sending commands to a remote server. This server</span>
-<span class="sd">    is expected to be running the WebDriver wire protocol as defined at</span>
-<span class="sd">    https://www.selenium.dev/documentation/legacy/json_wire_protocol/.</span>
+<span class="w">    </span><span class="sd">"""Control a browser by sending commands to a remote WebDriver server.</span>
+
+<span class="sd">    This class expects the remote server to be running the WebDriver wire protocol</span>
+<span class="sd">    as defined at https://www.selenium.dev/documentation/legacy/json_wire_protocol/.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">    -----------</span>
@@ -406,37 +405,32 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">command_executor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RemoteConnection</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"http://127.0.0.1:4444"</span><span class="p">,</span>
+        <span class="n">command_executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">RemoteConnection</span> <span class="o">=</span> <span class="s2">"http://127.0.0.1:4444"</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">file_detector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FileDetector</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">BaseOptions</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseOptions</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">locator_converter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LocatorConverter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">web_element_cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">client_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClientConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">file_detector</span><span class="p">:</span> <span class="n">FileDetector</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">BaseOptions</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseOptions</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">locator_converter</span><span class="p">:</span> <span class="n">LocatorConverter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">web_element_cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">client_config</span><span class="p">:</span> <span class="n">ClientConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Create a new driver that will issue commands using the wire</span>
-<span class="sd">        protocol.</span>
+<span class="w">        </span><span class="sd">"""Create a new driver instance that issues commands using the WebDriver protocol.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        command_executor : str or remote_connection.RemoteConnection</span>
-<span class="sd">            - Either a string representing the URL of the remote server or a custom</span>
-<span class="sd">            remote_connection.RemoteConnection object. Defaults to 'http://127.0.0.1:4444/wd/hub'.</span>
-<span class="sd">        keep_alive : bool (Deprecated)</span>
-<span class="sd">            - Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive. Defaults to True.</span>
-<span class="sd">        file_detector : object or None</span>
-<span class="sd">            - Pass a custom file detector object during instantiation. If None, the default</span>
-<span class="sd">                LocalFileDetector() will be used.</span>
-<span class="sd">        options : options.Options</span>
-<span class="sd">            - Instance of a driver options.Options class.</span>
-<span class="sd">        locator_converter : object or None</span>
-<span class="sd">            - Custom locator converter to use. Defaults to None.</span>
-<span class="sd">        web_element_cls : class</span>
-<span class="sd">            - Custom class to use for web elements. Defaults to WebElement.</span>
-<span class="sd">        client_config : object or None</span>
-<span class="sd">            - Custom client configuration to use. Defaults to None.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            command_executor: Either a string representing the URL of the remote</span>
+<span class="sd">                server or a custom remote_connection.RemoteConnection object.</span>
+<span class="sd">                Defaults to 'http://127.0.0.1:4444/wd/hub'.</span>
+<span class="sd">            keep_alive: (Deprecated) Whether to configure</span>
+<span class="sd">                remote_connection.RemoteConnection to use HTTP keep-alive.</span>
+<span class="sd">                Defaults to True.</span>
+<span class="sd">            file_detector: Pass a custom file detector object during</span>
+<span class="sd">                instantiation. If None, the default LocalFileDetector() will be</span>
+<span class="sd">                used.</span>
+<span class="sd">            options: Instance of a driver options.Options class.</span>
+<span class="sd">            locator_converter: Custom locator converter to use. Defaults to None.</span>
+<span class="sd">            web_element_cls: Custom class to use for web elements. Defaults to</span>
+<span class="sd">                WebElement.</span>
+<span class="sd">            client_config: Custom client configuration to use. Defaults to None.</span>
 <span class="sd">        """</span>
-
         <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s2">"missing 1 required keyword-only argument: 'options' (instance of driver `options.Options` class)"</span>
@@ -457,7 +451,7 @@
                 <span class="n">client_config</span><span class="o">=</span><span class="n">client_config</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pinned_scripts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_handler</span> <span class="o">=</span> <span class="n">ErrorHandler</span><span class="p">()</span>
@@ -471,30 +465,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">start_session</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fedcm</span> <span class="o">=</span> <span class="n">FedCM</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_network</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_browser</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_session</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_browsing_context</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_permissions</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_emulation</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_devtools</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span> <span class="n">WebSocketConnection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_script</span><span class="p">:</span> <span class="n">Script</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">:</span> <span class="n">Network</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_browser</span><span class="p">:</span> <span class="n">Browser</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_browsing_context</span><span class="p">:</span> <span class="n">BrowsingContext</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">:</span> <span class="n">Storage</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span><span class="p">:</span> <span class="n">WebExtension</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_permissions</span><span class="p">:</span> <span class="n">Permissions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emulation</span><span class="p">:</span> <span class="n">Emulation</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input</span><span class="p">:</span> <span class="n">Input</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_devtools</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> (session="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s1">")&gt;'</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"WebDriver"</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">exc_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span>
-        <span class="n">exc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
-        <span class="n">traceback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">],</span>
+        <span class="n">exc_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exc</span><span class="p">:</span> <span class="ne">BaseException</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">traceback</span><span class="p">:</span> <span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
 
@@ -502,24 +496,24 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.file_detector_context">[docs]</a>
     <span class="nd">@contextmanager</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">file_detector_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_detector_class</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Overrides the current file detector (if necessary) in limited</span>
-<span class="sd">        context. Ensures the original file detector is set afterwards.</span>
+<span class="w">        </span><span class="sd">"""Override the current file detector temporarily within a limited context.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        file_detector_class : object</span>
-<span class="sd">            - Class of the desired file detector. If the class is different</span>
-<span class="sd">            from the current file_detector, then the class is instantiated with args and kwargs</span>
-<span class="sd">            and used as a file detector during the duration of the context manager.</span>
-<span class="sd">        args : tuple</span>
-<span class="sd">            - Optional arguments that get passed to the file detector class during instantiation.</span>
-<span class="sd">        kwargs : dict</span>
-<span class="sd">            - Keyword arguments, passed the same way as args.</span>
+<span class="sd">        Ensures the original file detector is set after exiting the context.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_detector_class: Class of the desired file detector. If the</span>
+<span class="sd">                class is different from the current file_detector, then the</span>
+<span class="sd">                class is instantiated with args and kwargs and used as a file</span>
+<span class="sd">                detector during the duration of the context manager.</span>
+<span class="sd">            *args: Optional arguments that get passed to the file detector class</span>
+<span class="sd">                during instantiation.</span>
+<span class="sd">            **kwargs: Keyword arguments, passed the same way as args.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; with webdriver.file_detector_context(UselessFileDetector):</span>
-<span class="sd">        &gt;&gt;&gt;    someinput.send_keys('/etc/hosts')</span>
+<span class="sd">            ```</span>
+<span class="sd">            with webdriver.file_detector_context(UselessFileDetector):</span>
+<span class="sd">                someinput.send_keys("/etc/hosts")</span>
+<span class="sd">            ````</span>
 <span class="sd">        """</span>
         <span class="n">last_detector</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_detector</span><span class="p">,</span> <span class="n">file_detector_class</span><span class="p">):</span>
@@ -538,19 +532,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Returns the name of the underlying browser for this instance.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; name = driver.name</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns the name of the underlying browser for this instance."""</span>
         <span class="k">if</span> <span class="s2">"browserName"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="p">[</span><span class="s2">"browserName"</span><span class="p">]</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">"browserName not specified in session capabilities"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WebDriver.start_client">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.start_client">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">start_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Called before starting a new session.</span>
 
 <span class="sd">        This method may be overridden to define custom startup behavior.</span>
@@ -560,7 +549,7 @@
 
 <div class="viewcode-block" id="WebDriver.stop_client">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.stop_client">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">stop_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop_client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Called after executing a quit command.</span>
 
 <span class="sd">        This method may be overridden to define custom shutdown</span>
@@ -574,12 +563,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">start_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a new session with the desired capabilities.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        capabilities : dict</span>
-<span class="sd">            - A capabilities dict to start the session with.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            capabilities: A capabilities dict to start the session with.</span>
 <span class="sd">        """</span>
-
         <span class="n">caps</span> <span class="o">=</span> <span class="n">_create_caps</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">,</span> <span class="n">caps</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
@@ -628,49 +614,37 @@
 <div class="viewcode-block" id="WebDriver.execute_cdp_cmd">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.execute_cdp_cmd">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_cdp_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Execute Chrome Devtools Protocol command and get returned result The</span>
-<span class="sd">        command and command args should follow chrome devtools protocol</span>
-<span class="sd">        domains/commands, refer to link</span>
-<span class="sd">        https://chromedevtools.github.io/devtools-protocol/</span>
+<span class="w">        </span><span class="sd">"""Execute Chrome Devtools Protocol command and get returned result.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        cmd : str,</span>
-<span class="sd">            - Command name</span>
+<span class="sd">        The command and command args should follow chrome devtools protocol domains/commands:</span>
+<span class="sd">          - https://chromedevtools.github.io/devtools-protocol/</span>
 
-<span class="sd">        cmd_args : dict</span>
-<span class="sd">            - Command args</span>
-<span class="sd">            - Empty dict {} if there is no command args</span>
+<span class="sd">        Args:</span>
+<span class="sd">            cmd: Command name.</span>
+<span class="sd">            cmd_args: Command args. Empty dict {} if there is no command args.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">            A dict, empty dict {} if there is no result to return.</span>
-<span class="sd">                - To getResponseBody: {'base64Encoded': False, 'body': 'response body string'}</span>
+<span class="sd">            A dict, empty dict {} if there is no result to return. To</span>
+<span class="sd">            getResponseBody: {'base64Encoded': False, 'body': 'response body</span>
+<span class="sd">            string'}</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": requestId})</span>
-
+<span class="sd">            `driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": requestId})`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"executeCdpCommand"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"cmd"</span><span class="p">:</span> <span class="n">cmd</span><span class="p">,</span> <span class="s2">"params"</span><span class="p">:</span> <span class="n">cmd_args</span><span class="p">})[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.execute">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.execute">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver_command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver_command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Sends a command to be executed by a command.CommandExecutor.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        driver_command : str</span>
-<span class="sd">            - The name of the command to execute as a string.</span>
-
-<span class="sd">        params : dict</span>
-<span class="sd">            - A dictionary of named Parameters to send with the command.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            driver_command: The name of the command to execute as a string.</span>
+<span class="sd">            params: A dictionary of named parameters to send with the command.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">          dict - The command's JSON response loaded into a dictionary object.</span>
+<span class="sd">            The command's JSON response loaded into a dictionary object.</span>
 <span class="sd">        """</span>
         <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_value</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 
@@ -694,22 +668,17 @@
 <div class="viewcode-block" id="WebDriver.get">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Navigate the browser to the specified URL in the current window or</span>
-<span class="sd">        tab.</span>
+<span class="w">        </span><span class="sd">"""Navigate the browser to the specified URL.</span>
 
 <span class="sd">        The method does not return until the page is fully loaded (i.e. the</span>
-<span class="sd">        onload event has fired).</span>
+<span class="sd">        onload event has fired) in the current window or tab.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        url : str</span>
-<span class="sd">            - The URL to be opened by the browser.</span>
-<span class="sd">            - Must include the protocol (e.g., http://, https://).</span>
+<span class="sd">        Args:</span>
+<span class="sd">            url: The URL to be opened by the browser. Must include the protocol</span>
+<span class="sd">                (e.g., http://, https://).</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver = webdriver.Chrome()</span>
-<span class="sd">        &gt;&gt;&gt; driver.get("https://example.com")</span>
+<span class="sd">            `driver.get("https://example.com")`</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="p">{</span><span class="s2">"url"</span><span class="p">:</span> <span class="n">url</span><span class="p">})</span></div>
 
@@ -719,21 +688,20 @@
 <span class="w">        </span><span class="sd">"""Returns the title of the current page.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; element = driver.find_element(By.ID, "foo")</span>
-<span class="sd">        &gt;&gt;&gt; print(element.title())</span>
+<span class="sd">            ```</span>
+<span class="sd">            element = driver.find_element(By.ID, "foo")</span>
+<span class="sd">            print(element.title())</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_TITLE</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WebDriver.pin_script">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.pin_script">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">pin_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">script_key</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScriptKey</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Store common javascript scripts to be executed later by a unique</span>
-<span class="sd">        hashable ID.</span>
+<span class="w">        </span><span class="sd">"""Store a JavaScript script by a unique hashable ID for later execution.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; script = "return document.getElementById('foo').value"</span>
+<span class="sd">            `script = "return document.getElementById('foo').value"`</span>
 <span class="sd">        """</span>
         <span class="n">script_key_instance</span> <span class="o">=</span> <span class="n">ScriptKey</span><span class="p">(</span><span class="n">script_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pinned_scripts</span><span class="p">[</span><span class="n">script_key_instance</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">script</span>
@@ -746,8 +714,7 @@
 <span class="w">        </span><span class="sd">"""Remove a pinned script from storage.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.unpin(script_key)</span>
+<span class="sd">            `driver.unpin(script_key)`</span>
 <span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pinned_scripts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">script_key</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -761,8 +728,7 @@
 <span class="w">        </span><span class="sd">"""Return a list of all pinned scripts.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; pinned_scripts = driver.get_pinned_scripts()</span>
+<span class="sd">            `pinned_scripts = driver.get_pinned_scripts()`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pinned_scripts</span><span class="p">)</span></div>
 
@@ -772,19 +738,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Synchronously Executes JavaScript in the current window/frame.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        script : str</span>
-<span class="sd">            - The javascript to execute.</span>
-
-<span class="sd">        *args : tuple</span>
-<span class="sd">            - Any applicable arguments for your JavaScript.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            script: The javascript to execute.</span>
+<span class="sd">            *args: Any applicable arguments for your JavaScript.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; input_id = "username"</span>
-<span class="sd">        &gt;&gt;&gt; input_value = "test_user"</span>
-<span class="sd">        &gt;&gt;&gt; driver.execute_script("document.getElementById(arguments[0]).value = arguments[1];", input_id, input_value)</span>
+<span class="sd">            ```</span>
+<span class="sd">            id = "username"</span>
+<span class="sd">            value = "test_user"</span>
+<span class="sd">            driver.execute_script("document.getElementById(arguments[0]).value = arguments[1];", id, value)</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">ScriptKey</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -800,22 +763,19 @@
 
 <div class="viewcode-block" id="WebDriver.execute_async_script">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.execute_async_script">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute_async_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_async_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Asynchronously Executes JavaScript in the current window/frame.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        script : str</span>
-<span class="sd">            - The javascript to execute.</span>
-
-<span class="sd">        *args : tuple</span>
-<span class="sd">            - Any applicable arguments for your JavaScript.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            script: The javascript to execute.</span>
+<span class="sd">            *args: Any applicable arguments for your JavaScript.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; script = "var callback = arguments[arguments.length - 1]; "</span>
-<span class="sd">        ...     "window.setTimeout(function(){ callback('timeout') }, 3000);"</span>
-<span class="sd">        &gt;&gt;&gt; driver.execute_async_script(script)</span>
+<span class="sd">            ```</span>
+<span class="sd">            script = "var callback = arguments[arguments.length - 1]; "</span>
+<span class="sd">                "window.setTimeout(function(){ callback('timeout') }, 3000);"</span>
+<span class="sd">            driver.execute_async_script(script)</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="n">command</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">W3C_EXECUTE_SCRIPT_ASYNC</span>
@@ -825,45 +785,25 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">current_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Gets the URL of the current page.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; print(driver.current_url)</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Gets the URL of the current page."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_CURRENT_URL</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">page_source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Gets the source of the current page.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; print(driver.page_source)</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Gets the source of the current page."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_PAGE_SOURCE</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
 
 <div class="viewcode-block" id="WebDriver.close">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Closes the current window.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.close()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Closes the current window."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">CLOSE</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.quit">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.quit">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Quits the driver and closes every associated window.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.quit()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Quits the driver and closes every associated window."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">QUIT</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
@@ -874,33 +814,18 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">current_window_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Returns the handle of the current window.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; print(driver.current_window_handle)</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns the handle of the current window."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_CURRENT_WINDOW_HANDLE</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">window_handles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Returns the handles of all windows within the current session.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; print(driver.window_handles)</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns the handles of all windows within the current session."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_WINDOW_HANDLES</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
 
 <div class="viewcode-block" id="WebDriver.maximize_window">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.maximize_window">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maximize_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Maximizes the current window that webdriver is using.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.maximize_window()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Maximizes the current window that webdriver is using."""</span>
         <span class="n">command</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">W3C_MAXIMIZE_WINDOW</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
@@ -908,12 +833,7 @@
 <div class="viewcode-block" id="WebDriver.fullscreen_window">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.fullscreen_window">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fullscreen_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Invokes the window manager-specific 'full screen' operation.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.fullscreen_window()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Invokes the window manager-specific 'full screen' operation."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FULLSCREEN_WINDOW</span><span class="p">)</span></div>
 
 
@@ -926,17 +846,13 @@
 
 <div class="viewcode-block" id="WebDriver.print_page">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.print_page">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">print_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrintOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_options</span><span class="p">:</span> <span class="n">PrintOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Takes PDF of the current page.</span>
 
 <span class="sd">        The driver makes a best effort to return a PDF based on the</span>
-<span class="sd">        provided Parameters.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.print_page()</span>
+<span class="sd">        provided parameters.</span>
 <span class="sd">        """</span>
-        <span class="n">options</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Any</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">print_options</span><span class="p">:</span>
             <span class="n">options</span> <span class="o">=</span> <span class="n">print_options</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
@@ -948,19 +864,17 @@
 <span class="w">        </span><span class="sd">"""Return an object containing all options to switch focus into.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        SwitchTo: an object containing all options to switch focus into.</span>
+<span class="sd">            An object containing all options to switch focus into.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; element = driver.switch_to.active_element</span>
-<span class="sd">        &gt;&gt;&gt; alert = driver.switch_to.alert</span>
-<span class="sd">        &gt;&gt;&gt; driver.switch_to.default_content()</span>
-<span class="sd">        &gt;&gt;&gt; driver.switch_to.frame("frame_name")</span>
-<span class="sd">        &gt;&gt;&gt; driver.switch_to.frame(1)</span>
-<span class="sd">        &gt;&gt;&gt; driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])</span>
-<span class="sd">        &gt;&gt;&gt; driver.switch_to.parent_frame()</span>
-<span class="sd">        &gt;&gt;&gt; driver.switch_to.window("main")</span>
+<span class="sd">            `element = driver.switch_to.active_element`</span>
+<span class="sd">            `alert = driver.switch_to.alert`</span>
+<span class="sd">            `driver.switch_to.default_content()`</span>
+<span class="sd">            `driver.switch_to.frame("frame_name")`</span>
+<span class="sd">            `driver.switch_to.frame(1)`</span>
+<span class="sd">            `driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])`</span>
+<span class="sd">            `driver.switch_to.parent_frame()`</span>
+<span class="sd">            `driver.switch_to.window("main")`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span>
 
@@ -968,66 +882,49 @@
 <div class="viewcode-block" id="WebDriver.back">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.back">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">back</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Goes one step backward in the browser history.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.back()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Goes one step backward in the browser history."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GO_BACK</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.forward">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Goes one step forward in the browser history.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.forward()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Goes one step forward in the browser history."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GO_FORWARD</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.refresh">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.refresh">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Refreshes the current page.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.refresh()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Refreshes the current page."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">REFRESH</span><span class="p">)</span></div>
 
 
-    <span class="c1"># Options</span>
 <div class="viewcode-block" id="WebDriver.get_cookies">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_cookies">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Returns a set of dictionaries, corresponding to cookies visible in</span>
-<span class="sd">        the current session.</span>
+<span class="w">        </span><span class="sd">"""Get all cookies visible to the current WebDriver instance.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        cookies:List[dict] : A list of dictionaries, corresponding to cookies visible in the current</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; cookies = driver.get_cookies()</span>
+<span class="sd">            A list of dictionaries, corresponding to cookies visible in the</span>
+<span class="sd">            current session.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ALL_COOKIES</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="WebDriver.get_cookie">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_cookie">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Get a single cookie by name. Raises ValueError if the name is empty</span>
-<span class="sd">        or whitespace. Returns the cookie if found, None if not.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Get a single cookie by name (case-sensitive,).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             A cookie dictionary or None if not found.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError if the name is empty or whitespace.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; cookie = driver.get_cookie("my_cookie")</span>
+<span class="sd">            `cookie = driver.get_cookie("my_cookie")`</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cookie name cannot be empty"</span><span class="p">)</span>
@@ -1041,15 +938,15 @@
 <div class="viewcode-block" id="WebDriver.delete_cookie">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.delete_cookie">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">delete_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Deletes a single cookie with the given name. Raises ValueError if</span>
-<span class="sd">        the name is empty or whitespace.</span>
+<span class="w">        </span><span class="sd">"""Delete a single cookie with the given name (case-sensitive).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError if the name is empty or whitespace.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.delete_cookie("my_cookie")</span>
+<span class="sd">            `driver.delete_cookie("my_cookie")`</span>
 <span class="sd">        """</span>
-
-        <span class="c1"># firefox deletes all cookies when "" is passed as name</span>
+        <span class="c1"># Firefox deletes all cookies when "" is passed as name</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cookie name cannot be empty"</span><span class="p">)</span>
 
@@ -1059,12 +956,7 @@
 <div class="viewcode-block" id="WebDriver.delete_all_cookies">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.delete_all_cookies">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">delete_all_cookies</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Delete all cookies in the scope of the session.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.delete_all_cookies()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Delete all cookies in the scope of the session."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">DELETE_ALL_COOKIES</span><span class="p">)</span></div>
 
 
@@ -1073,18 +965,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cookie_dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Adds a cookie to your current session.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        cookie_dict : dict</span>
-<span class="sd">            - A dictionary object, with required keys - "name" and "value";</span>
-<span class="sd">            - Optional keys - "path", "domain", "secure", "httpOnly", "expiry", "sameSite"</span>
+<span class="sd">        Args:</span>
+<span class="sd">            cookie_dict: A dictionary object, with required keys - "name" and</span>
+<span class="sd">                "value"; Optional keys - "path", "domain", "secure", "httpOnly",</span>
+<span class="sd">                "expiry", "sameSite".</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.add_cookie({"name": "foo", "value": "bar"})</span>
-<span class="sd">        &gt;&gt;&gt; driver.add_cookie({"name": "foo", "value": "bar", "path": "/"})</span>
-<span class="sd">        &gt;&gt;&gt; driver.add_cookie({"name": "foo", "value": "bar", "path": "/", "secure": True})</span>
-<span class="sd">        &gt;&gt;&gt; driver.add_cookie({"name": "foo", "value": "bar", "sameSite": "Strict"})</span>
+<span class="sd">            `driver.add_cookie({"name": "foo", "value": "bar"})`</span>
+<span class="sd">            `driver.add_cookie({"name": "foo", "value": "bar", "path": "/"})`</span>
+<span class="sd">            `driver.add_cookie({"name": "foo", "value": "bar", "path": "/", "secure": True})`</span>
+<span class="sd">            `driver.add_cookie({"name": "foo", "value": "bar", "sameSite": "Strict"})`</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="s2">"sameSite"</span> <span class="ow">in</span> <span class="n">cookie_dict</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">cookie_dict</span><span class="p">[</span><span class="s2">"sameSite"</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"Strict"</span><span class="p">,</span> <span class="s2">"Lax"</span><span class="p">,</span> <span class="s2">"None"</span><span class="p">]</span>
@@ -1097,19 +987,17 @@
 <div class="viewcode-block" id="WebDriver.implicitly_wait">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.implicitly_wait">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">implicitly_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_to_wait</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Sets a sticky timeout to implicitly wait for an element to be found,</span>
-<span class="sd">        or a command to complete. This method only needs to be called one time</span>
-<span class="sd">        per session. To set the timeout for calls to execute_async_script, see</span>
-<span class="sd">        set_script_timeout.</span>
+<span class="w">        </span><span class="sd">"""Set a sticky implicit timeout for element location and command completion.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        time_to_wait : float</span>
-<span class="sd">            - Amount of time to wait (in seconds)</span>
+<span class="sd">        This method sets a timeout that applies to all element location strategies</span>
+<span class="sd">        for the duration of the session. It only needs to be called once per session.</span>
+<span class="sd">        To set the timeout for asynchronous script execution, see set_script_timeout.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time_to_wait: Amount of time to wait (in seconds).</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.implicitly_wait(30)</span>
+<span class="sd">            `driver.implicitly_wait(30)`</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="p">{</span><span class="s2">"implicit"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)})</span></div>
 
@@ -1117,17 +1005,16 @@
 <div class="viewcode-block" id="WebDriver.set_script_timeout">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.set_script_timeout">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_script_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_to_wait</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Set the amount of time that the script should wait during an</span>
+<span class="w">        </span><span class="sd">"""Set the timeout for asynchronous script execution.</span>
+
+<span class="sd">        This timeout specifies how long a script can run during an</span>
 <span class="sd">        execute_async_script call before throwing an error.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        time_to_wait : float</span>
-<span class="sd">            - The amount of time to wait (in seconds)</span>
+<span class="sd">        Args:</span>
+<span class="sd">            time_to_wait: The amount of time to wait (in seconds).</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.set_script_timeout(30)</span>
+<span class="sd">            `driver.set_script_timeout(30)`</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="p">{</span><span class="s2">"script"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)})</span></div>
 
@@ -1135,17 +1022,16 @@
 <div class="viewcode-block" id="WebDriver.set_page_load_timeout">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.set_page_load_timeout">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_page_load_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_to_wait</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Set the amount of time to wait for a page load to complete before</span>
+<span class="w">        </span><span class="sd">"""Set the timeout for page load completion.</span>
+
+<span class="sd">        This specifies how long to wait for a page load to complete before</span>
 <span class="sd">        throwing an error.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        time_to_wait : float</span>
-<span class="sd">             - The amount of time to wait (in seconds)</span>
+<span class="sd">        Args:</span>
+<span class="sd">            time_to_wait: The amount of time to wait (in seconds).</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.set_page_load_timeout(30)</span>
+<span class="sd">            `driver.set_page_load_timeout(30)`</span>
 <span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="p">{</span><span class="s2">"pageLoad"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)})</span>
@@ -1158,15 +1044,13 @@
 <span class="w">        </span><span class="sd">"""Get all the timeouts that have been set on the current session.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        Timeouts: A named tuple with the following fields:</span>
-<span class="sd">            - implicit_wait: The time to wait for elements to be found.</span>
-<span class="sd">            - page_load: The time to wait for a page to load.</span>
-<span class="sd">            - script: The time to wait for scripts to execute.</span>
+<span class="sd">            A named tuple with the following fields:</span>
+<span class="sd">              - implicit_wait: The time to wait for elements to be found.</span>
+<span class="sd">              - page_load: The time to wait for a page to load.</span>
+<span class="sd">              - script: The time to wait for scripts to execute.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.timeouts</span>
+<span class="sd">            `driver.timeouts`</span>
 <span class="sd">        """</span>
         <span class="n">timeouts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_TIMEOUTS</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
         <span class="n">timeouts</span><span class="p">[</span><span class="s2">"implicit_wait"</span><span class="p">]</span> <span class="o">=</span> <span class="n">timeouts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"implicit"</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
@@ -1176,44 +1060,36 @@
 
     <span class="nd">@timeouts</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">timeouts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeouts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Set all timeouts for the session. This will override any previously</span>
-<span class="sd">        set timeouts.</span>
+<span class="w">        </span><span class="sd">"""Set all timeouts for the session.</span>
+
+<span class="sd">        This will override any previously set timeouts.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; my_timeouts = Timeouts()</span>
-<span class="sd">        &gt;&gt;&gt; my_timeouts.implicit_wait = 10</span>
-<span class="sd">        &gt;&gt;&gt; driver.timeouts = my_timeouts</span>
+<span class="sd">            ```</span>
+<span class="sd">            my_timeouts = Timeouts()</span>
+<span class="sd">            my_timeouts.implicit_wait = 10</span>
+<span class="sd">            driver.timeouts = my_timeouts</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="n">timeouts</span><span class="o">.</span><span class="n">_to_json</span><span class="p">())[</span><span class="s2">"value"</span><span class="p">]</span>
 
 <div class="viewcode-block" id="WebDriver.find_element">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.find_element">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Find an element given a By strategy and locator.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        by : selenium.webdriver.common.by.By</span>
-<span class="sd">            The locating strategy to use. Default is `By.ID`. Supported values include:</span>
-<span class="sd">            - By.ID: Locate by element ID.</span>
-<span class="sd">            - By.NAME: Locate by the `name` attribute.</span>
-<span class="sd">            - By.XPATH: Locate by an XPath expression.</span>
-<span class="sd">            - By.CSS_SELECTOR: Locate by a CSS selector.</span>
-<span class="sd">            - By.CLASS_NAME: Locate by the `class` attribute.</span>
-<span class="sd">            - By.TAG_NAME: Locate by the tag name (e.g., "input", "button").</span>
-<span class="sd">            - By.LINK_TEXT: Locate a link element by its exact text.</span>
-<span class="sd">            - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.</span>
-<span class="sd">            - RelativeBy: Locate elements relative to a specified root element.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        element = driver.find_element(By.ID, 'foo')</span>
+<span class="sd">        Args:</span>
+<span class="sd">            by: The locating strategy to use. Default is `By.ID`. Supported</span>
+<span class="sd">                values include: By.ID, By.NAME, By.XPATH, By.CSS_SELECTOR,</span>
+<span class="sd">                By.CLASS_NAME, By.TAG_NAME, By.LINK_TEXT, By.PARTIAL_LINK_TEXT,</span>
+<span class="sd">                or RelativeBy.</span>
+<span class="sd">            value: The locator value to use with the specified `by` strategy.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">        WebElement</span>
-<span class="sd">            The first matching `WebElement` found on the page.</span>
+<span class="sd">            The first matching WebElement found on the page.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            `element = driver.find_element(By.ID, 'foo')`</span>
 <span class="sd">        """</span>
         <span class="n">by</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator_converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -1228,31 +1104,21 @@
 
 <div class="viewcode-block" id="WebDriver.find_elements">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.find_elements">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WebElement</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Find elements given a By strategy and locator.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        by : selenium.webdriver.common.by.By</span>
-<span class="sd">            The locating strategy to use. Default is `By.ID`. Supported values include:</span>
-<span class="sd">            - By.ID: Locate by element ID.</span>
-<span class="sd">            - By.NAME: Locate by the `name` attribute.</span>
-<span class="sd">            - By.XPATH: Locate by an XPath expression.</span>
-<span class="sd">            - By.CSS_SELECTOR: Locate by a CSS selector.</span>
-<span class="sd">            - By.CLASS_NAME: Locate by the `class` attribute.</span>
-<span class="sd">            - By.TAG_NAME: Locate by the tag name (e.g., "input", "button").</span>
-<span class="sd">            - By.LINK_TEXT: Locate a link element by its exact text.</span>
-<span class="sd">            - By.PARTIAL_LINK_TEXT: Locate a link element by partial text match.</span>
-<span class="sd">            - RelativeBy: Locate elements relative to a specified root element.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        element = driver.find_elements(By.ID, 'foo')</span>
+<span class="sd">        Args:</span>
+<span class="sd">            by: The locating strategy to use. Default is `By.ID`. Supported</span>
+<span class="sd">                values include: By.ID, By.NAME, By.XPATH, By.CSS_SELECTOR,</span>
+<span class="sd">                By.CLASS_NAME, By.TAG_NAME, By.LINK_TEXT, By.PARTIAL_LINK_TEXT,</span>
+<span class="sd">                or RelativeBy.</span>
+<span class="sd">            value: The locator value to use with the specified `by` strategy.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">        List[WebElement]</span>
-<span class="sd">            list of `WebElements` matching locator strategy found on the page.</span>
+<span class="sd">            List of WebElements matching locator strategy found on the page.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            `element = driver.find_elements(By.ID, 'foo')`</span>
 <span class="sd">        """</span>
         <span class="n">by</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator_converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -1272,30 +1138,23 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Returns the drivers current capabilities being used.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; print(driver.capabilities)</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns the drivers current capabilities being used."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span>
 
 <div class="viewcode-block" id="WebDriver.get_screenshot_as_file">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_screenshot_as_file">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Saves a screenshot of the current window to a PNG image file.</span>
-<span class="sd">        Returns False if there is any IOError, else returns True. Use full</span>
-<span class="sd">        paths in your filename.</span>
+<span class="w">        </span><span class="sd">"""Save a screenshot of the current window to a PNG image file.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        filename : str</span>
-<span class="sd">            - The full path you wish to save your screenshot to. This</span>
-<span class="sd">            - should end with a `.png` extension.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            False if there is any IOError, else returns True. Use full paths in your filename.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: The full path you wish to save your screenshot to. This</span>
+<span class="sd">                should end with a `.png` extension.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_screenshot_as_file("/Screenshots/foo.png")</span>
+<span class="sd">            `driver.get_screenshot_as_file("./screenshots/foo.png")`</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".png"</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
@@ -1317,19 +1176,17 @@
 <div class="viewcode-block" id="WebDriver.save_screenshot">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.save_screenshot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Saves a screenshot of the current window to a PNG image file.</span>
-<span class="sd">        Returns False if there is any IOError, else returns True. Use full</span>
-<span class="sd">        paths in your filename.</span>
+<span class="w">        </span><span class="sd">"""Save a screenshot of the current window to a PNG image file.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        filename : str</span>
-<span class="sd">            - The full path you wish to save your screenshot to. This</span>
-<span class="sd">            - should end with a `.png` extension.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            False if there is any IOError, else returns True. Use full paths in your filename.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: The full path you wish to save your screenshot to. This</span>
+<span class="sd">                should end with a `.png` extension.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.save_screenshot("/Screenshots/foo.png")</span>
+<span class="sd">            `driver.save_screenshot("./screenshots/foo.png")`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
@@ -1340,8 +1197,7 @@
 <span class="w">        </span><span class="sd">"""Gets the screenshot of the current window as a binary data.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_screenshot_as_png()</span>
+<span class="sd">            `driver.get_screenshot_as_png()`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_screenshot_as_base64</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"ascii"</span><span class="p">))</span></div>
 
@@ -1349,12 +1205,12 @@
 <div class="viewcode-block" id="WebDriver.get_screenshot_as_base64">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_screenshot_as_base64">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Gets the screenshot of the current window as a base64 encoded string</span>
-<span class="sd">        which is useful in embedded images in HTML.</span>
+<span class="w">        </span><span class="sd">"""Get a base64-encoded screenshot of the current window.</span>
+
+<span class="sd">        This encoding is useful for embedding screenshots in HTML.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_screenshot_as_base64()</span>
+<span class="sd">            `driver.get_screenshot_as_base64()`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
@@ -1362,19 +1218,15 @@
 <div class="viewcode-block" id="WebDriver.set_window_size">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.set_window_size">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_window_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">windowHandle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"current"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Sets the width and height of the current window. (window.resizeTo)</span>
+<span class="w">        </span><span class="sd">"""Sets the width and height of the current window.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        width : int</span>
-<span class="sd">            - the width in pixels to set the window to</span>
-
-<span class="sd">        height : int</span>
-<span class="sd">            - the height in pixels to set the window to</span>
+<span class="sd">        Args:</span>
+<span class="sd">            width: The width in pixels to set the window to.</span>
+<span class="sd">            height: The height in pixels to set the window to.</span>
+<span class="sd">            windowHandle: The handle of the window to resize. Default is "current".</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.set_window_size(800, 600)</span>
+<span class="sd">            `driver.set_window_size(800, 600)`</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_if_window_handle_is_current</span><span class="p">(</span><span class="n">windowHandle</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_window_rect</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="n">height</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">height</span><span class="p">))</span></div>
@@ -1386,10 +1238,8 @@
 <span class="w">        </span><span class="sd">"""Gets the width and height of the current window.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_window_size()</span>
+<span class="sd">            `driver.get_window_size()`</span>
 <span class="sd">        """</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_if_window_handle_is_current</span><span class="p">(</span><span class="n">windowHandle</span><span class="p">)</span>
         <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_window_rect</span><span class="p">()</span>
 
@@ -1402,19 +1252,15 @@
 <div class="viewcode-block" id="WebDriver.set_window_position">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.set_window_position">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_window_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">windowHandle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"current"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Sets the x,y position of the current window. (window.moveTo)</span>
+<span class="w">        </span><span class="sd">"""Sets the x,y position of the current window.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x : float</span>
-<span class="sd">            - The x-coordinate in pixels to set the window position</span>
-
-<span class="sd">        y : float</span>
-<span class="sd">            - The y-coordinate in pixels to set the window position</span>
+<span class="sd">        Args:</span>
+<span class="sd">            x: The x-coordinate in pixels to set the window position.</span>
+<span class="sd">            y: The y-coordinate in pixels to set the window position.</span>
+<span class="sd">            windowHandle: The handle of the window to reposition. Default is "current".</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.set_window_position(0, 0)</span>
+<span class="sd">            `driver.set_window_position(0, 0)`</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_if_window_handle_is_current</span><span class="p">(</span><span class="n">windowHandle</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_window_rect</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span></div>
@@ -1426,10 +1272,8 @@
 <span class="w">        </span><span class="sd">"""Gets the x,y position of the current window.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_window_position()</span>
+<span class="sd">            `driver.get_window_position()`</span>
 <span class="sd">        """</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_if_window_handle_is_current</span><span class="p">(</span><span class="n">windowHandle</span><span class="p">)</span>
         <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_window_rect</span><span class="p">()</span>
 
@@ -1444,12 +1288,13 @@
 <div class="viewcode-block" id="WebDriver.get_window_rect">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_window_rect">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_window_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Gets the x, y coordinates of the window as well as height and width</span>
-<span class="sd">        of the current window.</span>
+<span class="w">        </span><span class="sd">"""Get the window's position and size.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            x, y coordinates and height and width of the current window.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.get_window_rect()</span>
+<span class="sd">            `driver.get_window_rect()`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_RECT</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
@@ -1457,18 +1302,17 @@
 <div class="viewcode-block" id="WebDriver.set_window_rect">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.set_window_rect">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_window_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Sets the x, y coordinates of the window as well as height and width</span>
-<span class="sd">        of the current window. This method is only supported for W3C compatible</span>
-<span class="sd">        browsers; other browsers should use `set_window_position` and</span>
-<span class="sd">        `set_window_size`.</span>
+<span class="w">        </span><span class="sd">"""Set the window's position and size.</span>
+
+<span class="sd">        Sets the x, y coordinates and height and width of the current window.</span>
+<span class="sd">        This method is only supported for W3C compatible browsers; other browsers</span>
+<span class="sd">        should use `set_window_position` and `set_window_size`.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.set_window_rect(x=10, y=10)</span>
-<span class="sd">        &gt;&gt;&gt; driver.set_window_rect(width=100, height=200)</span>
-<span class="sd">        &gt;&gt;&gt; driver.set_window_rect(x=10, y=10, width=100, height=200)</span>
+<span class="sd">            `driver.set_window_rect(x=10, y=10)`</span>
+<span class="sd">            `driver.set_window_rect(width=100, height=200)`</span>
+<span class="sd">            `driver.set_window_rect(x=10, y=10, width=100, height=200)`</span>
 <span class="sd">        """</span>
-
         <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">height</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">width</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s2">"x and y or height and width need values"</span><span class="p">)</span>
 
@@ -1481,17 +1325,13 @@
 
     <span class="nd">@file_detector</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">file_detector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Set the file detector to be used when sending keyboard input. By</span>
-<span class="sd">        default, this is set to a file detector that does nothing.</span>
+<span class="w">        </span><span class="sd">"""Set the file detector for keyboard input.</span>
 
-<span class="sd">        - see FileDetector</span>
-<span class="sd">        - see LocalFileDetector</span>
-<span class="sd">        - see UselessFileDetector</span>
+<span class="sd">        By default, this is set to a file detector that does nothing.</span>
+<span class="sd">        See FileDetector, LocalFileDetector, and UselessFileDetector.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        detector : Any</span>
-<span class="sd">            - The detector to use. Must not be None.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            detector: The detector to use. Must not be None.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">detector</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"You may not set a file detector that is null"</span><span class="p">)</span>
@@ -1500,12 +1340,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_detector</span> <span class="o">=</span> <span class="n">detector</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Gets the current orientation of the device.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; orientation = driver.orientation</span>
+<span class="sd">            `orientation = driver.orientation`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_SCREEN_ORIENTATION</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span>
 
@@ -1513,14 +1352,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sets the current orientation of the device.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        value : str</span>
-<span class="sd">            - orientation to set it to.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            value: Orientation to set it to.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.orientation = "landscape"</span>
+<span class="sd">            `driver.orientation = "landscape"`</span>
 <span class="sd">        """</span>
         <span class="n">allowed_values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"LANDSCAPE"</span><span class="p">,</span> <span class="s2">"PORTRAIT"</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">allowed_values</span><span class="p">:</span>
@@ -1530,7 +1366,7 @@
 
 <div class="viewcode-block" id="WebDriver.start_devtools">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.start_devtools">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">start_devtools</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_devtools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">WebSocketConnection</span><span class="p">]:</span>
         <span class="k">global</span> <span class="n">cdp</span>
         <span class="n">import_cdp</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"se:cdp"</span><span class="p">):</span>
@@ -1589,7 +1425,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">script</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">script</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Script</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
 
@@ -1598,7 +1434,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_script</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_start_bidi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start_bidi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"webSocketUrl"</span><span class="p">):</span>
             <span class="n">ws_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"webSocketUrl"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1611,7 +1447,7 @@
         <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Network</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
 
@@ -1621,19 +1457,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">browser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">browser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Browser</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Returns a browser module object for BiDi browser commands.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        Browser: an object containing access to BiDi browser commands.</span>
+<span class="sd">            An object containing access to BiDi browser commands.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        ---------</span>
-<span class="sd">        &gt;&gt;&gt; user_context = driver.browser.create_user_context()</span>
-<span class="sd">        &gt;&gt;&gt; user_contexts = driver.browser.get_user_contexts()</span>
-<span class="sd">        &gt;&gt;&gt; client_windows = driver.browser.get_client_windows()</span>
-<span class="sd">        &gt;&gt;&gt; driver.browser.remove_user_context(user_context)</span>
+<span class="sd">            `user_context = driver.browser.create_user_context()`</span>
+<span class="sd">            `user_contexts = driver.browser.get_user_contexts()`</span>
+<span class="sd">            `client_windows = driver.browser.get_client_windows()`</span>
+<span class="sd">            `driver.browser.remove_user_context(user_context)`</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
@@ -1644,9 +1478,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_browser</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns the BiDi session object for the current WebDriver</span>
-<span class="sd">        session."""</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Returns the BiDi session object for the current WebDriver session."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
 
@@ -1656,20 +1489,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bidi_session</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">browsing_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns a browsing context module object for BiDi browsing context</span>
-<span class="sd">        commands.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">browsing_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrowsingContext</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Returns a browsing context module object for BiDi browsing context commands.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        BrowsingContext: an object containing access to BiDi browsing context commands.</span>
+<span class="sd">            An object containing access to BiDi browsing context commands.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        ---------</span>
-<span class="sd">        &gt;&gt;&gt; context_id = driver.browsing_context.create(type="tab")</span>
-<span class="sd">        &gt;&gt;&gt; driver.browsing_context.navigate(context=context_id, url="https://www.selenium.dev")</span>
-<span class="sd">        &gt;&gt;&gt; driver.browsing_context.capture_screenshot(context=context_id)</span>
-<span class="sd">        &gt;&gt;&gt; driver.browsing_context.close(context_id)</span>
+<span class="sd">            `context_id = driver.browsing_context.create(type="tab")`</span>
+<span class="sd">            `driver.browsing_context.navigate(context=context_id, url="https://www.selenium.dev")`</span>
+<span class="sd">            `driver.browsing_context.capture_screenshot(context=context_id)`</span>
+<span class="sd">            `driver.browsing_context.close(context_id)`</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
@@ -1680,21 +1510,21 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_browsing_context</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">storage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Storage</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Returns a storage module object for BiDi storage commands.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        Storage: an object containing access to BiDi storage commands.</span>
+<span class="sd">            An object containing access to BiDi storage commands.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        ---------</span>
-<span class="sd">        &gt;&gt;&gt; cookie_filter = CookieFilter(name="example")</span>
-<span class="sd">        &gt;&gt;&gt; result = driver.storage.get_cookies(filter=cookie_filter)</span>
-<span class="sd">        &gt;&gt;&gt; driver.storage.set_cookie(cookie=PartialCookie(</span>
-<span class="sd">                "name", BytesValue(BytesValue.TYPE_STRING, "value"), "domain")</span>
-<span class="sd">            )</span>
-<span class="sd">        &gt;&gt;&gt; driver.storage.delete_cookies(filter=CookieFilter(name="example"))</span>
+<span class="sd">            ```</span>
+<span class="sd">            cookie_filter = CookieFilter(name="example")</span>
+<span class="sd">            result = driver.storage.get_cookies(filter=cookie_filter)</span>
+<span class="sd">            cookie=PartialCookie("name", BytesValue(BytesValue.TYPE_STRING, "value")</span>
+<span class="sd">            driver.storage.set_cookie(cookie=cookie, "domain"))</span>
+<span class="sd">            cookie_filter=CookieFilter(name="example")</span>
+<span class="sd">            driver.storage.delete_cookies(filter=cookie_filter)</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
@@ -1705,18 +1535,19 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns a permissions module object for BiDi permissions commands.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Permissions</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Get a permissions module object for BiDi permissions commands.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        Permissions: an object containing access to BiDi permissions commands.</span>
+<span class="sd">            An object containing access to BiDi permissions commands.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        ---------</span>
-<span class="sd">        &gt;&gt;&gt; from selenium.webdriver.common.bidi.permissions import PermissionDescriptor, PermissionState</span>
-<span class="sd">        &gt;&gt;&gt; descriptor = PermissionDescriptor("geolocation")</span>
-<span class="sd">        &gt;&gt;&gt; driver.permissions.set_permission(descriptor, PermissionState.GRANTED, "https://example.com")</span>
+<span class="sd">            ```</span>
+<span class="sd">            from selenium.webdriver.common.bidi.permissions import PermissionDescriptor, PermissionState</span>
+
+<span class="sd">            descriptor = PermissionDescriptor("geolocation")</span>
+<span class="sd">            driver.permissions.set_permission(descriptor, PermissionState.GRANTED, "https://example.com")</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
@@ -1727,18 +1558,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permissions</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">webextension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns a webextension module object for BiDi webextension commands.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">webextension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebExtension</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Get a webextension module object for BiDi webextension commands.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        WebExtension: an object containing access to BiDi webextension commands.</span>
+<span class="sd">            An object containing access to BiDi webextension commands.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        ---------</span>
-<span class="sd">        &gt;&gt;&gt; extension_path = "/path/to/extension"</span>
-<span class="sd">        &gt;&gt;&gt; extension_result = driver.webextension.install(path=extension_path)</span>
-<span class="sd">        &gt;&gt;&gt; driver.webextension.uninstall(extension_result)</span>
+<span class="sd">            `extension_path = "/path/to/extension"`</span>
+<span class="sd">            `extension_result = driver.webextension.install(path=extension_path)`</span>
+<span class="sd">            `driver.webextension.uninstall(extension_result)`</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
@@ -1749,18 +1578,19 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_webextension</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">emulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns an emulation module object for BiDi emulation commands.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">emulation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Emulation</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Get an emulation module object for BiDi emulation commands.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        Emulation: an object containing access to BiDi emulation commands.</span>
+<span class="sd">            An object containing access to BiDi emulation commands.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        ---------</span>
-<span class="sd">        &gt;&gt;&gt; from selenium.webdriver.common.bidi.emulation import GeolocationCoordinates</span>
-<span class="sd">        &gt;&gt;&gt; coordinates = GeolocationCoordinates(37.7749, -122.4194)</span>
-<span class="sd">        &gt;&gt;&gt; driver.emulation.set_geolocation_override(coordinates=coordinates, contexts=[context_id])</span>
+<span class="sd">            ```</span>
+<span class="sd">            from selenium.webdriver.common.bidi.emulation import GeolocationCoordinates</span>
+
+<span class="sd">            coordinates = GeolocationCoordinates(37.7749, -122.4194)</span>
+<span class="sd">            driver.emulation.set_geolocation_override(coordinates=coordinates, contexts=[context_id])</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
@@ -1771,19 +1601,20 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emulation</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns an input module object for BiDi input commands.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">input</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Input</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Get an input module object for BiDi input commands.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        --------</span>
-<span class="sd">        Input: an object containing access to BiDi input commands.</span>
+<span class="sd">            An object containing access to BiDi input commands.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        ---------</span>
-<span class="sd">        &gt;&gt;&gt; from selenium.webdriver.common.bidi.input import KeySourceActions, KeyDownAction, KeyUpAction</span>
-<span class="sd">        &gt;&gt;&gt; key_actions = KeySourceActions(id="keyboard", actions=[KeyDownAction(value="a"), KeyUpAction(value="a")])</span>
-<span class="sd">        &gt;&gt;&gt; driver.input.perform_actions(driver.current_window_handle, [key_actions])</span>
-<span class="sd">        &gt;&gt;&gt; driver.input.release_actions(driver.current_window_handle)</span>
+<span class="sd">            ```</span>
+<span class="sd">            from selenium.webdriver.common.bidi.input import KeySourceActions, KeyDownAction, KeyUpAction</span>
+
+<span class="sd">            actions = KeySourceActions(id="keyboard", actions=[KeyDownAction(value="a"), KeyUpAction(value="a")])</span>
+<span class="sd">            driver.input.perform_actions(driver.current_window_handle, [actions])</span>
+<span class="sd">            driver.input.release_actions(driver.current_window_handle)</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_websocket_connection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_bidi</span><span class="p">()</span>
@@ -1826,22 +1657,19 @@
 <span class="w">        </span><span class="sd">"""Adds a virtual authenticator with the given options.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions</span>
-<span class="sd">        &gt;&gt;&gt; options = VirtualAuthenticatorOptions(protocol="u2f", transport="usb", device_id="myDevice123")</span>
-<span class="sd">        &gt;&gt;&gt; driver.add_virtual_authenticator(options)</span>
+<span class="sd">            ```</span>
+<span class="sd">            from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions</span>
+
+<span class="sd">            options = VirtualAuthenticatorOptions(protocol="u2f", transport="usb", device_id="myDevice123")</span>
+<span class="sd">            driver.add_virtual_authenticator(options)</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">ADD_VIRTUAL_AUTHENTICATOR</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())[</span><span class="s2">"value"</span><span class="p">]</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">virtual_authenticator_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Returns the id of the virtual authenticator.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; print(driver.virtual_authenticator_id)</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">virtual_authenticator_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Returns the id of the virtual authenticator."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span>
 
 <div class="viewcode-block" id="WebDriver.remove_virtual_authenticator">
@@ -1852,10 +1680,6 @@
 
 <span class="sd">        The authenticator is no longer valid after removal, so no</span>
 <span class="sd">        methods may be called.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.remove_virtual_authenticator()</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">REMOVE_VIRTUAL_AUTHENTICATOR</span><span class="p">,</span> <span class="p">{</span><span class="s2">"authenticatorId"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span><span class="p">})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -1868,10 +1692,12 @@
 <span class="w">        </span><span class="sd">"""Injects a credential into the authenticator.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from selenium.webdriver.common.credential import Credential</span>
-<span class="sd">        &gt;&gt;&gt; credential = Credential(id="user@example.com", password="aPassword")</span>
-<span class="sd">        &gt;&gt;&gt; driver.add_credential(credential)</span>
+<span class="sd">            ```</span>
+<span class="sd">            from selenium.webdriver.common.credential import Credential</span>
+
+<span class="sd">            credential = Credential(id="user@example.com", password="aPassword")</span>
+<span class="sd">            driver.add_credential(credential)</span>
+<span class="sd">            ```</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">ADD_CREDENTIAL</span><span class="p">,</span> <span class="p">{</span><span class="o">**</span><span class="n">credential</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="s2">"authenticatorId"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span><span class="p">})</span></div>
 
@@ -1880,12 +1706,7 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_credentials">[docs]</a>
     <span class="nd">@required_virtual_authenticator</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Credential</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Returns the list of credentials owned by the authenticator.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; credentials = driver.get_credentials()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns the list of credentials owned by the authenticator."""</span>
         <span class="n">credential_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_CREDENTIALS</span><span class="p">,</span> <span class="p">{</span><span class="s2">"authenticatorId"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span><span class="p">})</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">Credential</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">credential</span><span class="p">)</span> <span class="k">for</span> <span class="n">credential</span> <span class="ow">in</span> <span class="n">credential_data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]]</span></div>
 
@@ -1893,13 +1714,12 @@
 <div class="viewcode-block" id="WebDriver.remove_credential">
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.remove_credential">[docs]</a>
     <span class="nd">@required_virtual_authenticator</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">remove_credential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">credential_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_credential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">credential_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytearray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Removes a credential from the authenticator.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; credential_id = "user@example.com"</span>
-<span class="sd">        &gt;&gt;&gt; driver.remove_credential(credential_id)</span>
+<span class="sd">            `credential_id = "user@example.com"`</span>
+<span class="sd">            `driver.remove_credential(credential_id)`</span>
 <span class="sd">        """</span>
         <span class="c1"># Check if the credential is bytearray converted to b64 string</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">credential_id</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">):</span>
@@ -1914,12 +1734,7 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.remove_all_credentials">[docs]</a>
     <span class="nd">@required_virtual_authenticator</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_all_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Removes all credentials from the authenticator.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.remove_all_credentials()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Removes all credentials from the authenticator."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">REMOVE_ALL_CREDENTIALS</span><span class="p">,</span> <span class="p">{</span><span class="s2">"authenticatorId"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span><span class="p">})</span></div>
 
 
@@ -1927,16 +1742,14 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_wpewebkit/selenium.webdriver.wpewebkit.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.set_user_verified">[docs]</a>
     <span class="nd">@required_virtual_authenticator</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_user_verified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verified</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Sets whether the authenticator will simulate success or fail on user</span>
-<span class="sd">        verification.</span>
+<span class="w">        </span><span class="sd">"""Set whether the authenticator will simulate success or failure on user verification.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        verified: True if the authenticator will pass user verification, False otherwise.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            verified: True if the authenticator will pass user verification,</span>
+<span class="sd">                False otherwise.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.set_user_verified(True)</span>
+<span class="sd">            `driver.set_user_verified(True)`</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_USER_VERIFIED</span><span class="p">,</span> <span class="p">{</span><span class="s2">"authenticatorId"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authenticator_id</span><span class="p">,</span> <span class="s2">"isUserVerified"</span><span class="p">:</span> <span class="n">verified</span><span class="p">})</span></div>
 
@@ -1944,12 +1757,7 @@
 <div class="viewcode-block" id="WebDriver.get_downloadable_files">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_downloadable_files">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Retrieves the downloadable files as a list of file names.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; files = driver.get_downloadable_files()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Retrieves the downloadable files as a list of file names."""</span>
         <span class="k">if</span> <span class="s2">"se:downloadsEnabled"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"You must enable downloads in order to work with downloadable files."</span><span class="p">)</span>
 
@@ -1959,20 +1767,14 @@
 <div class="viewcode-block" id="WebDriver.download_file">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.download_file">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Downloads a file with the specified file name to the target</span>
-<span class="sd">        directory.</span>
+<span class="w">        </span><span class="sd">"""Download a file with the specified file name to the target directory.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        file_name : str</span>
-<span class="sd">            - The name of the file to download.</span>
-
-<span class="sd">        target_directory : str</span>
-<span class="sd">            - The path to the directory to save the downloaded file.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            file_name: The name of the file to download.</span>
+<span class="sd">            target_directory: The path to the directory to save the downloaded file.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.download_file("example.zip", "/path/to/directory")</span>
+<span class="sd">            `driver.download_file("example.zip", "/path/to/directory")`</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="s2">"se:downloadsEnabled"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"You must enable downloads in order to work with downloadable files."</span><span class="p">)</span>
@@ -1994,12 +1796,7 @@
 <div class="viewcode-block" id="WebDriver.delete_downloadable_files">
 <a class="viewcode-back" href="../../../../selenium_webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.delete_downloadable_files">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">delete_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Deletes all downloadable files.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; driver.delete_downloadable_files()</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Deletes all downloadable files."""</span>
         <span class="k">if</span> <span class="s2">"se:downloadsEnabled"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">"You must enable downloads in order to work with downloadable files."</span><span class="p">)</span>
 
@@ -2008,39 +1805,32 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">fedcm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FedCM</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Returns the Federated Credential Management (FedCM) dialog object</span>
-<span class="sd">        for interaction.</span>
+<span class="w">        </span><span class="sd">"""Get the Federated Credential Management (FedCM) dialog commands.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">        FedCM: an object providing access to all Federated Credential Management (FedCM) dialog commands.</span>
+<span class="sd">            An object providing access to all Federated Credential Management</span>
+<span class="sd">            (FedCM) dialog commands.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; title = driver.fedcm.title</span>
-<span class="sd">        &gt;&gt;&gt; subtitle = driver.fedcm.subtitle</span>
-<span class="sd">        &gt;&gt;&gt; dialog_type = driver.fedcm.dialog_type</span>
-<span class="sd">        &gt;&gt;&gt; accounts = driver.fedcm.account_list</span>
-<span class="sd">        &gt;&gt;&gt; driver.fedcm.select_account(0)</span>
-<span class="sd">        &gt;&gt;&gt; driver.fedcm.accept()</span>
-<span class="sd">        &gt;&gt;&gt; driver.fedcm.dismiss()</span>
-<span class="sd">        &gt;&gt;&gt; driver.fedcm.enable_delay()</span>
-<span class="sd">        &gt;&gt;&gt; driver.fedcm.disable_delay()</span>
-<span class="sd">        &gt;&gt;&gt; driver.fedcm.reset_cooldown()</span>
+<span class="sd">            `driver.fedcm.title`</span>
+<span class="sd">            `driver.fedcm.subtitle`</span>
+<span class="sd">            `driver.fedcm.dialog_type`</span>
+<span class="sd">            `driver.fedcm.account_list`</span>
+<span class="sd">            `driver.fedcm.select_account(0)`</span>
+<span class="sd">            `driver.fedcm.accept()`</span>
+<span class="sd">            `driver.fedcm.dismiss()`</span>
+<span class="sd">            `driver.fedcm.enable_delay()`</span>
+<span class="sd">            `driver.fedcm.disable_delay()`</span>
+<span class="sd">            `driver.fedcm.reset_cooldown()`</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fedcm</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports_fedcm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Returns whether the browser supports FedCM capabilities.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; print(driver.supports_fedcm)</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Returns whether the browser supports FedCM capabilities."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ArgOptions</span><span class="o">.</span><span class="n">FEDCM_CAPABILITY</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_require_fedcm_support</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_require_fedcm_support</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Raises an exception if FedCM is not supported."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">supports_fedcm</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
@@ -2049,13 +1839,8 @@
             <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns the FedCM dialog object for interaction.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; dialog = driver.dialog</span>
-<span class="sd">        """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dialog</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Returns the FedCM dialog object for interaction."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_require_fedcm_support</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -2064,25 +1849,17 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">fedcm_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ignored_exceptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Waits for and returns the FedCM dialog.</span>
 
-<span class="sd">        Parameters:</span>
-<span class="sd">        -----------</span>
-<span class="sd">        timeout : int</span>
-<span class="sd">            - How long to wait for the dialog</span>
-
-<span class="sd">        poll_frequency : floatHow</span>
-<span class="sd">            - Frequently to poll</span>
-
-<span class="sd">        ignored_exceptions : Any</span>
-<span class="sd">            - Exceptions to ignore while waiting</span>
+<span class="sd">        Args:</span>
+<span class="sd">            timeout: How long to wait for the dialog.</span>
+<span class="sd">            poll_frequency: How frequently to poll.</span>
+<span class="sd">            ignored_exceptions: Exceptions to ignore while waiting.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">        -------</span>
-<span class="sd">            The FedCM dialog object if found</span>
+<span class="sd">            The FedCM dialog object if found.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">        -------</span>
-<span class="sd">            TimeoutException if dialog doesn't appear</span>
-<span class="sd">            WebDriverException if FedCM not supported</span>
+<span class="sd">            TimeoutException: If dialog doesn't appear.</span>
+<span class="sd">            WebDriverException: If FedCM not supported.</span>
 <span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.common.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoAlertPresentException</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.support.wait</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebDriverWait</span>
@@ -2092,7 +1869,7 @@
         <span class="k">if</span> <span class="n">ignored_exceptions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ignored_exceptions</span> <span class="o">=</span> <span class="p">(</span><span class="n">NoAlertPresentException</span><span class="p">,)</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">_check_fedcm</span><span class="p">():</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_check_fedcm</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dialog</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">dialog</span> <span class="o">=</span> <span class="n">Dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">dialog</span> <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">type</span> <span class="k">else</span> <span class="kc">None</span>

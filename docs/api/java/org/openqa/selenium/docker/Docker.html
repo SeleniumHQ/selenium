@@ -121,6 +121,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.http.HttpHandler)" class="member-name-link">Docker</a><wbr>(<a href="../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;client)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.http.HttpHandler,java.lang.String)" class="member-name-link">Docker</a><wbr>(<a href="../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;client,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;apiVersion)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Creates a Docker client with an optional API version override.</div>
+</div>
 </div>
 </section>
 </li>
@@ -185,6 +190,20 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.http.HttpHandler)">
 <h3>Docker</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Docker</span><wbr><span class="parameters">(<a href="../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;client)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.http.HttpHandler,java.lang.String)">
+<h3>Docker</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Docker</span><wbr><span class="parameters">(<a href="../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;client,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;apiVersion)</span></div>
+<div class="block">Creates a Docker client with an optional API version override.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>client</code> - HTTP client for Docker communication</dd>
+<dd><code>apiVersion</code> - Optional API version to use (e.g., "1.40" or "1.44"). If null, the version
+     will be auto-detected.</dd>
+</dl>
 </section>
 </li>
 </ul>

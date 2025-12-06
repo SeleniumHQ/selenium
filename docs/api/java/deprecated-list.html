@@ -90,18 +90,39 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/Proxy.html#getFtpProxy()">org.openqa.selenium.Proxy.getFtpProxy()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/HasDownloads.html#getDownloadableFiles()">org.openqa.selenium.HasDownloads.getDownloadableFiles()</a></div>
 <div class="col-last even-row-color">
+<div class="block">Use method <a href="org/openqa/selenium/HasDownloads.html#getDownloadedFiles()"><code>HasDownloads.getDownloadedFiles()</code></a> instead</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/Proxy.html#getFtpProxy()">org.openqa.selenium.Proxy.getFtpProxy()</a></div>
+<div class="col-last odd-row-color">
 <div class="block">getFtpProxy is deprecated and will be removed in a future release.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/Proxy.html#setFtpProxy(java.lang.String)">org.openqa.selenium.Proxy.setFtpProxy<wbr>(String)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/Proxy.html#setFtpProxy(java.lang.String)">org.openqa.selenium.Proxy.setFtpProxy<wbr>(String)</a></div>
+<div class="col-last even-row-color">
 <div class="block">setFtpProxy is deprecated and will be removed in a future release.</div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/Response.html#getStatus()">org.openqa.selenium.remote.Response.getStatus()</a></div>
-<div class="col-last even-row-color"></div>
-<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/Response.html#setStatus(java.lang.Integer)">org.openqa.selenium.remote.Response.setStatus<wbr>(Integer)</a></div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(java.io.File)">org.openqa.selenium.remote.http.Contents.string<wbr>(File)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Not needed anymore. It's a bad idea to read the entire file to memory. It may cause
+     OutOfMemory errors in case of large files.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(org.openqa.selenium.remote.http.Contents.Supplier,java.nio.charset.Charset)">org.openqa.selenium.remote.http.Contents.string<wbr>(Contents.Supplier, Charset)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use method <a href="org/openqa/selenium/remote/http/Contents.Supplier.html#contentAsString(java.nio.charset.Charset)"><code>Contents.Supplier.contentAsString(Charset)</code></a> instead.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/http/Contents.html#string(org.openqa.selenium.remote.http.HttpMessage)">org.openqa.selenium.remote.http.Contents.string<wbr>(HttpMessage&lt;?&gt;)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Use method <code>HttpMessage.contentAsString()</code> instead</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#getDownloadableFiles()">org.openqa.selenium.remote.RemoteWebDriver.getDownloadableFiles()</a></div>
+<div class="col-last even-row-color">
+<div class="block">Use method <a href="org/openqa/selenium/remote/RemoteWebDriver.html#getDownloadedFiles()"><code>RemoteWebDriver.getDownloadedFiles()</code></a> instead</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="org/openqa/selenium/remote/Response.html#getStatus()">org.openqa.selenium.remote.Response.getStatus()</a></div>
 <div class="col-last odd-row-color"></div>
+<div class="col-summary-item-name even-row-color"><a href="org/openqa/selenium/remote/Response.html#setStatus(java.lang.Integer)">org.openqa.selenium.remote.Response.setStatus<wbr>(Integer)</a></div>
+<div class="col-last even-row-color"></div>
 </div>
 </div>
 </li>

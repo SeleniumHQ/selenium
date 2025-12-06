@@ -46,10 +46,10 @@
   
   
   
-    <title>selenium.webdriver.chrome.options &#8212; Selenium 4.38.0 documentation</title>
+    <title>selenium.webdriver.chrome.options &#8212; Selenium 4.39.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
-    <script src="../_static/documentation_options.js?v=8f3b5b96"></script>
+    <script src="../_static/documentation_options.js?v=feee11cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Selenium 4.38.0 documentation"
+        <a href="../index.html" title="Selenium 4.39.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -89,7 +89,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.38.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.chrome.options </span>
         </div>
       </div>
@@ -146,7 +146,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.38.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Selenium 4.38.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Selenium 4.38.0 documentation">Selenium 4.38.0 documentation</a>
+       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
   </label>
   
 
@@ -317,8 +317,7 @@ device_serial: The device serial number</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.add_encoded_extension">
 <span class="sig-name descname"><span class="pre">add_encoded_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_encoded_extension" title="Link to this definition">¶</a></dt>
-<dd><p>Adds Base64 encoded string with extension data to a list that will
-be used to extract it to the ChromeDriver.</p>
+<dd><p>Add Base64-encoded string with extension data to be extracted to ChromeDriver.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>extension: Base64 encoded string with extension data.</p>
 </dd>
@@ -337,28 +336,21 @@ value: The option value.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.add_extension">
 <span class="sig-name descname"><span class="pre">add_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_extension" title="Link to this definition">¶</a></dt>
-<dd><p>Adds the path to the extension to a list that will be used to
-extract it to the ChromeDriver.</p>
+<dd><p>Add the path to an extension to be extracted to ChromeDriver.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>extension: Path to the *.crx file.</p>
+<dt>Args:</dt><dd><p>extension: Path to the <a href="#id1"><span class="problematic" id="id2">*</span></a>.crx file.</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.arguments">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">arguments</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.arguments" title="Link to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Returns:</dt><dd><p>A list of arguments needed for the browser.</p>
-</dd>
-</dl>
+<dd><p>Returns a list of arguments needed for the browser.</p>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.binary_location">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">binary_location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.binary_location" title="Link to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Returns:</dt><dd><p>The location of the binary, otherwise an empty string.</p>
-</dd>
-</dl>
+<dd><p>Returns the location of the binary, otherwise an empty string.</p>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.capabilities">
@@ -367,41 +359,28 @@ extract it to the ChromeDriver.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.debugger_address">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">debugger_address</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.debugger_address" title="Link to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Returns:</dt><dd><p>The address of the remote devtools instance.</p>
-</dd>
-</dl>
+<dd><p>Returns the address of the remote devtools instance.</p>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.enable_webextensions">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enable_webextensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.enable_webextensions" title="Link to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Returns:</dt><dd><p>Whether webextension support is enabled for Chromium-based browsers.
-True if webextension support is enabled, False otherwise.</p>
-</dd>
-</dl>
+<dd><p>Return whether webextension support is enabled for Chromium-based browsers.</p>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.experimental_options">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">experimental_options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.experimental_options" title="Link to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Returns:</dt><dd><p>A dictionary of experimental options for chromium.</p>
-</dd>
-</dl>
+<dd><p>Returns a dictionary of experimental options for chromium.</p>
 </dd></dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.extensions">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.extensions" title="Link to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Returns:</dt><dd><p>A list of encoded extensions that will be loaded.</p>
-</dd>
-</dl>
+<dd><p>Returns a list of encoded extensions that will be loaded.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.ignore_local_proxy_environment_variables">
 <span class="sig-name descname"><span class="pre">ignore_local_proxy_environment_variables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.ignore_local_proxy_environment_variables" title="Link to this definition">¶</a></dt>
-<dd><p>By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-being picked up and used.</p>
+<dd><p>Ignore HTTP_PROXY and HTTPS_PROXY environment variables.</p>
+<p>This method is deprecated; use a Proxy instance with ProxyType.DIRECT instead.</p>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.set_capability">
@@ -421,567 +400,193 @@ being picked up and used.</p>
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.browser_version">
 <span class="sig-name descname"><span class="pre">browser_version</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.browser_version" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Sets the version of the browser.</p>
-<section id="usage">
-<h2 id="usage">Usage:<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.browser_version</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.browser_version</cite></p></li>
+<li><p>Set: <cite>self.browser_version = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.browser_version</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: str</p>
+</dd>
+<dt>Returns:</dt><dd><p>str when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="parameters">
-<h2 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>str</cite></p>
-</section>
-<section id="returns">
-<h2 id="returns">Returns:<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>str</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.platform_name">
 <span class="sig-name descname"><span class="pre">platform_name</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.platform_name" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Sets name of the platform.</p>
-<section id="id1">
-<h2 id="id1">Usage:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.platform_name</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.platform_name</cite></p></li>
+<li><p>Set: <cite>self.platform_name = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.platform_name</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: str</p>
+</dd>
+<dt>Returns:</dt><dd><p>str when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id2">
-<h2 id="id2">Parameters:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>str</cite></p>
-</section>
-<section id="id3">
-<h2 id="id3">Returns:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>str</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.accept_insecure_certs">
 <span class="sig-name descname"><span class="pre">accept_insecure_certs</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.accept_insecure_certs" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Set whether the session accepts insecure certificates.</p>
-<section id="id4">
-<h2 id="id4">Usage:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.accept_insecure_certs</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.accept_insecure_certs</cite></p></li>
+<li><p>Set: <cite>self.accept_insecure_certs = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.accept_insecure_certs</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: bool</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id5">
-<h2 id="id5">Parameters:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>bool</cite></p>
-</section>
-<section id="id6">
-<h2 id="id6">Returns:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>bool</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.strict_file_interactability">
 <span class="sig-name descname"><span class="pre">strict_file_interactability</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.strict_file_interactability" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Sets whether session is about file interactability.</p>
-<section id="id7">
-<h2 id="id7">Usage:<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.strict_file_interactability</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.strict_file_interactability</cite></p></li>
+<li><p>Set: <cite>self.strict_file_interactability = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.strict_file_interactability</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: bool</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id8">
-<h2 id="id8">Parameters:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>bool</cite></p>
-</section>
-<section id="id9">
-<h2 id="id9">Returns:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>bool</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.set_window_rect">
 <span class="sig-name descname"><span class="pre">set_window_rect</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.set_window_rect" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Sets window size and position.</p>
-<section id="id10">
-<h2 id="id10">Usage:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.set_window_rect</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.set_window_rect</cite></p></li>
+<li><p>Set: <cite>self.set_window_rect = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.set_window_rect</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: bool</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id11">
-<h2 id="id11">Parameters:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>bool</cite></p>
-</section>
-<section id="id12">
-<h2 id="id12">Returns:<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>bool</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.enable_bidi">
 <span class="sig-name descname"><span class="pre">enable_bidi</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.enable_bidi" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Set whether the session has WebDriverBiDi enabled.</p>
-<section id="id13">
-<h2 id="id13">Usage:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.enable_bidi</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.enable_bidi</cite></p></li>
+<li><p>Set: <cite>self.enable_bidi = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.enable_bidi</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: bool</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id14">
-<h2 id="id14">Parameters:<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>bool</cite></p>
-</section>
-<section id="id15">
-<h2 id="id15">Returns:<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>bool</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.page_load_strategy">
 <span class="sig-name descname"><span class="pre">page_load_strategy</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.page_load_strategy" title="Link to this definition">¶</a></dt>
-<dd><p>:Gets and Sets page load strategy, the default is “normal”.</p>
-<section id="id16">
-<h2 id="id16">Usage:<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.page_load_strategy</cite></p></li>
+<dd><p>Gets and Sets page load strategy, the default is “normal”.</p>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.page_load_strategy</cite></p></li>
+<li><p>Set: <cite>self.page_load_strategy = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.page_load_strategy</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: str</p>
+</dd>
+<dt>Returns:</dt><dd><p>str when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id17">
-<h2 id="id17">Parameters:<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>str</cite></p>
-</section>
-<section id="id18">
-<h2 id="id18">Returns:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>str</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.unhandled_prompt_behavior">
 <span class="sig-name descname"><span class="pre">unhandled_prompt_behavior</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.unhandled_prompt_behavior" title="Link to this definition">¶</a></dt>
-<dd><p>:Gets and Sets unhandled prompt behavior, the default is “dismiss and
-notify”.</p>
-<section id="id19">
-<h2 id="id19">Usage:<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.unhandled_prompt_behavior</cite></p></li>
+<dd><p>Gets and Sets unhandled prompt behavior, the default is “dismiss and notify”.</p>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.unhandled_prompt_behavior</cite></p></li>
+<li><p>Set: <cite>self.unhandled_prompt_behavior = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.unhandled_prompt_behavior</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: str</p>
+</dd>
+<dt>Returns:</dt><dd><p>str when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id20">
-<h2 id="id20">Parameters:<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>str</cite></p>
-</section>
-<section id="id21">
-<h2 id="id21">Returns:<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>str</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.timeouts">
 <span class="sig-name descname"><span class="pre">timeouts</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.timeouts" title="Link to this definition">¶</a></dt>
-<dd><p>:Gets and Sets implicit timeout, pageLoad timeout and script timeout if
-set (in milliseconds)</p>
-<section id="id22">
-<h2 id="id22">Usage:<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.timeouts</cite></p></li>
+<dd><p>Gets and Sets implicit timeout, pageLoad timeout and script timeout if set (in milliseconds).</p>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.timeouts</cite></p></li>
+<li><p>Set: <cite>self.timeouts = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.timeouts</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: dict</p>
+</dd>
+<dt>Returns:</dt><dd><p>dict when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id23">
-<h2 id="id23">Parameters:<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>dict</cite></p>
-</section>
-<section id="id24">
-<h2 id="id24">Returns:<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>dict</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.proxy">
 <span class="sig-name descname"><span class="pre">proxy</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.proxy" title="Link to this definition">¶</a></dt>
 <dd><p>Sets and Gets Proxy.</p>
-<section id="id25">
-<h2 id="id25">Usage:<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.proxy</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.proxy</cite></p></li>
+<li><p>Set: <cite>self.proxy = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.proxy</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: Proxy</p>
+</dd>
+<dt>Returns:</dt><dd><p>Proxy when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id26">
-<h2 id="id26">Parameters:<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>Proxy</cite></p>
-</section>
-<section id="id27">
-<h2 id="id27">Returns:<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>Proxy</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.enable_downloads">
 <span class="sig-name descname"><span class="pre">enable_downloads</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.enable_downloads" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Sets whether session can download files.</p>
-<section id="id28">
-<h2 id="id28">Usage:<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.enable_downloads</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.enable_downloads</cite></p></li>
+<li><p>Set: <cite>self.enable_downloads = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.enable_downloads</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: bool</p>
+</dd>
+<dt>Returns:</dt><dd><p>bool when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id29">
-<h2 id="id29">Parameters:<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>bool</cite></p>
-</section>
-<section id="id30">
-<h2 id="id30">Returns:<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>bool</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="selenium.webdriver.chrome.options.Options.web_socket_url">
 <span class="sig-name descname"><span class="pre">web_socket_url</span></span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.web_socket_url" title="Link to this definition">¶</a></dt>
 <dd><p>Gets and Sets WebSocket URL.</p>
-<section id="id31">
-<h2 id="id31">Usage:<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>self.web_socket_url</cite></p></li>
+<dl class="simple">
+<dt>Usage:</dt><dd><ul class="simple">
+<li><p>Get: <cite>self.web_socket_url</cite></p></li>
+<li><p>Set: <cite>self.web_socket_url = value</cite></p></li>
 </ul>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>self.web_socket_url</cite> = <cite>value</cite></p></li>
-</ul>
+<dt>Args:</dt><dd><p>value: str</p>
+</dd>
+<dt>Returns:</dt><dd><p>str when getting, None when setting.</p>
 </dd>
 </dl>
-</li>
-</ul>
-</section>
-<section id="id32">
-<h2 id="id32">Parameters:<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h2>
-<p><cite>value</cite>: <cite>str</cite></p>
-</section>
-<section id="id33">
-<h2 id="id33">Returns:<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Get</dt><dd><ul>
-<li><p><cite>bool</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Set</dt><dd><ul>
-<li><p><cite>None</cite></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</section>
 </dd></dl>
 </dd></dl>
 </section>

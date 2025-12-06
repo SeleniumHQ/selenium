@@ -101,7 +101,7 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public record AuthRequiredEventArgs : BaseParametersEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BrowsingContextEventArgs&gt;, IEquatable&lt;BaseParametersEventArgs&gt;, IEquatable&lt;AuthRequiredEventArgs&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public record AuthRequiredEventArgs : BaseParametersEventArgs, IEquatable&lt;EventArgs&gt;, IEquatable&lt;BaseParametersEventArgs&gt;, IEquatable&lt;AuthRequiredEventArgs&gt;</code></pre>
   </div>
 
 
@@ -112,7 +112,6 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html">BaseParametersEventArgs</a></div>
       <div><span class="xref">AuthRequiredEventArgs</span></div>
     </dd>
@@ -122,7 +121,6 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
     <dt>Implements</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html">EventArgs</a>&gt;</div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html">BrowsingContextEventArgs</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html">BaseParametersEventArgs</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs.html">AuthRequiredEventArgs</a>&gt;</div>
     </dd>
@@ -138,6 +136,9 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_Context">BaseParametersEventArgs.Context</a>
+    </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_IsBlocked">BaseParametersEventArgs.IsBlocked</a>
     </div>
@@ -157,16 +158,19 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
       <a class="xref" href="OpenQA.Selenium.BiDi.Network.BaseParametersEventArgs.html#OpenQA_Selenium_BiDi_Network_BaseParametersEventArgs_Intercepts">BaseParametersEventArgs.Intercepts</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContextEventArgs.html#OpenQA_Selenium_BiDi_BrowsingContextEventArgs_Context">BrowsingContextEventArgs.Context</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.EventArgs.html#OpenQA_Selenium_BiDi_EventArgs_BiDi">EventArgs.BiDi</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
@@ -176,12 +180,6 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
-    </div>
-    <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </dd></dl>
 
@@ -196,8 +194,8 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
 
   <a id="OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs__ctor_" data-uid="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs.#ctor*"></a>
 
-  <h3 id="OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs__ctor_OpenQA_Selenium_BiDi_BiDi_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_Int64_OpenQA_Selenium_BiDi_Network_RequestData_System_DateTimeOffset_OpenQA_Selenium_BiDi_Network_ResponseData_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Network_Intercept__" data-uid="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs.#ctor(OpenQA.Selenium.BiDi.BiDi,OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.Int64,OpenQA.Selenium.BiDi.Network.RequestData,System.DateTimeOffset,OpenQA.Selenium.BiDi.Network.ResponseData,System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Network.Intercept})">
-  AuthRequiredEventArgs(BiDi, BrowsingContext?, bool, Navigation?, long, RequestData, DateTimeOffset, ResponseData, IReadOnlyList&lt;Intercept&gt;?)
+  <h3 id="OpenQA_Selenium_BiDi_Network_AuthRequiredEventArgs__ctor_OpenQA_Selenium_BiDi_BrowsingContext_BrowsingContext_System_Boolean_OpenQA_Selenium_BiDi_BrowsingContext_Navigation_System_Int64_OpenQA_Selenium_BiDi_Network_RequestData_System_DateTimeOffset_OpenQA_Selenium_BiDi_Network_ResponseData_System_Collections_Generic_IReadOnlyList_OpenQA_Selenium_BiDi_Network_Intercept__" data-uid="OpenQA.Selenium.BiDi.Network.AuthRequiredEventArgs.#ctor(OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext,System.Boolean,OpenQA.Selenium.BiDi.BrowsingContext.Navigation,System.Int64,OpenQA.Selenium.BiDi.Network.RequestData,System.DateTimeOffset,OpenQA.Selenium.BiDi.Network.ResponseData,System.Collections.Generic.IReadOnlyList{OpenQA.Selenium.BiDi.Network.Intercept})">
+  AuthRequiredEventArgs(BrowsingContext?, bool, Navigation?, long, RequestData, DateTimeOffset, ResponseData, IReadOnlyList&lt;Intercept&gt;?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Network/AuthRequiredEventArgs.cs/#L25"><i class="bi bi-code-slash"></i></a>
   </h3>
 
@@ -205,13 +203,11 @@ Class AuthRequiredEventArgs  <a class="header-action link-secondary" title="View
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AuthRequiredEventArgs(BiDi BiDi, BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response, IReadOnlyList&lt;Intercept&gt;? Intercepts)</code></pre>
+    <pre><code class="lang-csharp hljs">public AuthRequiredEventArgs(BrowsingContext? Context, bool IsBlocked, Navigation? Navigation, long RedirectCount, RequestData Request, DateTimeOffset Timestamp, ResponseData Response, IReadOnlyList&lt;Intercept&gt;? Intercepts)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>BiDi</code> <a class="xref" href="OpenQA.Selenium.BiDi.BiDi.html">BiDi</a></dt>
-    <dd></dd>
     <dt><code>Context</code> <a class="xref" href="OpenQA.Selenium.BiDi.BrowsingContext.BrowsingContext.html">BrowsingContext</a></dt>
     <dd></dd>
     <dt><code>IsBlocked</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
