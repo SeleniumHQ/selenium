@@ -1,29 +1,12 @@
 v4.39.0
 ======
+* Add CDP for Chrome 143 and remove 140
 * [build] Upgrade rules_dotnet to 0.20.5 (#16592)
 * [bidi] Simplify namespace for communications (#16602)
 * Generate atoms statically (#16608)
 * Add syntax highlighting for JavaScript string methods (#16616)
-    > * Add syntax highlighting for JavaScript string methods
-    > * Use const for JavaScript
-    > * Avoid ifdef in the support package
-    > * Add const to support package too
-    > * Work around internal issue
-    > * Fix bazel build
-    > * fix whitespace
-    > * Fix path to internal file
-    > * Use glob to indicate direct file
-    > * Fix file visibility
-    > * Fix reference to StringSyntaxConstants as well
-    > * Fix build format
-    > * Fix build once more
 * Unwrap element wrapper recursively (#15362)
-    > * Unwrap element wrapper more than once
-    > * fix whitespace
 * Simplify nuget package reference in Bazel (#16630)
-    > * Simplify nuget package reference in Bazel
-    > * Fix lint issue
-    > * Satisfy linter
 * [bidi] Fix events subscription possibilities (#16603)
 * Pack `net462` target framework (#16564)
 * [bidi] Possibility to reset viewport (#16601)
@@ -38,14 +21,12 @@ v4.39.0
 * Allow inspecting source generated files (#16656)
 * Annotate JavaScript strings within BiDi (#16657)
 * Fix nullability annotations on `NodeRemoteValue` (#16661)
-    > * Fix nullability annotations on `NodeRemoteValue`
-    > * Improve test for SharedId
 * Replace `Lazy<T>` with `??=` in `BrowsingContext` (#16664)
 * [bidi] Avoid BiDi type in EventArgs ctor for unnecessary metadata generation (#16667)
-* update devtools versions
 
 v4.38.0
 ======
+* Add CDP for Chrome 142 and remove 139
 * [bidi] Avoid using JsonInclude attribute to include optional property for DTO (#16413)
 * update devtools versions
 
