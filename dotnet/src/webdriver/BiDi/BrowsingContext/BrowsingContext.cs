@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContext
+public sealed record BrowsingContext
 {
     public BrowsingContext(BiDi bidi, string id)
         : this(id)
@@ -230,15 +230,13 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, options.WithContext(this));
     }
 
-    public override bool Equals(object? obj)
+    public bool Equals(BrowsingContext? other)
     {
-        if (obj is BrowsingContext browsingContextObj) return browsingContextObj.Id == Id;
-
-        return false;
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
     }
 }
