@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.UUID;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -52,13 +53,20 @@ public class SessionId implements Serializable {
     return obj instanceof SessionId && opaqueKey.equals(((SessionId) obj).opaqueKey);
   }
 
-  private Object toJson() {
+  private String toJson() {
     return opaqueKey;
   }
 
   private static SessionId fromJson(Object raw) {
     if (raw instanceof String) {
       return new SessionId(String.valueOf(raw));
+    }
+
+    if (raw instanceof Map) {
+      Map<?, ?> map = (Map<?, ?>) raw;
+      if (map.get("value") instanceof String) {
+        return new SessionId(String.valueOf(map.get("value")));
+      }
     }
 
     throw new JsonException("Unable to coerce session id from " + raw);
