@@ -25,26 +25,7 @@ using static NUnit.Framework.Interfaces.ResultState;
 
 namespace OpenQA.Selenium;
 
-public abstract class DriverTestFixture : DriverTestFixtureNoCreate
-{
-
-    [OneTimeSetUp]
-    public void SetUp()
-    {
-        driver = EnvironmentManager.Instance.GetCurrentDriver();
-    }
-
-    [TearDown]
-    public void ResetOnError()
-    {
-        if (TestContext.CurrentContext.Result.Outcome == Error)
-        {
-            driver = EnvironmentManager.Instance.CreateFreshDriver();
-        }
-    }
-}
-
-public abstract class DriverTestFixtureNoCreate
+public abstract class DriverTestFixture
 {
     public string alertsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
     public string blankPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("blank.html");
@@ -143,6 +124,21 @@ public abstract class DriverTestFixtureNoCreate
             }
 
             return false;
+        }
+    }
+
+    [OneTimeSetUp]
+    public void SetUp()
+    {
+        driver = EnvironmentManager.Instance.GetCurrentDriver();
+    }
+
+    [TearDown]
+    public void ResetOnError()
+    {
+        if (TestContext.CurrentContext.Result.Outcome == Error)
+        {
+            driver = EnvironmentManager.Instance.CreateFreshDriver();
         }
     }
 
