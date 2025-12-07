@@ -18,15 +18,13 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
@@ -42,11 +40,8 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
     String id = ((HasExtensions) driver).installExtension(extension);
     assertThat(id).isEqualTo("webextensions-selenium-example-v3@example.com");
 
-    try {
-      ((HasExtensions) driver).uninstallExtension(id);
-    } catch (WebDriverException ex) {
-      fail(ex.getMessage());
-    }
+    assertThatCode(() -> ((HasExtensions) driver).uninstallExtension(id))
+        .doesNotThrowAnyException();
   }
 
   @Test
@@ -58,7 +53,7 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void shouldAllowRemoteWebDriverBuilderToUseHasContext() throws MalformedURLException {
+  public void shouldAllowRemoteWebDriverBuilderToUseHasContext() {
     FirefoxOptions options = new FirefoxOptions();
     String dir = "foo/bar";
     options.addPreference("browser.download.dir", dir);

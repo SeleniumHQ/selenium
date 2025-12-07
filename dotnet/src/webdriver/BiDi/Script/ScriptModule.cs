@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -116,9 +117,15 @@ public sealed class ScriptModule : Module
         return await Broker.SubscribeAsync("script.realmDestroyed", handler, options, _jsonContext.RealmDestroyedEventArgs).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions options)
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        _jsonContext = new ScriptJsonSerializerContext(options);
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new PreloadScriptConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new RealmConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+
+        _jsonContext = new ScriptJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
@@ -178,4 +185,5 @@ public sealed class ScriptModule : Module
 
 [JsonSerializable(typeof(MessageEventArgs))]
 [JsonSerializable(typeof(RealmDestroyedEventArgs))]
+
 internal partial class ScriptJsonSerializerContext : JsonSerializerContext;

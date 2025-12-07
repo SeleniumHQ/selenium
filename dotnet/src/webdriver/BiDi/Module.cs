@@ -27,7 +27,7 @@ public abstract class Module
 
     protected Broker Broker { get; private set; } = null!;
 
-    protected abstract void Initialize(JsonSerializerOptions options);
+    protected abstract void Initialize(JsonSerializerOptions jsonSerializerOptions);
 
     internal static TModule Create<TModule>(BiDi bidi, Broker broker, JsonSerializerOptions jsonSerializerOptions)
         where TModule : Module, new()

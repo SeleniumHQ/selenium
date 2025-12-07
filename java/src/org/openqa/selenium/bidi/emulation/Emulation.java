@@ -55,4 +55,10 @@ public class Emulation {
 
     return bidi.send(new Command<>("emulation.setScriptingEnabled", parameters.toMap(), Map.class));
   }
+
+  public void setUserAgentOverride(SetUserAgentOverrideParameters parameters) {
+    Require.nonNull("SetUserAgentOverride parameters", parameters);
+
+    bidi.send(new Command<>("emulation.setUserAgentOverride", parameters.toMap(), Map.class));
+  }
 }

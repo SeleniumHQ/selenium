@@ -15,15 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v140;
+package org.openqa.selenium.grid.data;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+public enum SessionClosedReason {
+  /** Session was closed normally via QUIT command from client */
+  QUIT_COMMAND("session closed normally (QUIT command)"),
+  /** Session timed out due to inactivity */
+  TIMEOUT("session timed out due to inactivity"),
+  /** Node was removed from the grid */
+  NODE_REMOVED("node was removed from the grid"),
+  /** Node was restarted */
+  NODE_RESTARTED("node was restarted");
 
-@AutoService(CdpInfo.class)
-public class v140CdpInfo extends CdpInfo {
+  private final String reasonText;
 
-  public v140CdpInfo() {
-    super(140, v140Domains::new);
+  SessionClosedReason(String reasonText) {
+    this.reasonText = reasonText;
+  }
+
+  public String getReasonText() {
+    return reasonText;
   }
 }

@@ -78,11 +78,11 @@ class NettyServerTest {
 
     HttpResponse res = client.execute(new HttpRequest(GET, "/does-not-matter"));
     outputHeaders(res);
-    assertThat(count.get()).isEqualTo(1);
+    assertThat(count).hasValue(1);
 
     client.execute(new HttpRequest(GET, "/does-not-matter"));
     outputHeaders(res);
-    assertThat(count.get()).isEqualTo(2);
+    assertThat(count).hasValue(2);
   }
 
   @Test

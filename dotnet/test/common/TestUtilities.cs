@@ -25,7 +25,7 @@ public class TestUtilities
 {
     private static IJavaScriptExecutor GetExecutor(IWebDriver driver)
     {
-        return driver as IJavaScriptExecutor;
+        return (IJavaScriptExecutor)driver;
     }
 
     private static string GetUserAgent(IWebDriver driver)

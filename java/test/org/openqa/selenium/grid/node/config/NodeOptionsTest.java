@@ -21,9 +21,9 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
@@ -304,17 +304,16 @@ class NodeOptionsTest {
                     "detect-drivers", "false",
                     "driver-implementation", "[chrome]")));
     List<Capabilities> reported = new ArrayList<>();
-    try {
-      new NodeOptions(config)
-          .getSessionFactories(
-              caps -> {
-                reported.add(caps);
-                return Collections.singleton(HelperFactory.create(config, caps));
-              });
-      fail("Should have not executed 'getSessionFactories' successfully");
-    } catch (ConfigException e) {
-      // Fall through
-    }
+    assertThatThrownBy(
+            () ->
+                new NodeOptions(config)
+                    .getSessionFactories(
+                        caps -> {
+                          reported.add(caps);
+                          return Collections.singleton(HelperFactory.create(config, caps));
+                        }))
+        .isInstanceOf(ConfigException.class)
+        .hasMessage("Specific drivers cannot be added if 'detect-drivers' is set to false");
 
     assertThat(reported).isEmpty();
   }
@@ -549,19 +548,19 @@ class NodeOptionsTest {
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<Capabilities> reported = new ArrayList<>();
-    try {
-      new NodeOptions(config)
-          .getSessionFactories(
-              caps -> {
-                reported.add(caps);
-                return Collections.singleton(HelperFactory.create(config, caps));
-              });
-      fail(
-          "Should have not executed 'getSessionFactories' successfully because driver config "
-              + "needs the stereotype field");
-    } catch (ConfigException e) {
-      // Fall through
-    }
+    assertThatThrownBy(
+            () ->
+                new NodeOptions(config)
+                    .getSessionFactories(
+                        caps -> {
+                          reported.add(caps);
+                          return Collections.singleton(HelperFactory.create(config, caps));
+                        }))
+        .as("driver config needs the stereotype field")
+        .isInstanceOf(ConfigException.class)
+        .hasMessage(
+            "Found config with no 'stereotype' setting! {display-name=Chrome Beta, max-sessions=2,"
+                + " cheese=paipa}");
 
     assertThat(reported).isEmpty();
   }

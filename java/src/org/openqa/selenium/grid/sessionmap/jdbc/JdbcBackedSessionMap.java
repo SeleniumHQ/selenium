@@ -81,7 +81,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     this.bus = Require.nonNull("Event bus", bus);
 
     this.connection = jdbcConnection;
-    this.bus.addListener(SessionClosedEvent.listener(this::remove));
+    // Listen to SessionClosedEvent and extract the sessionId
+    this.bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
     this.bus.addListener(
         NodeRemovedEvent.listener(
@@ -220,7 +221,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         try (ResultSet sessions = statement.executeQuery()) {
           if (!sessions.next()) {
             NoSuchSessionException exception =
-                new NoSuchSessionException("Unable to find session.");
+                new NoSuchSessionException("Unable to find session with id: " + id);
             span.setAttribute("error", true);
             span.setStatus(Status.NOT_FOUND);
             EXCEPTION.accept(attributeMap, exception);

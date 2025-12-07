@@ -23,7 +23,7 @@ using System.Text.Json.Serialization;
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed record UserPromptOpenedEventArgs(BrowsingContext Context, Session.UserPromptHandlerType Handler, UserPromptType Type, string Message, string? DefaultValue)
-    : BrowsingContextEventArgs(Context);
+    : EventArgs;
 
 [JsonConverter(typeof(CamelCaseEnumConverter<UserPromptType>))]
 public enum UserPromptType

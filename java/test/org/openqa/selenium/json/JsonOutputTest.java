@@ -666,7 +666,7 @@ class JsonOutputTest {
 
     JsonArray converted = JsonParser.parseString(json).getAsJsonArray();
 
-    assertThat(converted.size()).isEqualTo(1);
+    assertThat(converted).hasSize(1);
     assertThat(converted.get(0).getAsString()).isEqualTo("cheese");
   }
 

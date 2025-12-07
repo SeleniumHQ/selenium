@@ -232,7 +232,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(seen.get()).isEqualTo(uri);
+    assertThat(seen).hasValue(uri);
   }
 
   @Test
@@ -259,7 +259,7 @@ class RemoteWebDriverBuilderTest {
             })
         .build();
 
-    assertThat(seen.get()).isEqualTo(uri);
+    assertThat(seen).hasValue(uri);
   }
 
   @Test
@@ -310,7 +310,7 @@ class RemoteWebDriverBuilderTest {
             })
         .build();
 
-    assertThat(seen.get()).isEqualTo(uri);
+    assertThat(seen).hasValue(uri);
   }
 
   @Test
@@ -330,7 +330,7 @@ class RemoteWebDriverBuilderTest {
             })
         .build();
 
-    assertThat(seen.get()).isEqualTo(uri);
+    assertThat(seen).hasValue(uri);
   }
 
   @Test

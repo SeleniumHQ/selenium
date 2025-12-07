@@ -62,7 +62,8 @@ module Selenium
 
         it 'target type is service_worker' do
           driver.devtools.page.navigate(url: url_for('service_worker.html'))
-          sleep 0.5 # wait for service worker to register
+          wait_for_devtools_target(target_type: 'service_worker')
+
           target = driver.devtools(target_type: 'service_worker').target
           expect(target.get_target_info.dig('result', 'targetInfo', 'type')).to eq 'service_worker'
         end
@@ -70,7 +71,7 @@ module Selenium
         it 'throws an error for unknown target type' do
           driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
           expect { driver.devtools(target_type: 'unknown') }
-            .to raise_error(Selenium::WebDriver::Error::WebDriverError, "Target type 'unknown' not found")
+            .to raise_error(Selenium::WebDriver::Error::NoSuchTargetError, "Target type 'unknown' not found")
         end
       end
 
