@@ -25,12 +25,12 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools;
 
-using CurrentCdpVersion = V142;
+using CurrentCdpVersion = V143;
 
 [TestFixture]
 public class DevToolsTargetTest : DevToolsTestFixture
 {
-    private int id = 142;
+    private int id = 143;
 
     [Test]
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]

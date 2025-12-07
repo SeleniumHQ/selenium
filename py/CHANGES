@@ -1,5 +1,23 @@
+Selenium 4.39.0
+* Add CDP for Chrome 143 and remove 140
+* [bidi]: add emulation command - `set_locale_override` (#16504)
+* [bidi]: add emulation command `set_scripting_enabled` (#16513)
+* Update docstrings to google pydoc format (#16511)
+* Update docstrings (remove reST leftovers and resolve D200) (#16525)
+* Fix docstring formatting and apply ruff linting rules (#16527)
+* Fix Ruff D417 warnings in docstrings (#16535)
+* Fix ruff D415 warnings in docstrings (#16536)
+* [bidi]: add `set_screen_orientation_override` command in Emulation (#16522)
+* Fix D205 ruff warnings for docstrings and add type hints (#16537)
+* [bidi]: add `set_download_behavior` command (#16556)
+* Fix more type annotations (#16551)
+* [bidi]: add emulation command `set_user_agent_override` (#16595)
+* Improve type hints with union syntax and native types (#16590)
+* Use daemon threads for WebSocket connections (#16298)
+* [bidi] Allow resetting viewport (#16623)
+
 Selenium 4.38.0
-* update devtools versions
+* Add CDP for Chrome 142 and remove 139
 * [py][bidi]: add set_timezone_override command in emulation (#16500)
 * Replaced :param: and :args: from docstrings (#16469)
 

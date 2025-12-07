@@ -159,7 +159,7 @@ class ScriptCommandsTest : BiDiTestFixture
 
         Assert.That(bar, Is.EqualTo(2));
 
-        await preloadScript.Script.RemoveAsync();
+        await bidi.Script.RemovePreloadScriptAsync(preloadScript.Script);
 
         var resultAfterRemoval = await context.Script.EvaluateAsync("window.bar", true, targetOptions: new() { Sandbox = "sandbox" });
 
