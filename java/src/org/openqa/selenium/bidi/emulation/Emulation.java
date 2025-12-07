@@ -37,23 +37,22 @@ public class Emulation {
     this.bidi = ((HasBiDi) driver).getBiDi();
   }
 
-  public Map<String, Object> setGeolocationOverride(SetGeolocationOverrideParameters parameters) {
+  public void setGeolocationOverride(SetGeolocationOverrideParameters parameters) {
     Require.nonNull("SetGeolocationOverride parameters", parameters);
 
-    return bidi.send(
-        new Command<>("emulation.setGeolocationOverride", parameters.toMap(), Map.class));
+    bidi.send(new Command<>("emulation.setGeolocationOverride", parameters.toMap(), Map.class));
   }
 
-  public Map<String, Object> setTimezoneOverride(SetTimezoneOverrideParameters parameters) {
+  public void setTimezoneOverride(SetTimezoneOverrideParameters parameters) {
     Require.nonNull("SetTimezoneOverride parameters", parameters);
 
-    return bidi.send(new Command<>("emulation.setTimezoneOverride", parameters.toMap(), Map.class));
+    bidi.send(new Command<>("emulation.setTimezoneOverride", parameters.toMap(), Map.class));
   }
 
-  public Map<String, Object> setScriptingEnabled(SetScriptingEnabledParameters parameters) {
+  public void setScriptingEnabled(SetScriptingEnabledParameters parameters) {
     Require.nonNull("SetScriptingEnabled parameters", parameters);
 
-    return bidi.send(new Command<>("emulation.setScriptingEnabled", parameters.toMap(), Map.class));
+    bidi.send(new Command<>("emulation.setScriptingEnabled", parameters.toMap(), Map.class));
   }
 
   public void setUserAgentOverride(SetUserAgentOverrideParameters parameters) {
