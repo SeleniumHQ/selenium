@@ -21,7 +21,7 @@ namespace OpenQA.Selenium.IE;
 
 // This is a simple wrapper class to create an InternetExplorerDriver that
 // uses the enables RequireWindowFocus as the default input simplation.
-public class EdgeInternetExplorerModeDriver : InternetExplorerDriver, IDriverOptionsProvider<InternetExplorerOptions>
+public class EdgeInternetExplorerModeDriver : InternetExplorerDriver
 {
 
     public EdgeInternetExplorerModeDriver()
