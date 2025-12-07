@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-class EmulationTest : BiDiTestFixture
+internal class EmulationTest : BiDiTestFixture
 {
     [Test]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
