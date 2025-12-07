@@ -84,8 +84,12 @@ module Selenium
           wait.until { driver.title }
         end
 
-        def wait_for_element(locator)
-          wait = Wait.new(timeout: 25, ignore: Error::NoSuchElementError)
+        def wait_for_element(locator, timeout = 25)
+          wait = Wait.new(timeout: timeout, ignore: Error::NoSuchElementError, message_provider: lambda {
+            url = "page url: #{driver.current_url};\n"
+            source = "page source: #{driver.find_element(css: 'body').attribute('innerHTML')}\n"
+            "could not find element #{locator} in #{timeout} seconds;\n#{url}#{source}"
+          })
           wait.until { driver.find_element(locator) }
         end
 

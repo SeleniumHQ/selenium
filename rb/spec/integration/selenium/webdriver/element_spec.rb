@@ -32,7 +32,7 @@ module Selenium
       # Safari returns "click intercepted" error instead of "element click intercepted"
       it 'raises if different element receives click', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
-        element = wait_for_element(id: 'contents')
+        element = wait_for_element(id: 'contents', timeout: 10)
         expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
