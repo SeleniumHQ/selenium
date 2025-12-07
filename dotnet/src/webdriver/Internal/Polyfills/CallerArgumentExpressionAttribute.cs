@@ -1,4 +1,4 @@
-// <copyright file="PermissionsBiDiExtensions.cs" company="Selenium Committers">
+// <copyright file="CallerArgumentExpressionAttribute.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,17 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Extensions.Permissions;
-using System;
+namespace System.Runtime.CompilerServices;
 
-namespace OpenQA.Selenium.BiDi.Permissions;
+#if !NET8_0_OR_GREATER
 
-public static class PermissionsBiDiExtensions
+internal class CallerArgumentExpressionAttribute(string paramName) : Attribute
 {
-    public static PermissionsModule AsPermissions(this BiDi bidi)
-    {
-        ArgumentNullException.ThrowIfNull(bidi);
-
-        return bidi.AsModule<PermissionsModule>();
-    }
+    public string ParamName = paramName;
 }
+
+#endif

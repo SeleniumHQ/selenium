@@ -58,10 +58,7 @@ internal sealed class CookieJar(WebDriver driver) : ICookieJar
     /// <exception cref="ArgumentNullException">If <paramref name="cookie"/> is <see langword="null"/>.</exception>
     public void AddCookie(Cookie cookie)
     {
-        if (cookie is null)
-        {
-            throw new ArgumentNullException(nameof(cookie));
-        }
+        ArgumentNullException.ThrowIfNull(cookie);
 
         Dictionary<string, object> parameters = new Dictionary<string, object>();
         parameters.Add("cookie", cookie);
@@ -92,10 +89,7 @@ internal sealed class CookieJar(WebDriver driver) : ICookieJar
     /// <exception cref="ArgumentNullException">If <paramref name="cookie"/> is <see langword="null"/>.</exception>
     public void DeleteCookie(Cookie cookie)
     {
-        if (cookie is null)
-        {
-            throw new ArgumentNullException(nameof(cookie));
-        }
+        ArgumentNullException.ThrowIfNull(cookie);
 
         this.DeleteCookieNamed(cookie.Name);
     }

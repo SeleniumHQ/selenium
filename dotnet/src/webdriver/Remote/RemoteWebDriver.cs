@@ -448,10 +448,7 @@ public class RemoteWebDriver : WebDriver, IDevTools, IHasDownloads
     [RequiresDynamicCode(DevToolsSession.CDP_AOTIncompatibilityMessage)]
     public DevToolsSession GetDevToolsSession(DevToolsOptions options)
     {
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
         if (this.devToolsSession == null)
         {

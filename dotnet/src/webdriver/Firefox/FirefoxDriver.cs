@@ -203,15 +203,9 @@ public class FirefoxDriver : WebDriver
     /// <exception cref="ArgumentNullException">If <paramref name="options"/> is <see langword="null"/>.</exception>
     private static ICommandExecutor GenerateDriverServiceCommandExecutor(DriverService service, DriverOptions options, TimeSpan commandTimeout)
     {
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(options);
 
-        if (service is null)
-        {
-            throw new ArgumentNullException(nameof(service));
-        }
+        ArgumentNullException.ThrowIfNull(service);
 
         if (service.DriverServicePath == null)
         {

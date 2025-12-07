@@ -1,4 +1,4 @@
-// <copyright file="WebDriver.Extensions.cs" company="Selenium Committers">
+// <copyright file="ArgumentNullExceptionExtensions.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,28 +17,22 @@
 // under the License.
 // </copyright>
 
-using System;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
-namespace OpenQA.Selenium.BiDi;
+namespace System;
 
-public static class WebDriverExtensions
+internal static class ArgumentNullExceptionExtensions
 {
-    public static async Task<BiDi> AsBiDiAsync(this IWebDriver webDriver, BiDiOptions? options = null)
+    extension(ArgumentNullException)
     {
-        ArgumentNullException.ThrowIfNull(webDriver);
-
-        string? webSocketUrl = null;
-
-        if (webDriver is IHasCapabilities hasCapabilities)
+        public static void ThrowIfNull([NotNull] object? arg, [CallerArgumentExpression(nameof(arg))] string paramName = "")
         {
-            webSocketUrl = hasCapabilities.Capabilities.GetCapability("webSocketUrl")?.ToString();
+            if (arg is null)
+            {
+                throw new ArgumentNullException(paramName);
+            }
         }
-
-        if (webSocketUrl is null) throw new BiDiException("The driver is not compatible with bidirectional protocol or \"webSocketUrl\" not enabled in driver options.");
-
-        var bidi = await BiDi.ConnectAsync(webSocketUrl, options).ConfigureAwait(false);
-
-        return bidi;
     }
 }
+

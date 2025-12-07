@@ -385,10 +385,7 @@ public class HttpCommandExecutor : ICommandExecutor
     {
         public HttpRequestInfo(Uri serverUri, Command commandToExecute, HttpCommandInfo commandInfo)
         {
-            if (commandInfo is null)
-            {
-                throw new ArgumentNullException(nameof(commandInfo));
-            }
+            ArgumentNullException.ThrowIfNull(commandInfo);
 
             this.FullUri = commandInfo.CreateCommandUri(serverUri, commandToExecute);
             this.HttpMethod = commandInfo.Method;
@@ -424,10 +421,7 @@ public class HttpCommandExecutor : ICommandExecutor
         public DiagnosticsHttpHandler(HttpMessageHandler messageHandler, ILogger logger)
             : base(messageHandler)
         {
-            if (messageHandler is null)
-            {
-                throw new ArgumentNullException(nameof(messageHandler));
-            }
+            ArgumentNullException.ThrowIfNull(messageHandler);
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

@@ -80,10 +80,7 @@ internal sealed class LogContext : ILogContext
 
     public ILogger GetLogger(Type type)
     {
-        if (type == null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
 
         _loggers ??= new ConcurrentDictionary<Type, ILogger>();
 
