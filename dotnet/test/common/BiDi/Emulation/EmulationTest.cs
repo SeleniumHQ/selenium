@@ -168,6 +168,21 @@ class EmulationTest : BiDiTestFixture
     }
 
     [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetScreenSettingsOverride()
+    {
+        var screenArea = new ScreenArea(300, 200);
+
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetScreenSettingsOverrideAsync(screenArea, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
     public void CanSetGeolocationCoordinatesOverride()
     {
         Assert.That(async () =>
