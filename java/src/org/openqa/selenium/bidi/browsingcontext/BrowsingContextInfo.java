@@ -95,37 +95,14 @@ public class BrowsingContextInfo {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "context":
-          id = input.read(String.class);
-          break;
-
-        case "url":
-          url = input.read(String.class);
-          break;
-
-        case "children":
-          children = input.read(LIST_OF_BROWSING_CONTEXT_INFO);
-          break;
-
-        case "parent":
-          parentBrowsingContext = input.read(String.class);
-          break;
-
-        case "clientWindow":
-          clientWindow = input.read(String.class);
-          break;
-
-        case "originalOpener":
-          originalOpener = input.read(String.class);
-          break;
-
-        case "userContext":
-          userContext = input.read(String.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
+        case "context" -> id = input.read(String.class);
+        case "url" -> url = input.read(String.class);
+        case "children" -> children = input.read(LIST_OF_BROWSING_CONTEXT_INFO);
+        case "parent" -> parentBrowsingContext = input.read(String.class);
+        case "clientWindow" -> clientWindow = input.read(String.class);
+        case "originalOpener" -> originalOpener = input.read(String.class);
+        case "userContext" -> userContext = input.read(String.class);
+        default -> input.skipValue();
       }
     }
 
