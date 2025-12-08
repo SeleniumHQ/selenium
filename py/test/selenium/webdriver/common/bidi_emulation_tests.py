@@ -107,6 +107,11 @@ def get_browser_user_agent(driver):
     return result.result["value"]
 
 
+def is_online(driver, context_id):
+    result = driver.script._evaluate("navigator.onLine", {"context": context_id}, await_promise=False)
+    return result.result["value"]
+
+
 def test_emulation_initialized(driver):
     assert driver.emulation is not None
     assert isinstance(driver.emulation, Emulation)
@@ -570,6 +575,49 @@ def test_set_user_agent_override_with_user_contexts(driver, pages):
 
             driver.emulation.set_user_agent_override(user_agent=None, user_contexts=[user_context])
             assert get_browser_user_agent(driver) == initial_user_agent
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_edge
+def test_set_network_conditions_offline_with_context(driver, pages):
+    context_id = driver.current_window_handle
+    driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+    assert is_online(driver, context_id) is True
+
+    # Set offline
+    driver.emulation.set_network_conditions(offline=True, contexts=[context_id])
+    assert is_online(driver, context_id) is False
+
+    # Reset
+    driver.emulation.set_network_conditions(offline=None, contexts=[context_id])
+    assert is_online(driver, context_id) is True
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_edge
+def test_set_network_conditions_offline_with_user_context(driver, pages):
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(
+            type=WindowTypes.TAB,
+            user_context=user_context,
+        )
+        try:
+            driver.switch_to.window(context_id)
+            driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+            assert is_online(driver, context_id) is True
+
+            driver.emulation.set_network_conditions(offline=True, user_contexts=[user_context])
+            assert is_online(driver, context_id) is False
+
+            driver.emulation.set_network_conditions(offline=None, user_contexts=[user_context])
+            assert is_online(driver, context_id) is True
         finally:
             driver.browsing_context.close(context_id)
     finally:
