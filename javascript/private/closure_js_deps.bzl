@@ -91,10 +91,9 @@ def closure_js_deps(name, deps = [], testonly = None, **kwargs):
         outs = ["deps.js"],
         cmd = """
             export BAZEL_BINDIR=$(BINDIR) && \\
-            ln -sf . _main && \\
             FILES="" && \\
             for f in $(SRCS); do \\
-                FILES="$$FILES --file $$(pwd)/_main/$$f"; \\
+                FILES="$$FILES --file $$(pwd)/$$f"; \\
             done && \\
             $(location //javascript/private:closure_make_deps) \\
                 --closure-path $$(pwd)/external/com_google_javascript_closure_library/closure \\
