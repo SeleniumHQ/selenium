@@ -242,7 +242,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
       byte[] data = content.getBytes(UTF_8);
 
       request.setHeader(HttpHeader.ContentLength.getName(), String.valueOf(data.length));
-      request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8.toString());
+      request.setHeader(HttpHeader.ContentType.getName(), JSON_UTF_8);
       request.setContent(bytes(data));
     }
 
