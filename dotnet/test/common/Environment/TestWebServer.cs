@@ -27,23 +27,14 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Environment;
 
-public class TestWebServer
+public class TestWebServer(string projectRoot, TestWebServerConfig config)
 {
     private Process webserverProcess;
 
     private string standaloneAppserverPath;
-    private string projectRootPath;
-    private bool captureWebServerOutput;
-    private bool hideCommandPrompt;
-    private string port;
-
-    public TestWebServer(string projectRoot, TestWebServerConfig config)
-    {
-        this.projectRootPath = projectRoot;
-        this.captureWebServerOutput = config.CaptureConsoleOutput;
-        this.hideCommandPrompt = config.HideCommandPromptWindow;
-        this.port = config.Port;
-    }
+    private bool captureWebServerOutput = config.CaptureConsoleOutput;
+    private readonly bool hideCommandPrompt = config.HideCommandPromptWindow;
+    private readonly string port = config.Port;
 
     public async Task StartAsync()
     {
@@ -77,14 +68,14 @@ public class TestWebServer
                 processArguments = $"run //java/test/org/openqa/selenium/environment:appserver {processArguments}";
 
                 // Override project root path to be exact selenium repo path, not 'bazel-bin'
-                projectRootPath = Path.Combine(AppContext.BaseDirectory, "../../../../../..");
+                projectRoot = Path.Combine(AppContext.BaseDirectory, "../../../../../..");
             }
 
             webserverProcess = new Process();
 
             webserverProcess.StartInfo.FileName = processFileName;
             webserverProcess.StartInfo.Arguments = processArguments;
-            webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
+            webserverProcess.StartInfo.WorkingDirectory = projectRoot;
             webserverProcess.StartInfo.UseShellExecute = !(hideCommandPrompt || captureWebServerOutput);
             webserverProcess.StartInfo.CreateNoWindow = hideCommandPrompt;
 
@@ -131,7 +122,7 @@ public class TestWebServer
                     output = webserverProcess.StandardOutput.ReadToEnd();
                 }
 
-                string errorMessage = string.Format("Could not start the test web server in {0} seconds.\nWorking directory: {1}\nProcess Args: {2}\nstdout: {3}\nstderr: {4}", timeout.TotalSeconds, projectRootPath, processArguments, output, error);
+                string errorMessage = string.Format("Could not start the test web server in {0} seconds.\nWorking directory: {1}\nProcess Args: {2}\nstdout: {3}\nstderr: {4}", timeout.TotalSeconds, projectRoot, processArguments, output, error);
 
                 throw new TimeoutException(errorMessage);
             }

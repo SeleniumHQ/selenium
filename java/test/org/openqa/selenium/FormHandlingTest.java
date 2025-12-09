@@ -154,7 +154,7 @@ class FormHandlingTest extends JupiterTestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
 
     String uploadPath = uploadElement.getAttribute("value");
-    assertThat(uploadPath.endsWith(file.getName())).isTrue();
+    assertThat(uploadPath).endsWith(file.getName());
   }
 
   @Test
@@ -169,7 +169,7 @@ class FormHandlingTest extends JupiterTestBase {
     uploadElement.sendKeys(file.getAbsolutePath());
 
     String uploadPath = uploadElement.getAttribute("value");
-    assertThat(uploadPath.endsWith(file.getName())).isTrue();
+    assertThat(uploadPath).endsWith(file.getName());
   }
 
   @Test

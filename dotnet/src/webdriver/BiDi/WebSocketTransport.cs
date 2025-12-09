@@ -19,6 +19,7 @@
 
 using OpenQA.Selenium.Internal.Logging;
 using System;
+using System.Buffers;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
@@ -32,7 +33,7 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
     private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
 
     private readonly ClientWebSocket _webSocket = new();
-    private readonly ArraySegment<byte> _receiveBuffer = new(new byte[1024 * 8]);
+    private readonly byte[] _receiveBuffer = ArrayPool<byte>.Shared.Rent(1024 * 8);
 
     private readonly SemaphoreSlim _socketSendSemaphoreSlim = new(1, 1);
     private readonly MemoryStream _sharedMemoryStream = new();
@@ -46,13 +47,15 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
     {
         _sharedMemoryStream.SetLength(0);
 
+        ArraySegment<byte> segment = new(_receiveBuffer);
+
         WebSocketReceiveResult result;
 
         do
         {
-            result = await _webSocket.ReceiveAsync(_receiveBuffer, cancellationToken).ConfigureAwait(false);
+            result = await _webSocket.ReceiveAsync(segment, cancellationToken).ConfigureAwait(false);
 
-            _sharedMemoryStream.Write(_receiveBuffer.Array!, _receiveBuffer.Offset, result.Count);
+            _sharedMemoryStream.Write(segment.Array!, segment.Offset, result.Count);
         }
         while (!result.EndOfMessage);
 
@@ -85,10 +88,32 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
         }
     }
 
+    private bool _disposed;
+
     public void Dispose()
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _webSocket.Dispose();
         _sharedMemoryStream.Dispose();
         _socketSendSemaphoreSlim.Dispose();
+        ReleaseBuffer();
+        _disposed = true;
+    }
+
+    ~WebSocketTransport()
+    {
+        ReleaseBuffer();
+    }
+
+    private void ReleaseBuffer()
+    {
+        if (_receiveBuffer is not null)
+        {
+            ArrayPool<byte>.Shared.Return(_receiveBuffer);
+        }
     }
 }

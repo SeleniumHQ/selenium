@@ -40,8 +40,5 @@ public class StableChannelFirefoxDriver : FirefoxDriver
     {
     }
 
-    public static FirefoxOptions DefaultOptions
-    {
-        get { return new FirefoxOptions() { AcceptInsecureCertificates = true, EnableDevToolsProtocol = true }; }
-    }
+    public static FirefoxOptions DefaultOptions => new FirefoxOptions() { AcceptInsecureCertificates = true, EnableDevToolsProtocol = true };
 }

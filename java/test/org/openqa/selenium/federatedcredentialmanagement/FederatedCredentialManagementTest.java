@@ -127,7 +127,7 @@ class FederatedCredentialManagementTest {
     assertThat(dialog.getDialogType()).isEqualTo("AccountChooser");
 
     List<FederatedCredentialManagementAccount> accountList = dialog.getAccounts();
-    assertThat(accountList.size()).isEqualTo(2);
+    assertThat(accountList).hasSize(2);
     dialog.selectAccount(1);
   }
 
@@ -148,7 +148,7 @@ class FederatedCredentialManagementTest {
     assertThat(dialog.getDialogType()).isEqualTo("AccountChooser");
 
     List<FederatedCredentialManagementAccount> accountList = dialog.getAccounts();
-    assertThat(accountList.size()).isEqualTo(2);
+    assertThat(accountList).hasSize(2);
 
     FederatedCredentialManagementAccount account1 = accountList.get(0);
 
