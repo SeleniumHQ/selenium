@@ -56,6 +56,7 @@ class CdpFacadeTest extends DevToolsTestBase {
   @AfterAll
   public static void stopServer() {
     safelyCall(() -> server.stop());
+    server = null;
   }
 
   @Test
