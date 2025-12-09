@@ -641,7 +641,7 @@ class Request:
 
 
 class Response:
-    """Represents a network response - network.ResponseData type"""
+    """Represents a network response - network.ResponseData type."""
 
     def __init__(
         self,
