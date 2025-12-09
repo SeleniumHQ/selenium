@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed class Intercept : IEquatable<Intercept>, IAsyncDisposable
+public sealed class Intercept : IAsyncDisposable
 {
     private readonly BiDi _bidi;
 
@@ -112,16 +112,13 @@ public sealed class Intercept : IEquatable<Intercept>, IAsyncDisposable
 
     public override bool Equals(object? obj)
     {
-        return Equals(obj as Intercept);
-    }
+        if (obj is Intercept interceptObj) return interceptObj.Id == Id;
 
-    public bool Equals(Intercept? other)
-    {
-        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+        return false;
     }
 
     public override int GetHashCode()
     {
-        return StringComparer.Ordinal.GetHashCode(Id);
+        return Id.GetHashCode();
     }
 }
