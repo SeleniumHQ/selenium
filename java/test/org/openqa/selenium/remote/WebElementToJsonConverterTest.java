@@ -20,6 +20,8 @@ package org.openqa.selenium.remote;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.COLLECTION;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -80,10 +82,7 @@ class WebElementToJsonConverterTest {
   @Test
   void convertsSimpleCollections() {
     Object converted = CONVERTER.apply(asList(null, "abc", true, 123, Math.PI));
-    assertThat(converted).isInstanceOf(Collection.class);
-
-    List<?> list = new ArrayList<>((Collection<?>) converted);
-    assertContentsInOrder(list, null, "abc", true, 123, Math.PI);
+    assertThat(converted).asInstanceOf(COLLECTION).containsExactly(null, "abc", true, 123, Math.PI);
   }
 
   @Test
@@ -94,14 +93,11 @@ class WebElementToJsonConverterTest {
     Object converted = CONVERTER.apply(outerList);
     assertThat(converted).isInstanceOf(Collection.class);
 
-    List<?> list = new ArrayList<>((Collection<?>) converted);
+    List<Object> list = new ArrayList<>((Collection<?>) converted);
     assertThat(list).hasSize(3);
     assertThat(list.get(0)).isEqualTo("apples");
     assertThat(list.get(1)).isEqualTo("oranges");
-    assertThat(list.get(2)).isInstanceOf(Collection.class);
-
-    list = new ArrayList<>((Collection<?>) list.get(2));
-    assertContentsInOrder(list, 123, "abc");
+    assertThat(list.get(2)).asInstanceOf(COLLECTION).containsExactly(123, "abc");
   }
 
   @Test
@@ -124,14 +120,10 @@ class WebElementToJsonConverterTest {
   void convertsASimpleMap() {
     Object converted =
         CONVERTER.apply(ImmutableMap.of("one", 1, "fruit", "apples", "honest", true));
-    assertThat(converted).isInstanceOf(Map.class);
 
-    @SuppressWarnings("unchecked")
-    Map<String, Object> map = (Map<String, Object>) converted;
-    assertThat(map).hasSize(3);
-    assertThat(map.get("one")).isEqualTo(1);
-    assertThat(map.get("fruit")).isEqualTo("apples");
-    assertThat(map.get("honest")).isEqualTo(true);
+    assertThat(converted)
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(Map.of("one", 1, "fruit", "apples", "honest", true));
   }
 
   @SuppressWarnings("unchecked")
@@ -152,14 +144,10 @@ class WebElementToJsonConverterTest {
 
     Map<String, Object> map = (Map<String, Object>) converted;
     assertThat(map).hasSize(4);
-    assertThat(map.get("one")).isEqualTo(1);
-    assertThat(map.get("fruit")).isEqualTo("apples");
-    assertThat(map.get("honest")).isEqualTo(true);
-    assertThat(map.get("nested")).isInstanceOf(Map.class);
-
-    map = (Map<String, Object>) map.get("nested");
-    assertThat(map).hasSize(1);
-    assertThat(map.get("bugs")).isEqualTo("bunny");
+    assertThat(map).containsEntry("one", 1);
+    assertThat(map).containsEntry("fruit", "apples");
+    assertThat(map).containsEntry("honest", true);
+    assertThat(map.get("nested")).asInstanceOf(MAP).hasSize(1).containsEntry("bugs", "bunny");
   }
 
   @SuppressWarnings("unchecked")
@@ -198,13 +186,11 @@ class WebElementToJsonConverterTest {
   void convertsAnArray() {
     Object value1 = CONVERTER.apply(new Object[] {"abc123", true, 123, Math.PI});
 
-    assertThat(value1).isInstanceOf(Collection.class);
-    assertContentsInOrder(new ArrayList<>((Collection<?>) value1), "abc123", true, 123, Math.PI);
+    assertThat(value1).asInstanceOf(COLLECTION).containsExactly("abc123", true, 123, Math.PI);
 
     Object value2 = CONVERTER.apply(new int[] {123, 456, 789});
 
-    assertThat(value2).isInstanceOf(Collection.class);
-    assertContentsInOrder(new ArrayList<>((Collection<?>) value2), 123, 456, 789);
+    assertThat(value2).asInstanceOf(COLLECTION).containsExactly(123, 456, 789);
   }
 
   @Test
@@ -213,18 +199,19 @@ class WebElementToJsonConverterTest {
     element.setId("abc123");
 
     Object value = CONVERTER.apply(new Object[] {element});
-    assertContentsInOrder(
-        new ArrayList<>((Collection<?>) value),
-        ImmutableMap.of(Dialect.W3C.getEncodedElementKey(), "abc123"));
+
+    assertThat(value)
+        .asInstanceOf(COLLECTION)
+        .containsExactly(Map.of(Dialect.W3C.getEncodedElementKey(), "abc123"));
   }
 
   @Test
   void shouldConvertShadowRoots() {
     ShadowRoot context = new ShadowRoot(createIdleDriver(), "abc123");
     Object value = CONVERTER.apply(new Object[] {context});
-    assertContentsInOrder(
-        new ArrayList<>((Collection<?>) value),
-        ImmutableMap.of(Dialect.W3C.getShadowRootElementKey(), "abc123"));
+    assertThat(value)
+        .asInstanceOf(COLLECTION)
+        .containsExactly(Map.of(Dialect.W3C.getShadowRootElementKey(), "abc123"));
   }
 
   private static WrappedWebElement wrapElement(WebElement element) {
@@ -232,17 +219,10 @@ class WebElementToJsonConverterTest {
   }
 
   private static void assertIsWebElementObject(Object value, String expectedKey) {
-    assertThat(value).isInstanceOf(Map.class);
-
-    Map<?, ?> map = (Map<?, ?>) value;
-    assertThat(map).hasSize(1);
-    assertThat(map.containsKey(Dialect.W3C.getEncodedElementKey())).isTrue();
-    assertThat(map.get(Dialect.W3C.getEncodedElementKey())).isEqualTo(expectedKey);
-  }
-
-  private static void assertContentsInOrder(List<?> list, Object... expectedContents) {
-    List<Object> expected = asList(expectedContents);
-    assertThat(list).isEqualTo(expected);
+    assertThat(value)
+        .asInstanceOf(MAP)
+        .hasSize(1)
+        .containsEntry(Dialect.W3C.getEncodedElementKey(), expectedKey);
   }
 
   private static RemoteWebDriver createIdleDriver() {

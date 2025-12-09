@@ -119,7 +119,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(match.get()).isTrue();
+    assertThat(match).isTrue();
   }
 
   @Test
@@ -170,7 +170,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(seen.get()).isTrue();
+    assertThat(seen).isTrue();
   }
 
   @Test
@@ -213,7 +213,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(seen.get()).isTrue();
+    assertThat(seen).isTrue();
   }
 
   @Test
@@ -291,7 +291,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(allOk.get()).isTrue();
+    assertThat(allOk).isTrue();
   }
 
   @Test
@@ -378,7 +378,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(allOk.get()).isTrue();
+    assertThat(allOk).isTrue();
   }
 
   @Test

@@ -39,11 +39,11 @@ import org.openqa.selenium.testing.NeedsFreshDriver;
 
 public class SetScriptingEnabledTest extends JupiterTestBase {
 
-  private boolean isFooInWindow(String contextId, Script script) {
+  private Optional<String> getHello(String contextId, Script script) {
     EvaluateResult result =
         script.evaluateFunctionInBrowsingContext(
-            contextId, "'foo' in window", false, Optional.empty());
-    return (Boolean) ((EvaluateResultSuccess) result).getResult().getValue().get();
+            contextId, "window.hello", false, Optional.empty());
+    return ((EvaluateResultSuccess) result).getResult().getValue().map(value -> (String) value);
   }
 
   @Test
@@ -59,16 +59,18 @@ public class SetScriptingEnabledTest extends JupiterTestBase {
     emulation.setScriptingEnabled(
         new SetScriptingEnabledParameters(false).contexts(List.of(contextId)));
 
-    context.navigate("data:text/html,<script>window.foo=123;</script>", ReadinessState.COMPLETE);
+    context.navigate(
+        "data:text/html,<script>window.hello='World';</script>", ReadinessState.COMPLETE);
 
-    assertThat(isFooInWindow(contextId, script)).isFalse();
+    assertThat(getHello(contextId, script)).isEmpty();
 
     emulation.setScriptingEnabled(
         new SetScriptingEnabledParameters(null).contexts(List.of(contextId)));
 
-    context.navigate("data:text/html,<script>window.foo=123;</script>", ReadinessState.COMPLETE);
+    context.navigate(
+        "data:text/html,<script>window.hello='World';</script>", ReadinessState.COMPLETE);
 
-    assertThat(isFooInWindow(contextId, script)).isTrue();
+    assertThat(getHello(contextId, script)).hasValue("World");
   }
 
   @Test

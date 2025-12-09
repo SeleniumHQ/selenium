@@ -53,7 +53,7 @@ class LogInspectorTest extends JupiterTestBase {
 
       ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
       Source source = logEntry.getSource();
-      assertThat(source.getBrowsingContext().isPresent()).isTrue();
+      assertThat(source.getBrowsingContext()).isPresent();
       assertThat(source.getRealm()).isNotNull();
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
       assertThat(logEntry.getArgs()).hasSize(1);
@@ -115,7 +115,7 @@ class LogInspectorTest extends JupiterTestBase {
       JavascriptLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
       Source source = logEntry.getSource();
-      assertThat(source.getBrowsingContext().isPresent()).isTrue();
+      assertThat(source.getBrowsingContext()).isPresent();
       assertThat(source.getRealm()).isNotNull();
 
       assertThat(logEntry.getText()).isEqualTo("Error: Not working");
@@ -203,7 +203,7 @@ class LogInspectorTest extends JupiterTestBase {
 
       LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
-      assertThat(logEntry.getConsoleLogEntry().isPresent()).isTrue();
+      assertThat(logEntry.getConsoleLogEntry()).isPresent();
 
       ConsoleLogEntry consoleLogEntry = logEntry.getConsoleLogEntry().get();
       assertThat(consoleLogEntry.getText()).isEqualTo("Hello, world!");

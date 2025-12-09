@@ -42,8 +42,7 @@ public class EvaluateParametersTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("number");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) successResult.getResult().getValue().get()).isEqualTo(3L);
+      assertThat(successResult.getResult().getValue()).hasValue(3L);
     }
   }
 
@@ -69,8 +68,7 @@ public class EvaluateParametersTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("boolean");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Boolean) successResult.getResult().getValue().get()).isEqualTo(true);
+      assertThat(successResult.getResult().getValue()).hasValue(true);
     }
   }
 
@@ -97,8 +95,7 @@ public class EvaluateParametersTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("boolean");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Boolean) successResult.getResult().getValue().get()).isEqualTo(false);
+      assertThat(successResult.getResult().getValue()).hasValue(false);
     }
   }
 
@@ -138,8 +135,11 @@ public class EvaluateParametersTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("object");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat(successResult.getResult().getHandle().isPresent()).isTrue();
+      assertThat(successResult.getResult().getHandle()).isPresent();
+      assertThat(successResult.getResult().getValue().get())
+          .extracting("a")
+          .extracting("value")
+          .isEqualTo(Optional.of(1L));
     }
   }
 
@@ -178,8 +178,7 @@ public class EvaluateParametersTest extends JupiterTestBase {
 
       EvaluateResultSuccess resultInSandboxSuccess = (EvaluateResultSuccess) resultInSandbox;
       assertThat(resultInSandboxSuccess.getResult().getType()).isEqualTo("number");
-      assertThat(resultInSandboxSuccess.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) resultInSandboxSuccess.getResult().getValue().get()).isEqualTo(2L);
+      assertThat(resultInSandboxSuccess.getResult().getValue()).hasValue(2L);
     }
   }
 
@@ -208,8 +207,7 @@ public class EvaluateParametersTest extends JupiterTestBase {
 
       EvaluateResultSuccess successFirstContextResult = (EvaluateResultSuccess) firstContextResult;
       assertThat(successFirstContextResult.getResult().getType()).isEqualTo("number");
-      assertThat(successFirstContextResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) successFirstContextResult.getResult().getValue().get()).isEqualTo(3L);
+      assertThat(successFirstContextResult.getResult().getValue()).hasValue(3L);
 
       EvaluateResult secondContextResult =
           script.evaluateFunctionInRealm(secondTabRealmId, "window.foo", true, Optional.empty());
@@ -219,8 +217,7 @@ public class EvaluateParametersTest extends JupiterTestBase {
       EvaluateResultSuccess successSecondContextResult =
           (EvaluateResultSuccess) secondContextResult;
       assertThat(successSecondContextResult.getResult().getType()).isEqualTo("number");
-      assertThat(successSecondContextResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) successSecondContextResult.getResult().getValue().get()).isEqualTo(5L);
+      assertThat(successSecondContextResult.getResult().getValue()).hasValue(5L);
     }
   }
 }

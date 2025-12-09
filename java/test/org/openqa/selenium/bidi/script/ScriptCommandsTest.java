@@ -19,6 +19,8 @@ package org.openqa.selenium.bidi.script;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.list;
+import static org.assertj.core.api.InstanceOfAssertFactories.optional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,8 +61,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) successResult.getResult().getValue().get()).isEqualTo(3L);
+    assertThat(successResult.getResult().getValue()).hasValue(3L);
   }
 
   @Test
@@ -89,8 +90,13 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("array");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat(((List<Object>) successResult.getResult().getValue().get())).hasSize(2);
+    assertThat(successResult.getResult().getValue())
+        .get()
+        .asInstanceOf(list(RemoteValue.class))
+        .hasSize(2)
+        .extracting("value")
+        .extracting("value")
+        .containsExactly("ARGUMENT_STRING_VALUE", 42L);
   }
 
   @Test
@@ -120,10 +126,10 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("window");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat(
-            ((WindowProxyProperties) successResult.getResult().getValue().get())
-                .getBrowsingContext())
+    assertThat(successResult.getResult().getValue())
+        .asInstanceOf(optional(WindowProxyProperties.class))
+        .get()
+        .extracting("browsingContext")
         .isNotNull();
   }
 
@@ -152,8 +158,10 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("node");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat(((NodeProperties) successResult.getResult().getValue().get()).getNodeType())
+    assertThat(successResult.getResult().getValue())
+        .asInstanceOf(optional(NodeProperties.class))
+        .get()
+        .extracting("nodeType")
         .isNotNull();
   }
 
@@ -180,9 +188,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("string");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat(((String) successResult.getResult().getValue().get()))
-        .isEqualTo("SOME_DELAYED_RESULT");
+    assertThat(successResult.getResult().getValue()).hasValue("SOME_DELAYED_RESULT");
   }
 
   @Test
@@ -235,8 +241,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) successResult.getResult().getValue().get()).isEqualTo(42L);
+    assertThat(successResult.getResult().getValue()).hasValue(42L);
   }
 
   @Test
@@ -258,8 +263,8 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
-    assertThat(successResult.getResult().getHandle().isPresent()).isTrue();
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successResult.getResult().getHandle()).isPresent();
+    assertThat(successResult.getResult().getValue()).isPresent();
   }
 
   @Test
@@ -281,8 +286,8 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(result.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
-    assertThat(successResult.getResult().getHandle().isPresent()).isFalse();
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successResult.getResult().getHandle()).isEmpty();
+    assertThat(successResult.getResult().getValue()).isPresent();
   }
 
   @Test
@@ -368,8 +373,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess resultInSandboxSuccess = (EvaluateResultSuccess) resultInSandbox;
     assertThat(resultInSandboxSuccess.getResult().getType()).isEqualTo("number");
-    assertThat(resultInSandboxSuccess.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) resultInSandboxSuccess.getResult().getValue().get()).isEqualTo(2L);
+    assertThat(resultInSandboxSuccess.getResult().getValue()).hasValue(2L);
   }
 
   @Test
@@ -411,10 +415,9 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     assertThat(firstContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
-    EvaluateResultSuccess successFirstContextresult = (EvaluateResultSuccess) firstContextResult;
-    assertThat(successFirstContextresult.getResult().getType()).isEqualTo("number");
-    assertThat(successFirstContextresult.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) successFirstContextresult.getResult().getValue().get()).isEqualTo(3L);
+    EvaluateResultSuccess successFirstContextResult = (EvaluateResultSuccess) firstContextResult;
+    assertThat(successFirstContextResult.getResult().getType()).isEqualTo("number");
+    assertThat(successFirstContextResult.getResult().getValue()).hasValue(3L);
 
     EvaluateResult secondContextResult =
         script.callFunctionInRealm(
@@ -427,10 +430,9 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     assertThat(secondContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
-    EvaluateResultSuccess successSecondContextresult = (EvaluateResultSuccess) secondContextResult;
-    assertThat(successSecondContextresult.getResult().getType()).isEqualTo("number");
-    assertThat(successSecondContextresult.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) successSecondContextresult.getResult().getValue().get()).isEqualTo(5L);
+    EvaluateResultSuccess successSecondContextResult = (EvaluateResultSuccess) secondContextResult;
+    assertThat(successSecondContextResult.getResult().getType()).isEqualTo("number");
+    assertThat(successSecondContextResult.getResult().getValue()).hasValue(5L);
   }
 
   @Test
@@ -447,8 +449,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) successResult.getResult().getValue().get()).isEqualTo(3L);
+    assertThat(successResult.getResult().getValue()).hasValue(3L);
   }
 
   @Test
@@ -486,8 +487,8 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("object");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat(successResult.getResult().getHandle().isPresent()).isTrue();
+    assertThat(successResult.getResult().getValue()).isPresent();
+    assertThat(successResult.getResult().getHandle()).isPresent();
   }
 
   @Test
@@ -523,8 +524,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     EvaluateResultSuccess resultInSandboxSuccess = (EvaluateResultSuccess) resultInSandbox;
     assertThat(resultInSandboxSuccess.getResult().getType()).isEqualTo("number");
-    assertThat(resultInSandboxSuccess.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) resultInSandboxSuccess.getResult().getValue().get()).isEqualTo(2L);
+    assertThat(resultInSandboxSuccess.getResult().getValue()).hasValue(2L);
   }
 
   @Test
@@ -548,20 +548,18 @@ public class ScriptCommandsTest extends JupiterTestBase {
 
     assertThat(firstContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
-    EvaluateResultSuccess successFirstContextresult = (EvaluateResultSuccess) firstContextResult;
-    assertThat(successFirstContextresult.getResult().getType()).isEqualTo("number");
-    assertThat(successFirstContextresult.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) successFirstContextresult.getResult().getValue().get()).isEqualTo(3L);
+    EvaluateResultSuccess successFirstContextResult = (EvaluateResultSuccess) firstContextResult;
+    assertThat(successFirstContextResult.getResult().getType()).isEqualTo("number");
+    assertThat(successFirstContextResult.getResult().getValue()).hasValue(3L);
 
     EvaluateResult secondContextResult =
         script.evaluateFunctionInRealm(secondTabRealmId, "window.foo", true, Optional.empty());
 
     assertThat(secondContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
-    EvaluateResultSuccess successSecondContextresult = (EvaluateResultSuccess) secondContextResult;
-    assertThat(successSecondContextresult.getResult().getType()).isEqualTo("number");
-    assertThat(successSecondContextresult.getResult().getValue().isPresent()).isTrue();
-    assertThat((Long) successSecondContextresult.getResult().getValue().get()).isEqualTo(5L);
+    EvaluateResultSuccess successSecondContextResult = (EvaluateResultSuccess) secondContextResult;
+    assertThat(successSecondContextResult.getResult().getType()).isEqualTo("number");
+    assertThat(successSecondContextResult.getResult().getValue()).hasValue(5L);
   }
 
   @Test
@@ -578,7 +576,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(evaluateResult.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successEvaluateResult = (EvaluateResultSuccess) evaluateResult;
-    assertThat(successEvaluateResult.getResult().getHandle().isPresent()).isTrue();
+    assertThat(successEvaluateResult.getResult().getHandle()).isPresent();
 
     List<LocalValue> arguments = new ArrayList<>();
 
@@ -603,7 +601,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     script.callFunctionInBrowsingContext(
         id, "arg => arg.a", false, Optional.of(arguments), Optional.empty(), Optional.empty());
 
-    assertThat(successEvaluateResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successEvaluateResult.getResult().getValue()).isPresent();
 
     List<String> handles = new ArrayList<>();
     handles.add(successEvaluateResult.getResult().getHandle().get());
@@ -635,7 +633,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     assertThat(evaluateResult.getRealmId()).isNotNull();
 
     EvaluateResultSuccess successEvaluateResult = (EvaluateResultSuccess) evaluateResult;
-    assertThat(successEvaluateResult.getResult().getHandle().isPresent()).isTrue();
+    assertThat(successEvaluateResult.getResult().getHandle()).isPresent();
 
     List<LocalValue> arguments = new ArrayList<>();
 
@@ -660,7 +658,7 @@ public class ScriptCommandsTest extends JupiterTestBase {
     script.callFunctionInBrowsingContext(
         id, "arg => arg.a", false, Optional.of(arguments), Optional.empty(), Optional.empty());
 
-    assertThat(successEvaluateResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successEvaluateResult.getResult().getValue()).isPresent();
 
     List<String> handles = new ArrayList<>();
     handles.add(successEvaluateResult.getResult().getHandle().get());

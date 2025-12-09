@@ -127,8 +127,8 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
         js.executeAsyncScript(
             script, new URL(appServer.whereIs("/")).toString(), method.toString());
 
-    assertThat(seen.get()).isTrue();
-    assertThat(response.toString()).contains("Received response for " + method);
+    assertThat(seen).isTrue();
+    assertThat(response).hasToString("Received response for " + method);
   }
 
   @Test
