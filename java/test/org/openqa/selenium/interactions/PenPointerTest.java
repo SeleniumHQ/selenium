@@ -215,28 +215,33 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  public void testHoverPersists() throws Exception {
+  public void testHoverPersists() {
     driver.get(pages.javascriptPage);
-    // Move to a different element to make sure the pen is not over the
-    // element with id 'item1' (from a previous test).
+    unfocusMenu();
 
+    WebElement menu = driver.findElement(By.id("menu1"));
+    WebElement menuItem = driver.findElement(By.id("item1"));
+    assertThat(menuItem.isDisplayed()).isFalse();
+    assertThat(driver.findElement(By.id("result")).getText()).isBlank();
+
+    // Hover the menu icon
+    setDefaultPen(driver).moveToElement(menu).build().perform();
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", menu);
+
+    // Wait until the menu items appear
+    wait.until(visibilityOf(menuItem));
+    assertThat(menuItem.getText()).isEqualTo("Item 1");
+
+    menuItem.click();
+    wait.until(elementTextToEqual(By.id("result"), "item 1"));
+  }
+
+  /**
+   * Move to a different element to make sure the mouse is not over the menu items (from a previous
+   * test).
+   */
+  private void unfocusMenu() {
     setDefaultPen(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
-
-    WebElement element = driver.findElement(By.id("menu1"));
-
-    final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEmpty();
-
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-
-    setDefaultPen(driver).moveToElement(element).build().perform();
-
-    // Intentionally wait to make sure hover persists.
-    Thread.sleep(2000);
-
-    wait.until(not(elementTextToEqual(item, "")));
-
-    assertThat(item.getText()).isEqualTo("Item 1");
   }
 
   @Test
