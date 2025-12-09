@@ -70,6 +70,13 @@ public sealed class EmulationModule : Module
         return await Broker.ExecuteCommandAsync(new SetScreenOrientationOverrideCommand(@params), options, _jsonContext.SetScreenOrientationOverrideCommand, _jsonContext.SetScreenOrientationOverrideResult).ConfigureAwait(false);
     }
 
+    public async Task<SetScreenSettingsOverrideResult> SetScreenSettingsOverrideAsync(ScreenArea? screenArea, SetScreenSettingsOverrideOptions? options = null)
+    {
+        var @params = new SetScreenSettingsOverrideParameters(screenArea, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync(new SetScreenSettingsOverrideCommand(@params), options, _jsonContext.SetScreenSettingsOverrideCommand, _jsonContext.SetScreenSettingsOverrideResult).ConfigureAwait(false);
+    }
+
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null)
     {
         var coordinates = new GeolocationCoordinates(latitude, longitude, options?.Accuracy, options?.Altitude, options?.AltitudeAccuracy, options?.Heading, options?.Speed);
@@ -114,6 +121,8 @@ public sealed class EmulationModule : Module
 [JsonSerializable(typeof(SetScriptingEnabledResult))]
 [JsonSerializable(typeof(SetScreenOrientationOverrideCommand))]
 [JsonSerializable(typeof(SetScreenOrientationOverrideResult))]
+[JsonSerializable(typeof(SetScreenSettingsOverrideCommand))]
+[JsonSerializable(typeof(SetScreenSettingsOverrideResult))]
 [JsonSerializable(typeof(SetGeolocationOverrideCommand))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
 
