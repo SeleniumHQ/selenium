@@ -18,6 +18,7 @@
 package org.openqa.selenium.print;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ class PrintOptionsTest {
     PrintOptions printOptions = new PrintOptions();
 
     printOptions.setPageRanges(List.of("1-2", "6-7"));
-    assertThat(printOptions.getPageRanges().length).isEqualTo(2);
+    assertThat(printOptions.getPageRanges()).containsExactly("1-2", "6-7");
   }
 
   @Test
@@ -65,17 +66,14 @@ class PrintOptionsTest {
 
     Map<String, Object> map = printOptions.toMap();
     assertThat(map).hasSize(7);
-    assertThat(map.containsKey("page")).isTrue();
-    assertThat(map.containsKey("orientation")).isTrue();
-    assertThat(map.containsKey("scale")).isTrue();
-    assertThat(map.containsKey("shrinkToFit")).isTrue();
-    assertThat(map.containsKey("background")).isTrue();
-    assertThat(map.containsKey("pageRanges")).isTrue();
-    assertThat(map.containsKey("margin")).isTrue();
-
-    Map<String, Double> margin = (Map<String, Double>) map.get("margin");
-    assertThat(margin).hasSize(4);
-    Map<String, Double> page = (Map<String, Double>) map.get("page");
-    assertThat(page).hasSize(2);
+    assertThat(map).containsKey("page");
+    assertThat(map).containsKey("orientation");
+    assertThat(map).containsKey("scale");
+    assertThat(map).containsKey("shrinkToFit");
+    assertThat(map).containsKey("background");
+    assertThat(map).containsKey("pageRanges");
+    assertThat(map).containsKey("margin");
+    assertThat(map.get("margin")).asInstanceOf(MAP).hasSize(4);
+    assertThat(map.get("page")).asInstanceOf(MAP).hasSize(2);
   }
 }

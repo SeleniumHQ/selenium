@@ -108,8 +108,7 @@ class CookieImplementationTest extends JupiterTestBase {
     assertCookieIsNotPresentWithName(key1);
     assertCookieIsNotPresentWithName(key2);
 
-    Set<Cookie> cookies = driver.manage().getCookies();
-    int countBefore = cookies.size();
+    int countBefore = driver.manage().getCookies().size();
 
     Cookie one = new Cookie.Builder(key1, "value").build();
     Cookie two = new Cookie.Builder(key2, "value").build();
@@ -118,11 +117,10 @@ class CookieImplementationTest extends JupiterTestBase {
     driver.manage().addCookie(two);
 
     openAnotherPage();
-    cookies = driver.manage().getCookies();
+    Set<Cookie> cookies = driver.manage().getCookies();
     assertThat(cookies).hasSize(countBefore + 2);
 
-    assertThat(cookies.contains(one)).isTrue();
-    assertThat(cookies.contains(two)).isTrue();
+    assertThat(cookies).contains(one, two);
   }
 
   @Test

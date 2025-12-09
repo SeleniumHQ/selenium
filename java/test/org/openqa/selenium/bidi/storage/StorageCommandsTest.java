@@ -158,8 +158,7 @@ class StorageCommandsTest extends JupiterTestBase {
     assertThat(result.getCookies().get(0).getValue().getValue()).isEqualTo(value);
     PartitionKey partitionKey = result.getPartitionKey();
 
-    assertThat(partitionKey.getUserContext()).isNotNull();
-    assertThat(partitionKey.getUserContext()).isEqualTo(userContext);
+    assertThat(partitionKey.getUserContext()).isNotNull().isEqualTo(userContext);
 
     driver.switchTo().window(windowHandle);
 
@@ -260,29 +259,20 @@ class StorageCommandsTest extends JupiterTestBase {
   @NotYetImplemented(EDGE)
   @Test
   public void canGetAllCookies() {
-    String key1 = generateUniqueKey();
-    String key2 = generateUniqueKey();
-
-    assertCookieIsNotPresentWithName(key1);
-    assertCookieIsNotPresentWithName(key2);
+    addRandomCookie("there might be other cookies before this test");
 
     GetCookiesParameters params = new GetCookiesParameters(new CookieFilter());
-    GetCookiesResult result = storage.getCookies(params);
+    int countBefore = storage.getCookies(params).getCookies().size();
 
-    int countBefore = result.getCookies().size();
-
-    Cookie one = new Cookie.Builder(key1, "value").build();
-    Cookie two = new Cookie.Builder(key2, "value").build();
-
-    driver.manage().addCookie(one);
-    driver.manage().addCookie(two);
+    String key1 = addRandomCookie("one");
+    String key2 = addRandomCookie("two");
 
     openAnotherPage();
-    result = storage.getCookies(params);
+    GetCookiesResult result = storage.getCookies(params);
     assertThat(result.getCookies()).hasSize(countBefore + 2);
 
-    assertThat(result.getCookies().get(0).getName().contains(key1)).isTrue();
-    assertThat(result.getCookies().get(1).getName().contains(key2)).isTrue();
+    assertThat(result.getCookies().get(countBefore).getName()).isEqualTo(key1);
+    assertThat(result.getCookies().get(countBefore + 1).getName()).isEqualTo(key2);
   }
 
   @Test
@@ -447,5 +437,12 @@ class StorageCommandsTest extends JupiterTestBase {
       url.append("&httpOnly=").append(cookie.isHttpOnly());
     }
     driver.get(url.toString());
+  }
+
+  private String addRandomCookie(String value) {
+    String key = generateUniqueKey();
+    assertCookieIsNotPresentWithName(key);
+    driver.manage().addCookie(new Cookie.Builder(key, value).build());
+    return key;
   }
 }
