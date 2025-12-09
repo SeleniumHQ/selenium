@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContext : IEquatable<BrowsingContext>
+public sealed class BrowsingContext
 {
     internal BrowsingContext(BiDi bidi, string id)
     {
@@ -225,16 +225,13 @@ public sealed class BrowsingContext : IEquatable<BrowsingContext>
 
     public override bool Equals(object? obj)
     {
-        return Equals(obj as BrowsingContext);
-    }
+        if (obj is BrowsingContext browsingContextObj) return browsingContextObj.Id == Id;
 
-    public bool Equals(BrowsingContext? other)
-    {
-        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
+        return false;
     }
 
     public override int GetHashCode()
     {
-        return StringComparer.Ordinal.GetHashCode(Id);
+        return Id.GetHashCode();
     }
 }
