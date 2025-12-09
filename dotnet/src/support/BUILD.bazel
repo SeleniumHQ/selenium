@@ -37,7 +37,7 @@ csharp_library(
         "//dotnet:source_files_support_needs_from_core",
     ],
     out = "WebDriver.Support",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
         "netstandard2.0",
@@ -80,7 +80,7 @@ csharp_library(
     ],
     out = "WebDriver.Support.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
         "netstandard2.0",

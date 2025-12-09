@@ -51,7 +51,7 @@ csharp_library(
     internals_visible_to = [
         "WebDriver.Common.Tests",
     ],
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
         "net462",
@@ -83,7 +83,7 @@ csharp_library(
     internals_visible_to = [
         "WebDriver.Common.Tests",
     ],
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     resources = [],
     target_frameworks = [
@@ -119,7 +119,7 @@ csharp_library(
     internals_visible_to = [
         "WebDriver.Common.Tests",
     ],
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     resources = [],
     target_frameworks = [
@@ -142,7 +142,7 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     target_frameworks = [
         "net462",
@@ -172,7 +172,7 @@ csharp_library(
     ]) + devtools_version_targets(),
     out = "WebDriver.StrongNamed",
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     resources = [],
     target_frameworks = [
@@ -206,7 +206,7 @@ csharp_library(
         "NET8_0_OR_GREATER",
     ],
     keyfile = "//dotnet:Selenium.snk",
-    langversion = "12.0",
+    langversion = "14.0",
     nullable = "enable",
     resources = [],
     target_frameworks = [
