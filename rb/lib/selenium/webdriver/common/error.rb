@@ -120,6 +120,13 @@ module Selenium
       class NoSuchWindowError < WebDriverError; end
 
       #
+      # A command to find a devtools target could not be satisfied because
+      # the target could not be found.
+      #
+
+      class NoSuchTargetError < WebDriverError; end
+
+      #
       # The element does not have a shadow root.
       #
 

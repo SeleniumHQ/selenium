@@ -17,14 +17,13 @@
 
 package org.openqa.selenium;
 
+import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
@@ -72,22 +71,16 @@ public class PageLoadTimeOutTest extends JupiterTestBase {
   @Ignore(value = SAFARI, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
-
-    driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
-    WebElement link = wait.until(visibilityOfElementLocated(By.id("link-to-slow-loading-page")));
-
-    long start = System.currentTimeMillis();
     try {
-      link.click();
-      fail("I should have timed out");
-    } catch (RuntimeException e) {
-      long end = System.currentTimeMillis();
+      driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
+      WebElement link = wait.until(visibilityOfElementLocated(By.id("link-to-slow-loading-page")));
 
-      assertThat(e).isInstanceOf(TimeoutException.class);
+      long start = currentTimeMillis();
 
-      int duration = (int) (end - start);
-      assertThat(duration).isGreaterThan(2000);
-      assertThat(duration).isLessThan(5000);
+      assertThatThrownBy(() -> link.click()).isInstanceOf(TimeoutException.class);
+
+      long duration = currentTimeMillis() - start;
+      assertThat(duration).isBetween(2000L, 5000L);
     } finally {
       driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
@@ -109,18 +102,13 @@ public class PageLoadTimeOutTest extends JupiterTestBase {
 
     driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
 
-    long start = System.currentTimeMillis();
     try {
-      driver.navigate().refresh();
-      fail("I should have timed out");
-    } catch (RuntimeException e) {
-      long end = System.currentTimeMillis();
+      long start = currentTimeMillis();
 
-      assertThat(e).isInstanceOf(TimeoutException.class);
+      assertThatThrownBy(() -> driver.navigate().refresh()).isInstanceOf(TimeoutException.class);
 
-      int duration = (int) (end - start);
-      assertThat(duration).isGreaterThanOrEqualTo(2000);
-      assertThat(duration).isLessThan(4000);
+      long duration = currentTimeMillis() - start;
+      assertThat(duration).isBetween(2000L, 4000L);
     } finally {
       driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
@@ -163,19 +151,18 @@ public class PageLoadTimeOutTest extends JupiterTestBase {
 
   private void assertPageLoadTimeoutIsEnforced(
       long webDriverPageLoadTimeout, long pageLoadTimeBuffer) {
-    long start = System.currentTimeMillis();
-    try {
-      driver.get(
-          appServer.whereIs("sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
-      fail("I should have timed out after " + webDriverPageLoadTimeout + " seconds");
-    } catch (RuntimeException e) {
-      long end = System.currentTimeMillis();
+    long start = currentTimeMillis();
+    assertThatThrownBy(
+            () -> {
+              driver.get(
+                  appServer.whereIs(
+                      "sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
+            })
+        .as("Should have timed out after " + webDriverPageLoadTimeout + " seconds")
+        .isInstanceOf(TimeoutException.class);
 
-      assertThat(e).isInstanceOf(TimeoutException.class);
-
-      long duration = end - start;
-      assertThat(duration).isGreaterThanOrEqualTo(webDriverPageLoadTimeout * 1000);
-      assertThat(duration).isLessThan((webDriverPageLoadTimeout + pageLoadTimeBuffer) * 1000);
-    }
+    long duration = currentTimeMillis() - start;
+    assertThat(duration).isGreaterThanOrEqualTo(webDriverPageLoadTimeout * 1000);
+    assertThat(duration).isLessThan((webDriverPageLoadTimeout + pageLoadTimeBuffer) * 1000);
   }
 }

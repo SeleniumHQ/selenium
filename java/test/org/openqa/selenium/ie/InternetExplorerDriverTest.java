@@ -19,8 +19,9 @@ package org.openqa.selenium.ie;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
+import static org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_NAME;
 
 import java.awt.*;
 import java.time.Duration;
@@ -153,12 +154,10 @@ class InternetExplorerDriverTest extends JupiterTestBase {
       Locale.setDefault(arabicLocale);
 
       int port = PortProber.findFreePort();
-      InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
-      builder.usingPort(port);
-      builder.build();
-
-    } catch (Exception e) {
-      throw e;
+      try (InternetExplorerDriverService service =
+          new InternetExplorerDriverService.Builder().usingPort(port).build()) {
+        assertThat(service.getDriverName()).isEqualTo(IE_DRIVER_NAME);
+      }
     } finally {
       Locale.setDefault(Locale.US);
     }

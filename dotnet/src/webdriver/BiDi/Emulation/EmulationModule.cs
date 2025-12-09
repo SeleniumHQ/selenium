@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -69,6 +70,13 @@ public sealed class EmulationModule : Module
         return await Broker.ExecuteCommandAsync(new SetScreenOrientationOverrideCommand(@params), options, _jsonContext.SetScreenOrientationOverrideCommand, _jsonContext.SetScreenOrientationOverrideResult).ConfigureAwait(false);
     }
 
+    public async Task<SetScreenSettingsOverrideResult> SetScreenSettingsOverrideAsync(ScreenArea? screenArea, SetScreenSettingsOverrideOptions? options = null)
+    {
+        var @params = new SetScreenSettingsOverrideParameters(screenArea, options?.Contexts, options?.UserContexts);
+
+        return await Broker.ExecuteCommandAsync(new SetScreenSettingsOverrideCommand(@params), options, _jsonContext.SetScreenSettingsOverrideCommand, _jsonContext.SetScreenSettingsOverrideResult).ConfigureAwait(false);
+    }
+
     public async Task<SetGeolocationOverrideResult> SetGeolocationCoordinatesOverrideAsync(double latitude, double longitude, SetGeolocationCoordinatesOverrideOptions? options = null)
     {
         var coordinates = new GeolocationCoordinates(latitude, longitude, options?.Accuracy, options?.Altitude, options?.AltitudeAccuracy, options?.Heading, options?.Speed);
@@ -92,9 +100,12 @@ public sealed class EmulationModule : Module
         return await Broker.ExecuteCommandAsync(new SetGeolocationOverrideCommand(@params), options, _jsonContext.SetGeolocationOverrideCommand, _jsonContext.SetGeolocationOverrideResult).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions options)
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        _jsonContext = new EmulationJsonSerializerContext(options);
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
+
+        _jsonContext = new EmulationJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
@@ -110,6 +121,9 @@ public sealed class EmulationModule : Module
 [JsonSerializable(typeof(SetScriptingEnabledResult))]
 [JsonSerializable(typeof(SetScreenOrientationOverrideCommand))]
 [JsonSerializable(typeof(SetScreenOrientationOverrideResult))]
+[JsonSerializable(typeof(SetScreenSettingsOverrideCommand))]
+[JsonSerializable(typeof(SetScreenSettingsOverrideResult))]
 [JsonSerializable(typeof(SetGeolocationOverrideCommand))]
 [JsonSerializable(typeof(SetGeolocationOverrideResult))]
+
 internal partial class EmulationJsonSerializerContext : JsonSerializerContext;

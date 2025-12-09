@@ -48,9 +48,9 @@ class AvailableLogsTest extends JupiterTestBase {
   @Test
   void browserLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes.contains(LogType.BROWSER))
+    assertThat(logTypes)
         .describedAs("Browser logs should be enabled by default")
-        .isTrue();
+        .contains(LogType.BROWSER);
   }
 
   @Test
@@ -58,26 +58,20 @@ class AvailableLogsTest extends JupiterTestBase {
     // Do one action to have *something* in the client logs.
     driver.get(pages.formPage);
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes.contains(LogType.CLIENT))
+    assertThat(logTypes)
         .describedAs("Client logs should be enabled by default")
-        .isTrue();
-    boolean foundExecutingStatement = false;
-    boolean foundExecutedStatement = false;
-    for (LogEntry logEntry : driver.manage().logs().get(LogType.CLIENT)) {
-      foundExecutingStatement |= logEntry.toString().contains("Executing: ");
-      foundExecutedStatement |= logEntry.toString().contains("Executed: ");
-    }
-
-    assertThat(foundExecutingStatement).isTrue();
-    assertThat(foundExecutedStatement).isTrue();
+        .contains(LogType.CLIENT);
+    LogEntries clientLogs = driver.manage().logs().get(LogType.CLIENT);
+    assertThat(clientLogs).anyMatch(logEntry -> logEntry.toString().contains("Executing: "));
+    assertThat(clientLogs).anyMatch(logEntry -> logEntry.toString().contains("Executed: "));
   }
 
   @Test
   void driverLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes.contains(LogType.DRIVER))
+    assertThat(logTypes)
         .describedAs("Remote driver logs should be enabled by default")
-        .isTrue();
+        .contains(LogType.DRIVER);
   }
 
   @Test
@@ -93,8 +87,8 @@ class AvailableLogsTest extends JupiterTestBase {
     assumeTrue(Boolean.getBoolean("selenium.browser.remote"));
 
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes.contains(LogType.SERVER))
+    assertThat(logTypes)
         .describedAs("Server logs should be enabled by default")
-        .isTrue();
+        .contains(LogType.SERVER);
   }
 }
