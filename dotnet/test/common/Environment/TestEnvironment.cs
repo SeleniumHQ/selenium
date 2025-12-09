@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Environment;
 
-class TestEnvironment
+internal class TestEnvironment
 {
     public bool CaptureWebServerOutput { get; set; }
 

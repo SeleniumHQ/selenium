@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.bidi.browsingcontext;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
 import java.util.Optional;
@@ -212,8 +212,7 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
       UserPromptClosed userPromptClosed = future.get(5, TimeUnit.SECONDS);
       assertThat(userPromptClosed.getBrowsingContextId()).isEqualTo(context.getId());
-      assertThat(userPromptClosed.getUserText().isPresent()).isTrue();
-      assertThat(userPromptClosed.getUserText().get()).isEqualTo("selenium");
+      assertThat(userPromptClosed.getUserText()).hasValue("selenium");
       assertThat(userPromptClosed.getAccepted()).isTrue();
     }
   }

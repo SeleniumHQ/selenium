@@ -84,17 +84,30 @@ module Selenium
           wait.until { driver.title }
         end
 
-        def wait_for_element(locator)
-          wait = Wait.new(timeout: 25, ignore: Error::NoSuchElementError)
+        def wait_for_element(locator, timeout = 25)
+          wait = Wait.new(timeout: timeout, ignore: Error::NoSuchElementError, message_provider: lambda {
+            url = "page url: #{driver.current_url};\n"
+            source = "page source: #{driver.find_element(css: 'body').attribute('innerHTML')}\n"
+            "could not find element #{locator} in #{timeout} seconds;\n#{url}#{source}"
+          })
           wait.until { driver.find_element(locator) }
         end
 
-        def wait_for_new_url(old_url)
+        def wait_for_url(new_url)
           wait = Wait.new(timeout: 5)
           wait.until do
-            url = driver.current_url
-            !(url.empty? || url.include?(old_url))
+            driver.current_url.include?(new_url)
           end
+        end
+
+        def wait_for_devtools_target(target_type:)
+          wait = Wait.new(timeout: 3, ignore: Error::NoSuchTargetError)
+          wait.until { driver.devtools(target_type: target_type).target }
+        end
+
+        def wait_for_title(title:)
+          wait = Wait.new(timeout: 5)
+          wait.until { driver.title == title }
         end
 
         def wait(timeout = 10)

@@ -18,9 +18,9 @@
 package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -194,27 +194,33 @@ class EndToEndTest {
     // The node added only has a single node. Make sure we can start and stop sessions.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "se:type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
-
-    // The node is still open. Now create a second session. It will be added to the queue.
-    // An retry will be attempted and once request times out, it should fail
     try {
-      WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
-      disposable.quit();
-      fail("Should not have been able to create driver");
-    } catch (SessionNotCreatedException expected) {
-      // Fall through
+      driver.get("https://www.google.com");
+
+      // The node is still open. Now try to create a second session. It will be added to the queue.
+      // A retry will be attempted and once request times out, it should fail.
+      assertThatThrownBy(
+              () -> {
+                WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
+                disposable.quit();
+              })
+          .as("Should not have been able to create driver")
+          .isInstanceOf(SessionNotCreatedException.class)
+          .hasMessageContaining("browserName: cheese, se:type: cheddar");
+    } finally {
+      driver.quit();
     }
 
-    // Kill the session, and wait until the grid says it's ready
-    driver.quit();
-
+    // and wait until the grid says it's ready
     waitUntilReady(server, Duration.ofSeconds(100));
 
-    // And now we're good to go.
-    driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
-    driver.quit();
+    // And now we can open another browser (because the previous one has been closed).
+    RemoteWebDriver newWebDriver = new RemoteWebDriver(server.getUrl(), caps);
+    try {
+      newWebDriver.get("https://www.google.com");
+    } finally {
+      newWebDriver.quit();
+    }
   }
 
   @ParameterizedTest
@@ -251,14 +257,15 @@ class EndToEndTest {
   void shouldRejectSessionRequestIfCapsNotSupported(Supplier<Deployment> values) {
     setFields(values);
 
-    try {
-      Capabilities unsupportedCaps = new ImmutableCapabilities("browserName", "brie");
-      WebDriver disposable = new RemoteWebDriver(server.getUrl(), unsupportedCaps);
-      disposable.quit();
-      fail("Should not have been able to create driver");
-    } catch (SessionNotCreatedException expected) {
-      // Fall through
-    }
+    assertThatThrownBy(
+            () -> {
+              Capabilities unsupportedCaps = new ImmutableCapabilities("browserName", "brie");
+              WebDriver disposable = new RemoteWebDriver(server.getUrl(), unsupportedCaps);
+              disposable.quit();
+            })
+        .as("Should not have been able to create driver")
+        .isInstanceOf(SessionNotCreatedException.class)
+        .hasMessageContaining("Capabilities {browserName: brie}");
   }
 
   @ParameterizedTest

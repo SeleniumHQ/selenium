@@ -29,20 +29,20 @@ public class LazyTest {
 
   @Test
   void trivialCase() {
-    Lazy expression = Lazy.lazy(() -> "constant");
+    Lazy<String> expression = Lazy.lazy(() -> "constant");
     assertThat(expression.get()).isEqualTo("constant");
     assertThat(expression.getIfInitialized()).contains("constant");
   }
 
   @Test
   void getIfInitialized_returnsNothing_ifNotInitializedYet() {
-    Lazy expression = Lazy.lazy(() -> "value#" + counter.incrementAndGet());
+    Lazy<String> expression = Lazy.lazy(() -> "value#" + counter.incrementAndGet());
     assertThat(expression.getIfInitialized()).isEmpty();
   }
 
   @Test
   void lazyEvaluatedExpression() {
-    Lazy expression = Lazy.lazy(() -> "value#" + counter.incrementAndGet());
+    Lazy<String> expression = Lazy.lazy(() -> "value#" + counter.incrementAndGet());
     assertThat(expression.get()).isEqualTo("value#1");
     assertThat(expression.get()).isEqualTo("value#1");
     assertThat(expression.getIfInitialized()).contains("value#1");
@@ -51,8 +51,8 @@ public class LazyTest {
 
   @Test
   void differentLazyInstances_produce_differentValues() {
-    Lazy expression1 = Lazy.lazy(() -> "one#" + counter.incrementAndGet());
-    Lazy expression2 = Lazy.lazy(() -> "two#" + counter.incrementAndGet());
+    Lazy<String> expression1 = Lazy.lazy(() -> "one#" + counter.incrementAndGet());
+    Lazy<String> expression2 = Lazy.lazy(() -> "two#" + counter.incrementAndGet());
     assertThat(expression1.get()).isEqualTo("one#1");
     assertThat(expression1.getIfInitialized()).contains("one#1");
     assertThat(expression2.getIfInitialized()).isEmpty();

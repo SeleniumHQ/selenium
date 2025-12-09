@@ -254,4 +254,10 @@ public class RemoteValue {
 
     return finalValue;
   }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "%s{type:%s, value:%s}", getClass().getSimpleName(), type, value.orElse(null));
+  }
 }

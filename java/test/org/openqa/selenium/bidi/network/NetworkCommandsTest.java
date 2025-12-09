@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.bidi.network;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.bidi.browsingcontext.ReadinessState.COMPLETE;
 import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.time.Duration;
@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -37,13 +39,14 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
-import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 class NetworkCommandsTest extends JupiterTestBase {
+  private static final Logger LOG = Logger.getLogger(NetworkCommandsTest.class.getName());
+
   private String page;
 
   @Test
@@ -83,8 +86,7 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
-      browsingContext.navigate(
-          appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
       boolean countdown = latch.await(5, TimeUnit.SECONDS);
       assertThat(countdown).isTrue();
     }
@@ -112,8 +114,7 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
-      browsingContext.navigate(
-          appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
 
       boolean countdown = latch.await(5, TimeUnit.SECONDS);
       assertThat(countdown).isTrue();
@@ -141,8 +142,7 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
-      browsingContext.navigate(
-          appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
 
       boolean countdown = latch.await(5, TimeUnit.SECONDS);
       assertThat(countdown).isTrue();
@@ -177,8 +177,7 @@ class NetworkCommandsTest extends JupiterTestBase {
 
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
-      browsingContext.navigate(
-          appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
 
       boolean countdown = latch.await(5, TimeUnit.SECONDS);
       assertThat(countdown).isTrue();
@@ -213,7 +212,7 @@ class NetworkCommandsTest extends JupiterTestBase {
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
-      browsingContext.navigate(page, ReadinessState.COMPLETE);
+      browsingContext.navigate(page, COMPLETE);
 
       assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
     }
@@ -233,12 +232,8 @@ class NetworkCommandsTest extends JupiterTestBase {
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
-      try {
-        browsingContext.navigate(page, ReadinessState.COMPLETE);
-        fail("Exception should be thrown");
-      } catch (Exception e) {
-        assertThat(e).isInstanceOf(WebDriverException.class);
-      }
+      assertThatThrownBy(() -> browsingContext.navigate(page, COMPLETE))
+          .isInstanceOf(WebDriverException.class);
     }
   }
 
@@ -270,15 +265,17 @@ class NetworkCommandsTest extends JupiterTestBase {
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
       try {
-        browsingContext.navigate(page, ReadinessState.COMPLETE);
-      } catch (Exception BiDiException) {
-        // Ignore
-        // Only Chromium browsers throw an error because the navigation did not complete as
-        // expected.
+        browsingContext.navigate(page, COMPLETE);
+      } catch (BiDiException expectedForChrome) {
+        LOG.log(
+            Level.FINE,
+            "Expected exception for chrome because because the navigation "
+                + "did not complete as expected: {0}",
+            expectedForChrome.toString());
       }
 
       latch.await(10, TimeUnit.SECONDS);
-      assertThat(status.get()).isEqualTo(401);
+      assertThat(status).hasValue(401);
     }
   }
 
@@ -296,8 +293,7 @@ class NetworkCommandsTest extends JupiterTestBase {
               () -> {
                 BrowsingContext browsingContext =
                     new BrowsingContext(driver, driver.getWindowHandle());
-                browsingContext.navigate(
-                    appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+                browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
               })
           .isInstanceOf(WebDriverException.class);
     }
