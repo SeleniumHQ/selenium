@@ -50,6 +50,18 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 @Beta
 public interface WebDriverListener {
 
+  // Listener configuration
+
+  /**
+   * This method configures the behavior of the listener with regard to exceptions occurred during
+   * its execution. By default, exceptions are suppressed.
+   *
+   * @return false by default. Override it and return true to throw exceptions instead.
+   */
+  default boolean throwsExceptions() {
+    return false;
+  }
+
   // Global
 
   /**

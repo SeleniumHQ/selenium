@@ -26,6 +26,7 @@ import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.bidi.browser.ClientWindowInfo;
+import org.openqa.selenium.bidi.browser.SetDownloadBehaviorParameters;
 import org.openqa.selenium.json.JsonInput;
 
 public class Browser {
@@ -89,5 +90,9 @@ public class Browser {
 
   public List<ClientWindowInfo> getClientWindows() {
     return bidi.send(new Command<>("browser.getClientWindows", Map.of(), clientWindowsInfoMapper));
+  }
+
+  public void setDownloadBehavior(SetDownloadBehaviorParameters parameters) {
+    bidi.send(new Command<>("browser.setDownloadBehavior", parameters.toMap()));
   }
 }

@@ -248,7 +248,7 @@ public class LogTest
     }
 }
 
-class TestLogHandler : ILogHandler
+internal class TestLogHandler : ILogHandler
 {
     public ILogHandler Clone()
     {

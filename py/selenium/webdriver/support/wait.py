@@ -16,7 +16,8 @@
 # under the License.
 
 import time
-from typing import Callable, Generic, Literal, Optional, TypeVar, Union
+from collections.abc import Callable
+from typing import Generic, Literal, TypeVar, Union
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.types import WaitExcTypes
@@ -36,36 +37,27 @@ class WebDriverWait(Generic[D]):
         driver: D,
         timeout: float,
         poll_frequency: float = POLL_FREQUENCY,
-        ignored_exceptions: Optional[WaitExcTypes] = None,
+        ignored_exceptions: WaitExcTypes | None = None,
     ):
         """Constructor, takes a WebDriver instance and timeout in seconds.
 
-        Attributes:
-        -----------
-        driver
-            - Instance of WebDriver (Ie, Firefox, Chrome or Remote) or
-            a WebElement
-
-        timeout
-            - Number of seconds before timing out
-
-        poll_frequency
-            - Sleep interval between calls
-            - By default, it is 0.5 second.
-
-        ignored_exceptions
-            - Iterable structure of exception classes ignored during calls.
-            - By default, it contains NoSuchElementException only.
+        Args:
+            driver: Instance of WebDriver (Ie, Firefox, Chrome or Remote) or
+                a WebElement.
+            timeout: Number of seconds before timing out.
+            poll_frequency: Sleep interval between calls. By default, it is
+                0.5 second.
+            ignored_exceptions: Iterable structure of exception classes ignored
+                during calls. By default, it contains NoSuchElementException only.
 
         Example:
-        --------
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.wait import WebDriverWait
-        >>> from selenium.common.exceptions import ElementNotVisibleException
-        >>>
-        >>> # Wait until the element is no longer visible
-        >>> is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException))
-        ...     .until_not(lambda x: x.find_element(By.ID, "someId").is_displayed())
+            >>> from selenium.webdriver.common.by import By
+            >>> from selenium.webdriver.support.wait import WebDriverWait
+            >>> from selenium.common.exceptions import ElementNotVisibleException
+            >>>
+            >>> # Wait until the element is no longer visible
+            >>> is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException))
+            ...     .until_not(lambda x: x.find_element(By.ID, "someId").is_displayed())
         """
         self._driver = driver
         self._timeout = float(timeout)
@@ -84,41 +76,33 @@ class WebDriverWait(Generic[D]):
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self._driver.session_id}")>'
 
-    def until(self, method: Callable[[D], Union[Literal[False], T]], message: str = "") -> T:
+    def until(self, method: Callable[[D], Literal[False] | T], message: str = "") -> T:
         """Wait until the method returns a value that is not False.
 
         Calls the method provided with the driver as an argument until the
         return value does not evaluate to ``False``.
 
-        Parameters:
-        -----------
-        method: callable(WebDriver)
-            - A callable object that takes a WebDriver instance as an argument.
+        Args:
+            method: A callable object that takes a WebDriver instance as an
+                argument.
+            message: Optional message for TimeoutException.
 
-        message: str
-            - Optional message for :exc:`TimeoutException`
-
-        Return:
-        -------
-        object: T
-            - The result of the last call to `method`
+        Returns:
+            The result of the last call to `method`.
 
         Raises:
-        -------
-        TimeoutException
-            - If 'method' does not return a truthy value within the WebDriverWait
-            object's timeout
+            TimeoutException: If 'method' does not return a truthy value within
+                the WebDriverWait object's timeout.
 
         Example:
-        --------
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-
-        # Wait until an element is visible on the page
-        >>> wait = WebDriverWait(driver, 10)
-        >>> element = wait.until(EC.visibility_of_element_located((By.ID, "exampleId")))
-        >>> print(element.text)
+            >>> from selenium.webdriver.common.by import By
+            >>> from selenium.webdriver.support.ui import WebDriverWait
+            >>> from selenium.webdriver.support import expected_conditions as EC
+            >>>
+            >>> # Wait until an element is visible on the page
+            >>> wait = WebDriverWait(driver, 10)
+            >>> element = wait.until(EC.visibility_of_element_located((By.ID, "exampleId")))
+            >>> print(element.text)
         """
         screen = None
         stacktrace = None
@@ -137,40 +121,32 @@ class WebDriverWait(Generic[D]):
             time.sleep(self._poll)
         raise TimeoutException(message, screen, stacktrace)
 
-    def until_not(self, method: Callable[[D], T], message: str = "") -> Union[T, Literal[True]]:
-        """Wait until the method returns a value that is not False.
+    def until_not(self, method: Callable[[D], T], message: str = "") -> T | Literal[True]:
+        """Wait until the method returns a value that is False.
 
         Calls the method provided with the driver as an argument until the
-        return value does not evaluate to ``False``.
+        return value evaluates to ``False``.
 
-        Parameters:
-        -----------
-        method: callable(WebDriver)
-            - A callable object that takes a WebDriver instance as an argument.
+        Args:
+            method: A callable object that takes a WebDriver instance as an
+                argument.
+            message: Optional message for TimeoutException.
 
-        message: str
-            - Optional message for :exc:`TimeoutException`
-
-        Return:
-        -------
-        object: T
-            - The result of the last call to `method`
+        Returns:
+            The result of the last call to `method`.
 
         Raises:
-        -------
-        TimeoutException
-            - If 'method' does not return False within the WebDriverWait
-            object's timeout
+            TimeoutException: If 'method' does not return False within the
+                WebDriverWait object's timeout.
 
         Example:
-        --------
-        >>> from selenium.webdriver.common.by import By
-        >>> from selenium.webdriver.support.ui import WebDriverWait
-        >>> from selenium.webdriver.support import expected_conditions as EC
-
-        # Wait until an element is visible on the page
-        >>> wait = WebDriverWait(driver, 10)
-        >>> is_disappeared = wait.until_not(EC.visibility_of_element_located((By.ID, "exampleId")))
+            >>> from selenium.webdriver.common.by import By
+            >>> from selenium.webdriver.support.ui import WebDriverWait
+            >>> from selenium.webdriver.support import expected_conditions as EC
+            >>>
+            >>> # Wait until an element is no longer visible on the page
+            >>> wait = WebDriverWait(driver, 10)
+            >>> is_disappeared = wait.until_not(EC.visibility_of_element_located((By.ID, "exampleId")))
         """
         end_time = time.monotonic() + self._timeout
         while True:

@@ -18,10 +18,12 @@
 package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
@@ -34,16 +36,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HasDownloads;
-import org.openqa.selenium.PersistentCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.grid.config.TomlConfig;
@@ -114,19 +112,23 @@ class RemoteWebDriverDownloadTest {
     driver.findElement(By.id("file-1")).click();
     driver.findElement(By.id("file-2")).click();
 
+    HasDownloads hasDownloads = (HasDownloads) driver;
     new WebDriverWait(driver, Duration.ofSeconds(5))
         .until(
             d ->
-                ((HasDownloads) d)
-                        .getDownloadableFiles().stream()
-                            // ensure we hit no temporary file created by the browser while
-                            // downloading
-                            .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
-                            .count()
+                hasDownloads.getDownloadableFiles().stream()
+                        // ensure we hit no temporary file created by the browser while
+                        // downloading
+                        .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
+                        .count()
                     == 2);
 
-    List<String> downloadableFiles = ((HasDownloads) driver).getDownloadableFiles();
+    List<String> downloadableFiles = hasDownloads.getDownloadableFiles();
     assertThat(downloadableFiles).contains("file_1.txt", "file_2.jpg");
+
+    List<DownloadedFile> downloadedFiles = hasDownloads.getDownloadedFiles();
+    assertThat(downloadedFiles.stream().map(f -> f.getName()).collect(Collectors.toList()))
+        .contains("file_1.txt", "file_2.jpg");
 
     driver.quit();
   }
@@ -150,13 +152,15 @@ class RemoteWebDriverDownloadTest {
                         // ensure we hit no temporary file created by the browser while downloading
                         .anyMatch((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith)));
 
-    String fileName = ((HasDownloads) driver).getDownloadableFiles().get(0);
+    DownloadedFile file = ((HasDownloads) driver).getDownloadedFiles().get(0);
 
     Path targetLocation = Files.createTempDirectory("download");
-    ((HasDownloads) driver).downloadFile(fileName, targetLocation);
+    ((HasDownloads) driver).downloadFile(file.getName(), targetLocation);
 
-    String fileContent = String.join("", Files.readAllLines(targetLocation.resolve(fileName)));
-    assertThat(fileContent).isEqualTo("Hello, World!");
+    File localFile = targetLocation.resolve(file.getName()).toFile();
+    assertThat(localFile).hasName(file.getName());
+    assertThat(localFile).hasSize(file.getSize());
+    assertThat(localFile).content().isEqualToIgnoringNewLines("Hello, World!");
 
     driver.quit();
   }
