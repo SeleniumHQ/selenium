@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.AfterEach;
@@ -256,7 +255,6 @@ class StorageCommandsTest extends JupiterTestBase {
     assertThat(key.getUserContext()).isEqualTo("default");
   }
 
-  @NotYetImplemented(EDGE)
   @Test
   public void canGetAllCookies() {
     addRandomCookie("there might be other cookies before this test");
@@ -402,10 +400,6 @@ class StorageCommandsTest extends JupiterTestBase {
     } catch (UnsupportedOperationException e) {
       return null;
     }
-  }
-
-  private Date someTimeInTheFuture() {
-    return new Date(System.currentTimeMillis() + 100000);
   }
 
   private void openAnotherPage() {
