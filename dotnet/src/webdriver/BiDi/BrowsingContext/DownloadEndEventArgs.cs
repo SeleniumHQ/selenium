@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 //[JsonDerivedType(typeof(DownloadCompleteEventArgs), "complete")]
 [JsonConverter(typeof(DownloadEndEventArgsConverter))]
 public abstract record DownloadEndEventArgs(BrowsingContext Context)
-    : BrowsingContextEventArgs(Context);
+    : EventArgs;
 
 public sealed record DownloadCanceledEventArgs(BrowsingContext Context, Navigation? Navigation, DateTimeOffset Timestamp, string Url)
     : DownloadEndEventArgs(Context), IBaseNavigationInfo;

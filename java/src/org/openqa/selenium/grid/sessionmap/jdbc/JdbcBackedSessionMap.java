@@ -221,7 +221,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         try (ResultSet sessions = statement.executeQuery()) {
           if (!sessions.next()) {
             NoSuchSessionException exception =
-                new NoSuchSessionException("Unable to find session.");
+                new NoSuchSessionException("Unable to find session with id: " + id);
             span.setAttribute("error", true);
             span.setStatus(Status.NOT_FOUND);
             EXCEPTION.accept(attributeMap, exception);

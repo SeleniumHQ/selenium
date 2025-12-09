@@ -18,30 +18,34 @@
 // </copyright>
 
 using System;
-using System.Threading.Tasks;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-public sealed class UserContext : IEquatable<UserContext>, IAsyncDisposable
+public sealed record UserContext
 {
-    private readonly BiDi _bidi;
-
-    internal UserContext(BiDi bidi, string id)
+    public UserContext(BiDi bidi, string id)
+        : this(id)
     {
-        _bidi = bidi;
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
+    }
+
+    [JsonConstructor]
+    internal UserContext(string id)
+    {
         Id = id;
     }
 
     internal string Id { get; }
 
-    public Task RemoveAsync()
-    {
-        return _bidi.Browser.RemoveUserContextAsync(this);
-    }
+    private BiDi? _bidi;
 
-    public async ValueTask DisposeAsync()
+    [JsonIgnore]
+    public BiDi BiDi
     {
-        await RemoveAsync().ConfigureAwait(false);
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
     }
 
     public bool Equals(UserContext? other)
@@ -49,14 +53,15 @@ public sealed class UserContext : IEquatable<UserContext>, IAsyncDisposable
         return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
-
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as UserContext);
-    }
-
     public override int GetHashCode()
     {
-        return StringComparer.Ordinal.GetHashCode(Id);
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }

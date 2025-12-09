@@ -27,10 +27,11 @@ using System.Linq;
 
 namespace OpenQA.Selenium.IE;
 
+[Ignore("")]
 [TestFixture]
 public class IeSpecificTests : DriverTestFixture
 {
-    //[Test]
+    [Test]
     public void KeysTest()
     {
         List<string> keyComboNames = new List<string>()
@@ -121,7 +122,7 @@ public class IeSpecificTests : DriverTestFixture
         Assert.That(passed, errors);
     }
 
-    //[Test]
+    [Test]
     public void InputOnChangeAlert()
     {
         driver.Url = alertsPage;
@@ -130,7 +131,7 @@ public class IeSpecificTests : DriverTestFixture
         alert.Accept();
     }
 
-    //[Test]
+    [Test]
     public void ScrollingFrameTest()
     {
         try
@@ -156,7 +157,7 @@ public class IeSpecificTests : DriverTestFixture
         }
     }
 
-    //[Test]
+    [Test]
     public void AlertSelectTest()
     {
         driver.Url = alertsPage;
@@ -165,7 +166,7 @@ public class IeSpecificTests : DriverTestFixture
         alert.Accept();
     }
 
-    //[Test]
+    [Test]
     public void ShouldBeAbleToBrowseTransformedXml()
     {
         driver.Url = xhtmlTestPage;
@@ -183,7 +184,7 @@ public class IeSpecificTests : DriverTestFixture
         Assert.That(driver.Title, Is.EqualTo("We Arrive Here"));
     }
 
-    //[Test]
+    [Test]
     public void ShouldBeAbleToStartMoreThanOneInstanceOfTheIEDriverSimultaneously()
     {
         IWebDriver secondDriver = new InternetExplorerDriver();
@@ -198,7 +199,7 @@ public class IeSpecificTests : DriverTestFixture
         secondDriver.Quit();
     }
 
-    //[Test]
+    [Test]
     public void ShouldPropagateSessionCookies()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("sessionCookie.html");
@@ -215,7 +216,7 @@ public class IeSpecificTests : DriverTestFixture
         Assert.That(bodyStyle, Does.Contain("BACKGROUND-COLOR: #80ffff").Or.Contain("background-color: rgb(128, 255, 255)"));
     }
 
-    //[Test]
+    [Test]
     public void ShouldHandleShowModalDialogWindows()
     {
         driver.Url = alertsPage;
@@ -251,7 +252,7 @@ public class IeSpecificTests : DriverTestFixture
         driver.SwitchTo().Window(originalWindowHandle);
     }
 
-    //[Test]
+    [Test]
     public void ScrollTest()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
@@ -261,7 +262,7 @@ public class IeSpecificTests : DriverTestFixture
         Assert.That(driver.FindElement(By.Id("clicked")).Text, Is.EqualTo("line1"));
     }
 
-    //[Test]
+    [Test]
     public void ShouldNotScrollOverflowElementsWhichAreVisible()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll2.html");
@@ -271,7 +272,7 @@ public class IeSpecificTests : DriverTestFixture
         Assert.That(((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].scrollTop;", list), Is.Zero, "Should not have scrolled");
     }
 
-    //[Test]
+    [Test]
     public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
@@ -281,7 +282,7 @@ public class IeSpecificTests : DriverTestFixture
         Assert.That(GetScrollTop(), Is.EqualTo(scrollTop));
     }
 
-    //[Test]
+    [Test]
     public void ShouldBeAbleToHandleCascadingModalDialogs()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
@@ -316,7 +317,7 @@ public class IeSpecificTests : DriverTestFixture
         driver.SwitchTo().Window(parentHandle);
     }
 
-    //[Test]
+    [Test]
     public void ShouldBeAbleToHandleCascadingModalDialogsLaunchedWithJavaScriptLinks()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
@@ -352,7 +353,7 @@ public class IeSpecificTests : DriverTestFixture
         driver.SwitchTo().Window(parentHandle);
     }
 
-    //[Test]
+    [Test]
     public void TestInvisibleZOrder()
     {
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("elementObscuredByInvisibleElement.html");

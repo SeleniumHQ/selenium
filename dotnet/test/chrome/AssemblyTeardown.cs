@@ -1,3 +1,4 @@
+// <copyright file="AssemblyTeardown.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14,16 +15,27 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+// </copyright>
 
-package org.openqa.selenium.devtools.v140;
+using NUnit.Framework;
+using OpenQA.Selenium.Environment;
+using System.Threading.Tasks;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
+[SetUpFixture]
+#pragma warning disable // Outside a namespace to affect the entire assembly
+public class AssemblyTeardown
+#pragma warning restore
+{
+    [OneTimeSetUp]
+    public async Task RunBeforeAnyTestAsync()
+    {
+        await EnvironmentManager.Instance.WebServer.StartAsync();
+    }
 
-@AutoService(CdpInfo.class)
-public class v140CdpInfo extends CdpInfo {
-
-  public v140CdpInfo() {
-    super(140, v140Domains::new);
-  }
+    [OneTimeTearDown]
+    public async Task RunAfterAnyTestsAsync()
+    {
+        EnvironmentManager.Instance.CloseCurrentDriver();
+        await EnvironmentManager.Instance.WebServer.StopAsync();
+    }
 }

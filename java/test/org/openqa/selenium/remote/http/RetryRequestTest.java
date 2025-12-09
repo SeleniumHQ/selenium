@@ -169,7 +169,7 @@ class RetryRequestTest {
 
     assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_OK);
 
-    assertThat(count.get()).isEqualTo(1);
+    assertThat(count).hasValue(1);
     server.stop();
   }
 
@@ -194,7 +194,7 @@ class RetryRequestTest {
     HttpResponse response = client.execute(request);
 
     assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_OK);
-    assertThat(count.get()).isEqualTo(3);
+    assertThat(count).hasValue(3);
 
     server.stop();
   }
@@ -240,7 +240,7 @@ class RetryRequestTest {
     HttpResponse response = client.execute(request);
 
     assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_INTERNAL_ERROR);
-    assertThat(count.get()).isEqualTo(1);
+    assertThat(count).hasValue(1);
 
     server.stop();
   }
@@ -267,7 +267,7 @@ class RetryRequestTest {
         new HttpRequest(GET, String.format(REQUEST_PATH, uri.getHost(), uri.getPort()));
     HttpResponse response = client.execute(request);
     assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_OK);
-    assertThat(count.get()).isEqualTo(3);
+    assertThat(count).hasValue(3);
 
     server.stop();
   }
@@ -291,7 +291,7 @@ class RetryRequestTest {
     HttpResponse response = client.execute(request);
 
     assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_UNAVAILABLE);
-    assertThat(count.get()).isEqualTo(3);
+    assertThat(count).hasValue(3);
 
     server.stop();
   }
@@ -314,7 +314,7 @@ class RetryRequestTest {
     HttpResponse response = handler.execute(request);
 
     assertThat(response).extracting(HttpResponse::getStatus).isEqualTo(HTTP_OK);
-    assertThat(count.get()).isEqualTo(3);
+    assertThat(count).hasValue(3);
   }
 
   @Test
@@ -334,7 +334,7 @@ class RetryRequestTest {
         Assertions.assertThrows(
             UncheckedIOException.class, () -> handler.execute(new HttpRequest(GET, "/")));
     assertThat(thrown).isSameAs(lastThrown.get());
-    assertThat(count.get()).isEqualTo(4);
+    assertThat(count).hasValue(4);
   }
 
   @Test
@@ -351,6 +351,6 @@ class RetryRequestTest {
                 });
 
     assertThat(handler.execute(new HttpRequest(GET, "/"))).isSameAs(lastResponse.get());
-    assertThat(count.get()).isEqualTo(3);
+    assertThat(count).hasValue(3);
   }
 }

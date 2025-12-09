@@ -32,6 +32,7 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.List;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -290,7 +291,8 @@ class CombinedInputActionsTest extends JupiterTestBase {
       y = Integer.parseInt(driver.findElement(By.id("pageY")).getText());
     }
 
-    assertThat(fuzzyPositionMatching(location.getX() + 20, location.getY() + 10, x, y)).isTrue();
+    assertThat(x).isCloseTo(location.getX() + 20, Offset.offset(5));
+    assertThat(y).isCloseTo(location.getY() + 10, Offset.offset(5));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, int actualX, int actualY) {

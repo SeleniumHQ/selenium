@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-class BrowserTest : BiDiTestFixture
+internal class BrowserTest : BiDiTestFixture
 {
     [Test]
     public async Task CanCreateUserContext()
@@ -53,7 +53,7 @@ class BrowserTest : BiDiTestFixture
         var userContext1 = await bidi.Browser.CreateUserContextAsync();
         var userContext2 = await bidi.Browser.CreateUserContextAsync();
 
-        await userContext2.UserContext.RemoveAsync();
+        await bidi.Browser.RemoveUserContextAsync(userContext2.UserContext);
 
         var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 

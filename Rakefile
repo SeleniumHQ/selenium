@@ -96,7 +96,7 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v140:v140.publish
+  //java/src/org/openqa/selenium/devtools/v143:v143.publish
   //java/src/org/openqa/selenium/devtools/v141:v141.publish
   //java/src/org/openqa/selenium/devtools/v142:v142.publish
   //java/src/org/openqa/selenium/edge:edge.publish

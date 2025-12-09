@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 

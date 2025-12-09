@@ -132,23 +132,23 @@ class TemporaryFilesystemTest {
     // Now create a file in the default instance, which should point to the temporary
     // directory just specified.
     File createdDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("xzy", "zzyip");
-    boolean isInOtherDir = createdDir.getAbsolutePath().startsWith(otherTempDirPath);
+    try {
+      assertThat(createdDir.getAbsolutePath()).startsWith(otherTempDirPath);
+    } finally {
+      // Cleanup - rid of the temporary directory and the directory containing it.
+      TemporaryFilesystem.getDefaultTmpFS().deleteTemporaryFiles();
+      otherTempDir.delete();
 
-    // Cleanup - rid of the temporary directory and the directory containing it.
-    TemporaryFilesystem.getDefaultTmpFS().deleteTemporaryFiles();
-    otherTempDir.delete();
-
-    // Reset to the default dir
-    TemporaryFilesystem.setTemporaryDirectory(baseForTest);
-
-    assertThat(isInOtherDir).isTrue();
+      // Reset to the default dir
+      TemporaryFilesystem.setTemporaryDirectory(baseForTest);
+    }
   }
 
   private void createDummyFilesystemContent(File dir) throws IOException {
-    assertThat(dir.isDirectory()).isTrue();
+    assertThat(dir).isDirectory();
     File.createTempFile("cleanup", "file", dir);
     File childDir = new File(dir, "child");
-    childDir.mkdir();
+    assertThat(childDir.mkdir()).isTrue();
     File.createTempFile("cleanup", "childFile", childDir);
   }
 }
