@@ -31,7 +31,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -414,6 +413,11 @@ public class RemoteWebDriver
 
   @Override
   public void close() {
+    // no-op if session id is null. We're only going to make ourselves unhappy
+    if (sessionId == null) {
+      return;
+    }
+
     if (this instanceof HasDevTools) {
       // This is a brute force approach to "solving" the problem of a hanging
       // CDP connection. Take a look at
@@ -433,13 +437,11 @@ public class RemoteWebDriver
 
     Response response = execute(DriverCommand.CLOSE);
     Object value = response.getValue();
-    List<String> windowHandles = (ArrayList<String>) value;
+    List<String> windowHandles = (List<String>) value;
 
-    if (windowHandles.isEmpty() && this instanceof HasBiDi) {
-      // If no top-level browsing contexts are open after calling close, it indicates that the
-      // WebDriver session is closed.
-      // If the WebDriver session is closed, the BiDi session also needs to be closed.
-      ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+    if (windowHandles == null || windowHandles.isEmpty()) {
+      // Time to quit the browser if it was the last opened window.
+      quit();
     }
   }
 
