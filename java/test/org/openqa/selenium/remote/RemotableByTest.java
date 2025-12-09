@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.remote;
 
+import static com.google.common.collect.ImmutableMap.of;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS_STRING;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -56,8 +56,7 @@ class RemotableByTest {
             });
     driver.findElement(By.cssSelector("#foo"));
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "css selector", "value", "#foo"));
+    assertThat(parameters).hasValue(of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -79,8 +78,7 @@ class RemotableByTest {
           }
         });
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "css selector", "value", "#foo"));
+    assertThat(parameters).hasValue(of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -108,8 +106,7 @@ class RemotableByTest {
 
     driver.findElement(new CustomBy());
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "magic", "value", "abracadabra"));
+    assertThat(parameters).hasValue(of("using", "magic", "value", "abracadabra"));
   }
 
   @Test
@@ -138,8 +135,7 @@ class RemotableByTest {
 
     driver.findElement(new CustomBy());
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "css selector", "value", "not-magic"));
+    assertThat(parameters).hasValue(of("using", "css selector", "value", "not-magic"));
   }
 
   @Test
@@ -192,8 +188,7 @@ class RemotableByTest {
     driver.findElement(new CustomBy("two"));
     driver.findElement(new CustomBy("three"));
 
-    assertThat(parameters.get())
-        .isEqualTo(ImmutableMap.of("using", "css selector", "value", "three"));
+    assertThat(parameters).hasValue(of("using", "css selector", "value", "three"));
   }
 
   private Response createResponse(Object value) {

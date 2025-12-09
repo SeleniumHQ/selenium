@@ -18,7 +18,6 @@
 package org.openqa.selenium.docker.client;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.docker.client.DockerClient.DOCKER_API_VERSION;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -43,10 +42,6 @@ class InspectContainer {
   private final HttpHandler client;
   private final String apiVersion;
   private final ApiVersionAdapter adapter;
-
-  public InspectContainer(HttpHandler client) {
-    this(client, DOCKER_API_VERSION, AdapterFactory.createAdapter(DOCKER_API_VERSION));
-  }
 
   public InspectContainer(HttpHandler client, String apiVersion) {
     this(client, apiVersion, AdapterFactory.createAdapter(apiVersion));
@@ -85,7 +80,11 @@ class InspectContainer {
         mounts.stream().map(mount -> (Map<String, Object>) mount).collect(Collectors.toList());
     Map<String, Object> hostConfig =
         (Map<String, Object>) rawInspectInfo.getOrDefault("HostConfig", Collections.emptyMap());
+    Map<String, Object> config =
+        (Map<String, Object>) rawInspectInfo.getOrDefault("Config", Collections.emptyMap());
+    Map<String, String> labels =
+        (Map<String, String>) config.getOrDefault("Labels", Collections.emptyMap());
 
-    return new ContainerInfo(id, ip, mountedVolumes, networkName, hostConfig);
+    return new ContainerInfo(id, ip, mountedVolumes, networkName, hostConfig, labels);
   }
 }

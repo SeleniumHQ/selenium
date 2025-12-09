@@ -36,8 +36,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 class ListImagesTest {
 
   @Test
-  void shouldReturnImageIfTagIsPresentWithApi141() {
-    testListImages("1.41");
+  void shouldReturnImageIfTagIsPresentWithApi140() {
+    testListImages("1.40");
   }
 
   @Test
@@ -74,7 +74,7 @@ class ListImagesTest {
     // Test with API 1.44 - should handle missing VirtualSize gracefully
     Set<Image> images = new ListImages(handler, "1.44").apply(reference);
 
-    assertThat(images.size()).isEqualTo(1);
+    assertThat(images).hasSize(1);
     Image image = images.iterator().next();
 
     assertThat(image.getId())
@@ -110,7 +110,7 @@ class ListImagesTest {
     // Test with specified API version
     Set<Image> images = new ListImages(handler, apiVersion).apply(reference);
 
-    assertThat(images.size()).isEqualTo(1);
+    assertThat(images).hasSize(1);
     Image image = images.iterator().next();
 
     assertThat(image.getId())

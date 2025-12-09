@@ -24,9 +24,9 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-class SetFilesTest : BiDiTestFixture
+internal class SetFilesTest : BiDiTestFixture
 {
-    string _tempFile;
+    private string _tempFile;
 
     [SetUp]
     public void SetUp()

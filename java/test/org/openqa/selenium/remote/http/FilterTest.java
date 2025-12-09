@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,8 +51,8 @@ class FilterTest {
     HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
 
     assertThat(res).isNotNull();
-    assertThat(handlerCalled.get()).isTrue();
-    assertThat(filterCalled.get()).isTrue();
+    assertThat(handlerCalled).isTrue();
+    assertThat(filterCalled).isTrue();
   }
 
   @Test
@@ -113,9 +112,9 @@ class FilterTest {
 
     root.execute(new HttpRequest(GET, "/cheese"));
 
-    assertThat(rootCalls.get()).isEqualTo(1);
-    assertThat(filterOneCount.get()).isEqualTo(1);
-    assertThat(filterTwoCount.get()).isEqualTo(1);
+    assertThat(rootCalls).hasValue(1);
+    assertThat(filterOneCount).hasValue(1);
+    assertThat(filterTwoCount).hasValue(1);
   }
 
   @Test
@@ -144,6 +143,6 @@ class FilterTest {
 
     handler.execute(new HttpRequest(GET, "/cheese"));
 
-    assertThat(ordered).isEqualTo(Arrays.asList("outer", "middle", "inner"));
+    assertThat(ordered).containsExactly("outer", "middle", "inner");
   }
 }

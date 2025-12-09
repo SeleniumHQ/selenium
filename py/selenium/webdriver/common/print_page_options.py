@@ -16,7 +16,7 @@
 # under the License.
 
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Literal, TypedDict
@@ -55,7 +55,7 @@ class _PageSettingsDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[float]:
+    def __get__(self, obj, cls) -> float | None:
         return obj._page.get(self.name, None)
 
     def __set__(self, obj, value) -> None:
@@ -76,7 +76,7 @@ class _MarginSettingsDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[float]:
+    def __get__(self, obj, cls) -> float | None:
         return obj._margin.get(self.name, None)
 
     def __set__(self, obj, value) -> None:
@@ -91,7 +91,7 @@ class _ScaleDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[float]:
+    def __get__(self, obj, cls) -> float | None:
         return obj._print_options.get(self.name)
 
     def __set__(self, obj, value) -> None:
@@ -109,7 +109,7 @@ class _PageOrientationDescriptor:
     def __init__(self, name):
         self.name = name
 
-    def __get__(self, obj, cls) -> Optional[Orientation]:
+    def __get__(self, obj, cls) -> Orientation | None:
         return obj._print_options.get(self.name, None)
 
     def __set__(self, obj, value) -> None:

@@ -86,7 +86,7 @@ public class DistributorNodeAvailabilityTest extends DistributorTestBase {
 
     DistributorStatus status = local.getStatus();
 
-    assertThat(status.getNodes().size()).isEqualTo(1);
+    assertThat(status.getNodes()).hasSize(1);
   }
 
   @Test

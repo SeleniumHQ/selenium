@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.internal;
 
-import java.lang.management.ManagementFactory;
 import java.util.logging.Level;
 
 /** Used to provide information about whether Selenium is running under debug mode. */
@@ -26,13 +25,10 @@ public class Debug {
   private static final boolean IS_DEBUG;
 
   static {
-    boolean debugFlag =
-        ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-            .anyMatch(str -> str.contains("-agentlib:jdwp"));
     boolean simpleProperty = Boolean.getBoolean("selenium.debug");
     boolean longerProperty = Boolean.getBoolean("selenium.webdriver.verbose");
 
-    IS_DEBUG = debugFlag || simpleProperty || longerProperty;
+    IS_DEBUG = simpleProperty || longerProperty;
   }
 
   private Debug() {

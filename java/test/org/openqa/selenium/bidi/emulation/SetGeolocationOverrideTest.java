@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.emulation;
 
 import static java.lang.Math.abs;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
@@ -39,34 +40,36 @@ import org.openqa.selenium.testing.NeedsSecureServer;
 
 @NeedsSecureServer
 class SetGeolocationOverrideTest extends JupiterTestBase {
-  Object getBrowserGeolocation(WebDriver driver, String userContext, String origin) {
+  private Map<String, Object> getBrowserGeolocation(
+      WebDriver driver, String userContext, String origin) {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     Permission permission = new Permission(driver);
 
     permission.setPermission(
         Map.of("name", "geolocation"), PermissionState.GRANTED, origin, userContext);
 
-    return executor.executeAsyncScript(
-        "const callback = arguments[arguments.length - 1];\n"
-            + "        navigator.geolocation.getCurrentPosition(\n"
-            + "            position => {\n"
-            + "                const coords = position.coords;\n"
-            + "                callback({\n"
-            + "                    latitude: coords.latitude,\n"
-            + "                    longitude: coords.longitude,\n"
-            + "                    accuracy: coords.accuracy,\n"
-            + "                    altitude: coords.altitude,\n"
-            + "                    altitudeAccuracy: coords.altitudeAccuracy,\n"
-            + "                    heading: coords.heading,\n"
-            + "                    speed: coords.speed,\n"
-            + "                    timestamp: position.timestamp\n"
-            + "                });\n"
-            + "            },\n"
-            + "            error => {\n"
-            + "                callback({ error: error.message });\n"
-            + "            },\n"
-            + "            { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }\n"
-            + "        );");
+    return (Map<String, Object>)
+        executor.executeAsyncScript(
+            "const callback = arguments[arguments.length - 1];\n"
+                + "        navigator.geolocation.getCurrentPosition(\n"
+                + "            position => {\n"
+                + "                const coords = position.coords;\n"
+                + "                callback({\n"
+                + "                    latitude: coords.latitude,\n"
+                + "                    longitude: coords.longitude,\n"
+                + "                    accuracy: coords.accuracy,\n"
+                + "                    altitude: coords.altitude,\n"
+                + "                    altitudeAccuracy: coords.altitudeAccuracy,\n"
+                + "                    heading: coords.heading,\n"
+                + "                    speed: coords.speed,\n"
+                + "                    timestamp: position.timestamp\n"
+                + "                });\n"
+                + "            },\n"
+                + "            error => {\n"
+                + "                callback({ error: error.message });\n"
+                + "            },\n"
+                + "            { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }\n"
+                + "        );");
   }
 
   @Test
@@ -90,18 +93,15 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     Object result = getBrowserGeolocation(driver, null, origin);
     Map<String, Object> r = ((Map<String, Object>) result);
 
-    assert !r.containsKey("error") : "Geolocation failed with error: " + r.get("error");
+    assertThat(r.containsKey("error")).isFalse();
 
     double latitude = ((Number) r.get("latitude")).doubleValue();
     double longitude = ((Number) r.get("longitude")).doubleValue();
     double accuracy = ((Number) r.get("accuracy")).doubleValue();
 
-    assert abs(latitude - coords.getLatitude()) < 0.0001
-        : "Latitude mismatch: expected " + coords.getLatitude() + ", got " + latitude;
-    assert abs(longitude - coords.getLongitude()) < 0.0001
-        : "Longitude mismatch: expected " + coords.getLongitude() + ", got " + longitude;
-    assert abs(accuracy - coords.getAccuracy()) < 0.0001
-        : "Accuracy mismatch: expected " + coords.getAccuracy() + ", got " + accuracy;
+    assertThat(abs(latitude - coords.getLatitude())).isLessThan(0.0001);
+    assertThat(abs(longitude - coords.getLongitude())).isLessThan(0.0001);
+    assertThat(abs(accuracy - coords.getAccuracy())).isLessThan(0.0001);
   }
 
   @Test
@@ -134,15 +134,15 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     Map<String, Object> r =
         (Map<String, Object>) getBrowserGeolocation(driver, userContext1, origin1);
 
-    assert !r.containsKey("error") : "Context1 geolocation failed with error: " + r.get("error");
+    assertThat(r.containsKey("error")).isFalse();
 
     double latitude1 = ((Number) r.get("latitude")).doubleValue();
     double longitude1 = ((Number) r.get("longitude")).doubleValue();
     double accuracy1 = ((Number) r.get("accuracy")).doubleValue();
 
-    assert abs(latitude1 - coords.getLatitude()) < 0.0001 : "Context1 latitude mismatch";
-    assert abs(longitude1 - coords.getLongitude()) < 0.0001 : "Context1 longitude mismatch";
-    assert abs(accuracy1 - coords.getAccuracy()) < 0.0001 : "Context1 accuracy mismatch";
+    assertThat(abs(latitude1 - coords.getLatitude())).isLessThan(0.0001);
+    assertThat(abs(longitude1 - coords.getLongitude())).isLessThan(0.0001);
+    assertThat(abs(accuracy1 - coords.getAccuracy())).isLessThan(0.0001);
 
     driver.switchTo().window(context2.getId());
     String url2 = appServer.whereIsSecure("blank.html");
@@ -154,15 +154,15 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     Map<String, Object> r2 =
         (Map<String, Object>) getBrowserGeolocation(driver, userContext2, origin2);
 
-    assert !r2.containsKey("error") : "Context2 geolocation failed with error: " + r2.get("error");
+    assertThat(r2.containsKey("error")).isFalse();
 
     double latitude2 = ((Number) r2.get("latitude")).doubleValue();
     double longitude2 = ((Number) r2.get("longitude")).doubleValue();
     double accuracy2 = ((Number) r2.get("accuracy")).doubleValue();
 
-    assert abs(latitude2 - coords.getLatitude()) < 0.0001 : "Context2 latitude mismatch";
-    assert abs(longitude2 - coords.getLongitude()) < 0.0001 : "Context2 longitude mismatch";
-    assert abs(accuracy2 - coords.getAccuracy()) < 0.0001 : "Context2 accuracy mismatch";
+    assertThat(abs(latitude2 - coords.getLatitude())).isLessThan(0.0001);
+    assertThat(abs(longitude2 - coords.getLongitude())).isLessThan(0.0001);
+    assertThat(abs(accuracy2 - coords.getAccuracy())).isLessThan(0.0001);
 
     context1.close();
     context2.close();
@@ -171,6 +171,7 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
   }
 
   @Test
+  @NeedsFreshDriver
   @Ignore(FIREFOX)
   void canSetGeolocationOverrideWithError() {
 
@@ -189,10 +190,51 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
     emul.setGeolocationOverride(
         new SetGeolocationOverrideParameters(error).contexts(List.of(contextId)));
 
-    Object result = getBrowserGeolocation(driver, null, origin);
-    Map<String, Object> r = ((Map<String, Object>) result);
+    Map<String, Object> result = getBrowserGeolocation(driver, null, origin);
+    assertThat(result).containsKey("error");
 
-    assert r.containsKey("error") : "Expected geolocation to fail with error, but got: " + r;
+    context.close();
+  }
+
+  @Test
+  @NeedsFreshDriver
+  void canResetGeolocationOverrideWithNullCoordinates() {
+    BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
+    String contextId = context.getId();
+
+    String url = appServer.whereIsSecure("blank.html");
+    context.navigate(url, ReadinessState.COMPLETE);
+    driver.switchTo().window(context.getId());
+
+    String origin =
+        (String) ((JavascriptExecutor) driver).executeScript("return window.location.origin;");
+
+    Emulation emul = new Emulation(driver);
+
+    GeolocationCoordinates coords = new GeolocationCoordinates(37.7749, -122.4194);
+    emul.setGeolocationOverride(
+        new SetGeolocationOverrideParameters(coords).contexts(List.of(contextId)));
+
+    Object firstResult = getBrowserGeolocation(driver, null, origin);
+    Map<String, Object> r1 = ((Map<String, Object>) firstResult);
+
+    assertThat(r1).doesNotContainKey("error");
+    double latitude1 = ((Number) r1.get("latitude")).doubleValue();
+    double longitude1 = ((Number) r1.get("longitude")).doubleValue();
+
+    assertThat(abs(latitude1 - coords.getLatitude())).isLessThan(0.0001);
+    assertThat(abs(longitude1 - coords.getLongitude())).isLessThan(0.0001);
+
+    emul.setGeolocationOverride(
+        new SetGeolocationOverrideParameters((GeolocationCoordinates) null)
+            .contexts(List.of(contextId)));
+
+    Object secondResult = getBrowserGeolocation(driver, null, origin);
+    Map<String, Object> r2 = ((Map<String, Object>) secondResult);
+
+    assertThat(r2)
+        .as("We expected an error because there's no real geolocation available")
+        .containsKey("error");
 
     context.close();
   }

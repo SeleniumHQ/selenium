@@ -28,13 +28,29 @@ public class SessionClosedEvent extends Event {
 
   private static final EventName SESSION_CLOSED = new EventName("session-closed");
 
+  // Backward compatible constructor
   public SessionClosedEvent(SessionId id) {
-    super(SESSION_CLOSED, id);
+    this(id, SessionClosedReason.QUIT_COMMAND);
   }
 
-  public static EventListener<SessionId> listener(Consumer<SessionId> handler) {
+  public SessionClosedEvent(SessionId id, SessionClosedReason reason) {
+    super(SESSION_CLOSED, new SessionClosedData(id, reason));
+    Require.nonNull("Session ID", id);
+    Require.nonNull("Reason", reason);
+  }
+
+  // Standard listener method that provides access to both SessionId and reason
+  public static EventListener<SessionClosedData> listener(Consumer<SessionClosedData> handler) {
     Require.nonNull("Handler", handler);
 
-    return new EventListener<>(SESSION_CLOSED, SessionId.class, handler);
+    return new EventListener<>(SESSION_CLOSED, SessionClosedData.class, handler);
+  }
+
+  // Convenience method for listeners that only care about the SessionId
+  public static EventListener<SessionClosedData> sessionListener(Consumer<SessionId> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(
+        SESSION_CLOSED, SessionClosedData.class, data -> handler.accept(data.getSessionId()));
   }
 }

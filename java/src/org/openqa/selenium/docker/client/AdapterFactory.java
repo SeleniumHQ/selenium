@@ -26,11 +26,12 @@ import java.util.logging.Logger;
  *
  * <ul>
  *   <li>API v1.40-1.43: Uses {@link V140Adapter}
- *   <li>API v1.44+: Uses {@link V144Adapter}
+ *   <li>API v1.44-1.47: Uses {@link V144Adapter}
+ *   <li>API v1.48+: Uses {@link V148Adapter}
  * </ul>
  *
  * <p>The factory uses version comparison to determine which adapter to use, ensuring that future
- * API versions (e.g., 1.45, 1.46) automatically use the most appropriate adapter.
+ * API versions automatically use the most appropriate adapter.
  */
 class AdapterFactory {
 
@@ -39,7 +40,7 @@ class AdapterFactory {
   /**
    * Creates an appropriate adapter for the given API version.
    *
-   * @param apiVersion The Docker API version (e.g., "1.40", "1.44")
+   * @param apiVersion The Docker API version (e.g., "1.40", "1.44", "1.48")
    * @return An adapter suitable for the specified API version
    * @throws IllegalArgumentException if apiVersion is null or empty
    */
@@ -48,7 +49,13 @@ class AdapterFactory {
       throw new IllegalArgumentException("API version cannot be null or empty");
     }
 
-    // API v1.44+ uses the new adapter
+    // API v1.48+ uses the latest adapter with multi-platform and gateway priority support
+    if (compareVersions(apiVersion, "1.48") >= 0) {
+      LOG.fine("Using V148Adapter for API version " + apiVersion);
+      return new V148Adapter(apiVersion);
+    }
+
+    // API v1.44-1.47 uses the v1.44 adapter
     if (compareVersions(apiVersion, "1.44") >= 0) {
       LOG.fine("Using V144Adapter for API version " + apiVersion);
       return new V144Adapter(apiVersion);

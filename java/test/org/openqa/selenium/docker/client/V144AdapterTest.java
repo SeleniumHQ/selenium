@@ -141,4 +141,33 @@ class V144AdapterTest {
     assertThat(adapted.get("Id")).isEqualTo("abc123");
     assertThat(adapted.containsKey("NetworkSettings")).isFalse();
   }
+
+  @Test
+  void shouldNotMutateOriginalResponseWhenRemovingDeprecatedFields() {
+    // Create original response with deprecated fields
+    Map<String, Object> originalNetworkSettings = new HashMap<>();
+    originalNetworkSettings.put("IPAddress", "172.17.0.2");
+    originalNetworkSettings.put("HairpinMode", false);
+    originalNetworkSettings.put("LinkLocalIPv6Address", "fe80::1");
+
+    Map<String, Object> originalResponse = new HashMap<>();
+    originalResponse.put("Id", "container123");
+    originalResponse.put("NetworkSettings", originalNetworkSettings);
+
+    // Adapt the response
+    Map<String, Object> adapted = adapter.adaptContainerInspectResponse(originalResponse);
+
+    // Verify original response is unchanged
+    assertThat(originalResponse.get("NetworkSettings")).isEqualTo(originalNetworkSettings);
+    assertThat(originalNetworkSettings).containsKey("HairpinMode");
+    assertThat(originalNetworkSettings).containsKey("LinkLocalIPv6Address");
+
+    // Verify adapted response has deprecated fields removed
+    @SuppressWarnings("unchecked")
+    Map<String, Object> adaptedNetworkSettings =
+        (Map<String, Object>) adapted.get("NetworkSettings");
+    assertThat(adaptedNetworkSettings).doesNotContainKey("HairpinMode");
+    assertThat(adaptedNetworkSettings).doesNotContainKey("LinkLocalIPv6Address");
+    assertThat(adaptedNetworkSettings).containsKey("IPAddress");
+  }
 }
