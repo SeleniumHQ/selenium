@@ -23,8 +23,8 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.Colors.GREEN;
 import static org.openqa.selenium.support.Colors.RED;
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -68,11 +68,10 @@ class PenPointerTest extends JupiterTestBase {
   private void performDragAndDropWithPen() {
     driver.get(pages.draggableLists);
 
-    WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
-
-    WebElement toDrag = driver.findElement(By.id("rightitem-3"));
-    WebElement dragInto = driver.findElement(By.id("sortable1"));
-    WebElement leftItem = driver.findElement(By.id("leftitem-4"));
+    WebElement dragReporter = wait.until(visibilityOfElementLocated(By.id("dragging_reports")));
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("rightitem-3")));
+    WebElement dragInto = wait.until(visibilityOfElementLocated(By.id("sortable1")));
+    WebElement leftItem = wait.until(visibilityOfElementLocated(By.id("leftitem-4")));
 
     Action moveToSpecificItem = setDefaultPen(driver).moveToElement(leftItem).build();
 
@@ -127,19 +126,8 @@ class PenPointerTest extends JupiterTestBase {
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
-    long waitEndTime = System.currentTimeMillis() + 15000;
-
-    while (!isElementAvailable(driver, By.id("draggable"))
-        && (System.currentTimeMillis() < waitEndTime)) {
-      Thread.sleep(200);
-    }
-
-    if (!isElementAvailable(driver, By.id("draggable"))) {
-      throw new RuntimeException("Could not find draggable element after 15 seconds.");
-    }
-
-    WebElement toDrag = driver.findElement(By.id("draggable"));
-    WebElement dropInto = driver.findElement(By.id("droppable"));
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("draggable")));
+    WebElement dropInto = wait.until(visibilityOfElementLocated(By.id("droppable")));
 
     Action holdDrag = setDefaultPen(driver).clickAndHold(toDrag).build();
     Action move = setDefaultPen(driver).moveToElement(dropInto).build();
@@ -149,9 +137,7 @@ class PenPointerTest extends JupiterTestBase {
     move.perform();
     drop.perform();
 
-    String text = dropInto.findElement(By.tagName("p")).getText();
-
-    assertThat(text).isEqualTo("Dropped!");
+    wait.until(elementTextToEqual(By.cssSelector("#droppable p"), "Dropped!"));
   }
 
   @Test

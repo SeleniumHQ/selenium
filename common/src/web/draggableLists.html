@@ -14,6 +14,7 @@
     </style>
     <script type="text/javascript">
       $(function() {
+        setTimeout(function() {
           $("#sortable1, #sortable2").sortable({
             connectWith: '.connectedSortable'
             }).disableSelection();
@@ -34,13 +35,15 @@
             drop: function(event, ui) {
               report_event("DropIn " + ui.draggable.text());
             }
-            });
           });
+          $("#sortable1, #sortable2").show();
+        }, 30);
+      });
     </script>
   </head>
   <body>
     <div class="demo">
-      <ul id="sortable1" class="connectedSortable">
+      <ul id="sortable1" class="connectedSortable" style="display: none;">
         <li id="leftitem-1" class="ui-state-default">LeftItem 1</li>
         <li id="leftitem-2" class="ui-state-default">LeftItem 2</li>
         <li id="leftitem-3" class="ui-state-default">LeftItem 3</li>
@@ -48,7 +51,7 @@
         <li id="leftitem-5" class="ui-state-default">LeftItem 5</li>
       </ul>
 
-      <ul id="sortable2" class="connectedSortable">
+      <ul id="sortable2" class="connectedSortable" style="display: none;">
         <li id="rightitem-1" class="ui-state-highlight">RightItem 1</li>
         <li id="rightitem-2" class="ui-state-highlight">RightItem 2</li>
         <li id="rightitem-3" class="ui-state-highlight">RightItem 3</li>

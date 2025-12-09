@@ -19,13 +19,9 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.openqa.selenium.WaitingConditions.elementTextToContain;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -392,23 +388,7 @@ class CorrectEventFiringTest extends JupiterTestBase {
     element.click();
 
     // Wait until focused
-    boolean focused = false;
-    WebElement result = driver.findElement(By.id("result"));
-    for (int i = 0; i < 5; ++i) {
-      String fired = result.getText();
-      if (fired.contains("focus")) {
-        focused = true;
-        break;
-      }
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-    assertThat(focused)
-        .as("If clicking on element didn't focus it in time, we can't proceed with the test")
-        .isTrue();
+    wait.until(elementTextToContain(By.id("result"), "focus"));
 
     element.sendKeys("a");
     assertEventNotFired("blur", driver);

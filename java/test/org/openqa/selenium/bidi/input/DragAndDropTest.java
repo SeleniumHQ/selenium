@@ -19,7 +19,8 @@ package org.openqa.selenium.bidi.input;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
+import static org.openqa.selenium.WaitingConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -33,7 +34,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDiException;
 import org.openqa.selenium.bidi.module.Input;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
@@ -51,18 +51,10 @@ class DragAndDropTest extends JupiterTestBase {
     inputModule = new Input(driver);
   }
 
-  private static void sleep(int ms) {
-    try {
-      Thread.sleep(ms);
-    } catch (InterruptedException e) {
-      throw new RuntimeException("Interrupted: " + e);
-    }
-  }
-
   @Test
   void testDragAndDropRelative() {
     driver.get(pages.dragAndDropPage);
-    WebElement img = driver.findElement(By.id("test1"));
+    WebElement img = wait.until(visibilityOfElementLocated(By.id("test1")));
     Point expectedLocation = img.getLocation();
     expectedLocation = drag(img, expectedLocation, 150, 200);
     wait.until(elementLocationToBe(img, expectedLocation));
@@ -77,8 +69,8 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
-    WebElement img1 = driver.findElement(By.id("test1"));
-    WebElement img2 = driver.findElement(By.id("test2"));
+    WebElement img1 = wait.until(visibilityOfElementLocated(By.id("test1")));
+    WebElement img2 = wait.until(visibilityOfElementLocated(By.id("test2")));
     inputModule.perform(windowHandle, new Actions(driver).dragAndDrop(img2, img1).getSequences());
     assertThat(img2.getLocation()).isEqualTo(img1.getLocation());
   }
@@ -95,8 +87,8 @@ class DragAndDropTest extends JupiterTestBase {
     ((JavascriptExecutor) driver)
         .executeScript("arguments[0].src = arguments[1]", iframe, pages.dragAndDropPage);
     driver.switchTo().frame(0);
-    WebElement img1 = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("test1")));
-    WebElement img2 = driver.findElement(By.id("test2"));
+    WebElement img1 = wait.until(visibilityOfElementLocated(By.id("test1")));
+    WebElement img2 = wait.until(visibilityOfElementLocated(By.id("test2")));
     inputModule.perform(
         driver.getWindowHandle(), new Actions(driver).dragAndDrop(img2, img1).getSequences());
     assertThat(img2.getLocation()).isEqualTo(img1.getLocation());
@@ -114,7 +106,7 @@ class DragAndDropTest extends JupiterTestBase {
     final WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
 
-    WebElement img1 = driver.findElement(By.id("test1"));
+    WebElement img1 = wait.until(visibilityOfElementLocated(By.id("test1")));
     Point initial = img1.getLocation();
 
     inputModule.perform(
@@ -126,7 +118,7 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
-    WebElement img = driver.findElement(By.id("test3"));
+    WebElement img = wait.until(visibilityOfElementLocated(By.id("test3")));
     Point expectedLocation = img.getLocation();
     expectedLocation = drag(img, expectedLocation, 100, 100);
     assertThat(img.getLocation()).isEqualTo(expectedLocation);
@@ -138,15 +130,13 @@ class DragAndDropTest extends JupiterTestBase {
   // BiDi in Chrome does not throw an error in case of target out of bounds
   void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
-    Actions actions = new Actions(driver);
-
-    WebElement img = driver.findElement(By.id("test1"));
+    WebElement img = wait.until(visibilityOfElementLocated(By.id("test1")));
 
     assertThatThrownBy(
             () ->
                 inputModule.perform(
                     windowHandle,
-                    actions
+                    new Actions(driver)
                         .dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE)
                         .getSequences()))
         .as("These coordinates are outside the page - expected to fail.")
@@ -164,12 +154,13 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
+    wait.until(visibilityOfElementLocated(By.id("test1")));
 
     JavascriptExecutor js = (JavascriptExecutor) driver;
     js.executeScript("window.resizeTo(300, 300);");
 
     driver.get(pages.dragAndDropPage);
-    WebElement img = driver.findElement(By.id("test3"));
+    WebElement img = wait.until(visibilityOfElementLocated(By.id("test3")));
     Point expectedLocation = img.getLocation();
     expectedLocation = drag(img, expectedLocation, 100, 100);
     assertThat(img.getLocation()).isEqualTo(expectedLocation);
@@ -183,31 +174,16 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
-
-    WebElement toDrag = driver.findElement(By.id("draggable"));
-    WebElement dropInto = driver.findElement(By.id("droppable"));
-
-    // Wait until all event handlers are installed.
-    sleep(500);
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("draggable")));
+    WebElement dropInto = wait.until(visibilityOfElementLocated(By.id("droppable")));
 
     inputModule.perform(
         windowHandle, new Actions(driver).dragAndDrop(toDrag, dropInto).getSequences());
 
-    String text = dropInto.findElement(By.tagName("p")).getText();
+    wait.until(elementTextToEqual(By.cssSelector("#droppable p"), "Dropped!"));
 
-    long waitEndTime = System.currentTimeMillis() + 15000;
-
-    while (!text.equals("Dropped!") && (System.currentTimeMillis() < waitEndTime)) {
-      sleep(200);
-      text = dropInto.findElement(By.tagName("p")).getText();
-    }
-
-    assertThat(text).isEqualTo("Dropped!");
-
-    WebElement reporter = driver.findElement(By.id("drop_reports"));
-    // Assert that only one mouse click took place and the mouse was moved
-    // during it.
-    assertThat(reporter.getText()).matches("start( move)* down( move)+ up( move)*");
+    // Assert that only one mouse click took place and the mouse was moved during it.
+    wait.until(elementTextToMatch(By.id("drop_reports"), "start( move)* down( move)+ up( move)*"));
   }
 
   @Test
