@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     describe Element, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it 'clicks' do
-        driver.navigate.to url_for('formPage.html')
+        open_file 'formPage.html'
         element = wait_for_element(id: 'imageButton')
         expect { element.click }.not_to raise_error
         reset_driver!(time: 1) if %i[safari safari_preview].include? GlobalTestEnv.browser
@@ -31,20 +31,20 @@ module Selenium
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
       it 'raises if different element receives click', except: {browser: %i[safari safari_preview]} do
-        driver.navigate.to url_for('click_tests/overlapping_elements.html')
+        open_file 'click_tests/overlapping_elements.html'
         element = wait_for_element(id: 'contents', timeout: 10)
         expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
       it 'raises if element is partially covered', except: {browser: %i[safari safari_preview]} do
-        driver.navigate.to url_for('click_tests/overlapping_elements.html')
+        open_file 'click_tests/overlapping_elements.html'
         element = wait_for_element(id: 'other_contents')
         expect { element.click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
       it 'raises if element stale' do
-        driver.navigate.to url_for('formPage.html')
+        open_file 'formPage.html'
         button = wait_for_element(id: 'imageButton')
         driver.navigate.refresh
 
@@ -56,7 +56,7 @@ module Selenium
 
       describe '#submit' do
         it 'valid submit button' do
-          driver.navigate.to url_for('formPage.html')
+          open_file 'formPage.html'
           wait_for_element(id: 'submitButton').submit
 
           wait_for_url('resultPage.html')
@@ -64,7 +64,7 @@ module Selenium
         end
 
         it 'any input element in form' do
-          driver.navigate.to url_for('formPage.html')
+          open_file 'formPage.html'
           wait_for_element(id: 'checky').submit
 
           wait_for_url('resultPage.html')
@@ -72,7 +72,7 @@ module Selenium
         end
 
         it 'any element in form' do
-          driver.navigate.to url_for('formPage.html')
+          open_file 'formPage.html'
           wait_for_element(css: 'form > p').submit
 
           wait_for_url('resultPage.html')
@@ -80,7 +80,7 @@ module Selenium
         end
 
         it 'button with id submit' do
-          driver.navigate.to url_for('formPage.html')
+          open_file 'formPage.html'
           wait_for_element(id: 'submit').submit
 
           wait_for_url('resultPage.html')
@@ -88,7 +88,7 @@ module Selenium
         end
 
         it 'button with name submit' do
-          driver.navigate.to url_for('formPage.html')
+          open_file 'formPage.html'
           wait_for_element(name: 'submit').submit
 
           wait_for_url('resultPage.html')
@@ -96,27 +96,27 @@ module Selenium
         end
 
         it 'errors with button outside form' do
-          driver.navigate.to url_for('formPage.html')
+          open_file 'formPage.html'
           element = wait_for_element(name: 'SearchableText')
           expect { element.submit }.to raise_error(Error::UnsupportedOperationError)
         end
       end
 
       it 'sends empty keys' do
-        driver.navigate.to url_for('formPage.html')
+        open_file 'formPage.html'
         element = wait_for_element(id: 'working')
         element.send_keys
         expect(element.text).to be_empty
       end
 
       it 'sends string keys' do
-        driver.navigate.to url_for('formPage.html')
+        open_file 'formPage.html'
         wait_for_element(id: 'working')
         expect { driver.find_element(id: 'working').send_keys('foo', 'bar') }.not_to raise_error
       end
 
       it 'sends key presses' do
-        driver.navigate.to url_for('javascriptPage.html')
+        open_file 'javascriptPage.html'
         key_reporter = wait_for_element(id: 'keyReporter')
 
         key_reporter.send_keys('Tet', :arrow_left, 's')
@@ -125,7 +125,7 @@ module Selenium
 
       # https://github.com/mozilla/geckodriver/issues/245
       it 'sends key presses chords', except: {browser: %i[firefox safari safari_preview]} do
-        driver.navigate.to url_for('javascriptPage.html')
+        open_file 'javascriptPage.html'
         key_reporter = wait_for_element(id: 'keyReporter')
 
         key_reporter.send_keys([:shift, 'h'], 'ello')
@@ -133,7 +133,7 @@ module Selenium
       end
 
       it 'handles file uploads' do
-        driver.navigate.to url_for('formPage.html')
+        open_file 'formPage.html'
 
         element = wait_for_element(id: 'upload')
         expect(element.attribute('value')).to be_empty
@@ -146,7 +146,7 @@ module Selenium
       end
 
       describe 'properties and attributes' do
-        before { driver.navigate.to url_for('formPage.html') }
+        before { open_file 'formPage.html' }
 
         context 'when string type' do
           let(:element) { wait_for_element(id: 'checky') }
@@ -308,7 +308,7 @@ module Selenium
         end
 
         describe 'style' do
-          before { driver.navigate.to url_for('clickEventPage.html') }
+          before { open_file 'clickEventPage.html' }
 
           let(:element) { wait_for_element(id: 'result') }
           let(:prop_or_attr) { 'style' }
@@ -452,13 +452,13 @@ module Selenium
       end
 
       it 'clears' do
-        driver.navigate.to url_for('formPage.html')
+        open_file 'formPage.html'
         element = wait_for_element(id: 'withText')
         expect { element.clear }.not_to raise_error
       end
 
       it 'gets and set selected' do
-        driver.navigate.to url_for('formPage.html')
+        open_file 'formPage.html'
 
         cheese = wait_for_element(id: 'cheese')
         peas = wait_for_element(id: 'peas')
@@ -475,26 +475,26 @@ module Selenium
       end
 
       it 'gets enabled' do
-        driver.navigate.to url_for('formPage.html')
+        open_file 'formPage.html'
         element = wait_for_element(id: 'notWorking')
         expect(element).not_to be_enabled
       end
 
       it 'gets text' do
-        driver.navigate.to url_for('xhtmlTest.html')
+        open_file 'xhtmlTest.html'
         element = wait_for_element(class: 'header')
         expect(element.text).to eq('XHTML Might Be The Future')
       end
 
       it 'gets displayed' do
-        driver.navigate.to url_for('xhtmlTest.html')
+        open_file 'xhtmlTest.html'
         element = wait_for_element(class: 'header')
         expect(element).to be_displayed
       end
 
       describe 'size and location' do
         it 'gets current location' do
-          driver.navigate.to url_for('xhtmlTest.html')
+          open_file 'xhtmlTest.html'
           loc = wait_for_element(class: 'header').location
 
           expect(loc.x).to be >= 1
@@ -502,7 +502,7 @@ module Selenium
         end
 
         it 'gets location once scrolled into view' do
-          driver.navigate.to url_for('javascriptPage.html')
+          open_file 'javascriptPage.html'
           loc = wait_for_element(id: 'keyUp').location_once_scrolled_into_view
 
           expect(loc.x).to be >= 1
@@ -510,7 +510,7 @@ module Selenium
         end
 
         it 'gets size' do
-          driver.navigate.to url_for('xhtmlTest.html')
+          open_file 'xhtmlTest.html'
           size = wait_for_element(class: 'header').size
 
           expect(size.width).to be_positive
@@ -518,7 +518,7 @@ module Selenium
         end
 
         it 'gets rect' do
-          driver.navigate.to url_for('xhtmlTest.html')
+          open_file 'xhtmlTest.html'
           rect = wait_for_element(class: 'header').rect
 
           expect(rect.x).to be_positive
@@ -530,7 +530,7 @@ module Selenium
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
       it 'drags and drop', except: {browser: :ie} do
-        driver.navigate.to url_for('dragAndDropTest.html')
+        open_file 'dragAndDropTest.html'
 
         img1 = wait_for_element(id: 'test1')
         img2 = wait_for_element(id: 'test2')
@@ -543,7 +543,7 @@ module Selenium
       end
 
       it 'gets css property' do
-        driver.navigate.to url_for('javascriptPage.html')
+        open_file 'javascriptPage.html'
         element = wait_for_element(id: 'green-parent')
 
         style1 = element.css_value('background-color')
@@ -554,7 +554,7 @@ module Selenium
       end
 
       it 'knows when two elements are equal' do
-        driver.navigate.to url_for('simpleTest.html')
+        open_file 'simpleTest.html'
 
         body = wait_for_element(tag_name: 'body')
         xbody = wait_for_element(xpath: '//body')
@@ -567,7 +567,7 @@ module Selenium
       end
 
       it 'knows when element arrays are equal' do
-        driver.navigate.to url_for('simpleTest.html')
+        open_file 'simpleTest.html'
 
         tags = driver.find_elements(tag_name: 'div')
         jstags = driver.execute_script('return document.getElementsByTagName("div")')
@@ -576,7 +576,7 @@ module Selenium
       end
 
       it 'knows when two elements are not equal' do
-        driver.navigate.to url_for('simpleTest.html')
+        open_file 'simpleTest.html'
 
         elements = driver.find_elements(tag_name: 'p')
         p1 = elements.fetch(0)
@@ -587,7 +587,7 @@ module Selenium
       end
 
       it 'returns the same #hash for equal elements when found by Driver#find_element' do
-        driver.navigate.to url_for('simpleTest.html')
+        open_file 'simpleTest.html'
 
         body = driver.find_element(tag_name: 'body')
         xbody = driver.find_element(xpath: '//body')
@@ -596,7 +596,7 @@ module Selenium
       end
 
       it 'returns the same #hash for equal elements when found by Driver#find_elements' do
-        driver.navigate.to url_for('simpleTest.html')
+        open_file 'simpleTest.html'
 
         body = driver.find_elements(tag_name: 'body').fetch(0)
         xbody = driver.find_elements(xpath: '//body').fetch(0)
