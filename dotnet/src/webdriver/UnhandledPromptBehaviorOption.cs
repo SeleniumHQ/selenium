@@ -63,6 +63,8 @@ public abstract record UnhandledPromptBehaviorOption
     public static UnhandledPromptBehaviorMultiOption Multi()
         => new();
 
+    internal abstract object? ToCapabilities();
+
     internal static string ConvertBehaviorToString(UnhandledPromptBehavior behavior) =>
         behavior switch
         {
@@ -79,7 +81,18 @@ public abstract record UnhandledPromptBehaviorOption
 /// Represents an option that specifies a single unhandled prompt behavior to use when interacting with browser dialogs.
 /// </summary>
 /// <param name="Value">The unhandled prompt behavior to apply. Specifies how unexpected browser prompts are handled during automation.</param>
-public sealed record UnhandledPromptBehaviorSingleOption(UnhandledPromptBehavior Value) : UnhandledPromptBehaviorOption;
+public sealed record UnhandledPromptBehaviorSingleOption(UnhandledPromptBehavior Value) : UnhandledPromptBehaviorOption
+{
+    internal override object? ToCapabilities()
+    {
+        if (Value == UnhandledPromptBehavior.Default)
+        {
+            return null;
+        }
+
+        return ConvertBehaviorToString(Value);
+    }
+}
 
 /// <summary>
 /// Represents a set of options that specify how unhandled browser prompts are handled for different prompt types.
@@ -124,8 +137,13 @@ public sealed record UnhandledPromptBehaviorMultiOption : UnhandledPromptBehavio
     /// </summary>
     public UnhandledPromptBehavior Default { get; set; } = UnhandledPromptBehavior.Default;
 
-    internal Dictionary<string, string> ToCapabilities()
+    internal override object? ToCapabilities()
     {
+        if (this == new UnhandledPromptBehaviorMultiOption())
+        {
+            return null;
+        }
+
         Dictionary<string, string> capabilities = [];
 
         if (Alert != default)

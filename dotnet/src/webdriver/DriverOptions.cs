@@ -470,21 +470,11 @@ public abstract class DriverOptions
             capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
         }
 
-        switch (this.UnhandledPromptBehavior)
+        var unhandledPromptBehaviorCapability = this.UnhandledPromptBehavior?.ToCapabilities();
+
+        if (unhandledPromptBehaviorCapability != null)
         {
-            case UnhandledPromptBehaviorSingleOption singleOption:
-                if (singleOption != default)
-                {
-                    var stringValue = UnhandledPromptBehaviorOption.ConvertBehaviorToString(singleOption.Value);
-                    capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, stringValue);
-                }
-                break;
-            case UnhandledPromptBehaviorMultiOption multiOption:
-                if (multiOption != default)
-                {
-                    capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, multiOption.ToCapabilities());
-                }
-                break;
+            capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, unhandledPromptBehaviorCapability);
         }
 
         if (this.Proxy != null)
