@@ -51,14 +51,14 @@ public abstract record UnhandledPromptBehaviorOption
     /// <param name="value">The <see cref="UnhandledPromptBehavior"/> to apply for all prompt types.</param>
     /// <returns>An <see cref="UnhandledPromptBehaviorSingleOption"/> wrapping the provided behavior.</returns>
     public static UnhandledPromptBehaviorSingleOption Single(UnhandledPromptBehavior value)
-        => new UnhandledPromptBehaviorSingleOption(value);
+        => new(value);
 
     /// <summary>
     /// Creates an <see cref="UnhandledPromptBehaviorMultiOption"/> allowing individual <see cref="UnhandledPromptBehavior"/> values per prompt type.
     /// </summary>
     /// <returns>An <see cref="UnhandledPromptBehaviorMultiOption"/> with per-prompt configurable behaviors.</returns>
     public static UnhandledPromptBehaviorMultiOption Multi()
-        => new UnhandledPromptBehaviorMultiOption();
+        => new();
 }
 
 /// <summary>
