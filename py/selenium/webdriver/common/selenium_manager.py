@@ -81,7 +81,9 @@ class SeleniumManager:
         if (env_path := os.getenv("SE_MANAGER_PATH")) is not None:
             logger.debug(f"Selenium Manager set by env SE_MANAGER_PATH to: {env_path}")
             path_candidate = Path(env_path)
-            path =  path_candidate if path_candidate.is_file() else None
+            if not path_candidate.is_file():
+                raise WebDriverException(f"SE_MANAGER_PATH does not point to a file: {env_path}")
+            path = path_candidate
         elif compiled_path.is_file():
             path = compiled_path
         else:
