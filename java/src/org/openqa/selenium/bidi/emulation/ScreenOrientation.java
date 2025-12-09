@@ -17,22 +17,16 @@
 
 package org.openqa.selenium.bidi.emulation;
 
-import java.util.HashMap;
 import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
 public class ScreenOrientation {
   private final ScreenOrientationNatural natural;
   private final ScreenOrientationType type;
 
   public ScreenOrientation(ScreenOrientationNatural natural, ScreenOrientationType type) {
-    if (natural == null) {
-      throw new IllegalArgumentException("Natural orientation cannot be null");
-    }
-    if (type == null) {
-      throw new IllegalArgumentException("Orientation type cannot be null");
-    }
-    this.natural = natural;
-    this.type = type;
+    this.natural = Require.nonNull("natural", natural);
+    this.type = Require.nonNull("type", type);
   }
 
   public ScreenOrientationNatural getNatural() {
@@ -44,9 +38,8 @@ public class ScreenOrientation {
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<>();
-    map.put("natural", natural.toString());
-    map.put("type", type.toString());
-    return map;
+    return Map.of(
+        "natural", natural.toString(),
+        "type", type.toString());
   }
 }

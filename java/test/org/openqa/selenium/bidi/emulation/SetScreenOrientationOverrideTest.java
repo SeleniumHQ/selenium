@@ -37,10 +37,13 @@ public class SetScreenOrientationOverrideTest extends JupiterTestBase {
     driver.switchTo().window(context);
     JavascriptExecutor executor = (JavascriptExecutor) driver;
 
-    String type = (String) executor.executeScript("return screen.orientation.type;");
-    Number angle = (Number) executor.executeScript("return screen.orientation.angle;");
+    Map<String, Object> orientation =
+        (Map<String, Object>)
+            executor.executeScript(
+                "return { type: screen.orientation.type, angle: screen.orientation.angle };");
 
-    return Map.of("type", type, "angle", angle.intValue());
+    return Map.of(
+        "type", orientation.get("type"), "angle", ((Number) orientation.get("angle")).intValue());
   }
 
   @Test
@@ -64,9 +67,6 @@ public class SetScreenOrientationOverrideTest extends JupiterTestBase {
     emulation.setScreenOrientationOverride(
         new SetScreenOrientationOverrideParameters(landscapeOrientation)
             .contexts(List.of(contextId)));
-
-    // Reload the page to apply the orientation change
-    context.navigate(url, ReadinessState.COMPLETE);
 
     Map<String, Object> currentOrientation = getScreenOrientation(contextId);
     assertThat(currentOrientation.get("type")).isEqualTo("landscape-primary");
@@ -123,9 +123,6 @@ public class SetScreenOrientationOverrideTest extends JupiterTestBase {
         emulation.setScreenOrientationOverride(
             new SetScreenOrientationOverrideParameters(landscapeOrientation)
                 .userContexts(List.of(userContext)));
-
-        // Reload the page to apply the orientation override
-        context.navigate(url, ReadinessState.COMPLETE);
 
         Map<String, Object> currentOrientation = getScreenOrientation(contextId);
         assertThat(currentOrientation.get("type")).isEqualTo("landscape-primary");
