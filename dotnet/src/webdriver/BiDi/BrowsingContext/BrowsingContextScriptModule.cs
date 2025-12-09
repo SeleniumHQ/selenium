@@ -18,7 +18,6 @@
 // </copyright>
 
 using OpenQA.Selenium.BiDi.Script;
-using OpenQA.Selenium.Internal;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 

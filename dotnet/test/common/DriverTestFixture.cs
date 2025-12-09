@@ -109,20 +109,15 @@ public abstract class DriverTestFixture
 
     public string printPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("printPage.html");
 
-    protected IWebDriver driver;
-
-    public IWebDriver DriverInstance
-    {
-        get { return driver; }
-        set { driver = value; }
-    }
+    public IWebDriver driver { get; set; }
 
     public bool IsNativeEventsEnabled
     {
         get
         {
-            IHasCapabilities capabilitiesDriver = driver as IHasCapabilities;
-            if (capabilitiesDriver != null && capabilitiesDriver.Capabilities.HasCapability(CapabilityType.HasNativeEvents) && (bool)capabilitiesDriver.Capabilities.GetCapability(CapabilityType.HasNativeEvents))
+            if (driver is IHasCapabilities capabilitiesDriver &&
+                capabilitiesDriver.Capabilities.HasCapability(CapabilityType.HasNativeEvents) &&
+                (bool)capabilitiesDriver.Capabilities.GetCapability(CapabilityType.HasNativeEvents))
             {
                 return true;
             }
@@ -154,12 +149,6 @@ public abstract class DriverTestFixture
         driver = EnvironmentManager.Instance.CreateFreshDriver();
     }
 
-    protected bool IsIeDriverTimedOutException(Exception e)
-    {
-        // The IE driver may throw a timed out exception
-        return e.GetType().Name.Contains("TimedOutException");
-    }
-
     protected bool WaitFor(Func<bool> waitFunction, string timeoutMessage)
     {
         return WaitFor<bool>(waitFunction, timeoutMessage);
@@ -173,7 +162,7 @@ public abstract class DriverTestFixture
     protected T WaitFor<T>(Func<T> waitFunction, TimeSpan timeout, string timeoutMessage)
     {
         DateTime endTime = DateTime.Now.Add(timeout);
-        T value = default(T);
+        T value = default;
         Exception lastException = null;
         while (DateTime.Now < endTime)
         {
@@ -207,6 +196,6 @@ public abstract class DriverTestFixture
         }
 
         Assert.Fail("Condition timed out: " + timeoutMessage);
-        return default(T);
+        return default;
     }
 }

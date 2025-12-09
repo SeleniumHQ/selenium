@@ -158,7 +158,7 @@ class WebElementToJsonConverterTest {
     assertThat(map.get("nested")).isInstanceOf(Map.class);
 
     map = (Map<String, Object>) map.get("nested");
-    assertThat(map.size()).isEqualTo(1);
+    assertThat(map).hasSize(1);
     assertThat(map.get("bugs")).isEqualTo("bunny");
   }
 
@@ -190,7 +190,7 @@ class WebElementToJsonConverterTest {
     assertThat(value).isInstanceOf(Map.class);
 
     Map<String, Object> map = (Map<String, Object>) value;
-    assertThat(map.size()).isEqualTo(1);
+    assertThat(map).hasSize(1);
     assertIsWebElementObject(map.get("one"), "abc123");
   }
 

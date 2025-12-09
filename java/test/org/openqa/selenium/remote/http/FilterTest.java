@@ -113,9 +113,9 @@ class FilterTest {
 
     root.execute(new HttpRequest(GET, "/cheese"));
 
-    assertThat(rootCalls.get()).isEqualTo(1);
-    assertThat(filterOneCount.get()).isEqualTo(1);
-    assertThat(filterTwoCount.get()).isEqualTo(1);
+    assertThat(rootCalls).hasValue(1);
+    assertThat(filterOneCount).hasValue(1);
+    assertThat(filterTwoCount).hasValue(1);
   }
 
   @Test

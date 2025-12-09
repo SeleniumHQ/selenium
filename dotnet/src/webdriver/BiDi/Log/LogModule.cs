@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -38,9 +39,14 @@ public sealed class LogModule : Module
         return await Broker.SubscribeAsync("log.entryAdded", handler, options, _jsonContext.LogEntry).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions options)
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        _jsonContext = new LogJsonSerializerContext(options);
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new RealmConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+
+        _jsonContext = new LogJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
@@ -80,4 +86,5 @@ public sealed class LogModule : Module
 #endregion
 
 [JsonSerializable(typeof(LogEntry))]
+
 internal partial class LogJsonSerializerContext : JsonSerializerContext;

@@ -18,50 +18,58 @@
 // </copyright>
 
 using System;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContext
+public sealed record BrowsingContext
 {
-    internal BrowsingContext(BiDi bidi, string id)
+    public BrowsingContext(BiDi bidi, string id)
+        : this(id)
     {
-        BiDi = bidi;
-        Id = id;
-
-        _logModule = new Lazy<BrowsingContextLogModule>(() => new BrowsingContextLogModule(this, BiDi.Log));
-        _networkModule = new Lazy<BrowsingContextNetworkModule>(() => new BrowsingContextNetworkModule(this, BiDi.Network));
-        _scriptModule = new Lazy<BrowsingContextScriptModule>(() => new BrowsingContextScriptModule(this, BiDi.Script));
-        _storageModule = new Lazy<BrowsingContextStorageModule>(() => new BrowsingContextStorageModule(this, BiDi.Storage));
-        _inputModule = new Lazy<BrowsingContextInputModule>(() => new BrowsingContextInputModule(this, BiDi.InputModule));
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
     }
 
-    private readonly Lazy<BrowsingContextLogModule> _logModule;
-    private readonly Lazy<BrowsingContextNetworkModule> _networkModule;
-    private readonly Lazy<BrowsingContextScriptModule> _scriptModule;
-    private readonly Lazy<BrowsingContextStorageModule> _storageModule;
-    private readonly Lazy<BrowsingContextInputModule> _inputModule;
+    [JsonConstructor]
+    internal BrowsingContext(string id)
+    {
+        Id = id;
+    }
+
+    private BrowsingContextLogModule? _logModule;
+    private BrowsingContextNetworkModule? _networkModule;
+    private BrowsingContextScriptModule? _scriptModule;
+    private BrowsingContextStorageModule? _storageModule;
+    private BrowsingContextInputModule? _inputModule;
 
     internal string Id { get; }
 
-    [JsonIgnore]
-    public BiDi BiDi { get; }
+    private BiDi? _bidi;
 
     [JsonIgnore]
-    public BrowsingContextLogModule Log => _logModule.Value;
+    public BiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
 
     [JsonIgnore]
-    public BrowsingContextNetworkModule Network => _networkModule.Value;
+    public BrowsingContextLogModule Log => _logModule ?? Interlocked.CompareExchange(ref _logModule, new BrowsingContextLogModule(this, BiDi.Log), null) ?? _logModule;
 
     [JsonIgnore]
-    public BrowsingContextScriptModule Script => _scriptModule.Value;
+    public BrowsingContextNetworkModule Network => _networkModule ?? Interlocked.CompareExchange(ref _networkModule, new BrowsingContextNetworkModule(this, BiDi.Network), null) ?? _networkModule;
 
     [JsonIgnore]
-    public BrowsingContextStorageModule Storage => _storageModule.Value;
+    public BrowsingContextScriptModule Script => _scriptModule ?? Interlocked.CompareExchange(ref _scriptModule, new BrowsingContextScriptModule(this, BiDi.Script), null) ?? _scriptModule;
 
     [JsonIgnore]
-    public BrowsingContextInputModule Input => _inputModule.Value;
+    public BrowsingContextStorageModule Storage => _storageModule ?? Interlocked.CompareExchange(ref _storageModule, new BrowsingContextStorageModule(this, BiDi.Storage), null) ?? _storageModule;
+
+    [JsonIgnore]
+    public BrowsingContextInputModule Input => _inputModule ?? Interlocked.CompareExchange(ref _inputModule, new BrowsingContextInputModule(this, BiDi.InputModule), null) ?? _inputModule;
 
     public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null)
     {
@@ -223,15 +231,20 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, options.WithContext(this));
     }
 
-    public override bool Equals(object? obj)
+    public bool Equals(BrowsingContext? other)
     {
-        if (obj is BrowsingContext browsingContextObj) return browsingContextObj.Id == Id;
-
-        return false;
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }

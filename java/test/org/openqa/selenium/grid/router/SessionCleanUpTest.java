@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.router;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
@@ -240,11 +239,7 @@ class SessionCleanUpTest {
 
       waitTillNodesAreRemoved(distributor);
 
-      try {
-        waitTillSessionIsRemoved(sessions, id);
-      } catch (Exception e) {
-        fail("Session not removed");
-      }
+      waitTillSessionIsRemoved(sessions, id);
     }
   }
 
@@ -321,11 +316,7 @@ class SessionCleanUpTest {
 
       waitTillNodesAreRemoved(distributor);
 
-      try {
-        waitTillSessionIsRemoved(sessions, id);
-      } catch (Exception e) {
-        fail("Session not removed");
-      }
+      waitTillSessionIsRemoved(sessions, id);
 
       Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
           distributor.newSession(
