@@ -38,6 +38,22 @@ public class AlertsTest : DriverTestFixture
     }
 
     [Test]
+    public void ShouldBeAbleToDismissTheWindowAlert()
+    {
+        using var driver = EnvironmentManager.Instance.CreateDriverInstance(new CustomAlertDriverOptions
+        {
+            UnhandledPromptBehavior = new UnhandledPromptBehaviorMultiOption { Default = UnhandledPromptBehavior.Dismiss }
+        });
+
+        driver.Url = CreateAlertPage("cheese");
+
+        driver.FindElement(By.Id("alert")).Click();
+
+        // If we can perform any action again, we're good to go
+        driver.FindElement(By.Id("alert")).Click();
+    }
+
+    [Test]
     public void ShouldAllowUsersToAcceptAnAlertManually()
     {
         driver.Url = CreateAlertPage("cheese");
@@ -559,4 +575,16 @@ public class AlertsTest : DriverTestFixture
         };
     }
 
+    class CustomAlertDriverOptions : DriverOptions
+    {
+        public CustomAlertDriverOptions()
+        {
+
+        }
+
+        public override ICapabilities ToCapabilities()
+        {
+            return null;
+        }
+    }
 }
