@@ -17,6 +17,9 @@
 // under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+
 namespace OpenQA.Selenium;
 
 /// <summary>
@@ -59,6 +62,17 @@ public abstract record UnhandledPromptBehaviorOption
     /// <returns>An <see cref="UnhandledPromptBehaviorMultiOption"/> with per-prompt configurable behaviors.</returns>
     public static UnhandledPromptBehaviorMultiOption Multi()
         => new();
+
+    internal static string ConvertBehaviorToString(UnhandledPromptBehavior behavior) =>
+        behavior switch
+        {
+            UnhandledPromptBehavior.Ignore => "ignore",
+            UnhandledPromptBehavior.Accept => "accept",
+            UnhandledPromptBehavior.Dismiss => "dismiss",
+            UnhandledPromptBehavior.AcceptAndNotify => "accept and notify",
+            UnhandledPromptBehavior.DismissAndNotify => "dismiss and notify",
+            _ => throw new ArgumentOutOfRangeException(nameof(behavior), $"UnhandledPromptBehavior value '{behavior}' is not recognized."),
+        };
 }
 
 /// <summary>
@@ -109,6 +123,38 @@ public sealed record UnhandledPromptBehaviorMultiOption : UnhandledPromptBehavio
     /// Gets or sets the default behavior to use when an unexpected browser prompt is encountered.
     /// </summary>
     public UnhandledPromptBehavior Default { get; set; } = UnhandledPromptBehavior.Default;
+
+    internal Dictionary<string, string> ToCapabilities()
+    {
+        Dictionary<string, string> capabilities = [];
+
+        if (Alert != default)
+        {
+            capabilities["alert"] = ConvertBehaviorToString(Alert);
+        }
+
+        if (Confirm != default)
+        {
+            capabilities["confirm"] = ConvertBehaviorToString(Confirm);
+        }
+
+        if (Prompt != default)
+        {
+            capabilities["prompt"] = ConvertBehaviorToString(Prompt);
+        }
+
+        if (BeforeUnload != default)
+        {
+            capabilities["beforeUnload"] = ConvertBehaviorToString(BeforeUnload);
+        }
+
+        if (Default != default)
+        {
+            capabilities["default"] = ConvertBehaviorToString(Default);
+        }
+
+        return capabilities;
+    }
 }
 
 /// <summary>

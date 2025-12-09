@@ -470,55 +470,21 @@ public abstract class DriverOptions
             capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
         }
 
-        static string UnhandledPromptBehaviorToString(UnhandledPromptBehavior behavior) => behavior switch
+        switch (this.UnhandledPromptBehavior)
         {
-            Selenium.UnhandledPromptBehavior.Ignore => "ignore",
-            Selenium.UnhandledPromptBehavior.Accept => "accept",
-            Selenium.UnhandledPromptBehavior.Dismiss => "dismiss",
-            Selenium.UnhandledPromptBehavior.AcceptAndNotify => "accept and notify",
-            Selenium.UnhandledPromptBehavior.DismissAndNotify => "dismiss and notify",
-            _ => throw new ArgumentOutOfRangeException(nameof(behavior), $"UnhandledPromptBehavior value '{behavior}' is not recognized."),
-        };
-
-        if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorSingleOption singleOption && singleOption.Value != Selenium.UnhandledPromptBehavior.Default)
-        {
-            var stringValue = UnhandledPromptBehaviorToString(singleOption.Value);
-
-            capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, stringValue);
-        }
-        else if (this.UnhandledPromptBehavior is UnhandledPromptBehaviorMultiOption multiOption)
-        {
-            Dictionary<string, string> multiOptionDictionary = [];
-
-            if (multiOption.Alert is not Selenium.UnhandledPromptBehavior.Default)
-            {
-                multiOptionDictionary["alert"] = UnhandledPromptBehaviorToString(multiOption.Alert);
-            }
-
-            if (multiOption.Confirm is not Selenium.UnhandledPromptBehavior.Default)
-            {
-                multiOptionDictionary["confirm"] = UnhandledPromptBehaviorToString(multiOption.Confirm);
-            }
-
-            if (multiOption.Prompt is not Selenium.UnhandledPromptBehavior.Default)
-            {
-                multiOptionDictionary["prompt"] = UnhandledPromptBehaviorToString(multiOption.Prompt);
-            }
-
-            if (multiOption.BeforeUnload is not Selenium.UnhandledPromptBehavior.Default)
-            {
-                multiOptionDictionary["beforeUnload"] = UnhandledPromptBehaviorToString(multiOption.BeforeUnload);
-            }
-
-            if (multiOption.Default is not Selenium.UnhandledPromptBehavior.Default)
-            {
-                multiOptionDictionary["default"] = UnhandledPromptBehaviorToString(multiOption.Default);
-            }
-
-            if (multiOptionDictionary.Count != 0)
-            {
-                capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, multiOptionDictionary);
-            }
+            case UnhandledPromptBehaviorSingleOption singleOption:
+                if (singleOption != default)
+                {
+                    var stringValue = UnhandledPromptBehaviorOption.ConvertBehaviorToString(singleOption.Value);
+                    capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, stringValue);
+                }
+                break;
+            case UnhandledPromptBehaviorMultiOption multiOption:
+                if (multiOption != default)
+                {
+                    capabilities.SetCapability(CapabilityType.UnhandledPromptBehavior, multiOption.ToCapabilities());
+                }
+                break;
         }
 
         if (this.Proxy != null)
