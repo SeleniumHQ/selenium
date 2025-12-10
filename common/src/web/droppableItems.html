@@ -12,35 +12,33 @@
   </style>
   <script type="text/javascript">
     $(function () {
-      setTimeout(function () {
-        $("#draggable").draggable();
-        $("#droppable").droppable({
-          drop: function () {
-            $(this).addClass('ui-state-highlight').find('p').html('Dropped!');
-          }
-        });
-
-        const report_event = function (report_text) {
-          const reportElement = $("#drop_reports");
-          const origText = reportElement.text();
-          reportElement.text(origText + " " + report_text);
+      $("#draggable").draggable();
+      $("#droppable").droppable({
+        drop: function () {
+          $(this).addClass('ui-state-highlight').find('p').html('Dropped!');
         }
+      });
 
-        $('body').mousedown(function () {
-          report_event('down');
-        });
+      const report_event = function (report_text) {
+        const reportElement = $("#drop_reports");
+        const origText = reportElement.text();
+        reportElement.text(origText + " " + report_text);
+      }
 
-        $('body').mousemove(function () {
-          report_event('move');
-        });
+      $('body').mousedown(function () {
+        report_event('down');
+      });
 
-        $('body').mouseup(function () {
-          report_event('up');
-        });
+      $('body').mousemove(function () {
+        report_event('move');
+      });
 
-        $("#droppable").show();
-        $("#draggable").show();
-      }, 30);
+      $('body').mouseup(function () {
+        report_event('up');
+      });
+
+      $("#droppable").show();
+      $("#draggable").show();
     });
   </script>
 </head>
