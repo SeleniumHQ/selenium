@@ -22,6 +22,13 @@ require_relative 'browser/window'
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # BiDi Implementation of the Browser Module
+      # Continue to use functionality from existing `driver.manager.window` method
+      #
+      # @api private
+      #
+
       class Browser
         def initialize(bidi)
           @bidi = bidi

@@ -188,7 +188,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
 
     String source = driver.getPageSource();
 
-    assertThat(seen.get()).isTrue();
+    assertThat(seen).isTrue();
     assertThat(source).contains("Hello, World!");
   }
 

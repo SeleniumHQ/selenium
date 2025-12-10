@@ -20,6 +20,10 @@
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       class InterceptedItem
         attr_reader :network, :request
 

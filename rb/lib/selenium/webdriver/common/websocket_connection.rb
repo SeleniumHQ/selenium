@@ -24,7 +24,10 @@ module Selenium
     class WebSocketConnection
       CONNECTION_ERRORS = [
         Errno::ECONNRESET, # connection is aborted (browser process was killed)
-        Errno::EPIPE # broken pipe (browser process was killed)
+        Errno::EPIPE, # broken pipe (browser process was killed)
+        Errno::EBADF, # file descriptor already closed (double-close or GC)
+        IOError, # Ruby socket read/write after close
+        EOFError # socket reached EOF after remote closed cleanly
       ].freeze
 
       RESPONSE_WAIT_TIMEOUT = 30
@@ -35,6 +38,11 @@ module Selenium
       def initialize(url:)
         @callback_threads = ThreadGroup.new
 
+        @callbacks_mtx = Mutex.new
+        @messages_mtx = Mutex.new
+        @closing_mtx = Mutex.new
+
+        @closing = false
         @session_id = nil
         @url = url
 
@@ -43,9 +51,26 @@ module Selenium
       end
 
       def close
-        @callback_threads.list.each(&:exit)
-        @socket_thread.exit
-        socket.close
+        @closing_mtx.synchronize do
+          return if @closing
+
+          @closing = true
+        end
+
+        begin
+          socket.close
+        rescue *CONNECTION_ERRORS => e
+          WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
+          # already closed
+        end
+
+        # Let threads unwind instead of calling exit
+        @socket_thread&.join(0.5)
+        @callback_threads.list.each do |thread|
+          thread.join(0.5)
+        rescue StandardError => e
+          WebDriver.logger.debug "Failed to join thread during close: #{e.class}: #{e.message}", id: :ws
+        end
       end
 
       def callbacks
@@ -53,62 +78,73 @@ module Selenium
       end
 
       def add_callback(event, &block)
-        callbacks[event] << block
-        block.object_id
+        @callbacks_mtx.synchronize do
+          callbacks[event] << block
+          block.object_id
+        end
       end
 
       def remove_callback(event, id)
-        return if callbacks[event].reject! { |callback| callback.object_id == id }
+        @callbacks_mtx.synchronize do
+          return if @closing
 
-        ids = callbacks[event]&.map(&:object_id)
-        raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}: #{ids}"
+          callbacks_for_event = callbacks[event]
+          return if callbacks_for_event.reject! { |cb| cb.object_id == id }
+
+          ids = callbacks_for_event.map(&:object_id)
+          raise Error::WebDriverError, "Callback with ID #{id} does not exist for event #{event}: #{ids}"
+        end
       end
 
       def send_cmd(**payload)
         id = next_id
         data = payload.merge(id: id)
-        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE], id: :bidi
+        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE], id: :ws
         data = JSON.generate(data)
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
-        socket.write(out_frame.to_s)
 
-        wait.until { messages.delete(id) }
+        begin
+          socket.write(out_frame.to_s)
+        rescue *CONNECTION_ERRORS => e
+          raise e, "WebSocket is closed (#{e.class}: #{e.message})"
+        end
+
+        wait.until { @messages_mtx.synchronize { messages.delete(id) } }
       end
 
       private
 
-      # We should be thread-safe to use the hash without synchronization
-      # because its keys are WebSocket message identifiers and they should be
-      # unique within a devtools session.
       def messages
         @messages ||= {}
       end
 
       def process_handshake
         socket.print(ws.to_s)
-        ws << socket.readpartial(1024)
+        ws << socket.readpartial(1024) until ws.finished?
       end
 
       def attach_socket_listener
         Thread.new do
-          Thread.current.abort_on_exception = true
           Thread.current.report_on_exception = false
 
-          until socket.eof?
+          loop do
+            break if @closing
+
             incoming_frame << socket.readpartial(1024)
 
             while (frame = incoming_frame.next)
+              break if @closing
+
               message = process_frame(frame)
               next unless message['method']
 
-              params = message['params']
-              callbacks[message['method']].each do |callback|
-                @callback_threads.add(callback_thread(params, &callback))
+              @messages_mtx.synchronize { callbacks[message['method']].dup }.each do |callback|
+                @callback_threads.add(callback_thread(message['params'], &callback))
               end
             end
           end
-        rescue *CONNECTION_ERRORS
-          Thread.stop
+        rescue *CONNECTION_ERRORS, WebSocket::Error => e
+          WebDriver.logger.debug "WebSocket listener closed: #{e.class}: #{e.message}", id: :ws
         end
       end
 
@@ -122,27 +158,27 @@ module Selenium
         # Firefox will periodically fail on unparsable empty frame
         return {} if message.empty?
 
-        message = JSON.parse(message)
-        messages[message['id']] = message
-        WebDriver.logger.debug "WebSocket <- #{message}"[...MAX_LOG_MESSAGE_SIZE], id: :bidi
+        msg = JSON.parse(message)
+        @messages_mtx.synchronize { messages[msg['id']] = msg if msg.key?('id') }
 
-        message
+        WebDriver.logger.debug "WebSocket <- #{msg}"[...MAX_LOG_MESSAGE_SIZE], id: :ws
+        msg
       end
 
       def callback_thread(params)
         Thread.new do
-          Thread.current.abort_on_exception = true
-
-          # We might end up blocked forever when we have an error in event.
-          # For example, if network interception event raises error,
-          # the browser will keep waiting for the request to be proceeded
-          # before returning back to the original thread. In this case,
-          # we should at least print the error.
-          Thread.current.report_on_exception = true
+          Thread.current.abort_on_exception = false
+          Thread.current.report_on_exception = false
+          return if @closing
 
           yield params
-        rescue Error::WebDriverError, *CONNECTION_ERRORS
-          Thread.stop
+        rescue Error::WebDriverError, *CONNECTION_ERRORS => e
+          WebDriver.logger.debug "Callback aborted: #{e.class}: #{e.message}", id: :ws
+        rescue StandardError => e
+          return if @closing
+
+          bt = Array(e.backtrace).first(5).join("\n")
+          WebDriver.logger.error "Callback error: #{e.class}: #{e.message}\n#{bt}", id: :ws
         end
       end
 

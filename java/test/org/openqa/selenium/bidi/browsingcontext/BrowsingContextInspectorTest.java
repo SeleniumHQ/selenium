@@ -212,7 +212,6 @@ class BrowsingContextInspectorTest extends JupiterTestBase {
 
       UserPromptClosed userPromptClosed = future.get(5, TimeUnit.SECONDS);
       assertThat(userPromptClosed.getBrowsingContextId()).isEqualTo(context.getId());
-      assertThat(userPromptClosed.getUserText().isPresent()).isTrue();
       assertThat(userPromptClosed.getUserText()).hasValue("selenium");
       assertThat(userPromptClosed.getAccepted()).isTrue();
     }

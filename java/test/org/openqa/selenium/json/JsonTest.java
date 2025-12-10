@@ -51,6 +51,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
 @Tag("UnitTests")
+@SuppressWarnings("removal")
 class JsonTest {
 
   @Test
@@ -159,10 +160,8 @@ class JsonTest {
   void canPopulateAMapThatContainsNull() {
     String raw = "{\"foo\": null}";
 
-    Map<?, ?> converted = new Json().toType(raw, Map.class);
-    assertThat(converted).hasSize(1);
-    assertThat(converted.containsKey("foo")).isTrue();
-    assertThat(converted.get("foo")).isNull();
+    Map<String, ?> converted = new Json().toType(raw, Map.class);
+    assertThat(converted).hasSize(1).containsEntry("foo", null);
   }
 
   @Test
@@ -297,7 +296,6 @@ class JsonTest {
     List<?> list = new Json().toType(rawJson, List.class);
 
     Object first = list.get(0);
-    assertThat(first instanceof Map).isTrue();
 
     assertThat(first)
         .asInstanceOf(MAP)

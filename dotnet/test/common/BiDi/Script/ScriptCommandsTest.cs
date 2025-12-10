@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class ScriptCommandsTest : BiDiTestFixture
+internal class ScriptCommandsTest : BiDiTestFixture
 {
     [Test]
     public async Task CanGetAllRealms()

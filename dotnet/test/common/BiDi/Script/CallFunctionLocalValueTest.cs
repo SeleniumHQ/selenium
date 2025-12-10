@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class CallFunctionLocalValueTest : BiDiTestFixture
+internal class CallFunctionLocalValueTest : BiDiTestFixture
 {
     [Test]
     public async Task CanCallFunctionWithArgumentUndefined()
