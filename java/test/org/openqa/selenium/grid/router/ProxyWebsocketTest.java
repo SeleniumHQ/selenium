@@ -141,7 +141,7 @@ class ProxyWebsocketTest {
       socket.sendText("Cheese!");
 
       assertThat(latch.await(5, SECONDS)).isTrue();
-      assertThat(text.get()).isEqualTo("Cheese!");
+      assertThat(text).hasValue("Cheese!");
     }
   }
 
@@ -184,7 +184,7 @@ class ProxyWebsocketTest {
       socket.sendText("Cheese!");
 
       assertThat(latch.await(5, SECONDS)).isTrue();
-      assertThat(text.get()).isEqualTo("Asiago");
+      assertThat(text).hasValue("Asiago");
     }
   }
 
@@ -272,7 +272,7 @@ class ProxyWebsocketTest {
       socket.sendText("Cheese!");
 
       assertThat(latch.await(5, SECONDS)).isTrue();
-      assertThat(text.get()).isEqualTo("Cheddar");
+      assertThat(text).hasValue("Cheddar");
     }
 
     secureProxyServer.stop();

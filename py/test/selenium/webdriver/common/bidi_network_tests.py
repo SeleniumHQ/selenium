@@ -33,6 +33,9 @@ def test_add_intercept(driver, pages):
     result = driver.network._add_intercept()
     assert result is not None, "Intercept not added"
 
+    # Clean up
+    driver.network._remove_intercept(result["intercept"])
+
 
 def test_remove_intercept(driver):
     result = driver.network._add_intercept()
@@ -88,6 +91,8 @@ def test_continue_request(driver, pages):
     assert driver.find_element(By.NAME, "login").is_displayed(), "Request not continued"
     assert len(exceptions) == 0, "Exception raised when continuing request in handler callback"
 
+    driver.network.remove_request_handler("before_request", callback_id)
+
 
 def test_continue_with_auth(driver):
     callback_id = driver.network.add_auth_handler("postman", "password")
@@ -96,6 +101,8 @@ def test_continue_with_auth(driver):
         context=driver.current_window_handle, url="https://postman-echo.com/basic-auth", wait=ReadinessState.COMPLETE
     )
     assert "authenticated" in driver.page_source, "Authorization failed"
+
+    driver.network.remove_auth_handler(callback_id)
 
 
 def test_remove_auth_handler(driver):
@@ -124,6 +131,8 @@ def test_handler_with_classic_navigation(driver, pages):
     pages.load("formPage.html")
     assert len(exceptions) == 0, "Exception raised in handler callback"
 
+    driver.network.remove_request_handler("before_request", callback_id)
+
 
 @pytest.mark.xfail_chrome(reason="Data URLs in Network requests are not implemented in Chrome yet")
 @pytest.mark.xfail_edge(reason="Data URLs in Network requests are not implemented in Edge yet")
@@ -140,10 +149,12 @@ def test_handler_with_data_url_request(driver, pages):
         except WebDriverException as e:
             exceptions.append(e)
 
-    driver.network.add_request_handler("before_request", callback)
+    callback_id = driver.network.add_request_handler("before_request", callback)
     url = pages.url("data_url.html")
     driver.browsing_context.navigate(context=driver.current_window_handle, url=url, wait=ReadinessState.COMPLETE)
     time.sleep(1)  # give callback time to complete
     assert driver.find_element(By.ID, "data-url-image").is_displayed()
     assert len(data_requests) > 0, "BiDi event not captured"
     assert len(exceptions) == 0, "Exception raised when continuing request in handler callback"
+
+    driver.network.remove_request_handler("before_request", callback_id)
