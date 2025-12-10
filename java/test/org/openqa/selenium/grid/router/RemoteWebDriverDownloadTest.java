@@ -37,10 +37,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
@@ -133,7 +131,7 @@ class RemoteWebDriverDownloadTest {
     driver.quit();
   }
 
-  @Test
+  @RepeatedTest(20)
   @Ignore(IE)
   @Ignore(SAFARI)
   void canDownloadFiles() throws IOException {

@@ -45,18 +45,6 @@ jobs:
         env:
           COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}...${{ github.event.pull_request.head.sha || github.sha }}
 
-  dotnet:
-    name: .NET
-    needs: check
-    uses: ./.github/workflows/ci-dotnet.yml
-    if: >
-      github.event_name == 'schedule' ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//dotnet') ||
-      contains(join(github.event.commits.*.message), '[dotnet]') ||
-      contains(github.event.pull_request.title, '[dotnet]')
-
   java:
     name: Java
     needs: check
@@ -68,41 +56,3 @@ jobs:
       contains(needs.check.outputs.targets, '//java') ||
       contains(join(github.event.commits.*.message), '[java]') ||
       contains(github.event.pull_request.title, '[java]')
-
-  python:
-    name: Python
-    needs: check
-    uses: ./.github/workflows/ci-python.yml
-    if: >
-      github.event_name == 'schedule' ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//py') ||
-      contains(join(github.event.commits.*.message), '[py]') ||
-      contains(github.event.pull_request.title, '[py]')
-
-  ruby:
-    name: Ruby
-    needs: check
-    uses: ./.github/workflows/ci-ruby.yml
-    if: >
-      github.event_name == 'schedule' ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//rb') ||
-      contains(join(github.event.commits.*.message), '[rb]') ||
-      contains(github.event.pull_request.title, '[rb]')
-
-  rust:
-    name: Rust
-    needs: check
-    uses: ./.github/workflows/ci-rust.yml
-    secrets:
-      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
-    if: >
-      github.event_name == 'schedule' ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'workflow_call' ||
-      contains(needs.check.outputs.targets, '//rust') ||
-      contains(join(github.event.commits.*.message), '[rust]') ||
-      contains(github.event.pull_request.title, '[rust]')
