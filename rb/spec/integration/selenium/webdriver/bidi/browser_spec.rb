@@ -117,7 +117,7 @@ module Selenium
           browser = described_class.new(bidi)
           window = browser.window
 
-          window.set_state(state: 'normal', width: 1024, height: 768, x: 100, y: 50)
+          window.set_state(state: :normal, width: 1024, height: 768, x: 100, y: 50)
           expect(window.state).to eq(:normal)
           expect(window.width).to eq(1024)
           expect(window.height).to eq(768)
