@@ -113,6 +113,8 @@ module Selenium
         end
 
         def open_file(file_name)
+          driver.navigate.to 'about:blank'
+          driver.navigate.to url_for('blank.html')
           driver.navigate.to url_for(file_name)
           wait_for_url(file_name)
         end
