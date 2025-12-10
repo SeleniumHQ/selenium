@@ -18,6 +18,7 @@
 package org.openqa.selenium.bidi.network;
 
 public enum DataType {
+  REQUEST("request"),
   RESPONSE("response");
 
   private final String value;

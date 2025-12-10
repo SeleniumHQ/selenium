@@ -409,8 +409,7 @@ class NetworkCommandsTest extends JupiterTestBase {
           });
 
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-      browsingContext.navigate(
-          appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
 
       boolean countdown = latch.await(5, TimeUnit.SECONDS);
       assertThat(countdown).isTrue();
@@ -441,8 +440,7 @@ class NetworkCommandsTest extends JupiterTestBase {
           });
 
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-      browsingContext.navigate(
-          appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
 
       boolean countdown = latch.await(5, TimeUnit.SECONDS);
       assertThat(countdown).isTrue();
@@ -484,8 +482,7 @@ class NetworkCommandsTest extends JupiterTestBase {
           });
 
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
-      browsingContext.navigate(
-          appServer.whereIs("/bidi/logEntryAdded.html"), ReadinessState.COMPLETE);
+      browsingContext.navigate(appServer.whereIs("/bidi/logEntryAdded.html"), COMPLETE);
 
       boolean countdown = latch.await(5, TimeUnit.SECONDS);
       assertThat(countdown).isTrue();
@@ -503,6 +500,47 @@ class NetworkCommandsTest extends JupiterTestBase {
       assertThat(collector).isNotNull();
 
       // Remove the collector, should not throw any exception
+      network.removeDataCollector(collector);
+    }
+  }
+
+  @Test
+  @NeedsFreshDriver
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(EDGE)
+  void canGetRequestDataWithCollector() throws InterruptedException {
+    try (Network network = new Network(driver)) {
+      AddDataCollectorParameters collectorParams =
+          new AddDataCollectorParameters(List.of(DataType.REQUEST), 2048);
+      String collector = network.addDataCollector(collectorParams);
+
+      CountDownLatch latch = new CountDownLatch(1);
+
+      network.onBeforeRequestSent(
+          beforeRequestSent -> {
+            // Only try to get data for POST requests which have body data
+            if ("POST".equalsIgnoreCase(beforeRequestSent.getRequest().getMethod())) {
+              String requestId = beforeRequestSent.getRequest().getRequestId();
+              GetDataParameters parameters =
+                  new GetDataParameters(DataType.REQUEST, requestId).collector(collector);
+
+              BytesValue result = network.getData(parameters);
+              assertThat(result).isNotNull();
+              assertThat(result.getValue()).isNotNull();
+
+              latch.countDown();
+            }
+          });
+
+      BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
+      browsingContext.navigate(appServer.whereIs("postForm.html"), COMPLETE);
+
+      // trigger POST request
+      driver.findElement(By.cssSelector("input[type='submit']")).click();
+
+      boolean countdown = latch.await(5, TimeUnit.SECONDS);
+      assertThat(countdown).isTrue();
+
       network.removeDataCollector(collector);
     }
   }
