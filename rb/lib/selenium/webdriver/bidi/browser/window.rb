@@ -49,19 +49,19 @@ module Selenium
           end
 
           def maximize
-            set_state(state: 'maximized')
+            set_state(state: :maximized)
           end
 
           def minimize
-            set_state(state: 'minimized')
+            set_state(state: :minimized)
           end
 
           def fullscreen
-            set_state(state: 'fullscreen')
+            set_state(state: :fullscreen)
           end
 
           def resize(width:, height:, x: nil, y: nil)
-            set_state(state: 'normal', width: width, height: height, x: x, y: y)
+            set_state(state: :normal, width: width, height: height, x: x, y: y)
           end
 
           private
