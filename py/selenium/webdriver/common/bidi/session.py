@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.common.bidi.common import command_builder
 
@@ -35,12 +34,12 @@ class UserPromptHandler:
 
     def __init__(
         self,
-        alert: Optional[str] = None,
-        before_unload: Optional[str] = None,
-        confirm: Optional[str] = None,
-        default: Optional[str] = None,
-        file: Optional[str] = None,
-        prompt: Optional[str] = None,
+        alert: str | None = None,
+        before_unload: str | None = None,
+        confirm: str | None = None,
+        default: str | None = None,
+        file: str | None = None,
+        prompt: str | None = None,
     ):
         """Initialize UserPromptHandler.
 

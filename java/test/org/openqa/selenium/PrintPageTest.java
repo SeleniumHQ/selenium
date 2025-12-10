@@ -46,7 +46,7 @@ class PrintPageTest extends JupiterTestBase {
     PrintOptions printOptions = new PrintOptions();
 
     Pdf pdf = printer.print(printOptions);
-    assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
+    assertThat(pdf.getContent()).contains(MAGIC_STRING);
   }
 
   // TODO: Skipped for Chrome because it needs to run headless, a workaround for this is needed.
@@ -57,7 +57,7 @@ class PrintPageTest extends JupiterTestBase {
     printOptions.setPageRanges("1-2");
 
     Pdf pdf = printer.print(printOptions);
-    assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
+    assertThat(pdf.getContent()).contains(MAGIC_STRING);
   }
 
   // TODO: Skipped for Chrome because it needs to run headless, a workaround for this is needed.
@@ -72,6 +72,6 @@ class PrintPageTest extends JupiterTestBase {
     printOptions.setPageSize(pageSize);
 
     Pdf pdf = printer.print(printOptions);
-    assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
+    assertThat(pdf.getContent()).contains(MAGIC_STRING);
   }
 }

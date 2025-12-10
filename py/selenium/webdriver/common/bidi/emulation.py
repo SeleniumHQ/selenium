@@ -16,7 +16,7 @@
 # under the License.
 
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 
@@ -51,8 +51,8 @@ class ScreenOrientation:
 
     def __init__(
         self,
-        natural: Union[ScreenOrientationNatural, str],
-        type: Union[ScreenOrientationType, str],
+        natural: ScreenOrientationNatural | str,
+        type: ScreenOrientationType | str,
     ):
         """Initialize ScreenOrientation.
 
@@ -83,10 +83,10 @@ class GeolocationCoordinates:
         latitude: float,
         longitude: float,
         accuracy: float = 1.0,
-        altitude: Optional[float] = None,
-        altitude_accuracy: Optional[float] = None,
-        heading: Optional[float] = None,
-        speed: Optional[float] = None,
+        altitude: float | None = None,
+        altitude_accuracy: float | None = None,
+        heading: float | None = None,
+        speed: float | None = None,
     ):
         """Initialize GeolocationCoordinates.
 
@@ -180,8 +180,8 @@ class GeolocationCoordinates:
             raise ValueError("speed must be >= 0.0")
         self._speed = value
 
-    def to_dict(self) -> dict[str, Union[float, None]]:
-        result: dict[str, Union[float, None]] = {
+    def to_dict(self) -> dict[str, float | None]:
+        result: dict[str, float | None] = {
             "latitude": self.latitude,
             "longitude": self.longitude,
             "accuracy": self.accuracy,
@@ -224,10 +224,10 @@ class Emulation:
 
     def set_geolocation_override(
         self,
-        coordinates: Optional[GeolocationCoordinates] = None,
-        error: Optional[GeolocationPositionError] = None,
-        contexts: Optional[list[str]] = None,
-        user_contexts: Optional[list[str]] = None,
+        coordinates: GeolocationCoordinates | None = None,
+        error: GeolocationPositionError | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Set geolocation override for the given contexts or user contexts.
 
@@ -267,9 +267,9 @@ class Emulation:
 
     def set_timezone_override(
         self,
-        timezone: Optional[str] = None,
-        contexts: Optional[list[str]] = None,
-        user_contexts: Optional[list[str]] = None,
+        timezone: str | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Set timezone override for the given contexts or user contexts.
 
@@ -300,9 +300,9 @@ class Emulation:
 
     def set_locale_override(
         self,
-        locale: Optional[str] = None,
-        contexts: Optional[list[str]] = None,
-        user_contexts: Optional[list[str]] = None,
+        locale: str | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Set locale override for the given contexts or user contexts.
 
@@ -332,9 +332,9 @@ class Emulation:
 
     def set_scripting_enabled(
         self,
-        enabled: Union[bool, None] = False,
-        contexts: Optional[list[str]] = None,
-        user_contexts: Optional[list[str]] = None,
+        enabled: bool | None = False,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Set scripting enabled override for the given contexts or user contexts.
 
@@ -368,9 +368,9 @@ class Emulation:
 
     def set_screen_orientation_override(
         self,
-        screen_orientation: Optional[ScreenOrientation] = None,
-        contexts: Optional[list[str]] = None,
-        user_contexts: Optional[list[str]] = None,
+        screen_orientation: ScreenOrientation | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Set screen orientation override for the given contexts or user contexts.
 
@@ -399,3 +399,35 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setScreenOrientationOverride", params))
+
+    def set_user_agent_override(
+        self,
+        user_agent: str | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set user agent override for the given contexts or user contexts.
+
+        Args:
+            user_agent: User agent string to emulate, or None to clear the override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and user_contexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or user_contexts")
+
+        params: dict[str, Any] = {"userAgent": user_agent}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setUserAgentOverride", params))

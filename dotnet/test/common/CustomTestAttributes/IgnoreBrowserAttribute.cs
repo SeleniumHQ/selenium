@@ -27,57 +27,34 @@ using System.Collections.Generic;
 namespace OpenQA.Selenium;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
-public class IgnoreBrowserAttribute : NUnitAttribute, IApplyToTest
+public class IgnoreBrowserAttribute(Browser browser) : NUnitAttribute, IApplyToTest
 {
-    private readonly Browser browser;
-    private readonly string ignoreReason = string.Empty;
-
-    public IgnoreBrowserAttribute(Browser browser)
-    {
-        this.browser = browser;
-    }
-
     public IgnoreBrowserAttribute(Browser browser, string reason)
         : this(browser)
     {
-        this.ignoreReason = reason;
+        Reason = reason;
     }
 
-    public Browser Value
-    {
-        get { return browser; }
-    }
+    public Browser Value { get; } = browser;
 
-    public string Reason
-    {
-        get { return ignoreReason; }
-    }
+    public string Reason { get; } = string.Empty;
 
     public void ApplyToTest(Test test)
     {
         if (test.RunState != RunState.NotRunnable)
         {
-            List<Attribute> ignoreAttributes = new List<Attribute>();
+            IgnoreBrowserAttribute[] ignoreAttributes;
             if (test.IsSuite)
             {
-                Attribute[] ignoreClassAttributes = test.TypeInfo.GetCustomAttributes<IgnoreBrowserAttribute>(true);
-                if (ignoreClassAttributes.Length > 0)
-                {
-                    ignoreAttributes.AddRange(ignoreClassAttributes);
-                }
+                ignoreAttributes = test.TypeInfo.GetCustomAttributes<IgnoreBrowserAttribute>(true);
             }
             else
             {
-                IgnoreBrowserAttribute[] ignoreMethodAttributes = test.Method.GetCustomAttributes<IgnoreBrowserAttribute>(true);
-                if (ignoreMethodAttributes.Length > 0)
-                {
-                    ignoreAttributes.AddRange(ignoreMethodAttributes);
-                }
+                ignoreAttributes = test.Method.GetCustomAttributes<IgnoreBrowserAttribute>(true);
             }
 
-            foreach (Attribute attr in ignoreAttributes)
+            foreach (IgnoreBrowserAttribute browserToIgnoreAttr in ignoreAttributes)
             {
-                IgnoreBrowserAttribute browserToIgnoreAttr = attr as IgnoreBrowserAttribute;
                 if (browserToIgnoreAttr != null && IgnoreTestForBrowser(browserToIgnoreAttr.Value))
                 {
                     string ignoreReason = "Ignoring browser " + EnvironmentManager.Instance.Browser.ToString() + ".";
@@ -87,7 +64,7 @@ public class IgnoreBrowserAttribute : NUnitAttribute, IApplyToTest
                     }
 
                     test.RunState = RunState.Ignored;
-                    test.Properties.Set(PropertyNames.SkipReason, browserToIgnoreAttr.Reason);
+                    test.Properties.Set(PropertyNames.SkipReason, ignoreReason);
                 }
             }
         }

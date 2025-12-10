@@ -18,7 +18,7 @@
 package org.openqa.selenium.bidi.input;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -140,19 +140,21 @@ class DragAndDropTest extends JupiterTestBase {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
 
-    try {
-      WebElement img = driver.findElement(By.id("test1"));
+    WebElement img = driver.findElement(By.id("test1"));
 
-      // Attempt to drag the image outside of the bounds of the page.
+    assertThatThrownBy(
+            () ->
+                inputModule.perform(
+                    windowHandle,
+                    actions
+                        .dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE)
+                        .getSequences()))
+        .as("These coordinates are outside the page - expected to fail.")
+        .isInstanceOf(BiDiException.class)
+        .hasMessageContaining("Move target (2147483664, 2147483664) is out of bounds");
 
-      inputModule.perform(
-          windowHandle,
-          actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).getSequences());
-      fail("These coordinates are outside the page - expected to fail.");
-    } catch (BiDiException expected) {
-      // Release mouse button - move was interrupted in the middle.
-      inputModule.perform(windowHandle, new Actions(driver).release().getSequences());
-    }
+    // Release mouse button - move was interrupted in the middle.
+    inputModule.perform(windowHandle, new Actions(driver).release().getSequences());
   }
 
   @NoDriverAfterTest

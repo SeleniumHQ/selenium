@@ -98,8 +98,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
     Object result = executeScript("return true;");
 
-    assertThat(result).isInstanceOf(Boolean.class);
-    assertThat((Boolean) result).isTrue();
+    assertThat(result).isInstanceOf(Boolean.class).isEqualTo(true);
   }
 
   @SuppressWarnings("unchecked")

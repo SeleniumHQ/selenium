@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class ScriptEventsTest : BiDiTestFixture
+internal class ScriptEventsTest : BiDiTestFixture
 {
     [Test]
     public async Task CanListenToChannelMessage()

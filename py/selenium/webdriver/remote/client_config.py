@@ -19,7 +19,6 @@ import base64
 import os
 import socket
 from enum import Enum
-from typing import Optional
 from urllib import parse
 
 import certifi
@@ -79,20 +78,20 @@ class ClientConfig:
     def __init__(
         self,
         remote_server_addr: str,
-        keep_alive: Optional[bool] = True,
-        proxy: Optional[Proxy] = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
-        ignore_certificates: Optional[bool] = False,
-        init_args_for_pool_manager: Optional[dict] = None,
-        timeout: Optional[int] = None,
-        ca_certs: Optional[str] = None,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        auth_type: Optional[AuthType] = AuthType.BASIC,
-        token: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        extra_headers: Optional[dict] = None,
-        websocket_timeout: Optional[float] = 30.0,
-        websocket_interval: Optional[float] = 0.1,
+        keep_alive: bool | None = True,
+        proxy: Proxy | None = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
+        ignore_certificates: bool | None = False,
+        init_args_for_pool_manager: dict | None = None,
+        timeout: int | None = None,
+        ca_certs: str | None = None,
+        username: str | None = None,
+        password: str | None = None,
+        auth_type: AuthType | None = AuthType.BASIC,
+        token: str | None = None,
+        user_agent: str | None = None,
+        extra_headers: dict | None = None,
+        websocket_timeout: float | None = 30.0,
+        websocket_interval: float | None = 0.1,
     ) -> None:
         self.remote_server_addr = remote_server_addr
         self.keep_alive = keep_alive
@@ -119,7 +118,7 @@ class ClientConfig:
         """Resets the timeout to the default value of socket."""
         self._timeout = socket.getdefaulttimeout()
 
-    def get_proxy_url(self) -> Optional[str]:
+    def get_proxy_url(self) -> str | None:
         """Returns the proxy URL to use for the connection."""
         proxy_type = self.proxy.proxy_type
         remote_add = parse.urlparse(self.remote_server_addr)
@@ -144,7 +143,7 @@ class ClientConfig:
             return self.proxy.sslProxy if self.remote_server_addr.startswith("https://") else self.proxy.http_proxy
         return None
 
-    def get_auth_header(self) -> Optional[dict]:
+    def get_auth_header(self) -> dict | None:
         """Returns the authorization to add to the request headers."""
         if self.auth_type is AuthType.BASIC and self.username and self.password:
             credentials = f"{self.username}:{self.password}"
