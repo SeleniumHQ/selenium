@@ -17,17 +17,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'browser/window'
+
 module Selenium
   module WebDriver
     class BiDi
       class Browser
-        Window = Struct.new(:handle, :active, :height, :width, :x, :y, :state) do
-          def active?
-            active
-          end
-        end
         def initialize(bidi)
           @bidi = bidi
+          @window = nil
         end
 
         def create_user_context
@@ -55,8 +53,12 @@ module Selenium
               y: win_data['y'],
               state: win_data['state']
             }
-            Window.new(**attributes)
+            Window.new(@bidi, **attributes)
           end
+        end
+
+        def window
+          @window ||= windows.find(&:active?) || windows.first
         end
       end # Browser
     end # BiDi

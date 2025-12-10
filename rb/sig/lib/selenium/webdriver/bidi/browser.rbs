@@ -2,17 +2,20 @@ module Selenium
   module WebDriver
     class BiDi
       class Browser
-        Window: Selenium::WebDriver::BiDi::Browser::Window
-
         @bidi: BiDi
+        @window: Window?
 
         def initialize: (BiDi bidi) -> void
 
         def create_user_context: () -> Hash[String, String]
 
-        def user_contexts: () -> Array[Hash[String, String]]
+        def user_contexts: () -> Hash[String, Array[Hash[String, String]]]
 
-        def remove_user_context: (String user_context) -> Hash[nil, nil]
+        def remove_user_context: (String user_context) -> Hash[untyped, untyped]
+
+        def windows: () -> Array[Window]
+
+        def window: () -> Window?
       end
     end
   end
