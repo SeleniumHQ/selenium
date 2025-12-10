@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-class BrowsingContextEventsTest : BiDiTestFixture
+internal class BrowsingContextEventsTest : BiDiTestFixture
 {
     [Test]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]

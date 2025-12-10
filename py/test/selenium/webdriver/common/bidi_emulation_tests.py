@@ -16,7 +16,14 @@
 # under the License.
 import pytest
 
-from selenium.webdriver.common.bidi.emulation import Emulation, GeolocationCoordinates, GeolocationPositionError
+from selenium.webdriver.common.bidi.emulation import (
+    Emulation,
+    GeolocationCoordinates,
+    GeolocationPositionError,
+    ScreenOrientation,
+    ScreenOrientationNatural,
+    ScreenOrientationType,
+)
 from selenium.webdriver.common.bidi.permissions import PermissionState
 from selenium.webdriver.common.window import WindowTypes
 
@@ -64,14 +71,48 @@ def get_browser_geolocation(driver, user_context=None):
     """)
 
 
+def get_browser_locale(driver):
+    result = driver.script._evaluate(
+        "Intl.DateTimeFormat().resolvedOptions().locale",
+        {"context": driver.current_window_handle},
+        await_promise=False,
+    )
+    return result.result["value"]
+
+
+def get_screen_orientation(driver, context_id):
+    result = driver.script._evaluate(
+        "screen.orientation.type",
+        {"context": context_id},
+        await_promise=False,
+    )
+    orientation_type = result.result["value"]
+
+    result = driver.script._evaluate(
+        "screen.orientation.angle",
+        {"context": context_id},
+        await_promise=False,
+    )
+    orientation_angle = result.result["value"]
+
+    return {"type": orientation_type, "angle": orientation_angle}
+
+
+def get_browser_user_agent(driver):
+    result = driver.script._evaluate(
+        "navigator.userAgent",
+        {"context": driver.current_window_handle},
+        await_promise=False,
+    )
+    return result.result["value"]
+
+
 def test_emulation_initialized(driver):
-    """Test that the emulation module is initialized properly."""
     assert driver.emulation is not None
     assert isinstance(driver.emulation, Emulation)
 
 
 def test_set_geolocation_override_with_coordinates_in_context(driver, pages):
-    """Test setting geolocation override with coordinates."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
     coords = GeolocationCoordinates(45.5, -122.4194, accuracy=10.0)
@@ -87,7 +128,6 @@ def test_set_geolocation_override_with_coordinates_in_context(driver, pages):
 
 
 def test_set_geolocation_override_with_coordinates_in_user_context(driver, pages):
-    """Test setting geolocation override with coordinates in a user context."""
     # Create a user context
     user_context = driver.browser.create_user_context()
 
@@ -112,7 +152,6 @@ def test_set_geolocation_override_with_coordinates_in_user_context(driver, pages
 
 
 def test_set_geolocation_override_all_coords(driver, pages):
-    """Test setting geolocation override with coordinates."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
     coords = GeolocationCoordinates(
@@ -138,7 +177,6 @@ def test_set_geolocation_override_all_coords(driver, pages):
 
 
 def test_set_geolocation_override_with_multiple_contexts(driver, pages):
-    """Test setting geolocation override with multiple browsing contexts."""
     # Create two browsing contexts
     context1_id = driver.browsing_context.create(type=WindowTypes.TAB)
     context2_id = driver.browsing_context.create(type=WindowTypes.TAB)
@@ -172,7 +210,6 @@ def test_set_geolocation_override_with_multiple_contexts(driver, pages):
 
 
 def test_set_geolocation_override_with_multiple_user_contexts(driver, pages):
-    """Test setting geolocation override with multiple user contexts."""
     # Create two user contexts
     user_context1 = driver.browser.create_user_context()
     user_context2 = driver.browser.create_user_context()
@@ -220,7 +257,6 @@ def test_set_geolocation_override_with_multiple_user_contexts(driver, pages):
 
 @pytest.mark.xfail_firefox
 def test_set_geolocation_override_with_error(driver, pages):
-    """Test setting geolocation override with error."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
 
@@ -233,7 +269,6 @@ def test_set_geolocation_override_with_error(driver, pages):
 
 
 def test_set_timezone_override_with_context(driver, pages):
-    """Test setting timezone override with a browsing context."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
 
@@ -258,7 +293,6 @@ def test_set_timezone_override_with_context(driver, pages):
 
 
 def test_set_timezone_override_with_user_context(driver, pages):
-    """Test setting timezone override with a user context."""
     user_context = driver.browser.create_user_context()
     context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
 
@@ -278,7 +312,6 @@ def test_set_timezone_override_with_user_context(driver, pages):
 
 @pytest.mark.xfail_firefox(reason="Firefox returns UTC as timezone string in case of offset.")
 def test_set_timezone_override_using_offset(driver, pages):
-    """Test setting timezone override using offset."""
     context_id = driver.current_window_handle
     pages.load("blank.html")
 
@@ -293,3 +326,251 @@ def test_set_timezone_override_using_offset(driver, pages):
     assert timezone_string == "+05:30", f"Expected timezone '+05:30', got: {timezone_string}"
 
     driver.emulation.set_timezone_override(timezone=None, contexts=[context_id])
+
+
+@pytest.mark.parametrize(
+    "locale,expected_locale",
+    [
+        # Locale with Unicode extension keyword for collation.
+        ("de-DE-u-co-phonebk", "de-DE"),
+        # Lowercase language and region.
+        ("fr-ca", "fr-CA"),
+        # Uppercase language and region (should be normalized by Intl.Locale).
+        ("FR-CA", "fr-CA"),
+        # Mixed case language and region (should be normalized by Intl.Locale).
+        ("fR-cA", "fr-CA"),
+        # Locale with transform extension (simple case).
+        ("en-t-zh", "en"),
+    ],
+)
+def test_set_locale_override_with_contexts(driver, pages, locale, expected_locale):
+    context_id = driver.current_window_handle
+
+    driver.emulation.set_locale_override(locale=locale, contexts=[context_id])
+
+    driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+    current_locale = get_browser_locale(driver)
+    assert current_locale == expected_locale, f"Expected locale {expected_locale}, got {current_locale}"
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        # Simple language code (2-letter).
+        "en",
+        # Language and region (both 2-letter).
+        "en-US",
+        # Language and script (4-letter).
+        "sr-Latn",
+        # Language, script, and region.
+        "zh-Hans-CN",
+    ],
+)
+def test_set_locale_override_with_user_contexts(driver, pages, value):
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+
+            driver.emulation.set_locale_override(locale=value, user_contexts=[user_context])
+
+            driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
+
+            current_locale = get_browser_locale(driver)
+            assert current_locale == value, f"Expected locale {value}, got {current_locale}"
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_firefox(reason="Not yet supported")
+def test_set_scripting_enabled_with_contexts(driver, pages):
+    context_id = driver.current_window_handle
+
+    # disable scripting
+    driver.emulation.set_scripting_enabled(enabled=False, contexts=[context_id])
+
+    driver.browsing_context.navigate(
+        context=context_id,
+        url="data:text/html,<script>window.foo=123;</script>",
+        wait="complete",
+    )
+    result = driver.script._evaluate("'foo' in window", {"context": context_id}, await_promise=False)
+    assert result.result["value"] is False, "Page script should not have executed when scripting is disabled"
+
+    # clear override via None to restore JS
+    driver.emulation.set_scripting_enabled(enabled=None, contexts=[context_id])
+    driver.browsing_context.navigate(
+        context=context_id,
+        url="data:text/html,<script>window.foo=123;</script>",
+        wait="complete",
+    )
+    result = driver.script._evaluate("'foo' in window", {"context": context_id}, await_promise=False)
+    assert result.result["value"] is True, "Page script should execute after clearing the override"
+
+
+@pytest.mark.xfail_firefox(reason="Not yet supported")
+def test_set_scripting_enabled_with_user_contexts(driver, pages):
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+
+            driver.emulation.set_scripting_enabled(enabled=False, user_contexts=[user_context])
+
+            url = pages.url("javascriptPage.html")
+            driver.browsing_context.navigate(context_id, url, wait="complete")
+
+            # Check that inline event handlers don't work; this page has an onclick handler
+            click_field = driver.find_element("id", "clickField")
+            initial_value = click_field.get_attribute("value")  # initial value is 'Hello'
+            click_field.click()
+
+            # Get the value after click, it should remain unchanged if scripting is disabled
+            result_value = driver.script._evaluate(
+                "document.getElementById('clickField').value", {"context": context_id}, await_promise=False
+            )
+            assert result_value.result["value"] == initial_value, (
+                "Inline onclick handler should not execute, i.e, value should not change to 'clicked'"
+            )
+
+            # Clear the scripting override
+            driver.emulation.set_scripting_enabled(enabled=None, user_contexts=[user_context])
+
+            driver.browsing_context.navigate(context_id, url, wait="complete")
+
+            # Click the element again, it should change to 'Clicked' now
+            driver.find_element("id", "clickField").click()
+            result_value = driver.script._evaluate(
+                "document.getElementById('clickField').value", {"context": context_id}, await_promise=False
+            )
+            assert result_value.result["value"] == "Clicked"
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+def test_set_screen_orientation_override_with_contexts(driver, pages):
+    context_id = driver.current_window_handle
+    initial_orientation = get_screen_orientation(driver, context_id)
+
+    # Set landscape-primary orientation
+    orientation = ScreenOrientation(
+        natural=ScreenOrientationNatural.LANDSCAPE,
+        type=ScreenOrientationType.LANDSCAPE_PRIMARY,
+    )
+    driver.emulation.set_screen_orientation_override(screen_orientation=orientation, contexts=[context_id])
+
+    url = pages.url("formPage.html")
+    driver.browsing_context.navigate(context_id, url, wait="complete")
+
+    # Verify the orientation was set
+    current_orientation = get_screen_orientation(driver, context_id)
+    assert current_orientation["type"] == "landscape-primary", f"Expected landscape-primary, got {current_orientation}"
+    assert current_orientation["angle"] == 0, f"Expected angle 0, got {current_orientation['angle']}"
+
+    # Set portrait-secondary orientation
+    orientation = ScreenOrientation(
+        natural=ScreenOrientationNatural.PORTRAIT,
+        type=ScreenOrientationType.PORTRAIT_SECONDARY,
+    )
+    driver.emulation.set_screen_orientation_override(screen_orientation=orientation, contexts=[context_id])
+
+    # Verify the orientation was changed
+    current_orientation = get_screen_orientation(driver, context_id)
+    assert current_orientation["type"] == "portrait-secondary", (
+        f"Expected portrait-secondary, got {current_orientation}"
+    )
+    assert current_orientation["angle"] == 180, f"Expected angle 180, got {current_orientation['angle']}"
+
+    driver.emulation.set_screen_orientation_override(screen_orientation=None, contexts=[context_id])
+
+    # Verify orientation was cleared
+    assert get_screen_orientation(driver, context_id) == initial_orientation
+
+
+@pytest.mark.parametrize(
+    "natural,orientation_type,expected_angle",
+    [
+        # Portrait natural orientations
+        ("Portrait", "portrait-primary", 0),
+        ("portrait", "portrait-secondary", 180),
+        ("portrait", "landscape-primary", 90),
+        ("portrait", "landscape-secondary", 270),
+        # Landscape natural orientations
+        ("Landscape", "Portrait-Primary", 90),  # test with different casing
+        ("landscape", "portrait-secondary", 270),
+        ("landscape", "landscape-primary", 0),
+        ("landscape", "landscape-secondary", 180),
+    ],
+)
+def test_set_screen_orientation_override_with_user_contexts(driver, pages, natural, orientation_type, expected_angle):
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+
+            # Set the specified orientation
+            orientation = ScreenOrientation(natural=natural, type=orientation_type)
+            driver.emulation.set_screen_orientation_override(
+                screen_orientation=orientation, user_contexts=[user_context]
+            )
+
+            url = pages.url("formPage.html")
+            driver.browsing_context.navigate(context_id, url, wait="complete")
+
+            # Verify the orientation was set
+            current_orientation = get_screen_orientation(driver, context_id)
+
+            assert current_orientation["type"] == orientation_type.lower()
+            assert current_orientation["angle"] == expected_angle
+
+            driver.emulation.set_screen_orientation_override(screen_orientation=None, user_contexts=[user_context])
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+def test_set_user_agent_override_with_contexts(driver, pages):
+    context_id = driver.current_window_handle
+    url = pages.url("formPage.html")
+    driver.browsing_context.navigate(context_id, url, wait="complete")
+    initial_user_agent = get_browser_user_agent(driver)
+
+    custom_user_agent = "Mozilla/5.0 (Custom Test Agent)"
+    driver.emulation.set_user_agent_override(user_agent=custom_user_agent, contexts=[context_id])
+
+    assert get_browser_user_agent(driver) == custom_user_agent
+
+    driver.emulation.set_user_agent_override(user_agent=None, contexts=[context_id])
+    assert get_browser_user_agent(driver) == initial_user_agent
+
+
+def test_set_user_agent_override_with_user_contexts(driver, pages):
+    user_context = driver.browser.create_user_context()
+    try:
+        context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
+        try:
+            driver.switch_to.window(context_id)
+            url = pages.url("formPage.html")
+            driver.browsing_context.navigate(context_id, url, wait="complete")
+            initial_user_agent = get_browser_user_agent(driver)
+
+            custom_user_agent = "Mozilla/5.0 (Custom User Context Agent)"
+            driver.emulation.set_user_agent_override(user_agent=custom_user_agent, user_contexts=[user_context])
+
+            assert get_browser_user_agent(driver) == custom_user_agent
+
+            driver.emulation.set_user_agent_override(user_agent=None, user_contexts=[user_context])
+            assert get_browser_user_agent(driver) == initial_user_agent
+        finally:
+            driver.browsing_context.close(context_id)
+    finally:
+        driver.browser.remove_user_context(user_context)

@@ -17,8 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class RemovePreloadScriptCommand(RemovePreloadScriptParameters @params)

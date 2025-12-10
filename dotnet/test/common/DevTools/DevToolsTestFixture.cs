@@ -19,6 +19,7 @@
 
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.DevTools;
 
@@ -27,10 +28,8 @@ public class DevToolsTestFixture : DriverTestFixture
     protected IDevTools devTools;
     protected IDevToolsSession session;
 
-    public bool IsDevToolsSupported
-    {
-        get { return devTools != null; }
-    }
+    [MemberNotNullWhen(true, nameof(devTools))]
+    public bool IsDevToolsSupported => devTools != null;
 
     [SetUp]
     public void Setup()

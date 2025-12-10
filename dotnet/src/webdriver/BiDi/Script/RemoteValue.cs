@@ -17,8 +17,8 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
+using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -252,7 +252,7 @@ public sealed record HtmlCollectionRemoteValue : RemoteValue
     public IReadOnlyList<RemoteValue>? Value { get; set; }
 }
 
-public sealed record NodeRemoteValue(string? SharedId, NodeProperties? Value) : RemoteValue, ISharedReference
+public sealed record NodeRemoteValue(string SharedId, NodeProperties? Value) : RemoteValue, ISharedReference
 {
     public Handle? Handle { get; set; }
 

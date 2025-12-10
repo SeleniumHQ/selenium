@@ -61,7 +61,8 @@ module Selenium
 
         it 'target type is service_worker' do
           driver.devtools.page.navigate(url: url_for('service_worker.html'))
-          sleep 0.5 # wait for service worker to register
+          wait_for_devtools_target(target_type: 'service_worker')
+
           target = driver.devtools(target_type: 'service_worker').target
           expect(target.get_target_info.dig('result', 'targetInfo', 'type')).to eq 'service_worker'
         end
@@ -69,7 +70,7 @@ module Selenium
         it 'throws an error for unknown target type' do
           driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
           expect { driver.devtools(target_type: 'unknown') }
-            .to raise_error(Selenium::WebDriver::Error::WebDriverError, "Target type 'unknown' not found")
+            .to raise_error(Selenium::WebDriver::Error::NoSuchTargetError, "Target type 'unknown' not found")
         end
       end
 
@@ -98,26 +99,20 @@ module Selenium
 
       it 'notifies about log messages' do
         logs = []
-        driver.on_log_event(:console) { |log| logs.push(log) }
+        driver.on_log_event(:console) { |log| logs.push(log.args[0]) }
         driver.navigate.to url_for('javascriptPage.html')
 
-        driver.execute_script("console.log('I like cheese');")
-        sleep 0.5
         driver.execute_script('console.log(true);')
-        sleep 0.5
         driver.execute_script('console.log(null);')
-        sleep 0.5
         driver.execute_script('console.log(undefined);')
-        sleep 0.5
         driver.execute_script('console.log(document);')
-        sleep 0.5
+        driver.execute_script("console.log('I like cheese');")
 
-        expect(logs).to include(
-          an_object_having_attributes(type: :log, args: ['I like cheese']),
-          an_object_having_attributes(type: :log, args: [true]),
-          an_object_having_attributes(type: :log, args: [nil]),
-          an_object_having_attributes(type: :log, args: [{'type' => 'undefined'}])
-        )
+        wait.until { logs.include?('I like cheese') }
+
+        expect(logs).to include(true)
+        expect(logs).to include(nil)
+        expect(logs).to include({'type' => 'undefined'})
       end
 
       it 'notifies about document log messages' do

@@ -143,8 +143,7 @@ class ErrorHandler:
     """Handles errors returned by the WebDriver server."""
 
     def check_response(self, response: dict[str, Any]) -> None:
-        """Checks that a JSON response from the WebDriver does not have an
-        error.
+        """Check that a JSON response from the WebDriver does not have an error.
 
         Args:
             response: The JSON response from the WebDriver server as a dictionary
