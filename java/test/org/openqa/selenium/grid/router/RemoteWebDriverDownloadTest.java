@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
@@ -36,8 +37,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -98,7 +97,7 @@ class RemoteWebDriverDownloadTest {
     executor.shutdownNow();
   }
 
-  @Test
+  @RepeatedTest(10)
   @Ignore(IE)
   @Ignore(SAFARI)
   void canListDownloadedFiles() {
@@ -111,27 +110,32 @@ class RemoteWebDriverDownloadTest {
     driver.findElement(By.id("file-2")).click();
 
     HasDownloads hasDownloads = (HasDownloads) driver;
-    new WebDriverWait(driver, Duration.ofSeconds(5))
+    new WebDriverWait(driver, Duration.ofSeconds(5), Duration.ofMillis(50))
         .until(
-            d ->
-                hasDownloads.getDownloadableFiles().stream()
-                        // ensure we hit no temporary file created by the browser while
-                        // downloading
-                        .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
-                        .count()
-                    == 2);
+            d -> {
+              List<String> files = hasDownloads.getDownloadableFiles();
+              List<String> matchingFiles =
+                  files.stream()
+                      .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
+                      .collect(toList());
+              System.out.printf(
+                  "[*****] FOUND %s FILES: %s; MATCHING %s FILES: %s%n",
+                  files.size(), files, matchingFiles.size(), matchingFiles);
+              // ensure we hit no temporary file created by the browser while downloading
+              return matchingFiles.size() == 2;
+            });
 
     List<String> downloadableFiles = hasDownloads.getDownloadableFiles();
     assertThat(downloadableFiles).contains("file_1.txt", "file_2.jpg");
 
     List<DownloadedFile> downloadedFiles = hasDownloads.getDownloadedFiles();
-    assertThat(downloadedFiles.stream().map(f -> f.getName()).collect(Collectors.toList()))
+    assertThat(downloadedFiles.stream().map(f -> f.getName()).collect(toList()))
         .contains("file_1.txt", "file_2.jpg");
 
     driver.quit();
   }
 
-  @RepeatedTest(20)
+  @RepeatedTest(10)
   @Ignore(IE)
   @Ignore(SAFARI)
   void canDownloadFiles() throws IOException {
@@ -142,20 +146,36 @@ class RemoteWebDriverDownloadTest {
     driver.get(appServer.whereIs("downloads/download.html"));
     driver.findElement(By.id("file-1")).click();
 
-    new WebDriverWait(driver, Duration.ofSeconds(5))
+    new WebDriverWait(driver, Duration.ofSeconds(5), Duration.ofMillis(50))
         .until(
             d ->
-                ((HasDownloads) d)
-                    .getDownloadableFiles().stream()
-                        // ensure we hit no temporary file created by the browser while downloading
-                        .anyMatch((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith)));
+            {
+              List<String> files = ((HasDownloads) d).getDownloadableFiles();
+              List<String> matchingFiles = files.stream()
+                .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
+                .collect(toList());
+              System.out.printf(
+                "[*****] FOUND %s FILES: %s; MATCHING %s FILES: %s%n",
+                files.size(), files, matchingFiles.size(), matchingFiles);
+
+              // ensure we hit no temporary file created by the browser while downloading
+              return !matchingFiles.isEmpty();
+            });
 
     DownloadedFile file = ((HasDownloads) driver).getDownloadedFiles().get(0);
 
     Path targetLocation = Files.createTempDirectory("download");
+    System.out.printf(
+      "[*****] DOWNLOADING FILE %s (size: %s) into %s...%n",
+      file.getName(), file.getSize(), targetLocation.toAbsolutePath());
+
     ((HasDownloads) driver).downloadFile(file.getName(), targetLocation);
 
     File localFile = targetLocation.resolve(file.getName()).toFile();
+    System.out.printf(
+      "[*****] DOWNLOADED FILE %s (size: %s) as %s (size: %s)...%n",
+      file.getName(), file.getSize(), localFile.getAbsolutePath(), localFile.length());
+
     assertThat(localFile).hasName(file.getName());
     assertThat(localFile).hasSize(file.getSize());
     assertThat(localFile).content().isEqualToIgnoringNewLines("Hello, World!");
@@ -175,16 +195,31 @@ class RemoteWebDriverDownloadTest {
     new WebDriverWait(driver, Duration.ofSeconds(5))
         .until(
             d ->
-                ((HasDownloads) d)
-                    .getDownloadableFiles().stream()
-                        // ensure we hit no temporary file created by the browser while downloading
-                        .anyMatch((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith)));
+            {
+              List<String> files = ((HasDownloads) d).getDownloadableFiles();
+              // ensure we hit no temporary file created by the browser while downloading
+              List<String> matchingFiles = files.stream()
+                .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
+                .collect(toList());
 
+              System.out.printf(
+                "[*****] FOUND %s FILES: %s; MATCHING %s FILES: %s%n",
+                files.size(), files, matchingFiles.size(), matchingFiles);
+
+              return !matchingFiles.isEmpty();
+            });
+
+    System.out.printf("[*****] Augmenting webdriver...%n");
     driver = new Augmenter().augment(driver);
+
+    System.out.printf("[*****] Deleting all downloaded files...%n");
     ((HasDownloads) driver).deleteDownloadableFiles();
 
     List<String> afterDeleteNames = ((HasDownloads) driver).getDownloadableFiles();
-    assertThat(afterDeleteNames.isEmpty()).isTrue();
+    System.out.printf(
+      "[*****] FOUND %s DOWNLOADED FILES: %s%n",
+      afterDeleteNames.size(), afterDeleteNames);
+    assertThat(afterDeleteNames).isEmpty();
 
     driver.quit();
   }
