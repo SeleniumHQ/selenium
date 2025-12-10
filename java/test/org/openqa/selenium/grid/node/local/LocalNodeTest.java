@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.local;
 
+import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -27,6 +28,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,14 +119,21 @@ class LocalNodeTest {
 
   @Test
   void canStopASession() {
-    node.stop(session.getId());
+    SessionId sessionId = session.getId();
+    assertThat(node.getSession(sessionId)).isNotNull();
+
+    node.stop(sessionId);
+
+    waitUntilNodeStopped(sessionId);
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> node.getSession(session.getId()));
+        .isThrownBy(() -> node.getSession(sessionId));
   }
 
   @Test
   void isNotOwnerOfAStoppedSession() {
     node.stop(session.getId());
+
+    waitUntilNodeStopped(session.getId());
     assertThat(node.isSessionOwner(session.getId())).isFalse();
   }
 
@@ -132,7 +141,9 @@ class LocalNodeTest {
   void cannotAcceptNewSessionsWhileDraining() {
     node.drain();
     assertThat(node.isDraining()).isTrue();
+
     node.stop(session.getId()); // stop the default session
+    waitUntilNodeStopped(session.getId());
 
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
@@ -155,41 +166,25 @@ class LocalNodeTest {
 
   @Test
   void canReturnStatusInfo() {
-    NodeStatus status = node.getStatus();
-    assertThat(
-            status.getSlots().stream()
-                .map(Slot::getSession)
-                .filter(Objects::nonNull)
-                .filter(s -> s.getId().equals(session.getId())))
-        .isNotEmpty();
+    SessionId sessionId = session.getId();
+    assertThat(findSession(sessionId)).isNotEmpty();
 
-    node.stop(session.getId());
-    status = node.getStatus();
-    assertThat(
-            status.getSlots().stream()
-                .map(Slot::getSession)
-                .filter(Objects::nonNull)
-                .filter(s -> s.getId().equals(session.getId())))
-        .isEmpty();
+    node.stop(sessionId);
+    waitUntilNodeStopped(sessionId);
+
+    assertThat(findSession(sessionId)).isEmpty();
   }
 
   @Test
   void nodeStatusInfoIsImmutable() {
+    SessionId sessionId = session.getId();
     NodeStatus status = node.getStatus();
-    assertThat(
-            status.getSlots().stream()
-                .map(Slot::getSession)
-                .filter(Objects::nonNull)
-                .filter(s -> s.getId().equals(session.getId())))
-        .isNotEmpty();
+    assertThat(findSession(status, sessionId)).isNotEmpty();
 
-    node.stop(session.getId());
-    assertThat(
-            status.getSlots().stream()
-                .map(Slot::getSession)
-                .filter(Objects::nonNull)
-                .filter(s -> s.getId().equals(session.getId())))
-        .isNotEmpty();
+    node.stop(sessionId);
+    waitUntilNodeStopped(sessionId);
+
+    assertThat(findSession(status, sessionId)).isNotEmpty();
   }
 
   @Test
@@ -433,5 +428,35 @@ class LocalNodeTest {
     Object bidiEnabled = capabilities.getCapability("se:bidiEnabled");
     assertThat(bidiEnabled).isNotNull();
     assertThat(Boolean.parseBoolean(bidiEnabled.toString())).isFalse();
+  }
+
+  @Test
+  void extractsFileNameFromRequestUri() {
+    assertThat(node.extractFileName("/session/1234/se/files/logo.png")).isEqualTo("logo.png");
+    assertThat(node.extractFileName("/session/1234/se/files/файл+with+tähtedega.png"))
+        .isEqualTo("файл+with+tähtedega.png");
+  }
+
+  private void waitUntilNodeStopped(SessionId sessionId) {
+    long timeout = Duration.ofSeconds(5).toMillis();
+
+    for (long start = currentTimeMillis(); currentTimeMillis() - start < timeout; ) {
+      if (findSession(sessionId).isEmpty()) {
+        break;
+      }
+    }
+  }
+
+  private Optional<Session> findSession(SessionId sessionId) {
+    NodeStatus status = node.getStatus();
+    return findSession(status, sessionId);
+  }
+
+  private Optional<Session> findSession(NodeStatus status, SessionId sessionId) {
+    return status.getSlots().stream()
+        .map(Slot::getSession)
+        .filter(Objects::nonNull)
+        .filter(s -> s.getId().equals(sessionId))
+        .findAny();
   }
 }

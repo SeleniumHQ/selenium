@@ -1,3 +1,4 @@
+load("@npm//javascript/atoms:google-closure-deps/package_json.bzl", closure_bin = "bin")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 py_binary(
@@ -8,4 +9,9 @@ py_binary(
     visibility = [
         "//visibility:public",
     ],
+)
+
+closure_bin.closure_make_deps_binary(
+    name = "closure_make_deps",
+    visibility = ["//javascript:__subpackages__"],
 )

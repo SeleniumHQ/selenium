@@ -30,70 +30,44 @@ using OSPlatform = System.Runtime.InteropServices.OSPlatform;
 namespace OpenQA.Selenium;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
-public class IgnorePlatformAttribute : NUnitAttribute, IApplyToTest
+public class IgnorePlatformAttribute(string platform) : NUnitAttribute, IApplyToTest
 {
-    private readonly String platform;
-    private readonly string ignoreReason = string.Empty;
-
-    public IgnorePlatformAttribute(string platform)
-    {
-        this.platform = platform.ToLower();
-    }
-
     public IgnorePlatformAttribute(string platform, string reason)
         : this(platform)
     {
-        this.ignoreReason = reason;
+        Reason = reason;
     }
 
-    public string Value
-    {
-        get { return platform; }
-    }
+    public string Value { get; } = platform;
 
-    public string Reason
-    {
-        get { return ignoreReason; }
-    }
+    public string Reason { get; } = string.Empty;
 
     public void ApplyToTest(Test test)
     {
         if (test.RunState != RunState.NotRunnable)
         {
-            List<Attribute> ignoreAttributes = new List<Attribute>();
+            IgnorePlatformAttribute[] ignoreAttributes;
             if (test.IsSuite)
             {
-                Attribute[] ignoreClassAttributes =
-                    test.TypeInfo.GetCustomAttributes<IgnorePlatformAttribute>(true);
-                if (ignoreClassAttributes.Length > 0)
-                {
-                    ignoreAttributes.AddRange(ignoreClassAttributes);
-                }
+                ignoreAttributes = test.TypeInfo.GetCustomAttributes<IgnorePlatformAttribute>(true);
             }
             else
             {
-                IgnorePlatformAttribute[] ignoreMethodAttributes =
-                    test.Method.GetCustomAttributes<IgnorePlatformAttribute>(true);
-                if (ignoreMethodAttributes.Length > 0)
-                {
-                    ignoreAttributes.AddRange(ignoreMethodAttributes);
-                }
+                ignoreAttributes = test.Method.GetCustomAttributes<IgnorePlatformAttribute>(true);
             }
 
-            foreach (Attribute attr in ignoreAttributes)
+            foreach (IgnorePlatformAttribute platformToIgnoreAttr in ignoreAttributes)
             {
-                IgnorePlatformAttribute platformToIgnoreAttr = attr as IgnorePlatformAttribute;
-                if (platformToIgnoreAttr != null && IgnoreTestForPlatform(platformToIgnoreAttr.Value))
+                if (IgnoreTestForPlatform(platformToIgnoreAttr.Value))
                 {
-                    string ignoreReason =
-                        "Ignoring platform " + EnvironmentManager.Instance.Browser.ToString() + ".";
+                    string ignoreReason = "Ignoring platform " + EnvironmentManager.Instance.Browser.ToString() + ".";
                     if (!string.IsNullOrEmpty(platformToIgnoreAttr.Reason))
                     {
                         ignoreReason = ignoreReason + " " + platformToIgnoreAttr.Reason;
                     }
 
                     test.RunState = RunState.Ignored;
-                    test.Properties.Set(PropertyNames.SkipReason, platformToIgnoreAttr.Reason);
+                    test.Properties.Set(PropertyNames.SkipReason, ignoreReason);
                 }
             }
         }
@@ -101,7 +75,7 @@ public class IgnorePlatformAttribute : NUnitAttribute, IApplyToTest
 
     private bool IgnoreTestForPlatform(string platformToIgnore)
     {
-        return CurrentPlatform() != null && platformToIgnore.Equals(CurrentPlatform());
+        return platformToIgnore.Equals(CurrentPlatform(), StringComparison.OrdinalIgnoreCase);
     }
 
     private string CurrentPlatform()

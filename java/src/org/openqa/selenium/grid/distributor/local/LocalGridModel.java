@@ -71,7 +71,7 @@ public class LocalGridModel extends GridModel {
     this.events = Require.nonNull("Event bus", events);
 
     this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
-    this.events.addListener(SessionClosedEvent.listener(this::release));
+    this.events.addListener(SessionClosedEvent.sessionListener(this::release));
   }
 
   public static LocalGridModel create(Config config) {

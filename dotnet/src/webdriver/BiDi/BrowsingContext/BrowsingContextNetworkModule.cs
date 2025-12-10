@@ -17,60 +17,66 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
-using System;
 using OpenQA.Selenium.BiDi.Network;
+using System;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextNetworkModule(BrowsingContext context, NetworkModule networkModule)
 {
-    public async Task<Intercept> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null)
+    public async Task<Interception> InterceptRequestAsync(Func<InterceptedRequest, Task> handler, InterceptRequestOptions? options = null)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var intercept = await networkModule.AddInterceptAsync([InterceptPhase.BeforeRequestSent], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.BeforeRequestSent], addInterceptOptions).ConfigureAwait(false);
 
-        await intercept.OnBeforeRequestSentAsync(
+        Interception interception = new(context.BiDi, interceptResult.Intercept);
+
+        await interception.OnBeforeRequestSentAsync(
             async req => await handler(new(req.BiDi, req.Context, req.IsBlocked, req.Navigation, req.RedirectCount, req.Request, req.Timestamp, req.Initiator, req.Intercepts)),
-            new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
+            new() { Contexts = [context] }).ConfigureAwait(false);
 
-        return intercept;
+        return interception;
     }
 
-    public async Task<Intercept> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null)
+    public async Task<Interception> InterceptResponseAsync(Func<InterceptedResponse, Task> handler, InterceptResponseOptions? options = null)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var intercept = await networkModule.AddInterceptAsync([InterceptPhase.ResponseStarted], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.ResponseStarted], addInterceptOptions).ConfigureAwait(false);
 
-        await intercept.OnResponseStartedAsync(
+        Interception interception = new(context.BiDi, interceptResult.Intercept);
+
+        await interception.OnResponseStartedAsync(
             async res => await handler(new(res.BiDi, res.Context, res.IsBlocked, res.Navigation, res.RedirectCount, res.Request, res.Timestamp, res.Response, res.Intercepts)),
-            new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
+            new() { Contexts = [context] }).ConfigureAwait(false);
 
-        return intercept;
+        return interception;
     }
 
-    public async Task<Intercept> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null)
+    public async Task<Interception> InterceptAuthAsync(Func<InterceptedAuth, Task> handler, InterceptAuthOptions? options = null)
     {
         AddInterceptOptions addInterceptOptions = new(options)
         {
             Contexts = [context]
         };
 
-        var intercept = await networkModule.AddInterceptAsync([InterceptPhase.AuthRequired], addInterceptOptions).ConfigureAwait(false);
+        var interceptResult = await networkModule.AddInterceptAsync([InterceptPhase.AuthRequired], addInterceptOptions).ConfigureAwait(false);
 
-        await intercept.OnAuthRequiredAsync(
+        Interception interception = new(context.BiDi, interceptResult.Intercept);
+
+        await interception.OnAuthRequiredAsync(
             async auth => await handler(new(auth.BiDi, auth.Context, auth.IsBlocked, auth.Navigation, auth.RedirectCount, auth.Request, auth.Timestamp, auth.Response, auth.Intercepts)),
-            new BrowsingContextsSubscriptionOptions(null) { Contexts = [context] }).ConfigureAwait(false);
+            new() { Contexts = [context] }).ConfigureAwait(false);
 
-        return intercept;
+        return interception;
     }
 
     public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)
@@ -83,54 +89,114 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return networkModule.SetCacheBehaviorAsync(behavior, setCacheBehaviorOptions);
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnBeforeRequestSentAsync(Func<BeforeRequestSentEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnBeforeRequestSentAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnBeforeRequestSentAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnBeforeRequestSentAsync(Action<BeforeRequestSentEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnBeforeRequestSentAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnBeforeRequestSentAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnResponseStartedAsync(Func<ResponseStartedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnResponseStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnResponseStartedAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnResponseStartedAsync(Action<ResponseStartedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnResponseStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnResponseStartedAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnResponseCompletedAsync(Func<ResponseCompletedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnResponseCompletedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnResponseCompletedAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnResponseCompletedAsync(Action<ResponseCompletedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnResponseCompletedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnResponseCompletedAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnFetchErrorAsync(Func<FetchErrorEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnFetchErrorAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnFetchErrorAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnFetchErrorAsync(Action<FetchErrorEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnFetchErrorAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnFetchErrorAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnAuthRequiredAsync(Func<AuthRequiredEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnAuthRequiredAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnAuthRequiredAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
     }
 
-    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnAuthRequiredAsync(Action<AuthRequiredEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return networkModule.OnAuthRequiredAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [context] });
+        return networkModule.OnAuthRequiredAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 }
 

@@ -17,19 +17,22 @@
 
 package org.openqa.selenium.json;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.WebDriverException;
 
+@NullMarked
 public class JsonException extends WebDriverException {
 
-  public JsonException(String message) {
+  public JsonException(@Nullable String message) {
     super(message);
   }
 
-  public JsonException(Throwable cause) {
+  public JsonException(@Nullable Throwable cause) {
     super(cause);
   }
 
-  public JsonException(String message, Throwable cause) {
+  public JsonException(@Nullable String message, @Nullable Throwable cause) {
     super(message, cause);
   }
 }

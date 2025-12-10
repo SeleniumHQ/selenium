@@ -15,9 +15,64 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Optional, Union
+from enum import Enum
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
+
+
+class ScreenOrientationNatural(Enum):
+    """Natural screen orientation."""
+
+    PORTRAIT = "portrait"
+    LANDSCAPE = "landscape"
+
+
+class ScreenOrientationType(Enum):
+    """Screen orientation type."""
+
+    PORTRAIT_PRIMARY = "portrait-primary"
+    PORTRAIT_SECONDARY = "portrait-secondary"
+    LANDSCAPE_PRIMARY = "landscape-primary"
+    LANDSCAPE_SECONDARY = "landscape-secondary"
+
+
+def _convert_to_enum(value, enum_class):
+    if isinstance(value, enum_class):
+        return value
+    try:
+        return enum_class(value.lower())
+    except ValueError:
+        raise ValueError(f"Invalid orientation: {value}")
+
+
+class ScreenOrientation:
+    """Represents screen orientation configuration."""
+
+    def __init__(
+        self,
+        natural: ScreenOrientationNatural | str,
+        type: ScreenOrientationType | str,
+    ):
+        """Initialize ScreenOrientation.
+
+        Args:
+            natural: Natural screen orientation ("portrait" or "landscape").
+            type: Screen orientation type ("portrait-primary", "portrait-secondary",
+                "landscape-primary", or "landscape-secondary").
+
+        Raises:
+            ValueError: If natural or type values are invalid.
+        """
+        # handle string values
+        self.natural = _convert_to_enum(natural, ScreenOrientationNatural)
+        self.type = _convert_to_enum(type, ScreenOrientationType)
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "natural": self.natural.value,
+            "type": self.type.value,
+        }
 
 
 class GeolocationCoordinates:
@@ -28,15 +83,14 @@ class GeolocationCoordinates:
         latitude: float,
         longitude: float,
         accuracy: float = 1.0,
-        altitude: Optional[float] = None,
-        altitude_accuracy: Optional[float] = None,
-        heading: Optional[float] = None,
-        speed: Optional[float] = None,
+        altitude: float | None = None,
+        altitude_accuracy: float | None = None,
+        heading: float | None = None,
+        speed: float | None = None,
     ):
         """Initialize GeolocationCoordinates.
 
-        Parameters:
-        -----------
+        Args:
             latitude: Latitude coordinate (-90.0 to 90.0).
             longitude: Longitude coordinate (-180.0 to 180.0).
             accuracy: Accuracy in meters (>= 0.0), defaults to 1.0.
@@ -46,7 +100,6 @@ class GeolocationCoordinates:
             speed: Speed in meters per second (>= 0.0) or None, defaults to None.
 
         Raises:
-        ------
             ValueError: If coordinates are out of valid range or if altitude_accuracy is provided without altitude.
         """
         self.latitude = latitude
@@ -127,8 +180,8 @@ class GeolocationCoordinates:
             raise ValueError("speed must be >= 0.0")
         self._speed = value
 
-    def to_dict(self) -> dict[str, Union[float, None]]:
-        result: dict[str, Union[float, None]] = {
+    def to_dict(self) -> dict[str, float | None]:
+        result: dict[str, float | None] = {
             "latitude": self.latitude,
             "longitude": self.longitude,
             "accuracy": self.accuracy,
@@ -164,34 +217,30 @@ class GeolocationPositionError:
 
 
 class Emulation:
-    """
-    BiDi implementation of the emulation module.
-    """
+    """BiDi implementation of the emulation module."""
 
     def __init__(self, conn):
         self.conn = conn
 
     def set_geolocation_override(
         self,
-        coordinates: Optional[GeolocationCoordinates] = None,
-        error: Optional[GeolocationPositionError] = None,
-        contexts: Optional[list[str]] = None,
-        user_contexts: Optional[list[str]] = None,
+        coordinates: GeolocationCoordinates | None = None,
+        error: GeolocationPositionError | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
     ) -> None:
         """Set geolocation override for the given contexts or user contexts.
 
-        Parameters:
-        -----------
+        Args:
             coordinates: Geolocation coordinates to emulate, or None.
             error: Geolocation error to emulate, or None.
             contexts: List of browsing context IDs to apply the override to.
             user_contexts: List of user context IDs to apply the override to.
 
         Raises:
-        ------
             ValueError: If both coordinates and error are provided, or if both contexts
-                       and user_contexts are provided, or if neither contexts nor
-                       user_contexts are provided.
+                and user_contexts are provided, or if neither contexts nor
+                user_contexts are provided.
         """
         if coordinates is not None and error is not None:
             raise ValueError("Cannot specify both coordinates and error")
@@ -215,3 +264,170 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setGeolocationOverride", params))
+
+    def set_timezone_override(
+        self,
+        timezone: str | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set timezone override for the given contexts or user contexts.
+
+        Args:
+            timezone: Timezone identifier (IANA timezone name or offset string like '+01:00'),
+                or None to clear the override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and user_contexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or user_contexts")
+
+        params: dict[str, Any] = {"timezone": timezone}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setTimezoneOverride", params))
+
+    def set_locale_override(
+        self,
+        locale: str | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set locale override for the given contexts or user contexts.
+
+        Args:
+            locale: Locale string as per BCP 47, or None to clear override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided, or if locale is invalid.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and userContexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or userContexts")
+
+        params: dict[str, Any] = {"locale": locale}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setLocaleOverride", params))
+
+    def set_scripting_enabled(
+        self,
+        enabled: bool | None = False,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set scripting enabled override for the given contexts or user contexts.
+
+        Args:
+            enabled: False to disable scripting, None to clear the override.
+                Note: Only emulation of disabled JavaScript is supported.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided, or if enabled is True.
+        """
+        if enabled:
+            raise ValueError("Only emulation of disabled JavaScript is supported (enabled must be False or None)")
+
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and userContexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or userContexts")
+
+        params: dict[str, Any] = {"enabled": enabled}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setScriptingEnabled", params))
+
+    def set_screen_orientation_override(
+        self,
+        screen_orientation: ScreenOrientation | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set screen orientation override for the given contexts or user contexts.
+
+        Args:
+            screen_orientation: ScreenOrientation object to emulate, or None to clear the override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and userContexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or userContexts")
+
+        params: dict[str, Any] = {
+            "screenOrientation": screen_orientation.to_dict() if screen_orientation is not None else None
+        }
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setScreenOrientationOverride", params))
+
+    def set_user_agent_override(
+        self,
+        user_agent: str | None = None,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set user agent override for the given contexts or user contexts.
+
+        Args:
+            user_agent: User agent string to emulate, or None to clear the override.
+            contexts: List of browsing context IDs to apply the override to.
+            user_contexts: List of user context IDs to apply the override to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and user_contexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or user_contexts")
+
+        params: dict[str, Any] = {"userAgent": user_agent}
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setUserAgentOverride", params))

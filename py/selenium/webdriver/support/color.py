@@ -48,7 +48,6 @@ class Color:
     """Color conversion support class.
 
     Example:
-
     ::
 
         from selenium.webdriver.support.color import Color

@@ -32,6 +32,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -67,6 +69,7 @@ import org.openqa.selenium.remote.http.HttpClient;
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
  * It is used as the base class for Chromium-based browser drivers (Chrome, Edge).
  */
+@NullMarked
 public class ChromiumDriver extends RemoteWebDriver
     implements HasAuthentication,
         HasBiDi,
@@ -90,8 +93,15 @@ public class ChromiumDriver extends RemoteWebDriver
   private final Optional<DevTools> devTools;
   private final Optional<URI> biDiUri;
   private final Optional<BiDi> biDi;
-  protected HasCasting casting;
-  protected HasCdp cdp;
+
+  /**
+   * May be null when the driver does not support casting; initialized during setup if available.
+   */
+  protected @Nullable HasCasting casting;
+
+  /** May be null when CDP is unavailable for the current browser/session. */
+  protected @Nullable HasCdp cdp;
+
   private final Map<Integer, ScriptKey> scriptKeys = new HashMap<>();
 
   protected ChromiumDriver(

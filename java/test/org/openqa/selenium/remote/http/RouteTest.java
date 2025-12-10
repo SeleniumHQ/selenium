@@ -27,7 +27,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +39,7 @@ class RouteTest {
         Route.get("/hello")
             .to(() -> req -> new HttpResponse().setContent(utf8String("Hello, World!")));
 
-    Assertions.assertThat(route.matches(new HttpRequest(GET, "/greeting"))).isFalse();
+    assertThat(route.matches(new HttpRequest(GET, "/greeting"))).isFalse();
   }
 
   @Test
@@ -50,7 +49,7 @@ class RouteTest {
             .to(() -> req -> new HttpResponse().setContent(utf8String("Hello, World!")));
 
     HttpRequest request = new HttpRequest(GET, "/hello");
-    Assertions.assertThat(route.matches(request)).isTrue();
+    assertThat(route.matches(request)).isTrue();
 
     HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("Hello, World!");
@@ -68,7 +67,7 @@ class RouteTest {
                                 utf8String(String.format("Hello, %s!", params.get("name")))));
 
     HttpRequest request = new HttpRequest(POST, "/greeting/cheese");
-    Assertions.assertThat(route.matches(request)).isTrue();
+    assertThat(route.matches(request)).isTrue();
 
     HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("Hello, cheese!");
@@ -83,7 +82,7 @@ class RouteTest {
                     .to(() -> req -> new HttpResponse().setContent(utf8String("brie"))));
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
-    Assertions.assertThat(route.matches(request)).isTrue();
+    assertThat(route.matches(request)).isTrue();
     HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("brie");
   }
@@ -103,12 +102,12 @@ class RouteTest {
                                             .setContent(Contents.utf8String(params.get("kind"))))));
 
     HttpRequest good = new HttpRequest(GET, "/cheese/favourite/is/stilton");
-    Assertions.assertThat(route.matches(good)).isTrue();
+    assertThat(route.matches(good)).isTrue();
     HttpResponse response = route.execute(good);
     assertThat(string(response)).isEqualTo("stilton");
 
     HttpRequest bad = new HttpRequest(GET, "/cheese/favourite/not-here");
-    Assertions.assertThat(route.matches(bad)).isFalse();
+    assertThat(route.matches(bad)).isFalse();
   }
 
   @Test
@@ -123,7 +122,7 @@ class RouteTest {
                                 new HttpResponse().setContent(Contents.utf8String(req.getUri()))));
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
-    Assertions.assertThat(route.matches(request)).isTrue();
+    assertThat(route.matches(request)).isTrue();
     HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("/type");
   }
@@ -137,12 +136,12 @@ class RouteTest {
                 .to(() -> req -> new HttpResponse().setContent(utf8String("gouda"))));
 
     HttpRequest greet = new HttpRequest(GET, "/hello");
-    Assertions.assertThat(route.matches(greet)).isTrue();
+    assertThat(route.matches(greet)).isTrue();
     HttpResponse response = route.execute(greet);
     assertThat(string(response)).isEqualTo("world");
 
     HttpRequest cheese = new HttpRequest(POST, "/cheese");
-    Assertions.assertThat(route.matches(cheese)).isTrue();
+    assertThat(route.matches(cheese)).isTrue();
     response = route.execute(cheese);
     assertThat(string(response)).isEqualTo("gouda");
   }
