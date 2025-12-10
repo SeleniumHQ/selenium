@@ -17,7 +17,6 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Session;
@@ -30,6 +29,8 @@ internal sealed record SubscribeParameters(IEnumerable<string> Events, IEnumerab
 public sealed class SubscribeOptions : CommandOptions
 {
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
 
 internal sealed record SubscribeResult(Subscription Subscription) : EmptyResult;

@@ -20,8 +20,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.Events;
 
@@ -442,7 +444,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// variable, as if the function were called via "Function.apply"
     /// </para>
     /// </remarks>
-    public object? ExecuteScript(string script, params object?[] args)
+    public object? ExecuteScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[] args)
     {
         if (this.WrappedDriver is not IJavaScriptExecutor javascriptDriver)
         {
@@ -542,7 +544,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
     /// <param name="script">The JavaScript code to execute.</param>
     /// <param name="args">The arguments to the script.</param>
     /// <returns>The value returned by the script.</returns>
-    public object? ExecuteAsyncScript(string script, params object?[] args)
+    public object? ExecuteAsyncScript([StringSyntax(StringSyntaxConstants.JavaScript)] string script, params object?[] args)
     {
         if (this.WrappedDriver is not IJavaScriptExecutor javascriptDriver)
         {

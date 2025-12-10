@@ -20,6 +20,10 @@
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       class Cookies < Hash
         def as_json
           map do |name, val|

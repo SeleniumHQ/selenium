@@ -20,7 +20,7 @@ import pkgutil
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from importlib import import_module
-from typing import Any, Optional
+from typing import Any
 
 from selenium.webdriver.common.by import By
 
@@ -34,8 +34,7 @@ def import_cdp():
 
 
 class Log:
-    """This class allows access to logging APIs that use the new WebDriver Bidi
-    protocol.
+    """Class for accessing logging APIs using the WebDriver Bidi protocol.
 
     This class is not to be used directly and should be used from the
     webdriver base classes.
@@ -48,7 +47,7 @@ class Log:
         self.devtools = bidi_session.devtools
         _pkg = ".".join(__name__.split(".")[:-1])
         # Ensure _mutation_listener_js is not None before decoding
-        _mutation_listener_js_bytes: Optional[bytes] = pkgutil.get_data(_pkg, "mutation-listener.js")
+        _mutation_listener_js_bytes: bytes | None = pkgutil.get_data(_pkg, "mutation-listener.js")
         if _mutation_listener_js_bytes is None:
             raise ValueError("Failed to load mutation-listener.js")
         self._mutation_listener_js = _mutation_listener_js_bytes.decode("utf8").strip()
@@ -68,7 +67,6 @@ class Log:
                 assert event["current_value"] == ""
                 assert event["old_value"] == "display:none;"
         """
-
         page = self.cdp.get_session_context("page.enable")
         await page.execute(self.devtools.page.enable())
         runtime = self.cdp.get_session_context("runtime.enable")
@@ -96,8 +94,7 @@ class Log:
 
     @asynccontextmanager
     async def add_js_error_listener(self) -> AsyncGenerator[dict[str, Any], None]:
-        """Listen for JS errors and when the contextmanager exits check if
-        there were JS Errors.
+        """Listen for JS errors and check if they occurred when the context manager exits.
 
         Example:
                 async with driver.log.add_js_error_listener() as error:
@@ -105,7 +102,6 @@ class Log:
                 assert bool(error)
                 assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
         """
-
         session = self.cdp.get_session_context("page.enable")
         await session.execute(self.devtools.page.enable())
         session = self.cdp.get_session_context("runtime.enable")
@@ -128,7 +124,6 @@ class Log:
                     driver.execute_script("console.log('I like cheese')")
                 assert messages["message"] == "I love cheese"
         """
-
         from selenium.webdriver.common.bidi.console import Console
 
         session = self.cdp.get_session_context("page.enable")

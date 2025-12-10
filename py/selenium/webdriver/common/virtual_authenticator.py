@@ -18,7 +18,7 @@
 import functools
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any
 
 
 class Protocol(str, Enum):
@@ -56,7 +56,6 @@ class VirtualAuthenticatorOptions:
 
         Initialize VirtualAuthenticatorOptions object.
         """
-
         self.protocol: str = protocol
         self.transport: str = transport
         self.has_resident_key: bool = has_resident_key
@@ -64,7 +63,7 @@ class VirtualAuthenticatorOptions:
         self.is_user_consenting: bool = is_user_consenting
         self.is_user_verified: bool = is_user_verified
 
-    def to_dict(self) -> dict[str, Union[str, bool]]:
+    def to_dict(self) -> dict[str, str | bool]:
         return {
             "protocol": self.protocol,
             "transport": self.transport,
@@ -80,12 +79,13 @@ class Credential:
         self,
         credential_id: bytes,
         is_resident_credential: bool,
-        rp_id: Optional[str],
-        user_handle: Optional[bytes],
+        rp_id: str | None,
+        user_handle: bytes | None,
         private_key: bytes,
         sign_count: int,
     ):
         """Constructor. A credential stored in a virtual authenticator.
+
         https://w3c.github.io/webauthn/#credential-parameters.
 
         Args:
@@ -112,11 +112,11 @@ class Credential:
         return self._is_resident_credential
 
     @property
-    def rp_id(self) -> str:
+    def rp_id(self) -> str | None:
         return self._rp_id
 
     @property
-    def user_handle(self) -> Optional[str]:
+    def user_handle(self) -> str | None:
         if self._user_handle:
             return urlsafe_b64encode(self._user_handle).decode()
         return None
@@ -146,7 +146,7 @@ class Credential:
 
     @classmethod
     def create_resident_credential(
-        cls, id: bytes, rp_id: str, user_handle: Optional[bytes], private_key: bytes, sign_count: int
+        cls, id: bytes, rp_id: str, user_handle: bytes | None, private_key: bytes, sign_count: int
     ) -> "Credential":
         """Creates a resident (i.e. stateful) credential.
 
@@ -193,8 +193,7 @@ class Credential:
 
 
 def required_chromium_based_browser(func):
-    """A decorator to ensure that the client used is a chromium based
-    browser."""
+    """Decorator to ensure that the client used is a chromium-based browser."""
 
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -208,8 +207,7 @@ def required_chromium_based_browser(func):
 
 
 def required_virtual_authenticator(func):
-    """A decorator to ensure that the function is called with a virtual
-    authenticator."""
+    """Decorator to ensure that the function is called with a virtual authenticator."""
 
     @functools.wraps(func)
     @required_chromium_based_browser

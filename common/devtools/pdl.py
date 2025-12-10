@@ -3,10 +3,11 @@
 # found in the LICENSE file.
 
 from __future__ import print_function
-import collections
+from collections import OrderedDict
 import json
 import re
 import sys
+from typing import Any
 
 description = ""
 
@@ -23,10 +24,12 @@ primitiveTypes = [
 ]
 
 
-def assignType(item, type, is_array=False, map_binary_to_string=False):
+def assignType(
+    item: dict, type: str, is_array: bool = False, map_binary_to_string: bool = False
+) -> None:
     if is_array:
         item["type"] = "array"
-        item["items"] = collections.OrderedDict()
+        item["items"] = OrderedDict()
         assignType(item["items"], type, False, map_binary_to_string)
         return
 
@@ -40,8 +43,10 @@ def assignType(item, type, is_array=False, map_binary_to_string=False):
         item["$ref"] = type
 
 
-def createItem(d, experimental, deprecated, name=None):
-    result = collections.OrderedDict(d)
+def createItem(
+    d: dict, experimental: bool | Any, deprecated: bool | Any, name: str | Any = None
+) -> OrderedDict[str, Any]:
+    result = OrderedDict(d)
     if name:
         result["name"] = name
     global description
@@ -54,9 +59,11 @@ def createItem(d, experimental, deprecated, name=None):
     return result
 
 
-def parse(data, file_name, map_binary_to_string=False):
-    protocol = collections.OrderedDict()
-    protocol["version"] = collections.OrderedDict()
+def parse(
+    data: str, file_name: str, map_binary_to_string: bool = False
+) -> OrderedDict[str, Any]:
+    protocol = OrderedDict()
+    protocol["version"] = OrderedDict()
     protocol["domains"] = []
     domain = None
     item = None
@@ -183,7 +190,9 @@ def parse(data, file_name, map_binary_to_string=False):
     return protocol
 
 
-def loads(data, file_name, map_binary_to_string=False):
+def loads(
+    data: str, file_name: str, map_binary_to_string: bool = False
+) -> OrderedDict[str, Any] | Any:
     if file_name.endswith(".pdl"):
         return parse(data, file_name, map_binary_to_string)
     return json.loads(data)

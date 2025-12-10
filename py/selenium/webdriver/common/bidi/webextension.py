@@ -15,16 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Union
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.common import command_builder
 
 
 class WebExtension:
-    """
-    BiDi implementation of the webExtension module.
-    """
+    """BiDi implementation of the webExtension module."""
 
     def __init__(self, conn):
         self.conn = conn
@@ -34,15 +31,13 @@ class WebExtension:
 
         You must provide exactly one of the parameters.
 
-        Parameters:
-        -----------
-            path: Path to an extension directory
-            archive_path: Path to an extension archive file
-            base64_value: Base64 encoded string of the extension archive
+        Args:
+            path: Path to an extension directory.
+            archive_path: Path to an extension archive file.
+            base64_value: Base64 encoded string of the extension archive.
 
         Returns:
-        -------
-            Dict: A dictionary containing the extension ID.
+            A dictionary containing the extension ID.
         """
         if sum(x is not None for x in (path, archive_path, base64_value)) != 1:
             raise ValueError("Exactly one of path, archive_path, or base64_value must be provided")
@@ -67,13 +62,12 @@ class WebExtension:
                 ) from e
             raise
 
-    def uninstall(self, extension_id_or_result: Union[str, dict]) -> None:
+    def uninstall(self, extension_id_or_result: str | dict) -> None:
         """Uninstalls a web extension from the remote end.
 
-        Parameters:
-        -----------
+        Args:
             extension_id_or_result: Either the extension ID as a string or the result dictionary
-                                   from a previous install() call containing the extension ID.
+              from a previous install() call containing the extension ID.
         """
         if isinstance(extension_id_or_result, dict):
             extension_id = extension_id_or_result.get("extension")

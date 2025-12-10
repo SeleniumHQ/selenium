@@ -38,8 +38,7 @@ public class TakesScreenshotTest : DriverTestFixture
     [Test]
     public void GetScreenshotAsFile()
     {
-        ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-        if (screenshotCapableDriver == null)
+        if (driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
@@ -57,8 +56,7 @@ public class TakesScreenshotTest : DriverTestFixture
     [Test]
     public void GetScreenshotAsBase64()
     {
-        ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-        if (screenshotCapableDriver == null)
+        if (driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
@@ -72,8 +70,7 @@ public class TakesScreenshotTest : DriverTestFixture
     [Test]
     public void GetScreenshotAsBinary()
     {
-        ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-        if (screenshotCapableDriver == null)
+        if (driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
@@ -95,8 +92,7 @@ public class TakesScreenshotTest : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-        if (screenshotCapableDriver == null)
+        if (driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
@@ -128,8 +124,7 @@ public class TakesScreenshotTest : DriverTestFixture
         driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen.html");
         IWebElement element = driver.FindElement(By.Id("cell11"));
 
-        ITakesScreenshot screenshotCapableElement = element as ITakesScreenshot;
-        if (screenshotCapableElement == null)
+        if (element is not ITakesScreenshot screenshotCapableElement)
         {
             return;
         }
@@ -154,8 +149,7 @@ public class TakesScreenshotTest : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-        if (screenshotCapableDriver == null)
+        if (driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
@@ -199,8 +193,7 @@ public class TakesScreenshotTest : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-        if (screenshotCapableDriver == null)
+        if (driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
@@ -242,8 +235,7 @@ public class TakesScreenshotTest : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-        if (screenshotCapableDriver == null)
+        if (driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }
@@ -283,8 +275,7 @@ public class TakesScreenshotTest : DriverTestFixture
         Assert.Ignore("Skipping test: this framework can not process colors.");
 #endif
 
-        ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
-        if (screenshotCapableDriver == null)
+        if (driver is not ITakesScreenshot screenshotCapableDriver)
         {
             return;
         }

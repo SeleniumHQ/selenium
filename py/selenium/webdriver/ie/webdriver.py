@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.ie.options import Options
@@ -26,13 +25,12 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
 class WebDriver(RemoteWebDriver):
-    """Controls the IEServerDriver and allows you to drive Internet
-    Explorer."""
+    """Control the IEServerDriver and drive Internet Explorer."""
 
     def __init__(
         self,
-        options: Optional[Options] = None,
-        service: Optional[Service] = None,
+        options: Options | None = None,
+        service: Service | None = None,
         keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the Ie driver.
@@ -44,7 +42,6 @@ class WebDriver(RemoteWebDriver):
             service: (Optional) service instance for managing the starting and stopping of the driver.
             keep_alive: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-
         self.service = service if service else Service()
         options = options if options else Options()
 

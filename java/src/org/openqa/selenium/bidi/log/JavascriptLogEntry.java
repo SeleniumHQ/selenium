@@ -21,6 +21,7 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.util.Map;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.json.JsonInput;
 
@@ -36,7 +37,7 @@ public class JavascriptLogEntry extends GenericLogEntry {
       String text,
       long timestamp,
       String type,
-      StackTrace stackTrace) {
+      @Nullable StackTrace stackTrace) {
     super(level, source, text, timestamp, "javascript", stackTrace);
     this.type = "javascript";
   }
@@ -97,7 +98,9 @@ public class JavascriptLogEntry extends GenericLogEntry {
     toReturn.put("level", super.getLevel());
     toReturn.put("text", super.getText());
     toReturn.put("timestamp", super.getTimestamp());
-    toReturn.put("stackTrace", super.getStackTrace());
+    if (getStackTrace() != null) {
+      toReturn.put("stackTrace", getStackTrace());
+    }
 
     return unmodifiableMap(toReturn);
   }
