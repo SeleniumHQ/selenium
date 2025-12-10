@@ -53,7 +53,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -125,7 +124,6 @@ class ReverseProxyEndToEndTest {
           .until(
               c -> {
                 HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-                System.out.println(Contents.string(response));
                 Map<String, Object> status = Values.get(response, MAP_TYPE);
                 return Boolean.TRUE.equals(
                     status != null && Boolean.parseBoolean(status.get("ready").toString()));

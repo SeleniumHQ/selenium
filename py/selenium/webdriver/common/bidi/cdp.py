@@ -22,8 +22,6 @@
 #
 # This code comes from https://github.com/HyperionGray/trio-chrome-devtools-protocol/tree/master/trio_cdp
 
-# flake8: noqa
-
 import contextvars
 import importlib
 import itertools
@@ -31,15 +29,10 @@ import json
 import logging
 import pathlib
 from collections import defaultdict
-from contextlib import asynccontextmanager
-from contextlib import contextmanager
+from collections.abc import AsyncGenerator, AsyncIterator, Generator
+from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass
-from typing import Any
-from collections.abc import AsyncGenerator
-from collections.abc import AsyncIterator
-from collections.abc import Generator
-from typing import Type
-from typing import TypeVar
+from typing import Any, TypeVar
 
 import trio
 from trio_websocket import ConnectionClosed as WsConnectionClosed
@@ -54,8 +47,7 @@ version = None
 
 
 def import_devtools(ver):
-    """Attempt to load the current latest available devtools into the module
-    cache for use later."""
+    """Attempt to load the current latest available devtools into the module cache for use later."""
     global devtools
     global version
     version = ver
@@ -105,8 +97,7 @@ def get_session_context(fn_name):
 
 @contextmanager
 def connection_context(connection):
-    """This context manager installs ``connection`` as the session context for
-    the current Trio task."""
+    """Context manager installs ``connection`` as the session context for the current Trio task."""
     token = _connection_context.set(connection)
     try:
         yield
@@ -116,8 +107,7 @@ def connection_context(connection):
 
 @contextmanager
 def session_context(session):
-    """This context manager installs ``session`` as the session context for the
-    current Trio task."""
+    """Context manager installs ``session`` as the session context for the current Trio task."""
     token = _session_context.set(session)
     try:
         yield
@@ -126,8 +116,7 @@ def session_context(session):
 
 
 def set_global_connection(connection):
-    """Install ``connection`` in the root context so that it will become the
-    default connection for all tasks.
+    """Install ``connection`` in the root context so that it will become the default connection for all tasks.
 
     This is generally not recommended, except it may be necessary in
     certain use cases such as running inside Jupyter notebook.
@@ -137,8 +126,7 @@ def set_global_connection(connection):
 
 
 def set_global_session(session):
-    """Install ``session`` in the root context so that it will become the
-    default session for all tasks.
+    """Install ``session`` in the root context so that it will become the default session for all tasks.
 
     This is generally not recommended, except it may be necessary in
     certain use cases such as running inside Jupyter notebook.
@@ -148,8 +136,7 @@ def set_global_session(session):
 
 
 class BrowserError(Exception):
-    """This exception is raised when the browser's response to a command
-    indicates that an error occurred."""
+    """This exception is raised when the browser's response to a command indicates that an error occurred."""
 
     def __init__(self, obj):
         self.code = obj.get("code")
@@ -177,8 +164,9 @@ class CdpConnectionClosed(WsConnectionClosed):
 
 
 class InternalError(Exception):
-    """This exception is only raised when there is faulty logic in TrioCDP or
-    the integration with PyCDP."""
+    """This exception is only raised when there is faulty logic in TrioCDP or the integration with PyCDP."""
+
+    pass
 
 
 @dataclass
@@ -236,8 +224,11 @@ class CdpBase:
         return response
 
     def listen(self, *event_types, buffer_size=10):
-        """Return an async iterator that iterates over events matching the
-        indicated types."""
+        """Listen for events.
+
+        Returns:
+            An async iterator that iterates over events matching the indicated types.
+        """
         sender, receiver = trio.open_memory_channel(buffer_size)
         for event_type in event_types:
             self.channels[event_type].add(sender)
@@ -273,8 +264,10 @@ class CdpBase:
             self._handle_event(data)
 
     def _handle_cmd_response(self, data: dict):
-        """Handle a response to a command. This will set an event flag that
-        will return control to the task that called the command.
+        """Handle a response to a command.
+
+        This will set an event flag that will return control to the
+        task that called the command.
 
         Args:
             data: response as a JSON dictionary
@@ -345,8 +338,7 @@ class CdpSession(CdpBase):
 
     @asynccontextmanager
     async def dom_enable(self):
-        """A context manager that executes ``dom.enable()`` when it enters and
-        then calls ``dom.disable()``.
+        """Context manager that executes ``dom.enable()`` when it enters and then calls ``dom.disable()``.
 
         This keeps track of concurrent callers and only disables DOM
         events when all callers have exited.
@@ -366,8 +358,7 @@ class CdpSession(CdpBase):
 
     @asynccontextmanager
     async def page_enable(self):
-        """A context manager that executes ``page.enable()`` when it enters and
-        then calls ``page.disable()`` when it exits.
+        """Context manager executes ``page.enable()`` when it enters and then calls ``page.disable()`` when it exits.
 
         This keeps track of concurrent callers and only disables page
         events when all callers have exited.
@@ -420,8 +411,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
 
     @asynccontextmanager
     async def open_session(self, target_id) -> AsyncIterator[CdpSession]:
-        """This context manager opens a session and enables the "simple" style
-        of calling CDP APIs.
+        """Context manager opens a session and enables the "simple" style of calling CDP APIs.
 
         For example, inside a session context, you can call ``await
         dom.get_document()`` and it will execute on the current session
@@ -432,8 +422,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
             yield session
 
     async def connect_session(self, target_id) -> "CdpSession":
-        """Returns a new :class:`CdpSession` connected to the specified
-        target."""
+        """Returns a new :class:`CdpSession` connected to the specified target."""
         global devtools
         session_id = await self.execute(devtools.target.attach_to_target(target_id, True))
         session = CdpSession(self.ws, session_id, target_id)
@@ -441,8 +430,10 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         return session
 
     async def _reader_task(self):
-        """Runs in the background and handles incoming messages: dispatching
-        responses to commands and events to listeners."""
+        """Runs in the background and handles incoming messages.
+
+        Dispatches responses to commands and events to listeners.
+        """
         global devtools
         while True:
             try:
@@ -482,9 +473,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
 
 @asynccontextmanager
 async def open_cdp(url) -> AsyncIterator[CdpConnection]:
-    """This async context manager opens a connection to the browser specified
-    by ``url`` before entering the block, then closes the connection when the
-    block exits.
+    """Async context manager opens a connection to the browser then closes the connection when the block exits.
 
     The context manager also sets the connection as the default
     connection for the current task, so that commands like ``await
@@ -492,7 +481,6 @@ async def open_cdp(url) -> AsyncIterator[CdpConnection]:
     you want to use multiple connections concurrently, it is recommended
     to open each on in a separate task.
     """
-
     async with trio.open_nursery() as nursery:
         conn = await connect_cdp(nursery, url)
         try:
@@ -503,8 +491,7 @@ async def open_cdp(url) -> AsyncIterator[CdpConnection]:
 
 
 async def connect_cdp(nursery, url) -> CdpConnection:
-    """Connect to the browser specified by ``url`` and spawn a background task
-    in the specified nursery.
+    """Connect to the browser specified by ``url`` and spawn a background task in the specified nursery.
 
     The ``open_cdp()`` context manager is preferred in most situations.
     You should only use this function if you need to specify a custom

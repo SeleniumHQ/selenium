@@ -16,15 +16,13 @@
 # under the License.
 
 from collections.abc import Mapping, Sequence
-from typing import Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service, utils
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of
-    `geckodriver`.
+    """Service class responsible for starting and stopping geckodriver.
 
     Args:
         executable_path: install path of the geckodriver executable, defaults to `geckodriver`.
@@ -37,12 +35,12 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        service_args: Optional[Sequence[str]] = None,
-        log_output: Optional[SubprocessStdAlias] = None,
-        env: Optional[Mapping[str, str]] = None,
-        driver_path_env_key: Optional[str] = None,
+        service_args: Sequence[str] | None = None,
+        log_output: SubprocessStdAlias | None = None,
+        env: Mapping[str, str] | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
         self._service_args = list(service_args or [])
@@ -67,6 +65,7 @@ class Service(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

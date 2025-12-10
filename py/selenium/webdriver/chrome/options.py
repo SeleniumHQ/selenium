@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -28,8 +27,8 @@ class Options(ChromiumOptions):
 
     def enable_mobile(
         self,
-        android_package: Optional[str] = "com.android.chrome",
-        android_activity: Optional[str] = None,
-        device_serial: Optional[str] = None,
+        android_package: str | None = "com.android.chrome",
+        android_activity: str | None = None,
+        device_serial: str | None = None,
     ) -> None:
         super().enable_mobile(android_package, android_activity, device_serial)

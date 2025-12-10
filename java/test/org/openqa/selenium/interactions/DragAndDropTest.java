@@ -18,7 +18,7 @@
 package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -131,17 +131,18 @@ class DragAndDropTest extends JupiterTestBase {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
 
-    try {
-      WebElement img = driver.findElement(By.id("test1"));
+    assertThatThrownBy(
+            () -> {
+              WebElement img = driver.findElement(By.id("test1"));
 
-      // Attempt to drag the image outside of the bounds of the page.
+              // Attempt to drag the image outside the bounds of the page.
+              actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
+            })
+        .as("These coordinates are outside the page - expected to fail.")
+        .isInstanceOf(MoveTargetOutOfBoundsException.class);
 
-      actions.dragAndDropBy(img, Integer.MAX_VALUE, Integer.MAX_VALUE).perform();
-      fail("These coordinates are outside the page - expected to fail.");
-    } catch (MoveTargetOutOfBoundsException expected) {
-      // Release mouse button - move was interrupted in the middle.
-      new Actions(driver).release().perform();
-    }
+    // Release mouse button - move was interrupted in the middle.
+    new Actions(driver).release().perform();
   }
 
   @NoDriverAfterTest

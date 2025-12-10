@@ -200,7 +200,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
         get
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string atom = GetAtom("is-displayed.js");
+            string atom = GetWrappedAtom("is_displayed", ResourceUtilities.IsDisplayedAtom);
             parameters.Add("script", atom);
             parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary() });
 
@@ -435,7 +435,7 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
     public virtual string? GetAttribute(string attributeName)
     {
         Dictionary<string, object> parameters = new Dictionary<string, object>();
-        string atom = GetAtom("get-attribute.js");
+        string atom = GetWrappedAtom("get_attribute", ResourceUtilities.GetAttributeAtom);
         parameters.Add("script", atom);
         parameters.Add("args", new object[] { ((IWebDriverObjectReference)this).ToDictionary(), attributeName });
 
@@ -706,20 +706,9 @@ public class WebElement : IWebElement, IFindsElement, IWrapsDriver, ILocatable, 
         return this.driver.Execute(commandToExecute, parameters);
     }
 
-    private static string GetAtom(string atomResourceName)
+    private static string GetWrappedAtom(string name, string content)
     {
-        string atom;
-        using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
-        {
-            using (StreamReader atomReader = new StreamReader(atomStream))
-            {
-                atom = atomReader.ReadToEnd();
-            }
-        }
-
-        string atomName = atomResourceName.Replace(".js", "");
-        string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", atomName, atom);
-        return wrappedAtom;
+        return string.Format(CultureInfo.InvariantCulture, "/* {0} */return ({1}).apply(null, arguments);", name, content);
     }
 
     private string UploadFile(string localFile)

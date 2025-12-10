@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
-class EmulationTest : BiDiTestFixture
+internal class EmulationTest : BiDiTestFixture
 {
     [Test]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
@@ -163,6 +163,21 @@ class EmulationTest : BiDiTestFixture
         Assert.That(async () =>
         {
             await bidi.Emulation.SetScreenOrientationOverrideAsync(null, new() { Contexts = [context] });
+        },
+        Throws.Nothing);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public void CanSetScreenSettingsOverride()
+    {
+        var screenArea = new ScreenArea(300, 200);
+
+        Assert.That(async () =>
+        {
+            await bidi.Emulation.SetScreenSettingsOverrideAsync(screenArea, new() { Contexts = [context] });
         },
         Throws.Nothing);
     }
