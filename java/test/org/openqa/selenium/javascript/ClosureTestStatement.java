@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.javascript;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.google.common.base.Stopwatch;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +27,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 
 class ClosureTestStatement {
 
@@ -70,11 +67,7 @@ class ClosureTestStatement {
     // Avoid Safari JS leak between tests.
     executor.executeScript("if (window && window.top) window.top.G_testRunner = null");
 
-    try {
-      driver.get(testUrl.toString());
-    } catch (WebDriverException e) {
-      fail("Test failed to load: " + e.getMessage());
-    }
+    driver.get(testUrl.toString());
 
     while (!getBoolean(executor, Query.IS_FINISHED)) {
       long elapsedTime = stopwatch.elapsed(TimeUnit.SECONDS);

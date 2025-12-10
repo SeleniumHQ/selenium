@@ -98,16 +98,16 @@ class DefaultSlotSelectorTest {
                 ImmutableMap.of("browserName", "chrome", "browserVersion", "132.0")));
     NodeStatus node2 =
         createNodeWithStereotypes(
-            Arrays.asList(ImmutableMap.of("browserName", "chrome", "browserVersion", "131.0")));
+            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "131.0")));
     NodeStatus node3 =
         createNodeWithStereotypes(
-            Arrays.asList(ImmutableMap.of("browserName", "chrome", "browserVersion", "")));
+            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "")));
     NodeStatus node4 =
         createNodeWithStereotypes(
-            Arrays.asList(ImmutableMap.of("browserName", "chrome", "browserVersion", "131.1")));
+            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "131.1")));
     NodeStatus node5 =
         createNodeWithStereotypes(
-            Arrays.asList(ImmutableMap.of("browserName", "chrome", "browserVersion", "beta")));
+            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "beta")));
     Set<NodeStatus> nodes = ImmutableSet.of(node1, node2, node3, node4, node5);
 
     Set<SlotId> slots = selector.selectSlot(caps, nodes, new DefaultSlotMatcher());

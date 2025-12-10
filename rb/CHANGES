@@ -1,9 +1,13 @@
+4.39.0 (2025-12-06)
+=========================
+* Add CDP for Chrome 143 and remove 140
+
 4.38.0 (2025-10-24)
 =========================
+* Add CDP for Chrome 142 and remove 139
 * Fix BiDi Network issue by removing nil values on network requests (#16442)
 * Remove cruft from old CI environment (#16473)
 * [bidi] remove deprecated classes for log inspector (#16474)
-* update devtools versions
 
 4.37.0 (2025-10-16)
 =========================

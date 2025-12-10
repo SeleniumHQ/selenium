@@ -188,7 +188,7 @@ class FirefoxProfileTest {
     assertThat(prefs).exists();
 
     try (Stream<String> lines = Files.lines(prefs.toPath())) {
-      assertThat(lines.anyMatch(s -> s.contains("i.like.cheese"))).isTrue();
+      assertThat(lines).anyMatch(s -> s.contains("i.like.cheese"));
     }
 
     FileHandler.delete(dir);
@@ -247,10 +247,7 @@ class FirefoxProfileTest {
 
   private void assertPreferenceValueEquals(String key, Object value) throws Exception {
     List<String> props = readGeneratedProperties(profile);
-    assertThat(
-            props.stream()
-                .anyMatch(line -> line.contains(key) && line.contains(", " + value + ")")))
-        .isTrue();
+    assertThat(props).anyMatch(line -> line.contains(key) && line.contains(", " + value + ")"));
   }
 
   private Preferences parseUserPrefs(FirefoxProfile profile) throws IOException {

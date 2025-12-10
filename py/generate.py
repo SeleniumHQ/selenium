@@ -23,24 +23,22 @@
 # This is a copy of https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
 # The license above is theirs and MUST be preserved.
 
-
 import builtins
-from dataclasses import dataclass
-from enum import Enum
 import itertools
 import json
 import logging
 import operator
 import os
-from pathlib import Path
 import re
-from textwrap import dedent, indent as tw_indent
-from typing import Optional, cast, List, Union
-
 from collections.abc import Iterator
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
+from textwrap import dedent
+from textwrap import indent as tw_indent
+from typing import Union, cast
 
 import inflection  # type: ignore
-
 
 log_level = getattr(logging, os.environ.get("LOG_LEVEL", "warning").upper())
 logging.basicConfig(level=log_level)
@@ -90,7 +88,7 @@ def parse_json_event(json: T_JSON_DICT) -> typing.Any:
 
 
 def indent(s, n):
-    """A shortcut for ``textwrap.indent`` that always uses spaces."""
+    """A shortcut for `textwrap.indent` that always uses spaces."""
     return tw_indent(s, n * " ")
 
 
@@ -98,8 +96,8 @@ BACKTICK_RE = re.compile(r"`([^`]+)`(\w+)?")
 
 
 def escape_backticks(docstr):
-    """
-    Escape backticks in a docstring by doubling them up.
+    """Escape backticks in a docstring by doubling them up.
+
     This is a little tricky because RST requires a non-letter character after
     the closing backticks, but some CDPs docs have things like "`AxNodeId`s".
     If we double the backticks in that string, then it won't be valid RST. The
@@ -121,12 +119,12 @@ def escape_backticks(docstr):
 
 
 def inline_doc(description):
-    """Generate an inline doc, e.g. ``#: This type is a ...``"""
+    """Generate an inline doc, e.g. `#: This type is a ...`."""
     if not description:
         return ""
 
     description = escape_backticks(description)
-    lines = [f"#: {l}" for l in description.split("\n")]
+    lines = [f"#: {line}" for line in description.split("\n")]
     return "\n".join(lines)
 
 
@@ -140,7 +138,7 @@ def docstring(description):
 
 
 def is_builtin(name):
-    """Return True if ``name`` would shadow a builtin."""
+    """Return True if `name` would shadow a builtin."""
     try:
         getattr(builtins, name)
         return True
@@ -149,8 +147,10 @@ def is_builtin(name):
 
 
 def snake_case(name):
-    """Convert a camel case name to snake case. If the name would shadow a
-    Python builtin, then append an underscore."""
+    """Convert a camel case name to snake case.
+
+    If the name would shadow a Python builtin, then append an underscore.
+    """
     name = inflection.underscore(name)
     if is_builtin(name):
         name += "_"
@@ -158,8 +158,8 @@ def snake_case(name):
 
 
 def ref_to_python(ref):
-    """
-    Convert a CDP ``$ref`` to the name of a Python type.
+    """Convert a CDP `$ref` to the name of a Python type.
+
     For a dotted ref, the part before the dot is snake cased.
     """
     if "." in ref:
@@ -270,8 +270,7 @@ class CdpProperty:
         return code
 
     def generate_to_json(self, dict_, use_self=True):
-        """Generate the code that exports this property to the specified JSON
-        dict."""
+        """Generate the code that exports this property to the specified JSON dict."""
         self_ref = "self." if use_self else ""
         assign = f"{dict_}['{self.name}'] = "
         if self.items:
@@ -293,13 +292,11 @@ class CdpProperty:
         return code
 
     def generate_from_json(self, dict_):
-        """Generate the code that creates an instance from a JSON dict named
-        ``dict_``."""
+        """Generate the code that creates an instance from a JSON dict named `dict_`."""
         if self.items:
             if self.items.ref:
                 py_ref = ref_to_python(self.items.ref)
                 expr = f"[{py_ref}.from_json(i) for i in {dict_}['{self.name}']]"
-                expr
             else:
                 cons = CdpPrimitiveType.get_constructor(self.items.type, "i")
                 expr = f"[{cons} for i in {dict_}['{self.name}']]"
@@ -384,11 +381,11 @@ class CdpType:
         return code
 
     def generate_enum_code(self):
-        """
-        Generate an "enum" type.
+        """Generate an "enum" type.
+
         Enums are handled by making a python class that contains only class
         members. Each class member is upper snaked case, e.g.
-        ``MyTypeClass.MY_ENUM_VALUE`` and is assigned a string value from the
+        `MyTypeClass.MY_ENUM_VALUE` and is assigned a string value from the
         CDP metadata.
         """
         def_to_json = dedent("""\
@@ -414,12 +411,11 @@ class CdpType:
         return code
 
     def generate_class_code(self):
-        """
-        Generate a class type.
-        Top-level types that are defined as a CDP ``object`` are turned into Python
+        """Generate a class type.
+
+        Top-level types that are defined as a CDP `object` are turned into Python
         dataclasses.
         """
-        # children = set()
         code = dedent(f"""\
             @dataclass
             class {self.id}:\n""")
@@ -536,9 +532,7 @@ class CdpParameter(CdpProperty):
         return doc
 
     def generate_from_json(self, dict_):
-        """
-        Generate the code to instantiate this parameter from a JSON dict.
-        """
+        """Generate the code to instantiate this parameter from a JSON dict."""
         code = super().generate_from_json(dict_)
         return f"{self.py_name}={code}"
 
@@ -836,10 +830,9 @@ class CdpDomain:
         return code
 
     def generate_imports(self):
-        """
-        Determine which modules this module depends on and emit the code to
-        import those modules.
-        Notice that CDP defines a ``dependencies`` field for each domain, but
+        """Determine which modules this module depends on and emit the code to import those modules.
+
+        Notice that CDP defines a `dependencies` field for each domain, but
         these dependencies are a subset of the modules that we actually need to
         import to make our Python code work correctly and type safe. So we
         ignore the CDP's declared dependencies and compute them ourselves.
@@ -864,9 +857,7 @@ class CdpDomain:
         return code
 
     def generate_sphinx(self):
-        """
-        Generate a Sphinx document for this domain.
-        """
+        """Generate a Sphinx document for this domain."""
         docs = self.domain + "\n"
         docs += "=" * len(self.domain) + "\n\n"
         if self.description:
@@ -928,8 +919,8 @@ class CdpDomain:
 
 
 def parse(json_path, output_path):
-    """
-    Parse JSON protocol description and return domain objects.
+    """Parse JSON protocol description and return domain objects.
+
     :param Path json_path: path to a JSON CDP schema
     :param Path output_path: a directory path to create the modules in
     :returns: a list of CDP domain objects
@@ -947,8 +938,8 @@ def parse(json_path, output_path):
 
 
 def generate_init(init_path, domains):
-    """
-    Generate an ``__init__.py`` that exports the specified modules.
+    """Generate an `__init__.py` that exports the specified modules.
+
     :param Path init_path: a file path to create the init file in
     :param list[tuple] modules: a list of modules each represented as tuples
         of (name, list_of_exported_symbols)
@@ -961,9 +952,7 @@ def generate_init(init_path, domains):
 
 
 def generate_docs(docs_path, domains):
-    """
-    Generate Sphinx documents for each domain.
-    """
+    """Generate Sphinx documents for each domain."""
     logger.info("Generating Sphinx documents")
 
     # Remove generated documents

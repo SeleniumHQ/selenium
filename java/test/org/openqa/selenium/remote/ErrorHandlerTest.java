@@ -48,6 +48,7 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
 
 @Tag("UnitTests")
+@SuppressWarnings("removal")
 class ErrorHandlerTest {
   private ErrorHandler handler;
 
@@ -99,7 +100,7 @@ class ErrorHandlerTest {
       int status, Class<? extends RuntimeException> type) {
     assertThatExceptionOfType(RuntimeException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(createResponse(status), 123))
-        .satisfies(e -> assertThat(type.isAssignableFrom(e.getClass())).isTrue());
+        .isInstanceOf(type);
   }
 
   @Test

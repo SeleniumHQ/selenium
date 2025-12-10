@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
@@ -129,17 +128,15 @@ class JdbcBackedSessionMapTest {
             new ImmutableCapabilities("key", "value"),
             Instant.now());
     sessions.add(expected);
+    SessionId sessionId = expected.getId();
 
     SessionMap reader = getSessionMap();
 
-    reader.remove(expected.getId());
+    reader.remove(sessionId);
 
-    try {
-      reader.get(expected.getId());
-      fail("Oh noes!");
-    } catch (NoSuchSessionException ignored) {
-      // This is expected
-    }
+    assertThatThrownBy(() -> reader.get(sessionId))
+        .isInstanceOf(NoSuchSessionException.class)
+        .hasMessageStartingWith("Unable to find session with id: " + sessionId);
   }
 
   private JdbcBackedSessionMap getSessionMap() {
