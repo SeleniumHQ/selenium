@@ -95,7 +95,7 @@ class RemoteWebDriverDownloadTest {
   public void tearDown() throws InterruptedException {
     tearDowns.parallelStream().forEach(Safely::safelyCall);
     executor.shutdownNow();
-//    executor.awaitTermination(10, SECONDS);
+    //    executor.awaitTermination(10, SECONDS);
   }
 
   @RepeatedTest(10)
