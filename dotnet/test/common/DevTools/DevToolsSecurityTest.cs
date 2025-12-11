@@ -30,7 +30,7 @@ using CurrentCdpVersion = V143;
 [TestFixture]
 public class DevToolsSecurityTest : DevToolsTestFixture
 {
-    //[Test]
+    [Test, Ignore("")]
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
     [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]

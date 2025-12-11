@@ -29,8 +29,7 @@ public class BasicWheelInterfaceTest : DriverTestFixture
     [SetUp]
     public void SetupTest()
     {
-        IActionExecutor actionExecutor = driver as IActionExecutor;
-        if (actionExecutor != null)
+        if (driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }

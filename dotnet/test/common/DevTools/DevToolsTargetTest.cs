@@ -30,7 +30,7 @@ using CurrentCdpVersion = V143;
 [TestFixture]
 public class DevToolsTargetTest : DevToolsTestFixture
 {
-    private int id = 143;
+    private const int id = 143;
 
     [Test]
     [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]

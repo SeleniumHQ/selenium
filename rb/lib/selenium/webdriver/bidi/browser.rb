@@ -20,6 +20,13 @@
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # BiDi Implementation of the Browser Module
+      # Continue to use functionality from existing `driver.manager.window` method
+      #
+      # @api private
+      #
+
       class Browser
         Window = Struct.new(:handle, :active, :height, :width, :x, :y, :state) do
           def active?

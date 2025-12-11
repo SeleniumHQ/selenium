@@ -30,7 +30,7 @@ namespace OpenQA.Selenium;
 [TestFixture]
 public class CookieImplementationTest : DriverTestFixture
 {
-    private Random random = new Random();
+    private readonly Random random = new Random();
     private bool isOnAlternativeHostName;
     private string hostname;
 
@@ -50,7 +50,7 @@ public class CookieImplementationTest : DriverTestFixture
             return;
         }
 
-        string key = string.Format("key_{0}", new Random().Next());
+        string key = string.Format("key_{0}", random.Next());
         ((IJavaScriptExecutor)driver).ExecuteScript("document.cookie = arguments[0] + '=set';", key);
 
         Cookie cookie = driver.Manage().Cookies.GetCookieNamed(key);
@@ -932,8 +932,7 @@ public class CookieImplementationTest : DriverTestFixture
 
     private string GetDocumentCookieOrNull()
     {
-        IJavaScriptExecutor jsDriver = driver as IJavaScriptExecutor;
-        if (jsDriver == null)
+        if (driver is not IJavaScriptExecutor jsDriver)
         {
             return null;
         }
