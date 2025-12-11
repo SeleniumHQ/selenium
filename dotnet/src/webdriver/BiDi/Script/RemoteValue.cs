@@ -76,6 +76,10 @@ public abstract record RemoteValue
     {
         var type = typeof(TResult);
 
+        if (typeof(RemoteValue).IsAssignableFrom(type)) // handle native derived types
+        {
+            return (TResult)(this as object);
+        }
         if (type == typeof(bool))
         {
             return (TResult)(Convert.ToBoolean(((BooleanRemoteValue)this).Value) as object);
@@ -87,10 +91,6 @@ public abstract record RemoteValue
         else if (type == typeof(string))
         {
             return (TResult)(((StringRemoteValue)this).Value as object);
-        }
-        else if (type == typeof(ObjectRemoteValue))
-        {
-            return (TResult)(((ObjectRemoteValue)this) as object);
         }
         else if (type is object)
         {
