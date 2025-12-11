@@ -363,4 +363,25 @@ internal class CallFunctionLocalValueTest : BiDiTestFixture
 
         Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
     }
+
+    [Test]
+    public async Task CanCallFunctionWithSharedReferenceLocalValue()
+    {
+        // Navigate to a page with a known element
+        driver.Url = UrlBuilder.WhereIs("bidi/logEntryAdded.html");
+
+        var node = (await context.LocateNodesAsync(new BrowsingContext.CssLocator("#consoleLog"))).Nodes[0];
+
+        var arg = new SharedReferenceLocalValue(node.SharedId);
+
+        var result = await context.Script.CallFunctionAsync($$"""
+            (el) => {
+              if (!(el instanceof Element) || el.id !== 'consoleLog') {
+                throw new Error("Assert failed: " + (el && el.id));
+              }
+            }
+            """, false, new() { Arguments = [arg] });
+
+        Assert.That(result, Is.TypeOf<EvaluateResultSuccess>(), $"Call was not successful: {result}");
+    }
 }
