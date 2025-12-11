@@ -191,8 +191,8 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
 
     int height = image.getHeight();
     int width = image.getWidth();
-    assertThat(width > 0).isTrue();
-    assertThat(height > 0).isTrue();
+    assertThat(width).isGreaterThan(0);
+    assertThat(height).isGreaterThan(0);
 
     Raster raster = image.getRaster();
     for (int i = 0; i < width; i = i + stepX) {

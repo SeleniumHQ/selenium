@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
@@ -70,7 +70,7 @@ class TakesScreenshotTest extends JupiterTestBase {
 
   @BeforeEach
   public void setUp() {
-    assumeTrue(driver instanceof TakesScreenshot);
+    assumeThat(driver).isInstanceOf(TakesScreenshot.class);
     screenshooter = (TakesScreenshot) driver;
   }
 
@@ -333,8 +333,8 @@ class TakesScreenshotTest extends JupiterTestBase {
 
     int height = image.getHeight();
     int width = image.getWidth();
-    assertThat(width > 0).isTrue();
-    assertThat(height > 0).isTrue();
+    assertThat(width).isPositive();
+    assertThat(height).isPositive();
 
     Raster raster = image.getRaster();
     for (int i = 0; i < width; i = i + stepX) {

@@ -41,6 +41,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 @Tag("UnitTests")
+@SuppressWarnings("removal")
 class W3CHttpResponseCodecTest {
 
   @Test

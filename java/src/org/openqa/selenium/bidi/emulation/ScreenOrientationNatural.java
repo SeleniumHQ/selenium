@@ -1,4 +1,3 @@
-// <copyright file="StableChannelEdgeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,27 +14,21 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-namespace OpenQA.Selenium.Edge;
+package org.openqa.selenium.bidi.emulation;
 
-public class StableChannelEdgeDriver : EdgeDriver
-{
+public enum ScreenOrientationNatural {
+  PORTRAIT("portrait"),
+  LANDSCAPE("landscape");
 
-    public StableChannelEdgeDriver()
-        : base(DefaultOptions)
-    {
-    }
+  private final String value;
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelEdgeDriver(EdgeOptions options)
-        : base(options)
-    {
-    }
+  ScreenOrientationNatural(String value) {
+    this.value = value;
+  }
 
-    public StableChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
-        : base(service, options)
-    {
-    }
-    public static EdgeOptions DefaultOptions => new EdgeOptions();
+  @Override
+  public String toString() {
+    return value;
+  }
 }

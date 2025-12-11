@@ -1,4 +1,3 @@
-// <copyright file="StableChannelEdgeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,27 +14,32 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-namespace OpenQA.Selenium.Edge;
+package org.openqa.selenium.bidi.emulation;
 
-public class StableChannelEdgeDriver : EdgeDriver
-{
+import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
-    public StableChannelEdgeDriver()
-        : base(DefaultOptions)
-    {
-    }
+public class ScreenOrientation {
+  private final ScreenOrientationNatural natural;
+  private final ScreenOrientationType type;
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelEdgeDriver(EdgeOptions options)
-        : base(options)
-    {
-    }
+  public ScreenOrientation(ScreenOrientationNatural natural, ScreenOrientationType type) {
+    this.natural = Require.nonNull("natural", natural);
+    this.type = Require.nonNull("type", type);
+  }
 
-    public StableChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
-        : base(service, options)
-    {
-    }
-    public static EdgeOptions DefaultOptions => new EdgeOptions();
+  public ScreenOrientationNatural getNatural() {
+    return natural;
+  }
+
+  public ScreenOrientationType getType() {
+    return type;
+  }
+
+  public Map<String, Object> toMap() {
+    return Map.of(
+        "natural", natural.toString(),
+        "type", type.toString());
+  }
 }

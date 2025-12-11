@@ -47,8 +47,7 @@ class RemoteFirefoxDriverTest extends JupiterTestBase {
   @Test
   void shouldTakeFullPageScreenshot() {
     File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
-    assertThat(tempFile.exists()).isTrue();
-    assertThat(tempFile).isNotEmpty();
+    assertThat(tempFile).exists().isNotEmpty();
   }
 
   @Test

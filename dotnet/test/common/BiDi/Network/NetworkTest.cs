@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-class NetworkTest : BiDiTestFixture
+internal class NetworkTest : BiDiTestFixture
 {
     [Test]
     public async Task CanAddDataCollector()

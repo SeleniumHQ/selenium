@@ -1,4 +1,3 @@
-// <copyright file="StableChannelEdgeDriver.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -15,27 +14,28 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// </copyright>
 
-namespace OpenQA.Selenium.Edge;
+package org.openqa.selenium.bidi.emulation;
 
-public class StableChannelEdgeDriver : EdgeDriver
-{
+public class SetScreenOrientationOverrideParameters extends AbstractOverrideParameters {
 
-    public StableChannelEdgeDriver()
-        : base(DefaultOptions)
-    {
+  public SetScreenOrientationOverrideParameters(ScreenOrientation screenOrientation) {
+    if (screenOrientation == null) {
+      map.put("screenOrientation", null);
+    } else {
+      map.put("screenOrientation", screenOrientation.toMap());
     }
+  }
 
-    // Required for dynamic setting with `EnvironmentManager.Instance.CreateDriverInstance(options)`
-    public StableChannelEdgeDriver(EdgeOptions options)
-        : base(options)
-    {
-    }
+  @Override
+  public SetScreenOrientationOverrideParameters contexts(java.util.List<String> contexts) {
+    super.contexts(contexts);
+    return this;
+  }
 
-    public StableChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
-        : base(service, options)
-    {
-    }
-    public static EdgeOptions DefaultOptions => new EdgeOptions();
+  @Override
+  public SetScreenOrientationOverrideParameters userContexts(java.util.List<String> userContexts) {
+    super.userContexts(userContexts);
+    return this;
+  }
 }

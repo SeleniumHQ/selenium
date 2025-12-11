@@ -21,6 +21,12 @@ require_relative 'network/url_pattern'
 module Selenium
   module WebDriver
     class BiDi
+      # Implements the Navigation Module of the WebDriver-BiDi specification
+      # Continue to use functionality from existing `driver.navigate` method
+      #
+      # @api private
+      #
+
       class Network
         EVENTS = {
           before_request: 'network.beforeRequestSent',

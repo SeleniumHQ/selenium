@@ -258,7 +258,7 @@ class ElementAttributeTest extends JupiterTestBase {
 
     String style = driver.findElement(By.id("red-item")).getAttribute("style");
 
-    assertThat(style.toLowerCase().contains("background-color")).isTrue();
+    assertThat(style).containsIgnoringCase("background-color");
   }
 
   @Test
