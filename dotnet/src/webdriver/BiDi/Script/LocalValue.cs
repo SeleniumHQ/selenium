@@ -28,6 +28,20 @@ using System.Text.RegularExpressions;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
+[JsonPolymorphic]
+[JsonDerivedType(typeof(NumberLocalValue))]
+[JsonDerivedType(typeof(StringLocalValue))]
+[JsonDerivedType(typeof(NullLocalValue))]
+[JsonDerivedType(typeof(UndefinedLocalValue))]
+[JsonDerivedType(typeof(BooleanLocalValue))]
+[JsonDerivedType(typeof(BigIntLocalValue))]
+[JsonDerivedType(typeof(ChannelLocalValue))]
+[JsonDerivedType(typeof(ArrayLocalValue))]
+[JsonDerivedType(typeof(DateLocalValue))]
+[JsonDerivedType(typeof(MapLocalValue))]
+[JsonDerivedType(typeof(ObjectLocalValue))]
+[JsonDerivedType(typeof(RegExpLocalValue))]
+[JsonDerivedType(typeof(SetLocalValue))]
 public abstract record LocalValue
 {
     public static implicit operator LocalValue(bool? value) { return ConvertFrom(value); }
