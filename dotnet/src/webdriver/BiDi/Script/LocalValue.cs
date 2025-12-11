@@ -267,6 +267,18 @@ public abstract record LocalValue
     }
 }
 
+public abstract record RemoteReferenceLocalValue : LocalValue, IRemoteReference;
+
+public sealed record SharedReferenceLocalValue(string SharedId) : RemoteReferenceLocalValue, ISharedReference
+{
+    public Handle? Handle { get; set; }
+}
+
+public sealed record RemoteObjectReferenceLocalValue(Handle Handle) : RemoteReferenceLocalValue, IRemoteObjectReference
+{
+    public string? SharedId { get; set; }
+}
+
 public abstract record PrimitiveProtocolLocalValue : LocalValue;
 
 public sealed record NumberLocalValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolLocalValue
