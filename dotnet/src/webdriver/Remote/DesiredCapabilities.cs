@@ -247,7 +247,7 @@ internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDict
     /// <summary>
     /// Indicates whether the current <see cref="DesiredCapabilities"/> is equal to another <see cref="object"/>.
     /// </summary>
-    /// <param name="obj"><see cref="DesiredCapabilities"/> you wish to compare.</param>
+    /// <param name="obj">An object to compare with this <see cref="DesiredCapabilities"/>.</param>
     /// <returns><see langword="true"/> if the current <see cref="DesiredCapabilities"/> is equal to the other parameter; otherwise, <see langword="false"/>.</returns>
     public override bool Equals(object? obj)
     {

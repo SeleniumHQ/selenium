@@ -1891,7 +1891,7 @@ public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScree
         /// <summary>
         /// Determines whether the specified <see cref="EventFiringShadowRoot"/> is equal to the current <see cref="EventFiringShadowRoot"/>.
         /// </summary>
-        /// <param name="other">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
+        /// <param name="other">The <see cref="ISearchContext"/> to compare to the current <see cref="EventFiringShadowRoot"/>.</param>
         /// <returns><see langword="true"/> if the current <see cref="EventFiringShadowRoot"/> is equal to the <paramref name="other"/> parameter; otherwise, <see langword="false"/>.</returns>
         public bool Equals(ISearchContext? other)
         {
