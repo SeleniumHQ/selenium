@@ -21,8 +21,6 @@ using OpenQA.Selenium.BiDi.Json.Converters;
 using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -89,6 +87,10 @@ public abstract record RemoteValue
         else if (type == typeof(string))
         {
             return (TResult)(((StringRemoteValue)this).Value as object);
+        }
+        else if (type == typeof(ObjectRemoteValue))
+        {
+            return (TResult)(((ObjectRemoteValue)this) as object);
         }
         else if (type is object)
         {
