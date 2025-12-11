@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,24 +25,9 @@ using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(NumberLocalValue), "number")]
-[JsonDerivedType(typeof(StringLocalValue), "string")]
-[JsonDerivedType(typeof(NullLocalValue), "null")]
-[JsonDerivedType(typeof(UndefinedLocalValue), "undefined")]
-[JsonDerivedType(typeof(BooleanLocalValue), "boolean")]
-[JsonDerivedType(typeof(BigIntLocalValue), "bigint")]
-[JsonDerivedType(typeof(ChannelLocalValue), "channel")]
-[JsonDerivedType(typeof(ArrayLocalValue), "array")]
-[JsonDerivedType(typeof(DateLocalValue), "date")]
-[JsonDerivedType(typeof(MapLocalValue), "map")]
-[JsonDerivedType(typeof(ObjectLocalValue), "object")]
-[JsonDerivedType(typeof(RegExpLocalValue), "regexp")]
-[JsonDerivedType(typeof(SetLocalValue), "set")]
 public abstract record LocalValue
 {
     public static implicit operator LocalValue(bool? value) { return ConvertFrom(value); }
@@ -285,34 +271,80 @@ public abstract record PrimitiveProtocolLocalValue : LocalValue;
 
 public sealed record NumberLocalValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolLocalValue
 {
+    [JsonInclude]
+    internal string Type { get; } = "number";
+
     public static explicit operator NumberLocalValue(double n) => new NumberLocalValue(n);
 }
 
-public sealed record StringLocalValue(string Value) : PrimitiveProtocolLocalValue;
+public sealed record StringLocalValue(string Value) : PrimitiveProtocolLocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "string";
+}
 
-public sealed record NullLocalValue : PrimitiveProtocolLocalValue;
+public sealed record NullLocalValue : PrimitiveProtocolLocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "null";
+}
 
-public sealed record UndefinedLocalValue : PrimitiveProtocolLocalValue;
+public sealed record UndefinedLocalValue : PrimitiveProtocolLocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "undefined";
+}
 
-public sealed record BooleanLocalValue(bool Value) : PrimitiveProtocolLocalValue;
+public sealed record BooleanLocalValue(bool Value) : PrimitiveProtocolLocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "boolean";
+}
 
-public sealed record BigIntLocalValue(string Value) : PrimitiveProtocolLocalValue;
+public sealed record BigIntLocalValue(string Value) : PrimitiveProtocolLocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "bigint";
+}
 
 public sealed record ChannelLocalValue(ChannelProperties Value) : LocalValue
 {
-    // AddPreloadScript takes arguments typed as ChannelLocalValue but still requires "type":"channel"
     [JsonInclude]
-    internal string Type => "channel";
+    internal string Type { get; } = "channel";
 }
 
-public sealed record ArrayLocalValue(IEnumerable<LocalValue> Value) : LocalValue;
+public sealed record ArrayLocalValue(IEnumerable<LocalValue> Value) : LocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "array";
+}
 
-public sealed record DateLocalValue(string Value) : LocalValue;
+public sealed record DateLocalValue(string Value) : LocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "date";
+}
 
-public sealed record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
+public sealed record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "map";
+}
 
-public sealed record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
+public sealed record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "object";
+}
 
-public sealed record RegExpLocalValue(RegExpValue Value) : LocalValue;
+public sealed record RegExpLocalValue(RegExpValue Value) : LocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "regexp";
+}
 
-public sealed record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue;
+public sealed record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue
+{
+    [JsonInclude]
+    internal string Type { get; } = "set";
+}
