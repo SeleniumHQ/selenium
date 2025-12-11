@@ -29,6 +29,8 @@ using System.Text.RegularExpressions;
 namespace OpenQA.Selenium.BiDi.Script;
 
 [JsonPolymorphic]
+[JsonDerivedType(typeof(SharedReferenceLocalValue))]
+[JsonDerivedType(typeof(RemoteObjectReferenceLocalValue))]
 [JsonDerivedType(typeof(NumberLocalValue))]
 [JsonDerivedType(typeof(StringLocalValue))]
 [JsonDerivedType(typeof(NullLocalValue))]
@@ -279,6 +281,9 @@ public abstract record LocalValue
 
         return new ObjectLocalValue(values);
     }
+
+    [JsonInclude]
+    internal abstract string Type { get; }
 }
 
 public abstract record RemoteReferenceLocalValue : LocalValue, IRemoteReference;
@@ -286,91 +291,82 @@ public abstract record RemoteReferenceLocalValue : LocalValue, IRemoteReference;
 public sealed record SharedReferenceLocalValue(string SharedId) : RemoteReferenceLocalValue, ISharedReference
 {
     public Handle? Handle { get; set; }
+
+    internal override string Type { get; } = null!;
 }
 
 public sealed record RemoteObjectReferenceLocalValue(Handle Handle) : RemoteReferenceLocalValue, IRemoteObjectReference
 {
     public string? SharedId { get; set; }
+
+    internal override string Type { get; } = null!;
 }
 
 public abstract record PrimitiveProtocolLocalValue : LocalValue;
 
 public sealed record NumberLocalValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolLocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "number";
+    internal override string Type { get; } = "number";
 
     public static explicit operator NumberLocalValue(double n) => new NumberLocalValue(n);
 }
 
 public sealed record StringLocalValue(string Value) : PrimitiveProtocolLocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "string";
+    internal override string Type { get; } = "string";
 }
 
 public sealed record NullLocalValue : PrimitiveProtocolLocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "null";
+    internal override string Type { get; } = "null";
 }
 
 public sealed record UndefinedLocalValue : PrimitiveProtocolLocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "undefined";
+    internal override string Type { get; } = "undefined";
 }
 
 public sealed record BooleanLocalValue(bool Value) : PrimitiveProtocolLocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "boolean";
+    internal override string Type { get; } = "boolean";
 }
 
 public sealed record BigIntLocalValue(string Value) : PrimitiveProtocolLocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "bigint";
+    internal override string Type { get; } = "bigint";
 }
 
 public sealed record ChannelLocalValue(ChannelProperties Value) : LocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "channel";
+    internal override string Type { get; } = "channel";
 }
 
 public sealed record ArrayLocalValue(IEnumerable<LocalValue> Value) : LocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "array";
+    internal override string Type { get; } = "array";
 }
 
 public sealed record DateLocalValue(string Value) : LocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "date";
+    internal override string Type { get; } = "date";
 }
 
 public sealed record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "map";
+    internal override string Type { get; } = "map";
 }
 
 public sealed record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "object";
+    internal override string Type { get; } = "object";
 }
 
 public sealed record RegExpLocalValue(RegExpValue Value) : LocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "regexp";
+    internal override string Type { get; } = "regexp";
 }
 
 public sealed record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue
 {
-    [JsonInclude]
-    internal string Type { get; } = "set";
+    internal override string Type { get; } = "set";
 }
