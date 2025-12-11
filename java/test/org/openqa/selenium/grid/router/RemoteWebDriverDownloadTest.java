@@ -92,9 +92,10 @@ class RemoteWebDriverDownloadTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  public void tearDown() throws InterruptedException {
     tearDowns.parallelStream().forEach(Safely::safelyCall);
     executor.shutdownNow();
+//    executor.awaitTermination(10, SECONDS);
   }
 
   @RepeatedTest(10)
@@ -148,15 +149,15 @@ class RemoteWebDriverDownloadTest {
 
     new WebDriverWait(driver, Duration.ofSeconds(5), Duration.ofMillis(50))
         .until(
-            d ->
-            {
+            d -> {
               List<String> files = ((HasDownloads) d).getDownloadableFiles();
-              List<String> matchingFiles = files.stream()
-                .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
-                .collect(toList());
+              List<String> matchingFiles =
+                  files.stream()
+                      .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
+                      .collect(toList());
               System.out.printf(
-                "[*****] FOUND %s FILES: %s; MATCHING %s FILES: %s%n",
-                files.size(), files, matchingFiles.size(), matchingFiles);
+                  "[*****] FOUND %s FILES: %s; MATCHING %s FILES: %s%n",
+                  files.size(), files, matchingFiles.size(), matchingFiles);
 
               // ensure we hit no temporary file created by the browser while downloading
               return !matchingFiles.isEmpty();
@@ -166,15 +167,15 @@ class RemoteWebDriverDownloadTest {
 
     Path targetLocation = Files.createTempDirectory("download");
     System.out.printf(
-      "[*****] DOWNLOADING FILE %s (size: %s) into %s...%n",
-      file.getName(), file.getSize(), targetLocation.toAbsolutePath());
+        "[*****] DOWNLOADING FILE %s (size: %s) into %s...%n",
+        file.getName(), file.getSize(), targetLocation.toAbsolutePath());
 
     ((HasDownloads) driver).downloadFile(file.getName(), targetLocation);
 
     File localFile = targetLocation.resolve(file.getName()).toFile();
     System.out.printf(
-      "[*****] DOWNLOADED FILE %s (size: %s) as %s (size: %s)...%n",
-      file.getName(), file.getSize(), localFile.getAbsolutePath(), localFile.length());
+        "[*****] DOWNLOADED FILE %s (size: %s) as %s (size: %s)...%n",
+        file.getName(), file.getSize(), localFile.getAbsolutePath(), localFile.length());
 
     assertThat(localFile).hasName(file.getName());
     assertThat(localFile).hasSize(file.getSize());
@@ -194,17 +195,17 @@ class RemoteWebDriverDownloadTest {
 
     new WebDriverWait(driver, Duration.ofSeconds(5))
         .until(
-            d ->
-            {
+            d -> {
               List<String> files = ((HasDownloads) d).getDownloadableFiles();
               // ensure we hit no temporary file created by the browser while downloading
-              List<String> matchingFiles = files.stream()
-                .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
-                .collect(toList());
+              List<String> matchingFiles =
+                  files.stream()
+                      .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
+                      .collect(toList());
 
               System.out.printf(
-                "[*****] FOUND %s FILES: %s; MATCHING %s FILES: %s%n",
-                files.size(), files, matchingFiles.size(), matchingFiles);
+                  "[*****] FOUND %s FILES: %s; MATCHING %s FILES: %s%n",
+                  files.size(), files, matchingFiles.size(), matchingFiles);
 
               return !matchingFiles.isEmpty();
             });
@@ -217,8 +218,7 @@ class RemoteWebDriverDownloadTest {
 
     List<String> afterDeleteNames = ((HasDownloads) driver).getDownloadableFiles();
     System.out.printf(
-      "[*****] FOUND %s DOWNLOADED FILES: %s%n",
-      afterDeleteNames.size(), afterDeleteNames);
+        "[*****] FOUND %s DOWNLOADED FILES: %s%n", afterDeleteNames.size(), afterDeleteNames);
     assertThat(afterDeleteNames).isEmpty();
 
     driver.quit();
