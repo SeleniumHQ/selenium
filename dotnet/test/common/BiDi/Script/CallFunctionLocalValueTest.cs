@@ -388,7 +388,10 @@ internal class CallFunctionLocalValueTest : BiDiTestFixture
     [Test]
     public async Task CanCallFunctionWithRemoteObjectReferenceLocalValue()
     {
-        ObjectRemoteValue objectRemoteValue = await context.Script.CallFunctionAsync<ObjectRemoteValue>("() => ({ a: 42 })", true, new() { ResultOwnership = ResultOwnership.Root });
+        ObjectRemoteValue objectRemoteValue = await context.Script.CallFunctionAsync<ObjectRemoteValue>(
+            "() => ({ a: 42 })",
+            true,
+            new() { ResultOwnership = ResultOwnership.Root });
 
         var arg = new RemoteObjectReferenceLocalValue(objectRemoteValue.Handle!);
 
