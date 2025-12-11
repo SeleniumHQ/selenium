@@ -253,11 +253,11 @@ class BrowsingContextTest extends JupiterTestBase {
     BrowsingContext window2 = new BrowsingContext(driver, WindowType.WINDOW);
 
     // We did not switch the driver, so we are running the script to check focus on 1st window
-    assertThat(getDocumentFocus()).isFalse();
+    assertThat(isDocumentFocused()).isFalse();
 
     window1.activate();
 
-    assertThat(getDocumentFocus()).isTrue();
+    assertThat(isDocumentFocused()).isTrue();
   }
 
   // TODO: Add a test for closing the last tab once the behavior is finalized
@@ -572,7 +572,7 @@ class BrowsingContextTest extends JupiterTestBase {
     return (T) ((JavascriptExecutor) driver).executeScript(js);
   }
 
-  private boolean getDocumentFocus() {
+  private boolean isDocumentFocused() {
     return executeScript("return document.hasFocus();");
   }
 

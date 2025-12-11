@@ -108,7 +108,7 @@ def test_error_if_invalid_env_path(monkeypatch):
 
     with pytest.raises(WebDriverException) as excinfo:
         SeleniumManager()._get_binary()
-    assert f"Unable to obtain working Selenium Manager binary; {sm_path}" in str(excinfo.value)
+    assert f"SE_MANAGER_PATH does not point to a file: {sm_path}" in str(excinfo.value)
 
 
 def test_run_successful():

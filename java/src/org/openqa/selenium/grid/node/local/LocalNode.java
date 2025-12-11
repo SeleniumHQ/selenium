@@ -95,6 +95,7 @@ import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedReason;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -334,12 +335,17 @@ public class LocalNode extends Node implements Closeable {
         attributeMap.put("session.id", id.toString());
         attributeMap.put("session.timeout_in_seconds", getSessionTimeout().toSeconds());
         attributeMap.put("session.remove.cause", cause.name());
+
+        // Determine the SessionClosedReason based on RemovalCause
+        SessionClosedReason closeReason;
         if (cause == RemovalCause.EXPIRED) {
+          closeReason = SessionClosedReason.TIMEOUT;
           // Session is timing out, stopping it by sending a DELETE
           LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
           span.setStatus(Status.CANCELLED);
           span.addEvent(String.format("Stopping the the timed session %s", id), attributeMap);
         } else {
+          closeReason = SessionClosedReason.QUIT_COMMAND;
           LOG.log(Level.INFO, () -> String.format("Session id %s is stopping on demand...", id));
           span.addEvent(String.format("Stopping the session %s on demand", id), attributeMap);
         }
@@ -354,8 +360,8 @@ public class LocalNode extends Node implements Closeable {
                 String.format("Exception while trying to stop session %s", id), attributeMap);
           }
         }
-        // Attempt to stop the session
-        slot.stop();
+        // Attempt to stop the session with the appropriate reason
+        slot.stop(closeReason);
         // Decrement pending sessions if Node is draining
         if (this.isDraining()) {
           int done = pendingSessions.decrementAndGet();

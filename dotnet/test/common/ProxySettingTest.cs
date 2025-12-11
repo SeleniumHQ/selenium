@@ -149,8 +149,7 @@ public class ProxySettingTest : DriverTestFixture
 
     private void EnvironmentManagerDriverStarting(object sender, DriverStartingEventArgs e)
     {
-        InternetExplorerOptions ieOptions = e.Options as InternetExplorerOptions;
-        if (ieOptions != null)
+        if (e.Options is InternetExplorerOptions ieOptions)
         {
             ieOptions.EnsureCleanSession = true;
         }
@@ -183,13 +182,11 @@ public class ProxySettingTest : DriverTestFixture
 
     private class ProxyAutoConfigServer : IDisposable
     {
-        private int listenerPort;
-        private string hostName;
-        private string pacFileContent;
+        private readonly string pacFileContent;
         private bool disposedValue = false; // To detect redundant calls
         private bool keepRunning = true;
         private HttpListener listener;
-        private Thread listenerThread;
+        private readonly Thread listenerThread;
 
         public ProxyAutoConfigServer(string pacFileContent)
             : this(pacFileContent, "localhost")
@@ -199,31 +196,35 @@ public class ProxySettingTest : DriverTestFixture
         public ProxyAutoConfigServer(string pacFileContent, string hostName)
         {
             this.pacFileContent = pacFileContent;
-            this.hostName = hostName;
+            HostName = hostName;
+            Port = DetectEmptyPort();
+            this.listenerThread = StartListeningThread();
+        }
 
-            //get an empty port
+        public string HostName { get; }
+
+        public int Port { get; }
+
+        private static int DetectEmptyPort()
+        {
             TcpListener l = new TcpListener(IPAddress.Loopback, 0);
             l.Start();
-            this.listenerPort = ((IPEndPoint)l.LocalEndpoint).Port;
+            var port = ((IPEndPoint)l.LocalEndpoint).Port;
             l.Stop();
-
-            this.listenerThread = new Thread(this.Listen);
-            this.listenerThread.Start();
+            return port;
         }
 
-        public string HostName
+        private Thread StartListeningThread()
         {
-            get { return hostName; }
-        }
-
-        public int Port
-        {
-            get { return listenerPort; }
+            var thread = new Thread(Listen);
+            thread.Start();
+            return thread;
         }
 
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -241,9 +242,14 @@ public class ProxySettingTest : DriverTestFixture
             }
         }
 
+        ~ProxyAutoConfigServer()
+        {
+            Dispose(false);
+        }
+
         private void ProcessContext(HttpListenerContext context)
         {
-            if (context.Request.Url.AbsoluteUri.ToLowerInvariant().Contains("proxy.pac"))
+            if (context.Request.Url.AbsoluteUri.Contains("proxy.pac", StringComparison.InvariantCultureIgnoreCase))
             {
                 byte[] pacFileBuffer = Encoding.ASCII.GetBytes(this.pacFileContent);
                 context.Response.ContentType = "application/x-javascript-config";
@@ -258,7 +264,7 @@ public class ProxySettingTest : DriverTestFixture
         private void Listen()
         {
             listener = new HttpListener();
-            listener.Prefixes.Add("http://" + this.HostName + ":" + this.listenerPort.ToString() + "/");
+            listener.Prefixes.Add("http://" + this.HostName + ":" + Port.ToString() + "/");
             listener.Start();
             while (this.keepRunning)
             {
@@ -276,10 +282,7 @@ public class ProxySettingTest : DriverTestFixture
 
     private class ProxyServer
     {
-        private HttpProxyServer server;
-        private List<string> uris = new List<string>();
-        int port;
-        string hostName = string.Empty;
+        private readonly List<string> uris = new List<string>();
 
         public ProxyServer()
             : this("127.0.0.1")
@@ -289,51 +292,39 @@ public class ProxySettingTest : DriverTestFixture
 
         public ProxyServer(string hostName)
         {
-            this.hostName = hostName;
-            this.server = new HttpProxyServer(this.hostName, new HttpProxy());
-            this.server.Start().WaitOne();
-            this.port = this.server.ProxyEndPoint.Port;
-            // this.server.Log += OnServerLog;
+            HostName = hostName;
+            Server = new HttpProxyServer(HostName, new HttpProxy());
+            Server.Start().WaitOne();
+            Port = Server.ProxyEndPoint.Port;
+            // this.Server.Log += OnServerLog;
         }
 
-        public string BaseUrl
-        {
-            get { return string.Format("{0}:{1}", this.hostName, this.port); }
-        }
+        public string BaseUrl => string.Format("{0}:{1}", HostName, Port);
 
-        public HttpProxyServer Server
-        {
-            get { return this.server; }
-        }
+        public HttpProxyServer Server { get; }
 
-        public string HostName
-        {
-            get { return hostName; }
-        }
+        public string HostName { get; } = string.Empty;
 
-        public int Port
-        {
-            get { return port; }
-        }
+        public int Port { get; }
 
         public void EnableLogResourcesOnResponse()
         {
-            this.server.Proxy.OnResponseSent = this.LogRequestedResources;
+            Server.Proxy.OnResponseSent = this.LogRequestedResources;
         }
 
         public void DisableLogResourcesOnResponse()
         {
-            this.server.Proxy.OnResponseSent = null;
+            Server.Proxy.OnResponseSent = null;
         }
 
         public void EnableContentOverwriteOnRequest()
         {
-            this.server.Proxy.OnRequestReceived = this.OverwriteRequestedContent;
+            Server.Proxy.OnRequestReceived = this.OverwriteRequestedContent;
         }
 
         public void DisableContentOverwriteOnRequest()
         {
-            this.server.Proxy.OnRequestReceived = null;
+            Server.Proxy.OnRequestReceived = null;
         }
 
         public bool HasBeenCalled(string resourceName)
@@ -343,8 +334,8 @@ public class ProxySettingTest : DriverTestFixture
 
         public void Quit()
         {
-            this.server.Proxy.OnResponseSent = null;
-            this.server.Stop();
+            Server.Proxy.OnResponseSent = null;
+            Server.Stop();
         }
 
         public Proxy AsProxy()

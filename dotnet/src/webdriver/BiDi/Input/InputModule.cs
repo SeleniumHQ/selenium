@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -49,9 +50,12 @@ public sealed class InputModule : Module
         return await Broker.ExecuteCommandAsync(new SetFilesCommand(@params), options, _jsonContext.SetFilesCommand, _jsonContext.SetFilesResult).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions options)
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        _jsonContext = new InputJsonSerializerContext(options);
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+
+        _jsonContext = new InputJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
@@ -65,4 +69,5 @@ public sealed class InputModule : Module
 [JsonSerializable(typeof(IEnumerable<IKeySourceAction>))]
 [JsonSerializable(typeof(IEnumerable<INoneSourceAction>))]
 [JsonSerializable(typeof(IEnumerable<IWheelSourceAction>))]
+
 internal partial class InputJsonSerializerContext : JsonSerializerContext;

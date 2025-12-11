@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Tag;
@@ -89,8 +89,8 @@ class PrefixedRouteTest {
 
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 
-    assertThat(path.get()).isEqualTo("/and/peas");
-    assertThat(parts.get()).isEqualTo(singletonList("/cheese"));
+    assertThat(path).hasValue("/and/peas");
+    assertThat(parts).hasValue(singletonList("/cheese"));
   }
 
   @Test
@@ -115,7 +115,7 @@ class PrefixedRouteTest {
 
     route.execute(new HttpRequest(GET, "/cheese/and/peas"));
 
-    assertThat(path.get()).isEqualTo("/peas");
-    assertThat(parts.get()).isEqualTo(Arrays.asList("/cheese", "/and"));
+    assertThat(path).hasValue("/peas");
+    assertThat(parts).hasValue(asList("/cheese", "/and"));
   }
 }

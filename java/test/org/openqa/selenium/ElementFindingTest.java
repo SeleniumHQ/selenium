@@ -708,7 +708,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
     driver.get(pages.xhtmlTestPage);
     List<WebElement> elements = driver.findElements(By.partialLinkText("ick me"));
-    assertThat(elements.size()).isEqualTo(2);
+    assertThat(elements).hasSize(2);
   }
 
   @Test

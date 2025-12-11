@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-class CombinedInputActionsTest : BiDiTestFixture
+internal class CombinedInputActionsTest : BiDiTestFixture
 {
     //[Test]
     public async Task Paint()

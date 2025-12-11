@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-class BrowsingContextTest : BiDiTestFixture
+internal class BrowsingContextTest : BiDiTestFixture
 {
     [Test]
     public async Task CanCreateNewTab()
