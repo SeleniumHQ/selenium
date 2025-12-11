@@ -365,7 +365,7 @@ public class Cookie : IEquatable<Cookie>
         {
             int hash = 17;
             hash = hash * 23 + this.cookieName.GetHashCode();
-            hash = hash * 23 + this.cookieValue?.GetHashCode() ?? 0;
+            hash = hash * 23 + (this.cookieValue?.GetHashCode() ?? 0);
             return hash;
         }
     }
