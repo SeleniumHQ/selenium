@@ -111,7 +111,7 @@ public abstract class WebSocketTestBase {
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
 
-    assertThat(message.get()).isEqualTo("Hello, World!");
+    assertThat(message).hasValue("Hello, World!");
   }
 
   @Test
@@ -134,7 +134,7 @@ public abstract class WebSocketTestBase {
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
 
-    assertThat(message.get()).isEqualTo("brie".getBytes(UTF_8));
+    assertThat(message).hasValue("brie".getBytes(UTF_8));
   }
 
   private static BaseServerOptions defaultOptions() {

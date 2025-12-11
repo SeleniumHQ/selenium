@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +51,7 @@ public class Contents {
      * @return the number of bytes that can be read from the InputStream returned by calling the get
      *     method.
      */
-    int length();
+    long length();
 
     /**
      * Release the related resources, if any.
@@ -61,6 +60,12 @@ public class Contents {
      */
     @Override
     void close() throws IOException;
+
+    String contentAsString(Charset charset);
+
+    default Reader reader(Charset charset) {
+      return new InputStreamReader(get(), charset);
+    }
   }
 
   private Contents() {
@@ -84,30 +89,16 @@ public class Contents {
     return bytes(value.toString().getBytes(charset));
   }
 
+  public static Supplier file(final File file) {
+    return new FileContentSupplier(file);
+  }
+
+  public static Supplier fromStream(InputStream stream, long length) {
+    return new InputStreamContentSupplier(stream, length);
+  }
+
   public static Supplier bytes(byte[] bytes) {
-    Require.nonNull("Bytes to return", bytes, "may be empty");
-
-    return new Supplier() {
-      private boolean closed;
-
-      @Override
-      public InputStream get() {
-        if (closed) throw new IllegalStateException("Contents.Supplier has been closed before");
-
-        return new ByteArrayInputStream(bytes);
-      }
-
-      @Override
-      public int length() {
-        if (closed) throw new IllegalStateException("Contents.Supplier has been closed before");
-
-        return bytes.length;
-      }
-
-      public void close() {
-        closed = true;
-      }
-    };
+    return new BytesContentSupplier(bytes);
   }
 
   public static byte[] bytes(Supplier supplier) {
@@ -126,15 +117,23 @@ public class Contents {
     return string(supplier, UTF_8);
   }
 
+  /**
+   * @deprecated Use method {@link Supplier#contentAsString(Charset)} instead.
+   */
+  @Deprecated
   public static String string(Supplier supplier, Charset charset) {
     Require.nonNull("Supplier of input", supplier);
     Require.nonNull("Character set", charset);
 
-    return new String(bytes(supplier), charset);
+    return supplier.contentAsString(charset);
   }
 
+  /**
+   * @deprecated Use method {@link HttpMessage#contentAsString()} instead
+   */
+  @Deprecated
   public static String string(HttpMessage<?> message) {
-    return string(message.getContent(), message.getContentEncoding());
+    return message.contentAsString();
   }
 
   public static Reader utf8Reader(Supplier supplier) {
@@ -147,7 +146,7 @@ public class Contents {
     Require.nonNull("Supplier of input", supplier);
     Require.nonNull("Character set", charset);
 
-    return new InputStreamReader(supplier.get(), charset);
+    return supplier.reader(charset);
   }
 
   public static Reader reader(HttpMessage<?> message) {
@@ -175,6 +174,11 @@ public class Contents {
     }
   }
 
+  /**
+   * @deprecated Not needed anymore. It's a bad idea to read the entire file to memory. It may cause
+   *     OutOfMemory errors in case of large files.
+   */
+  @Deprecated
   public static String string(File input) throws IOException {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
         InputStream isr = Files.newInputStream(input.toPath())) {

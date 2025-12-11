@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-public sealed record ResponseCompletedEventArgs(BiDi BiDi,
+public sealed record ResponseCompletedEventArgs(
     BrowsingContext.BrowsingContext? Context,
     bool IsBlocked,
     Navigation? Navigation,
@@ -32,4 +32,4 @@ public sealed record ResponseCompletedEventArgs(BiDi BiDi,
     DateTimeOffset Timestamp,
     ResponseData Response,
     IReadOnlyList<Intercept>? Intercepts)
-    : BaseParametersEventArgs(BiDi, Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);
+    : BaseParametersEventArgs(Context, IsBlocked, Navigation, RedirectCount, Request, Timestamp, Intercepts);

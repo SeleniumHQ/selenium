@@ -17,14 +17,16 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.Internal;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
 internal sealed class CallFunctionCommand(CallFunctionParameters @params)
     : Command<CallFunctionParameters, EvaluateResult>(@params, "script.callFunction");
 
-internal sealed record CallFunctionParameters(string FunctionDeclaration, bool AwaitPromise, Target Target, IEnumerable<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : Parameters;
+internal sealed record CallFunctionParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, bool AwaitPromise, Target Target, IEnumerable<LocalValue>? Arguments, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, LocalValue? This, bool? UserActivation) : Parameters;
 
 public sealed class CallFunctionOptions : CommandOptions
 {

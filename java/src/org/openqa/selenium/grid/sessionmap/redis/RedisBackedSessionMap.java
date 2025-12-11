@@ -76,7 +76,7 @@ public class RedisBackedSessionMap extends SessionMap {
     this.bus = Require.nonNull("Event bus", bus);
     this.connection = new GridRedisClient(serverUri);
     this.serverUri = serverUri;
-    this.bus.addListener(SessionClosedEvent.listener(this::remove));
+    this.bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
     this.bus.addListener(
         NodeRemovedEvent.listener(
@@ -223,7 +223,8 @@ public class RedisBackedSessionMap extends SessionMap {
       attributeMap.put(REDIS_URI_KEY, uriKey);
 
       if (rawUri == null) {
-        NoSuchSessionException exception = new NoSuchSessionException("Unable to find session.");
+        NoSuchSessionException exception =
+            new NoSuchSessionException("Unable to find session with id: " + id);
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND);
         EXCEPTION.accept(attributeMap, exception);

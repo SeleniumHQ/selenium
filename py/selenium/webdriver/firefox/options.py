@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from typing import Any
 
 from typing_extensions import deprecated
@@ -66,7 +67,7 @@ class Options(ArgOptions):
         """Returns the location of the binary."""
         return self._binary_location
 
-    @binary_location.setter  # noqa
+    @binary_location.setter
     def binary_location(self, value: str) -> None:
         """Sets the location of the browser binary by string."""
         if not isinstance(value, str):
