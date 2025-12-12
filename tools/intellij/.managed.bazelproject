@@ -1,0 +1,8 @@
+directories:
+  # Add the directories you want added as source here
+  # Do not attempt to sync remote-build locally
+  .
+  -common/remote-build
+
+# Automatically includes all relevant targets under the 'directories' above
+derive_targets_from_directories: true
