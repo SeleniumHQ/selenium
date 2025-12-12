@@ -1,6 +1,6 @@
 directories:
   # Add the directories you want added as source here
-  # Do not attempt to sync remote-build locally
+  # Loads all directories by default except do not want to sync remote-build locally
   .
   -common/remote-build
 
