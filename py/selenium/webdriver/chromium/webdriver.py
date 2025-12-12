@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import base64
+import warnings
 
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
@@ -216,6 +218,71 @@ class ChromiumDriver(RemoteWebDriver):
             pass
         finally:
             self.service.stop()
+
+    def get_full_page_screenshot_as_file(self, filename) -> bool:
+        """Save a full document screenshot of the current window to a PNG image file.
+
+        Args:
+            filename: The full path you wish to save your screenshot to. This
+                should end with a `.png` extension.
+
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
+
+        Example:
+            driver.get_full_page_screenshot_as_file("/Screenshots/foo.png")
+        """
+        if not filename.lower().endswith(".png"):
+            warnings.warn(
+                "name used for saved screenshot does not match file type. It should end with a `.png` extension",
+                UserWarning,
+            )
+        png = self.get_full_page_screenshot_as_png()
+        try:
+            with open(filename, "wb") as f:
+                f.write(png)
+        except OSError:
+            return False
+        finally:
+            del png
+        return True
+
+    def save_full_page_screenshot(self, filename) -> bool:
+        """Save a full document screenshot of the current window to a PNG image file.
+
+        Args:
+            filename: The full path you wish to save your screenshot to. This
+                should end with a `.png` extension.
+
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
+
+        Example:
+            driver.save_full_page_screenshot("/Screenshots/foo.png")
+        """
+        return self.get_full_page_screenshot_as_file(filename)
+
+    def get_full_page_screenshot_as_png(self) -> bytes:
+        """Get the full document screenshot of the current window as binary data.
+
+        Returns:
+            Binary data of the screenshot.
+
+        Example:
+            driver.get_full_page_screenshot_as_png()
+        """
+        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode("ascii"))
+
+    def get_full_page_screenshot_as_base64(self) -> str:
+        """Get the full document screenshot of the current window as a base64-encoded string.
+
+        Returns:
+            Base64 encoded string of the screenshot.
+
+        Example:
+            driver.get_full_page_screenshot_as_base64()
+        """
+        return self.execute("FULL_PAGE_SCREENSHOT")["value"]
 
     def download_file(self, *args, **kwargs):
         """Download file functionality is not implemented for Chromium driver."""
