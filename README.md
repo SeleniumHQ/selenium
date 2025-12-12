@@ -183,15 +183,15 @@ To make things more simple, building each of the bindings is available with this
 
 ### Java
 
-#### IntelliJ
+#### JetBrains
 
-Most of the team uses Intellij for their day-to-day editing. If you're
-working in IntelliJ, then we highly recommend installing the [Bazel IJ
-plugin](https://plugins.jetbrains.com/plugin/8609-bazel) which is documented on
-[its own site](https://plugins.jetbrains.com/plugin/8609-bazel).
+Most of the team uses IntelliJ or other JetBrains IDEs for their day-to-day editing. 
 
-To use Selenium with the IntelliJ Bazel plugin, import the repository as a Bazel project, and select the project
-view file from the [scripts](scripts) directory. `ij.bazelproject` for Mac/Linux and `ij-win.bazelproject` for Windows.
+Opening Selenium with IntelliJ will request to install two plugins:
+* The [JetBrains Bazel plugin](https://plugins.jetbrains.com/plugin/22977-bazel), 
+which will automatically synchronize upon opening.
+* The [google-java-format plugin](https://plugins.jetbrains.com/plugin/8527-google-java-format)
+to allow your IDE to keep any Java formatting for you. Follow additional directions as provided.
 
 #### Linting
 
