@@ -28,7 +28,8 @@ module Selenium
           delete_network_conditions: [:delete, 'session/:session_id/chromium/network_conditions'],
           set_permission: [:post, 'session/:session_id/permissions'],
           get_available_log_types: [:get, 'session/:session_id/se/log/types'],
-          get_log: [:post, 'session/:session_id/se/log']
+          get_log: [:post, 'session/:session_id/se/log'],
+          full_page_screenshot: [:get, 'session/:session_id/screenshot/full']
         }.freeze
 
         def launch_app(id)
@@ -92,6 +93,10 @@ module Selenium
           rescue KeyError
             next
           end
+        end
+
+        def full_screenshot
+          execute :full_page_screenshot
         end
       end # Bridge
     end # Chromium

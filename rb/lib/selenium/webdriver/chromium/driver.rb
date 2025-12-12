@@ -40,6 +40,7 @@ module Selenium
                       DriverExtensions::HasLogs,
                       DriverExtensions::HasLogEvents,
                       DriverExtensions::HasPinnedScripts,
+                      DriverExtensions::FullPageScreenshot,
                       DriverExtensions::PrintsPage].freeze
 
         protected
