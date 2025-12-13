@@ -95,18 +95,18 @@ module Selenium
 
         it 'takes full page screenshot', except: [{platform: :macosx,
                                                    reason: 'showing half resolution of what expected'}],
-                                         exclusive: {browser: :firefox} do
+                                         exclusive: {browser: %i[firefox chrome edge]} do
           viewport_width = driver.execute_script('return window.innerWidth;')
           viewport_height = driver.execute_script('return window.innerHeight;')
 
           screenshot = driver.save_screenshot path, full_page: true
           width, height = png_size(screenshot)
 
-          expect(width).to be >= viewport_width
+          expect(width).to be <= viewport_width
           expect(height).to be > viewport_height
         end
 
-        it 'does not take full page screenshot', only: {browser: %i[chrome edge safari safari_preview],
+        it 'does not take full page screenshot', only: {browser: %i[safari safari_preview],
                                                         reason: 'these browsers do not implement this feature'} do
           expect {
             driver.save_screenshot path, full_page: true

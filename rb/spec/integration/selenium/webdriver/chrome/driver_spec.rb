@@ -86,19 +86,6 @@ module Selenium
           ensure
             FileUtils.rm_rf(path)
           end
-
-          it 'saves a screenshot of the full page' do
-            driver.navigate.to url_for('printPage.html')
-            viewport_height = driver.execute_script('return window.innerHeight;')
-
-            path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
-            screenshot = driver.save_screenshot(path, full_page: true)
-
-            _width, height = png_size(screenshot)
-            expect(height).to be > viewport_height
-          ensure
-            FileUtils.rm_rf(path)
-          end
         end
 
         describe '#logs' do
