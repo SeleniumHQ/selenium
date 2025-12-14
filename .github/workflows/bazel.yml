@@ -185,6 +185,14 @@ jobs:
         if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         run: |
           git diff > changes.patch
+      - name: "Upload test logs"
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          retention-days: 7
+          path: |
+            **/*.log
       - name: "Upload changes"
         if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         uses: actions/upload-artifact@v4

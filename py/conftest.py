@@ -333,7 +333,7 @@ def driver(request):
     marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
     if marker is not None:
         if "run" in marker.kwargs:
-            if marker.kwargs["run"] is False:
+            if not marker.kwargs["run"]:
                 pytest.skip()
                 yield
                 return
@@ -474,7 +474,7 @@ def clean_driver(request):
     marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
     if marker is not None:
         if "run" in marker.kwargs:
-            if marker.kwargs["run"] is False:
+            if not marker.kwargs["run"]:
                 pytest.skip()
                 yield
                 return

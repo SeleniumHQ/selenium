@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.router;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -32,12 +31,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -156,7 +153,7 @@ class SessionQueueGridWithTimeoutTest {
   }
 
   @Test
-  void shouldBeAbleToDeleteTimedoutSessions() {
+  void shouldBeAbleToDeleteTimedOutSessions() throws Exception {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -177,13 +174,6 @@ class SessionQueueGridWithTimeoutTest {
             .withTimeout(Duration.ofSeconds(7))
             .until(node -> node.getUsedSlots() == 0);
       }
-
-    } catch (InterruptedException e) {
-      fail("Unable to create session. Thread Interrupted");
-    } catch (ExecutionException e) {
-      fail("Unable to create session due to execution exception.");
-    } catch (TimeoutException e) {
-      fail("Unable to create session. Timeout occurred.");
     } finally {
       fixedThreadPoolService.shutdownNow();
       scheduler.shutdownNow();

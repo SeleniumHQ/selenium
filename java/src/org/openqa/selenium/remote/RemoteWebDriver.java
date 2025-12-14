@@ -23,9 +23,12 @@ import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -80,7 +83,6 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
@@ -88,6 +90,7 @@ import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
@@ -727,9 +730,12 @@ public class RemoteWebDriver
   public void downloadFile(String fileName, Path targetLocation) throws IOException {
     requireDownloadsEnabled(capabilities);
 
-    Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
-    String contents = ((Map<String, String>) response.getValue()).get("contents");
-    Zip.unzip(contents, targetLocation.toFile());
+    Response response = execute(DriverCommand.GET_DOWNLOADED_FILE, Map.of("name", fileName));
+
+    Contents.Supplier content = (Contents.Supplier) response.getValue();
+    try (InputStream fileContent = content.get()) {
+      Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
+    }
   }
 
   /**
