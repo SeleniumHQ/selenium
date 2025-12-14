@@ -282,7 +282,7 @@ class ChromiumDriver(RemoteWebDriver):
         Example:
             driver.get_full_page_screenshot_as_base64()
         """
-        return self.execute("FULL_PAGE_SCREENSHOT")["value"]
+        return self.execute("getFullPageScreenshot")["value"]
 
     def download_file(self, *args, **kwargs):
         """Download file functionality is not implemented for Chromium driver."""
