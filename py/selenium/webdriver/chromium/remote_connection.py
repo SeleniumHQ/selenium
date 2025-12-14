@@ -44,7 +44,7 @@ class ChromiumRemoteConnection(RemoteConnection):
     def _remote_commands(self, vendor_prefix):
         remote_commands = {
             "launchApp": ("POST", "/session/$sessionId/chromium/launch_app"),
-            "getFullPageScreenshot": ("POST", "/session/$sessionId/screenshot/full"),
+            "getFullPageScreenshot": ("GET", "/session/$sessionId/screenshot/full"),
             "setPermissions": ("POST", "/session/$sessionId/permissions"),
             "setNetworkConditions": ("POST", "/session/$sessionId/chromium/network_conditions"),
             "getNetworkConditions": ("GET", "/session/$sessionId/chromium/network_conditions"),
