@@ -17,49 +17,67 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class SessionModule(Broker broker) : Module(broker)
+internal sealed class SessionModule : Module
 {
+    private SessionJsonSerializerContext _jsonContext = null!;
+
     public async Task<StatusResult> StatusAsync(StatusOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync<StatusCommand, StatusResult>(new StatusCommand(), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new StatusCommand(), options, _jsonContext.StatusCommand, _jsonContext.StatusResult).ConfigureAwait(false);
     }
 
     public async Task<SubscribeResult> SubscribeAsync(IEnumerable<string> events, SubscribeOptions? options = null)
     {
-        var @params = new SubscribeCommandParameters(events, options?.Contexts);
+        var @params = new SubscribeParameters(events, options?.Contexts);
 
-        return await Broker.ExecuteCommandAsync<SubscribeCommand, SubscribeResult>(new(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new(@params), options, _jsonContext.SubscribeCommand, _jsonContext.SubscribeResult).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
+    public async Task<UnsubscribeResult> UnsubscribeAsync(IEnumerable<Subscription> subscriptions, UnsubscribeByIdOptions? options = null)
     {
-        var @params = new UnsubscribeByIdCommandParameters(subscriptions);
+        var @params = new UnsubscribeByIdParameters(subscriptions);
 
-        return await Broker.ExecuteCommandAsync<UnsubscribeByIdCommand, EmptyResult>(new UnsubscribeByIdCommand(@params), options).ConfigureAwait(false);
-    }
-
-    public async Task<EmptyResult> UnsubscribeAsync(IEnumerable<string> eventNames, UnsubscribeByAttributesOptions? options = null)
-    {
-        var @params = new UnsubscribeByAttributesCommandParameters(eventNames, options?.Contexts);
-
-        return await Broker.ExecuteCommandAsync<UnsubscribeByAttributesCommand, EmptyResult>(new UnsubscribeByAttributesCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new UnsubscribeByIdCommand(@params), options, _jsonContext.UnsubscribeByIdCommand, _jsonContext.UnsubscribeResult).ConfigureAwait(false);
     }
 
     public async Task<NewResult> NewAsync(CapabilitiesRequest capabilitiesRequest, NewOptions? options = null)
     {
-        var @params = new NewCommandParameters(capabilitiesRequest);
+        var @params = new NewParameters(capabilitiesRequest);
 
-        return await Broker.ExecuteCommandAsync<NewCommand, NewResult>(new NewCommand(@params), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new NewCommand(@params), options, _jsonContext.NewCommand, _jsonContext.NewResult).ConfigureAwait(false);
     }
 
-    public async Task<EmptyResult> EndAsync(EndOptions? options = null)
+    public async Task<EndResult> EndAsync(EndOptions? options = null)
     {
-        return await Broker.ExecuteCommandAsync<EndCommand, EmptyResult>(new EndCommand(), options).ConfigureAwait(false);
+        return await Broker.ExecuteCommandAsync(new EndCommand(), options, _jsonContext.EndCommand, _jsonContext.EndResult).ConfigureAwait(false);
+    }
+
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
+    {
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
+
+        _jsonContext = new SessionJsonSerializerContext(jsonSerializerOptions);
     }
 }
+
+[JsonSerializable(typeof(StatusCommand))]
+[JsonSerializable(typeof(StatusResult))]
+[JsonSerializable(typeof(NewCommand))]
+[JsonSerializable(typeof(NewResult))]
+[JsonSerializable(typeof(EndCommand))]
+[JsonSerializable(typeof(EndResult))]
+[JsonSerializable(typeof(SubscribeCommand))]
+[JsonSerializable(typeof(SubscribeResult))]
+[JsonSerializable(typeof(UnsubscribeByIdCommand))]
+[JsonSerializable(typeof(UnsubscribeResult))]
+
+internal partial class SessionJsonSerializerContext : JsonSerializerContext;

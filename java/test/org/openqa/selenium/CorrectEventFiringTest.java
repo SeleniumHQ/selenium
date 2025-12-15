@@ -17,9 +17,7 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -180,11 +178,9 @@ class CorrectEventFiringTest extends JupiterTestBase {
   void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
 
-    try {
-      driver.findElement(By.id("throwing-mouseover")).click();
-    } catch (WebDriverException e) {
-      fail("Error in event handler should not have propagated: " + e);
-    }
+    assertThatCode(() -> driver.findElement(By.id("throwing-mouseover")).click())
+        .as("Error in event handler should not have propagated")
+        .doesNotThrowAnyException();
   }
 
   @Test
@@ -410,9 +406,9 @@ class CorrectEventFiringTest extends JupiterTestBase {
         throw new RuntimeException(e);
       }
     }
-    if (!focused) {
-      fail("Clicking on element didn't focus it in time - can't proceed so failing");
-    }
+    assertThat(focused)
+        .as("If clicking on element didn't focus it in time, we can't proceed with the test")
+        .isTrue();
 
     element.sendKeys("a");
     assertEventNotFired("blur", driver);

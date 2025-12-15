@@ -17,14 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class HandleUserPromptCommand(HandleUserPromptCommandParameters @params)
-    : Command<HandleUserPromptCommandParameters, EmptyResult>(@params, "browsingContext.handleUserPrompt");
+internal sealed class HandleUserPromptCommand(HandleUserPromptParameters @params)
+    : Command<HandleUserPromptParameters, HandleUserPromptResult>(@params, "browsingContext.handleUserPrompt");
 
-internal sealed record HandleUserPromptCommandParameters(BrowsingContext Context, bool? Accept, string? UserText) : CommandParameters;
+internal sealed record HandleUserPromptParameters(BrowsingContext Context, bool? Accept, string? UserText) : Parameters;
 
 public sealed class HandleUserPromptOptions : CommandOptions
 {
@@ -32,3 +30,5 @@ public sealed class HandleUserPromptOptions : CommandOptions
 
     public string? UserText { get; set; }
 }
+
+public sealed record HandleUserPromptResult : EmptyResult;

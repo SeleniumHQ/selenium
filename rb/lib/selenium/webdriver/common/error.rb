@@ -38,9 +38,9 @@ module Selenium
       ERROR_URL = 'https://www.selenium.dev/documentation/webdriver/troubleshooting/errors'
 
       URLS = {
-        NoSuchElementError: "#{ERROR_URL}#no-such-element-exception",
-        StaleElementReferenceError: "#{ERROR_URL}#stale-element-reference-exception",
-        InvalidSelectorError: "#{ERROR_URL}#invalid-selector-exception",
+        NoSuchElementError: "#{ERROR_URL}#nosuchelementexception",
+        StaleElementReferenceError: "#{ERROR_URL}#staleelementreferenceexception",
+        InvalidSelectorError: "#{ERROR_URL}#invalidselectorexception",
         NoSuchDriverError: "#{ERROR_URL}/driver_location"
       }.freeze
 
@@ -118,6 +118,13 @@ module Selenium
       #
 
       class NoSuchWindowError < WebDriverError; end
+
+      #
+      # A command to find a devtools target could not be satisfied because
+      # the target could not be found.
+      #
+
+      class NoSuchTargetError < WebDriverError; end
 
       #
       # The element does not have a shadow root.

@@ -18,11 +18,12 @@
 // </copyright>
 
 using NUnit.Framework;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
-class BrowserTest : BiDiTestFixture
+internal class BrowserTest : BiDiTestFixture
 {
     [Test]
     public async Task CanCreateUserContext()
@@ -38,12 +39,12 @@ class BrowserTest : BiDiTestFixture
         var userContext1 = await bidi.Browser.CreateUserContextAsync();
         var userContext2 = await bidi.Browser.CreateUserContextAsync();
 
-        var userContexts = await bidi.Browser.GetUserContextsAsync();
+        var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 
-        Assert.That(userContexts, Is.Not.Null);
-        Assert.That(userContexts, Has.Count.GreaterThanOrEqualTo(2));
-        Assert.That(userContexts, Does.Contain(userContext1));
-        Assert.That(userContexts, Does.Contain(userContext2));
+        Assert.That(userContextsResult, Is.Not.Null);
+        Assert.That(userContextsResult.UserContexts, Has.Count.GreaterThanOrEqualTo(2));
+        Assert.That(userContextsResult.UserContexts.Select(contextInfo => contextInfo.UserContext), Does.Contain(userContext1.UserContext));
+        Assert.That(userContextsResult.UserContexts.Select(contextInfo => contextInfo.UserContext), Does.Contain(userContext2.UserContext));
     }
 
     [Test]
@@ -52,21 +53,54 @@ class BrowserTest : BiDiTestFixture
         var userContext1 = await bidi.Browser.CreateUserContextAsync();
         var userContext2 = await bidi.Browser.CreateUserContextAsync();
 
-        await userContext2.UserContext.RemoveAsync();
+        await bidi.Browser.RemoveUserContextAsync(userContext2.UserContext);
 
-        var userContexts = await bidi.Browser.GetUserContextsAsync();
+        var userContextsResult = await bidi.Browser.GetUserContextsAsync();
 
-        Assert.That(userContexts, Does.Contain(userContext1));
-        Assert.That(userContexts, Does.Not.Contain(userContext2));
+        Assert.That(userContextsResult.UserContexts.Select(contextInfo => contextInfo.UserContext), Does.Contain(userContext1.UserContext));
+        Assert.That(userContextsResult.UserContexts.Select(contextInfo => contextInfo.UserContext), Does.Not.Contain(userContext2.UserContext));
     }
 
     [Test]
     public async Task CanGetClientWindows()
     {
-        var clientWindows = await bidi.Browser.GetClientWindowsAsync();
+        var clientWindowsResult = await bidi.Browser.GetClientWindowsAsync();
 
-        Assert.That(clientWindows, Is.Not.Null);
-        Assert.That(clientWindows, Has.Count.GreaterThanOrEqualTo(1));
-        Assert.That(clientWindows[0].ClientWindow, Is.Not.Null);
+        Assert.That(clientWindowsResult, Is.Not.Null);
+        Assert.That(clientWindowsResult.ClientWindows, Has.Count.GreaterThanOrEqualTo(1));
+        Assert.That(clientWindowsResult.ClientWindows[0].ClientWindow, Is.Not.Null);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public async Task CanSetDownloadBehaviorAllowed()
+    {
+        var result = await bidi.Browser.SetDownloadBehaviorAllowedAsync("/my/path");
+
+        Assert.That(result, Is.Not.Null);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public async Task CanSetDownloadBehaviorAllowedDefault()
+    {
+        var result = await bidi.Browser.SetDownloadBehaviorAllowedAsync();
+
+        Assert.That(result, Is.Not.Null);
+    }
+
+    [Test]
+    [IgnoreBrowser(Selenium.Browser.Chrome, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Edge, "Not supported yet?")]
+    [IgnoreBrowser(Selenium.Browser.Firefox, "Not supported yet?")]
+    public async Task CanSetDownloadBehaviorDenied()
+    {
+        var result = await bidi.Browser.SetDownloadBehaviorDeniedAsync();
+
+        Assert.That(result, Is.Not.Null);
     }
 }

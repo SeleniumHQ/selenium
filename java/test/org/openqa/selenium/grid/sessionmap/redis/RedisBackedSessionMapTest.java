@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap.redis;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
@@ -120,11 +119,7 @@ class RedisBackedSessionMapTest {
 
     sessions.remove(expected.getId());
 
-    try {
-      sessions.get(expected.getId());
-      fail("Oh noes!");
-    } catch (NoSuchSessionException ignored) {
-      // This is expected
-    }
+    assertThatThrownBy(() -> sessions.get(expected.getId()))
+        .isInstanceOf(NoSuchSessionException.class);
   }
 }

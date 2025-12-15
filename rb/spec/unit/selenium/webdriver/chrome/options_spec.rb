@@ -141,6 +141,18 @@ module Selenium
           end
         end
 
+        describe '#enable_bidi!' do
+          it 'allows setting and querying bidi' do
+            expect(options.web_socket_url).to be_nil
+            expect(options.bidi?).to be false
+
+            options.enable_bidi!
+
+            expect(options.bidi?).to be true
+            expect(options.web_socket_url).to be true
+          end
+        end
+
         describe '#add_extension' do
           it 'adds an extension' do
             allow(File).to receive(:file?).and_return(true)
@@ -265,6 +277,26 @@ module Selenium
             expect(opts.as_json).to eq('browserName' => 'chrome',
                                        'goog:chromeOptions' =>
                                          {'args' => ["--user-data-dir=#{directory}"]})
+          end
+
+          it 'processes unhandled_prompt_behavior hash values' do
+            opts = described_class.new(unhandled_prompt_behavior: {
+                                         alert: :accept_and_notify,
+                                         confirm: 'dismiss_and_notify',
+                                         prompt: :ignore,
+                                         before_unload: 'accept',
+                                         default: :dismiss
+                                       })
+
+            expect(opts.as_json).to eq('browserName' => 'chrome',
+                                       'unhandledPromptBehavior' => {
+                                         'alert' => 'accept and notify',
+                                         'confirm' => 'dismiss and notify',
+                                         'prompt' => 'ignore',
+                                         'beforeUnload' => 'accept',
+                                         'default' => 'dismiss'
+                                       },
+                                       'goog:chromeOptions' => {})
           end
 
           it 'returns a JSON hash' do

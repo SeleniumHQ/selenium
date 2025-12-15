@@ -17,14 +17,12 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-internal sealed class ReloadCommand(ReloadCommandParameters @params)
-    : Command<ReloadCommandParameters, NavigateResult>(@params, "browsingContext.reload");
+internal sealed class ReloadCommand(ReloadParameters @params)
+    : Command<ReloadParameters, ReloadResult>(@params, "browsingContext.reload");
 
-internal sealed record ReloadCommandParameters(BrowsingContext Context, bool? IgnoreCache, ReadinessState? Wait) : CommandParameters;
+internal sealed record ReloadParameters(BrowsingContext Context, bool? IgnoreCache, ReadinessState? Wait) : Parameters;
 
 public sealed class ReloadOptions : CommandOptions
 {
@@ -32,3 +30,5 @@ public sealed class ReloadOptions : CommandOptions
 
     public ReadinessState? Wait { get; set; }
 }
+
+public sealed record ReloadResult(Navigation? Navigation, string Url) : NavigateResult(Navigation, Url);

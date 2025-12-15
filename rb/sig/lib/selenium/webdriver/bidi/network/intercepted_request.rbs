@@ -2,15 +2,15 @@ module Selenium
   module WebDriver
     class BiDi
       class InterceptedRequest < InterceptedItem
-        @method: String
+        @method: String?
 
-        @url: String
+        @url: String?
 
-        @body: Hash[untyped, untyped]
+        @body: Hash[untyped, untyped]?
 
-        @headers: Hash[untyped, untyped]
+        @headers: Hash[untyped, untyped]?
 
-        @cookies: Hash[untyped, untyped]
+        @cookies: Hash[untyped, untyped]?
 
         attr_accessor method: String
 
@@ -22,6 +22,8 @@ module Selenium
 
         def continue: () -> Hash[nil, nil]
 
+        def cookies=: -> Hash[nil, nil]
+
         def fail: () -> Hash[nil, nil]
 
         def body=: (Hash[untyped, untyped] value) -> Hash[untyped, untyped]
@@ -29,6 +31,8 @@ module Selenium
         def headers: () -> Hash[untyped, untyped]
 
         def cookies: () -> Hash[untyped, untyped]
+
+        def headers=: -> Hash[untyped, untyped]
       end
     end
   end

@@ -27,6 +27,7 @@ import { Menu as MenuIcon } from '@mui/icons-material'
 import { Help as HelpIcon } from '@mui/icons-material'
 import React from 'react'
 import seleniumGridLogo from '../../assets/selenium-grid-logo.svg'
+import { ThemeToggle } from '../ThemeToggle/ThemeToggle'
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
@@ -93,14 +94,16 @@ function TopBar (props): JSX.Element {
                 component="h1"
                 variant="h4"
                 noWrap
+                sx={{ color: (theme) => theme.palette.mode === 'dark' ? 'primary.main' : 'inherit' }}
               >
                 Selenium Grid
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{ color: (theme) => theme.palette.mode === 'dark' ? 'primary.main' : 'inherit' }}>
                 {subheader}
               </Typography>
             </Box>
           </Box>
+          <ThemeToggle />
         </Toolbar>
       </AppBar>
     </Box>

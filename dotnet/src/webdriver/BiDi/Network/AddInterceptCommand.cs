@@ -17,15 +17,16 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
-using OpenQA.Selenium.BiDi.Communication;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
-internal sealed class AddInterceptCommand(AddInterceptCommandParameters @params)
-    : Command<AddInterceptCommandParameters, AddInterceptResult>(@params, "network.addIntercept");
+internal sealed class AddInterceptCommand(AddInterceptParameters @params)
+    : Command<AddInterceptParameters, AddInterceptResult>(@params, "network.addIntercept");
 
-internal sealed record AddInterceptCommandParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : CommandParameters;
+internal sealed record AddInterceptParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : Parameters;
 
 public class AddInterceptOptions : CommandOptions
 {
@@ -48,6 +49,7 @@ public record BrowsingContextAddInterceptOptions
 
 public sealed record AddInterceptResult(Intercept Intercept) : EmptyResult;
 
+[JsonConverter(typeof(CamelCaseEnumConverter<InterceptPhase>))]
 public enum InterceptPhase
 {
     BeforeRequestSent,
