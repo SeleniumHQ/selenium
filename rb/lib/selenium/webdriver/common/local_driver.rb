@@ -27,7 +27,17 @@ module Selenium
         caps = process_options(options, service)
         url = service_url(service)
 
-        [caps, url]
+        begin
+          yield(caps, url) if block_given?
+        rescue Selenium::WebDriver::Error::WebDriverError
+          @service_manager&.stop
+          raise
+        end
+      end
+
+      def service_url(service)
+        @service_manager = service.launch
+        @service_manager.uri
       end
 
       def process_options(options, service)

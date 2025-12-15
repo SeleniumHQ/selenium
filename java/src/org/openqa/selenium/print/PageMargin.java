@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.print;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.jspecify.annotations.NullMarked;
 
@@ -59,12 +58,10 @@ public class PageMargin {
   }
 
   public Map<String, Object> toMap() {
-    final Map<String, Object> options = new HashMap<>(7);
-    options.put("top", getTop());
-    options.put("bottom", getBottom());
-    options.put("left", getLeft());
-    options.put("right", getRight());
-
-    return options;
+    return Map.of(
+        "top", getTop(),
+        "bottom", getBottom(),
+        "left", getLeft(),
+        "right", getRight());
   }
 }

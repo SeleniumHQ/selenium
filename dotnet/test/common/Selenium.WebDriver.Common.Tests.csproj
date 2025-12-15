@@ -10,7 +10,6 @@
     <PackageReference Include="BenderProxy" Version="1.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="Runfiles" Version="0.14.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0">

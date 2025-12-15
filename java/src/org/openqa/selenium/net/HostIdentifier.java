@@ -27,11 +27,9 @@ import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
 
-@NullMarked
 public class HostIdentifier {
   private static final Logger LOG = Logger.getLogger(HostIdentifier.class.getName());
 

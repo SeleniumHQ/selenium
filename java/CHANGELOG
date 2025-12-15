@@ -1,5 +1,27 @@
+v4.39.0
+======
+* Add CDP for Chrome 143 and remove 140
+* [BiDi] implement `browsingContext.downloadEnd` event (#16347)
+* [BiDi] implement `emulation.setTimezoneOverride` (#16530)
+* [grid] Minimum Docker API 1.44 for Docker Engine v29+ in Dynamic Grid (#16591)
+* Show file modification time (#16589)
+* [grid] Improve Docker client for Dynamic Grid (#16596)
+* [grid] Improve browser container labels and naming in Dynamic Grid (#16599)
+* [BiDi] emulation: allow passing null to GeolocationOverride (#16594)
+* [grid] Update container label `compose.oneoff` in Dynamic Grid (#16613)
+* [grid] Dynamic Grid group dynamic containers in compose stack (#16620)
+* [BiDi] implement `emulation.setScriptingEnabled` (#16631)
+* Avoid logging debug logs with INFO level (either in RUN or DEBUG mode) (#16584)
+* Add JSpecify nullable annotations to exception classes (#16026)
+* annotate with `@NullMarked` the whole package `org.openqa.selenium.net` (#16494)
+* [bidi]: add BiDi method `BrowsingContext.setViewport(null, null)` to reset the mobile emulation mode (#16524)
+* Replace Maven dependency references with artifact() for org.jspecify.jspecify (#16635)
+* 16612 download large files (#16627)
+* #16573 unwrap double-wrapped webdriver (#16575)
+
 v4.38.0
 ======
+* Add CDP for Chrome 142 and remove 139
 * JSpecify annotations for `ExecuteMethod` (#16464)
 * JSpecify annotations for `org.openqa.selenium.federatedcredent… (#16461)
 * JSpecify annotations for `org.openqa.selenium.interactions` (#16462)
@@ -10,7 +32,6 @@ v4.38.0
 * JSpecify annotations for `ExpectedCondition` (#16489)
 * JSpecify annotations for `Response` `SessionId` `HttpSessionId` (#16490)
 * [java][bidi]: add test for onHistoryUpdated event (#16293)
-* update devtools versions
 
 v4.37.0
 ======
