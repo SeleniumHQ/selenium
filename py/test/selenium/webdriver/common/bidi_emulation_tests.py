@@ -589,13 +589,14 @@ def test_set_network_conditions_offline_with_context(driver, pages):
 
     assert is_online(driver, context_id) is True
 
-    # Set offline
-    driver.emulation.set_network_conditions(offline=True, contexts=[context_id])
-    assert is_online(driver, context_id) is False
-
-    # Reset
-    driver.emulation.set_network_conditions(offline=None, contexts=[context_id])
-    assert is_online(driver, context_id) is True
+    try:
+        # Set offline
+        driver.emulation.set_network_conditions(offline=True, contexts=[context_id])
+        assert is_online(driver, context_id) is False
+    finally:
+        # Reset
+        driver.emulation.set_network_conditions(offline=False, contexts=[context_id])
+        assert is_online(driver, context_id) is True
 
 
 @pytest.mark.xfail_firefox
@@ -615,10 +616,8 @@ def test_set_network_conditions_offline_with_user_context(driver, pages):
 
             driver.emulation.set_network_conditions(offline=True, user_contexts=[user_context])
             assert is_online(driver, context_id) is False
-
-            driver.emulation.set_network_conditions(offline=None, user_contexts=[user_context])
-            assert is_online(driver, context_id) is True
         finally:
+            driver.emulation.set_network_conditions(offline=False, user_contexts=[user_context])
             driver.browsing_context.close(context_id)
     finally:
         driver.browser.remove_user_context(user_context)

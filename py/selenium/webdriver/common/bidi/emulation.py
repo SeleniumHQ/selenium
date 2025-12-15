@@ -434,14 +434,14 @@ class Emulation:
 
     def set_network_conditions(
         self,
-        offline: bool | None = None,
+        offline: bool = False,
         contexts: list[str] | None = None,
         user_contexts: list[str] | None = None,
     ) -> None:
         """Set network conditions for the given contexts or user contexts.
 
         Args:
-            offline: True to emulate offline network conditions, False or None to disable.
+            offline: True to emulate offline network conditions, False to clear the override.
             contexts: List of browsing context IDs to apply the conditions to.
             user_contexts: List of user context IDs to apply the conditions to.
 
