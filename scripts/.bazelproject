@@ -1,3 +1,5 @@
+# This is for the newer jetbrains maintained plugin: https://plugins.jetbrains.com/plugin/22977-bazel
+
 directories:
   # Add the directories you want added as source here
   # Loads all directories by default except do not want to sync remote-build locally

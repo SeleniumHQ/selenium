@@ -1,3 +1,5 @@
+# This is for the legacy plugin: https://plugins.jetbrains.com/plugin/8609-bazel-for-intellij-legacy-
+
 directories:
   # Add the directories you want added as source here
   # By default, we've added your entire workspace ('.')
