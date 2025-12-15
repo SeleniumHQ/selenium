@@ -178,6 +178,13 @@ public static class SeleniumManager
     {
         StringBuilder argsBuilder = new StringBuilder(arguments);
         argsBuilder.Append(" --language-binding csharp");
+#if NET8_0_OR_GREATER
+        argsBuilder.Append($" --language-version net8.0/{Environment.Version.Major}");
+#elif NETSTANDARD2_0
+        argsBuilder.Append($" --language-version netstandard2.0/{Environment.Version.Major}");
+#elif NET462
+        argsBuilder.Append(" --language-version net462");
+#endif
         argsBuilder.Append(" --output json");
         if (_logger.IsEnabled(LogEventLevel.Debug))
         {

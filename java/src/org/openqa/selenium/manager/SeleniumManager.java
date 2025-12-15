@@ -261,10 +261,12 @@ public class SeleniumManager {
    * @return the locations of the assets from Selenium Manager execution
    */
   public Result getBinaryPaths(List<String> arguments) {
-    List<String> args = new ArrayList<>(arguments.size() + 5);
+    List<String> args = new ArrayList<>(arguments.size() + 7);
     args.addAll(arguments);
     args.add("--language-binding");
     args.add("java");
+    args.add("--language-version");
+    args.add(Runtime.version().feature() + "");
     args.add("--output");
     args.add("json");
 

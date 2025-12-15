@@ -145,6 +145,10 @@ struct Cli {
     #[clap(long)]
     language_binding: Option<String>,
 
+    /// Version of the language binding invoking Selenium Manager (e.g., 4.18.1, 3.12, net8.0/8)
+    #[clap(long)]
+    language_version: Option<String>,
+
     /// Avoid sends usage statistics to plausible.io
     #[clap(long)]
     avoid_stats: bool,
@@ -223,6 +227,7 @@ fn main() {
     selenium_manager.set_cache_path(cache_path.clone());
     selenium_manager.set_offline(cli.offline);
     selenium_manager.set_language_binding(cli.language_binding.unwrap_or_default());
+    selenium_manager.set_language_binding_version(cli.language_version.unwrap_or_default());
     let sm_version = clap::crate_version!();
     let selenium_version = sm_version.strip_prefix(SM_BETA_LABEL).unwrap_or(sm_version);
     selenium_manager.set_selenium_version(selenium_version.to_string());

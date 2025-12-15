@@ -44,7 +44,16 @@ function getBinaryPaths(capabilities) {
 }
 
 function getArgs(options) {
-  let args = ['--browser', options.getBrowserName(), '--language-binding', 'javascript', '--output', 'json']
+  let args = [
+    '--browser',
+    options.getBrowserName(),
+    '--language-binding',
+    'javascript',
+    '--language-version',
+    process.versions.node,
+    '--output',
+    'json',
+  ]
 
   if (options.getBrowserVersion() && options.getBrowserVersion() !== '') {
     args.push('--browser-version', options.getBrowserVersion())
