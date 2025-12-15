@@ -77,7 +77,8 @@ module Selenium
 
           context 'when encoding strings to UTF-8' do
             it 'converts binary-encoded strings that are valid UTF-8' do
-              binary_string = 'return navigator.userAgent;'.dup.force_encoding(Encoding::BINARY)
+              binary_string = +'return navigator.userAgent;'
+              binary_string.force_encoding(Encoding::BINARY)
               command_hash = {script: binary_string, args: []}
 
               common.call(:post, 'execute', command_hash)
@@ -91,7 +92,8 @@ module Selenium
             end
 
             it 'converts binary-encoded strings in nested hashes' do
-              binary_string = 'test value'.dup.force_encoding(Encoding::BINARY)
+              binary_string = +'test value'
+              binary_string.force_encoding(Encoding::BINARY)
               command_hash = {
                 outer: {
                   inner: binary_string,
@@ -109,7 +111,8 @@ module Selenium
             end
 
             it 'converts binary-encoded strings in arrays' do
-              binary_string = 'array item'.dup.force_encoding(Encoding::BINARY)
+              binary_string = +'array item'
+              binary_string.force_encoding(Encoding::BINARY)
               command_hash = {items: [binary_string, 'utf8 item']}
 
               common.call(:post, 'test', command_hash)
@@ -123,7 +126,8 @@ module Selenium
 
             it 'raises error for invalid byte sequences' do
               # Create an invalid UTF-8 byte sequence
-              invalid_string = "\xFF\xFE".dup.force_encoding(Encoding::BINARY)
+              invalid_string = +"\xFF\xFE"
+              invalid_string.force_encoding(Encoding::BINARY)
               command_hash = {script: invalid_string}
 
               expect { common.call(:post, 'execute', command_hash) }

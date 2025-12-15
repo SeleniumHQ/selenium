@@ -117,7 +117,7 @@ module Selenium
             end
 
             str.encode(Encoding::UTF_8)
-          rescue Encoding::Error => e
+          rescue EncodingError => e
             raise Error::WebDriverError,
                   "Unable to encode string to UTF-8: #{e.message}. " \
                   "String encoding: #{str.encoding}, content: #{str.inspect}"
