@@ -4,7 +4,7 @@ This guide helps contributors write tests in the Selenium Python codebase.
 
 ## Test Framework
 
-* Tests use pytest.
+* Tests use [pytest](https://pytest.org).
 * Test HTML pages live in `common/src/web/`.
 * `pages` fixture loads test pages via `pages.load("pageName.html")`.
 * Assertions use standard pytest `assert` statements.
@@ -22,6 +22,22 @@ def test_something_safari_fails(driver, pages):
     pass
 ```
 
+## Test Organization
+
+```
+py/test/
+├── unit/                    # Unit tests (no browser)
+│   └── selenium/webdriver/
+└── selenium/webdriver/      # Integration tests
+    ├── common/              # Cross-browser tests
+    ├── chrome/
+    ├── firefox/
+    ├── safari/
+    └── remote/
+```
+
+Test files end in `_tests.py` (e.g., `visibility_tests.py`).
+
 ## Running Tests
 
 Bazel creates test targets for each browser. Tests run in parallel by default.
@@ -33,21 +49,33 @@ bazel test //py:test-chrome  # Chrome browser tests
 bazel test //py:test-firefox  # Firefox browser tests
 bazel test //py:common-chrome  # Common tests with Chrome
 
+# A single test file with Chrome:
+bazel test //py:common-chrome-test/selenium/webdriver/common/alerts_tests.py
+
 # With BiDi protocol
 bazel test //py:common-chrome-bidi
 
-# Test Filters
-bazel test //py:... --test_tag_filters=chrome
+# Test filters
+bazel test //py/... --test_tag_filters=chrome
 
-# Additional Arguments
-bazel test //py:... --flaky_test_attempts=3
-bazel test //py:... --test_output=all
-bazel test //py:... --test_output=streamed
+# Additional arguments
+bazel test //py/... --flaky_test_attempts=3
+bazel test //py/... --test_output=all
+bazel test //py/... --test_output=streamed
+bazel test //py:test-chrome --headless
+
+# View all targets
+bazel query //py/...
 ```
-
 ## Fixtures
 
-The main fixtures from `conftest.py`:
+We make use of
+[pytest fixtures](https://docs.pytest.org/en/stable/reference/fixtures.html)
+to simplify test setup/teardown. There are several
+[built-in pytest fixtures](https://docs.pytest.org/en/stable/reference/fixtures.html),
+and many of our own internal fixtures. If a fixture is specific to a module, you will
+find it defined within the test file that uses it. If it is shared among several
+modules, you will find the main fixtures in `conftest.py`:
 
 | Fixture | Description |
 |---------|-------------|
@@ -59,7 +87,12 @@ The main fixtures from `conftest.py`:
 
 ## Markers
 
-Browser-specific expected failures. Each accepts optional `reason` and `run` parameters.
+We use [pytest markers](https://docs.pytest.org/en/stable/how-to/mark.html) to indicate
+special test behaviors.
+
+### Browser-specific Expected Failures
+
+Each accepts optional `reason` and `run` parameters.
 
 | Marker | When to Use |
 |--------|-------------|
@@ -87,22 +120,6 @@ def test_skip_safari(driver, pages):
 |--------|-------------|
 | `@pytest.mark.no_driver_after_test` | Teardown driver after test |
 | `@pytest.mark.needs_fresh_driver` | Restart driver for test isolation |
-
-## Test Organization
-
-```
-py/test/
-├── unit/                    # Unit tests (no browser)
-│   └── selenium/webdriver/
-└── selenium/webdriver/      # Integration tests
-    ├── common/              # Cross-browser tests
-    ├── chrome/
-    ├── firefox/
-    ├── safari/
-    └── remote/
-```
-
-Test files end in `_tests.py` (e.g., `visibility_tests.py`).
 
 ## Build Files
 
