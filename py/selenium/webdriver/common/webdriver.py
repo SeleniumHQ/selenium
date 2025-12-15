@@ -29,7 +29,7 @@ class LocalWebDriver(RemoteWebDriver):
     def __new__(cls, *args, **kwargs):
         if cls is LocalWebDriver:
             raise TypeError(f"Only children of '{cls.__name__}' may be instantiated")
-        return object.__new__(cls, *args, **kwargs)
+        return object.__new__(cls)
 
     def quit(self) -> None:
         """Closes the browser and shuts down the driver executable."""
