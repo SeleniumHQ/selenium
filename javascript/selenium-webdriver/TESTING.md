@@ -4,10 +4,10 @@ This guide helps contributors write tests in the Selenium JavaScript codebase.
 
 ## Test Framework
 
-* Tests use Mocha.
-* Test HTML pages accessed via `Pages` object.
-* `suite()` wrapper handles multi-browser setup.
-* Assertions use Node.js `assert` module.
+- Tests use Mocha.
+- Test HTML pages accessed via `Pages` object.
+- `suite()` wrapper handles multi-browser setup.
+- Assertions use Node.js `assert` module.
 
 ```javascript
 const assert = require('node:assert')
@@ -61,12 +61,10 @@ const { ignore, suite } = require('../lib/test')
 
 suite(function (env) {
   // Skip single test on Safari
-  ignore(env.browsers(Browser.SAFARI)).it('test name', async function () {
-  })
+  ignore(env.browsers(Browser.SAFARI)).it('test name', async function () {})
 
   // Skip on multiple browsers
-  ignore(env.browsers(Browser.CHROME, Browser.FIREFOX)).it('test name', async function () {
-  })
+  ignore(env.browsers(Browser.CHROME, Browser.FIREFOX)).it('test name', async function () {})
 
   // Skip entire describe block
   ignore(env.browsers(Browser.IE)).describe('feature', function () {
@@ -82,27 +80,27 @@ Browser values: `Browser.CHROME`, `Browser.FIREFOX`, `Browser.SAFARI`, `Browser.
 
 ### From `lib/test`
 
-| Export | Description |
-|--------|-------------|
-| `suite(fn)` | Test wrapper that handles driver setup per browser |
-| `ignore(predicate)` | Skip tests when predicate returns true |
-| `Pages` | Object with test page URLs (`Pages.simpleTestPage`, etc.) |
-| `whereIs(path)` | Get URL for test resource |
+| Export              | Description                                               |
+| ------------------- | --------------------------------------------------------- |
+| `suite(fn)`         | Test wrapper that handles driver setup per browser        |
+| `ignore(predicate)` | Skip tests when predicate returns true                    |
+| `Pages`             | Object with test page URLs (`Pages.simpleTestPage`, etc.) |
+| `whereIs(path)`     | Get URL for test resource                                 |
 
 ### Inside `suite(fn)`
 
-| Member | Description |
-|--------|-------------|
-| `env.builder()` | Get WebDriver builder for current browser |
-| `env.browsers(...names)` | Predicate for browser matching |
+| Member                   | Description                               |
+| ------------------------ | ----------------------------------------- |
+| `env.builder()`          | Get WebDriver builder for current browser |
+| `env.browsers(...names)` | Predicate for browser matching            |
 
 ### Test Utilities (`test/lib/testutil.js`)
 
-| Utility | Description |
-|---------|-------------|
+| Utility                        | Description                            |
+| ------------------------------ | -------------------------------------- |
 | `callbackPair(success, error)` | Create callback pair for async testing |
-| `StubError` | Error class for testing error handling |
-| `assertIsStubError(err)` | Assert error is StubError |
+| `StubError`                    | Error class for testing error handling |
+| `assertIsStubError(err)`       | Assert error is StubError              |
 
 ## Test Organization
 
@@ -125,6 +123,6 @@ Test files end in `_test.js`.
 
 ## Build Files
 
-* Adding tests shouldn't require Bazel changes for existing directories.
-* Small tests (no browser) go in `test/lib/`.
-* Large tests (browser required) go in `test/`.
+- Adding tests shouldn't require Bazel changes for existing directories.
+- Small tests (no browser) go in `test/lib/`.
+- Large tests (browser required) go in `test/`.
