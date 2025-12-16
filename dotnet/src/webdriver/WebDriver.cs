@@ -40,7 +40,7 @@ public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFinds
     /// </summary>
     protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
     private IFileDetector fileDetector = new DefaultFileDetector();
-    private NetworkManager network;
+    private NetworkManager? network;
     private WebElementFactory elementFactory;
 
     private readonly List<string> registeredCommands = new List<string>();

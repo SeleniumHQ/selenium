@@ -60,4 +60,11 @@ public class Emulation {
 
     bidi.send(new Command<>("emulation.setUserAgentOverride", parameters.toMap(), Map.class));
   }
+
+  public void setScreenOrientationOverride(SetScreenOrientationOverrideParameters parameters) {
+    Require.nonNull("SetScreenOrientationOverride parameters", parameters);
+
+    bidi.send(
+        new Command<>("emulation.setScreenOrientationOverride", parameters.toMap(), Map.class));
+  }
 }
