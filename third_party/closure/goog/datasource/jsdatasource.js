@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview An implementation of DataNode for wrapping JS data.
- *
  */
 
 
@@ -99,7 +98,7 @@ goog.ds.JsDataSource.prototype.get = function() {
  */
 goog.ds.JsDataSource.prototype.set = function(value) {
   if (value && goog.isObject(this.root_)) {
-    throw Error('Can\'t set group nodes to new values yet');
+    throw new Error('Can\'t set group nodes to new values yet');
   }
 
   if (this.parent_) {
@@ -131,7 +130,7 @@ goog.ds.JsDataSource.prototype.getChildNodes = function(opt_selector) {
       return new goog.ds.EmptyNodeList();
     }
   } else {
-    throw Error('Selector not supported yet (' + opt_selector + ')');
+    throw new Error('Selector not supported yet (' + opt_selector + ')');
   }
 
 };

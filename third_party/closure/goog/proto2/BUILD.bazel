@@ -1,0 +1,133 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":descriptor",
+        ":fielddescriptor",
+        ":lazydeserializer",
+        ":message",
+        ":objectserializer",
+        ":pbliteserializer",
+        ":serializer",
+        ":textformatserializer",
+        ":util",
+    ],
+)
+
+closure_js_library(
+    name = "descriptor",
+    srcs = ["descriptor.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "fielddescriptor",
+    srcs = ["fielddescriptor.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "lazydeserializer",
+    srcs = ["lazydeserializer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/proto2:message",
+        "//third_party/closure/goog/proto2:serializer",
+    ],
+)
+
+closure_js_library(
+    name = "message",
+    srcs = ["message.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/proto2:descriptor",
+        "//third_party/closure/goog/proto2:fielddescriptor",
+    ],
+)
+
+closure_js_library(
+    name = "objectserializer",
+    srcs = ["objectserializer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/proto2:fielddescriptor",
+        "//third_party/closure/goog/proto2:serializer",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "pbliteserializer",
+    srcs = ["pbliteserializer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/proto2:fielddescriptor",
+        "//third_party/closure/goog/proto2:lazydeserializer",
+        "//third_party/closure/goog/proto2:serializer",
+    ],
+)
+
+closure_js_library(
+    name = "serializer",
+    srcs = ["serializer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/proto2:fielddescriptor",
+        "//third_party/closure/goog/proto2:message",
+    ],
+)
+
+closure_js_library(
+    name = "test.pb",
+    testonly = True,
+    srcs = ["test.pb.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/proto2:message"],
+)
+
+closure_js_library(
+    name = "textformatserializer",
+    srcs = ["textformatserializer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/proto2:fielddescriptor",
+        "//third_party/closure/goog/proto2:message",
+        "//third_party/closure/goog/proto2:serializer",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "util",
+    srcs = ["util.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/asserts"],
+)

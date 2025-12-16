@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview DOM pattern to match the start of a tag.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.StartTag');

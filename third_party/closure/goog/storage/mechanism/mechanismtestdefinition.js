@@ -18,7 +18,6 @@
  * mechanism variables used in mechanismSeparationTester
  * and mechanismSelectionTester. This exists to allow test compilation
  * to work correctly for these legacy tests.
- * @visibility {//visibility:private}
  */
 
 goog.provide('goog.storage.mechanism.mechanismTestDefinition');
@@ -27,3 +26,4 @@ goog.setTestOnly('goog.storage.mechanism.mechanismTestDefinition');
 var mechanism;
 var mechanism_shared;
 var mechanism_separate;
+var minimumQuota;

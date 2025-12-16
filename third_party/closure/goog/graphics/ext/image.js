@@ -15,12 +15,12 @@
 
 /**
  * @fileoverview A thick wrapper around images.
- * @author robbyw@google.com (Robby Walker)
  */
 
 
 goog.provide('goog.graphics.ext.Image');
 
+goog.forwardDeclare('goog.graphics.ext.Group');
 goog.require('goog.graphics.ext.Element');
 
 

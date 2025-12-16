@@ -14,11 +14,11 @@
 
 /**
  * @fileoverview Renderer for {@link goog.ui.SubMenu}s.
- *
  */
 
 goog.provide('goog.ui.SubMenuRenderer');
 
+goog.forwardDeclare('goog.ui.SubMenu');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
@@ -44,7 +44,6 @@ goog.require('goog.ui.MenuItemRenderer');
  *
  * @constructor
  * @extends {goog.ui.MenuItemRenderer}
- * @final
  */
 goog.ui.SubMenuRenderer = function() {
   goog.ui.MenuItemRenderer.call(this);

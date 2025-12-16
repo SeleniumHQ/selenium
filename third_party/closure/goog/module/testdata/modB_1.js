@@ -23,11 +23,13 @@ goog.setTestOnly('goog.module.testdata.modB_1');
 
 goog.require('goog.module.ModuleManager');
 
+goog.module.ModuleManager.getInstance().beforeLoadModuleCode('modB');
+
 function throwErrorInModuleB() {
-  throw Error();
+  throw new Error();
 }
 
-if (window.modB1Loaded) throw Error('modB_1 loaded twice');
+if (window.modB1Loaded) throw new Error('modB_1 loaded twice');
 window.modB1Loaded = true;
 
-goog.module.ModuleManager.getInstance().setLoaded('modB');
+goog.module.ModuleManager.getInstance().setLoaded();

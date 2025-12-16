@@ -1,0 +1,30 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "all_js",
+    exports = [":style"],
+)
+
+closure_js_library(
+    name = "style",
+    srcs = ["style.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/cssom",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/useragent",
+    ],
+)

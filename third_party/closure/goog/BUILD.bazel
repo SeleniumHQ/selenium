@@ -1,12 +1,212 @@
-# Only present to allow us to provide the filegroup to the test webserver
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
 
-filegroup(
-    name = "goog",
-    srcs = glob([
-        "**/*.js",
-    ]),
-    visibility = [
-        "//dotnet/test:__subpackages__",
-        "//java/test/org/openqa/selenium/environment:__pkg__",
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_css_library")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "library",
+    exports = [
+        "//third_party/closure/goog/a11y/aria:all_js",
+        "//third_party/closure/goog/array:all_js",
+        "//third_party/closure/goog/asserts:all_js",
+        "//third_party/closure/goog/async:all_js",
+        "//third_party/closure/goog/collections:all_js",
+        "//third_party/closure/goog/color:all_js",
+        "//third_party/closure/goog/crypt:all_js",
+        "//third_party/closure/goog/cssom:all_js",
+        "//third_party/closure/goog/datasource:all_js",
+        "//third_party/closure/goog/date:all_js",
+        "//third_party/closure/goog/db:all_js",
+        "//third_party/closure/goog/debug:all_js",
+        "//third_party/closure/goog/delegate:all_js",
+        "//third_party/closure/goog/disposable:all_js",
+        "//third_party/closure/goog/dom:all_js",
+        "//third_party/closure/goog/editor:all_js",
+        "//third_party/closure/goog/events:all_js",
+        "//third_party/closure/goog/format:all_js",
+        "//third_party/closure/goog/fs:all_js",
+        "//third_party/closure/goog/functions:all_js",
+        "//third_party/closure/goog/fx:all_js",
+        "//third_party/closure/goog/graphics:all_js",
+        "//third_party/closure/goog/history:all_js",
+        "//third_party/closure/goog/html:all_js",
+        "//third_party/closure/goog/i18n:all_js",
+        "//third_party/closure/goog/iter:all_js",
+        "//third_party/closure/goog/json:all_js",
+        "//third_party/closure/goog/loader:all_js",
+        "//third_party/closure/goog/locale:all_js",
+        "//third_party/closure/goog/log:all_js",
+        "//third_party/closure/goog/math:all_js",
+        "//third_party/closure/goog/memoize:all_js",
+        "//third_party/closure/goog/messaging:all_js",
+        "//third_party/closure/goog/module:all_js",
+        "//third_party/closure/goog/net:all_js",
+        "//third_party/closure/goog/object:all_js",
+        "//third_party/closure/goog/positioning:all_js",
+        "//third_party/closure/goog/promise:all_js",
+        "//third_party/closure/goog/proto:all_js",
+        "//third_party/closure/goog/proto2:all_js",
+        "//third_party/closure/goog/pubsub:all_js",
+        "//third_party/closure/goog/reflect:all_js",
+        "//third_party/closure/goog/result:all_js",
+        "//third_party/closure/goog/soy:all_js",
+        "//third_party/closure/goog/spell:all_js",
+        "//third_party/closure/goog/stats:all_js",
+        "//third_party/closure/goog/storage:all_js",
+        "//third_party/closure/goog/streams:all_js",
+        "//third_party/closure/goog/string:all_js",
+        "//third_party/closure/goog/structs:all_js",
+        "//third_party/closure/goog/style:all_js",
+        "//third_party/closure/goog/testing:all_js",
+        "//third_party/closure/goog/timer:all_js",
+        "//third_party/closure/goog/tweak:all_js",
+        "//third_party/closure/goog/uri:all_js",
+        "//third_party/closure/goog/useragent:all_js",
+        "//third_party/closure/goog/vec:all_js",
+        "//third_party/closure/goog/webgl:all_js",
+        "//third_party/closure/goog/window:all_js",
     ],
 )
+
+closure_js_library(
+    name = "testing",
+    testonly = True,
+    exports = [
+        "//third_party/closure/goog:test_module",
+        "//third_party/closure/goog:test_module_dep",
+        "//third_party/closure/goog/crypt:hashtester",
+        "//third_party/closure/goog/events:eventtargettester",
+        "//third_party/closure/goog/html:testing",
+        "//third_party/closure/goog/promise:testsuiteadapter",
+        "//third_party/closure/goog/proto2:test.pb",
+        "//third_party/closure/goog/storage:collectablestoragetester",
+        "//third_party/closure/goog/storage:storagetester",
+        "//third_party/closure/goog/storage/mechanism:iterablemechanismtester",
+        "//third_party/closure/goog/storage/mechanism:mechanismseparationtester",
+        "//third_party/closure/goog/storage/mechanism:mechanismsharingtester",
+        "//third_party/closure/goog/storage/mechanism:mechanismtestdefinition",
+        "//third_party/closure/goog/storage/mechanism:mechanismtester",
+        "//third_party/closure/goog/style:stylescrollbartester",
+        "//third_party/closure/goog/testing:assertionfailure",
+        "//third_party/closure/goog/testing:asserts",
+        "//third_party/closure/goog/testing:asynctestcase",
+        "//third_party/closure/goog/testing:benchmark",
+        "//third_party/closure/goog/testing:continuationtestcase",
+        "//third_party/closure/goog/testing:deferredtestcase",
+        "//third_party/closure/goog/testing:dom",
+        "//third_party/closure/goog/testing:expectedfailures",
+        "//third_party/closure/goog/testing:functionmock",
+        "//third_party/closure/goog/testing:graphics",
+        "//third_party/closure/goog/testing:jstdtestcaseadapter",
+        "//third_party/closure/goog/testing:jsunit",
+        "//third_party/closure/goog/testing:jsunitexception",
+        "//third_party/closure/goog/testing:loosemock",
+        "//third_party/closure/goog/testing:mock",
+        "//third_party/closure/goog/testing:mockclassfactory",
+        "//third_party/closure/goog/testing:mockclock",
+        "//third_party/closure/goog/testing:mockcontrol",
+        "//third_party/closure/goog/testing:mockinterface",
+        "//third_party/closure/goog/testing:mockmatchers",
+        "//third_party/closure/goog/testing:mockrandom",
+        "//third_party/closure/goog/testing:mockrange",
+        "//third_party/closure/goog/testing:mockstorage",
+        "//third_party/closure/goog/testing:mockuseragent",
+        "//third_party/closure/goog/testing:multitestrunner",
+        "//third_party/closure/goog/testing:objectpropertystring",
+        "//third_party/closure/goog/testing:performancetable",
+        "//third_party/closure/goog/testing:performancetimer",
+        "//third_party/closure/goog/testing:propertyreplacer",
+        "//third_party/closure/goog/testing:pseudorandom",
+        "//third_party/closure/goog/testing:recordfunction",
+        "//third_party/closure/goog/testing:shardingtestcase",
+        "//third_party/closure/goog/testing:singleton",
+        "//third_party/closure/goog/testing:stacktrace",
+        "//third_party/closure/goog/testing:strictmock",
+        "//third_party/closure/goog/testing:testcase",
+        "//third_party/closure/goog/testing:testqueue",
+        "//third_party/closure/goog/testing:testrunner",
+        "//third_party/closure/goog/testing:testsuite",
+        "//third_party/closure/goog/testing/async:mockcontrol",
+        "//third_party/closure/goog/testing/editor:dom",
+        "//third_party/closure/goog/testing/editor:fieldmock",
+        "//third_party/closure/goog/testing/editor:testhelper",
+        "//third_party/closure/goog/testing/events",
+        "//third_party/closure/goog/testing/events:eventobserver",
+        "//third_party/closure/goog/testing/events:matchers",
+        "//third_party/closure/goog/testing/events:onlinehandler",
+        "//third_party/closure/goog/testing/fs",
+        "//third_party/closure/goog/testing/fs:blob",
+        "//third_party/closure/goog/testing/fs:entry",
+        "//third_party/closure/goog/testing/fs:file",
+        "//third_party/closure/goog/testing/fs:filereader",
+        "//third_party/closure/goog/testing/fs:filesystem",
+        "//third_party/closure/goog/testing/fs:filewriter",
+        "//third_party/closure/goog/testing/fs:progressevent",
+        "//third_party/closure/goog/testing/i18n:asserts",
+        "//third_party/closure/goog/testing/messaging:mockmessagechannel",
+        "//third_party/closure/goog/testing/messaging:mockmessageevent",
+        "//third_party/closure/goog/testing/messaging:mockmessageport",
+        "//third_party/closure/goog/testing/messaging:mockportnetwork",
+        "//third_party/closure/goog/testing/net:mockiframeio",
+        "//third_party/closure/goog/testing/net:xhrio",
+        "//third_party/closure/goog/testing/net:xhriopool",
+        "//third_party/closure/goog/testing/proto2",
+        "//third_party/closure/goog/testing/storage:fakemechanism",
+        "//third_party/closure/goog/testing/style",
+        "//third_party/closure/goog/testing/style:layoutasserts",
+        "//third_party/closure/goog/tweak:testhelpers",
+        "//third_party/closure/goog/useragent:useragenttestutil",
+    ],
+)
+
+closure_js_library(
+    name = "goog",
+    srcs = ["goog.js"],
+    lenient = True,
+    no_closure_library = True,
+)
+
+closure_js_library(
+    name = "test_module",
+    testonly = True,
+    srcs = ["test_module.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog:test_module_dep"],
+)
+
+closure_js_library(
+    name = "test_module_dep",
+    testonly = True,
+    srcs = ["test_module_dep.js"],
+    lenient = True,
+)
+
+filegroup(
+    name = "base",
+    srcs = [
+        "base.js",
+        "transitionalforwarddeclarations.js",
+    ],
+)
+
+closure_js_library(
+    name = "deps",
+    srcs = ["deps.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "transpile",
+    srcs = ["transpile.js"],
+    lenient = True,
+)
+
+closure_css_library(
+    name = "css",
+    srcs = ["@com_google_javascript_closure_library//:css_files"],
+)
+

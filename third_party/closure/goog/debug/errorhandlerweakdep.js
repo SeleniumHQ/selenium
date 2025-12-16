@@ -16,7 +16,6 @@
  * @fileoverview File which defines dummy object to work around undefined
  * properties compiler warning for weak dependencies on
  * {@link goog.debug.ErrorHandler#protectEntryPoint}.
- *
  */
 
 goog.provide('goog.debug.errorHandlerWeakDep');

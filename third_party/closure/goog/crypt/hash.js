@@ -16,7 +16,6 @@
  * @fileoverview Abstract cryptographic hash interface.
  *
  * See goog.crypt.Sha1 and goog.crypt.Md5 for sample implementations.
- *
  */
 
 goog.provide('goog.crypt.Hash');

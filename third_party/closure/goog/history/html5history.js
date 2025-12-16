@@ -18,7 +18,6 @@
  *
  * TODO(user): There should really be a history interface and multiple
  * implementations.
- *
  */
 
 
@@ -299,12 +298,12 @@ goog.history.Html5History.prototype.onHistoryEvent_ = function(e) {
 
 /**
  * A token transformer that can create a URL from a history
- * token. This is used by {@code goog.history.Html5History} to create
+ * token. This is used by `goog.history.Html5History` to create
  * URL when storing token without the hash fragment.
  *
- * Given a {@code window.location} object containing the location
- * created by {@code createUrl}, the token transformer allows
- * retrieval of the token back via {@code retrieveToken}.
+ * Given a `window.location` object containing the location
+ * created by `createUrl`, the token transformer allows
+ * retrieval of the token back via `retrieveToken`.
  *
  * @interface
  */
@@ -313,11 +312,11 @@ goog.history.Html5History.TokenTransformer = function() {};
 
 /**
  * Retrieves a history token given the path prefix and
- * {@code window.location} object.
+ * `window.location` object.
  *
  * @param {string} pathPrefix The path prefix to use when storing token
  *     in a path; always begin with a slash.
- * @param {Location} location The {@code window.location} object.
+ * @param {Location} location The `window.location` object.
  *     Treat this object as read-only.
  * @return {string} token The history token.
  */
@@ -332,7 +331,7 @@ goog.history.Html5History.TokenTransformer.prototype.retrieveToken = function(
  * @param {string} token The history token.
  * @param {string} pathPrefix The path prefix to use when storing token
  *     in a path; always begin with a slash.
- * @param {Location} location The {@code window.location} object.
+ * @param {Location} location The `window.location` object.
  *     Treat this object as read-only.
  * @return {string} url The complete URL string from path onwards
  *     (without {@code protocol://host:port} part); must begin with a

@@ -19,7 +19,6 @@
  *   var sha256 = new goog.crypt.Sha256();
  *   sha256.update(bytes);
  *   var hash = sha256.digest();
- *
  */
 
 goog.provide('goog.crypt.Sha256');

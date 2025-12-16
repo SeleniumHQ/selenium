@@ -17,7 +17,7 @@ goog.provide('goog.pubsub.TopicId');
 
 
 /**
- * A templated class that is used to register {@code goog.pubsub.PubSub}
+ * A templated class that is used to register `goog.pubsub.PubSub`
  * subscribers.
  *
  * Typical usage for a publisher:

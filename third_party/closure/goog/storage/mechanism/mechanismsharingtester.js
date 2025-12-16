@@ -19,7 +19,6 @@
  * separate mechanism instances share the same underlying storage. Most (if
  * not all) storage mechanisms should have this property. If the mechanism
  * employs namespaces, make sure the same namespace is used for both objects.
- *
  */
 
 goog.provide('goog.storage.mechanism.mechanismSharingTester');

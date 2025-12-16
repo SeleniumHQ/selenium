@@ -57,10 +57,6 @@ function testParse() {
   table.run(function() {
     var o = goog.json.parse(s);
   }, 'Parse using goog.json.parse');
-
-  table.run(function() {
-    var o = goog.json.unsafeParse(s);
-  }, 'Parse using goog.json.unsafeParse');
 }
 
 

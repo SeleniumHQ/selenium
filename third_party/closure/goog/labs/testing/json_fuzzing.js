@@ -215,7 +215,7 @@ goog.labs.testing.JsonFuzzing.prototype.nextElm_ = function(depth) {
     case 1:
       return this.nextArray_(depth);
     default:
-      throw Error('invalid elm type encounted.');
+      throw new Error('invalid elm type encounted.');
   }
 };
 
@@ -259,7 +259,7 @@ goog.labs.testing.JsonFuzzing.prototype.nextMessage_ = function(depth) {
         result['f' + i] = null;
         continue;
       default:
-        throw Error('invalid field type encounted.');
+        throw new Error('invalid field type encounted.');
     }
   }
 
@@ -306,7 +306,7 @@ goog.labs.testing.JsonFuzzing.prototype.nextArray_ = function(depth) {
         result.push(null);
         continue;
       default:
-        throw Error('invalid field type encounted.');
+        throw new Error('invalid field type encounted.');
     }
   }
 

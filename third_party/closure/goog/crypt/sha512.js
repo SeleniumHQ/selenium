@@ -19,8 +19,6 @@
  *   var sha512 = new goog.crypt.Sha512();
  *   sha512.update(bytes);
  *   var hash = sha512.digest();
- *
- * @author fy@google.com (Frank Yellin)
  */
 
 goog.provide('goog.crypt.Sha512');

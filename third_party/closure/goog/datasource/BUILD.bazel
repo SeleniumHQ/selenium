@@ -1,0 +1,124 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":datamanager",
+        ":datasource",
+        ":expr",
+        ":fastdatanode",
+        ":jsdatasource",
+        ":jsondatasource",
+        ":jsxmlhttpdatasource",
+        ":xmldatasource",
+    ],
+)
+
+closure_js_library(
+    name = "datamanager",
+    srcs = ["datamanager.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/datasource",
+        "//third_party/closure/goog/datasource:expr",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/structs",
+        "//third_party/closure/goog/structs:map",
+    ],
+)
+
+closure_js_library(
+    name = "datasource",
+    srcs = ["datasource.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/log",
+    ],
+)
+
+closure_js_library(
+    name = "expr",
+    srcs = ["expr.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/datasource",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "fastdatanode",
+    srcs = ["fastdatanode.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/datasource",
+        "//third_party/closure/goog/datasource:datamanager",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "jsdatasource",
+    srcs = ["jsdatasource.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/datasource",
+        "//third_party/closure/goog/datasource:datamanager",
+    ],
+)
+
+closure_js_library(
+    name = "jsondatasource",
+    srcs = ["jsondatasource.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/datasource",
+        "//third_party/closure/goog/datasource:datamanager",
+        "//third_party/closure/goog/datasource:jsdatasource",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/log",
+    ],
+)
+
+closure_js_library(
+    name = "jsxmlhttpdatasource",
+    srcs = ["jsxmlhttpdatasource.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/datasource",
+        "//third_party/closure/goog/datasource:datamanager",
+        "//third_party/closure/goog/datasource:fastdatanode",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/uri",
+    ],
+)
+
+closure_js_library(
+    name = "xmldatasource",
+    srcs = ["xmldatasource.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/datasource",
+        "//third_party/closure/goog/datasource:datamanager",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:xml",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/uri",
+    ],
+)

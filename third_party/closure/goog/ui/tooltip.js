@@ -15,7 +15,6 @@
 /**
  * @fileoverview Tooltip widget implementation.
  *
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/tooltip.html
  */
 
@@ -70,10 +69,9 @@ goog.ui.Tooltip = function(opt_el, opt_str, opt_domHelper) {
       (opt_el ? goog.dom.getDomHelper(goog.dom.getElement(opt_el)) :
                 goog.dom.getDomHelper());
 
-  goog.ui.Popup.call(
-      this,
-      this.dom_.createDom(
-          goog.dom.TagName.DIV, {'style': 'position:absolute;display:none;'}));
+  goog.ui.Popup.call(this, this.dom_.createDom(goog.dom.TagName.DIV, {
+    'style': 'position:absolute;display:none;'
+  }));
 
   /**
    * Cursor position relative to the page.
@@ -91,7 +89,7 @@ goog.ui.Tooltip = function(opt_el, opt_str, opt_domHelper) {
 
   /**
    * Keyboard focus event handler for elements inside the tooltip.
-   * @private {goog.events.FocusHandler}
+   * @private {?goog.events.FocusHandler}
    */
   this.tooltipFocusHandler_ = null;
 
@@ -122,7 +120,7 @@ goog.ui.Tooltip.activeInstances_ = [];
 /**
  * Active element reference. Used by the delayed show functionality to keep
  * track of the element the mouse is over or the element with focus.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.Tooltip.prototype.activeEl_ = null;
@@ -690,7 +688,7 @@ goog.ui.Tooltip.prototype.hasActiveChild = function() {
 
 
 /**
- * Saves the current mouse cursor position to {@code this.cursorPosition}.
+ * Saves the current mouse cursor position to `this.cursorPosition`.
  * @param {goog.events.BrowserEvent} event MOUSEOVER or MOUSEMOVE event.
  * @private
  */
@@ -731,7 +729,7 @@ goog.ui.Tooltip.prototype.handleMouseOver = function(event) {
 goog.ui.Tooltip.prototype.getAnchorFromElement = function(el) {
   // FireFox has a bug where mouse events relating to <input> elements are
   // sometimes duplicated (often in FF2, rarely in FF3): once for the
-  // <input> element and once for a magic hidden <div> element.  Javascript
+  // <input> element and once for a magic hidden <div> element.  JavaScript
   // code does not have sufficient permissions to read properties on that
   // magic element and thus will throw an error in this call to
   // getAnchorFromElement_().  In that case we swallow the error.
@@ -985,20 +983,21 @@ goog.ui.Tooltip.CursorTooltipPosition.prototype.reposition = function(
     element, popupCorner, opt_margin) {
   var viewportElt = goog.style.getClientViewportElement(element);
   var viewport = goog.style.getVisibleRectForElement(viewportElt);
-  var margin = opt_margin ?
-      new goog.math.Box(
-          opt_margin.top + 10, opt_margin.right, opt_margin.bottom,
-          opt_margin.left + 10) :
-      new goog.math.Box(10, 0, 0, 10);
+  var margin = opt_margin ? new goog.math.Box(
+                                opt_margin.top + 10, opt_margin.right,
+                                opt_margin.bottom, opt_margin.left + 10) :
+                            new goog.math.Box(10, 0, 0, 10);
 
   if (goog.positioning.positionAtCoordinate(
           this.coordinate, element, goog.positioning.Corner.TOP_START, margin,
-          viewport, goog.positioning.Overflow.ADJUST_X |
+          viewport,
+          goog.positioning.Overflow.ADJUST_X |
               goog.positioning.Overflow.FAIL_Y) &
       goog.positioning.OverflowStatus.FAILED) {
     goog.positioning.positionAtCoordinate(
         this.coordinate, element, goog.positioning.Corner.TOP_START, margin,
-        viewport, goog.positioning.Overflow.ADJUST_X |
+        viewport,
+        goog.positioning.Overflow.ADJUST_X |
             goog.positioning.Overflow.ADJUST_Y);
   }
 };

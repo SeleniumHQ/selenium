@@ -16,7 +16,6 @@
  * @fileoverview Provides data persistence using HTML5 session storage
  * mechanism. Session storage must be available under window.sessionStorage,
  * see: http://www.w3.org/TR/webstorage/#the-sessionstorage-attribute.
- *
  */
 
 goog.provide('goog.storage.mechanism.HTML5SessionStorage');

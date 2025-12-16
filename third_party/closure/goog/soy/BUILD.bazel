@@ -1,0 +1,63 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":data",
+        ":renderer",
+        ":soy",
+    ],
+)
+
+closure_js_library(
+    name = "data",
+    srcs = ["data.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safescript",
+        "//third_party/closure/goog/html:safestyle",
+        "//third_party/closure/goog/html:safestylesheet",
+        "//third_party/closure/goog/html:safeurl",
+        "//third_party/closure/goog/html:trustedresourceurl",
+        "//third_party/closure/goog/html:uncheckedconversions",
+        "//third_party/closure/goog/i18n:bidi",
+        "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/uri",
+    ],
+)
+
+closure_js_library(
+    name = "renderer",
+    srcs = ["renderer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/soy",
+        "//third_party/closure/goog/soy:data",
+    ],
+)
+
+closure_js_library(
+    name = "soy",
+    srcs = ["soy.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/soy:data",
+    ],
+)

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview A wrapper for the HTML5 FileReader object.
- *
  */
 
 goog.provide('goog.fs.FileReader');

@@ -15,7 +15,6 @@
 /**
  * @fileoverview
  * Implementations of DataNode for wrapping XML data.
- *
  */
 
 goog.provide('goog.ds.XmlDataSource');
@@ -151,7 +150,7 @@ goog.ds.XmlDataSource.prototype.get = function() {
  * @override
  */
 goog.ds.XmlDataSource.prototype.set = function(value) {
-  throw Error('Can\'t set on XmlDataSource yet');
+  throw new Error('Can\'t set on XmlDataSource yet');
 };
 
 
@@ -167,7 +166,7 @@ goog.ds.XmlDataSource.prototype.getChildNodes = function(opt_selector) {
     this.createChildNodes_();
     return this.childNodeList_;
   } else {
-    throw Error('Unsupported selector');
+    throw new Error('Unsupported selector');
   }
 
 };

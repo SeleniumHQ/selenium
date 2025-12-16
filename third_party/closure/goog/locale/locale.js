@@ -81,8 +81,8 @@ goog.locale.Resource = {
 // e.g. en-Latn-GB
 //
 // NOTICE:
-// No special format checking is performed. If you pass a none valid
-// language code as parameter to the following functions,
+// No special format checking is performed. If you pass an invalid
+// language code as a parameter to the following functions,
 // you might get an unexpected result.
 
 
@@ -416,11 +416,42 @@ goog.locale.getResourceWithFallback = function(resourceName, opt_locale) {
 
 // Export global functions that are used by the date time constants files.
 // See http://go/js_locale_data
+
+/**
+ * Registers the LocaleNameConstants constants object for a given locale name.
+ * @param {!Object} dataObj The resource object.
+ * @param {string} localeName Locale ID.
+ */
 var registerLocalNameConstants = goog.locale.registerLocaleNameConstants;
 
+/**
+ * Registers the TimeZoneSelectedIds constants object for a given locale name.
+ * @param {?Object} dataObj The resource object.
+ * @param {string} localeName Locale ID.
+ */
 var registerTimeZoneSelectedIds = goog.locale.registerTimeZoneSelectedIds;
+
+/**
+ * Registers the TimeZoneSelectedShortNames constants object for a given
+ *     locale name.
+ * @param {!Object} dataObj The resource object.
+ * @param {string} localeName Locale ID.
+ */
 var registerTimeZoneSelectedShortNames =
     goog.locale.registerTimeZoneSelectedShortNames;
+
+/**
+ * Registers the TimeZoneSelectedLongNames constants object for a given locale
+ *     name.
+ * @param {!Object} dataObj The resource object.
+ * @param {string} localeName Locale ID.
+ */
 var registerTimeZoneSelectedLongNames =
     goog.locale.registerTimeZoneSelectedLongNames;
+
+/**
+ * Registers the TimeZoneAllLongNames constants object for a given locale name.
+ * @param {!Object} dataObj The resource object.
+ * @param {string} localeName Locale ID.
+ */
 var registerTimeZoneAllLongNames = goog.locale.registerTimeZoneAllLongNames;

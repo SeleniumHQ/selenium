@@ -77,7 +77,7 @@ goog.Thenable.addImplementation(goog.result.SimpleResult);
 /**
  * A waiting handler entry.
  * @typedef {{
- *   callback: !function(goog.result.SimpleResult),
+ *   callback: function(!goog.result.SimpleResult),
  *   scope: Object
  * }}
  * @private

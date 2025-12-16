@@ -21,15 +21,16 @@
 goog.module('goog.testing.parallelClosureTestSuite');
 goog.setTestOnly('goog.testing.parallelClosureTestSuite');
 
-var Promise = goog.require('goog.Promise');
-var events = goog.require('goog.events');
-var MultiTestRunner = goog.require('goog.testing.MultiTestRunner');
-var TestCase = goog.require('goog.testing.TestCase');
-var jsunit = goog.require('goog.testing.jsunit');
-var testSuite = goog.require('goog.testing.testSuite');
-var json = goog.require('goog.json');
+const MultiTestRunner = goog.require('goog.testing.MultiTestRunner');
+const Promise = goog.require('goog.Promise');
+const TestCase = goog.require('goog.testing.TestCase');
+const asserts = goog.require('goog.asserts');
+const events = goog.require('goog.events');
+const json = goog.require('goog.json');
+const testSuite = goog.require('goog.testing.testSuite');
 
-var testRunner;
+/** @type {?MultiTestRunner} */
+let testRunner = null;
 
 
 /**
@@ -40,7 +41,7 @@ var testRunner;
  *   allResults: !Object<string, !Array<string>>
  * }}
  */
-var ParallelTestResults;
+let ParallelTestResults;
 
 
 /**
@@ -51,20 +52,20 @@ var ParallelTestResults;
  * @return {!ParallelTestResults} Flattened test report for all tests.
  */
 function processAllTestResults(testResults) {
-  var totalTests = 0;
-  var totalFailed = 0;
-  var allResults = {};
-  var failureReports = '';
+  let totalTests = 0;
+  let totalFailed = 0;
+  const allResults = {};
+  let failureReports = '';
 
-  for (var i = 0; i < testResults.length; i++) {
-    var result = testResults[i];
-    for (var testName in result) {
+  for (let i = 0; i < testResults.length; i++) {
+    const result = testResults[i];
+    for (const testName in result) {
       totalTests++;
       allResults[testName] = result[testName];
-      var failures = result[testName];
+      const failures = result[testName];
       if (failures.length) {
         totalFailed++;
-        for (var j = 0; j < failures.length; j++) {
+        for (let j = 0; j < failures.length; j++) {
           failureReports += failures[j] + '\n';
         }
       }
@@ -79,13 +80,14 @@ function processAllTestResults(testResults) {
   };
 }
 
-var testObj = {
+const testObj = {
   setUpPage: function() {
     // G_parallelTestRunner is exported in gen_parallel_test_html.py.
-    var timeout = goog.global['G_parallelTestRunner']['testTimeout'];
-    var allTests = goog.global['G_parallelTestRunner']['allTests'];
-    var parallelFrames = goog.global['G_parallelTestRunner']['parallelFrames'];
-    var parallelTimeout =
+    const timeout = goog.global['G_parallelTestRunner']['testTimeout'];
+    const allTests = goog.global['G_parallelTestRunner']['allTests'];
+    const parallelFrames =
+        goog.global['G_parallelTestRunner']['parallelFrames'];
+    const parallelTimeout =
         goog.global['G_parallelTestRunner']['parallelTimeout'];
 
     // Create a test runner and render it.
@@ -108,13 +110,15 @@ var testObj = {
   },
 
   testRunAllTests: function() {
-    var failurePromise = new Promise(function(resolve, reject) {
+    asserts.assert(testRunner, 'Was "setUpPage" called?');
+
+    const failurePromise = new Promise(function(resolve, reject) {
       events.listen(testRunner, 'testsFinished', resolve);
     });
 
     testRunner.start();
 
-    var allResults = {};
+    let allResults = {};
     // TestPoller.java invokes this to get test results for sponge. We override
     // it and return the results of each individual test instead of the
     // containing "testRunAllTests".
@@ -127,7 +131,7 @@ var testObj = {
     };
 
     return failurePromise.then(function(failures) {
-      var testResults = processAllTestResults(failures['allTestResults']);
+      const testResults = processAllTestResults(failures['allTestResults']);
       allResults = testResults.allResults;
       if (testResults.totalFailures) {
         fail(

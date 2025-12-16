@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview A basic statistics tracker.
- *
  */
 
 goog.provide('goog.stats.BasicStat');

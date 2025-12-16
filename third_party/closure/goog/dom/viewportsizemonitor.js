@@ -15,7 +15,6 @@
 /**
  * @fileoverview Utility class that monitors viewport size changes.
  *
- * @author attila@google.com (Attila Bodis)
  * @see ../demos/viewportsizemonitor.html
  */
 
@@ -37,7 +36,7 @@ goog.require('goog.math.Size');
  *
  * Use this class if you want to execute resize/reflow logic each time the
  * user resizes the browser window.  This class is guaranteed to only dispatch
- * {@code RESIZE} events when the pixel dimensions of the viewport change.
+ * `RESIZE` events when the pixel dimensions of the viewport change.
  * (Internet Explorer fires resize events if any element on the page is resized,
  * even if the viewport dimensions are unchanged, which can lead to infinite
  * resize loops.)

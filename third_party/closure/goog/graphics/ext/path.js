@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview A thick wrapper around paths.
- * @author robbyw@google.com (Robby Walker)
  */
 
 

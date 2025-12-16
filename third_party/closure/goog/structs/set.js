@@ -15,7 +15,6 @@
 /**
  * @fileoverview Datastructure: Set.
  *
- * @author arv@google.com (Erik Arvidsson)
  *
  * This class implements a set data structure. Adding and removing is O(1). It
  * supports both object and primitive values. Be careful because you can add
@@ -29,8 +28,6 @@ goog.provide('goog.structs.Set');
 goog.require('goog.structs');
 goog.require('goog.structs.Collection');
 goog.require('goog.structs.Map');
-
-
 
 /**
  * A set that can contain both primitives and objects.  Adding and removing
@@ -47,6 +44,7 @@ goog.require('goog.structs.Map');
  * @implements {goog.structs.Collection<T>}
  * @final
  * @template T
+ * @deprecated This type is misleading: use ES6 Set instead.
  */
 goog.structs.Set = function(opt_values) {
   this.map_ = new goog.structs.Map;
@@ -54,6 +52,12 @@ goog.structs.Set = function(opt_values) {
     this.addAll(opt_values);
   }
 };
+
+/**
+ * A function that returns a unique id.
+ * @private @const {function(?Object): number}
+ */
+goog.structs.Set.getUid_ = goog.getUid;
 
 
 /**
@@ -67,7 +71,7 @@ goog.structs.Set = function(opt_values) {
 goog.structs.Set.getKey_ = function(val) {
   var type = typeof val;
   if (type == 'object' && val || type == 'function') {
-    return 'o' + goog.getUid(/** @type {Object} */ (val));
+    return 'o' + goog.structs.Set.getUid_(/** @type {Object} */ (val));
   } else {
     return type.substr(0, 1) + val;
   }

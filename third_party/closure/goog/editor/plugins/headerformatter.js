@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Handles applying header styles to text.
- *
  */
 
 goog.provide('goog.editor.plugins.HeaderFormatter');

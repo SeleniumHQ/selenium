@@ -14,9 +14,17 @@
 
 /**
  * @fileoverview Error classes for the IndexedDB wrapper.
- *
  */
 
+
+
+// TODO(b/130421259): We're trying to migrate all ES5 subclasses of Closure
+// Library to ES6. In ES6 this cannot be referenced before super is called. This
+// file has at least one this before a super call (in ES5) and cannot be
+// automatically upgraded to ES6 as a result. Please fix this if you have a
+// chance. Note: This can sometimes be caused by not calling the super
+// constructor at all. You can run the conversion tool yourself to see what it
+// does on this file: blaze run //javascript/refactoring/es6_classes:convert.
 
 goog.provide('goog.db.DomErrorLike');
 goog.provide('goog.db.Error');
@@ -24,6 +32,7 @@ goog.provide('goog.db.Error.ErrorCode');
 goog.provide('goog.db.Error.ErrorName');
 goog.provide('goog.db.Error.VersionChangeBlockedError');
 
+goog.require('goog.asserts');
 goog.require('goog.debug.Error');
 
 
@@ -49,7 +58,7 @@ goog.db.DOMErrorLike.prototype.name;
 goog.db.Error = function(error, context, opt_message) {
   var errorCode = null;
   var internalError = null;
-  if (goog.isNumber(error)) {
+  if (typeof error === 'number') {
     errorCode = error;
     internalError = {name: goog.db.Error.getName(errorCode)};
   } else {
@@ -139,6 +148,7 @@ goog.db.Error.DatabaseErrorCode_ = {
  * @see http://www.w3.org/TR/IndexedDB/#idl-def-IDBDatabaseException
  *
  * @enum {number}
+ * @suppress {missingProperties} Obsolete IndexDb exception objects
  */
 goog.db.Error.ErrorCode = {
   UNKNOWN_ERR: (goog.global.IDBDatabaseException ||
@@ -342,12 +352,8 @@ goog.db.Error.getName = function(code) {
  */
 goog.db.Error.fromRequest = function(request, message) {
   if ('error' in request) {
-    // Chrome 21 and before.
-    return new goog.db.Error(request.error, message);
-  } else if ('name' in request) {
-    // Chrome 22+.
-    var errorName = goog.db.Error.getName(request.error.severity);
-    return new goog.db.Error({name: errorName}, message);
+    // Chrome 22+
+    return new goog.db.Error(goog.asserts.assert(request.error), message);
   } else {
     return new goog.db.Error(
         {name: goog.db.Error.ErrorName.UNKNOWN_ERR}, message);

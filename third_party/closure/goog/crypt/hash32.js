@@ -16,7 +16,6 @@
  * @fileoverview Implementation of 32-bit hashing functions.
  *
  * This is a direct port from the Google Java Hash class
- *
  */
 
 goog.provide('goog.crypt.hash32');
@@ -141,7 +140,7 @@ goog.crypt.hash32.encodeByteArray = function(
 /**
  * Performs an inplace mix of an object with the integer properties (a, b, c)
  * and returns the final value of c.
- * @param {Object} mix Object with properties, a, b, and c.
+ * @param {{a:number, b:number, c:number}} mix Object with properties, a, b, and c.
  * @return {number} The end c-value for the mixing.
  * @private
  */

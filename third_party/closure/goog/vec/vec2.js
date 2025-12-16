@@ -15,7 +15,6 @@
 /**
  * @fileoverview Definition of 2 element vectors.  This follows the same design
  * patterns as Vec3 and Vec4.
- *
  */
 
 goog.provide('goog.vec.Vec2');
@@ -24,10 +23,10 @@ goog.provide('goog.vec.Vec2');
 goog.require('goog.vec');
 
 
-/** @typedef {goog.vec.Float32} */ goog.vec.Vec2.Float32;
-/** @typedef {goog.vec.Float64} */ goog.vec.Vec2.Float64;
-/** @typedef {goog.vec.Number} */ goog.vec.Vec2.Number;
-/** @typedef {goog.vec.AnyType} */ goog.vec.Vec2.AnyType;
+/** @typedef {!goog.vec.Float32} */ goog.vec.Vec2.Float32;
+/** @typedef {!goog.vec.Float64} */ goog.vec.Vec2.Float64;
+/** @typedef {!goog.vec.Number} */ goog.vec.Vec2.Number;
+/** @typedef {!goog.vec.AnyType} */ goog.vec.Vec2.AnyType;
 
 
 /**
@@ -392,7 +391,7 @@ goog.vec.Vec2.lerp = function(vec0, vec1, f, resultVec) {
  *     chained together.
  */
 goog.vec.Vec2.max = function(vec0, limit, resultVec) {
-  if (goog.isNumber(limit)) {
+  if (typeof limit === 'number') {
     resultVec[0] = Math.max(vec0[0], limit);
     resultVec[1] = Math.max(vec0[1], limit);
   } else {
@@ -415,7 +414,7 @@ goog.vec.Vec2.max = function(vec0, limit, resultVec) {
  *     chained together.
  */
 goog.vec.Vec2.min = function(vec0, limit, resultVec) {
-  if (goog.isNumber(limit)) {
+  if (typeof limit === 'number') {
     resultVec[0] = Math.min(vec0[0], limit);
     resultVec[1] = Math.min(vec0[1], limit);
   } else {

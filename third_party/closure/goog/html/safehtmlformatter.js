@@ -82,8 +82,9 @@ goog.html.SafeHtmlFormatter.Replacement;
  */
 goog.html.SafeHtmlFormatter.prototype.format = function(format) {
   var openedTags = [];
+  var marker = goog.string.htmlEscape(goog.html.SafeHtmlFormatter.MARKER_);
   var html = goog.string.htmlEscape(format).replace(
-      /\{SafeHtmlFormatter:\w+\}/g,
+      new RegExp('\\{' + marker + '[\\w&#;]+\\}', 'g'),
       goog.bind(this.replaceFormattingString_, this, openedTags));
   goog.asserts.assert(openedTags.length == 0,
       'Expected no unclosed tags, got <' + openedTags.join('>, <') + '>.');
@@ -193,6 +194,10 @@ goog.html.SafeHtmlFormatter.prototype.safeHtml = function(safeHtml) {
 };
 
 
+/** @private @const {string} Marker used for replacements. */
+goog.html.SafeHtmlFormatter.MARKER_ = 'SafeHtmlFormatter:';
+
+
 /**
  * Stores a replacement and returns its marker.
  * @param {!goog.html.SafeHtmlFormatter.Replacement} replacement
@@ -202,8 +207,8 @@ goog.html.SafeHtmlFormatter.prototype.safeHtml = function(safeHtml) {
 goog.html.SafeHtmlFormatter.prototype.storeReplacement_ = function(
     replacement) {
   this.replacementsCount_++;
-  var marker = '{SafeHtmlFormatter:' + this.replacementsCount_ + '_' +
-      goog.string.getRandomString() + '}';
-  this.replacements_[marker] = replacement;
+  var marker = '{' + goog.html.SafeHtmlFormatter.MARKER_ +
+      this.replacementsCount_ + '_' + goog.string.getRandomString() + '}';
+  this.replacements_[goog.string.htmlEscape(marker)] = replacement;
   return marker;
 };

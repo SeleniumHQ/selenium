@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview SvgGraphics sub class that uses SVG to draw the graphics.
- * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.graphics.SvgGraphics');
@@ -210,7 +209,7 @@ goog.graphics.SvgGraphics.prototype.setElementFill = function(element, fill) {
       });
 
       var gstyle = 'stop-color:' + fill.getColor1();
-      if (goog.isNumber(fill.getOpacity1())) {
+      if (typeof fill.getOpacity1() === 'number') {
         gstyle += ';stop-opacity:' + fill.getOpacity1();
       }
       var stop1 =
@@ -223,7 +222,7 @@ goog.graphics.SvgGraphics.prototype.setElementFill = function(element, fill) {
       //   gstyles += 'opacity:' + fill.getOpacity() + ';'
       // }
       gstyle = 'stop-color:' + fill.getColor2();
-      if (goog.isNumber(fill.getOpacity2())) {
+      if (typeof fill.getOpacity2() === 'number') {
         gstyle += ';stop-opacity:' + fill.getOpacity2();
       }
       var stop2 =
@@ -261,7 +260,7 @@ goog.graphics.SvgGraphics.prototype.setElementStroke = function(
     svgElement.setAttribute('stroke-opacity', stroke.getOpacity());
 
     var width = stroke.getWidth();
-    if (goog.isString(width) && width.indexOf('px') != -1) {
+    if (typeof width === 'string' && width.indexOf('px') != -1) {
       svgElement.setAttribute(
           'stroke-width', parseFloat(width) / this.getPixelScaleX());
     } else {
@@ -396,6 +395,7 @@ goog.graphics.SvgGraphics.prototype.setViewBox_ = function() {
  * Updates the transform of the root element to fake a viewBox.  Should only
  * be called when useManualViewbox_ is set.
  * @private
+ * @suppress {strictPrimitiveOperators} Part of the go/strict_warnings_migration
  */
 goog.graphics.SvgGraphics.prototype.updateManualViewBox_ = function() {
   if (!this.isInDocument() ||
@@ -447,8 +447,8 @@ goog.graphics.SvgGraphics.prototype.getPixelSize = function() {
   // compute the size manually if it is percentage based.
   var width = this.width;
   var height = this.height;
-  var computeWidth = goog.isString(width) && width.indexOf('%') != -1;
-  var computeHeight = goog.isString(height) && height.indexOf('%') != -1;
+  var computeWidth = (typeof width === 'string') && width.indexOf('%') != -1;
+  var computeHeight = (typeof height === 'string') && height.indexOf('%') != -1;
 
   if (!this.isInDocument() && (computeWidth || computeHeight)) {
     return null;

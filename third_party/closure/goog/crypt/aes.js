@@ -15,8 +15,6 @@
 /**
  * @fileoverview Implementation of AES in JavaScript.
  * @see http://en.wikipedia.org/wiki/Advanced_Encryption_Standard
- *
- * @author nnaze@google.com (Nathan Naze) - port to Closure
  */
 
 goog.provide('goog.crypt.Aes');
@@ -117,7 +115,8 @@ goog.crypt.Aes.BLOCK_SIZE_IN_WORDS_ = goog.crypt.Aes.prototype.BLOCK_SIZE / 4;
  * @define {boolean} Whether to call test method stubs.  This can be enabled
  *     for unit testing.
  */
-goog.define('goog.crypt.Aes.ENABLE_TEST_MODE', false);
+goog.crypt.Aes.ENABLE_TEST_MODE =
+    goog.define('goog.crypt.Aes.ENABLE_TEST_MODE', false);
 
 
 /**

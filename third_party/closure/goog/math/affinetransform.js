@@ -64,7 +64,7 @@ goog.math.AffineTransform = function(
         /** @type {number} */ (opt_m02),
         /** @type {number} */ (opt_m12));
   } else if (arguments.length != 0) {
-    throw Error('Insufficient matrix parameters');
+    throw new Error('Insufficient matrix parameters');
   } else {
     this.m00_ = this.m11_ = 1;
     this.m10_ = this.m01_ = this.m02_ = this.m12_ = 0;
@@ -103,9 +103,10 @@ goog.math.AffineTransform.prototype.clone = function() {
  */
 goog.math.AffineTransform.prototype.setTransform = function(
     m00, m10, m01, m11, m02, m12) {
-  if (!goog.isNumber(m00) || !goog.isNumber(m10) || !goog.isNumber(m01) ||
-      !goog.isNumber(m11) || !goog.isNumber(m02) || !goog.isNumber(m12)) {
-    throw Error('Invalid transform parameters');
+  if (typeof m00 !== 'number' || typeof m10 !== 'number' ||
+      typeof m01 !== 'number' || typeof m11 !== 'number' ||
+      typeof m02 !== 'number' || typeof m12 !== 'number') {
+    throw new Error('Invalid transform parameters');
   }
   this.m00_ = m00;
   this.m10_ = m10;
@@ -248,8 +249,8 @@ goog.math.AffineTransform.prototype.preRotate = function(theta, x, y) {
  * @return {!goog.math.AffineTransform} This affine transform.
  */
 goog.math.AffineTransform.prototype.shear = function(shx, shy) {
-  var m00 = this.m00_;
-  var m10 = this.m10_;
+  const m00 = this.m00_;
+  const m10 = this.m10_;
   this.m00_ += shy * this.m01_;
   this.m10_ += shy * this.m11_;
   this.m01_ += shx * m00;
@@ -273,9 +274,9 @@ goog.math.AffineTransform.prototype.shear = function(shx, shy) {
  * @return {!goog.math.AffineTransform} This affine transform.
  */
 goog.math.AffineTransform.prototype.preShear = function(shx, shy) {
-  var m00 = this.m00_;
-  var m01 = this.m01_;
-  var m02 = this.m02_;
+  const m00 = this.m00_;
+  const m01 = this.m01_;
+  const m02 = this.m02_;
   this.m00_ += shx * this.m10_;
   this.m01_ += shx * this.m11_;
   this.m02_ += shx * this.m12_;
@@ -355,8 +356,8 @@ goog.math.AffineTransform.prototype.getShearY = function() {
  * @return {!goog.math.AffineTransform} This affine transform.
  */
 goog.math.AffineTransform.prototype.concatenate = function(tx) {
-  var m0 = this.m00_;
-  var m1 = this.m01_;
+  let m0 = this.m00_;
+  let m1 = this.m01_;
   this.m00_ = tx.m00_ * m0 + tx.m10_ * m1;
   this.m01_ = tx.m01_ * m0 + tx.m11_ * m1;
   this.m02_ += tx.m02_ * m0 + tx.m12_ * m1;
@@ -377,8 +378,8 @@ goog.math.AffineTransform.prototype.concatenate = function(tx) {
  * @return {!goog.math.AffineTransform} This affine transform.
  */
 goog.math.AffineTransform.prototype.preConcatenate = function(tx) {
-  var m0 = this.m00_;
-  var m1 = this.m10_;
+  let m0 = this.m00_;
+  let m1 = this.m10_;
   this.m00_ = tx.m00_ * m0 + tx.m01_ * m1;
   this.m10_ = tx.m10_ * m0 + tx.m11_ * m1;
 
@@ -410,12 +411,12 @@ goog.math.AffineTransform.prototype.preConcatenate = function(tx) {
  */
 goog.math.AffineTransform.prototype.transform = function(
     src, srcOff, dst, dstOff, numPts) {
-  var i = srcOff;
-  var j = dstOff;
-  var srcEnd = srcOff + 2 * numPts;
+  let i = srcOff;
+  let j = dstOff;
+  const srcEnd = srcOff + 2 * numPts;
   while (i < srcEnd) {
-    var x = src[i++];
-    var y = src[i++];
+    const x = src[i++];
+    const y = src[i++];
     dst[j++] = x * this.m00_ + y * this.m01_ + this.m02_;
     dst[j++] = x * this.m10_ + y * this.m11_ + this.m12_;
   }
@@ -437,7 +438,7 @@ goog.math.AffineTransform.prototype.getDeterminant = function() {
  * @return {boolean} Whether the transform is invertible.
  */
 goog.math.AffineTransform.prototype.isInvertible = function() {
-  var det = this.getDeterminant();
+  const det = this.getDeterminant();
   return isFinite(det) && isFinite(this.m02_) && isFinite(this.m12_) &&
       det != 0;
 };
@@ -448,7 +449,7 @@ goog.math.AffineTransform.prototype.isInvertible = function() {
  *     representing the inverse transformation.
  */
 goog.math.AffineTransform.prototype.createInverse = function() {
-  var det = this.getDeterminant();
+  const det = this.getDeterminant();
   return new goog.math.AffineTransform(
       this.m11_ / det, -this.m10_ / det, -this.m01_ / det, this.m00_ / det,
       (this.m01_ * this.m12_ - this.m11_ * this.m02_) / det,
@@ -554,8 +555,8 @@ goog.math.AffineTransform.prototype.setToShear = function(shx, shy) {
  * @return {!goog.math.AffineTransform} This affine transform.
  */
 goog.math.AffineTransform.prototype.setToRotation = function(theta, x, y) {
-  var cos = Math.cos(theta);
-  var sin = Math.sin(theta);
+  const cos = Math.cos(theta);
+  const sin = Math.sin(theta);
   return this.setTransform(
       cos, sin, -sin, cos, x - x * cos + y * sin, y - x * sin - y * cos);
 };

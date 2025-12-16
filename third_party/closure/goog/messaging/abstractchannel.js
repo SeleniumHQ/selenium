@@ -17,7 +17,6 @@
  * repetitive details of registering and dispatching to services. This is more
  * useful for full-fledged channels than for decorators, since decorators
  * generally delegate service registering anyway.
- *
  */
 
 
@@ -137,7 +136,7 @@ goog.messaging.AbstractChannel.prototype.deliver = function(
 
   var decodedPayload =
       this.decodePayload(serviceName, payload, service.objectPayload);
-  if (goog.isDefAndNotNull(decodedPayload)) {
+  if (decodedPayload != null) {
     service.callback(decodedPayload);
   }
 };
@@ -184,16 +183,16 @@ goog.messaging.AbstractChannel.prototype.getService = function(
  */
 goog.messaging.AbstractChannel.prototype.decodePayload = function(
     serviceName, payload, objectPayload) {
-  if (objectPayload && goog.isString(payload)) {
+  if (objectPayload && typeof payload === 'string') {
     try {
-      return goog.json.parse(payload);
+      return /** @type {!Object} */ (JSON.parse(payload));
     } catch (err) {
       goog.log.warning(
           this.logger, 'Expected JSON payload for ' + serviceName + ', was "' +
               payload + '"');
       return null;
     }
-  } else if (!objectPayload && !goog.isString(payload)) {
+  } else if (!objectPayload && typeof payload !== 'string') {
     return goog.json.serialize(payload);
   }
   return payload;

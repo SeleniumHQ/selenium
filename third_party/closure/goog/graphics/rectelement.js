@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview A thin wrapper around the DOM element for rectangles.
- * @author arv@google.com (Erik Arvidsson)
  */
 
 

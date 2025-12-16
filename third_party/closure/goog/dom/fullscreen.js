@@ -14,15 +14,12 @@
 
 /**
  * @fileoverview Functions for managing full screen status of the DOM.
- *
  */
 
 goog.provide('goog.dom.fullscreen');
 goog.provide('goog.dom.fullscreen.EventType');
 
 goog.require('goog.dom');
-goog.require('goog.userAgent');
-
 
 /**
  * Event types for full screen.
@@ -31,13 +28,17 @@ goog.require('goog.userAgent');
 goog.dom.fullscreen.EventType = {
   /** Dispatched by the Document when the fullscreen status changes. */
   CHANGE: (function() {
-    if (goog.userAgent.WEBKIT) {
+    var el = goog.dom.getDomHelper().getDocument().documentElement;
+    if (el.requestFullscreen) {
+      return 'fullscreenchange';
+    }
+    if (el.webkitRequestFullscreen) {
       return 'webkitfullscreenchange';
     }
-    if (goog.userAgent.GECKO) {
+    if (el.mozRequestFullScreen) {
       return 'mozfullscreenchange';
     }
-    if (goog.userAgent.IE) {
+    if (el.msRequestFullscreen) {
       return 'MSFullscreenChange';
     }
     // Opera 12-14, and W3C standard (Draft):
@@ -45,6 +46,27 @@ goog.dom.fullscreen.EventType = {
     return 'fullscreenchange';
   })()
 };
+
+
+/**
+ * Options for fullscreen navigation UI:
+ * https://fullscreen.spec.whatwg.org/#dictdef-fullscreenoptions
+ * @enum {string}
+ */
+goog.dom.fullscreen.FullscreenNavigationUI = {
+  AUTO: 'auto',
+  HIDE: 'hide',
+  SHOW: 'show'
+};
+
+/**
+ * @record
+ * @extends {FullscreenOptions}
+ */
+goog.dom.fullscreen.FullscreenOptions = function() {};
+
+/** @type {!goog.dom.fullscreen.FullscreenNavigationUI} */
+goog.dom.fullscreen.FullscreenOptions.prototype.navigationUI;
 
 
 /**
@@ -67,16 +89,18 @@ goog.dom.fullscreen.isSupported = function(opt_domHelper) {
 /**
  * Requests putting the element in full screen.
  * @param {!Element} element The element to put full screen.
+ * @param {!goog.dom.fullscreen.FullscreenOptions=} opt_options Options for full
+ *     screen. This field will be ignored on older browsers.
  */
-goog.dom.fullscreen.requestFullScreen = function(element) {
-  if (element.webkitRequestFullscreen) {
+goog.dom.fullscreen.requestFullScreen = function(element, opt_options) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen(opt_options);
+  } else if (element.webkitRequestFullscreen) {
     element.webkitRequestFullscreen();
   } else if (element.mozRequestFullScreen) {
     element.mozRequestFullScreen();
   } else if (element.msRequestFullscreen) {
     element.msRequestFullscreen();
-  } else if (element.requestFullscreen) {
-    element.requestFullscreen();
   }
 };
 
@@ -88,8 +112,6 @@ goog.dom.fullscreen.requestFullScreen = function(element) {
 goog.dom.fullscreen.requestFullScreenWithKeys = function(element) {
   if (element.mozRequestFullScreenWithKeys) {
     element.mozRequestFullScreenWithKeys();
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
   } else {
     goog.dom.fullscreen.requestFullScreen(element);
   }
@@ -103,14 +125,14 @@ goog.dom.fullscreen.requestFullScreenWithKeys = function(element) {
  */
 goog.dom.fullscreen.exitFullScreen = function(opt_domHelper) {
   var doc = goog.dom.fullscreen.getDocument_(opt_domHelper);
-  if (doc.webkitCancelFullScreen) {
+  if (doc.exitFullscreen) {
+    doc.exitFullscreen();
+  } else if (doc.webkitCancelFullScreen) {
     doc.webkitCancelFullScreen();
   } else if (doc.mozCancelFullScreen) {
     doc.mozCancelFullScreen();
   } else if (doc.msExitFullscreen) {
     doc.msExitFullscreen();
-  } else if (doc.exitFullscreen) {
-    doc.exitFullscreen();
   }
 };
 
@@ -140,8 +162,8 @@ goog.dom.fullscreen.isFullScreen = function(opt_domHelper) {
 goog.dom.fullscreen.getFullScreenElement = function(opt_domHelper) {
   var doc = goog.dom.fullscreen.getDocument_(opt_domHelper);
   var element_list = [
-    doc.webkitFullscreenElement, doc.mozFullScreenElement,
-    doc.msFullscreenElement, doc.fullscreenElement
+    doc.fullscreenElement, doc.webkitFullscreenElement,
+    doc.mozFullScreenElement, doc.msFullscreenElement
   ];
   for (var i = 0; i < element_list.length; i++) {
     if (element_list[i] != null) {

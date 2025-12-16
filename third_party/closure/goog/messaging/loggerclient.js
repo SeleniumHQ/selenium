@@ -15,11 +15,11 @@
 /**
  * @fileoverview This class sends logging messages over a message channel to a
  * server on the main page that prints them using standard logging mechanisms.
- *
  */
 
 goog.provide('goog.messaging.LoggerClient');
 
+goog.forwardDeclare('goog.messaging.MessageChannel');
 goog.require('goog.Disposable');
 goog.require('goog.debug');
 goog.require('goog.debug.LogManager');
@@ -76,7 +76,7 @@ goog.inherits(goog.messaging.LoggerClient, goog.Disposable);
 
 /**
  * The singleton instance, if any.
- * @type {goog.messaging.LoggerClient}
+ * @type {?goog.messaging.LoggerClient}
  * @private
  */
 goog.messaging.LoggerClient.instance_ = null;

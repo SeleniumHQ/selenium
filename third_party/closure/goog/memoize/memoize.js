@@ -17,7 +17,6 @@
  * functions.
  *
  * @see http://en.wikipedia.org/wiki/Memoization
- *
  */
 
 goog.provide('goog.memoize');
@@ -34,41 +33,51 @@ goog.provide('goog.memoize');
  * @param {function(number, Object): string=} opt_serializer A function to
  *     serialize f's arguments. It must have the same signature as
  *     goog.memoize.simpleSerializer. It defaults to that function.
- * @this {Object} The object whose function is being wrapped.
  * @return {!Function} The wrapped function.
  */
 goog.memoize = function(f, opt_serializer) {
-  var serializer = opt_serializer || goog.memoize.simpleSerializer;
+  const serializer = opt_serializer || goog.memoize.simpleSerializer;
 
-  return function() {
-    if (goog.memoize.ENABLE_MEMOIZE) {
-      // In the strict mode, when this function is called as a global function,
-      // the value of 'this' is undefined instead of a global object. See:
-      // https://developer.mozilla.org/en/JavaScript/Strict_mode
-      var thisOrGlobal = this || goog.global;
-      // Maps the serialized list of args to the corresponding return value.
-      var cache = thisOrGlobal[goog.memoize.CACHE_PROPERTY_] ||
-          (thisOrGlobal[goog.memoize.CACHE_PROPERTY_] = {});
-      var key = serializer(goog.getUid(f), arguments);
-      return cache.hasOwnProperty(key) ?
-          cache[key] :
-          (cache[key] = f.apply(this, arguments));
-    } else {
-      return f.apply(this, arguments);
-    }
-  };
+  return (/**
+           * @this {Object} The object whose function is being wrapped.
+           * @return {?} the return value of the original function.
+           */
+          function() {
+            if (goog.memoize.ENABLE_MEMOIZE) {
+              // In the strict mode, when this function is called as a global
+              // function, the value of 'this' is undefined instead of a global
+              // object. See:
+              // https://developer.mozilla.org/en/JavaScript/Strict_mode
+              // Otherwise, if memoize wraps a method of an object, `this` will
+              // be the context object, causing memoize to cache its values on
+              // the object instance, instead of on the global object.
+              // This (ha!) is a very surprising API, but retained for backwards
+              // compatibility.
+              const thisOrGlobal = this || goog.global;
+              // Maps the serialized list of args to the corresponding return
+              // value.
+              const cache = thisOrGlobal[goog.memoize.CACHE_PROPERTY_] ||
+                  (thisOrGlobal[goog.memoize.CACHE_PROPERTY_] = {});
+              const key = serializer(goog.getUid(f), arguments);
+              return cache.hasOwnProperty(key) ?
+                  cache[key] :
+                  (cache[key] = f.apply(this, arguments));
+            } else {
+              return f.apply(this, arguments);
+            }
+          });
 };
 
 
 /**
  * @define {boolean} Flag to disable memoization in unit tests.
  */
-goog.define('goog.memoize.ENABLE_MEMOIZE', true);
+goog.memoize.ENABLE_MEMOIZE = goog.define('goog.memoize.ENABLE_MEMOIZE', true);
 
 
 /**
  * Clears the memoization cache on the given object.
- * @param {Object} cacheOwner The owner of the cache. This is the {@code this}
+ * @param {Object} cacheOwner The owner of the cache. This is the `this`
  *     context of the memoized function.
  */
 goog.memoize.clearCache = function(cacheOwner) {
@@ -91,14 +100,14 @@ goog.memoize.CACHE_PROPERTY_ = 'closure_memoize_cache_';
  * @param {number} functionUid Unique identifier of the function whose result
  *     is cached.
  * @param {?{length:number}} args The arguments that the function to memoize is
- *     called with. Note: it is an array-like object, because supports indexing
- *     and has the length property.
+ *     called with. Note: it is an array-like object, because it supports
+ *     indexing and has the length property.
  * @return {string} The list of arguments with type information concatenated
  *     with the functionUid argument, serialized as \x0B-separated string.
  */
 goog.memoize.simpleSerializer = function(functionUid, args) {
-  var context = [functionUid];
-  for (var i = args.length - 1; i >= 0; --i) {
+  const context = [functionUid];
+  for (let i = args.length - 1; i >= 0; --i) {
     context.push(typeof args[i], args[i]);
   }
   return context.join('\x0B');

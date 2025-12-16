@@ -14,12 +14,12 @@
 
 /**
  * @fileoverview Provides the typeahead functionality for the tree class.
- *
  */
 
 goog.provide('goog.ui.tree.TypeAhead');
 goog.provide('goog.ui.tree.TypeAhead.Offset');
 
+goog.forwardDeclare('goog.ui.tree.BaseNode');
 goog.require('goog.array');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.string');
@@ -55,7 +55,7 @@ goog.ui.tree.TypeAhead = function() {
   /**
    * Matching nodes from the latest typeahead search. Used when more than
    * one node is present with the same label text.
-   * @private {?Array<goog.ui.tree.BaseNode>}
+   * @private {?Array<?goog.ui.tree.BaseNode>}
    */
   this.matchingNodes_ = null;
 

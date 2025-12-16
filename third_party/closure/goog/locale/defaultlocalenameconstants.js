@@ -15,8 +15,7 @@
 /**
  * @fileoverview Default list of locale specific country and language names.
  *
- * File generated from CLDR ver. 31.0.1
- *
+ * File generated from CLDR ver. 35
  */
 
 // clang-format off
@@ -61,6 +60,7 @@ goog.locale.defaultLocaleNameConstants = {
     '151': 'Eastern Europe',
     '154': 'Northern Europe',
     '155': 'Western Europe',
+    '202': 'Sub-Saharan Africa',
     '419': 'Latin America',
     'AC': 'Ascension Island',
     'AD': 'Andorra',
@@ -212,11 +212,11 @@ goog.locale.defaultLocaleNameConstants = {
     'MF': 'St. Martin',
     'MG': 'Madagascar',
     'MH': 'Marshall Islands',
-    'MK': 'Macedonia (FYROM)',
+    'MK': 'North Macedonia',
     'ML': 'Mali',
     'MM': 'Myanmar (Burma)',
     'MN': 'Mongolia',
-    'MO': 'Macau',
+    'MO': 'Macao',
     'MP': 'Northern Mariana Islands',
     'MQ': 'Martinique',
     'MR': 'Mauritania',
@@ -282,7 +282,7 @@ goog.locale.defaultLocaleNameConstants = {
     'SV': 'El Salvador',
     'SX': 'Sint Maarten',
     'SY': 'Syria',
-    'SZ': 'Swaziland',
+    'SZ': 'Eswatini',
     'TA': 'Tristan da Cunha',
     'TC': 'Turks & Caicos Islands',
     'TD': 'Chad',
@@ -398,6 +398,7 @@ goog.locale.defaultLocaleNameConstants = {
     'car': 'Carib',
     'cay': 'Cayuga',
     'cch': 'Atsam',
+    'ccp': 'Chakma',
     'ce': 'Chechen',
     'ceb': 'Cebuano',
     'cgg': 'Chiga',
@@ -468,6 +469,7 @@ goog.locale.defaultLocaleNameConstants = {
     'fan': 'Fang',
     'fat': 'Fanti',
     'ff': 'Fulah',
+    'ff_Latn': 'Fulah (Latin)',
     'fi': 'Finnish',
     'fil': 'Filipino',
     'fj': 'Fijian',
@@ -817,7 +819,6 @@ goog.locale.defaultLocaleNameConstants = {
     'uga': 'Ugaritic',
     'uk': 'Ukrainian',
     'umb': 'Umbundu',
-    'und': 'Unknown language',
     'ur': 'Urdu',
     'uz': 'Uzbek',
     'uz_Arab': 'Uzbek (Arabic)',
@@ -847,6 +848,8 @@ goog.locale.defaultLocaleNameConstants = {
     'yi': 'Yiddish',
     'yo': 'Yoruba',
     'yue': 'Cantonese',
+    'yue_Hans': 'Cantonese (Simplified)',
+    'yue_Hant': 'Cantonese (Traditional)',
     'za': 'Zhuang',
     'zap': 'Zapotec',
     'zbl': 'Blissymbols',

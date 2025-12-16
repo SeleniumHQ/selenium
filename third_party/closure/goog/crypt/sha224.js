@@ -19,7 +19,6 @@
  *   var sha224 = new goog.crypt.Sha224();
  *   sha224.update(bytes);
  *   var hash = sha224.digest();
- *
  */
 
 goog.provide('goog.crypt.Sha224');

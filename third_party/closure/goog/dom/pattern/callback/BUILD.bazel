@@ -1,0 +1,41 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":callback",
+        ":counter",
+        ":test",
+    ],
+)
+
+closure_js_library(
+    name = "callback",
+    srcs = ["callback.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagiterator",
+        "//third_party/closure/goog/iter",
+    ],
+)
+
+closure_js_library(
+    name = "counter",
+    srcs = ["counter.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "test",
+    srcs = ["test.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/iter"],
+)

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Wrapper for an IndexedDB transaction.
- *
  */
 
 

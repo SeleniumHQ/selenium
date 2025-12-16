@@ -28,7 +28,6 @@
  *
  * Testing code should not have dependencies outside of goog.testing so as to
  * reduce the chance of masking missing dependencies.
- *
  */
 
 goog.setTestOnly('goog.testing.TestRunner');
@@ -36,7 +35,10 @@ goog.provide('goog.testing.TestRunner');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
+goog.require('goog.json');
 goog.require('goog.testing.TestCase');
+goog.require('goog.userAgent');
 
 
 
@@ -85,8 +87,56 @@ goog.testing.TestRunner = function() {
    * @private {boolean}
    */
   this.strict_ = true;
+
+  /**
+   * Store the serializer to avoid it being overwritten by a mock.
+   * @private {function(!Object): string}
+   */
+  this.jsonStringify_ = goog.json.serialize;
+
+  /**
+   * An id unique to this runner. Checked by the server during polling to
+   * verify that the page was not reloaded.
+   * @private {string}
+   */
+  this.uniqueId_ = ((Math.random() * 1e9) >>> 0) + '-' +
+      window.location.pathname.replace(/.*\//, '').replace(/\.html.*$/, '');
+
+  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(11)) {
+    return;
+  }
+
+  var self = this;
+  function onPageHide() {
+    self.clearUniqueId();
+  }
+  window.addEventListener('pagehide', onPageHide);
+
 };
 
+/**
+ * The uuid is embedded in the URL search. This function allows us to mock
+ * the search in the test.
+ * @return {string}
+ */
+goog.testing.TestRunner.prototype.getSearchString = function() {
+  return window.location.search;
+};
+
+/**
+ * Returns the unique id for this test page.
+ * @return {string}
+ */
+goog.testing.TestRunner.prototype.getUniqueId = function() {
+  return this.uniqueId_;
+};
+
+/**
+ * Clears the unique id for this page. The value will hint the reason.
+ */
+goog.testing.TestRunner.prototype.clearUniqueId = function() {
+  this.uniqueId_ = 'pagehide';
+};
 
 /**
  * Initializes the test runner.
@@ -94,7 +144,8 @@ goog.testing.TestRunner = function() {
  */
 goog.testing.TestRunner.prototype.initialize = function(testCase) {
   if (this.testCase && this.testCase.running) {
-    throw Error('The test runner is already waiting for a test to complete');
+    throw new Error(
+        'The test runner is already waiting for a test to complete');
   }
   this.testCase = testCase;
   this.initialized = true;
@@ -132,16 +183,23 @@ goog.testing.TestRunner.prototype.isInitialized = function() {
 
 
 /**
- * Returns true if the test runner is finished.
+ * Returns false if the test runner has not finished successfully.
  * Used by Selenium Hooks.
- * @return {boolean} Whether the test runner is active.
+ * @return {boolean} Whether the test runner is not active.
  */
 goog.testing.TestRunner.prototype.isFinished = function() {
-  return this.errors.length > 0 ||
-      this.initialized && !!this.testCase && this.testCase.started &&
-      !this.testCase.running;
+  return this.errors.length > 0 || this.isComplete();
 };
 
+
+/**
+ * Returns true if the test runner is finished.
+ * @return {boolean} True if the test runner started and subsequently completed.
+ */
+goog.testing.TestRunner.prototype.isComplete = function() {
+  return this.initialized && !!this.testCase && this.testCase.started &&
+      !this.testCase.running;
+};
 
 /**
  * Returns true if the test case didn't fail.
@@ -169,6 +227,12 @@ goog.testing.TestRunner.prototype.hasErrors = function() {
  * @param {string} msg Error message.
  */
 goog.testing.TestRunner.prototype.logError = function(msg) {
+  if (this.isComplete()) {
+    // Once the user has checked their code, subsequent errors can occur
+    // because of tearDown actions. For now, log these but do not fail the test.
+    this.log('Error after test completed: ' + msg);
+    return;
+  }
   if (!this.errorFilter_ || this.errorFilter_.call(null, msg)) {
     this.errors.push(msg);
   }
@@ -246,20 +310,20 @@ goog.testing.TestRunner.prototype.getNumFilesLoaded = function() {
  */
 goog.testing.TestRunner.prototype.execute = function() {
   if (!this.testCase) {
-    throw Error(
+    throw new Error(
         'The test runner must be initialized with a test case ' +
         'before execute can be called.');
   }
 
   if (this.strict_ && this.testCase.getCount() == 0) {
-    throw Error(
+    throw new Error(
         'No tests found in given test case: ' + this.testCase.getName() + '. ' +
         'By default, the test runner fails if a test case has no tests. ' +
         'To modify this behavior, see goog.testing.TestRunner\'s ' +
         'setStrict() method, or G_testRunner.setStrict()');
   }
 
-  this.testCase.setCompletedCallback(goog.bind(this.onComplete_, this));
+  this.testCase.addCompletedCallback(goog.bind(this.onComplete_, this));
   if (goog.testing.TestRunner.shouldUsePromises_(this.testCase)) {
     this.testCase.runTestsReturningPromise();
   } else {
@@ -297,6 +361,7 @@ goog.testing.TestRunner.prototype.onComplete_ = function() {
     if (el == null) {
       el = goog.dom.createElement(goog.dom.TagName.DIV);
       el.id = goog.testing.TestRunner.TEST_LOG_ID;
+      el.dir = 'ltr';
       document.body.appendChild(el);
     }
     this.logEl_ = el;
@@ -330,16 +395,24 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
     var line = lines[i];
     var color;
     var isPassed = /PASSED/.test(line);
+    var isSkipped = /SKIPPED/.test(line);
     var isFailOrError =
         /FAILED/.test(line) || /ERROR/.test(line) || /NO TESTS RUN/.test(line);
     if (isPassed) {
       color = 'darkgreen';
+    } else if (isSkipped) {
+      color = 'slategray';
     } else if (isFailOrError) {
       color = 'darkred';
     } else {
       color = '#333';
     }
     var div = goog.dom.createElement(goog.dom.TagName.DIV);
+    // Empty divs don't take up any space, use \n to take up space and preserve
+    // newlines when copying the logs.
+    if (line == '') {
+      line = '\n';
+    }
     if (line.substr(0, 2) == '> ') {
       // The stack trace may contain links so it has to be interpreted as HTML.
       div.innerHTML = line;
@@ -378,7 +451,7 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
       a.innerHTML = '(run individually)';
       a.style.fontSize = '0.8em';
       a.style.color = '#888';
-      a.href = href;
+      goog.dom.safe.setAnchorHref(a, href);
       div.appendChild(document.createTextNode(' '));
       div.appendChild(a);
     }
@@ -451,7 +524,19 @@ goog.testing.TestRunner.prototype.getTestResults = function() {
  */
 goog.testing.TestRunner.prototype.getTestResultsAsJson = function() {
   if (this.testCase) {
-    return this.testCase.getTestResultsAsJson();
+    var testCaseResults
+        /** {Object<string, !Array<!goog.testing.TestCase.IResult>>} */
+        = this.testCase.getTestResults();
+    if (this.hasErrors()) {
+      var globalErrors = [];
+      for (var i = 0; i < this.errors.length; i++) {
+        globalErrors.push(
+            {source: '', message: this.errors[i], stacktrace: ''});
+      }
+      // We are writing on our testCase results, but the test is over.
+      testCaseResults['globalErrors'] = globalErrors;
+    }
+    return this.jsonStringify_(testCaseResults);
   }
   return null;
 };

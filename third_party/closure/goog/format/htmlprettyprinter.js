@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Provides functions to parse and pretty-print HTML strings.
- *
  */
 
 goog.provide('goog.format.HtmlPrettyPrinter');
@@ -241,7 +240,7 @@ goog.format.HtmlPrettyPrinter.prototype.format = function(html) {
     // Double check that we're making progress.
     var newLastIndex = tokenRegex.lastIndex;
     if (!token || newLastIndex <= lastIndex) {
-      throw Error('Regex failed to make progress through source html.');
+      throw new Error('Regex failed to make progress through source html.');
     }
     lastIndex = newLastIndex;
 
@@ -265,7 +264,7 @@ goog.format.HtmlPrettyPrinter.prototype.format = function(html) {
   // Length should be original length plus # line breaks added.
   var expectedLength = html.length + buffer.breakCount;
   if (result.length != expectedLength) {
-    throw Error('Lost data pretty printing html.');
+    throw new Error('Lost data pretty printing html.');
   }
 
   return result;

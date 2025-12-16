@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Renderer for {@link goog.ui.TriStateMenuItem}s.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.ui.TriStateMenuItemRenderer');

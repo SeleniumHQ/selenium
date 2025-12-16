@@ -18,6 +18,7 @@
 
 .goog-menu-filter div {
   color: gray;
+  pointer-events: none;
   position: absolute;
   padding: 1px;
 }

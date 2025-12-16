@@ -15,7 +15,6 @@
 /**
  * @fileoverview Common test functions for tweak unit tests.
  *
- * @author agrieve@google.com (Andrew Grieve)
  * @package
  */
 

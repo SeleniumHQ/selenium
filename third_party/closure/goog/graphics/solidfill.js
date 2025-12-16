@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Represents a solid color fill goog.graphics.
- * @author arv@google.com (Erik Arvidsson)
  */
 
 

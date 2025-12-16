@@ -16,7 +16,6 @@
 /**
  * @fileoverview Thin wrappers around the DOM element returned from
  * the different draw methods of the graphics. This is the SVG implementation.
- * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.graphics.SvgEllipseElement');
@@ -27,6 +26,7 @@ goog.provide('goog.graphics.SvgRectElement');
 goog.provide('goog.graphics.SvgTextElement');
 
 
+goog.forwardDeclare('goog.graphics.SvgGraphics');
 goog.require('goog.dom');
 goog.require('goog.graphics.EllipseElement');
 goog.require('goog.graphics.GroupElement');
@@ -227,7 +227,8 @@ goog.inherits(goog.graphics.SvgTextElement, goog.graphics.TextElement);
  * @override
  */
 goog.graphics.SvgTextElement.prototype.setText = function(text) {
-  this.getElement().firstChild.data = text;
+  // This is actually SVGTextElement but we don't have it in externs.
+  /** @type {!Text} */ (this.getElement().firstChild).data = text;
 };
 
 

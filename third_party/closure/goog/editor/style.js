@@ -25,8 +25,6 @@
  * more permissive than the goog.style API should be. For example,
  * goog.style.getComputedStyle will throw an exception if you give it a
  * text node.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.style');
@@ -128,6 +126,7 @@ goog.editor.style.SELECTABLE_INPUT_TYPES_ =
  * Prevent the default action on mousedown events.
  * @param {goog.events.Event} e The mouse down event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.editor.style.cancelMouseDownHelper_ = function(e) {
   var targetTagName = e.target.tagName;
@@ -179,7 +178,7 @@ goog.editor.style.makeUnselectable = function(element, eventHandler) {
  *
  * For IE this simply turns off the "unselectable" property.
  *
- * Under FF no descendent of an unselectable node can be selectable:
+ * Under FF no descendant of an unselectable node can be selectable:
  *
  * https://bugzilla.mozilla.org/show_bug.cgi?id=203291
  *

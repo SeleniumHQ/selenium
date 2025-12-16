@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Wrapper for an IndexedDB index.
- *
  */
 
 
@@ -80,7 +79,7 @@ goog.db.Index.prototype.isUnique = function() {
  *
  * @param {string} fn Function name to call on the index to get the request.
  * @param {string} msg Message to give to the error.
- * @param {IDBKeyType} key The key to look up in the index.
+ * @param {!IDBKeyType} key The key to look up in the index.
  * @return {!goog.async.Deferred} The resulting deferred object.
  * @private
  */
@@ -107,7 +106,7 @@ goog.db.Index.prototype.get_ = function(fn, msg, key) {
  * Fetches a single object from the object store. Even if there are multiple
  * objects that match the given key, this method will get only one of them.
  *
- * @param {IDBKeyType} key Key to look up in the index.
+ * @param {!IDBKeyType} key Key to look up in the index.
  * @return {!goog.async.Deferred} The deferred object for the given record.
  */
 goog.db.Index.prototype.get = function(key) {
@@ -120,7 +119,7 @@ goog.db.Index.prototype.get = function(key) {
  * it's listed under in the object store. Even if there are multiple records
  * that match the given key, this method returns the first.
  *
- * @param {IDBKeyType} key Key to look up in the index.
+ * @param {!IDBKeyType} key Key to look up in the index.
  * @return {!goog.async.Deferred} The deferred key for the record that matches
  *     the key.
  */
@@ -130,79 +129,85 @@ goog.db.Index.prototype.getKey = function(key) {
 
 
 /**
- * Helper function for getAll and getAllKeys.
+ * Returns the values matching `opt_key` up to `opt_count`.
  *
- * @param {string} fn Function name to call on the index to get the request.
- * @param {string} msg Message to give to the error.
- * @param {IDBKeyType=} opt_key Key to look up in the index.
- * @return {!goog.async.Deferred} The resulting deferred array of objects.
- * @private
- */
-goog.db.Index.prototype.getAll_ = function(fn, msg, opt_key) {
-  // This is the most common use of IDBKeyRange. If more specific uses of
-  // cursors are needed then a full wrapper should be created.
-  var IDBKeyRange = goog.global.IDBKeyRange || goog.global.webkitIDBKeyRange;
-  var d = new goog.async.Deferred();
-  var request;
-  try {
-    if (opt_key) {
-      request = this.index_[fn](IDBKeyRange.only(opt_key));
-    } else {
-      request = this.index_[fn]();
-    }
-  } catch (err) {
-    if (opt_key) {
-      msg += ' for key ' + goog.debug.deepExpose(opt_key);
-    }
-    d.errback(goog.db.Error.fromException(err, msg));
-    return d;
-  }
-  var result = [];
-  request.onsuccess = function(ev) {
-    var cursor = ev.target.result;
-    if (cursor) {
-      result.push(cursor.value);
-      cursor['continue']();
-    } else {
-      d.callback(result);
-    }
-  };
-  request.onerror = function(ev) {
-    if (opt_key) {
-      msg += ' for key ' + goog.debug.deepExpose(opt_key);
-    }
-    d.errback(goog.db.Error.fromRequest(ev.target, msg));
-  };
-  return d;
-};
-
-
-/**
- * Gets all indexed objects. If the key is provided, gets all indexed objects
- * that match the key instead.
+ * If `obt_key` is a `KeyRange`, returns all keys in that range. If it is
+ * `undefined`, returns all known keys.
  *
- * @param {IDBKeyType=} opt_key Key to look up in the index.
+ * @param {!IDBKeyType|!goog.db.KeyRange=} opt_key Key or KeyRange to look up in
+ *     the index.
+ * @param {number=} opt_count The number records to return
  * @return {!goog.async.Deferred} A deferred array of objects that match the
  *     key.
  */
-goog.db.Index.prototype.getAll = function(opt_key) {
+goog.db.Index.prototype.getAll = function(opt_key, opt_count) {
   return this.getAll_(
-      'openCursor', 'getting all from index ' + this.getName(), opt_key);
+      'getAll', 'getting all from index ' + this.getName(), opt_key, opt_count);
 };
 
 
 /**
- * Gets the keys to look up all the indexed objects. If the key is provided,
- * gets all records for objects that match the key instead.
+ * Returns the keys matching `opt_key` up to `opt_count`.
  *
- * @param {IDBKeyType=} opt_key Key to look up in the index.
+ * If `obt_key` is a `KeyRange`, returns all keys in that range. If it is
+ * `undefined`, returns all known keys.
+ *
+ * @param {!IDBKeyType|!goog.db.KeyRange=} opt_key Key or KeyRange to look up in
+ *     the index.
+ * @param {number=} opt_count The number records to return
  * @return {!goog.async.Deferred} A deferred array of keys for objects that
  *     match the key.
  */
-goog.db.Index.prototype.getAllKeys = function(opt_key) {
+goog.db.Index.prototype.getAllKeys = function(opt_key, opt_count) {
   return this.getAll_(
-      'openKeyCursor', 'getting all keys from index ' + this.getName(),
-      opt_key);
+      'getAllKeys', 'getting all keys index ' + this.getName(), opt_key,
+      opt_count);
+};
+
+
+/**
+ * Helper function for native `getAll` and `getAllKeys` on `IDBObjectStore` that
+ * takes in `IDBKeyRange` as params.
+ *
+ * Returns the result of the native method in a `Deferred` object.
+ *
+ * @param {string} fn Function name to call on the index to get the request.
+ * @param {string} msg Message to give to the error.
+ * @param {!IDBKeyType|!goog.db.KeyRange|undefined} keyOrRange
+ *     Key or KeyRange to look up in the index.
+ * @param {number|undefined} count The number records to return
+ * @return {!goog.async.Deferred} The resulting deferred array of objects.
+ * @private
+ */
+goog.db.Index.prototype.getAll_ = function(fn, msg, keyOrRange, count) {
+  var nativeRange;
+  if (keyOrRange === undefined) {
+    nativeRange = undefined;
+  } else if (keyOrRange instanceof goog.db.KeyRange) {
+    nativeRange = keyOrRange.range();
+  } else {
+    nativeRange = goog.db.KeyRange.only(keyOrRange).range();
+  }
+
+  var d = new goog.async.Deferred();
+  var request;
+  try {
+    request = this.index_[fn](nativeRange, count);
+  } catch (err) {
+    msg += ' for range ' +
+        (nativeRange ? goog.debug.deepExpose(nativeRange) : '<all>');
+    d.errback(goog.db.Error.fromException(err, msg));
+    return d;
+  }
+  request.onsuccess = function() {
+    d.callback(request.result);
+  };
+  request.onerror = function(ev) {
+    msg += ' for range ' +
+        (nativeRange ? goog.debug.deepExpose(nativeRange) : '<all>');
+    d.errback(goog.db.Error.fromRequest(ev.target, msg));
+  };
+  return d;
 };
 
 
@@ -235,7 +240,7 @@ goog.db.Index.prototype.getAllKeys = function(opt_key) {
  * @param {!goog.db.Cursor.Direction=} opt_direction The direction. If undefined
  *     moves in a forward direction with duplicates.
  * @return {!goog.db.Cursor} The cursor.
- * @throws {goog.db.Error} If there was a problem opening the cursor.
+ * @throws {!goog.db.Error} If there was a problem opening the cursor.
  */
 goog.db.Index.prototype.openCursor = function(opt_range, opt_direction) {
   return goog.db.Cursor.openCursor(this.index_, opt_range, opt_direction);

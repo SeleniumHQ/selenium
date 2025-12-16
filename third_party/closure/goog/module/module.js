@@ -18,7 +18,6 @@
  * javascript modules at runtime, as described in the designdoc.
  *
  *   <http://go/js_modules_design>
- *
  */
 
 goog.provide('goog.module');

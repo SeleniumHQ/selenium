@@ -16,7 +16,6 @@
  * @fileoverview Defines the base class for a module. This is used to allow the
  * code to be modularized, giving the benefits of lazy loading and loading on
  * demand.
- *
  */
 
 goog.provide('goog.module.BaseModule');
@@ -28,7 +27,7 @@ goog.require('goog.module');
 
 
 /**
- * A basic module object that represents a module of Javascript code that can
+ * A basic module object that represents a module of JavaScript code that can
  * be dynamically loaded.
  *
  * @constructor

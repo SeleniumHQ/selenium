@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Graphics utility functions and factory methods.
- * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/graphics/advancedcoordinates.html
  * @see ../demos/graphics/advancedcoordinates2.html
  * @see ../demos/graphics/basicelements.html

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Provides functions to parse and manipulate email addresses.
- *
  */
 
 goog.provide('goog.format.EmailAddress');

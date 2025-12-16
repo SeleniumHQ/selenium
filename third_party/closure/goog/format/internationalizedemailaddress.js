@@ -16,7 +16,6 @@
  * @fileoverview Provides functions to parse and manipulate internationalized
  * email addresses. This is useful in the context of Email Address
  * Internationalization (EAI) as defined by RFC6530.
- *
  */
 
 goog.provide('goog.format.InternationalizedEmailAddress');
@@ -146,7 +145,7 @@ goog.format.InternationalizedEmailAddress.EAI_EMAIL_ADDRESS_ = new RegExp(
  * @return {boolean} Whether the provided string is a valid local part.
  */
 goog.format.InternationalizedEmailAddress.isValidLocalPartSpec = function(str) {
-  if (!goog.isDefAndNotNull(str)) {
+  if (str == null) {
     return false;
   }
   return goog.format.InternationalizedEmailAddress.EAI_LOCAL_PART_.test(str);
@@ -161,7 +160,7 @@ goog.format.InternationalizedEmailAddress.isValidLocalPartSpec = function(str) {
  */
 goog.format.InternationalizedEmailAddress.isValidDomainPartSpec = function(
     str) {
-  if (!goog.isDefAndNotNull(str)) {
+  if (str == null) {
     return false;
   }
   return goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_.test(str);
@@ -183,7 +182,7 @@ goog.format.InternationalizedEmailAddress.prototype.isValid = function() {
  * @return {boolean} Whether the provided string is a valid address.
  */
 goog.format.InternationalizedEmailAddress.isValidAddress = function(str) {
-  if (!goog.isDefAndNotNull(str)) {
+  if (str == null) {
     return false;
   }
   return goog.format.InternationalizedEmailAddress.parse(str).isValid();
@@ -196,7 +195,7 @@ goog.format.InternationalizedEmailAddress.isValidAddress = function(str) {
  * @return {boolean} Whether the provided string is a valid address spec.
  */
 goog.format.InternationalizedEmailAddress.isValidAddrSpec = function(str) {
-  if (!goog.isDefAndNotNull(str)) {
+  if (str == null) {
     return false;
   }
 

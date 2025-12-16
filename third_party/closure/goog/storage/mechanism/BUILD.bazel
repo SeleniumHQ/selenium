@@ -1,0 +1,173 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":errorcode",
+        ":errorhandlingmechanism",
+        ":html5localstorage",
+        ":html5sessionstorage",
+        ":html5webstorage",
+        ":ieuserdata",
+        ":iterablemechanism",
+        ":mechanism",
+        ":mechanismfactory",
+        ":prefixedmechanism",
+    ],
+)
+
+closure_js_library(
+    name = "errorcode",
+    srcs = ["errorcode.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "errorhandlingmechanism",
+    srcs = ["errorhandlingmechanism.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/storage/mechanism"],
+)
+
+closure_js_library(
+    name = "html5localstorage",
+    srcs = ["html5localstorage.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/storage/mechanism:html5webstorage"],
+)
+
+closure_js_library(
+    name = "html5sessionstorage",
+    srcs = ["html5sessionstorage.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/storage/mechanism:html5webstorage"],
+)
+
+closure_js_library(
+    name = "html5webstorage",
+    srcs = ["html5webstorage.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/storage/mechanism:errorcode",
+        "//third_party/closure/goog/storage/mechanism:iterablemechanism",
+    ],
+)
+
+closure_js_library(
+    name = "ieuserdata",
+    srcs = ["ieuserdata.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/storage/mechanism:errorcode",
+        "//third_party/closure/goog/storage/mechanism:iterablemechanism",
+        "//third_party/closure/goog/structs:map",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "iterablemechanism",
+    srcs = ["iterablemechanism.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/storage/mechanism",
+    ],
+)
+
+closure_js_library(
+    name = "iterablemechanismtester",
+    testonly = True,
+    srcs = ["iterablemechanismtester.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/testing:asserts",
+    ],
+)
+
+closure_js_library(
+    name = "mechanism",
+    srcs = ["mechanism.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "mechanismfactory",
+    srcs = ["mechanismfactory.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/storage/mechanism:html5localstorage",
+        "//third_party/closure/goog/storage/mechanism:html5sessionstorage",
+        "//third_party/closure/goog/storage/mechanism:ieuserdata",
+        "//third_party/closure/goog/storage/mechanism:prefixedmechanism",
+    ],
+)
+
+closure_js_library(
+    name = "mechanismseparationtester",
+    testonly = True,
+    srcs = ["mechanismseparationtester.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/storage/mechanism:mechanismtestdefinition",
+        "//third_party/closure/goog/testing:asserts",
+    ],
+)
+
+closure_js_library(
+    name = "mechanismsharingtester",
+    testonly = True,
+    srcs = ["mechanismsharingtester.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/storage/mechanism:mechanismtestdefinition",
+        "//third_party/closure/goog/testing:asserts",
+    ],
+)
+
+closure_js_library(
+    name = "mechanismtestdefinition",
+    testonly = True,
+    srcs = ["mechanismtestdefinition.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "mechanismtester",
+    testonly = True,
+    srcs = ["mechanismtester.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/storage/mechanism:errorcode",
+        "//third_party/closure/goog/testing:asserts",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/useragent:product_isversion",
+    ],
+)
+
+closure_js_library(
+    name = "prefixedmechanism",
+    srcs = ["prefixedmechanism.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/storage/mechanism:iterablemechanism",
+    ],
+)

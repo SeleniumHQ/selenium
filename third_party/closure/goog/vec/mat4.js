@@ -21,7 +21,6 @@
  * vectors as follows: resultVec = matrix * vec.
  *
  * The matrices are stored in column-major order.
- *
  */
 goog.provide('goog.vec.Mat4');
 
@@ -30,14 +29,14 @@ goog.require('goog.vec.Vec3');
 goog.require('goog.vec.Vec4');
 
 
-/** @typedef {goog.vec.Float32} */ goog.vec.Mat4.Float32;
-/** @typedef {goog.vec.Float64} */ goog.vec.Mat4.Float64;
-/** @typedef {goog.vec.Number} */ goog.vec.Mat4.Number;
-/** @typedef {goog.vec.AnyType} */ goog.vec.Mat4.AnyType;
+/** @typedef {!goog.vec.Float32} */ goog.vec.Mat4.Float32;
+/** @typedef {!goog.vec.Float64} */ goog.vec.Mat4.Float64;
+/** @typedef {!goog.vec.Number} */ goog.vec.Mat4.Number;
+/** @typedef {!goog.vec.AnyType} */ goog.vec.Mat4.AnyType;
 
 // The following two types are deprecated - use the above types instead.
 /** @typedef {!Float32Array} */ goog.vec.Mat4.Type;
-/** @typedef {goog.vec.ArrayType} */ goog.vec.Mat4.Mat4Like;
+/** @typedef {!goog.vec.ArrayType} */ goog.vec.Mat4.Mat4Like;
 
 
 /**

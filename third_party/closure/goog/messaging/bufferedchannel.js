@@ -15,7 +15,6 @@
 /**
  * @fileoverview A wrapper for asynchronous message-passing channels that buffer
  * their output until both ends of the channel are connected.
- *
  */
 
 goog.provide('goog.messaging.BufferedChannel');

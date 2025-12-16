@@ -19,8 +19,6 @@
  *   var sha384 = new goog.crypt.Sha384();
  *   sha384.update(bytes);
  *   var hash = sha384.digest();
- *
- * @author fy@google.com (Frank Yellin)
  */
 
 goog.provide('goog.crypt.Sha384');

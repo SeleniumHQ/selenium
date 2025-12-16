@@ -31,7 +31,6 @@
  *
  * See the README for notes about the design and structure of the API
  * (especially related to performance).
- *
  */
 goog.provide('goog.vec.vec3f');
 goog.provide('goog.vec.vec3f.Type');
@@ -39,7 +38,7 @@ goog.provide('goog.vec.vec3f.Type');
 /** @suppress {extraRequire} */
 goog.require('goog.vec');
 
-/** @typedef {goog.vec.Float32} */ goog.vec.vec3f.Type;
+/** @typedef {!goog.vec.Float32} */ goog.vec.vec3f.Type;
 
 
 /**
@@ -497,7 +496,7 @@ goog.vec.vec3f.slerp = function(v0, v1, f, resultVec) {
  *     chained together.
  */
 goog.vec.vec3f.max = function(vec0, limit, resultVec) {
-  if (goog.isNumber(limit)) {
+  if (typeof limit === 'number') {
     resultVec[0] = Math.max(vec0[0], limit);
     resultVec[1] = Math.max(vec0[1], limit);
     resultVec[2] = Math.max(vec0[2], limit);
@@ -522,7 +521,7 @@ goog.vec.vec3f.max = function(vec0, limit, resultVec) {
  *     chained together.
  */
 goog.vec.vec3f.min = function(vec0, limit, resultVec) {
-  if (goog.isNumber(limit)) {
+  if (typeof limit === 'number') {
     resultVec[0] = Math.min(vec0[0], limit);
     resultVec[1] = Math.min(vec0[1], limit);
     resultVec[2] = Math.min(vec0[2], limit);

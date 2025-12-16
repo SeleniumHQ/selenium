@@ -21,7 +21,6 @@
  * incomplete implementation of web workers, it doesn't support sending ports
  * over Window connections. IE has no web worker support at all, and so is
  * unsupported by this class.
- *
  */
 
 goog.provide('goog.messaging.PortChannel');
@@ -260,7 +259,9 @@ goog.messaging.PortChannel.prototype.send = function(serviceName, payload) {
     message = goog.json.serialize(message);
   }
 
-  this.port_.postMessage(message, ports);
+  // Avoid a type error by casting to unknown as the type checker doesn't
+  // know which variant we are calling here.
+  this.port_.postMessage(/** @type {?} */ (message), ports);
 };
 
 
@@ -277,7 +278,7 @@ goog.messaging.PortChannel.prototype.deliver_ = function(e) {
 
   if (goog.messaging.PortChannel.REQUIRES_SERIALIZATION_) {
     try {
-      data = goog.json.parse(data);
+      data = JSON.parse(data);
     } catch (error) {
       // Ignore any non-JSON messages.
       return;
@@ -299,7 +300,7 @@ goog.messaging.PortChannel.prototype.deliver_ = function(e) {
     payload = this.decodePayload(
         serviceName, this.injectPorts_(browserEvent.ports || [], payload),
         service.objectPayload);
-    if (goog.isDefAndNotNull(payload)) {
+    if (payload != null) {
       service.callback(payload);
     }
   }
@@ -316,14 +317,16 @@ goog.messaging.PortChannel.prototype.deliver_ = function(e) {
 goog.messaging.PortChannel.prototype.validateMessage_ = function(data) {
   if (!('serviceName' in data)) {
     goog.log.warning(
-        this.logger, 'Message object doesn\'t contain service name: ' +
+        this.logger,
+        'Message object doesn\'t contain service name: ' +
             goog.debug.deepExpose(data));
     return false;
   }
 
   if (!('payload' in data)) {
     goog.log.warning(
-        this.logger, 'Message object doesn\'t contain payload: ' +
+        this.logger,
+        'Message object doesn\'t contain payload: ' +
             goog.debug.deepExpose(data));
     return false;
   }

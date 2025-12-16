@@ -15,7 +15,7 @@
 
 /**
  * @fileoverview Provides utility routines for copying modified
- * {@code CSSRule} objects from the parent document into iframes so that any
+ * `CSSRule` objects from the parent document into iframes so that any
  * content in the iframe will be styled as if it was inline in the parent
  * document.
  *
@@ -43,7 +43,6 @@
  *
  * body .highlighted { background-color: yellow; }
  * </p>
- *
  */
 
 
@@ -126,11 +125,11 @@ goog.cssom.iframe.style.CssRuleSet_ = function() {
 
 
 /**
- * Initializes the rule set from a {@code CSSRule}.
+ * Initializes the rule set from a `CSSRule`.
  *
- * @param {CSSRule} cssRule The {@code CSSRule} to initialize from.
+ * @param {CSSRule} cssRule The `CSSRule` to initialize from.
  * @return {boolean} True if initialization succeeded. We only support
- *     {@code CSSStyleRule} and {@code CSSFontFaceRule} objects.
+ *     `CSSStyleRule` and `CSSFontFaceRule` objects.
  */
 goog.cssom.iframe.style.CssRuleSet_.prototype.initializeFromCssRule = function(
     cssRule) {
@@ -303,6 +302,8 @@ goog.cssom.iframe.style.makeColorRuleImportant_ = function(cssText) {
  * @private
  */
 goog.cssom.iframe.style.CssSelector_ = function(opt_selectorString) {
+  /** @type {!Array<!goog.cssom.iframe.style.CssSelectorPart_>|undefined} */
+  this.parts;
 
   /**
    * Object to track ancestry matches to speed up repeatedly testing this
@@ -574,7 +575,7 @@ goog.cssom.iframe.style.getRuleSetsFromDocument_ = function(doc) {
  * Static object to cache rulesets read from documents. Inspecting all
  * active css rules is an expensive operation, so its best to only do
  * it once and then cache the results.
- * @type {Object}
+ * @const
  * @private
  */
 goog.cssom.iframe.style.ruleSetCache_ = {};
@@ -582,10 +583,10 @@ goog.cssom.iframe.style.ruleSetCache_ = {};
 
 /**
  * Cache of ruleset objects keyed by document unique ID.
- * @type {Object}
+ * @const {!Object<number,!Array<!goog.cssom.iframe.style.CssRuleSet_>>}
  * @private
  */
-goog.cssom.iframe.style.ruleSetCache_.ruleSetCache_ = {};
+goog.cssom.iframe.style.ruleSetCache_.cache_ = {};
 
 
 /**
@@ -595,7 +596,7 @@ goog.cssom.iframe.style.ruleSetCache_.ruleSetCache_ = {};
  */
 goog.cssom.iframe.style.ruleSetCache_.loadRuleSetsForDocument = function(doc) {
   var docUid = goog.getUid(doc);
-  goog.cssom.iframe.style.ruleSetCache_.ruleSetCache_[docUid] =
+  goog.cssom.iframe.style.ruleSetCache_.cache_[docUid] =
       goog.cssom.iframe.style.getRuleSetsFromDocument_(doc);
 };
 
@@ -609,7 +610,7 @@ goog.cssom.iframe.style.ruleSetCache_.loadRuleSetsForDocument = function(doc) {
  */
 goog.cssom.iframe.style.ruleSetCache_.getRuleSetsForDocument = function(doc) {
   var docUid = goog.getUid(doc);
-  var cache = goog.cssom.iframe.style.ruleSetCache_.ruleSetCache_;
+  var cache = goog.cssom.iframe.style.ruleSetCache_.cache_;
   if (!cache[docUid]) {
     goog.cssom.iframe.style.ruleSetCache_.loadRuleSetsForDocument(doc);
   }
@@ -623,7 +624,6 @@ goog.cssom.iframe.style.ruleSetCache_.getRuleSetsForDocument = function(doc) {
   }
   return ruleSetsCopy;
 };
-
 
 /**
  * Array of CSS properties that are inherited by child nodes, according to
@@ -681,7 +681,7 @@ goog.cssom.iframe.style.textProperties_ = [
  * @param {boolean=} opt_forceRuleSetCacheUpdate Flag to force the internal
  *     cache of rulesets to refresh itself before we read the same.
  * @param {boolean=} opt_copyBackgroundContext Flag indicating that if the
- *     {@code element} has a transparent background, background rules
+ *     `element` has a transparent background, background rules
  *     from the nearest ancestor element(s) that have background-color
  *     and/or background-image set should be copied.
  * @return {string} String containing all CSS rules present in the original
@@ -892,6 +892,7 @@ goog.cssom.iframe.style.getBackgroundXYValues_ = function(styleObject) {
 goog.cssom.iframe.style.getBackgroundContext = function(element) {
   var propertyValues = {'backgroundImage': 'none'};
   var ancestor = element;
+  /** @type {!Window|undefined} */
   var currentIframeWindow;
   // Walk up the DOM tree to find the ancestor nodes whose backgrounds
   // may be visible underneath this element. Background-image and

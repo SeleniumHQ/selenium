@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Represents a font to be used with a Renderer.
- * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/graphics/basicelements.html
  */
 

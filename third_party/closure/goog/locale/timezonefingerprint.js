@@ -25,7 +25,6 @@
  * zone ID groups. Most of the further modifications will be about relative
  * time zone order in each time zone group. The easiest way to do that is
  * to modify this code directly, and that's what we decide to do.
- *
  */
 
 // clang-format off

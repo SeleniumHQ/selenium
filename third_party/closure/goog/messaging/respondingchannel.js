@@ -15,13 +15,13 @@
 /**
  * @fileoverview Definition of goog.messaging.RespondingChannel, which wraps a
  * MessageChannel and allows the user to get the response from the services.
- *
  */
 
 
 goog.provide('goog.messaging.RespondingChannel');
 
 goog.require('goog.Disposable');
+goog.require('goog.Promise');
 goog.require('goog.log');
 goog.require('goog.messaging.MultiChannel');
 
@@ -215,10 +215,26 @@ goog.messaging.RespondingChannel.prototype.registerService = function(
  */
 goog.messaging.RespondingChannel.prototype.callbackProxy_ = function(
     callback, message) {
+  var response = callback(message['data']);
+  var signature = message['signature'];
+  goog.Promise.resolve(response).then(goog.bind(function(result) {
+    this.sendResponse_(result, signature);
+  }, this));
+};
 
+
+/**
+ * Sends the results of the service callback to the remote caller's callback.
+ * @param {(string|!Object)} result The results of the service callback.
+ * @param {string} signature The signature of the request to the service
+ *     callback.
+ * @private
+ */
+goog.messaging.RespondingChannel.prototype.sendResponse_ = function(
+    result, signature) {
   var resultMessage = {};
-  resultMessage['data'] = callback(message['data']);
-  resultMessage['signature'] = message['signature'];
+  resultMessage['data'] = result;
+  resultMessage['signature'] = signature;
   // The callback invoked above may have disposed the channel so check if it
   // exists.
   if (this.privateChannel_) {

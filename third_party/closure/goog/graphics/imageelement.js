@@ -27,7 +27,7 @@ goog.require('goog.graphics.Element');
 /**
  * Interface for a graphics image element.
  * You should not construct objects from this constructor. Instead,
- * you should use {@code goog.graphics.Graphics.drawImage} and it
+ * you should use `goog.graphics.Graphics.drawImage` and it
  * will return an implementation of this interface for you.
  *
  * @param {Element} element The DOM element to wrap.

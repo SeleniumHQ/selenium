@@ -15,7 +15,6 @@
 /**
  * @fileoverview Protocol Buffer 2 Serializer which serializes messages
  *  into anonymous, simplified JSON objects.
- *
  */
 
 goog.provide('goog.proto2.ObjectSerializer');
@@ -35,13 +34,17 @@ goog.require('goog.string');
  *     which key option to use when serializing/deserializing.
  * @param {boolean=} opt_serializeBooleanAsNumber If specified and true, the
  *     serializer will convert boolean values to 0/1 representation.
+ * @param {boolean=} opt_ignoreUnknownFields If specified and true, the
+ *     serializer will ignore unknown fields in the JSON payload instead of
+ *     returning an error.
  * @constructor
  * @extends {goog.proto2.Serializer}
  */
 goog.proto2.ObjectSerializer = function(
-    opt_keyOption, opt_serializeBooleanAsNumber) {
+    opt_keyOption, opt_serializeBooleanAsNumber, opt_ignoreUnknownFields) {
   this.keyOption_ = opt_keyOption;
   this.serializeBooleanAsNumber_ = opt_serializeBooleanAsNumber;
+  this.ignoreUnknownFields_ = opt_ignoreUnknownFields;
 };
 goog.inherits(goog.proto2.ObjectSerializer, goog.proto2.Serializer);
 
@@ -49,6 +52,15 @@ goog.inherits(goog.proto2.ObjectSerializer, goog.proto2.Serializer);
 /**
  * An enumeration of the options for how to emit the keys in
  * the generated simplified object.
+ *
+ * For serialization, the option specifies the keys to use in the serialized
+ * object.
+ *
+ * For deserialization, the option specifies which keys are allowed; an object
+ * serialized by TAG may be deserialized by TAG or by NAME or by
+ * CAMEL_CASE_NAME, but an object serialized by NAME cannot be deserialized by
+ * TAG.  An object serialized with any option can be deserialized by
+ * CAMEL_CASE_NAME.
  *
  * @enum {number}
  */
@@ -62,7 +74,13 @@ goog.proto2.ObjectSerializer.KeyOption = {
    * Use the name of the field as the key. Unknown fields
    * will still use their tags as keys.
    */
-  NAME: 1
+  NAME: 1,
+
+  /**
+   * Use the camel cased name of the field as the key.
+   * Unknown fields will still use their tags as keys.
+   */
+  CAMEL_CASE_NAME: 2
 };
 
 
@@ -83,10 +101,35 @@ goog.proto2.ObjectSerializer.prototype.serialize = function(message) {
   for (var i = 0; i < fields.length; i++) {
     var field = fields[i];
 
-    var key = this.keyOption_ == goog.proto2.ObjectSerializer.KeyOption.NAME ?
-        field.getName() :
-        field.getTag();
-
+    var key = field.getTag();
+    switch (this.keyOption_) {
+      case goog.proto2.ObjectSerializer.KeyOption.TAG:
+        // no action necessary, key already has the correct value.
+        break;
+      case goog.proto2.ObjectSerializer.KeyOption.NAME:
+        key = field.getName();
+        break;
+      case goog.proto2.ObjectSerializer.KeyOption.CAMEL_CASE_NAME:
+        key = goog.string.toCamelCase(
+            field
+                .getName()
+                // goog.string.toCamelCase expects a hyphen delimited string but
+                // proto fields are usually underscore delimited
+                // (go/proto-style-guide); the following regex converts from
+                // underscore delimited form to hyphen delimited form.
+                .replace(/_/g, '-'));
+        break;
+      default:
+        // Default should never be reached unless keyOption is outside the valid
+        // domain.
+        goog.asserts.assert(
+            this.keyOption_ !== goog.proto2.ObjectSerializer.KeyOption.TAG &&
+                this.keyOption_ !==
+                    goog.proto2.ObjectSerializer.KeyOption.NAME &&
+                this.keyOption_ !==
+                    goog.proto2.ObjectSerializer.KeyOption.CAMEL_CASE_NAME,
+            'keyOption should be one of TAG, NAME, or CAMEL_CASE_NAME');
+    }
 
     if (message.has(field)) {
       if (field.isRepeated()) {
@@ -118,7 +161,7 @@ goog.proto2.ObjectSerializer.prototype.getSerializedValue = function(
   // Some deserialization libraries, such as GWT, can use this notation.
   if (this.serializeBooleanAsNumber_ &&
       field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.BOOL &&
-      goog.isBoolean(value)) {
+      typeof value === 'boolean') {
     return value ? 1 : 0;
   }
 
@@ -134,7 +177,7 @@ goog.proto2.ObjectSerializer.prototype.getDeserializedValue = function(
   // Gracefully handle the case where a boolean is represented by 0/1.
   // Some serialization libraries, such as GWT, can use this notation.
   if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.BOOL &&
-      goog.isNumber(value)) {
+      typeof value === 'number') {
     return Boolean(value);
   }
 
@@ -164,12 +207,25 @@ goog.proto2.ObjectSerializer.prototype.deserializeTo = function(message, data) {
     if (isNumeric) {
       field = descriptor.findFieldByTag(key);
     } else {
-      // We must be in Key == NAME mode to lookup by name.
+      // We must not be in Key == TAG mode to lookup by name.
       goog.asserts.assert(
-          this.keyOption_ == goog.proto2.ObjectSerializer.KeyOption.NAME,
+          this.keyOption_ == goog.proto2.ObjectSerializer.KeyOption.NAME ||
+              this.keyOption_ ==
+                  goog.proto2.ObjectSerializer.KeyOption.CAMEL_CASE_NAME,
           'Key mode ' + this.keyOption_ + 'for key ' + key + ' is not ' +
-              goog.proto2.ObjectSerializer.KeyOption.NAME);
+              goog.proto2.ObjectSerializer.KeyOption.NAME + ' nor ' +
+              goog.proto2.ObjectSerializer.KeyOption.CAMEL_CASE_NAME);
 
+      if (this.keyOption_ ==
+          goog.proto2.ObjectSerializer.KeyOption.CAMEL_CASE_NAME) {
+        key = goog.string
+                  .toSelectorCase(key)
+                  // goog.string.toSelectorCase returns a hyphen delimited form
+                  // of the name but protos usually use an underscore delimited
+                  // form (go/proto-style-guide); the following regex converts
+                  // from hyphens to underscores.
+                  .replace(/\-/g, '_');
+      }
       field = descriptor.findFieldByName(key);
     }
 
@@ -190,11 +246,14 @@ goog.proto2.ObjectSerializer.prototype.deserializeTo = function(message, data) {
       }
     } else {
       if (isNumeric) {
-        // We have an unknown field.
+        // We have an unknown field (with a numeric tag).
         message.setUnknown(Number(key), value);
       } else {
-        // Named fields must be present.
-        goog.asserts.fail('Failed to find field: ' + key);
+        // Handle unknown non-numeric tag.
+        if (!this.ignoreUnknownFields_) {
+          // Named fields must be present.
+          goog.asserts.fail('Failed to find field: ' + key);
+        }
       }
     }
   }

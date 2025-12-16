@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Progressive Emoji Palette renderer implementation.
- *
  */
 
 goog.provide('goog.ui.emoji.ProgressiveEmojiPaletteRenderer');
@@ -74,16 +73,17 @@ goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype
     .updateAnimatedPaletteItem = function(item, animatedImg) {
   // Just to be safe, we check for the existence of the img element within this
   // palette item before attempting to modify it.
+  /** @type {!HTMLImageElement|undefined} */
   var img;
   var el = item.firstChild;
   while (el) {
     if ('IMG' == /** @type {!Element} */ (el).tagName) {
-      img = /** @type {!Element} */ (el);
+      img = /** @type {!HTMLImageElement} */ (el);
       break;
     }
     el = el.firstChild;
   }
-  if (!el) {
+  if (!img) {
     return;
   }
 

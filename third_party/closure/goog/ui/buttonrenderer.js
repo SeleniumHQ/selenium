@@ -14,21 +14,18 @@
 
 /**
  * @fileoverview Default renderer for {@link goog.ui.Button}s.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ButtonRenderer');
 
+goog.forwardDeclare('goog.ui.Button');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
 goog.require('goog.ui.ButtonSide');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.ControlRenderer');
-
-goog.forwardDeclare('goog.ui.Button');  // circular
+goog.require('goog.ui.ControlRenderer');  // circular
 
 
 
@@ -36,11 +33,11 @@ goog.forwardDeclare('goog.ui.Button');  // circular
  * Default renderer for {@link goog.ui.Button}s.  Extends the superclass with
  * the following button-specific API methods:
  * <ul>
- *   <li>{@code getValue} - returns the button element's value
- *   <li>{@code setValue} - updates the button element to reflect its new value
- *   <li>{@code getTooltip} - returns the button element's tooltip text
- *   <li>{@code setTooltip} - updates the button element's tooltip text
- *   <li>{@code setCollapsed} - removes one or both of the button element's
+ *   <li>`getValue` - returns the button element's value
+ *   <li>`setValue` - updates the button element to reflect its new value
+ *   <li>`getTooltip` - returns the button element's tooltip text
+ *   <li>`setTooltip` - updates the button element's tooltip text
+ *   <li>`setCollapsed` - removes one or both of the button element's
  *       borders
  * </ul>
  * For alternate renderers, see {@link goog.ui.NativeButtonRenderer},

@@ -16,8 +16,6 @@
  * @fileoverview Implementation of CBC mode for block ciphers.  See
  *     http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
  *     #Cipher-block_chaining_.28CBC.29. for description.
- *
- * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.provide('goog.crypt.Cbc');

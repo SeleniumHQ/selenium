@@ -33,7 +33,6 @@
  * populated messages with tag numbers that are not continuous (and/or are very
  * large) will have many (empty) spots and thus, are inefficient.
  *
- *
  */
 
 goog.provide('goog.proto2.PbLiteSerializer');
@@ -173,7 +172,7 @@ goog.proto2.PbLiteSerializer.prototype.getDeserializedValue = function(
 
   if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.BOOL) {
     goog.asserts.assert(
-        goog.isNumber(value) || goog.isBoolean(value),
+        typeof value === 'number' || typeof value === 'boolean',
         'Value is expected to be a number or boolean');
     return !!value;
   }

@@ -19,7 +19,6 @@
  * implements namespaces. There is no need to include those tests for mechanisms
  * extending goog.storage.mechanism.PrefixedMechanism. Make sure a different
  * namespace is used for each object.
- *
  */
 
 goog.provide('goog.storage.mechanism.mechanismSeparationTester');

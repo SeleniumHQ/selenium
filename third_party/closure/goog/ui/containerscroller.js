@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Scroll behavior that can be added onto a container.
- * @author gboyer@google.com (Garry Boyer)
  */
 
 goog.provide('goog.ui.ContainerScroller');
@@ -85,7 +84,7 @@ goog.inherits(goog.ui.ContainerScroller, goog.Disposable);
  * The last target the user hovered over.
  *
  * @see #onEnter_
- * @type {goog.ui.Component}
+ * @type {?goog.ui.Component}
  * @private
  */
 goog.ui.ContainerScroller.prototype.lastEnterTarget_ = null;

@@ -15,8 +15,6 @@
 /**
  * @fileoverview An abstract superclass for TrogEdit dialog plugins. Each
  * Trogedit dialog has its own plugin.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.plugins.AbstractDialogPlugin');

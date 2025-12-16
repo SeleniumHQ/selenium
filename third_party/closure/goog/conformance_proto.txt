@@ -1,0 +1,530 @@
+# Conformance users:
+#
+# DO NOT COPY PASTE THESE RULES. If you do, changes to Closure can break your
+# build and you also won't get new or improved rules. Instead use this file in
+# your project and extend the rules to disable them or to add their whitelists.
+
+
+
+### Platform restrictions ###
+
+requirement: {
+  rule_id: 'closure:callee'
+  type: BANNED_PROPERTY
+  error_message: 'Arguments.prototype.callee is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#callee'
+
+  value: 'Arguments.prototype.callee'
+
+  whitelist_regexp: '.+/closure/goog/base.js'  # goog.base uses arguments.callee
+  whitelist_regexp: '.+/closure/goog/debug/'  # legacy stack trace support, etc
+  # TODO(mlourenco): Fix this? Not sure if possible or not.
+  whitelist_regexp: '.+/closure/goog/testing/stacktrace.js'
+}
+
+requirement: {
+  rule_id: 'closure:expose'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanExpose'
+  error_message: '@expose is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#expose'
+}
+
+requirement: {
+  rule_id: 'closure:throwOfNonErrorTypes'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanThrowOfNonErrorTypes'
+  error_message: 'Only Error or Error subclass objects may be thrown. See https://google.github.io/closure-library/develop/conformance_rules.html#throwOfNonErrorTypes'
+
+  whitelist_regexp: '.+/closure/goog/storage/'  # throws numbers as part of its api
+  whitelist_regexp: '.+/closure/goog/testing/mock.js'  # throws Object in $recordAndThrow
+}
+
+requirement: {
+  rule_id: 'closure:globalVars'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanGlobalVars'
+  error_message: 'Global declarations are not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#globalVars'
+
+  whitelist_regexp: '.+/closure/goog/base.js' # global 'goog'
+  whitelist_regexp: '.+/closure/goog/labs/testing/' # global matchers, etc
+  whitelist_regexp: '.+/closure/goog/locale/locale.js' # dumb api
+  whitelist_regexp: '.+/closure/goog/testing/' # global assert methods, etc
+  whitelist_regexp: '.+/closure/goog/tweak/testhelpers.js' # global values
+  whitelist_regexp: '^Post.*_module$' # injected '_ModuleManager_initialize'
+}
+
+requirement: {
+  rule_id: 'closure:unknownThis'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanUnknownThis'
+  error_message: 'References to "this" that are typed as "unknown" are not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#unknownThis'
+
+  whitelist_regexp: '.+/closure/goog/base.js'
+  whitelist_regexp: '.+/closure/goog/debug/errorhandler.js'
+  whitelist_regexp: '.+/closure/goog/editor/plugins/linkbubble.js'
+  whitelist_regexp: '.+/closure/goog/editor/plugins/linkdialogplugin.js'
+  whitelist_regexp: '.+/closure/goog/functions/functions.js'
+  whitelist_regexp: '.+/closure/goog/memoize/memoize.js'
+  whitelist_regexp: '.+/closure/goog/pubsub/pubsub.js'
+  whitelist_regexp: '.+/closure/goog/result/resultutil.js'
+  whitelist_regexp: '.+/closure/goog/testing/'
+  whitelist_regexp: '.+/closure/goog/ui/editor/bubble.js'
+  whitelist_regexp: '.+/closure/goog/ui/editor/toolbarcontroller.js'
+}
+
+### Browser tech requirements ###
+
+# This requirement is somewhat Google-specific: open-source Closure users that
+# don't use GAPI could reasonably ignore it depending on how they do messaging
+# in their app.
+requirement: {
+  rule_id: 'closure:postMessage'
+  type: BANNED_PROPERTY_CALL
+  error_message: 'Window.prototype.postMessage is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#postMessage'
+
+  value: 'Window.prototype.postMessage'
+
+  # Known-safe common infrastructure.
+  whitelist_regexp: '.+/closure/goog/async/nexttick.js'
+  whitelist_regexp: '.+/closure/goog/net/xpc/nativemessagingtransport.js'
+  # TODO(user): make sure this gets security reviewed (b/29333525).
+  whitelist_regexp: '.+/closure/goog/messaging/portchannel.js'
+}
+
+### Security: forbid DOM properties and functions which can cause XSS ###
+
+# These are properties and functions which might have safe wrappers under
+# goog.dom.safe. Two groups: properties and functions which accept
+# HTML/CSS/script-as-string, properties and function which accept URLs.
+
+#### DOM properties and functions which accept HTML/CSS/script-as-string #####
+
+requirement: {
+  rule_id: 'closure:eval'
+  # TODO(jakubvrana): Change to BANNED_NAME_CALL after cl/154708486 lands.
+  type: BANNED_NAME
+  error_message: 'eval is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#eval'
+
+  value: 'eval'
+  value: 'execScript'
+  value: 'goog.globalEval'
+
+  whitelist_regexp: '.+/closure/goog/base.js' # goog.module loading in uncompiled code.
+  whitelist_regexp: '.+/closure/goog/goog.js' # Forwards goog.globalEval
+  whitelist_regexp: '.+/closure/goog/debug/errorhandler.js' # wraps setTimeout and similar functions
+  whitelist_regexp: '.+/closure/goog/json/json.js' # used in goog.json.parse
+  whitelist_regexp: '.+/closure/goog/module/loader.js'
+  whitelist_regexp: '.+/closure/goog/module/moduleloader.js'
+
+}
+
+requirement: {
+  rule_id: 'closure:windowEval'
+  type: BANNED_PROPERTY_CALL
+  error_message: 'window.eval is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#eval'
+
+  value: 'Window.prototype.eval'
+  value: 'Window.prototype.execScript'
+
+  whitelist_regexp: '.+/closure/goog/base.js'
+  # TODO(jakubvrana): To be investigated.
+  whitelist_regexp: '.+/closure/goog/net/xpc/nixtransport.js'
+}
+
+requirement: {
+  rule_id: 'closure:stringFunctionDefinition'
+  type: RESTRICTED_NAME_CALL
+  error_message: 'Function, setTimeout, setInterval and requestAnimationFrame are not allowed with string argument. See https://google.github.io/closure-library/develop/conformance_rules.html#eval'
+
+  value: 'Function:function()'
+  value: 'setTimeout:function(Function, ...?)'
+  value: 'setInterval:function(Function, ...?)'
+  value: 'requestAnimationFrame:function(Function, ...?)'
+}
+
+requirement: {
+  rule_id: 'closure:windowStringFunctionDefinition'
+  type: RESTRICTED_METHOD_CALL
+  error_message: 'window.setTimeout, setInterval and requestAnimationFrame are not allowed with string argument. See https://google.github.io/closure-library/develop/conformance_rules.html#eval'
+
+  value: 'Window.prototype.setTimeout:function(Function, ...?)'
+  value: 'Window.prototype.setInterval:function(Function, ...?)'
+  value: 'Window.prototype.requestAnimationFrame:function(Function, ...?)'
+}
+
+requirement: {
+  rule_id: 'closure:innerHtml'
+  type: BANNED_PROPERTY_NON_CONSTANT_WRITE
+  error_message: 'Assignment to Element.prototype.innerHTML is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#innerHtml'
+
+  value: 'Element.prototype.innerHTML'
+
+  # Safe wrapper for this property.
+  whitelist_regexp: '.+/closure/goog/dom/safe.js'
+
+  # Safe DOM Tree Processor and HTML sanitizer, which use it safely in order to
+  # have the browser parse an HTML string using an inert DOM.
+  whitelist_regexp: '.+/closure/goog/html/sanitizer/htmlsanitizer.js'
+  whitelist_regexp: '.+/closure/goog/html/sanitizer/safedomtreeprocessor.js'
+  # Safely used in goog.string.unescapeEntitiesUsingDom_; the string assigned to
+  # innerHTML is a single HTML entity.
+  whitelist_regexp: '.+/closure/goog/string/string.js'
+  # goog.soy.renderElement and renderAsElement.  Safe if used with Strict Soy
+  # templates.
+  whitelist_regexp: '.+/closure/goog/soy/soy.js'
+  whitelist_regexp: '.+/closure/goog/dom/browserrange/ierange.js'
+  whitelist_regexp: '.+/closure/goog/editor/'
+  whitelist_regexp: '.+/closure/goog/style/style.js'
+  whitelist_regexp: '.+/closure/goog/testing/'
+}
+
+requirement: {
+  rule_id: 'closure:outerHtml'
+  type: BANNED_PROPERTY_NON_CONSTANT_WRITE
+  error_message: 'Assignment to Element.prototype.outerHTML is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#innerHtml'
+
+  value: 'Element.prototype.outerHTML'
+
+  # Safe wrapper for this property.
+  whitelist_regexp: '.+/closure/goog/dom/safe.js'
+  whitelist_regexp: '.+/closure/goog/editor/'
+}
+
+requirement: {
+  rule_id: 'closure:documentWrite'
+  type: BANNED_PROPERTY
+  error_message: 'Using Document.prototype.write is not allowed. Use goog.dom.safe.documentWrite instead. See https://google.github.io/closure-library/develop/conformance_rules.html#documentWrite.'
+
+  value: 'Document.prototype.write'
+  value: 'Document.prototype.writeln'
+
+  # These are safe.
+  whitelist_regexp: '.+/closure/goog/async/nexttick.js'
+  whitelist_regexp: '.+/closure/goog/base.js'
+  whitelist_regexp: '.+/closure/goog/dom/safe.js'
+  # TODO(jakubvrana): These need to be refactored.
+  whitelist_regexp: '.+/closure/goog/editor/icontent.js'
+  whitelist_regexp: '.+/closure/goog/testing/'
+}
+
+requirement: {
+  rule_id: 'closure:untypedScript'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanCreateElement'
+  error_message: 'Use goog.dom functions with goog.dom.TagName.SCRIPT to create <script> elements. See https://google.github.io/closure-library/develop/conformance_rules.html#untypedElements'
+
+  value: 'script'
+
+  whitelist_regexp: '.+/closure/goog/base.js'
+}
+
+requirement: {
+  rule_id: 'closure:untypedIframe'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanCreateElement'
+  error_message: 'Use goog.dom functions with goog.dom.TagName.IFRAME to create <iframe> elements. See https://google.github.io/closure-library/develop/conformance_rules.html#untypedElements'
+
+  value: 'iframe'
+
+  whitelist_regexp: '.+/closure/goog/async/nexttick.js'
+}
+
+requirement: {
+  rule_id: 'closure:untypedFrame'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanCreateElement'
+  error_message: 'Use goog.dom functions with goog.dom.TagName.FRAME to create <frame> elements. See https://google.github.io/closure-library/develop/conformance_rules.html#untypedElements'
+
+  value: 'frame'
+}
+
+requirement: {
+  rule_id: 'closure:untypedObject'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanCreateElement'
+  error_message: 'Use goog.dom functions with goog.dom.TagName.OBJECT to create <object> elements. See https://google.github.io/closure-library/develop/conformance_rules.html#untypedElements'
+
+  value: 'object'
+}
+
+requirement: {
+  rule_id: 'closure:untypedEmbed'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanCreateElement'
+  error_message: 'Use goog.dom functions with goog.dom.TagName.EMBED to create <embed> elements. See https://google.github.io/closure-library/develop/conformance_rules.html#untypedElements'
+
+  value: 'embed'
+}
+
+requirement: {
+  rule_id: 'closure:scriptContentProperty'
+  type: BANNED_PROPERTY_WRITE
+  error_message: 'Setting content of <script> and then appending it to the document has the same effect as calling eval(). See https://google.github.io/closure-library/develop/conformance_rules.html#scriptContent'
+  # We ban untyped script creation by closure:untypedScript.
+  report_loose_type_violations: false
+
+  value: 'HTMLScriptElement.prototype.innerHTML'
+  value: 'HTMLScriptElement.prototype.text'
+  value: 'HTMLScriptElement.prototype.textContent'
+
+  whitelist_regexp: '.+/closure/goog/base.js'
+  whitelist_regexp: '.+/closure/goog/dom/safe.js'
+}
+
+requirement: {
+  rule_id: 'closure:scriptContentMethod'
+  type: BANNED_PROPERTY
+  error_message: 'Setting content of <script> and then appending it to the document has the same effect as calling eval(). See https://google.github.io/closure-library/develop/conformance_rules.html#scriptContent'
+  # We ban untyped script creation by closure:untypedScript.
+  report_loose_type_violations: false
+
+  value: 'HTMLScriptElement.prototype.appendChild'
+
+  whitelist_regexp: '.+/closure/goog/base.js'
+}
+
+#### DOM properties and functions which accept URLs ####
+
+# One rule per property name that exists for several types (e.g. href).
+# Property names that exist for a single type (e.g. manifest) all
+# share a single rule.
+# Types with several dangerous properties and functions have their own rule
+# (e.g. Location). This rule does not include any of its properties which are
+# shared with other types (e.g. Location.prototype.href).
+#
+# For property names that exist on several types (e.g. href), the matching
+# is done for their shared super type, even if the super type itself does not
+# have the property. For example, Element does not have the href property, but
+# many of its subtypes have. It's also necessary to match on Element for
+# properties that exist on Element's subtypes because document.createElement()
+# returns Element; matching on its subtypes only would miss many writes to the
+# property.
+
+# TODO(mlourenco): Create locationType rule banning protocol, assign()
+# and replace() of Location.
+
+# TODO(mlourenco): Move to "hrefProperty".
+requirement: {
+  rule_id: 'closure:locationHref'
+  type: BANNED_PROPERTY_NON_CONSTANT_WRITE
+  error_message: 'Assignment to Location.prototype.href is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#location'
+
+  value: 'Location.prototype.href'
+
+  whitelist_regexp: '.+/closure/goog/dom/safe.js'
+  # URL is sanitized in goog.net.xpc.IframePollingTransport.Sender, before
+  # being assigned to .href.
+  whitelist_regexp: '.+/closure/goog/net/xpc/iframepollingtransport.js'
+  # The following whitelist entries are due to usages of .href that still
+  # need to be refactored or reviewed. See http://b/12014412.
+  whitelist_regexp: '.+/closure/goog/history/history.js'
+}
+
+# TODO(mlourenco): Rename to "locationProperty". Add Document.location to it.
+requirement: {
+  rule_id: 'closure:location'
+  type: BANNED_PROPERTY_NON_CONSTANT_WRITE
+  error_message: 'Assignment to Window.prototype.location is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#location'
+
+  value: 'Window.prototype.location'
+}
+
+# TODO(user): Rename hrefProperty.
+requirement: {
+  rule_id: 'closure:href'
+  type: BANNED_PROPERTY_NON_CONSTANT_WRITE
+  error_message: 'Assignment to .href property of Anchor, Link, etc elements, is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#href'
+
+  # Many subtypes of Element have an href property.
+  value: 'Element.prototype.href'
+  # These are not subtypes of Element.
+  value: 'StyleSheet.prototype.href'
+  value: 'CSSImportRule.prototype.href'
+
+  # Safe wrapper for this property.
+  whitelist_regexp: '.+/closure/goog/dom/safe.js'
+  # The following whitelist entries are due to usages of .href that still
+  # need to be refactored or reviewed. See http://b/12014412.
+  whitelist_regexp: '.+/closure/goog/editor/plugins/linkdialogplugin.js'
+  whitelist_regexp: '.+/closure/goog/testing/testrunner.js'
+  # This use has previously been refactored away, but had to be rolled
+  # back due to breakages in gmail, see http://b/13727806.
+  # This use may actually be safe because it only assigns to .href in
+  # the context of a contenteditable. To be further reviewed.
+  whitelist_regexp: '.+/closure/goog/editor/link.js'
+}
+
+# TODO(mlourenco): Move src to "srcProperty", others to "otherProperties". Ban
+# "src" and other properties at "Element", so that elements returned by
+# document.createElement() are captured.
+requirement: {
+  rule_id: 'closure:trustedResourceUrlProperties'
+  type: BANNED_PROPERTY_NON_CONSTANT_WRITE
+  error_message: 'Assignment to property requires a TrustedResourceUrl via goog.dom.safe. See https://google.github.io/closure-library/develop/conformance_rules.html#trustedResourceUrl'
+
+  # Properties which can only be assigned to from a TrustedResourceUrl.
+  value: 'HTMLElement.prototype.manifest'
+  value: 'HTMLEmbedElement.prototype.src'
+  value: 'HTMLFrameElement.prototype.src'
+  value: 'HTMLIFrameElement.prototype.src'
+  # For HTMLLinkElement both href and rel have to be assigned at the same time.
+  value: 'HTMLLinkElement.prototype.rel'
+  # TODO(mlourenco): We probably want an "objectType" rule instead since
+  # there are a bunch of dangerous properties.
+  value: 'HTMLObjectElement.prototype.data'
+  value: 'HTMLScriptElement.prototype.src'
+  value: 'HTMLTrackElement.prototype.src'
+  # TODO(mlourenco): Ban other dangerous properties (archive, classid, etc).
+
+  # Closure's debug loader.
+  whitelist_regexp: '.+/closure/goog/base.js'
+  # Safe wrapper for this property.
+  whitelist_regexp: '.+/closure/goog/dom/safe.js'
+  # The following whitelist entries are due to assignments from string that
+  # still need to be refactored or reviewed. See http://b/12014412.
+  whitelist_regexp: '.+/closure/goog/net/crossdomainrpc.js'
+  whitelist_regexp: '.+/closure/goog/net/xpc/'
+  whitelist_regexp: '.+/closure/goog/testing/multitestrunner.js'
+  whitelist_regexp: '.+/closure/goog/ui/dragdropdetector.js'
+}
+
+requirement: {
+  rule_id: 'closure:createDom'
+  type: CUSTOM
+  java_class: 'com.google.javascript.jscomp.ConformanceRules$BanCreateDom'
+  error_message: 'Assigning a string to a dangerous property via createDom is forbidden. See https://google.github.io/closure-library/develop/conformance_rules.html#createDom'
+
+  value: 'embed.src'
+  value: 'frame.src'
+  value: 'html.manifest'
+  value: 'iframe.src'
+  value: 'object.data'
+  value: 'script.src'
+  value: 'script.text'
+  value: 'script.textContent'
+  value: 'track.src'
+  value: '*.href'
+  value: '*.innerHTML'
+  value: '*.outerHTML'
+
+  whitelist_regexp: '.+/closure/goog/tweak/tweakui.js' # False positive - missing type on containerNodeName.
+  # TODO(jakubvrana): Ban this.
+  whitelist_regexp: '.+/closure/goog/ui/abstractspellchecker.js'
+}
+
+requirement: {
+  rule_id: 'closure:setProperties'
+  type: BANNED_CODE_PATTERN
+  error_message: 'Assigning a value to a dangerous property via setProperties is forbidden. See https://google.github.io/closure-library/develop/conformance_rules.html#createDom'
+
+  value:
+      '/**\n'
+      ' * @param {!HTMLEmbedElement|!HTMLFrameElement|!HTMLIFrameElement|!HTMLScriptElement|!HTMLTrackElement} element\n'
+      ' * @param {{src: ?}} attrs\n'
+      ' */\n'
+      'function template(element, attrs) {'
+      '  goog.dom.setProperties(element, attrs);'
+      '}'
+  value:
+      '/**\n'
+      ' * @param {!HTMLObjectElement} element\n'
+      ' * @param {{data: ?}} attrs\n'
+      ' */\n'
+      'function template(element, attrs) {\n'
+      '  goog.dom.setProperties(element, attrs);\n'
+      '}'
+  value:
+      '/**\n'
+      ' * @param {!goog.dom.DomHelper} dom\n'
+      ' * @param {!HTMLEmbedElement|!HTMLFrameElement|!HTMLIFrameElement|!HTMLScriptElement|!HTMLTrackElement} element\n'
+      ' * @param {{src: ?}} attrs\n'
+      ' */\n'
+      'function template(dom, element, attrs) {\n'
+      '  dom.setProperties(element, attrs);\n'
+      '}'
+  value:
+      '/**\n'
+      ' * @param {!goog.dom.DomHelper} dom\n'
+      ' * @param {!HTMLObjectElement} element\n'
+      ' * @param {{data: ?}} attrs\n'
+      ' */\n'
+      'function template(dom, element, attrs) {\n'
+      '  dom.setProperties(element, attrs);\n'
+      '}'
+}
+
+requirement: {
+  rule_id: 'closure:setAttribute'
+  type: BANNED_CODE_PATTERN
+  error_message: 'Assigning a value to a dangerous property via setAttribute is forbidden. See https://google.github.io/closure-library/develop/conformance_rules.html#createDom'
+
+  value:
+      '/**\n'
+      ' * @param {!HTMLEmbedElement|!HTMLFrameElement|!HTMLIFrameElement|!HTMLScriptElement|!HTMLTrackElement} element\n'
+      ' * @param {?} value\n'
+      ' */\n'
+      'function template(element, value) {'
+      '  element.setAttribute(\'src\', value);'
+      '}'
+  value:
+      '/**\n'
+      ' * @param {!HTMLObjectElement} element\n'
+      ' * @param {?} value\n'
+      ' */\n'
+      'function template(element, value) {\n'
+      '  element.setAttribute(\'data\', value);\n'
+      '}'
+}
+
+#### Closure functions which use goog.html.legacyconversions ####
+
+# These are functions which accept a string and then use
+# goog.html.legacyconversions to convert the string into SafeHtml. They
+# are not XSS-safe.
+#
+# These rules allow projects to have compile-time errors for legacyconversions
+# functions and to progressively move away from them by using the whitelist.
+
+
+
+### Closure library restrictions ###
+
+requirement: {
+  rule_id: 'closure:getLogger'
+  type: BANNED_NAME
+  error_message: 'Use of goog.debug.Logger.getLogger is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#logger'
+
+  value: 'goog.debug.Logger.getLogger'
+
+  whitelist_regexp: '.+/closure/goog/debug/'
+  whitelist_regexp: '.+/closure/goog/log/'
+}
+
+requirement: {
+  rule_id: 'closure:logger'
+  type: BANNED_PROPERTY_CALL
+  error_message: 'Direct use of goog.debug.Logger is not allowed. See https://google.github.io/closure-library/develop/conformance_rules.html#logger'
+
+  value: 'goog.debug.Logger.prototype.log'
+  value: 'goog.debug.Logger.prototype.shout'
+  value: 'goog.debug.Logger.prototype.severe'
+  value: 'goog.debug.Logger.prototype.warning'
+  value: 'goog.debug.Logger.prototype.info'
+  value: 'goog.debug.Logger.prototype.config'
+  value: 'goog.debug.Logger.prototype.fine'
+  value: 'goog.debug.Logger.prototype.finer'
+  value: 'goog.debug.Logger.prototype.finest'
+  value: 'goog.debug.Logger.prototype.logRecord'
+  value: 'goog.debug.Logger.prototype.getName'
+  value: 'goog.debug.Logger.prototype.addHandler'
+  value: 'goog.debug.Logger.prototype.removeHandler'
+  value: 'goog.debug.Logger.prototype.getParent'
+  value: 'goog.debug.Logger.prototype.getChildren'
+  value: 'goog.debug.Logger.prototype.getLevel'
+  value: 'goog.debug.Logger.prototype.setLevel'
+  value: 'goog.debug.Logger.prototype.getEffectiveLevel'
+  value: 'goog.debug.Logger.prototype.isLoggable'
+  value: 'goog.debug.Logger.prototype.getLogRecord'
+
+  whitelist_regexp: '.+/closure/goog/debug/'
+  whitelist_regexp: '.+/closure/goog/log/'
+}

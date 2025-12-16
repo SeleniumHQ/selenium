@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Wrapper for a IndexedDB key range.
- *
  */
 
 
@@ -54,9 +53,9 @@ goog.db.KeyRange.IDB_KEY_RANGE_ =
 
 /**
  * Creates a new key range for a single value.
- *
  * @param {IDBKeyType} key The single value in the range.
  * @return {!goog.db.KeyRange} The key range.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.db.KeyRange.only = function(key) {
   return new goog.db.KeyRange(goog.db.KeyRange.IDB_KEY_RANGE_.only(key));
@@ -65,7 +64,6 @@ goog.db.KeyRange.only = function(key) {
 
 /**
  * Creates a key range with upper and lower bounds.
- *
  * @param {IDBKeyType} lower The value of the lower bound.
  * @param {IDBKeyType} upper The value of the upper bound.
  * @param {boolean=} opt_lowerOpen If true, the range excludes the lower bound
@@ -73,6 +71,7 @@ goog.db.KeyRange.only = function(key) {
  * @param {boolean=} opt_upperOpen If true, the range excludes the upper bound
  *     value.
  * @return {!goog.db.KeyRange} The key range.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.db.KeyRange.bound = function(lower, upper, opt_lowerOpen, opt_upperOpen) {
   return new goog.db.KeyRange(
@@ -83,11 +82,11 @@ goog.db.KeyRange.bound = function(lower, upper, opt_lowerOpen, opt_upperOpen) {
 
 /**
  * Creates a key range with a lower bound only, finishes at the last record.
- *
  * @param {IDBKeyType} lower The value of the lower bound.
  * @param {boolean=} opt_lowerOpen If true, the range excludes the lower bound
  *     value.
  * @return {!goog.db.KeyRange} The key range.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.db.KeyRange.lowerBound = function(lower, opt_lowerOpen) {
   return new goog.db.KeyRange(
@@ -97,11 +96,11 @@ goog.db.KeyRange.lowerBound = function(lower, opt_lowerOpen) {
 
 /**
  * Creates a key range with a upper bound only, starts at the first record.
- *
  * @param {IDBKeyType} upper The value of the upper bound.
  * @param {boolean=} opt_upperOpen If true, the range excludes the upper bound
  *     value.
  * @return {!goog.db.KeyRange} The key range.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.db.KeyRange.upperBound = function(upper, opt_upperOpen) {
   return new goog.db.KeyRange(

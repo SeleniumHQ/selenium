@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Class for showing simple modal popup.
- * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.ui.ModalPopup');
@@ -75,7 +74,7 @@ goog.ui.ModalPopup = function(opt_useIframeMask, opt_domHelper) {
 
   /**
    * The element that had focus before the popup was displayed.
-   * @type {Element}
+   * @type {?Element}
    * @private
    */
   this.lastFocus_ = null;
@@ -95,7 +94,7 @@ goog.tagUnsealableClass(goog.ui.ModalPopup);
 
 /**
  * Focus handler. It will be initialized in enterDocument.
- * @type {goog.events.FocusHandler}
+ * @type {?goog.events.FocusHandler}
  * @private
  */
 goog.ui.ModalPopup.prototype.focusHandler_ = null;
@@ -111,7 +110,7 @@ goog.ui.ModalPopup.prototype.visible_ = false;
 
 /**
  * Element for the background which obscures the UI and blocks events.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.ModalPopup.prototype.bgEl_ = null;
@@ -120,7 +119,7 @@ goog.ui.ModalPopup.prototype.bgEl_ = null;
 /**
  * Iframe element that is only used for IE as a workaround to keep select-type
  * elements from burning through background.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.ModalPopup.prototype.bgIframeEl_ = null;
@@ -129,7 +128,7 @@ goog.ui.ModalPopup.prototype.bgIframeEl_ = null;
 /**
  * Element used to catch focus and prevent the user from tabbing out
  * of the popup.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.ModalPopup.prototype.tabCatcherElement_ = null;

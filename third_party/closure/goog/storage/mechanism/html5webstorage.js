@@ -15,7 +15,6 @@
 /**
  * @fileoverview Base class that implements functionality common
  * across both session and local web storage mechanisms.
- *
  */
 
 goog.provide('goog.storage.mechanism.HTML5WebStorage');
@@ -111,7 +110,7 @@ goog.storage.mechanism.HTML5WebStorage.prototype.get = function(key) {
   // paradox where a key exists, but it does not when it is retrieved.
   // http://www.w3.org/TR/2009/WD-webstorage-20091029/#the-storage-interface
   var value = this.storage_.getItem(key);
-  if (!goog.isString(value) && !goog.isNull(value)) {
+  if (typeof value !== 'string' && value !== null) {
     throw goog.storage.mechanism.ErrorCode.INVALID_VALUE;
   }
   return value;
@@ -146,7 +145,7 @@ goog.storage.mechanism.HTML5WebStorage.prototype.__iterator__ = function(
     }
     var value = storage.getItem(key);
     // The value must exist and be a string, otherwise it is a storage error.
-    if (!goog.isString(value)) {
+    if (typeof value !== 'string') {
       throw goog.storage.mechanism.ErrorCode.INVALID_VALUE;
     }
     return value;

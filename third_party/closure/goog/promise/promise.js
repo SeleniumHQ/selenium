@@ -28,10 +28,10 @@ goog.require('goog.promise.Resolver');
  * NOTE: This class was created in anticipation of the built-in Promise type
  * being standardized and implemented across browsers. Now that Promise is
  * available in modern browsers, and is automatically polyfilled by the Closure
- * Compiler, by default, most new code should use native {@code Promise}
- * instead of {@code goog.Promise}. However, {@code goog.Promise} has the
+ * Compiler, by default, most new code should use native `Promise`
+ * instead of `goog.Promise`. However, `goog.Promise` has the
  * concept of cancellation which native Promises do not yet have. So code
- * needing cancellation may still want to use {@code goog.Promise}.
+ * needing cancellation may still want to use `goog.Promise`.
  *
  * Promises provide a result that may be resolved asynchronously. A Promise may
  * be resolved by being fulfilled with a fulfillment value, rejected with a
@@ -44,13 +44,13 @@ goog.require('goog.promise.Resolver');
  * allow for optional type annotations that enforce that fulfillment values are
  * of the appropriate types at compile time.
  *
- * The result of a Promise is accessible by calling {@code then} and registering
- * {@code onFulfilled} and {@code onRejected} callbacks. Once the Promise
+ * The result of a Promise is accessible by calling `then` and registering
+ * `onFulfilled` and `onRejected` callbacks. Once the Promise
  * is settled, the relevant callbacks are invoked with the fulfillment value or
  * rejection reason as argument. Callbacks are always invoked in the order they
- * were registered, even when additional {@code then} calls are made from inside
+ * were registered, even when additional `then` calls are made from inside
  * another callback. A callback is always run asynchronously sometime after the
- * scope containing the registering {@code then} invocation has returned.
+ * scope containing the registering `then` invocation has returned.
  *
  * If a Promise is resolved with another Promise, the first Promise will block
  * until the second is settled, and then assumes the same result as the second
@@ -69,8 +69,8 @@ goog.require('goog.promise.Resolver');
  *             this:RESOLVER_CONTEXT,
  *             function((TYPE|IThenable<TYPE>|Thenable)=),
  *             function(*=)): void} resolver
- *     Initialization function that is invoked immediately with {@code resolve}
- *     and {@code reject} functions as arguments. The Promise is resolved or
+ *     Initialization function that is invoked immediately with `resolve`
+ *     and `reject` functions as arguments. The Promise is resolved or
  *     rejected with the first argument passed to either function.
  * @param {RESOLVER_CONTEXT=} opt_context An optional context for executing the
  *     resolver function. If unspecified, the resolver function will be executed
@@ -97,21 +97,21 @@ goog.Promise = function(resolver, opt_context) {
   this.result_ = undefined;
 
   /**
-   * For Promises created by calling {@code then()}, the originating parent.
-   * @private {goog.Promise}
+   * For Promises created by calling `then()`, the originating parent.
+   * @private {?goog.Promise}
    */
   this.parent_ = null;
 
   /**
-   * The linked list of {@code onFulfilled} and {@code onRejected} callbacks
-   * added to this Promise by calls to {@code then()}.
+   * The linked list of `onFulfilled` and `onRejected` callbacks
+   * added to this Promise by calls to `then()`.
    * @private {?goog.Promise.CallbackEntry_}
    */
   this.callbackEntries_ = null;
 
   /**
-   * The tail of the linked list of {@code onFulfilled} and {@code onRejected}
-   * callbacks added to this Promise by calls to {@code then()}.
+   * The tail of the linked list of `onFulfilled` and `onRejected`
+   * callbacks added to this Promise by calls to `then()`.
    * @private {?goog.Promise.CallbackEntry_}
    */
   this.callbackEntriesTail_ = null;
@@ -124,9 +124,9 @@ goog.Promise = function(resolver, opt_context) {
 
   if (goog.Promise.UNHANDLED_REJECTION_DELAY > 0) {
     /**
-     * A timeout ID used when the {@code UNHANDLED_REJECTION_DELAY} is greater
+     * A timeout ID used when the `UNHANDLED_REJECTION_DELAY` is greater
      * than 0 milliseconds. The ID is set when the Promise is rejected, and
-     * cleared only if an {@code onRejected} callback is invoked for the
+     * cleared only if an `onRejected` callback is invoked for the
      * Promise (or one of its descendants) before the delay is exceeded.
      *
      * If the rejection is not handled before the timeout completes, the
@@ -136,9 +136,9 @@ goog.Promise = function(resolver, opt_context) {
     this.unhandledRejectionId_ = 0;
   } else if (goog.Promise.UNHANDLED_REJECTION_DELAY == 0) {
     /**
-     * When the {@code UNHANDLED_REJECTION_DELAY} is set to 0 milliseconds, a
+     * When the `UNHANDLED_REJECTION_DELAY` is set to 0 milliseconds, a
      * boolean that is set if the Promise is rejected, and reset to false if an
-     * {@code onRejected} callback is invoked for the Promise (or one of its
+     * `onRejected` callback is invoked for the Promise (or one of its
      * descendants). If the rejection is not handled before the next timestep,
      * the rejection reason is passed to the unhandled rejection handler.
      * @private {boolean}
@@ -200,22 +200,24 @@ goog.Promise = function(resolver, opt_context) {
 
 
 /**
- * @define {boolean} Whether traces of {@code then} calls should be included in
+ * @define {boolean} Whether traces of `then` calls should be included in
  * exceptions thrown
  */
-goog.define('goog.Promise.LONG_STACK_TRACES', false);
+goog.Promise.LONG_STACK_TRACES =
+    goog.define('goog.Promise.LONG_STACK_TRACES', false);
 
 
 /**
  * @define {number} The delay in milliseconds before a rejected Promise's reason
  * is passed to the rejection handler. By default, the rejection handler
  * rethrows the rejection reason so that it appears in the developer console or
- * {@code window.onerror} handler.
+ * `window.onerror` handler.
  *
  * Rejections are rethrown as quickly as possible by default. A negative value
  * disables rejection handling entirely.
  */
-goog.define('goog.Promise.UNHANDLED_REJECTION_DELAY', 0);
+goog.Promise.UNHANDLED_REJECTION_DELAY =
+    goog.define('goog.Promise.UNHANDLED_REJECTION_DELAY', 0);
 
 
 /**
@@ -241,8 +243,8 @@ goog.Promise.State_ = {
 
 
 /**
- * Entries in the callback chain. Each call to {@code then},
- * {@code thenCatch}, or {@code thenAlways} creates an entry containing the
+ * Entries in the callback chain. Each call to `then`,
+ * `thenCatch`, or `thenAlways` creates an entry containing the
  * functions that may be invoked once the Promise is settled.
  *
  * @private @final @struct @constructor
@@ -250,9 +252,9 @@ goog.Promise.State_ = {
 goog.Promise.CallbackEntry_ = function() {
   /** @type {?goog.Promise} */
   this.child = null;
-  /** @type {Function} */
+  /** @type {?Function} */
   this.onFulfilled = null;
-  /** @type {Function} */
+  /** @type {?Function} */
   this.onRejected = null;
   /** @type {?} */
   this.context = null;
@@ -284,7 +286,8 @@ goog.Promise.CallbackEntry_.prototype.reset = function() {
  * @define {number} The number of currently unused objects to keep around for
  *    reuse.
  */
-goog.define('goog.Promise.DEFAULT_MAX_UNUSED', 100);
+goog.Promise.DEFAULT_MAX_UNUSED =
+    goog.define('goog.Promise.DEFAULT_MAX_UNUSED', 100);
 
 
 /** @const @private {goog.async.FreeList<!goog.Promise.CallbackEntry_>} */
@@ -366,7 +369,7 @@ goog.Promise.reject = function(opt_reason) {
 /**
  * This is identical to
  * {@code goog.Promise.resolve(value).then(onFulfilled, onRejected)}, but it
- * avoids creating an unnecessary wrapper Promise when {@code value} is already
+ * avoids creating an unnecessary wrapper Promise when `value` is already
  * thenable.
  *
  * @param {?(goog.Thenable<TYPE>|Thenable|TYPE)} value
@@ -542,12 +545,12 @@ goog.Promise.withResolver = function() {
  * Adds callbacks that will operate on the result of the Promise, returning a
  * new child Promise.
  *
- * If the Promise is fulfilled, the {@code onFulfilled} callback will be invoked
+ * If the Promise is fulfilled, the `onFulfilled` callback will be invoked
  * with the fulfillment value as argument, and the child Promise will be
  * fulfilled with the return value of the callback. If the callback throws an
  * exception, the child Promise will be rejected with the thrown value instead.
  *
- * If the Promise is rejected, the {@code onRejected} callback will be invoked
+ * If the Promise is rejected, the `onRejected` callback will be invoked
  * with the rejection reason as argument, and the child Promise will be resolved
  * with the return value or rejected with the thrown value of the callback.
  *
@@ -582,10 +585,10 @@ goog.Thenable.addImplementation(goog.Promise);
  * Adds callbacks that will operate on the result of the Promise without
  * returning a child Promise (unlike "then").
  *
- * If the Promise is fulfilled, the {@code onFulfilled} callback will be invoked
+ * If the Promise is fulfilled, the `onFulfilled` callback will be invoked
  * with the fulfillment value as argument.
  *
- * If the Promise is rejected, the {@code onRejected} callback will be invoked
+ * If the Promise is rejected, the `onRejected` callback will be invoked
  * with the rejection reason as argument.
  *
  * @param {?(function(this:THIS, TYPE):?)=} opt_onFulfilled A
@@ -630,14 +633,14 @@ goog.Promise.prototype.thenVoid = function(
  * Adds a callback that will be invoked when the Promise is settled (fulfilled
  * or rejected). The callback receives no argument, and no new child Promise is
  * created. This is useful for ensuring that cleanup takes place after certain
- * asynchronous operations. Callbacks added with {@code thenAlways} will be
- * executed in the same order with other calls to {@code then},
- * {@code thenAlways}, or {@code thenCatch}.
+ * asynchronous operations. Callbacks added with `thenAlways` will be
+ * executed in the same order with other calls to `then`,
+ * `thenAlways`, or `thenCatch`.
  *
  * Since it does not produce a new child Promise, cancellation propagation is
- * not prevented by adding callbacks with {@code thenAlways}. A Promise that has
- * a cleanup handler added with {@code thenAlways} will be canceled if all of
- * its children created by {@code then} (or {@code thenCatch}) are canceled.
+ * not prevented by adding callbacks with `thenAlways`. A Promise that has
+ * a cleanup handler added with `thenAlways` will be canceled if all of
+ * its children created by `then` (or `thenCatch`) are canceled.
  * Additionally, since any rejections are not passed to the callback, it does
  * not stop the unhandled rejection handler from running.
  *
@@ -663,15 +666,16 @@ goog.Promise.prototype.thenAlways = function(onSettled, opt_context) {
 
 /**
  * Adds a callback that will be invoked only if the Promise is rejected. This
- * is equivalent to {@code then(null, onRejected)}.
+ * is equivalent to `then(null, onRejected)`.
  *
  * @param {function(this:THIS, *): *} onRejected A function that will be
- *     invoked with the rejection reason if the Promise is rejected.
+ *     invoked with the rejection reason if this Promise is rejected.
  * @param {THIS=} opt_context An optional context object that will be the
  *     execution context for the callbacks. By default, functions are executed
  *     in the global scope.
- * @return {!goog.Promise} A new Promise that will receive the result of the
- *     callback.
+ * @return {!goog.Promise} A new Promise that will resolve either to the
+ *     value of this promise, or if this promise is rejected, the result of
+ *     `onRejected`. The returned Promise will reject if `onRejected` throws.
  * @template THIS
  */
 goog.Promise.prototype.thenCatch = function(onRejected, opt_context) {
@@ -696,8 +700,10 @@ goog.Promise.prototype.thenCatch = function(onRejected, opt_context) {
  */
 goog.Promise.prototype.cancel = function(opt_message) {
   if (this.state_ == goog.Promise.State_.PENDING) {
+    // Instantiate Error object synchronously. This ensures Error::stack points
+    // to the cancel() callsite.
+    var err = new goog.Promise.CancellationError(opt_message);
     goog.async.run(function() {
-      var err = new goog.Promise.CancellationError(opt_message);
       this.cancelInternal_(err);
     }, this);
   }
@@ -783,7 +789,7 @@ goog.Promise.prototype.cancelChild_ = function(childPromise, err) {
  * execution if the Promise has already been settled.
  *
  * @param {goog.Promise.CallbackEntry_} callbackEntry Record containing
- *     {@code onFulfilled} and {@code onRejected} callbacks to execute after
+ *     `onFulfilled` and `onRejected` callbacks to execute after
  *     the Promise is settled.
  * @private
  */
@@ -799,7 +805,7 @@ goog.Promise.prototype.addCallbackEntry_ = function(callbackEntry) {
 /**
  * Creates a child Promise and adds it to the callback entry list. The result of
  * the child Promise is determined by the state of the parent Promise and the
- * result of the {@code onFulfilled} or {@code onRejected} callbacks as
+ * result of the `onFulfilled` or `onRejected` callbacks as
  * specified in the Promise resolution procedure.
  *
  * @see http://promisesaplus.com/#the__method
@@ -836,7 +842,7 @@ goog.Promise.prototype.addChildPromise_ = function(
     callbackEntry.onRejected = onRejected ? function(reason) {
       try {
         var result = onRejected.call(opt_context, reason);
-        if (!goog.isDef(result) &&
+        if (result === undefined &&
             reason instanceof goog.Promise.CancellationError) {
           // Propagate cancellation to children if no other result is returned.
           reject(reason);
@@ -966,17 +972,17 @@ goog.Promise.maybeThen_ = function(value, onFulfilled, onRejected, context) {
 
 
 /**
- * Attempts to call the {@code then} method on an object in the hopes that it is
+ * Attempts to call the `then` method on an object in the hopes that it is
  * a Promise-compatible instance. This allows interoperation between different
  * Promise implementations, however a non-compliant object may cause a Promise
- * to hang indefinitely. If the {@code then} method throws an exception, the
+ * to hang indefinitely. If the `then` method throws an exception, the
  * dependent Promise will be rejected with the thrown value.
  *
  * @see http://promisesaplus.com/#point-70
  *
- * @param {Thenable} thenable An object with a {@code then} method that may be
+ * @param {Thenable} thenable An object with a `then` method that may be
  *     compatible with the Promise/A+ specification.
- * @param {!Function} then The {@code then} method of the Thenable object.
+ * @param {!Function} then The `then` method of the Thenable object.
  * @param {!Function} onFulfilled
  * @param {!Function} onRejected
  * @param {*} context
@@ -1014,7 +1020,7 @@ goog.Promise.tryThen_ = function(
  * Section 2.2.4 of the Promises/A+ specification requires that Promise
  * callbacks must only be invoked from a call stack that only contains Promise
  * implementation code, which we accomplish by invoking callback execution after
- * a timeout. If {@code startExecution_} is called multiple times for the same
+ * a timeout. If `startExecution_` is called multiple times for the same
  * Promise, the callback chain will be evaluated only once. Additional callbacks
  * may be added during the evaluation phase, and will be executed in the same
  * event loop.
@@ -1116,8 +1122,8 @@ goog.Promise.prototype.executeCallbacks_ = function() {
 
 
 /**
- * Executes a pending callback for this Promise. Invokes an {@code onFulfilled}
- * or {@code onRejected} callback based on the settled state of the Promise.
+ * Executes a pending callback for this Promise. Invokes an `onFulfilled`
+ * or `onRejected` callback based on the settled state of the Promise.
  *
  * @param {!goog.Promise.CallbackEntry_} callbackEntry An entry containing the
  *     onFulfilled and/or onRejected callbacks for this step.
@@ -1172,15 +1178,15 @@ goog.Promise.invokeCallback_ = function(callbackEntry, state, result) {
 
 
 /**
- * Records a stack trace entry for functions that call {@code then} or the
- * Promise constructor. May be disabled by unsetting {@code LONG_STACK_TRACES}.
+ * Records a stack trace entry for functions that call `then` or the
+ * Promise constructor. May be disabled by unsetting `LONG_STACK_TRACES`.
  *
  * @param {!Error} err An Error object created by the calling function for
  *     providing a stack trace.
  * @private
  */
 goog.Promise.prototype.addStackTrace_ = function(err) {
-  if (goog.Promise.LONG_STACK_TRACES && goog.isString(err.stack)) {
+  if (goog.Promise.LONG_STACK_TRACES && typeof err.stack === 'string') {
     // Extract the third line of the stack trace, which is the entry for the
     // user function that called into Promise code.
     var trace = err.stack.split('\n', 4)[3];
@@ -1195,15 +1201,15 @@ goog.Promise.prototype.addStackTrace_ = function(err) {
 
 /**
  * Adds extra stack trace information to an exception for the list of
- * asynchronous {@code then} calls that have been run for this Promise. Stack
+ * asynchronous `then` calls that have been run for this Promise. Stack
  * trace information is recorded in {@see #addStackTrace_}, and appended to
- * rethrown errors when {@code LONG_STACK_TRACES} is enabled.
+ * rethrown errors when `LONG_STACK_TRACES` is enabled.
  *
- * @param {*} err An unhandled exception captured during callback execution.
+ * @param {?} err An unhandled exception captured during callback execution.
  * @private
  */
 goog.Promise.prototype.appendLongStack_ = function(err) {
-  if (goog.Promise.LONG_STACK_TRACES && err && goog.isString(err.stack) &&
+  if (goog.Promise.LONG_STACK_TRACES && err && typeof err.stack === 'string' &&
       this.stack_.length) {
     var longTrace = ['Promise trace:'];
 
@@ -1245,8 +1251,8 @@ goog.Promise.prototype.removeUnhandledRejection_ = function() {
 
 
 /**
- * Marks this rejected Promise as unhandled. If no {@code onRejected} callback
- * is called for this Promise before the {@code UNHANDLED_REJECTION_DELAY}
+ * Marks this rejected Promise as unhandled. If no `onRejected` callback
+ * is called for this Promise before the `UNHANDLED_REJECTION_DELAY`
  * expires, the reason will be passed to the unhandled rejection handler. The
  * handler typically rethrows the rejection reason so that it becomes visible in
  * the developer console.
@@ -1276,7 +1282,7 @@ goog.Promise.addUnhandledRejection_ = function(promise, reason) {
 
 /**
  * A method that is invoked with the rejection reasons for Promises that are
- * rejected but have no {@code onRejected} callbacks registered yet.
+ * rejected but have no `onRejected` callbacks registered yet.
  * @type {function(*)}
  * @private
  */
@@ -1286,14 +1292,14 @@ goog.Promise.handleRejection_ = goog.async.throwException;
 /**
  * Sets a handler that will be called with reasons from unhandled rejected
  * Promises. If the rejected Promise (or one of its descendants) has an
- * {@code onRejected} callback registered, the rejection will be considered
+ * `onRejected` callback registered, the rejection will be considered
  * handled, and the rejection handler will not be called.
  *
  * By default, unhandled rejections are rethrown so that the error may be
- * captured by the developer console or a {@code window.onerror} handler.
+ * captured by the developer console or a `window.onerror` handler.
  *
  * @param {function(*)} handler A function that will be called with reasons from
- *     rejected Promises. Defaults to {@code goog.async.throwException}.
+ *     rejected Promises. Defaults to `goog.async.throwException`.
  */
 goog.Promise.setUnhandledRejectionHandler = function(handler) {
   goog.Promise.handleRejection_ = handler;

@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Objects representing shapes drawn on a canvas.
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.graphics.CanvasEllipseElement');
@@ -26,6 +25,7 @@ goog.provide('goog.graphics.CanvasRectElement');
 goog.provide('goog.graphics.CanvasTextElement');
 
 
+goog.forwardDeclare('goog.graphics.CanvasGraphics');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
@@ -452,7 +452,7 @@ goog.graphics.CanvasPathElement.prototype.draw = function(ctx) {
         }
         break;
       case goog.graphics.Path.Segment.ARCTO:
-        throw Error('Canvas paths cannot contain arcs');
+        throw new Error('Canvas paths cannot contain arcs');
       case goog.graphics.Path.Segment.CLOSE:
         ctx.closePath();
         break;

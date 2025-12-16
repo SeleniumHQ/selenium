@@ -15,11 +15,11 @@
 /**
  * @fileoverview Provides a convenient API for data persistence using a selected
  * data storage mechanism.
- *
  */
 
 goog.provide('goog.storage.Storage');
 
+goog.forwardDeclare('goog.storage.mechanism.Mechanism');
 goog.require('goog.json');
 goog.require('goog.storage.ErrorCode');
 
@@ -50,7 +50,7 @@ goog.storage.Storage = function(mechanism) {
  * @param {*} value The value to serialize to a string and save.
  */
 goog.storage.Storage.prototype.set = function(key, value) {
-  if (!goog.isDef(value)) {
+  if (value === undefined) {
     this.mechanism.remove(key);
     return;
   }
@@ -75,12 +75,12 @@ goog.storage.Storage.prototype.get = function(key) {
     // details.
     return undefined;
   }
-  if (goog.isNull(json)) {
+  if (json === null) {
     return undefined;
   }
 
   try {
-    return goog.json.parse(json);
+    return JSON.parse(json);
   } catch (e) {
     throw goog.storage.ErrorCode.INVALID_VALUE;
   }

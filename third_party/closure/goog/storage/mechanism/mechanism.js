@@ -15,7 +15,6 @@
 /**
  * @fileoverview Abstract interface for storing and retrieving data using
  * some persistence mechanism.
- *
  */
 
 goog.provide('goog.storage.mechanism.Mechanism');

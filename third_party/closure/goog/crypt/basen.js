@@ -21,7 +21,6 @@
  * mostly for demonstration purpose.
  *
  * TODO: Make base64 and baseN classes that have common interface.  (Perhaps...)
- *
  */
 
 goog.provide('goog.crypt.baseN');
@@ -103,12 +102,13 @@ goog.crypt.baseN.BASE_64_URL_SAFE =
  */
 goog.crypt.baseN.recodeString = function(number, inputBase, outputBase) {
   if (outputBase == '') {
-    throw Error('Empty output base');
+    throw new Error('Empty output base');
   }
 
   // Check if number is 0 (special case when we don't want to return '').
-  var isZero = true;
-  for (var i = 0, n = number.length; i < n; i++) {
+  let isZero = true;
+  let n = number.length;
+  for (let i = 0; i < n; i++) {
     if (number.charAt(i) != inputBase.charAt(0)) {
       isZero = false;
       break;
@@ -118,24 +118,25 @@ goog.crypt.baseN.recodeString = function(number, inputBase, outputBase) {
     return outputBase.charAt(0);
   }
 
-  var numberDigits = goog.crypt.baseN.stringToArray_(number, inputBase);
+  const numberDigits = goog.crypt.baseN.stringToArray_(number, inputBase);
 
-  var inputBaseSize = inputBase.length;
-  var outputBaseSize = outputBase.length;
+  const inputBaseSize = inputBase.length;
+  const outputBaseSize = outputBase.length;
 
   // result = 0.
-  var result = [];
+  const result = [];
 
   // For all digits of number, starting with the most significant ...
-  for (var i = numberDigits.length - 1; i >= 0; i--) {
+  for (let i = numberDigits.length - 1; i >= 0; i--) {
     // result *= number.base.
-    var carry = 0;
-    for (var j = 0, n = result.length; j < n; j++) {
-      var digit = result[j];
+    let carry = 0;
+    const n = result.length;
+    for (let j = 0; j < n; j++) {
+      let digit = result[j];
       // This may overflow for huge bases.  See function comment.
       digit = digit * inputBaseSize + carry;
       if (digit >= outputBaseSize) {
-        var remainder = digit % outputBaseSize;
+        const remainder = digit % outputBaseSize;
         carry = (digit - remainder) / outputBaseSize;
         digit = remainder;
       } else {
@@ -144,23 +145,23 @@ goog.crypt.baseN.recodeString = function(number, inputBase, outputBase) {
       result[j] = digit;
     }
     while (carry) {
-      var remainder = carry % outputBaseSize;
+      const remainder = carry % outputBaseSize;
       result.push(remainder);
       carry = (carry - remainder) / outputBaseSize;
     }
 
     // result += number[i].
     carry = numberDigits[i];
-    var j = 0;
+    let j = 0;
     while (carry) {
       if (j >= result.length) {
         // Extend result with a leading zero which will be overwritten below.
         result.push(0);
       }
-      var digit = result[j];
+      let digit = result[j];
       digit += carry;
       if (digit >= outputBaseSize) {
-        var remainder = digit % outputBaseSize;
+        const remainder = digit % outputBaseSize;
         carry = (digit - remainder) / outputBaseSize;
         digit = remainder;
       } else {
@@ -191,16 +192,17 @@ goog.crypt.baseN.recodeString = function(number, inputBase, outputBase) {
  * @private
  */
 goog.crypt.baseN.stringToArray_ = function(number, base) {
-  var index = {};
-  for (var i = 0, n = base.length; i < n; i++) {
+  const index = {};
+  const n = base.length;
+  for (let i = 0; i < n; i++) {
     index[base.charAt(i)] = i;
   }
-  var result = [];
-  for (var i = number.length - 1; i >= 0; i--) {
-    var character = number.charAt(i);
-    var digit = index[character];
+  const result = [];
+  for (let i = number.length - 1; i >= 0; i--) {
+    const character = number.charAt(i);
+    const digit = index[character];
     if (typeof digit == 'undefined') {
-      throw Error(
+      throw new Error(
           'Number ' + number + ' contains a character not found in base ' +
           base + ', which is ' + character);
     }
@@ -227,13 +229,14 @@ goog.crypt.baseN.stringToArray_ = function(number, base) {
  * @private
  */
 goog.crypt.baseN.arrayToString_ = function(number, base) {
-  var n = number.length;
-  var chars = [];
-  var baseSize = base.length;
-  for (var i = n - 1; i >= 0; i--) {
-    var digit = number[i];
+  const n = number.length;
+  const chars = [];
+  const baseSize = base.length;
+  for (let i = n - 1; i >= 0; i--) {
+    const digit = number[i];
     if (digit >= baseSize || digit < 0) {
-      throw Error('Number ' + number + ' contains an invalid digit: ' + digit);
+      throw new Error(
+          'Number ' + number + ' contains an invalid digit: ' + digit);
     }
     chars.push(base.charAt(digit));
   }

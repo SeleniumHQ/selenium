@@ -31,7 +31,6 @@
  *
  * See the README for notes about the design and structure of the API
  * (especially related to performance).
- *
  */
 goog.provide('goog.vec.mat4d');
 goog.provide('goog.vec.mat4d.Type');
@@ -43,7 +42,7 @@ goog.require('goog.vec.vec3d');
 goog.require('goog.vec.vec4d');
 
 
-/** @typedef {goog.vec.Float64} */ goog.vec.mat4d.Type;
+/** @typedef {!goog.vec.Float64} */ goog.vec.mat4d.Type;
 
 
 /**

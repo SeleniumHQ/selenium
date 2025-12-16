@@ -38,7 +38,8 @@ goog.proto2.Serializer = function() {};
  * @define {boolean} Whether to decode and convert symbolic enum values to
  * actual enum values or leave them as strings.
  */
-goog.define('goog.proto2.Serializer.DECODE_SYMBOLIC_ENUMS', false);
+goog.proto2.Serializer.DECODE_SYMBOLIC_ENUMS =
+    goog.define('goog.proto2.Serializer.DECODE_SYMBOLIC_ENUMS', false);
 
 
 /**
@@ -68,7 +69,7 @@ goog.proto2.Serializer.prototype.serialize = goog.abstractMethod;
 goog.proto2.Serializer.prototype.getSerializedValue = function(field, value) {
   if (field.isCompositeType()) {
     return this.serialize(/** @type {goog.proto2.Message} */ (value));
-  } else if (goog.isNumber(value) && !isFinite(value)) {
+  } else if (typeof value === 'number' && !isFinite(value)) {
     return value.toString();
   } else {
     return value;
@@ -132,8 +133,9 @@ goog.proto2.Serializer.prototype.getDeserializedValue = function(field, value) {
     // If it's a string, get enum value by name.
     // NB: In order this feature to work, property renaming should be turned off
     // for the respective enums.
-    if (goog.proto2.Serializer.DECODE_SYMBOLIC_ENUMS && goog.isString(value)) {
-      // enumType is a regular Javascript enum as defined in field's metadata.
+    if (goog.proto2.Serializer.DECODE_SYMBOLIC_ENUMS &&
+        typeof value === 'string') {
+      // enumType is a regular JavaScript enum as defined in field's metadata.
       var enumType = field.getNativeType();
       if (enumType.hasOwnProperty(value)) {
         return enumType[value];
@@ -142,7 +144,7 @@ goog.proto2.Serializer.prototype.getDeserializedValue = function(field, value) {
 
     // If it's a string containing a positive integer, this looks like a viable
     // enum int value. Return as numeric.
-    if (goog.isString(value) &&
+    if (typeof value === 'string' &&
         goog.proto2.Serializer.INTEGER_REGEX.test(value)) {
       var numeric = Number(value);
       if (numeric > 0) {
@@ -168,13 +170,13 @@ goog.proto2.Serializer.prototype.getDeserializedValue = function(field, value) {
   var nativeType = field.getNativeType();
   if (nativeType === String) {
     // JSON numbers can be converted to strings.
-    if (goog.isNumber(value)) {
+    if (typeof value === 'number') {
       return String(value);
     }
   } else if (nativeType === Number) {
     // JSON strings are sometimes used for large integer numeric values, as well
     // as Infinity, -Infinity and NaN.
-    if (goog.isString(value)) {
+    if (typeof value === 'string') {
       // Handle +/- Infinity and NaN values.
       if (value === 'Infinity' || value === '-Infinity' || value === 'NaN') {
         return Number(value);

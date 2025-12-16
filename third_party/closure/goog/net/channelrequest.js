@@ -20,13 +20,17 @@
  * XMLHTTP, Trident ActiveX (ie only), and Image request. It provides timeout
  * detection. This class is part of the BrowserChannel implementation and is not
  * for use by normal application code.
- *
  */
 
 
 goog.provide('goog.net.ChannelRequest');
 goog.provide('goog.net.ChannelRequest.Error');
 
+goog.forwardDeclare('goog.Uri');
+goog.forwardDeclare('goog.net.BrowserChannel');
+goog.forwardDeclare('goog.net.BrowserTestChannel');
+goog.forwardDeclare('goog.net.ChannelDebug');
+goog.forwardDeclare('goog.net.XhrIo');
 goog.require('goog.Timer');
 goog.require('goog.async.Throttle');
 goog.require('goog.dom.TagName');
@@ -128,7 +132,7 @@ goog.net.ChannelRequest = function(
 
 /**
  * Extra HTTP headers to add to all the requests sent to the server.
- * @type {Object}
+ * @type {?Object}
  * @private
  */
 goog.net.ChannelRequest.prototype.extraHeaders_ = null;
@@ -202,7 +206,7 @@ goog.net.ChannelRequest.prototype.postData_ = null;
 
 /**
  * The XhrLte request if the request is using XMLHTTP
- * @type {goog.net.XhrIo}
+ * @type {?goog.net.XhrIo}
  * @private
  */
 goog.net.ChannelRequest.prototype.xmlHttp_ = null;
@@ -219,7 +223,7 @@ goog.net.ChannelRequest.prototype.xmlHttpChunkStart_ = 0;
 
 /**
  * The Trident instance if the request is using Trident.
- * @type {Object}
+ * @type {?Object}
  * @private
  */
 goog.net.ChannelRequest.prototype.trident_ = null;
@@ -281,7 +285,7 @@ goog.net.ChannelRequest.prototype.readyStateChangeThrottleMs_ = 0;
 /**
  * The throttle for readystatechange events for the current request, or null
  * if there is none.
- * @type {goog.async.Throttle}
+ * @type {?goog.async.Throttle}
  * @private
  */
 goog.net.ChannelRequest.prototype.readyStateChangeThrottle_ = null;
@@ -1086,8 +1090,7 @@ goog.net.ChannelRequest.prototype.sendUsingImgTag = function(uri) {
  * @private
  */
 goog.net.ChannelRequest.prototype.imgTagGet_ = function() {
-  var eltImg = new Image();
-  eltImg.src = this.baseUri_;
+  goog.dom.safe.setImageSrc(new Image(), this.baseUri_.toString());
   this.requestStartTime_ = goog.now();
   this.ensureWatchDogTimer_();
 };
@@ -1124,7 +1127,7 @@ goog.net.ChannelRequest.prototype.ensureWatchDogTimer_ = function() {
 goog.net.ChannelRequest.prototype.startWatchDogTimer_ = function(time) {
   if (this.watchDogTimerId_ != null) {
     // assertion
-    throw Error('WatchDog timer not null');
+    throw new Error('WatchDog timer not null');
   }
   /** @private @suppress {missingRequire} Circular dep. */
   this.watchDogTimerId_ = goog.net.BrowserChannel.setTimeout(

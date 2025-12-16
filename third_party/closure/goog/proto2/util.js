@@ -26,7 +26,7 @@ goog.require('goog.asserts');
  * clients of PB2. This for is clients that do not want assertion/checking
  * running even in non-COMPILED builds.
  */
-goog.define('goog.proto2.Util.PBCHECK', !COMPILED);
+goog.proto2.Util.PBCHECK = goog.define('goog.proto2.Util.PBCHECK', !COMPILED);
 
 
 /**

@@ -15,12 +15,12 @@
 
 /**
  * @fileoverview A thick wrapper around ellipses.
- * @author robbyw@google.com (Robby Walker)
  */
 
 
 goog.provide('goog.graphics.ext.Ellipse');
 
+goog.forwardDeclare('goog.graphics.ext.Group');
 goog.require('goog.graphics.ext.StrokeAndFillElement');
 
 

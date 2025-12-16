@@ -14,21 +14,19 @@
 
 /**
  * @fileoverview Defines the goog.module.ModuleInfo class.
- *
  */
 
 goog.provide('goog.module.ModuleInfo');
 
+goog.forwardDeclare('goog.loader.AbstractModuleManager.FailureType');
 goog.require('goog.Disposable');
 goog.require('goog.async.throwException');
 goog.require('goog.functions');
+goog.require('goog.html.TrustedResourceUrl');
 /** @suppress {extraRequire} */
 goog.require('goog.module');
 goog.require('goog.module.BaseModule');
 goog.require('goog.module.ModuleLoadCallback');
-
-// TODO(johnlenz): goog.module.ModuleManager.FailureType into its own file.
-goog.forwardDeclare('goog.module.ModuleManager.FailureType');
 
 
 
@@ -88,7 +86,7 @@ goog.inherits(goog.module.ModuleInfo, goog.Disposable);
 
 /**
  * The uris that can be used to retrieve this module's code.
- * @type {Array<string>?}
+ * @type {?Array<!goog.html.TrustedResourceUrl>}
  * @private
  */
 goog.module.ModuleInfo.prototype.uris_ = null;
@@ -132,18 +130,22 @@ goog.module.ModuleInfo.prototype.getId = function() {
 
 /**
  * Sets the uris of this module.
- * @param {Array<string>} uris Uris for this module's code.
+ * @param {!Array<!goog.html.TrustedResourceUrl>} uris Uris for this module's
+ *     code.
  */
-goog.module.ModuleInfo.prototype.setUris = function(uris) {
+goog.module.ModuleInfo.prototype.setTrustedUris = function(uris) {
   this.uris_ = uris;
 };
 
 
 /**
  * Gets the uris of this module.
- * @return {Array<string>?} Uris for this module's code.
+ * @return {!Array<!goog.html.TrustedResourceUrl>} Uris for this module's code.
  */
 goog.module.ModuleInfo.prototype.getUris = function() {
+  if (!this.uris_) {
+    this.uris_ = [];
+  }
   return this.uris_;
 };
 
@@ -158,7 +160,7 @@ goog.module.ModuleInfo.prototype.setModuleConstructor = function(constructor) {
   if (this.moduleConstructor_ === goog.module.BaseModule) {
     this.moduleConstructor_ = constructor;
   } else {
-    throw Error('Cannot set module constructor more than once.');
+    throw new Error('Cannot set module constructor more than once.');
   }
 };
 
@@ -238,6 +240,17 @@ goog.module.ModuleInfo.prototype.isLoaded = function() {
 
 
 /**
+ * Marks the current module as loaded. This is useful for subtractive module
+ * loading, where occasionally we need to fallback to normal module loading,
+ * and re-fetch the module graph. In this case, we need a way to tell the module
+ * manager to mark all modules that are already loaded.
+ */
+goog.module.ModuleInfo.prototype.setLoaded = function() {
+  this.module_ = new goog.module.BaseModule();
+};
+
+
+/**
  * Gets the module.
  * @return {goog.module.BaseModule?} The module if it has been loaded.
  *     Otherwise, null.
@@ -281,7 +294,8 @@ goog.module.ModuleInfo.prototype.onLoad = function(contextProvider) {
 
 /**
  * Calls the error callbacks for the module.
- * @param {goog.module.ModuleManager.FailureType} cause What caused the error.
+ * @param {goog.loader.AbstractModuleManager.FailureType} cause What caused the
+ *     error.
  */
 goog.module.ModuleInfo.prototype.onError = function(cause) {
   var result = this.callCallbacks_(this.onErrorCallbacks_, cause);

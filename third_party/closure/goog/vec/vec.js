@@ -36,7 +36,7 @@ goog.require('goog.vec.Float32Array');
 goog.require('goog.vec.Float64Array');
 
 // All vector and matrix operations are based upon arrays of numbers using
-// either Float32Array, Float64Array, or a standard Javascript Array of
+// either Float32Array, Float64Array, or a standard JavaScript Array of
 // Numbers.
 
 

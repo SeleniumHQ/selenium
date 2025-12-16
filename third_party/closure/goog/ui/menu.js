@@ -79,7 +79,7 @@ goog.ui.Menu = function(opt_domHelper, opt_renderer) {
 
   // Unlike Containers, Menus aren't keyboard-accessible by default.  This line
   // preserves backwards compatibility with code that depends on menus not
-  // receiving focus - e.g. {@code goog.ui.MenuButton}.
+  // receiving focus - e.g. `goog.ui.MenuButton`.
   this.setFocusable(false);
 };
 goog.inherits(goog.ui.Menu, goog.ui.Container);
@@ -357,7 +357,7 @@ goog.ui.Menu.prototype.setVisible = function(show, opt_force, opt_e) {
       this.allowAutoFocus_) {
     this.getKeyEventTarget().focus();
   }
-  if (show && opt_e && goog.isNumber(opt_e.clientX)) {
+  if (show && opt_e && typeof opt_e.clientX === 'number') {
     this.openingCoords = new goog.math.Coordinate(opt_e.clientX, opt_e.clientY);
   } else {
     this.openingCoords = null;
@@ -460,7 +460,7 @@ goog.ui.Menu.prototype.setHighlightedIndex = function(index) {
 
 
 /**
- * Decorate menu items located in any descendent node which as been explicitly
+ * Decorate menu items located in any descendant node which as been explicitly
  * marked as a 'content' node.
  * @param {Element} element Element to decorate.
  * @protected

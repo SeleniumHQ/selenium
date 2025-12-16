@@ -17,8 +17,16 @@
  * UserData uses proprietary Element.addBehavior(), Element.load(),
  * Element.save(), and Element.XMLDocument() methods, see:
  * http://msdn.microsoft.com/en-us/library/ms531424(v=vs.85).aspx.
- *
  */
+
+
+// TODO(b/130421259): We're trying to migrate all ES5 subclasses of Closure
+// Library to ES6. In ES6 this cannot be referenced before super is called. This
+// file has at least one this before a super call (in ES5) and cannot be
+// automatically upgraded to ES6 as a result. Please fix this if you have a
+// chance. Note: This can sometimes be caused by not calling the super
+// constructor at all. You can run the conversion tool yourself to see what it
+// does on this file: blaze run //javascript/refactoring/es6_classes:convert.
 
 goog.provide('goog.storage.mechanism.IEUserData');
 
@@ -46,14 +54,14 @@ goog.storage.mechanism.IEUserData = function(storageKey, opt_storageNodeId) {
   /**
    * The key to store the data under.
    *
-   * @private {?string}
+   * @private {string}
    */
   this.storageKey_ = storageKey;
 
   /**
    * The document element used for storing data.
    *
-   * @private {Element}
+   * @private {?Element}
    */
   this.storageNode_ = null;
 
@@ -117,7 +125,7 @@ goog.storage.mechanism.IEUserData.ENCODE_MAP = {
 /**
  * Global storageKey to storageNode map, so we save on reloading the storage.
  *
- * @type {goog.structs.Map}
+ * @type {?goog.structs.Map}
  * @private
  */
 goog.storage.mechanism.IEUserData.storageMap_ = null;
@@ -183,7 +191,7 @@ goog.storage.mechanism.IEUserData.prototype.get = function(key) {
   // http://msdn.microsoft.com/en-us/library/ms531348(v=vs.85).aspx
   var value = this.storageNode_.getAttribute(
       goog.storage.mechanism.IEUserData.encodeKey_(key));
-  if (!goog.isString(value) && !goog.isNull(value)) {
+  if (typeof value !== 'string' && value !== null) {
     throw goog.storage.mechanism.ErrorCode.INVALID_VALUE;
   }
   return value;
@@ -219,7 +227,7 @@ goog.storage.mechanism.IEUserData.prototype.__iterator__ = function(opt_keys) {
     }
     var value = item.nodeValue;
     // The value must exist and be a string, otherwise it is a storage error.
-    if (!goog.isString(value)) {
+    if (typeof value !== 'string') {
       throw goog.storage.mechanism.ErrorCode.INVALID_VALUE;
     }
     return value;

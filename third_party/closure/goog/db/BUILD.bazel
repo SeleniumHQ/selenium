@@ -1,0 +1,119 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":cursor",
+        ":db",
+        ":error",
+        ":index",
+        ":indexeddb",
+        ":keyrange",
+        ":objectstore",
+        ":transaction",
+    ],
+)
+
+closure_js_library(
+    name = "cursor",
+    srcs = ["cursor.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/db:error",
+        "//third_party/closure/goog/db:keyrange",
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/mochikit/async:deferred",
+    ],
+)
+
+closure_js_library(
+    name = "db",
+    srcs = ["db.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/db:error",
+        "//third_party/closure/goog/db:indexeddb",
+        "//third_party/closure/goog/db:transaction",
+        "//third_party/closure/goog/mochikit/async:deferred",
+    ],
+)
+
+closure_js_library(
+    name = "error",
+    srcs = ["error.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:error",
+    ],
+)
+
+closure_js_library(
+    name = "index",
+    srcs = ["index.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/db:cursor",
+        "//third_party/closure/goog/db:error",
+        "//third_party/closure/goog/db:keyrange",
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/mochikit/async:deferred",
+    ],
+)
+
+closure_js_library(
+    name = "indexeddb",
+    srcs = ["indexeddb.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/db:error",
+        "//third_party/closure/goog/db:objectstore",
+        "//third_party/closure/goog/db:transaction",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+    ],
+)
+
+closure_js_library(
+    name = "keyrange",
+    srcs = ["keyrange.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "objectstore",
+    srcs = ["objectstore.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/db:cursor",
+        "//third_party/closure/goog/db:error",
+        "//third_party/closure/goog/db:index",
+        "//third_party/closure/goog/db:keyrange",
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/mochikit/async:deferred",
+    ],
+)
+
+closure_js_library(
+    name = "transaction",
+    srcs = ["transaction.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/db:error",
+        "//third_party/closure/goog/db:objectstore",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/mochikit/async:deferred",
+    ],
+)

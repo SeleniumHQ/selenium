@@ -15,7 +15,6 @@
 /**
  * @fileoverview Wraps an iterable storage mechanism and creates artificial
  * namespaces using a prefix in the global namespace.
- *
  */
 
 goog.provide('goog.storage.mechanism.PrefixedMechanism');

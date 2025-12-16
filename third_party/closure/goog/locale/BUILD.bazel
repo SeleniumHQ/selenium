@@ -1,0 +1,88 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":countries",
+        ":defaultlocalenameconstants",
+        ":genericfontnames",
+        ":genericfontnamesdata",
+        ":locale",
+        ":nativenameconstants",
+        ":scriptToLanguages",
+        ":timezonedetection",
+        ":timezonefingerprint",
+        ":timezonelist",
+    ],
+)
+
+closure_js_library(
+    name = "countries",
+    srcs = ["countries.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "defaultlocalenameconstants",
+    srcs = ["defaultlocalenameconstants.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "genericfontnames",
+    srcs = ["genericfontnames.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "genericfontnamesdata",
+    srcs = ["genericfontnamesdata.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "locale",
+    srcs = ["locale.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/locale:nativenameconstants"],
+)
+
+closure_js_library(
+    name = "nativenameconstants",
+    srcs = ["nativenameconstants.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "scriptToLanguages",
+    srcs = ["scriptToLanguages.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/locale"],
+)
+
+closure_js_library(
+    name = "timezonedetection",
+    srcs = ["timezonedetection.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/locale:timezonefingerprint"],
+)
+
+closure_js_library(
+    name = "timezonefingerprint",
+    srcs = ["timezonefingerprint.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "timezonelist",
+    srcs = ["timezonelist.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/locale"],
+)

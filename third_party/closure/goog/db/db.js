@@ -38,7 +38,6 @@
  *      });
  *  });
  *  </code>
- *
  */
 
 
@@ -122,7 +121,7 @@ goog.db.UpgradeNeededCallback;
 goog.db.openDatabase = function(
     name, opt_version, opt_onUpgradeNeeded, opt_onBlocked) {
   goog.asserts.assert(
-      goog.isDef(opt_version) == goog.isDef(opt_onUpgradeNeeded),
+      (opt_version !== undefined) == (opt_onUpgradeNeeded !== undefined),
       'opt_version must be passed to goog.db.openDatabase if and only if ' +
           'opt_onUpgradeNeeded is also passed');
 

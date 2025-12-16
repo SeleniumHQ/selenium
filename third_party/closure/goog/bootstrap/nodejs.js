@@ -34,8 +34,6 @@
  * goog.require('my.Class')
  * </code>
  *
- * @author nick@medium.com (Nick Santos)
- *
  * @nocompile
  */
 

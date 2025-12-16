@@ -15,12 +15,15 @@
 
 /**
  * @fileoverview A thick wrapper around elements with stroke and fill.
- * @author robbyw@google.com (Robby Walker)
  */
 
 
 goog.provide('goog.graphics.ext.StrokeAndFillElement');
 
+goog.forwardDeclare('goog.graphics.Fill');
+goog.forwardDeclare('goog.graphics.Stroke');
+goog.forwardDeclare('goog.graphics.StrokeAndFillElement');
+goog.forwardDeclare('goog.graphics.ext.Group');
 goog.require('goog.graphics.ext.Element');
 
 

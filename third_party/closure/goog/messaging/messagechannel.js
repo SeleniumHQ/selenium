@@ -27,7 +27,6 @@
  * responsible for disposing of the channels they wrap when the decorators
  * themselves are disposed. Decorators should also follow the APIs of the
  * individual methods listed below.
- *
  */
 
 

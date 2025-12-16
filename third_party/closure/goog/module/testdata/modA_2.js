@@ -23,7 +23,9 @@ goog.setTestOnly('goog.module.testdata.modA_2');
 
 goog.require('goog.module.ModuleManager');
 
-if (window.modA2Loaded) throw Error('modA_2 loaded twice');
+goog.module.ModuleManager.getInstance().beforeLoadModuleCode('modA');
+
+if (window.modA2Loaded) throw new Error('modA_2 loaded twice');
 window.modA2Loaded = true;
 
-goog.module.ModuleManager.getInstance().setLoaded('modA');
+goog.module.ModuleManager.getInstance().setLoaded();

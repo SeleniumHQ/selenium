@@ -23,7 +23,6 @@
  *
  *     Adding support for the other TypedArray classes here does not make sense
  *     since this vector math library only needs Float32Array.
- *
  */
 goog.provide('goog.vec.Float32Array');
 
@@ -42,7 +41,7 @@ goog.provide('goog.vec.Float32Array');
 goog.vec.Float32Array = function(p0) {
   /** @type {number} */
   this.length = /** @type {number} */ (p0.length || p0);
-  for (var i = 0; i < this.length; i++) {
+  for (let i = 0; i < this.length; i++) {
     this[i] = p0[i] || 0;
   }
 };
@@ -73,7 +72,7 @@ goog.vec.Float32Array.prototype.BYTES_PER_ELEMENT = 4;
  */
 goog.vec.Float32Array.prototype.set = function(values, opt_offset) {
   opt_offset = opt_offset || 0;
-  for (var i = 0; i < values.length && opt_offset + i < this.length; i++) {
+  for (let i = 0; i < values.length && opt_offset + i < this.length; i++) {
     this[opt_offset + i] = values[i];
   }
 };

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Interface for storing, retieving and scanning data using some
  * persistence mechanism.
- *
  */
 
 goog.provide('goog.storage.mechanism.IterableMechanism');

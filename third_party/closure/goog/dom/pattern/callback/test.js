@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Callback object that tests if a pattern matches at least once.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.callback.Test');
@@ -40,7 +38,7 @@ goog.dom.pattern.callback.Test = function() {
   /**
    * The callback function.  Suitable as a callback for
    * {@link goog.dom.pattern.Matcher}.
-   * @private {Function}
+   * @private {?Function}
    */
   this.callback_ = null;
 };

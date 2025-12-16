@@ -17,7 +17,6 @@
  *
  * Abstraction for data sources that allows listening for changes at different
  * levels of the data tree and updating the data via XHR requests
- *
  */
 
 
@@ -479,7 +478,7 @@ goog.inherits(goog.ds.EmptyNodeList, goog.ds.BasicNodeList);
  * @override
  */
 goog.ds.EmptyNodeList.prototype.add = function(node) {
-  throw Error('Can\'t add to EmptyNodeList');
+  throw new Error('Can\'t add to EmptyNodeList');
 };
 
 

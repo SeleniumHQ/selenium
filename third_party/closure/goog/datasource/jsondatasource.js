@@ -14,15 +14,14 @@
 
 /**
  * @fileoverview Implementation of DataNode for wrapping JSON data.
- *
  */
 
 
 goog.provide('goog.ds.JsonDataSource');
 
-goog.require('goog.Uri');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.ds.DataManager');
 goog.require('goog.ds.JsDataSource');
 goog.require('goog.ds.LoadState');
@@ -49,7 +48,7 @@ goog.require('goog.log');
  * A URI of an empty string will mean that no request is made
  * and the data source will be a data source with no child nodes
  *
- * @param {string|goog.Uri} uri URI for the request.
+ * @param {?goog.html.TrustedResourceUrl} uri URI for the request.
  * @param {string} name Name of the datasource.
  * @param {string=} opt_callbackParamName The parameter name that is used to
  *     specify the callback. Defaults to 'callback'.
@@ -60,11 +59,7 @@ goog.require('goog.log');
  */
 goog.ds.JsonDataSource = function(uri, name, opt_callbackParamName) {
   goog.ds.JsDataSource.call(this, null, name, null);
-  if (uri) {
-    this.uri_ = new goog.Uri(uri);
-  } else {
-    this.uri_ = null;
-  }
+  this.uri_ = uri;
 
   /**
    * This is the callback parameter name that is added to the uri.
@@ -103,20 +98,21 @@ goog.ds.JsonDataSource.prototype.load = function() {
     // that it also doesn't get renamed and stops the compiler from complaining
     goog.ds.JsonDataSource['dataSources'][this.dataName_] = this;
     goog.log.info(
-        goog.ds.logger, 'Sending JS request for DataSource ' +
-            this.getDataName() + ' to ' + this.uri_);
+        goog.ds.logger,
+        'Sending JS request for DataSource ' + this.getDataName() + ' to ' +
+            this.uri_.getTypedStringValue());
 
     this.loadState_ = goog.ds.LoadState.LOADING;
 
-    var uriToCall = new goog.Uri(this.uri_);
-    uriToCall.setParameterValue(
-        this.callbackParamName_, 'JsonReceive.' + this.dataName_);
+    var params = {};
+    params[this.callbackParamName_] = 'JsonReceive.' + this.dataName_;
+    var uriToCall = this.uri_.cloneWithParams(params);
 
     goog.global['JsonReceive'][this.dataName_] =
         goog.bind(this.receiveData, this);
 
-    var scriptEl =
-        goog.dom.createDom(goog.dom.TagName.SCRIPT, {'src': uriToCall});
+    var scriptEl = goog.dom.createDom(goog.dom.TagName.SCRIPT);
+    goog.dom.safe.setScriptSrc(scriptEl, uriToCall);
     goog.dom.getElementsByTagNameAndClass(goog.dom.TagName.HEAD)[0].appendChild(
         scriptEl);
   } else {

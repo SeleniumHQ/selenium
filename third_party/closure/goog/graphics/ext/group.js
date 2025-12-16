@@ -15,12 +15,12 @@
 
 /**
  * @fileoverview A thicker wrapper around graphics groups.
- * @author robbyw@google.com (Robby Walker)
  */
 
 
 goog.provide('goog.graphics.ext.Group');
 
+goog.forwardDeclare('goog.graphics.GroupElement');
 goog.require('goog.array');
 goog.require('goog.graphics.ext.Element');
 
@@ -94,7 +94,7 @@ goog.graphics.ext.Group.prototype.removeChild = function(element) {
 
 /**
  * Calls the given function on each of this component's children in order.  If
- * {@code opt_obj} is provided, it will be used as the 'this' object in the
+ * `opt_obj` is provided, it will be used as the 'this' object in the
  * function when called.  The function should take two arguments:  the child
  * component and its 0-based index.  The return value is ignored.
  * @param {Function} f The function to call for every child component; should

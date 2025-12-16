@@ -20,9 +20,11 @@ goog.provide('goog.net.HttpStatus');
 
 
 /**
- * HTTP Status Codes defined in RFC 2616 and RFC 6585.
+ * HTTP Status Codes defined in RFC 2616, RFC 6585, RFC 4918 and RFC 7538.
  * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
  * @see http://tools.ietf.org/html/rfc6585
+ * @see https://tools.ietf.org/html/rfc4918
+ * @see https://tools.ietf.org/html/rfc7538
  * @enum {number}
  */
 goog.net.HttpStatus = {
@@ -38,6 +40,7 @@ goog.net.HttpStatus = {
   NO_CONTENT: 204,
   RESET_CONTENT: 205,
   PARTIAL_CONTENT: 206,
+  MULTI_STATUS: 207,
 
   // Redirection 3xx
   MULTIPLE_CHOICES: 300,
@@ -47,6 +50,7 @@ goog.net.HttpStatus = {
   NOT_MODIFIED: 304,
   USE_PROXY: 305,
   TEMPORARY_REDIRECT: 307,
+  PERMANENT_REDIRECT: 308,
 
   // Client Error 4xx
   BAD_REQUEST: 400,
@@ -67,6 +71,9 @@ goog.net.HttpStatus = {
   UNSUPPORTED_MEDIA_TYPE: 415,
   REQUEST_RANGE_NOT_SATISFIABLE: 416,
   EXPECTATION_FAILED: 417,
+  UNPROCESSABLE_ENTITY: 422,
+  LOCKED: 423,
+  FAILED_DEPENDENCY: 424,
   PRECONDITION_REQUIRED: 428,
   TOO_MANY_REQUESTS: 429,
   REQUEST_HEADER_FIELDS_TOO_LARGE: 431,
@@ -78,6 +85,7 @@ goog.net.HttpStatus = {
   SERVICE_UNAVAILABLE: 503,
   GATEWAY_TIMEOUT: 504,
   HTTP_VERSION_NOT_SUPPORTED: 505,
+  INSUFFICIENT_STORAGE: 507,
   NETWORK_AUTHENTICATION_REQUIRED: 511,
 
   /*

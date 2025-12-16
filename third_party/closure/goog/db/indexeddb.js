@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Wrapper for an IndexedDB database.
- *
  */
 
 
@@ -85,13 +84,16 @@ goog.db.IndexedDb.prototype.open_ = true;
 /**
  * Dispatches a wrapped error event based on the given event.
  *
- * @param {Event} ev The error event given to the underlying IDBDatabase.
+ * @param {!Event} ev The error event given to the underlying IDBDatabase.
  * @private
  */
 goog.db.IndexedDb.prototype.dispatchError_ = function(ev) {
+  const idbRequest = /** @type {?IDBRequest} */ (ev.target);
+  const domError = idbRequest && idbRequest.error;
+  const /** ?number */ errorCode = domError && domError.severity;
   this.dispatchEvent({
     type: goog.db.IndexedDb.EventType.ERROR,
-    errorCode: /** @type {IDBRequest} */ (ev.target).error.severity
+    errorCode: errorCode,
   });
 };
 

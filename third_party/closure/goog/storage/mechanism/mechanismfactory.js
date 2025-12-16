@@ -15,7 +15,6 @@
 /**
  * @fileoverview Provides factory methods for selecting the best storage
  * mechanism, depending on availability and needs.
- *
  */
 
 goog.provide('goog.storage.mechanism.mechanismfactory');

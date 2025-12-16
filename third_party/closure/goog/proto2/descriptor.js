@@ -19,6 +19,8 @@
 goog.provide('goog.proto2.Descriptor');
 goog.provide('goog.proto2.Metadata');
 
+goog.forwardDeclare('goog.proto2.FieldDescriptor');
+goog.forwardDeclare('goog.proto2.Message');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');

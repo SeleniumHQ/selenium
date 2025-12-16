@@ -15,7 +15,6 @@
 /**
  * @fileoverview The leaf node of a {@link goog.messaging.PortNetwork}. Callers
  * connect to the operator, and request connections with other contexts from it.
- *
  */
 
 goog.provide('goog.messaging.PortCaller');
@@ -128,7 +127,7 @@ goog.messaging.PortCaller.prototype.connectionGranted_ = function(message) {
     // close any future ports.
     port.close();
   } else if (!args['success']) {
-    throw Error(args['message']);
+    throw new Error(args['message']);
   } else {
     port.start();
     var channel = new goog.messaging.PortChannel(port);

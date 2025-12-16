@@ -17,17 +17,17 @@
  *
  * These tests should be included in tests of any class extending
  * goog.storage.mechanism.Mechanism.
- *
  */
 
 goog.provide('goog.storage.mechanism.mechanismTester');
+goog.setTestOnly();
 
 goog.require('goog.storage.mechanism.ErrorCode');
 goog.require('goog.testing.asserts');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 goog.require('goog.userAgent.product.isVersion');
-goog.setTestOnly('goog.storage.mechanism.mechanismTester');
+
 
 
 var mechanism = null;

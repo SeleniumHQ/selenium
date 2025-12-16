@@ -16,8 +16,6 @@
  * @fileoverview Definition of the browser range interface.
  *
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 

@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Helper for various storage tests.
- *
- * @author johnlenz@google.com (John Lenz)
  */
 
 goog.provide('goog.storage.storageTester');

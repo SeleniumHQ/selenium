@@ -23,7 +23,6 @@
  * Usage:
  *   var key = pbkdf2.deriveKeySha1(
  *       stringToByteArray('password'), stringToByteArray('salt'), 1000, 128);
- *
  */
 
 goog.provide('goog.crypt.pbkdf2');

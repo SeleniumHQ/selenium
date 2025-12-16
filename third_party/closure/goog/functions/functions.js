@@ -13,10 +13,16 @@
 // limitations under the License.
 
 /**
- * @fileoverview Utilities for creating functions. Loosely inspired by the
- * java classes: http://goo.gl/GM0Hmu and http://goo.gl/6k7nI8.
+ * @fileoverview Utilities for creating functions. Loosely inspired by these
+ * java classes from the Guava library:
+ * com.google.common.base.Functions
+ * https://google.github.io/guava/releases/snapshot-jre/api/docs/index.html?com/google/common/base/Functions.html
  *
- * @author nicksantos@google.com (Nick Santos)
+ * com.google.common.base.Predicates
+ * https://google.github.io/guava/releases/snapshot-jre/api/docs/index.html?com/google/common/base/Predicates.html
+ *
+ * More about these can be found at
+ * https://github.com/google/guava/wiki/FunctionalExplained
  */
 
 
@@ -38,21 +44,27 @@ goog.functions.constant = function(retValue) {
  * Always returns false.
  * @type {function(...): boolean}
  */
-goog.functions.FALSE = goog.functions.constant(false);
+goog.functions.FALSE = function() {
+  return false;
+};
 
 
 /**
  * Always returns true.
  * @type {function(...): boolean}
  */
-goog.functions.TRUE = goog.functions.constant(true);
+goog.functions.TRUE = function() {
+  return true;
+};
 
 
 /**
  * Always returns NULL.
  * @type {function(...): null}
  */
-goog.functions.NULL = goog.functions.constant(null);
+goog.functions.NULL = function() {
+  return null;
+};
 
 
 /**
@@ -74,7 +86,9 @@ goog.functions.identity = function(opt_returnValue, var_args) {
  * @return {!Function} The error-throwing function.
  */
 goog.functions.error = function(message) {
-  return function() { throw Error(message); };
+  return function() {
+    throw new Error(message);
+  };
 };
 
 
@@ -99,7 +113,8 @@ goog.functions.fail = function(err) {
 goog.functions.lock = function(f, opt_numArgs) {
   opt_numArgs = opt_numArgs || 0;
   return function() {
-    return f.apply(this, Array.prototype.slice.call(arguments, 0, opt_numArgs));
+    const self = /** @type {*} */ (this);
+    return f.apply(self, Array.prototype.slice.call(arguments, 0, opt_numArgs));
   };
 };
 
@@ -130,11 +145,12 @@ goog.functions.nth = function(n) {
  *     was invoked as a method of.
  */
 goog.functions.partialRight = function(fn, var_args) {
-  var rightArgs = Array.prototype.slice.call(arguments, 1);
+  const rightArgs = Array.prototype.slice.call(arguments, 1);
   return function() {
-    var newArgs = Array.prototype.slice.call(arguments);
+    const self = /** @type {*} */ (this);
+    const newArgs = Array.prototype.slice.call(arguments);
     newArgs.push.apply(newArgs, rightArgs);
-    return fn.apply(this, newArgs);
+    return fn.apply(self, newArgs);
   };
 };
 
@@ -179,16 +195,17 @@ goog.functions.equalTo = function(value, opt_useLooseComparison) {
  * @template T
  */
 goog.functions.compose = function(fn, var_args) {
-  var functions = arguments;
-  var length = functions.length;
+  const functions = arguments;
+  const length = functions.length;
   return function() {
-    var result;
+    const self = /** @type {*} */ (this);
+    let result;
     if (length) {
-      result = functions[length - 1].apply(this, arguments);
+      result = functions[length - 1].apply(self, arguments);
     }
 
-    for (var i = length - 2; i >= 0; i--) {
-      result = functions[i].call(this, result);
+    for (let i = length - 2; i >= 0; i--) {
+      result = functions[i].call(self, result);
     }
     return result;
   };
@@ -203,12 +220,13 @@ goog.functions.compose = function(fn, var_args) {
  * @return {!Function} A function that calls all inputs in sequence.
  */
 goog.functions.sequence = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
+  const functions = arguments;
+  const length = functions.length;
   return function() {
-    var result;
-    for (var i = 0; i < length; i++) {
-      result = functions[i].apply(this, arguments);
+    const self = /** @type {*} */ (this);
+    let result;
+    for (let i = 0; i < length; i++) {
+      result = functions[i].apply(self, arguments);
     }
     return result;
   };
@@ -225,11 +243,12 @@ goog.functions.sequence = function(var_args) {
  *      functions.
  */
 goog.functions.and = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
+  const functions = arguments;
+  const length = functions.length;
   return function() {
-    for (var i = 0; i < length; i++) {
-      if (!functions[i].apply(this, arguments)) {
+    const self = /** @type {*} */ (this);
+    for (let i = 0; i < length; i++) {
+      if (!functions[i].apply(self, arguments)) {
         return false;
       }
     }
@@ -248,11 +267,12 @@ goog.functions.and = function(var_args) {
  *    functions.
  */
 goog.functions.or = function(var_args) {
-  var functions = arguments;
-  var length = functions.length;
+  const functions = arguments;
+  const length = functions.length;
   return function() {
-    for (var i = 0; i < length; i++) {
-      if (functions[i].apply(this, arguments)) {
+    const self = /** @type {*} */ (this);
+    for (let i = 0; i < length; i++) {
+      if (functions[i].apply(self, arguments)) {
         return true;
       }
     }
@@ -269,7 +289,10 @@ goog.functions.or = function(var_args) {
  * opposite.
  */
 goog.functions.not = function(f) {
-  return function() { return !f.apply(this, arguments); };
+  return function() {
+    const self = /** @type {*} */ (this);
+    return !f.apply(self, arguments);
+  };
 };
 
 
@@ -283,7 +306,7 @@ goog.functions.not = function(f) {
  *
  * @param {function(new:T, ...)} constructor The constructor for the Object.
  * @param {...*} var_args The arguments to be passed to the constructor.
- * @return {T} A new instance of the class given in {@code constructor}.
+ * @return {T} A new instance of the class given in `constructor`.
  * @template T
  */
 goog.functions.create = function(constructor, var_args) {
@@ -291,12 +314,12 @@ goog.functions.create = function(constructor, var_args) {
    * @constructor
    * @final
    */
-  var temp = function() {};
+  const temp = function() {};
   temp.prototype = constructor.prototype;
 
   // obj will have constructor's prototype in its chain and
   // 'obj instanceof constructor' will be true.
-  var obj = new temp();
+  const obj = new temp();
 
   // obj is initialized by constructor.
   // arguments is only array-like so lacks shift(), but can be used with
@@ -310,7 +333,8 @@ goog.functions.create = function(constructor, var_args) {
  * @define {boolean} Whether the return value cache should be used.
  *    This should only be used to disable caches when testing.
  */
-goog.define('goog.functions.CACHE_RETURN_VALUE', true);
+goog.functions.CACHE_RETURN_VALUE =
+    goog.define('goog.functions.CACHE_RETURN_VALUE', true);
 
 
 /**
@@ -329,8 +353,8 @@ goog.define('goog.functions.CACHE_RETURN_VALUE', true);
  * @template T
  */
 goog.functions.cacheReturnValue = function(fn) {
-  var called = false;
-  var value;
+  let called = false;
+  let value;
 
   return function() {
     if (!goog.functions.CACHE_RETURN_VALUE) {
@@ -360,10 +384,10 @@ goog.functions.cacheReturnValue = function(fn) {
 goog.functions.once = function(f) {
   // Keep a reference to the function that we null out when we're done with
   // it -- that way, the function can be GC'd when we're done with it.
-  var inner = f;
+  let inner = f;
   return function() {
     if (inner) {
-      var tmp = inner;
+      const tmp = inner;
       inner = null;
       tmp();
     }
@@ -381,8 +405,8 @@ goog.functions.once = function(f) {
  * autocomplete pop-up every so often rather than updating with every keystroke,
  * since the final text typed by the user is the one that should produce the
  * final autocomplete results. For more stateful debouncing with support for
- * pausing, resuming, and canceling debounced actions, use {@code
- * goog.async.Debouncer}.
+ * pausing, resuming, and canceling debounced actions, use
+ * `goog.async.Debouncer`.
  *
  * @param {function(this:SCOPE, ...?)} f Function to call.
  * @param {number} interval Interval over which to debounce. The function will
@@ -392,10 +416,10 @@ goog.functions.once = function(f) {
  * @template SCOPE
  */
 goog.functions.debounce = function(f, interval, opt_scope) {
-  var timeout = 0;
+  let timeout = 0;
   return /** @type {function(...?)} */ (function(var_args) {
     goog.global.clearTimeout(timeout);
-    var args = arguments;
+    const args = arguments;
     timeout = goog.global.setTimeout(function() {
       f.apply(opt_scope, args);
     }, interval);
@@ -421,11 +445,11 @@ goog.functions.debounce = function(f, interval, opt_scope) {
  * @template SCOPE
  */
 goog.functions.throttle = function(f, interval, opt_scope) {
-  var timeout = 0;
-  var shouldFire = false;
-  var args = [];
+  let timeout = 0;
+  let shouldFire = false;
+  let args = [];
 
-  var handleTimeout = function() {
+  const handleTimeout = function() {
     timeout = 0;
     if (shouldFire) {
       shouldFire = false;
@@ -433,7 +457,7 @@ goog.functions.throttle = function(f, interval, opt_scope) {
     }
   };
 
-  var fire = function() {
+  const fire = function() {
     timeout = goog.global.setTimeout(handleTimeout, interval);
     f.apply(opt_scope, args);
   };
@@ -468,9 +492,9 @@ goog.functions.throttle = function(f, interval, opt_scope) {
  * @template SCOPE
  */
 goog.functions.rateLimit = function(f, interval, opt_scope) {
-  var timeout = 0;
+  let timeout = 0;
 
-  var handleTimeout = function() {
+  const handleTimeout = function() {
     timeout = 0;
   };
 

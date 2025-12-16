@@ -16,7 +16,6 @@
  * @fileoverview Definition of goog.messaging.MultiChannel, which uses a
  * single underlying MessageChannel to carry several independent virtual message
  * channels.
- *
  */
 
 
@@ -87,12 +86,12 @@ goog.messaging.MultiChannel.prototype.logger_ =
  */
 goog.messaging.MultiChannel.prototype.createVirtualChannel = function(name) {
   if (name.indexOf(':') != -1) {
-    throw Error(
+    throw new Error(
         'Virtual channel name "' + name + '" should not contain colons');
   }
 
   if (name in this.virtualChannels_) {
-    throw Error(
+    throw new Error(
         'Virtual channel "' + name + '" was already created for ' +
         'this multichannel.');
   }
@@ -262,7 +261,7 @@ goog.messaging.MultiChannel.VirtualChannel.prototype.registerDefaultService =
 goog.messaging.MultiChannel.VirtualChannel.prototype.send = function(
     serviceName, payload) {
   if (this.isDisposed()) {
-    throw Error('#send called for disposed VirtualChannel.');
+    throw new Error('#send called for disposed VirtualChannel.');
   }
 
   this.parent_.underlyingChannel_.send(this.name_ + ':' + serviceName, payload);
@@ -273,7 +272,7 @@ goog.messaging.MultiChannel.VirtualChannel.prototype.send = function(
  * Wraps a callback with a function that will log a warning and abort if it's
  * called when this channel is disposed.
  *
- * @param {function()} callback The callback to wrap.
+ * @param {!Function} callback The callback to wrap.
  * @param {...*} var_args Other arguments, passed to the callback.
  * @private
  */

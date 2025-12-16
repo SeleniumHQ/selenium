@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Represents a stroke object for goog.graphics.
- * @author arv@google.com (Erik Arvidsson)
  */
 
 

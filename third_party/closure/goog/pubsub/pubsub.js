@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview  Topic-based publish/subscribe channel implementation.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.pubsub.PubSub');
@@ -105,7 +103,7 @@ goog.inherits(goog.pubsub.PubSub, goog.Disposable);
 
 /**
  * Subscribes a function to a topic.  The function is invoked as a method on
- * the given {@code opt_context} object, or in the global scope if no context
+ * the given `opt_context` object, or in the global scope if no context
  * is specified.  Subscribing the same function to the same topic multiple
  * times will result in multiple function invocations while publishing.
  * Returns a subscription key that can be used to unsubscribe the function from
@@ -142,7 +140,7 @@ goog.pubsub.PubSub.prototype.subscribe = function(topic, fn, opt_context) {
 
 /**
  * Subscribes a single-use function to a topic.  The function is invoked as a
- * method on the given {@code opt_context} object, or in the global scope if
+ * method on the given `opt_context` object, or in the global scope if
  * no context is specified, and is then unsubscribed.  Returns a subscription
  * key that can be used to unsubscribe the function from the topic via
  * {@link #unsubscribeByKey}.
@@ -314,8 +312,8 @@ goog.pubsub.PubSub.prototype.publish = function(topic, var_args) {
 /**
  * Runs a function asynchronously with the given context and arguments.
  * @param {!Function} func The function to call.
- * @param {*} context The context in which to call {@code func}.
- * @param {!Array} args The arguments to pass to {@code func}.
+ * @param {*} context The context in which to call `func`.
+ * @param {!Array} args The arguments to pass to `func`.
  * @private
  */
 goog.pubsub.PubSub.runAsync_ = function(func, context, args) {

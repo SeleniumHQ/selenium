@@ -105,6 +105,8 @@ goog.html.sanitizer.TagWhitelist = {
   'SPAN': true,      // HTMLSpanElement
   'STRIKE': true,    // HTMLElement
   'STRONG': true,    // HTMLElement
+  // Disallowed by default via tagBlacklist unless allowed via the builder.
+  'STYLE': true,     // HTMLStyleElement
   'SUB': true,       // HTMLElement
   'SUMMARY': true,   // HTMLElement
   'SUP': true,       // HTMLElement

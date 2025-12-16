@@ -17,7 +17,6 @@
  * boundary conditions.
  *
  * See http://en.wikipedia.org/wiki/Spline_interpolation.
- *
  */
 
 goog.provide('goog.math.interpolator.Spline1');

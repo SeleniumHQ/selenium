@@ -17,8 +17,6 @@
  * pair of algorithms that implement encryption and decryption of input bytes.
  *
  * @see http://en.wikipedia.org/wiki/Block_cipher
- *
- * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.provide('goog.crypt.BlockCipher');

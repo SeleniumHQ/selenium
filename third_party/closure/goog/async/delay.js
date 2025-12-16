@@ -17,7 +17,6 @@
  * invoked after a delay, especially when that delay is frequently restarted.
  * Examples include delaying before displaying a tooltip, menu hysteresis,
  * idle timers, etc.
- * @author brenneman@google.com (Shawn Brenneman)
  * @see ../demos/timers.html
  */
 
@@ -123,7 +122,8 @@ goog.async.Delay.prototype.disposeInternal = function() {
 goog.async.Delay.prototype.start = function(opt_interval) {
   this.stop();
   this.id_ = goog.Timer.callOnce(
-      this.callback_, goog.isDef(opt_interval) ? opt_interval : this.interval_);
+      this.callback_,
+      opt_interval !== undefined ? opt_interval : this.interval_);
 };
 
 

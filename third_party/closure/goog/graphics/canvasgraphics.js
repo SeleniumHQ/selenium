@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview CanvasGraphics sub class that uses the canvas tag for drawing.
- * @author robbyw@google.com (Robby Walker)
  */
 
 
@@ -257,8 +256,8 @@ goog.graphics.CanvasGraphics.prototype.getPixelSize = function() {
   // have to compute the size manually if it is percentage based.
   var width = this.width;
   var height = this.height;
-  var computeWidth = goog.isString(width) && width.indexOf('%') != -1;
-  var computeHeight = goog.isString(height) && height.indexOf('%') != -1;
+  var computeWidth = (typeof width === 'string') && width.indexOf('%') != -1;
+  var computeHeight = (typeof height === 'string') && height.indexOf('%') != -1;
 
   if (!this.isInDocument() && (computeWidth || computeHeight)) {
     return null;
@@ -410,7 +409,7 @@ goog.graphics.CanvasGraphics.prototype.drawElement = function(element) {
     ctx.strokeStyle = stroke.getColor();
 
     var width = stroke.getWidth();
-    if (goog.isString(width) && width.indexOf('px') != -1) {
+    if (typeof width === 'string' && width.indexOf('px') != -1) {
       width = parseFloat(width) / this.getPixelScaleX();
     }
     ctx.lineWidth = width;

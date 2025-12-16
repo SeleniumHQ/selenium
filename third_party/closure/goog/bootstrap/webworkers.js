@@ -30,8 +30,12 @@
  * @return {boolean} True if the script was imported, false otherwise.
  */
 this.CLOSURE_IMPORT_SCRIPT = (function(global) {
-  return function(src) {
-    global['importScripts'](src);
+  return function(src, opt_sourceText) {
+    if (opt_sourceText) {
+      eval(opt_sourceText)
+    } else {
+      global['importScripts'](src);
+    }
     return true;
   };
 })(this);

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Defines error codes to be thrown by storage mechanisms.
- *
  */
 
 goog.provide('goog.storage.mechanism.ErrorCode');
