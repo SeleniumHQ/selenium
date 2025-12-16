@@ -24,4 +24,4 @@ jobs:
       os: windows
       run: |
         fsutil 8dot3name set 0
-        bazel test //dotnet/test/common:ElementFindingTest-firefox //dotnet/test/common:ElementFindingTest-chrome --pin_browsers=true
+        bazel test //dotnet/test/common:ElementFindingTest-firefox //dotnet/test/common:ElementFindingTest-chrome
