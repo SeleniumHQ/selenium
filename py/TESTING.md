@@ -61,12 +61,54 @@ bazel test //py/... --test_tag_filters=chrome
 # Additional arguments
 bazel test //py/... --flaky_test_attempts=3
 bazel test //py/... --test_output=all
-bazel test //py/... --test_output=streamed
+bazel test //py/... --test_output=streamed  # Live output for debugging
 bazel test //py:test-chrome --headless
+
+# Run a specific test in a test file
+bazel test //py:common-chrome-bidi-test/selenium/webdriver/common/bidi_browsing_context_tests.py \
+  --test_arg=-k \
+  --test_arg=test_get_tree_with_child \
 
 # View all targets
 bazel query //py/...
 ```
+
+## Running Tests Without Bazel (using pytest)
+
+You can run tests directly with pytest after setting up the development environment.
+
+### Setup
+
+First, install the required dependencies:
+
+```shell
+pip install -r py/requirements.txt
+```
+
+Then build the generated files and copy them into your local source tree:
+
+```shell
+./go py:local_dev
+```
+
+### Running with pytest
+
+```shell
+# Run all tests in a directory
+pytest py/test/selenium/webdriver/chrome/ --driver chrome
+
+# Run a specific test file
+pytest py/test/selenium/webdriver/common/window_tests.py
+
+# Run a specific test function
+pytest py/test/selenium/webdriver/common/window_tests.py::test_should_get_the_size_of_the_current_window
+
+# With pytest options
+pytest py/test/selenium/webdriver/chrome/ --driver chrome --headless -v
+```
+> **Note:**
+> For running BiDi tests, use the `--bidi` flag.
+
 ## Fixtures
 
 We make use of
