@@ -32,9 +32,9 @@ module Selenium
         # @api public
         #
 
-        def save_print_page(path, **options)
+        def save_print_page(path, **)
           File.open(path, 'wb') do |file|
-            content = Base64.decode64 print_page(**options)
+            content = Base64.decode64 print_page(**)
             file << content
           end
         end

@@ -25,7 +25,7 @@ jobs:
     with:
       name: Check format script run
       caching: false
-      ruby-version: jruby-10.0.0.0
+      ruby-version: jruby-10.0.2.0
       run: ./scripts/github-actions/check-format.sh
 
   test:
@@ -35,5 +35,5 @@ jobs:
     with:
       name: All RBE tests
       caching: false
-      ruby-version: jruby-10.0.0.0
+      ruby-version: jruby-10.0.2.0
       run: ./scripts/github-actions/ci-build.sh ${{ github.event.inputs.disable_test_cache }}

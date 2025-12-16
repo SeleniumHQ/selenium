@@ -30,15 +30,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby-version: 3.2.8
+          - ruby-version: 3.4.1
             os: ubuntu
-          - ruby-version: 3.2.8
+          - ruby-version: 3.4.1
             os: windows
-          - ruby-version: 3.2.8
+          - ruby-version: 3.4.1
             os: macos
-          - ruby-version: 3.4.3
+          - ruby-version: 3.4.1
             os: ubuntu
-          - ruby-version: jruby-10.0.0.0
+          - ruby-version: jruby-10.0.2.0
             os: ubuntu
           - ruby-version: truffleruby-24.2.1
             os: ubuntu

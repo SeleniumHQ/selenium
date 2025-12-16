@@ -87,9 +87,9 @@ module Selenium
           es.map { |e| Element.new self, e.ref.last }
         end
 
-        def execute_script(script, *args)
+        def execute_script(script, *)
           dispatch(:execute_script, script, driver) do
-            @delegate.execute_script(script, *args)
+            @delegate.execute_script(script, *)
           end
         end
 

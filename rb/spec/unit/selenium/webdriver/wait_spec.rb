@@ -22,8 +22,8 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Wait do
-      def wait(*args)
-        Wait.new(*args)
+      def wait(*)
+        Wait.new(*)
       end
 
       it 'waits until the returned value is true' do
