@@ -7,9 +7,45 @@
 ## Common commands
 - Build: `bazel build //py/...`
 
-## Dependency management
-- Dev dependencies must be updated in `py/requirements.txt` and then run `scripts/update_py_dependencies.sh`
-- Package dependencies must be updated in `py/pyproject.toml` and `py/BUILD.bazel`
-
 ## Testing
 See `py/TESTING.md`
+
+## Code conventions
+
+### Logging
+```python
+logger = logging.getLogger(__name__)
+
+logger.warning("actionable: something needs attention")
+logger.info("useful: driver started successfully")
+logger.debug("diagnostic: request payload for debugging")
+```
+
+### Deprecation
+```python
+warnings.warn(
+    "old_method is deprecated, use new_method instead",
+    DeprecationWarning,
+    stacklevel=2
+)
+```
+
+### Type hints
+Type hints are used throughout; add type annotations to new code
+
+### Documentation
+Use Google-style docstrings:
+```python
+def method(param: str) -> bool:
+    """Brief description.
+
+    Args:
+        param: Description of param.
+
+    Returns:
+        Description of return value.
+
+    Raises:
+        ValueError: When condition.
+    """
+```

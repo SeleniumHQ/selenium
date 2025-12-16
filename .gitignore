@@ -148,6 +148,9 @@ dotnet-bin
 .metadata/
 .npmrc
 
+/.local/*
+!/.local/.gitkeep
+
 # Security
 .env
 .env.local
