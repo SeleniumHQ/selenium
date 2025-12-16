@@ -57,7 +57,27 @@ Unless specifically instructed, ask for verification before making changes to th
 - Dependency updates and `MODULE.bazel` changes
 - Grid routing/distributor/queue logic
 
-## When asked to make code changes
+## Execution model (important)
+In many AI-agent environments, Bazel cannot run (insufficient network/toolchain/browser access).
+Agents MUST:
+- Never claim commands/tests were executed unless the user provides output.
+- Provide copy/paste-ready commands for the user to run in an admin terminal.
+- Ask for the exact output needed (errors, failing targets, stack traces), then iterate.
+
+### When proposing verification:
+- Prefer the narrowest Bazel labels and smallest test set.
+- Prefer `./go <task>` when it exists (it matches CI/release flows).
+- Provide commands in the order they should be run, one block at a time.
+
+### Terminal run requested
+Use this format:
+Goal: <specify the reason for executing the Bazel command>
+Run:
+bazel <command> '...'
+Paste back:
+the command output + any errors
+
+## After making code changes
 - Report any high risk changes made
 - Report the exact Bazel commands run with results
 - Report any expected cross-binding impact and follow-up issues needed
