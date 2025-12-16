@@ -40,6 +40,13 @@ config_setting(
     values = {"stamp": "true"},
 )
 
+config_setting(
+    name = "use_pinned_browser",
+    flag_values = {
+        ":pin_browsers": "true",
+    },
+)
+
 alias(
     name = "chromedriver",
     actual = "@local_drivers//:chromedriver",
