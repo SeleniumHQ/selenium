@@ -1,11 +1,10 @@
 # DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
 
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-load("@rules_python//python:defs.bzl", "py_binary")
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 closure_js_library(
     name = "layoutasserts",

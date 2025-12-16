@@ -1,11 +1,10 @@
 # DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
 
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-load("@rules_python//python:defs.bzl", "py_binary")
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 closure_js_library(
     name = "all_js",
@@ -116,8 +115,8 @@ closure_js_library(
         "//third_party/closure/goog/messaging:deferredchannel",
         "//third_party/closure/goog/messaging:portchannel",
         "//third_party/closure/goog/messaging:portnetwork",
-        "//third_party/closure/goog/object",
         "//third_party/closure/goog/mochikit/async:deferred",
+        "//third_party/closure/goog/object",
     ],
 )
 
@@ -134,11 +133,11 @@ closure_js_library(
         "//third_party/closure/goog/log",
         "//third_party/closure/goog/messaging:abstractchannel",
         "//third_party/closure/goog/messaging:deferredchannel",
+        "//third_party/closure/goog/mochikit/async:deferred",
         "//third_party/closure/goog/object",
         "//third_party/closure/goog/string",
         "//third_party/closure/goog/timer",
         "//third_party/closure/goog/useragent",
-        "//third_party/closure/goog/mochikit/async:deferred",
     ],
 )
 

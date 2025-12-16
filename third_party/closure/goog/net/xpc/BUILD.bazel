@@ -1,11 +1,10 @@
 # DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
 
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-load("@rules_python//python:defs.bzl", "py_binary")
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 closure_js_library(
     name = "all_js",
@@ -38,6 +37,7 @@ closure_js_library(
         "//third_party/closure/goog/json",
         "//third_party/closure/goog/log",
         "//third_party/closure/goog/messaging:abstractchannel",
+        "//third_party/closure/goog/mochikit/async:deferred",
         "//third_party/closure/goog/net/xpc",
         "//third_party/closure/goog/net/xpc:crosspagechannelrole",
         "//third_party/closure/goog/net/xpc:directtransport",
@@ -46,7 +46,6 @@ closure_js_library(
         "//third_party/closure/goog/uri",
         "//third_party/closure/goog/uri:utils",
         "//third_party/closure/goog/useragent",
-        "//third_party/closure/goog/mochikit/async:deferred",
     ],
 )
 
@@ -63,12 +62,12 @@ closure_js_library(
     deps = [
         "//third_party/closure/goog/events:eventhandler",
         "//third_party/closure/goog/log",
+        "//third_party/closure/goog/mochikit/async:deferred",
         "//third_party/closure/goog/net/xpc",
         "//third_party/closure/goog/net/xpc:crosspagechannelrole",
         "//third_party/closure/goog/net/xpc:transport",
         "//third_party/closure/goog/object",
         "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/mochikit/async:deferred",
     ],
 )
 
@@ -98,11 +97,11 @@ closure_js_library(
         "//third_party/closure/goog/events",
         "//third_party/closure/goog/events:eventhandler",
         "//third_party/closure/goog/log",
+        "//third_party/closure/goog/mochikit/async:deferred",
         "//third_party/closure/goog/net/xpc",
         "//third_party/closure/goog/net/xpc:crosspagechannelrole",
         "//third_party/closure/goog/net/xpc:transport",
         "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/mochikit/async:deferred",
     ],
 )
 

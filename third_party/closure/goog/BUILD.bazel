@@ -1,11 +1,10 @@
 # DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
 
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_css_library", "closure_js_library")
+
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_css_library")
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 closure_js_library(
     name = "library",
@@ -209,4 +208,3 @@ closure_css_library(
     name = "css",
     srcs = ["@com_google_javascript_closure_library//:css_files"],
 )
-
