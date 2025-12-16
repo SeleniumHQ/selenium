@@ -13,9 +13,7 @@ alias(
     name = "selenium-manager-linux",
     actual = select({
         "//common:use_pinned_browser": "@download_sm_linux//file",
-        "//common:stamp": "@download_sm_linux//file",
-        "//common:linux": "//rust:selenium-manager-linux",
-        "//conditions:default": "@download_sm_linux//file",
+        "//conditions:default": "//rust:selenium-manager-linux",
     }),
 )
 
@@ -23,9 +21,7 @@ alias(
     name = "selenium-manager-macos",
     actual = select({
         "//common:use_pinned_browser": "@download_sm_macos//file",
-        "//common:stamp": "@download_sm_macos//file",
-        "//common:macos": "//rust:selenium-manager-macos",
-        "//conditions:default": "@download_sm_macos//file",
+        "//conditions:default": "//rust:selenium-manager-macos",
     }),
 )
 
@@ -33,8 +29,6 @@ alias(
     name = "selenium-manager-windows",
     actual = select({
         "//common:use_pinned_browser": "@download_sm_windows//file",
-        "//common:stamp": "@download_sm_windows//file",
-        "//common:windows": "//rust:selenium-manager-windows",
-        "//conditions:default": "@download_sm_windows//file",
+        "//conditions:default": "//rust:selenium-manager-windows",
     }),
 )
