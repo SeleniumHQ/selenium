@@ -323,6 +323,42 @@ This sequence will push some seven or so jars into your local Maven
 repository with something like 'selenium-server-3.0.0.jar' as
 the name.
 
+## Building via Docker with `buildx` (amd64)
+
+If building locally is problematic (shell env quirks, macOS native issues, or x86_64-only dependencies like `buck.pex`), you can build inside Docker for `linux/amd64` using `docker buildx`.
+
+Prerequisites:
+- `docker`
+- `docker buildx` plugin (verify with: docker buildx version)
+- Optional helper script: `macOS_build_script.sh` (builds and runs with recommended settings)
+- Recommended for cross-arch builds: `binfmt` for `amd64`
+  - `docker run --privileged --rm tonistiigi/binfmt --install amd64`
+
+Steps:
+1. Build the amd64 image:
+   ```
+   docker buildx build --platform linux/amd64 -f Dockerfile.selenium-build -t selenium-build:java8-amd64 . --load
+   ```
+2. Run the build with high memory and host Maven cache mounted:
+   ```
+   docker run --rm --platform linux/amd64 \
+     --memory=16g --memory-swap=16g \
+     -v "$PWD":/work -v "$HOME/.m2":/root/.m2 \
+     -w /work selenium-build:java8-amd64 \
+     ./go maven-install
+   ```
+   
+If you encounter memory pressure (e.g., exit code 137), retry with smaller heaps:
+
+```
+docker run --rm --platform linux/amd64 \
+  --memory=16g --memory-swap=16g \
+  -e BUCK_EXTRA_JAVA_ARGS="-Xmx1024m -XX:ReservedCodeCacheSize=128m -XX:MaxMetaspaceSize=256m" \
+  -v "$PWD":/work -v "$HOME/.m2":/root/.m2 \
+  -w /work selenium-build:java8-amd64 \
+  ./go maven-install
+```
+
 ## Useful Resources
 
 Refer to the [Building Web
