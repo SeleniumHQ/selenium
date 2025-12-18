@@ -19,7 +19,6 @@ closure_js_library(
         ":dom",
         ":expectedfailures",
         ":functionmock",
-        ":graphics",
         ":jstdasyncwrapper",
         ":jstdtestcaseadapter",
         ":jsunit",

@@ -4,6 +4,7 @@ load("//java:defs.bzl", "selenium_test")
 def closure_test_suite(name, data = [], browsers = None):
     data = data + [
         "//third_party/closure/goog:base",
+        "//third_party/closure/goog:css",
         "//third_party/closure/goog:deps",
         "//third_party/closure/goog:library",
         "//third_party/closure/goog/testing",
