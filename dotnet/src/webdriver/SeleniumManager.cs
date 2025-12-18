@@ -184,6 +184,8 @@ public static class SeleniumManager
         argsBuilder.Append($" --language-version netstandard2.0/{Environment.Version.Major}");
 #elif NET462
         argsBuilder.Append(" --language-version net462");
+#else
+#error Add support here
 #endif
         argsBuilder.Append(" --output json");
         if (_logger.IsEnabled(LogEventLevel.Debug))
