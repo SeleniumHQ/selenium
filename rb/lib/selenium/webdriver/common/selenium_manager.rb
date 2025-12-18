@@ -38,7 +38,7 @@ module Selenium
         # @return [Hash] paths to the requested assets.
         def binary_paths(*arguments)
           arguments += %w[--language-binding ruby]
-          arguments += ['--language-version', RUBY_VERSION]
+          arguments += ['--language-version', RUBY_VERSION.split('.').first(2).join('.')]
           arguments += %w[--output json]
           arguments << '--debug' if WebDriver.logger.debug?
 
