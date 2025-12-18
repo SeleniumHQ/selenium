@@ -582,7 +582,6 @@ def test_set_user_agent_override_with_user_contexts(driver, pages):
 
 
 @pytest.mark.xfail_firefox
-@pytest.mark.xfail_edge
 def test_set_network_conditions_offline_with_context(driver, pages):
     context_id = driver.current_window_handle
     driver.browsing_context.navigate(context_id, pages.url("formPage.html"), wait="complete")
@@ -600,7 +599,6 @@ def test_set_network_conditions_offline_with_context(driver, pages):
 
 
 @pytest.mark.xfail_firefox
-@pytest.mark.xfail_edge
 def test_set_network_conditions_offline_with_user_context(driver, pages):
     user_context = driver.browser.create_user_context()
     try:
