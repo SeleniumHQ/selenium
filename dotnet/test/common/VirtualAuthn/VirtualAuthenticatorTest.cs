@@ -65,7 +65,7 @@ public class VirtualAuthenticatorTest : DriverTestFixture
         jsDriver = (IJavaScriptExecutor)driver;
         webDriver = (WebDriver)driver;
 
-        // Maximize window to ensure focus 
+        // Maximize window to ensure focus
         webDriver.Manage().Window.Maximize();
         webDriver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("virtual-authenticator.html");
     }
