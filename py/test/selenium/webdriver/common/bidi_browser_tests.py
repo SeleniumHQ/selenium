@@ -33,19 +33,22 @@ from selenium.webdriver.common.window import WindowTypes
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-class FakeProxyHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        print(f"[Fake Proxy] Intercepted request to: {self.path}")
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"proxied response")
+def start_local_http_server(port, response_content=b"local server response", log_prefix=None):
+    class Handler(http.server.SimpleHTTPRequestHandler):
+        def do_GET(self):
+            if log_prefix:
+                print(f"[{log_prefix}] Intercepted request to: {self.path}")
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(response_content)
+
+    server = socketserver.TCPServer(("localhost", port), Handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    return server
 
 
 def start_fake_proxy(port):
-    server = socketserver.TCPServer(("localhost", port), FakeProxyHandler)
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-    return server
+    return start_local_http_server(port, response_content=b"proxied response", log_prefix="Fake Proxy")
 
 
 def test_browser_initialized(driver):
@@ -165,21 +168,23 @@ def test_create_user_context_with_direct_proxy(driver):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
-@pytest.mark.xfail_firefox(reason="Firefox proxy settings are different")
-@pytest.mark.xfail_remote
 def test_create_user_context_with_manual_proxy_all_params(driver):
     """Test creating a user context with manual proxy configuration."""
     # Start a fake proxy server
-    port = free_port()
-    fake_proxy_server = start_fake_proxy(port=port)
+    proxy_port = free_port()
+    fake_proxy_server = start_fake_proxy(port=proxy_port)
+
+    # Start a local HTTP server for the no_proxy test
+    no_proxy_port = free_port()
+    no_proxy_server = start_local_http_server(port=no_proxy_port, response_content=b"direct connection - not proxied")
 
     proxy = Proxy()
     proxy.proxy_type = ProxyType.MANUAL
-    proxy.http_proxy = f"localhost:{port}"
-    proxy.ssl_proxy = f"localhost:{port}"
-    proxy.socks_proxy = f"localhost:{port}"
+    proxy.http_proxy = f"localhost:{proxy_port}"
+    proxy.ssl_proxy = f"localhost:{proxy_port}"
+    proxy.socks_proxy = f"localhost:{proxy_port}"
     proxy.socks_version = 5
-    proxy.no_proxy = ["the-internet.herokuapp.com"]
+    proxy.no_proxy = [f"localhost:{no_proxy_port}"]
 
     user_context = driver.browser.create_user_context(proxy=proxy)
 
@@ -189,9 +194,9 @@ def test_create_user_context_with_manual_proxy_all_params(driver):
 
     try:
         # Visit no proxy site, it should bypass proxy
-        driver.get("http://the-internet.herokuapp.com/")
+        driver.get(f"http://localhost:{no_proxy_port}/")
         body_text = driver.find_element(By.TAG_NAME, "body").text.lower()
-        assert "welcome to the-internet" in body_text
+        assert "direct connection - not proxied" in body_text
 
         # Visit a site that should be proxied
         driver.get("http://example.com/")
@@ -201,13 +206,13 @@ def test_create_user_context_with_manual_proxy_all_params(driver):
 
     finally:
         driver.browser.remove_user_context(user_context)
+        no_proxy_server.shutdown()
+        no_proxy_server.server_close()
         fake_proxy_server.shutdown()
         fake_proxy_server.server_close()
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
-@pytest.mark.xfail_firefox(reason="Firefox proxy settings are different")
-@pytest.mark.xfail_remote
 def test_create_user_context_with_proxy_and_accept_insecure_certs(driver):
     """Test creating a user context with both acceptInsecureCerts and proxy parameters."""
     # Start fake proxy server
