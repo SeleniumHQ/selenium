@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Mock file object.
- *
  */
 
 goog.setTestOnly('goog.testing.fs.File');

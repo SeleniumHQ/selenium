@@ -32,7 +32,6 @@
  * Flow-control support is limited due to the underlying use of XHR. That is,
  * this version will assume the "flowing mode", and the read method is not
  * provided.
- *
  */
 
 goog.provide('goog.net.streams.NodeReadableStream');

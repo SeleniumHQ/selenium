@@ -70,14 +70,14 @@ goog.ui.ac.RichRemote = function(url, input, opt_multi, opt_useSimilar) {
    * @type {goog.ui.ac.Renderer}
    * @private
    */
-  this.renderer_ = new goog.ui.ac.Renderer(null, customRenderer);
+  var renderer = new goog.ui.ac.Renderer(null, customRenderer);
 
   /**
    * A remote matcher that parses rich results returned by the server.
    * @type {goog.ui.ac.RichRemoteArrayMatcher}
    * @private
    */
-  this.matcher_ = new goog.ui.ac.RichRemoteArrayMatcher(url, !opt_useSimilar);
+  var matcher = new goog.ui.ac.RichRemoteArrayMatcher(url, !opt_useSimilar);
 
   /**
    * An input handler that calls select on a row when it is selected.
@@ -88,8 +88,7 @@ goog.ui.ac.RichRemote = function(url, input, opt_multi, opt_useSimilar) {
       new goog.ui.ac.RichInputHandler(null, null, !!opt_multi, 300);
 
   // Create the widget and connect it to the input handler.
-  goog.ui.ac.AutoComplete.call(
-      this, this.matcher_, this.renderer_, inputhandler);
+  goog.ui.ac.AutoComplete.call(this, matcher, renderer, inputhandler);
   inputhandler.attachAutoComplete(this);
   inputhandler.attachInputs(input);
 };

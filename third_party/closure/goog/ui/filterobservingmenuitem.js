@@ -17,8 +17,6 @@
  * {@link goog.ui.FilteredMenu}. The observer method is called when the filter
  * text changes and allows the menu item to update its content and state based
  * on the filter.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.ui.FilterObservingMenuItem');
@@ -54,7 +52,7 @@ goog.tagUnsealableClass(goog.ui.FilterObservingMenuItem);
 
 /**
  * Function called when the filter text changes.
- * @type {Function} function(goog.ui.FilterObservingMenuItem, string)
+ * @type {?Function} function(goog.ui.FilterObservingMenuItem, string)
  * @private
  */
 goog.ui.FilterObservingMenuItem.prototype.observer_ = null;

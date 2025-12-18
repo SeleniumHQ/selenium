@@ -15,8 +15,6 @@
 /**
  * @fileoverview A class for representing a separator, with renderers for both
  * horizontal (menu) and vertical (toolbar) separators.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.Separator');

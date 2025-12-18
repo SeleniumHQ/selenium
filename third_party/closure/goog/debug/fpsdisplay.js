@@ -59,7 +59,7 @@ goog.debug.FpsDisplay.SAMPLES = 10;
 
 /**
  * The current animation.
- * @type {goog.debug.FpsDisplay.FpsAnimation_}
+ * @type {?goog.debug.FpsDisplay.FpsAnimation_}
  * @private
  */
 goog.debug.FpsDisplay.prototype.animation_ = null;

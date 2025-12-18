@@ -16,7 +16,6 @@
  * @fileoverview Mock implementations of the Closure HTML5 FileSystem wrapper
  * classes. These implementations are designed to be usable in any browser, so
  * they use none of the native FileSystem-related objects.
- *
  */
 
 goog.setTestOnly('goog.testing.fs');
@@ -27,6 +26,7 @@ goog.require('goog.array');
 goog.require('goog.async.Deferred');
 /** @suppress {extraRequire} */
 goog.require('goog.fs');
+goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.fs.Blob');
 goog.require('goog.testing.fs.FileSystem');
 

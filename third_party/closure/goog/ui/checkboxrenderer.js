@@ -14,11 +14,11 @@
 
 /**
  * @fileoverview Default renderer for {@link goog.ui.Checkbox}s.
- *
  */
 
 goog.provide('goog.ui.CheckboxRenderer');
 
+goog.forwardDeclare('goog.ui.Checkbox.State');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
@@ -190,5 +190,5 @@ goog.ui.CheckboxRenderer.prototype.getClassForCheckboxState = function(state) {
   } else if (state == goog.ui.Checkbox.State.UNDETERMINED) {
     return goog.getCssName(baseClass, 'undetermined');
   }
-  throw Error('Invalid checkbox state: ' + state);
+  throw new Error('Invalid checkbox state: ' + state);
 };

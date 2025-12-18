@@ -1,0 +1,90 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":browser",
+        ":device",
+        ":engine",
+        ":extra",
+        ":platform",
+        ":util",
+        ":verifier",
+    ],
+)
+
+closure_js_library(
+    name = "browser",
+    srcs = ["browser.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/labs/useragent:util",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string:internal",
+    ],
+)
+
+closure_js_library(
+    name = "device",
+    srcs = ["device.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/labs/useragent:util"],
+)
+
+closure_js_library(
+    name = "engine",
+    srcs = ["engine.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/labs/useragent:util",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "extra",
+    srcs = ["extra.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/useragent:browser",
+        "//third_party/closure/goog/labs/useragent:platform",
+    ],
+)
+
+closure_js_library(
+    name = "platform",
+    srcs = ["platform.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/useragent:util",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "test_agents",
+    testonly = True,
+    srcs = ["test_agents.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "util",
+    srcs = ["util.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/string:internal"],
+)
+
+closure_js_library(
+    name = "verifier",
+    srcs = ["verifier.js"],
+    lenient = True,
+)

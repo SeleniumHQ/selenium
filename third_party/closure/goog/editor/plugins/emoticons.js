@@ -15,8 +15,6 @@
 
 /**
  * @fileoverview Plugin for generating emoticons.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.plugins.Emoticons');

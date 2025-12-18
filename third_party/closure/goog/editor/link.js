@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview A utility class for managing editable links.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.Link');
@@ -96,7 +94,7 @@ goog.editor.Link.prototype.getCurrentText = function() {
 
     var leaf = goog.editor.node.getLeftMostLeaf(anchor);
     if (leaf.tagName && leaf.tagName == goog.dom.TagName.IMG) {
-      this.currentText_ = leaf.getAttribute('alt');
+      this.currentText_ = leaf.getAttribute('alt') || '';
     } else {
       this.currentText_ = goog.dom.getRawTextContent(this.getAnchor());
     }
@@ -138,7 +136,7 @@ goog.editor.Link.prototype.removeLink = function() {
 /**
  * Change the link.
  * @param {string} newText New text for the link. If the link contains all its
- *     text in one descendent, newText will only replace the text in that
+ *     text in one descendant, newText will only replace the text in that
  *     one node. Otherwise, we'll change the innerHTML of the whole
  *     link to newText.
  * @param {string} newUrl A new URL.
@@ -341,7 +339,8 @@ goog.editor.Link.isLikelyUrl = function(str) {
   // Require domains to contain a '.', unless the domain is fully qualified and
   // forbids domains from containing invalid characters.
   var domain = parts[goog.uri.utils.ComponentIndex.DOMAIN];
-  if (!domain || (addedScheme && domain.indexOf('.') == -1) ||
+  if (!domain ||
+      (addedScheme && (domain.indexOf('.') === -1 || domain.length < 3)) ||
       (/[^\w\d\-\u0100-\uffff.%]/.test(domain))) {
     return false;
   }

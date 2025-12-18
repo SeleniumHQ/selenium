@@ -40,11 +40,11 @@ closure_js_library(
         ":dom",
         ":errors",
         ":events",
-        "@io_bazel_rules_closure//closure/library/array",
-        "@io_bazel_rules_closure//closure/library/dom:tagname",
-        "@io_bazel_rules_closure//closure/library/math:coordinate",
-        "@io_bazel_rules_closure//closure/library/math:vec2",
-        "@io_bazel_rules_closure//closure/library/style",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/math:vec2",
+        "//third_party/closure/goog/style",
     ],
 )
 
@@ -63,8 +63,8 @@ closure_js_library(
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
-        "@io_bazel_rules_closure//closure/library/array",
-        "@io_bazel_rules_closure//closure/library/color:names",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/color:names",
     ],
 )
 
@@ -91,15 +91,15 @@ closure_js_library(
         ":events",
         ":locators",
         ":useragent",
-        "@io_bazel_rules_closure//closure/library/array",
-        "@io_bazel_rules_closure//closure/library/dom",
-        "@io_bazel_rules_closure//closure/library/dom:selection",
-        "@io_bazel_rules_closure//closure/library/dom:tagname",
-        "@io_bazel_rules_closure//closure/library/math:coordinate",
-        "@io_bazel_rules_closure//closure/library/structs:map",
-        "@io_bazel_rules_closure//closure/library/structs:set",
-        "@io_bazel_rules_closure//closure/library/useragent",
-        "@io_bazel_rules_closure//closure/library/useragent:product",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:selection",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/structs:map",
+        "//third_party/closure/goog/structs:set",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
     ],
 )
 
@@ -115,10 +115,10 @@ closure_js_library(
     deps = [
         ":errors",
         ":useragent",
-        "@io_bazel_rules_closure//closure/library/array",
-        "@io_bazel_rules_closure//closure/library/dom",
-        "@io_bazel_rules_closure//closure/library/dom:nodetype",
-        "@io_bazel_rules_closure//closure/library/dom:tagname",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:tagname",
     ],
 )
 
@@ -139,16 +139,16 @@ closure_js_library(
         ":domcore",
         ":json",
         ":useragent",
-        "@io_bazel_rules_closure//closure/library/array",
-        "@io_bazel_rules_closure//closure/library/dom",
-        "@io_bazel_rules_closure//closure/library/dom:nodetype",
-        "@io_bazel_rules_closure//closure/library/dom:tagname",
-        "@io_bazel_rules_closure//closure/library/math",
-        "@io_bazel_rules_closure//closure/library/math:coordinate",
-        "@io_bazel_rules_closure//closure/library/math:rect",
-        "@io_bazel_rules_closure//closure/library/string",
-        "@io_bazel_rules_closure//closure/library/style",
-        "@io_bazel_rules_closure//closure/library/useragent",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/useragent",
     ],
 )
 
@@ -183,12 +183,12 @@ closure_js_library(
         ":errors",
         ":json",
         ":useragent",
-        "@io_bazel_rules_closure//closure/library/array",
-        "@io_bazel_rules_closure//closure/library/dom",
-        "@io_bazel_rules_closure//closure/library/events:browserevent",
-        "@io_bazel_rules_closure//closure/library/style",
-        "@io_bazel_rules_closure//closure/library/useragent",
-        "@io_bazel_rules_closure//closure/library/useragent:product",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
     ],
 )
 
@@ -209,8 +209,8 @@ closure_js_library(
         ":dom",
         ":errors",
         ":locators",
-        "@io_bazel_rules_closure//closure/library/dom",
-        "@io_bazel_rules_closure//closure/library/dom:tagname",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
     ],
 )
 
@@ -228,7 +228,7 @@ closure_js_library(
         ":errors",
         ":json",
         ":useragent",
-        "@io_bazel_rules_closure//closure/library/useragent:all_js",
+        "//third_party/closure/goog/useragent:all_js",
     ],
 )
 
@@ -250,10 +250,10 @@ closure_js_library(
         ":bot",
         ":errors",
         ":json",
-        "@io_bazel_rules_closure//closure/library/array",
-        "@io_bazel_rules_closure//closure/library/dom:nodetype",
-        "@io_bazel_rules_closure//closure/library/object",
-        "@io_bazel_rules_closure//closure/library/useragent",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/useragent",
     ],
 )
 
@@ -265,8 +265,8 @@ closure_js_library(
     ],
     deps = [
         ":useragent",
-        "@io_bazel_rules_closure//closure/library/json",
-        "@io_bazel_rules_closure//closure/library/useragent",
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/useragent",
     ],
 )
 
@@ -290,13 +290,13 @@ closure_js_library(
         ":errors",
         ":json",
         ":useragent",
-        "@io_bazel_rules_closure//closure/library/array",
-        "@io_bazel_rules_closure//closure/library/dom",
-        "@io_bazel_rules_closure//closure/library/dom:nodetype",
-        "@io_bazel_rules_closure//closure/library/math:rect",
-        "@io_bazel_rules_closure//closure/library/string",
-        "@io_bazel_rules_closure//closure/library/useragent",
-        "@io_bazel_rules_closure//closure/library/useragent:product",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
     ],
 )
 
@@ -309,10 +309,10 @@ closure_js_library(
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
-        "@io_bazel_rules_closure//closure/library/string",
-        "@io_bazel_rules_closure//closure/library/useragent",
-        "@io_bazel_rules_closure//closure/library/useragent:product",
-        "@io_bazel_rules_closure//closure/library/useragent:product_isversion",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/useragent:product_isversion",
     ],
 )
 
@@ -347,9 +347,9 @@ closure_js_library(
         ":bot",
         ":errors",
         ":useragent",
-        "@io_bazel_rules_closure//closure/library/dom:nodetype",
-        "@io_bazel_rules_closure//closure/library/string",
-        "@io_bazel_rules_closure//closure/library/useragent",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
     ],
 )
 

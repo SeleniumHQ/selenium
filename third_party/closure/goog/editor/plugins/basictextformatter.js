@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Functions to style text.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.plugins.BasicTextFormatter');
@@ -188,7 +186,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.execCommandInternal = function(
   switch (command) {
     case goog.editor.plugins.BasicTextFormatter.COMMAND.BACKGROUND_COLOR:
       // Don't bother for no color selected, color picker is resetting itself.
-      if (!goog.isNull(opt_arg)) {
+      if (opt_arg !== null) {
         if (goog.editor.BrowserFeature.EATS_EMPTY_BACKGROUND_COLOR) {
           this.applyBgColorManually_(opt_arg);
         } else if (goog.userAgent.OPERA) {
@@ -231,7 +229,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.execCommandInternal = function(
 
       if (command ==
               goog.editor.plugins.BasicTextFormatter.COMMAND.FONT_COLOR &&
-          goog.isNull(opt_arg)) {
+          opt_arg === null) {
         // If we don't have a color, then FONT_COLOR is a no-op.
         break;
       }
@@ -264,7 +262,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.execCommandInternal = function(
               }
             }
           }
-        // Fall through.
+          // Fall through.
 
         case goog.editor.plugins.BasicTextFormatter.COMMAND.ORDERED_LIST:
         case goog.editor.plugins.BasicTextFormatter.COMMAND.UNORDERED_LIST:
@@ -288,7 +286,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.execCommandInternal = function(
               !this.queryCommandValue(command)) {
             hasDummySelection |= this.beforeInsertListGecko_();
           }
-        // Fall through to preserveDir block
+          // Fall through to preserveDir block
 
         case goog.editor.plugins.BasicTextFormatter.COMMAND.FORMAT_BLOCK:
           // Both FF & IE may lose directionality info. Save/restore it.
@@ -1187,7 +1185,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.applyExecCommandIEFixes_ =
   var range = this.getRange_();
   var dh = this.getFieldDomHelper();
   if (command in
-          goog.editor.plugins.BasicTextFormatter.blockquoteHatingCommandsIE_) {
+      goog.editor.plugins.BasicTextFormatter.blockquoteHatingCommandsIE_) {
     var parent = range && range.getContainerElement();
     if (parent) {
       var blockquotes = goog.dom.getElementsByTagNameAndClass(
@@ -1244,7 +1242,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.applyExecCommandIEFixes_ =
   var fieldObject = this.getFieldObject();
   if (!fieldObject.usesIframe() && !endDiv) {
     if (command in
-            goog.editor.plugins.BasicTextFormatter.brokenExecCommandsIE_) {
+        goog.editor.plugins.BasicTextFormatter.brokenExecCommandsIE_) {
       var field = fieldObject.getElement();
 
       // If the field is totally empty, or if the field contains only text nodes
@@ -1403,8 +1401,9 @@ goog.editor.plugins.BasicTextFormatter.prototype.fixIELists_ = function() {
   var lists = goog.array.toArray(goog.dom.getElementsByTagName(
       goog.dom.TagName.UL, /** @type {!Element} */ (container)));
   goog.array.extend(
-      lists, goog.array.toArray(goog.dom.getElementsByTagName(
-                 goog.dom.TagName.OL, /** @type {!Element} */ (container))));
+      lists,
+      goog.array.toArray(goog.dom.getElementsByTagName(
+          goog.dom.TagName.OL, /** @type {!Element} */ (container))));
   // Fix the lists
   goog.array.forEach(lists, function(node) {
     var type = node.type;
@@ -1630,6 +1629,18 @@ goog.editor.plugins.BasicTextFormatter.SUPPORTED_JUSTIFICATIONS_ = {
 
 
 /**
+ * To avoid forcing the BidiPlugin code to be loaded create a simple interface
+ * for the method that is needed.
+ *
+ * @record
+ */
+goog.editor.plugins.BasicTextFormatter.IBidiPlugin = function() {
+  /** @type {function():?string}} */
+  this.getSelectionAlignment;
+};
+
+
+/**
  * Returns true if the current justification matches the justification
  * command for the entire selection.
  * @param {string} command The justification command to check for.
@@ -1643,6 +1654,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.isJustification_ = function(
   if (alignment == 'full') {
     alignment = 'justify';
   }
+
   var bidiPlugin = this.getFieldObject().getPluginByClassId('Bidi');
   if (bidiPlugin) {
     // BiDi aware version
@@ -1651,9 +1663,9 @@ goog.editor.plugins.BasicTextFormatter.prototype.isJustification_ = function(
     // faster. If profiling confirms that it would be good to use this approach
     // in both cases. Otherwise the bidi part should be moved into an
     // execCommand so this bidi plugin dependence isn't needed here.
-    /** @type {Function} */
-    bidiPlugin.getSelectionAlignment;
-    return alignment == bidiPlugin.getSelectionAlignment();
+    return alignment ==
+        /** @type {!goog.editor.plugins.BasicTextFormatter.IBidiPlugin} */
+        (bidiPlugin).getSelectionAlignment();
   } else {
     // BiDi unaware version
     var range = this.getRange_();

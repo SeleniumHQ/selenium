@@ -1,0 +1,77 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":basenode",
+        ":treecontrol",
+        ":treenode",
+        ":typeahead",
+    ],
+)
+
+closure_js_library(
+    name = "basenode",
+    srcs = ["basenode.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria",
+        "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safestyle",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:stringbuffer",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/ui:component",
+    ],
+)
+
+closure_js_library(
+    name = "treecontrol",
+    srcs = ["treecontrol.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/events:focushandler",
+        "//third_party/closure/goog/events:keyhandler",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/ui/tree:basenode",
+        "//third_party/closure/goog/ui/tree:treenode",
+        "//third_party/closure/goog/ui/tree:typeahead",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "treenode",
+    srcs = ["treenode.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/ui/tree:basenode"],
+)
+
+closure_js_library(
+    name = "typeahead",
+    srcs = ["typeahead.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/structs:trie",
+    ],
+)

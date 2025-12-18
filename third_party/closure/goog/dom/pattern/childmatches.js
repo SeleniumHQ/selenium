@@ -15,9 +15,16 @@
 /**
  * @fileoverview DOM pattern to match any children of a tag, and
  * specifically collect those that match a child pattern.
- *
- * @author robbyw@google.com (Robby Walker)
  */
+
+
+// TODO(b/130421259): We're trying to migrate all ES5 subclasses of Closure
+// Library to ES6. In ES6 this cannot be referenced before super is called. This
+// file has at least one this before a super call (in ES5) and cannot be
+// automatically upgraded to ES6 as a result. Please fix this if you have a
+// chance. Note: This can sometimes be caused by not calling the super
+// constructor at all. You can run the conversion tool yourself to see what it
+// does on this file: blaze run //javascript/refactoring/es6_classes:convert.
 
 goog.provide('goog.dom.pattern.ChildMatches');
 
@@ -77,8 +84,8 @@ goog.inherits(goog.dom.pattern.ChildMatches, goog.dom.pattern.AllChildren);
  *
  * @param {Node} token Token to match against.
  * @param {goog.dom.TagWalkType} type The type of token.
- * @return {goog.dom.pattern.MatchType} {@code MATCHING} if the token is on the
- *     same level or deeper and {@code BACKTRACK_MATCH} if not.
+ * @return {goog.dom.pattern.MatchType} `MATCHING` if the token is on the
+ *     same level or deeper and `BACKTRACK_MATCH` if not.
  * @override
  */
 goog.dom.pattern.ChildMatches.prototype.matchToken = function(token, type) {

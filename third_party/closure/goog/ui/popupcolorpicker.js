@@ -63,7 +63,7 @@ goog.ui.PopupColorPicker.prototype.initialized_ = false;
 
 /**
  * Instance of a color picker control.
- * @type {goog.ui.ColorPicker}
+ * @type {?goog.ui.ColorPicker}
  * @private
  */
 goog.ui.PopupColorPicker.prototype.colorPicker_ = null;
@@ -71,7 +71,7 @@ goog.ui.PopupColorPicker.prototype.colorPicker_ = null;
 
 /**
  * Instance of goog.ui.Popup used to manage the behavior of the color picker.
- * @type {goog.ui.Popup}
+ * @type {?goog.ui.Popup}
  * @private
  */
 goog.ui.PopupColorPicker.prototype.popup_ = null;
@@ -97,7 +97,7 @@ goog.ui.PopupColorPicker.prototype.popupCorner_ =
 
 /**
  * Reference to the element that triggered the last popup.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.PopupColorPicker.prototype.lastTarget_ = null;

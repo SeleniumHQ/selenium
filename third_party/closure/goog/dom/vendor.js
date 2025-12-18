@@ -79,7 +79,7 @@ goog.dom.vendor.getPrefixedPropertyName = function(propertyName, opt_object) {
   if (prefix) {
     prefix = prefix.toLowerCase();
     var prefixedPropertyName = prefix + goog.string.toTitleCase(propertyName);
-    return (!goog.isDef(opt_object) || prefixedPropertyName in opt_object) ?
+    return (opt_object === undefined || prefixedPropertyName in opt_object) ?
         prefixedPropertyName :
         null;
   }

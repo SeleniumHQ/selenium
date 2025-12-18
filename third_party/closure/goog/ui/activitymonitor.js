@@ -20,7 +20,6 @@
  *
  * If you would prefer to get BECOME_ACTIVE and BECOME_IDLE events when the
  * user changes states, then you should use the IdleTimer class instead.
- *
  */
 
 goog.provide('goog.ui.ActivityMonitor');

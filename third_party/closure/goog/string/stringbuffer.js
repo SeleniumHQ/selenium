@@ -70,7 +70,7 @@ goog.string.StringBuffer.prototype.append = function(a1, opt_a2, var_args) {
   // Use a1 directly to avoid arguments instantiation for single-arg case.
   this.buffer_ += String(a1);
   if (opt_a2 != null) {  // second argument is undefined (null == undefined)
-    for (var i = 1; i < arguments.length; i++) {
+    for (let i = 1; i < arguments.length; i++) {
       this.buffer_ += arguments[i];
     }
   }

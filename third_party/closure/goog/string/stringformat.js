@@ -27,13 +27,15 @@ goog.provide('goog.string.format');
 goog.require('goog.string');
 
 
+// TODO(johnlenz): goog.string.format should not accept undefined as a parameter
 /**
  * Performs sprintf-like conversion, i.e. puts the values in a template.
  * DO NOT use it instead of built-in conversions in simple cases such as
  * 'Cost: %.2f' as it would introduce unnecessary latency opposed to
  * 'Cost: ' + cost.toFixed(2).
  * @param {string} formatString Template string containing % specifiers.
- * @param {...string|number} var_args Values formatString is to be filled with.
+ * @param {...(string|number|undefined)} var_args Values formatString is to
+ *     be filled with.
  * @return {string} Formatted string.
  */
 goog.string.format = function(formatString, var_args) {
@@ -44,7 +46,7 @@ goog.string.format = function(formatString, var_args) {
   // Try to get the template.
   var template = args.shift();
   if (typeof template == 'undefined') {
-    throw Error('[goog.string.format] Template required');
+    throw new Error('[goog.string.format] Template required');
   }
 
   // This re is used for matching, it also defines what is supported.
@@ -75,7 +77,7 @@ goog.string.format = function(formatString, var_args) {
 
     // If we didn't get any arguments, fail.
     if (typeof value == 'undefined') {
-      throw Error('[goog.string.format] Not enough arguments');
+      throw new Error('[goog.string.format] Not enough arguments');
     }
 
     // Patch the value argument to the beginning of our type specific call.

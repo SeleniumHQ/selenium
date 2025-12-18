@@ -24,7 +24,8 @@ goog.provide('goog.dom.animationFrame.polyfill');
 /**
  * @define {boolean} If true, will install the requestAnimationFrame polyfill.
  */
-goog.define('goog.dom.animationFrame.polyfill.ENABLED', true);
+goog.dom.animationFrame.polyfill.ENABLED =
+    goog.define('goog.dom.animationFrame.polyfill.ENABLED', true);
 
 
 /**
@@ -32,9 +33,9 @@ goog.define('goog.dom.animationFrame.polyfill.ENABLED', true);
  */
 goog.dom.animationFrame.polyfill.install = function() {
   if (goog.dom.animationFrame.polyfill.ENABLED) {
-    var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for (var i = 0, v; v = vendors[i] && !goog.global.requestAnimationFrame;
-         ++i) {
+    const vendors = ['ms', 'moz', 'webkit', 'o'];
+    let v;
+    for (let i = 0; v = vendors[i] && !goog.global.requestAnimationFrame; ++i) {
       goog.global.requestAnimationFrame =
           goog.global[v + 'RequestAnimationFrame'];
       goog.global.cancelAnimationFrame =
@@ -43,10 +44,10 @@ goog.dom.animationFrame.polyfill.install = function() {
     }
 
     if (!goog.global.requestAnimationFrame) {
-      var lastTime = 0;
+      let lastTime = 0;
       goog.global.requestAnimationFrame = function(callback) {
-        var currTime = new Date().getTime();
-        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+        const currTime = new Date().getTime();
+        const timeToCall = Math.max(0, 16 - (currTime - lastTime));
         lastTime = currTime + timeToCall;
         return goog.global.setTimeout(function() {
           callback(currTime + timeToCall);

@@ -39,7 +39,6 @@
  *
  *  // Stop the deferred function call (does nothing if it's not active).
  *  deferredCall.stop();
- *
  */
 
 
@@ -53,16 +52,16 @@ goog.require('goog.async.Delay');
 /**
  * A ConditionalDelay object invokes the associated function after a specified
  * interval delay and checks its return value. If the function returns
- * {@code true} the conditional delay is cancelled and {@see #onSuccess}
+ * `true` the conditional delay is cancelled and {@see #onSuccess}
  * is called. Otherwise this object keeps to invoke the deferred function until
- * either it returns {@code true} or the timeout is exceeded. In the latter case
+ * either it returns `true` or the timeout is exceeded. In the latter case
  * the {@see #onFailure} method will be called.
  *
  * The interval duration and timeout can be specified each time the delay is
  * started. Calling start on an active delay will reset the timer.
  *
  * @param {function():boolean} listener Function to call when the delay
- *     completes. Should return a value that type-converts to {@code true} if
+ *     completes. Should return a value that type-converts to `true` if
  *     the call succeeded and this delay should be stopped.
  * @param {Object=} opt_handler The object scope to invoke the function in.
  * @constructor
@@ -88,7 +87,7 @@ goog.async.ConditionalDelay = function(listener, opt_handler) {
   this.runUntil_ = 0;
 
   /**
-   * True if the listener has been executed, and it returned {@code true}.
+   * True if the listener has been executed, and it returned `true`.
    * @private {boolean}
    */
   this.isDone_ = false;
@@ -127,12 +126,12 @@ goog.async.ConditionalDelay.prototype.disposeInternal = function() {
 /**
  * Starts the delay timer. The provided listener function will be called
  * repeatedly after the specified interval until the function returns
- * {@code true} or the timeout is exceeded. Calling start on an active timer
+ * `true` or the timeout is exceeded. Calling start on an active timer
  * will stop the timer first.
  * @param {number=} opt_interval The time interval between the function
  *     invocations (in milliseconds). Default is 0.
  * @param {number=} opt_timeout The timeout interval (in milliseconds). Takes
- *     precedence over the {@code opt_interval}, i.e. if the timeout is less
+ *     precedence over the `opt_interval`, i.e. if the timeout is less
  *     than the invocation interval, the function will be called when the
  *     timeout is exceeded. A negative value means no timeout. Default is 0.
  */
@@ -168,7 +167,7 @@ goog.async.ConditionalDelay.prototype.isActive = function() {
 
 /**
  * @return {boolean} True if the listener has been executed and returned
- *     {@code true} since the last call to {@see #start}.
+ *     `true` since the last call to {@see #start}.
  */
 goog.async.ConditionalDelay.prototype.isDone = function() {
   return this.isDone_;
@@ -177,7 +176,7 @@ goog.async.ConditionalDelay.prototype.isDone = function() {
 
 /**
  * Called when the listener has been successfully executed and returned
- * {@code true}. The {@see #isDone} method should return {@code true} by now.
+ * `true`. The {@see #isDone} method should return `true` by now.
  * Designed for inheritance, should be overridden by subclasses or on the
  * instances if they care.
  */
@@ -188,7 +187,7 @@ goog.async.ConditionalDelay.prototype.onSuccess = function() {
 
 /**
  * Called when this delayed call is cancelled because the timeout has been
- * exceeded, and the listener has never returned {@code true}.
+ * exceeded, and the listener has never returned `true`.
  * Designed for inheritance, should be overridden by subclasses or on the
  * instances if they care.
  */
@@ -198,8 +197,8 @@ goog.async.ConditionalDelay.prototype.onFailure = function() {
 
 
 /**
- * A callback function for the underlying {@code goog.async.Delay} object. When
- * executed the listener function is called, and if it returns {@code true}
+ * A callback function for the underlying `goog.async.Delay` object. When
+ * executed the listener function is called, and if it returns `true`
  * the delay is stopped and the {@see #onSuccess} method is invoked.
  * If the timeout is exceeded the delay is stopped and the
  * {@see #onFailure} method is called.

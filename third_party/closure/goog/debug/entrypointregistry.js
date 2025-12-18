@@ -21,8 +21,6 @@
  * Entry points may be registered before or after a call to
  * goog.debug.entryPointRegistry.monitorAll. If an entry point is registered
  * later, the existing monitor will instrument the new entry point.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.debug.EntryPointMonitor');
@@ -60,7 +58,7 @@ goog.debug.EntryPointMonitor.prototype.wrap;
  * order that they were wrapped.
  *
  * @param {!Function} fn A function to unwrap.
- * @return {!Function} The unwrapped function, or {@code fn} if it was not
+ * @return {!Function} The unwrapped function, or `fn` if it was not
  *     a wrapped function created by this monitor.
  */
 goog.debug.EntryPointMonitor.prototype.unwrap;

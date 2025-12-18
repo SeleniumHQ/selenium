@@ -17,12 +17,11 @@
  */
 
 goog.provide('goog.net.MockIFrameIo');
+goog.forwardDeclare('goog.testing.TestQueue');
 goog.require('goog.events.EventTarget');
-goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.IframeIo');
-goog.forwardDeclare('goog.testing.TestQueue');
 
 
 
@@ -84,7 +83,7 @@ goog.net.MockIFrameIo.prototype.lastError_ = '';
 
 /**
  * Last custom error.
- * @type {Object}
+ * @type {?Object}
  * @private
  */
 goog.net.MockIFrameIo.prototype.lastCustomError_ = null;
@@ -92,7 +91,7 @@ goog.net.MockIFrameIo.prototype.lastCustomError_ = null;
 
 /**
  * Last URI.
- * @type {goog.Uri}
+ * @type {?goog.Uri}
  * @private
  */
 goog.net.MockIFrameIo.prototype.lastUri_ = null;
@@ -123,7 +122,7 @@ goog.net.MockIFrameIo.prototype.complete_;
 goog.net.MockIFrameIo.prototype.send = function(
     uri, opt_method, opt_noCache, opt_data) {
   if (this.active_) {
-    throw Error('[goog.net.IframeIo] Unable to send, already active.');
+    throw new Error('[goog.net.IframeIo] Unable to send, already active.');
   }
 
   this.testQueue_.enqueue(['s', uri, opt_method, opt_noCache, opt_data]);
@@ -143,7 +142,7 @@ goog.net.MockIFrameIo.prototype.send = function(
 goog.net.MockIFrameIo.prototype.sendFromForm = function(
     form, opt_uri, opt_noCache) {
   if (this.active_) {
-    throw Error('[goog.net.IframeIo] Unable to send, already active.');
+    throw new Error('[goog.net.IframeIo] Unable to send, already active.');
   }
 
   this.testQueue_.enqueue(['s', form, opt_uri, opt_noCache]);
@@ -248,7 +247,7 @@ goog.net.MockIFrameIo.prototype.getResponseText = function() {
  * @return {Object} The parsed content.
  */
 goog.net.MockIFrameIo.prototype.getResponseJson = function() {
-  return goog.json.parse(this.lastContent_);
+  return /** @type {!Object} */ (JSON.parse(this.lastContent_));
 };
 
 

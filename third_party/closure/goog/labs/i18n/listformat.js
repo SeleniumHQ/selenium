@@ -24,15 +24,14 @@
  * In English, lists of items don't really have gender, and in fact few things
  * have gender. But the idea is this:
  *  - for a list of "male items" (think "John, Steve") you use "they"
- *  - for "Marry, Ann" (all female) you might have a "feminine" form of "they"
- *  - and yet another form for mixed lists ("John, Marry") or undetermined
- *    (when you don't know the gender of the items, or when they are neuter)
+ *  - for "Mary, Ann" (all female) you might have a "feminine" form of "they"
+ *  - and yet another form for mixed lists ("John, Mary") or undetermined
+ *    (when you don't know the gender of the items, or when they are neutral)
  *
- * For example in Greek "they" will be translated as "αυτοί" for masculin,
- * "αυτές" for feminin, and "αυτά" for neutral/undetermined.
+ * For example in Greek "they" will be translated as "αυτοί" for masculine,
+ * "αυτές" for feminine, and "αυτά" for neutral/undetermined.
  * (it is in fact more complicated than that, as weak/strong forms and case
  * also matter, see http://en.wiktionary.org/wiki/Appendix:Greek_pronouns)
- *
  */
 
 goog.provide('goog.labs.i18n.GenderInfo');
@@ -168,7 +167,9 @@ goog.labs.i18n.GenderInfo = function() {
    * Stores the language-aware mode of determining the gender of a list.
    * @private {goog.labs.i18n.GenderInfo.ListGenderStyle_}
    */
-  this.listGenderStyle_ = goog.labs.i18n.ListFormatSymbols.GENDER_STYLE;
+  this.listGenderStyle_ =
+      /** @type {goog.labs.i18n.GenderInfo.ListGenderStyle_} */ (
+          goog.labs.i18n.ListFormatSymbols.GENDER_STYLE);
 };
 
 

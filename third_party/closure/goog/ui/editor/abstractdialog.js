@@ -15,8 +15,6 @@
 /**
  * @fileoverview Wrapper around {@link goog.ui.Dialog}, to provide
  * dialogs that are smarter about interacting with a rich text editor.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.ui.editor.AbstractDialog');
@@ -428,14 +426,6 @@ goog.ui.editor.AbstractDialog.prototype.disposeInternal = function() {
 
 
 // *** Private implementation *********************************************** //
-
-
-/**
- * The wrapped dialog widget.
- * @type {goog.ui.Dialog}
- * @private
- */
-goog.ui.editor.AbstractDialog.prototype.dialogInternal_;
 
 
 /**

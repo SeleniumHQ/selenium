@@ -20,7 +20,6 @@
  *
  * When adding public functions to anything under this namespace, be sure to add
  * its mock counterpart to goog.testing.fs.
- *
  */
 
 goog.provide('goog.fs');
@@ -159,7 +158,7 @@ goog.fs.browserSupportsObjectUrls = function() {
 goog.fs.getBlob = function(var_args) {
   var BlobBuilder = goog.global.BlobBuilder || goog.global.WebKitBlobBuilder;
 
-  if (goog.isDef(BlobBuilder)) {
+  if (BlobBuilder !== undefined) {
     var bb = new BlobBuilder();
     for (var i = 0; i < arguments.length; i++) {
       bb.append(arguments[i]);
@@ -185,13 +184,13 @@ goog.fs.getBlob = function(var_args) {
 goog.fs.getBlobWithProperties = function(parts, opt_type, opt_endings) {
   var BlobBuilder = goog.global.BlobBuilder || goog.global.WebKitBlobBuilder;
 
-  if (goog.isDef(BlobBuilder)) {
+  if (BlobBuilder !== undefined) {
     var bb = new BlobBuilder();
     for (var i = 0; i < parts.length; i++) {
       bb.append(parts[i], opt_endings);
     }
     return bb.getBlob(opt_type);
-  } else if (goog.isDef(goog.global.Blob)) {
+  } else if (goog.global.Blob !== undefined) {
     var properties = {};
     if (opt_type) {
       properties['type'] = opt_type;
@@ -201,7 +200,7 @@ goog.fs.getBlobWithProperties = function(parts, opt_type, opt_endings) {
     }
     return new Blob(parts, properties);
   } else {
-    throw Error('This browser doesn\'t seem to support creating Blobs');
+    throw new Error('This browser doesn\'t seem to support creating Blobs');
   }
 };
 
@@ -234,7 +233,7 @@ goog.fs.blobToString = function(blob, opt_encoding) {
  * @return {Blob} The blob slice or null if not supported.
  */
 goog.fs.sliceBlob = function(blob, start, opt_end) {
-  if (!goog.isDef(opt_end)) {
+  if (opt_end === undefined) {
     opt_end = blob.size;
   }
   if (blob.webkitSlice) {

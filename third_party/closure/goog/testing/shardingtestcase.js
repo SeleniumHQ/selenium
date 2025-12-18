@@ -19,7 +19,7 @@
  * <ol>
  *   <li>Instead of writing your large test in foo_test.html, write it in
  * foo_test_template.html</li>
- *   <li>Add a call to {@code goog.testing.ShardingTestCase.shardByFileName()}
+ *   <li>Add a call to `goog.testing.ShardingTestCase.shardByFileName()`
  * near the top of your test, before any test cases or setup methods.</li>
  *   <li>Symlink foo_test_template.html into different sharded test files
  * named foo_1of4_test.html, foo_2of4_test.html, etc, using `ln -s`.</li>
@@ -29,8 +29,6 @@
  * as a symlink
  *   </li>
  * </ol>
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.setTestOnly('goog.testing.ShardingTestCase');

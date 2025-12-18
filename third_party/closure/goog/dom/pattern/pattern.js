@@ -15,8 +15,6 @@
 /**
  * @fileoverview DOM patterns.  Allows for description of complex DOM patterns
  * using regular expression like constructs.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern');
@@ -33,7 +31,7 @@ goog.provide('goog.dom.pattern.MatchType');
  *     the regular expression.
  */
 goog.dom.pattern.matchStringOrRegex = function(obj, str) {
-  if (goog.isString(obj)) {
+  if (typeof obj === 'string') {
     // Match a string
     return str == obj;
   } else {

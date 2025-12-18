@@ -15,7 +15,6 @@
 /**
  * @fileoverview Tools for testing Closure renderers against static markup
  * spec pages.
- *
  */
 
 goog.setTestOnly('goog.testing.ui.style');
@@ -79,6 +78,7 @@ goog.testing.ui.style.getElementChildren = function(element) {
  * which means it is allowed to have arbitrary children.
  * @param {Node} element The node to test.
  * @return {boolean} Whether the given node is a content node or not.
+ * @suppress {missingProperties} "className" not defined on Node
  */
 goog.testing.ui.style.isContentNode = function(element) {
   return element.className.indexOf('content') != -1;

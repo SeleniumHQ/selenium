@@ -18,7 +18,6 @@
  * states as defined by W3C ARIA standard: http://www.w3.org/TR/wai-aria/
  * All modern browsers have some form of ARIA support, so no browser checks are
  * performed when adding ARIA to components.
- *
  */
 
 goog.provide('goog.a11y.aria');
@@ -304,16 +303,15 @@ goog.a11y.aria.assertRoleIsSetInternalUtil = function(element, allowedRoles) {
  */
 goog.a11y.aria.getStateBoolean = function(element, stateName) {
   var attr =
-      /** @type {string|boolean} */ (
-          element.getAttribute(
-              goog.a11y.aria.getAriaAttributeName_(stateName)));
+      /** @type {string|boolean|null} */ (element.getAttribute(
+          goog.a11y.aria.getAriaAttributeName_(stateName)));
   goog.asserts.assert(
-      goog.isBoolean(attr) || attr == null || attr == 'true' ||
+      typeof attr === 'boolean' || attr == null || attr == 'true' ||
       attr == 'false');
   if (attr == null) {
     return attr;
   }
-  return goog.isBoolean(attr) ? attr : attr == 'true';
+  return typeof attr === 'boolean' ? attr : attr == 'true';
 };
 
 
@@ -330,7 +328,7 @@ goog.a11y.aria.getStateNumber = function(element, stateName) {
           element.getAttribute(
               goog.a11y.aria.getAriaAttributeName_(stateName)));
   goog.asserts.assert(
-      (attr == null || !isNaN(Number(attr))) && !goog.isBoolean(attr));
+      (attr == null || !isNaN(Number(attr))) && typeof attr !== 'boolean');
   return attr == null ? null : Number(attr);
 };
 
@@ -346,7 +344,7 @@ goog.a11y.aria.getStateString = function(element, stateName) {
   var attr =
       element.getAttribute(goog.a11y.aria.getAriaAttributeName_(stateName));
   goog.asserts.assert(
-      (attr == null || goog.isString(attr)) &&
+      (attr == null || typeof attr === 'string') &&
       (attr == '' || isNaN(Number(attr))) && attr != 'true' && attr != 'false');
   return (attr == null || attr == '') ? null : attr;
 };

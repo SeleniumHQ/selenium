@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Constant declarations for common key codes.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.events.KeyNames');

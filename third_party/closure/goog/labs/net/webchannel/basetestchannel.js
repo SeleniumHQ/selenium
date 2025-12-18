@@ -14,17 +14,16 @@
 
 /**
  * @fileoverview Base TestChannel implementation.
- *
  */
 
 
 goog.provide('goog.labs.net.webChannel.BaseTestChannel');
 
+goog.forwardDeclare('goog.labs.net.webChannel.WebChannelBase');
 goog.require('goog.labs.net.webChannel.Channel');
 goog.require('goog.labs.net.webChannel.ChannelRequest');
 goog.require('goog.labs.net.webChannel.WebChannelDebug');
 goog.require('goog.labs.net.webChannel.requestStats');
-goog.require('goog.labs.net.webChannel.requestStats.Stat');
 goog.require('goog.net.WebChannel');
 
 
@@ -57,13 +56,13 @@ goog.labs.net.webChannel.BaseTestChannel = function(channel, channelDebug) {
 
   /**
    * Extra HTTP headers to add to all the requests sent to the server.
-   * @private {Object}
+   * @private {?Object}
    */
   this.extraHeaders_ = null;
 
   /**
    * The test request.
-   * @private {goog.labs.net.webChannel.ChannelRequest}
+   * @private {?goog.labs.net.webChannel.ChannelRequest}
    */
   this.request_ = null;
 
@@ -163,7 +162,7 @@ BaseTestChannel.prototype.connect = function(path) {
 
   // If the channel already has the result of the handshake, then skip it.
   var handshakeResult = this.channel_.getConnectionState().handshakeResult;
-  if (goog.isDefAndNotNull(handshakeResult)) {
+  if (handshakeResult != null) {
     this.hostPrefix_ = this.channel_.correctHostPrefix(handshakeResult[0]);
     this.state_ = BaseTestChannel.State_.CONNECTION_TESTING;
     this.checkBufferingProxy_();
@@ -185,8 +184,7 @@ BaseTestChannel.prototype.connect = function(path) {
   this.request_.setExtraHeaders(this.extraHeaders_);
 
   this.request_.xmlHttpGet(
-      sendDataUri, false /* decodeChunks */, null /* hostPrefix */,
-      true /* opt_noClose */);
+      sendDataUri, false /* decodeChunks */, null /* hostPrefix */);
   this.state_ = BaseTestChannel.State_.INIT;
 };
 
@@ -205,12 +203,13 @@ BaseTestChannel.prototype.checkBufferingProxy_ = function() {
   // If the test result is already available, skip its execution.
   var bufferingProxyResult =
       this.channel_.getConnectionState().bufferingProxyResult;
-  if (goog.isDefAndNotNull(bufferingProxyResult)) {
-    this.channelDebug_.debug(
-        'TestConnection: skipping stage 2, precomputed result is ' +
-                bufferingProxyResult ?
-            'Buffered' :
-            'Unbuffered');
+  if (bufferingProxyResult != null) {
+    this.channelDebug_.debug(function() {
+      return 'TestConnection: skipping stage 2, precomputed result is ' +
+              bufferingProxyResult ?
+          'Buffered' :
+          'Unbuffered';
+    });
     requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_START);
     if (bufferingProxyResult) {  // Buffered/Proxy connection
       requestStats.notifyStatEvent(requestStats.Stat.PROXY);
@@ -237,8 +236,7 @@ BaseTestChannel.prototype.checkBufferingProxy_ = function() {
   }
 
   this.request_.xmlHttpGet(
-      recvDataUri, false /** decodeChunks */, this.hostPrefix_,
-      false /** opt_noClose */);
+      recvDataUri, false /** decodeChunks */, this.hostPrefix_);
 };
 
 

@@ -1,0 +1,49 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":localnamefetcher",
+        ":namefetcher",
+        ":remotenamefetcher",
+    ],
+)
+
+closure_js_library(
+    name = "localnamefetcher",
+    srcs = ["localnamefetcher.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/i18n:ucharnames",
+        "//third_party/closure/goog/i18n/uchar:namefetcher",
+        "//third_party/closure/goog/log",
+    ],
+)
+
+closure_js_library(
+    name = "namefetcher",
+    srcs = ["namefetcher.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "remotenamefetcher",
+    srcs = ["remotenamefetcher.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/i18n:uchar",
+        "//third_party/closure/goog/i18n/uchar:namefetcher",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/uri",
+    ],
+)
