@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview TabPane widget implementation.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.ui.TabPane');
@@ -33,6 +31,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.html.SafeStyleSheet');
 goog.require('goog.style');
 
 
@@ -193,7 +192,7 @@ goog.ui.TabPane.prototype.create_ = function() {
       goog.dom.classlist.add(element, goog.getCssName('goog-tabpane-right'));
       break;
     default:
-      throw Error('Invalid tab location');
+      throw new Error('Invalid tab location');
   }
 
   // Listen for click and keydown events on header
@@ -218,9 +217,10 @@ goog.ui.TabPane.prototype.create_ = function() {
  * @private
  */
 goog.ui.TabPane.prototype.createClear_ = function() {
-  var clearFloatStyle = '.' + goog.getCssName('goog-tabpane-clear') +
-      ' { clear: both; height: 0px; overflow: hidden }';
-  goog.style.installStyles(clearFloatStyle);
+  var clearFloatStyle = goog.html.SafeStyleSheet.createRule(
+      '.' + goog.getCssName('goog-tabpane-clear'),
+      {'clear': 'both', 'height': '0', 'overflow': 'hidden'});
+  goog.style.installSafeStyleSheet(clearFloatStyle);
   return this.dom_.createDom(
       goog.dom.TagName.DIV, goog.getCssName('goog-tabpane-clear'));
 };
@@ -289,7 +289,7 @@ goog.ui.TabPane.prototype.addPage = function(page, opt_index) {
 
   // Insert page at specified position
   var index = this.pages_.length;
-  if (goog.isDef(opt_index) && opt_index != index) {
+  if (opt_index !== undefined && opt_index != index) {
     index = opt_index;
     this.pages_.splice(index, 0, page);
     this.elButtonBar_.insertBefore(
@@ -330,7 +330,7 @@ goog.ui.TabPane.prototype.addPage = function(page, opt_index) {
  *     based index.
  */
 goog.ui.TabPane.prototype.removePage = function(page) {
-  if (goog.isNumber(page)) {
+  if (typeof page === 'number') {
     page = this.pages_[page];
   }
   this.pages_.splice(page.index_, 1);
@@ -422,9 +422,9 @@ goog.ui.TabPane.prototype.getElement = function() {
 
 /**
  * Click event handler for header element, handles clicks on tabs.
- *
  * @param {goog.events.BrowserEvent} event Click event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.TabPane.prototype.onHeaderClick_ = function(event) {
   var el = event.target;
@@ -448,9 +448,9 @@ goog.ui.TabPane.prototype.onHeaderClick_ = function(event) {
 /**
  * KeyDown event handler for header element. Arrow keys moves between pages.
  * Home and end selects the first/last page.
- *
  * @param {goog.events.BrowserEvent} event KeyDown event.
  * @private
+ * @suppress {strictPrimitiveOperators} Part of the go/strict_warnings_migration
  */
 goog.ui.TabPane.prototype.onHeaderKeyDown_ = function(event) {
   if (event.altKey || event.metaKey || event.ctrlKey) {
@@ -489,10 +489,10 @@ goog.ui.TabPane.prototype.onHeaderKeyDown_ = function(event) {
  * @constructor
  */
 goog.ui.TabPane.TabPage = function(opt_el, opt_title, opt_domHelper) {
-  var title = null, el;
-  if (goog.isString(opt_el) && !goog.isDef(opt_title)) {
-    title = opt_el;
-  } else if (opt_title) {
+  /** @type {!Element|string|null} */
+  var title = null;
+  var el;
+  if (opt_title) {
     title = opt_title;
     el = opt_el;
   } else if (opt_el) {
@@ -658,7 +658,7 @@ goog.ui.TabPane.TabPage.prototype.setVisible_ = function(visible) {
  */
 goog.ui.TabPane.TabPage.prototype.setParent_ = function(tabPane, opt_index) {
   this.parent_ = tabPane;
-  this.index_ = goog.isDef(opt_index) ? opt_index : null;
+  this.index_ = (opt_index !== undefined) ? opt_index : null;
 };
 
 

@@ -19,9 +19,16 @@
  * Empty fields (adjacent commas) are returned as empty strings.
  *
  * This parser uses http://tools.ietf.org/html/rfc4180 as the definition of CSV.
- *
- * @author nnaze@google.com (Nathan Naze) Ported to Closure
  */
+
+// TODO(b/130421259): We're trying to migrate all ES5 subclasses of Closure
+// Library to ES6. In ES6 this cannot be referenced before super is called. This
+// file has at least one this before a super call (in ES5) and cannot be
+// automatically upgraded to ES6 as a result. Please fix this if you have a
+// chance. Note: This can sometimes be caused by not calling the super
+// constructor at all. You can run the conversion tool yourself to see what it
+// does on this file: blaze run //javascript/refactoring/es6_classes:convert.
+
 goog.provide('goog.labs.format.csv');
 goog.provide('goog.labs.format.csv.ParseError');
 goog.provide('goog.labs.format.csv.Token');
@@ -106,7 +113,7 @@ goog.labs.format.csv.ParseError.findLineInfo_ = function(str, index) {
     return line.startLineIndex <= index && line.endLineIndex > index;
   });
 
-  if (goog.isNumber(lineIndex)) {
+  if (typeof (lineIndex) === 'number') {
     var line = lines[lineIndex];
     return {line: line, lineIndex: lineIndex};
   }
@@ -173,7 +180,7 @@ goog.labs.format.csv.parse = function(text, opt_ignoreErrors, opt_delimiter) {
    */
   function pushBack(t) {
     goog.labs.format.csv.assertToken_(t);
-    goog.asserts.assert(goog.isNull(pushBackToken));
+    goog.asserts.assert(pushBackToken === null);
     pushBackToken = t;
   }
 
@@ -243,6 +250,9 @@ goog.labs.format.csv.parse = function(text, opt_ignoreErrors, opt_delimiter) {
           if (token == NEWLINE) {
             pushBack(token);
           }
+          if (token == delimiter) {
+            sawComma = true;
+          }
           break;
         }
 
@@ -268,7 +278,7 @@ goog.labs.format.csv.parse = function(text, opt_ignoreErrors, opt_delimiter) {
       }
     }
 
-    if (goog.isNull(end)) {
+    if (end === null) {
       if (!opt_ignoreErrors) {
         throw new goog.labs.format.csv.ParseError(
             text, text.length - 1, 'Unexpected end of text after open quote');
@@ -387,7 +397,7 @@ goog.labs.format.csv.Sentinels_ = {
  * @private
  */
 goog.labs.format.csv.isCharacterString_ = function(str) {
-  return goog.isString(str) && str.length == 1;
+  return typeof str === 'string' && str.length == 1;
 };
 
 
@@ -398,7 +408,7 @@ goog.labs.format.csv.isCharacterString_ = function(str) {
  * @private
  */
 goog.labs.format.csv.assertToken_ = function(o) {
-  if (goog.isString(o)) {
+  if (typeof o === 'string') {
     goog.asserts.assertString(o);
     goog.asserts.assert(
         goog.labs.format.csv.isCharacterString_(o),

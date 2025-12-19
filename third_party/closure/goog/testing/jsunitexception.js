@@ -46,5 +46,5 @@ goog.inherits(goog.testing.JsUnitException, Error);
 
 /** @override */
 goog.testing.JsUnitException.prototype.toString = function() {
-  return this.message;
+  return this.message || this.jsUnitMessage;
 };

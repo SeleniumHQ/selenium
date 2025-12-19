@@ -19,7 +19,6 @@
  * This is a goog.editor.Field, but with blending and sizing capabilities,
  * and avoids using an iframe whenever possible.
  *
- * @author nicksantos@google.com (Nick Santos)
  * @see ../demos/editor/seamlessfield.html
  */
 
@@ -39,10 +38,8 @@ goog.require('goog.editor.icontent.FieldStyleInfo');
 goog.require('goog.editor.node');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.html.legacyconversions');
-goog.require('goog.html.uncheckedconversions');
+goog.require('goog.html.SafeHtml');
 goog.require('goog.log');
-goog.require('goog.string.Const');
 goog.require('goog.style');
 
 
@@ -409,33 +406,6 @@ goog.editor.SeamlessField.prototype.setIframeableCss = function(iframeableCss) {
 goog.editor.SeamlessField.haveInstalledCss_ = false;
 
 
-/**
- * Applies CSS from the wrapper-div to the field iframe.
- */
-goog.editor.SeamlessField.prototype.inheritBlendedCSS = function() {
-  // No-op if the field isn't using an iframe.
-  if (!this.usesIframe()) {
-    return;
-  }
-  var field = this.getElement();
-  var head = goog.dom.getDomHelper(field).getElementsByTagNameAndClass(
-      goog.dom.TagName.HEAD)[0];
-  if (head) {
-    // We created this <head>, and we know the only thing we put in there
-    // is a <style> block.  So it's safe to blow away all the children
-    // as part of rewriting the styles.
-    goog.dom.removeChildren(head);
-  }
-
-  // Force a cache-clearing in CssUtil - this function was called because
-  // we're applying the 'blend' for the first time, or because we
-  // *need* to recompute the blend.
-  var newCSS = this.getIframeableCss(true);
-  goog.style.installSafeStyleSheet(
-      goog.html.legacyconversions.safeStyleSheetFromString(newCSS), field);
-};
-
-
 // Overridden methods.
 
 
@@ -559,11 +529,8 @@ goog.editor.SeamlessField.prototype.turnOnDesignModeGecko = function() {
 goog.editor.SeamlessField.prototype.installStyles = function() {
   if (!this.usesIframe()) {
     if (!goog.editor.SeamlessField.haveInstalledCss_) {
-      if (this.cssStyles) {
-        goog.style.installSafeStyleSheet(
-            goog.html.legacyconversions.safeStyleSheetFromString(
-                this.cssStyles),
-            this.getElement());
+      if (this.cssStyles.getTypedStringValue()) {
+        goog.style.installSafeStyleSheet(this.cssStyles, this.getElement());
       }
 
       // TODO(user): this should be reset to false when the editor is quit.
@@ -680,11 +647,8 @@ goog.editor.SeamlessField.prototype.attachIframe = function(iframe) {
     var doc = iframe.contentWindow.document;
     if (goog.editor.node.isStandardsMode(iframe.ownerDocument)) {
       doc.open();
-      var emptyHtml =
-          goog.html.uncheckedconversions
-              .safeHtmlFromStringKnownToSatisfyTypeContract(
-                  goog.string.Const.from('HTML from constant string'),
-                  '<!DOCTYPE HTML><html></html>');
+      var emptyHtml = goog.html.SafeHtml.concat(
+          goog.html.SafeHtml.DOCTYPE_HTML, goog.html.SafeHtml.create('html'));
       goog.dom.safe.documentWrite(doc, emptyHtml);
       doc.close();
     }
@@ -700,7 +664,7 @@ goog.editor.SeamlessField.prototype.getFieldFormatInfo = function(extraStyles) {
         this.id, goog.editor.node.isStandardsMode(originalElement), true,
         this.isFixedHeight(), extraStyles);
   }
-  throw Error('no field');
+  throw new Error('no field');
 };
 
 
@@ -712,7 +676,8 @@ goog.editor.SeamlessField.prototype.writeIframeContent = function(
   goog.style.setStyle(iframe, 'visibility', 'hidden');
   var formatInfo = this.getFieldFormatInfo(extraStyles);
   var styleInfo = new goog.editor.icontent.FieldStyleInfo(
-      this.getOriginalElement(), this.cssStyles + this.getIframeableCss());
+      this.getOriginalElement(),
+      this.cssStyles.getTypedStringValue() + this.getIframeableCss());
   goog.editor.icontent.writeNormalInitialBlendedIframe(
       formatInfo, innerHtml, styleInfo, iframe);
   this.doFieldSizingGecko();

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Error handling utilities.
- *
  */
 
 goog.provide('goog.debug.ErrorHandler');
@@ -157,7 +156,7 @@ goog.debug.ErrorHandler.prototype.protectEntryPoint = function(fn) {
 /**
  * Helps {@link #protectEntryPoint} by actually creating the protected
  * wrapper function, after {@link #protectEntryPoint} determines that one does
- * not already exist for the given function.  Can be overriden by subclasses
+ * not already exist for the given function.  Can be overridden by subclasses
  * that may want to implement different error handling, or add additional
  * entry point hooks.
  * @param {!Function} fn An entry point function to be protected.
@@ -171,8 +170,9 @@ goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn) {
     var stackTrace = goog.debug.getStacktraceSimple(15);
   }
   var googDebugErrorHandlerProtectedFunction = function() {
+    var self = /** @type {?} */ (this);
     if (that.isDisposed()) {
-      return fn.apply(this, arguments);
+      return fn.apply(self, arguments);
     }
 
     if (tracers) {
@@ -180,44 +180,9 @@ goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn) {
           'protectedEntryPoint: ' + that.getStackTraceHolder_(stackTrace));
     }
     try {
-      return fn.apply(this, arguments);
+      return fn.apply(self, arguments);
     } catch (e) {
-      // Don't re-report errors that have already been handled by this code.
-      var MESSAGE_PREFIX =
-          goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX;
-      if ((e && typeof e === 'object' && e.message &&
-           e.message.indexOf(MESSAGE_PREFIX) == 0) ||
-          (typeof e === 'string' && e.indexOf(MESSAGE_PREFIX) == 0)) {
-        return;
-      }
-      that.errorHandlerFn_(e);
-      if (!that.wrapErrors_) {
-        // Add the prefix to the existing message.
-        if (that.prefixErrorMessages_) {
-          if (typeof e === 'object' && e && 'message' in e) {
-            e.message = MESSAGE_PREFIX + e.message;
-          } else {
-            e = MESSAGE_PREFIX + e;
-          }
-        }
-        if (goog.DEBUG) {
-          // Work around for https://code.google.com/p/v8/issues/detail?id=2625
-          // and https://code.google.com/p/chromium/issues/detail?id=237059
-          // Custom errors and errors with custom stack traces show the wrong
-          // stack trace
-          // If it has a stack and Error.captureStackTrace is supported (only
-          // supported in V8 as of May 2013) log the stack to the console.
-          if (e && e.stack && Error.captureStackTrace &&
-              goog.global['console']) {
-            goog.global['console']['error'](e.message, e.stack);
-          }
-        }
-        // Re-throw original error. This is great for debugging as it makes
-        // browser JS dev consoles show the correct error and stack trace.
-        throw e;
-      }
-      // Re-throw it since this may be expected by the caller.
-      throw new goog.debug.ErrorHandler.ProtectedFunctionError(e);
+      that.handleError_(e);
     } finally {
       if (tracers) {
         goog.debug.Trace.stopTracer(tracer);
@@ -226,6 +191,51 @@ goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn) {
   };
   googDebugErrorHandlerProtectedFunction[this.getFunctionIndex_(false)] = fn;
   return googDebugErrorHandlerProtectedFunction;
+};
+
+
+/**
+ * Internal error handler.
+ * @param {?} e The error string or an Error-like object.
+ * @private
+ */
+goog.debug.ErrorHandler.prototype.handleError_ = function(e) {
+  // Don't re-report errors that have already been handled by this code.
+  var MESSAGE_PREFIX =
+      goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX;
+  if ((e && typeof e === 'object' && typeof e.message === 'string' &&
+       e.message.indexOf(MESSAGE_PREFIX) == 0) ||
+      (typeof e === 'string' && e.indexOf(MESSAGE_PREFIX) == 0)) {
+    return;
+  }
+  this.errorHandlerFn_(e);
+  if (!this.wrapErrors_) {
+    // Add the prefix to the existing message.
+    if (this.prefixErrorMessages_) {
+      if (typeof e === 'object' && e && typeof e.message === 'string') {
+        /** @type {{message}} */ (e).message = MESSAGE_PREFIX + e.message;
+      } else {
+        e = MESSAGE_PREFIX + e;
+      }
+    }
+    if (goog.DEBUG) {
+      // Work around for https://code.google.com/p/v8/issues/detail?id=2625
+      // and https://code.google.com/p/chromium/issues/detail?id=237059
+      // Custom errors and errors with custom stack traces show the wrong
+      // stack trace
+      // If it has a stack and Error.captureStackTrace is supported (only
+      // supported in V8 as of May 2013) log the stack to the console.
+      if (e && typeof e.stack === 'string' && Error.captureStackTrace &&
+          goog.global['console']) {
+        goog.global['console']['error'](e.message, e.stack);
+      }
+    }
+    // Re-throw original error. This is great for debugging as it makes
+    // browser JS dev consoles show the correct error and stack trace.
+    throw e;
+  }
+  // Re-throw it since this may be expected by the caller.
+  throw new goog.debug.ErrorHandler.ProtectedFunctionError(e);
 };
 
 
@@ -243,6 +253,25 @@ goog.debug.ErrorHandler.prototype.protectWindowSetTimeout = function() {
  */
 goog.debug.ErrorHandler.prototype.protectWindowSetInterval = function() {
   this.protectWindowFunctionsHelper_('setInterval');
+};
+
+
+/**
+ * Install an unhandledrejection event listener that reports rejected promises.
+ * Note: this will only work with Chrome 49+ and friends, but so far is the only
+ * way to report uncaught errors in aysnc/await functions.
+ */
+goog.debug.ErrorHandler.prototype.catchUnhandledRejections = function() {
+  if ('onunhandledrejection' in goog.global) {
+    goog.global.onunhandledrejection = (event) => {
+      // event.reason contains the rejection reason. When an Error is
+      // thrown, this is the Error object. If it is undefined, create a new
+      // error object.
+      const e =
+          event && event.reason ? event.reason : new Error('uncaught error');
+      this.handleError_(e);
+    };
+  }
 };
 
 
@@ -280,7 +309,7 @@ goog.debug.ErrorHandler.prototype.protectWindowFunctionsHelper_ = function(
   win[fnName] = function(fn, time) {
     // Don't try to protect strings. In theory, we could try to globalEval
     // the string, but this seems to lead to permission errors on IE6.
-    if (goog.isString(fn)) {
+    if (typeof fn === 'string') {
       fn = goog.partial(goog.globalEval, fn);
     }
     arguments[0] = fn = that.protectEntryPoint(fn);
@@ -289,12 +318,14 @@ goog.debug.ErrorHandler.prototype.protectWindowFunctionsHelper_ = function(
     // also doesn't care what "this" is, so we can just call the
     // original function directly
     if (originalFn.apply) {
-      return originalFn.apply(this, arguments);
+      return originalFn.apply(/** @type {?} */ (this), arguments);
     } else {
       var callback = fn;
       if (arguments.length > 2) {
         var args = Array.prototype.slice.call(arguments, 2);
-        callback = function() { fn.apply(this, args); };
+        callback = function() {
+          fn.apply(/** @type {?} */ (this), args);
+        };
       }
       return originalFn(callback, time);
     }
@@ -346,6 +377,7 @@ goog.debug.ErrorHandler.prototype.disposeInternal = function() {
  * @final
  */
 goog.debug.ErrorHandler.ProtectedFunctionError = function(cause) {
+  /** @suppress {missingProperties} message may not be defined. */
   var message = goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX +
       (cause && cause.message ? String(cause.message) : String(cause));
   goog.debug.ErrorHandler.ProtectedFunctionError.base(
@@ -357,8 +389,9 @@ goog.debug.ErrorHandler.ProtectedFunctionError = function(cause) {
    */
   this.cause = cause;
 
+  /** @suppress {missingProperties} stack may not be defined. */
   var stack = cause && cause.stack;
-  if (stack && goog.isString(stack)) {
+  if (stack && typeof stack === 'string') {
     this.stack = /** @type {string} */ (stack);
   }
 };

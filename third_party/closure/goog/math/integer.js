@@ -18,12 +18,11 @@
  *
  * For the specific case of 64-bit integers, use goog.math.Long, which is more
  * efficient.
- *
  */
 
 goog.provide('goog.math.Integer');
 
-
+goog.require('goog.reflect');
 
 /**
  * Constructs a two's-complement integer an array containing bits of the
@@ -36,9 +35,9 @@ goog.provide('goog.math.Integer');
  * The internal representation of an integer is an array of 32-bit signed
  * pieces, along with a sign (0 or -1) that indicates the contents of all the
  * other 32-bit pieces out to infinity.  We use 32-bit pieces because these are
- * the size of integers on which Javascript performs bit-operations.  For
+ * the size of integers on which JavaScript performs bit-operations.  For
  * operations like addition and multiplication, we split each number into 16-bit
- * pieces, which can easily be multiplied within Javascript's floating-point
+ * pieces, which can easily be multiplied within JavaScript's floating-point
  * representation without overflow or change in sign.
  *
  * @struct
@@ -48,11 +47,6 @@ goog.provide('goog.math.Integer');
  * @final
  */
 goog.math.Integer = function(bits, sign) {
-  /**
-   * @type {!Array<number>}
-   * @private
-   */
-  this.bits_ = [];
 
   /**
    * @type {number}
@@ -60,16 +54,29 @@ goog.math.Integer = function(bits, sign) {
    */
   this.sign_ = sign;
 
+  // Note: using a local variable while initializing the array helps the
+  // compiler understand that assigning to the array is local side-effect and
+  // that enables the entire constructor to be seen as side-effect free.
+  var localBits = [];
+
   // Copy the 32-bit signed integer values passed in.  We prune out those at the
   // top that equal the sign since they are redundant.
   var top = true;
+
   for (var i = bits.length - 1; i >= 0; i--) {
     var val = bits[i] | 0;
     if (!top || val != sign) {
-      this.bits_[i] = val;
+      localBits[i] = val;
       top = false;
     }
   }
+
+  /**
+   * @type {!Array<number>}
+   * @private
+   * @const
+   */
+  this.bits_ = localBits;
 };
 
 
@@ -79,7 +86,7 @@ goog.math.Integer = function(bits, sign) {
 
 /**
  * A cache of the Integer representations of small integer values.
- * @type {!Object}
+ * @type {!Object<number, !goog.math.Integer>}
  * @private
  */
 goog.math.Integer.IntCache_ = {};
@@ -92,17 +99,12 @@ goog.math.Integer.IntCache_ = {};
  */
 goog.math.Integer.fromInt = function(value) {
   if (-128 <= value && value < 128) {
-    var cachedObj = goog.math.Integer.IntCache_[value];
-    if (cachedObj) {
-      return cachedObj;
-    }
+    return goog.reflect.cache(
+        goog.math.Integer.IntCache_, value, function(val) {
+          return new goog.math.Integer([val | 0], val < 0 ? -1 : 0);
+        });
   }
-
-  var obj = new goog.math.Integer([value | 0], value < 0 ? -1 : 0);
-  if (-128 <= value && value < 128) {
-    goog.math.Integer.IntCache_[value] = obj;
-  }
-  return obj;
+  return new goog.math.Integer([value | 0], value < 0 ? -1 : 0);
 };
 
 
@@ -153,18 +155,18 @@ goog.math.Integer.fromBits = function(bits) {
  */
 goog.math.Integer.fromString = function(str, opt_radix) {
   if (str.length == 0) {
-    throw Error('number format error: empty string');
+    throw new Error('number format error: empty string');
   }
 
   var radix = opt_radix || 10;
   if (radix < 2 || 36 < radix) {
-    throw Error('radix out of range: ' + radix);
+    throw new Error('radix out of range: ' + radix);
   }
 
   if (str.charAt(0) == '-') {
     return goog.math.Integer.fromString(str.substring(1), radix).negate();
   } else if (str.indexOf('-') >= 0) {
-    throw Error('number format error: interior "-" character');
+    throw new Error('number format error: interior "-" character');
   }
 
   // Do several (8) digits each time through the loop, so as to
@@ -196,20 +198,19 @@ goog.math.Integer.fromString = function(str, opt_radix) {
 goog.math.Integer.TWO_PWR_32_DBL_ = (1 << 16) * (1 << 16);
 
 
-/** @type {!goog.math.Integer} */
+/**  @type {!goog.math.Integer} */
 goog.math.Integer.ZERO = goog.math.Integer.fromInt(0);
 
-
-/** @type {!goog.math.Integer} */
+/**  @type {!goog.math.Integer} */
 goog.math.Integer.ONE = goog.math.Integer.fromInt(1);
 
 
 /**
+ * @const
  * @type {!goog.math.Integer}
  * @private
  */
 goog.math.Integer.TWO_PWR_24_ = goog.math.Integer.fromInt(1 << 24);
-
 
 /**
  * Returns the value, assuming it is a 32-bit integer.
@@ -244,7 +245,7 @@ goog.math.Integer.prototype.toNumber = function() {
 goog.math.Integer.prototype.toString = function(opt_radix) {
   var radix = opt_radix || 10;
   if (radix < 2 || 36 < radix) {
-    throw Error('radix out of range: ' + radix);
+    throw new Error('radix out of range: ' + radix);
   }
 
   if (this.isZero()) {
@@ -454,6 +455,12 @@ goog.math.Integer.prototype.negate = function() {
 };
 
 
+/** @return {!goog.math.Integer} The absolute value of this value. */
+goog.math.Integer.prototype.abs = function() {
+  return this.isNegative() ? this.negate() : this;
+};
+
+
 /**
  * Returns the sum of this and the given Integer.
  * @param {goog.math.Integer} other The Integer to add to this.
@@ -584,12 +591,12 @@ goog.math.Integer.carry16_ = function(bits, index) {
  * the issue linked above.
  *
  * @param {!goog.math.Integer} other The Integer to divide "this" by.
- * @return {!goog.math.Integer} "this" value divided by the given one.
+ * @return {!goog.math.Integer.DivisionResult}
  * @private
  */
 goog.math.Integer.prototype.slowDivide_ = function(other) {
   if (this.isNegative() || other.isNegative()) {
-    throw Error('slowDivide_ only works with positive integers.');
+    throw new Error('slowDivide_ only works with positive integers.');
   }
 
   var twoPower = goog.math.Integer.ONE;
@@ -625,7 +632,13 @@ goog.math.Integer.prototype.slowDivide_ = function(other) {
     multiple = multiple.shiftRight(1);
     twoPower = twoPower.shiftRight(1);
   }
-  return res;
+
+
+  // TODO(b/130639293): Calculate this more efficiently during the division.
+  // This is kind of a waste since it isn't always needed, but it keeps the
+  // API smooth. Since this is already a slow path it probably isn't a big deal.
+  var remainder = this.subtract(res.multiply(other));
+  return new goog.math.Integer.DivisionResult(res, remainder);
 };
 
 
@@ -635,20 +648,60 @@ goog.math.Integer.prototype.slowDivide_ = function(other) {
  * @return {!goog.math.Integer} This value divided by the given one.
  */
 goog.math.Integer.prototype.divide = function(other) {
+  return this.divideAndRemainder(other).quotient;
+};
+
+
+/**
+ * A struct for holding the quotient and remainder of a division.
+ *
+ * @constructor
+ * @final
+ * @struct
+ *
+ * @param {!goog.math.Integer} quotient
+ * @param {!goog.math.Integer} remainder
+ */
+goog.math.Integer.DivisionResult = function(quotient, remainder) {
+  /** @const */
+  this.quotient = quotient;
+
+  /** @const */
+  this.remainder = remainder;
+};
+
+
+/**
+ * Returns this Integer divided by the given one, as well as the remainder of
+ * that division.
+ *
+ * @param {!goog.math.Integer} other The Integer to divide this by.
+ * @return {!goog.math.Integer.DivisionResult}
+ */
+goog.math.Integer.prototype.divideAndRemainder = function(other) {
   if (other.isZero()) {
-    throw Error('division by zero');
+    throw new Error('division by zero');
   } else if (this.isZero()) {
-    return goog.math.Integer.ZERO;
+    return new goog.math.Integer.DivisionResult(
+        goog.math.Integer.ZERO, goog.math.Integer.ZERO);
   }
 
   if (this.isNegative()) {
-    if (other.isNegative()) {
-      return this.negate().divide(other.negate());
-    } else {
-      return this.negate().divide(other).negate();
-    }
+    // Do the division on the negative of the numerator...
+    var result = this.negate().divideAndRemainder(other);
+    return new goog.math.Integer.DivisionResult(
+        // ...and flip the sign back after.
+        result.quotient.negate(),
+        // The remainder must always have the same sign as the numerator.
+        result.remainder.negate());
   } else if (other.isNegative()) {
-    return this.divide(other.negate()).negate();
+    // Do the division on the negative of the denominator...
+    var result = this.divideAndRemainder(other.negate());
+    return new goog.math.Integer.DivisionResult(
+        // ...and flip the sign back after.
+        result.quotient.negate(),
+        // The remainder must always have the same sign as the numerator.
+        result.remainder);
   }
 
   // Have to degrade to slowDivide for Very Large Numbers, because
@@ -694,7 +747,7 @@ goog.math.Integer.prototype.divide = function(other) {
     res = res.add(approxRes);
     rem = rem.subtract(approxRem);
   }
-  return res;
+  return new goog.math.Integer.DivisionResult(res, rem);
 };
 
 
@@ -704,7 +757,7 @@ goog.math.Integer.prototype.divide = function(other) {
  * @return {!goog.math.Integer} This value modulo the given one.
  */
 goog.math.Integer.prototype.modulo = function(other) {
-  return this.subtract(this.divide(other).multiply(other));
+  return this.divideAndRemainder(other).remainder;
 };
 
 

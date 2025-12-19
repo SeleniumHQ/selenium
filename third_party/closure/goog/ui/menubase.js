@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Definition of the MenuBase class.
- *
  */
 
 goog.provide('goog.ui.MenuBase');

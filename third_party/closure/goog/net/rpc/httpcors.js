@@ -18,7 +18,6 @@
  * As part of net.rpc package, CORS features provided by this class
  * depend on the server support. Please check related specs to decide how
  * to enable any of the features provided by this class.
- *
  */
 
 goog.module('goog.net.rpc.HttpCors');
@@ -38,6 +37,17 @@ var googUriUtils = goog.require('goog.uri.utils');
  * @type {string}
  */
 exports.HTTP_HEADERS_PARAM_NAME = '$httpHeaders';
+
+
+/**
+ * The default URL parameter name to overwrite http method with a URL param
+ * to avoid CORS preflight.
+ *
+ * See https://github.com/whatwg/fetch/issues/210#issue-129531743 for the spec.
+ *
+ * @type {string}
+ */
+exports.HTTP_METHOD_PARAM_NAME = '$httpMethod';
 
 
 /**
@@ -87,7 +97,7 @@ exports.setHttpHeadersWithOverwriteParam = function(
     return url;
   }
   var httpHeaders = exports.generateHttpHeadersOverwriteParam(extraHeaders);
-  if (goog.isString(url)) {
+  if (typeof url === 'string') {
     return googUriUtils.appendParam(
         url, googString.urlEncode(urlParam), httpHeaders);
   } else {

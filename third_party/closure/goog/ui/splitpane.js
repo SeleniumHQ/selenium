@@ -89,7 +89,7 @@ goog.ui.SplitPane = function(
   this.secondComponent_ = secondComponent;
   this.addChild(secondComponent);
 
-  /** @private {Element} */
+  /** @private {?Element} */
   this.splitpaneHandle_ = null;
 };
 goog.inherits(goog.ui.SplitPane, goog.ui.Component);
@@ -181,7 +181,7 @@ goog.ui.SplitPane.prototype.splitDragger_ = null;
 
 /**
  * The left/top component dom container.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.SplitPane.prototype.firstComponentContainer_ = null;
@@ -189,7 +189,7 @@ goog.ui.SplitPane.prototype.firstComponentContainer_ = null;
 
 /**
  * The right/bottom component dom container.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.SplitPane.prototype.secondComponentContainer_ = null;
@@ -239,7 +239,7 @@ goog.ui.SplitPane.prototype.continuousResize_ = true;
 
 /**
  * Iframe overlay to prevent iframes from grabbing events.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.SplitPane.prototype.iframeOverlay_ = null;
@@ -363,7 +363,7 @@ goog.ui.SplitPane.prototype.getElementToDecorate_ = function(
     }
   }
 
-  // Default to the first descendent element with the correct class.
+  // Default to the first descendant element with the correct class.
   return goog.dom.getElementsByTagNameAndClass(null, className, rootElement)[0];
 };
 
@@ -546,7 +546,7 @@ goog.ui.SplitPane.prototype.setOrientation = function(orientation) {
     if (this.isInDocument()) {
       this.setOrientationClassForHandle();
       // TODO(user): Should handleSize_ and initialSize_ also be adjusted ?
-      if (goog.isNumber(this.firstComponentSize_)) {
+      if (typeof this.firstComponentSize_ === 'number') {
         var splitpaneSize = goog.style.getBorderBoxSize(this.getElement());
         var ratio = isVertical ? splitpaneSize.height / splitpaneSize.width :
                                  splitpaneSize.width / splitpaneSize.height;
@@ -625,9 +625,9 @@ goog.ui.SplitPane.prototype.setFirstComponentSize_ = function(
   var isVertical = this.isVertical();
   // Figure out first component size; it's either passed in, taken from the
   // saved size, or is half of the total size.
-  var firstComponentSize = goog.isNumber(opt_size) ?
+  var firstComponentSize = (typeof opt_size === 'number') ?
       opt_size :
-      goog.isNumber(this.firstComponentSize_) ?
+      typeof this.firstComponentSize_ === 'number' ?
       this.firstComponentSize_ :
       Math.floor((isVertical ? splitpaneSize.height : splitpaneSize.width) / 2);
   this.firstComponentSize_ = firstComponentSize;

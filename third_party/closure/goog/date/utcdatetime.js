@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Locale independent date/time class.
- *
  */
 
 goog.provide('goog.date.UtcDateTime');
@@ -48,13 +47,14 @@ goog.date.UtcDateTime = function(
     opt_year, opt_month, opt_date, opt_hours, opt_minutes, opt_seconds,
     opt_milliseconds) {
   var timestamp;
-  if (goog.isNumber(opt_year)) {
+  if (typeof opt_year === 'number') {
     timestamp = Date.UTC(
         opt_year, opt_month || 0, opt_date || 1, opt_hours || 0,
         opt_minutes || 0, opt_seconds || 0, opt_milliseconds || 0);
   } else {
     timestamp = opt_year ? opt_year.getTime() : goog.now();
   }
+  /** @override */
   this.date = new Date(timestamp);
 };
 goog.inherits(goog.date.UtcDateTime, goog.date.DateTime);

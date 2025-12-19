@@ -1,0 +1,72 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":announcer",
+        ":aria",
+        ":attributes",
+        ":datatables",
+        ":roles",
+    ],
+)
+
+closure_js_library(
+    name = "announcer",
+    srcs = ["announcer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria",
+        "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/timer",
+    ],
+)
+
+closure_js_library(
+    name = "aria",
+    srcs = ["aria.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/a11y/aria:datatables",
+        "//third_party/closure/goog/a11y/aria:roles",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "attributes",
+    srcs = ["attributes.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "datatables",
+    srcs = ["datatables.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "roles",
+    srcs = ["roles.js"],
+    lenient = True,
+)

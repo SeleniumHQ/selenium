@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Contains the base class for transports.
- *
  */
 
 

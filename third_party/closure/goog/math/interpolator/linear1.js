@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview A one dimensional linear interpolator.
- *
  */
 
 goog.provide('goog.math.interpolator.Linear1');

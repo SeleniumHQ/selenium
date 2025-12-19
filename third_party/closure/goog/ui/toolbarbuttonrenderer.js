@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Renderer for toolbar buttons.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ToolbarButtonRenderer');

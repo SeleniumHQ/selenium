@@ -19,7 +19,6 @@
  * @see ../demos/menubar.html
  */
 
-/** @suppress {extraProvide} */
 goog.provide('goog.ui.menuBarDecorator');
 
 goog.require('goog.ui.MenuBarRenderer');

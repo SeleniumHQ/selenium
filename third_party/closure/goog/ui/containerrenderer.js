@@ -14,12 +14,13 @@
 
 /**
  * @fileoverview Base class for container renderers.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ContainerRenderer');
 
+goog.forwardDeclare('goog.ui.Container');
+goog.forwardDeclare('goog.ui.Container.Orientation');
+goog.forwardDeclare('goog.ui.Control');
 goog.require('goog.a11y.aria');
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -151,7 +152,7 @@ goog.ui.ContainerRenderer.prototype.getContentElement = function(element) {
 
 
 /**
- * Default implementation of {@code canDecorate}; returns true if the element
+ * Default implementation of `canDecorate`; returns true if the element
  * is a DIV, false otherwise.
  * @param {Element} element Element to decorate.
  * @return {boolean} Whether the renderer can decorate the element.
@@ -162,7 +163,7 @@ goog.ui.ContainerRenderer.prototype.canDecorate = function(element) {
 
 
 /**
- * Default implementation of {@code decorate} for {@link goog.ui.Container}s.
+ * Default implementation of `decorate` for {@link goog.ui.Container}s.
  * Decorates the element with the container, and attempts to decorate its child
  * elements.  Returns the decorated element.
  * @param {goog.ui.Container} container Container to decorate the element.
@@ -363,7 +364,7 @@ goog.ui.ContainerRenderer.prototype.getClassNames = function(container) {
 
 /**
  * Returns the default orientation of containers rendered or decorated by this
- * renderer.  The base class implementation returns {@code VERTICAL}.
+ * renderer.  The base class implementation returns `VERTICAL`.
  * @return {goog.ui.Container.Orientation} Default orientation for containers
  *     created or decorated by this renderer.
  * @suppress {missingRequire} goog.ui.Container

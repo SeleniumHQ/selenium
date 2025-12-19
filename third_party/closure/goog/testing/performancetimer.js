@@ -16,8 +16,6 @@
  * @fileoverview Performance timer.
  *
  * {@see goog.testing.benchmark} for an easy way to use this functionality.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.setTestOnly('goog.testing.PerformanceTimer');
@@ -160,7 +158,7 @@ goog.testing.PerformanceTimer.prototype.run = function(testFn) {
 
 /**
  * Executes the test function of the specified task as described in
- * {@code run}. In addition, if specified, the set up and tear down functions of
+ * `run`. In addition, if specified, the set up and tear down functions of
  * the task are invoked before and after each invocation of the test function.
  * @see goog.testing.PerformanceTimer#run
  * @param {goog.testing.PerformanceTimer.Task} task A task describing the test
@@ -193,7 +191,7 @@ goog.testing.PerformanceTimer.prototype.runTask = function(task) {
 
 /**
  * Finishes the run of a task by creating a result object from samples, in the
- * format described in {@code run}.
+ * format described in `run`.
  * @see goog.testing.PerformanceTimer#run
  * @param {!Array<number>} samples The samples to analyze.
  * @return {!Object} Object containing performance stats.
@@ -280,6 +278,24 @@ goog.testing.PerformanceTimer.prototype.runAsyncTaskSample_ = function(
 
 
 /**
+ * Return the median of the samples.
+ * @param {!Array<number>} samples
+ * @return {number}
+ */
+goog.testing.PerformanceTimer.median = function(samples) {
+  samples.sort(function(a, b) {
+    return a - b;
+  });
+  let half = Math.floor(samples.length / 2);
+  if (samples.length % 2) {
+    return samples[half];
+  } else {
+    return (samples[half - 1] + samples[half]) / 2.0;
+  }
+};
+
+
+/**
  * Execute a function that optionally returns a deferred object and continue
  * with the given continuation function only once the deferred object has a
  * result.
@@ -310,6 +326,7 @@ goog.testing.PerformanceTimer.createResults = function(samples) {
   return {
     'average': goog.math.average.apply(null, samples),
     'count': samples.length,
+    'median': goog.testing.PerformanceTimer.median(samples),
     'maximum': Math.max.apply(null, samples),
     'minimum': Math.min.apply(null, samples),
     'standardDeviation': goog.math.standardDeviation.apply(null, samples),

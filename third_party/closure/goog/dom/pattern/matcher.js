@@ -15,8 +15,6 @@
 /**
  * @fileoverview DOM pattern matcher.  Allows for simple searching of DOM
  * using patterns descended from {@link goog.dom.pattern.AbstractPattern}.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.Matcher');

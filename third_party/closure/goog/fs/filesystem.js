@@ -14,10 +14,11 @@
 
 /**
  * @fileoverview A wrapper for the HTML5 FileSystem object.
- *
  */
 
 goog.provide('goog.fs.FileSystem');
+
+goog.forwardDeclare('goog.fs.DirectoryEntry');
 
 
 

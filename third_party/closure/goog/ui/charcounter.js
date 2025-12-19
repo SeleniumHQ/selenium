@@ -15,7 +15,6 @@
 /**
  * @fileoverview Character counter widget implementation.
  *
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/charcounter.html
  */
 

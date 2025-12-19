@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Emoji implementation.
- *
  */
 
 goog.provide('goog.ui.emoji.Emoji');

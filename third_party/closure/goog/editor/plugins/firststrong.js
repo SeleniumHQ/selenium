@@ -34,9 +34,8 @@
  *
  * <em>Please note</em> that this plugin does not perform the direction change
  * itself. Rather, it fires editor commands upon the key up event when a
- * direction change needs to be performed; {@code goog.editor.Command.DIR_RTL}
- * or {@code goog.editor.Command.DIR_RTL}.
- *
+ * direction change needs to be performed; `goog.editor.Command.DIR_RTL`
+ * or `goog.editor.Command.DIR_RTL`.
  */
 
 goog.provide('goog.editor.plugins.FirstStrong');
@@ -240,7 +239,7 @@ goog.editor.plugins.FirstStrong.prototype.isNeutralBlock_ = function() {
       goog.editor.plugins.FirstStrong.isGeckoBlock_ :
       goog.editor.plugins.FirstStrong.isBlock_;
   var paragraph = this.getTextAround_(root, cursor, blockFunction);
-  // Not using {@code goog.i18n.bidi.isNeutralText} as it contains additional,
+  // Not using `goog.i18n.bidi.isNeutralText` as it contains additional,
   // unwanted checks to the content.
   return !goog.i18n.bidi.hasAnyLtr(paragraph) &&
       !goog.i18n.bidi.hasAnyRtl(paragraph);

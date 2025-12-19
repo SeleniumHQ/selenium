@@ -15,7 +15,6 @@
 /**
  * @fileoverview Contains the class which uses native messaging
  * facilities for cross domain communication.
- *
  */
 
 
@@ -265,7 +264,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.couldPeerVersionBe_ = function(
 goog.net.xpc.NativeMessagingTransport.initialize_ = function(listenWindow) {
   var uid = goog.getUid(listenWindow);
   var value = goog.net.xpc.NativeMessagingTransport.activeCount_[uid];
-  if (!goog.isNumber(value)) {
+  if (typeof value !== 'number') {
     value = 0;
   }
   if (value == 0) {
@@ -289,7 +288,7 @@ goog.net.xpc.NativeMessagingTransport.initialize_ = function(listenWindow) {
 goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
   var data = msgEvt.getBrowserEvent().data;
 
-  if (!goog.isString(data)) {
+  if (typeof data !== 'string') {
     return false;
   }
 

@@ -20,8 +20,6 @@
  *
  * This may be used, for example, to track the availability of sparse elements
  * in an array without iterating over the entire array.
- *
- * @author brenneman@google.com (Shawn Brenneman)
  */
 
 goog.provide('goog.math.RangeSet');

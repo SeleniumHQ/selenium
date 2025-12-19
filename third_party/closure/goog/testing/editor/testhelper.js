@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Class that allows for simple text editing tests.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.setTestOnly('goog.testing.editor.TestHelper');
@@ -40,7 +38,7 @@ goog.require('goog.testing.dom');
  */
 goog.testing.editor.TestHelper = function(root) {
   if (!root) {
-    throw Error('Null root');
+    throw new Error('Null root');
   }
   goog.Disposable.call(this);
 
@@ -67,7 +65,7 @@ goog.inherits(goog.testing.editor.TestHelper, goog.Disposable);
  */
 goog.testing.editor.TestHelper.prototype.setRoot = function(root) {
   if (!root) {
-    throw Error('Null root');
+    throw new Error('Null root');
   }
   this.root_ = root;
 };
@@ -143,8 +141,8 @@ goog.testing.editor.TestHelper.prototype.findTextNode = function(textOrRegexp) {
 
 
 /**
- * Select from the given {@code fromOffset} in the given {@code from} node to
- * the given {@code toOffset} in the optionally given {@code to} node. If nodes
+ * Select from the given `fromOffset` in the given `from` node to
+ * the given `toOffset` in the optionally given `to` node. If nodes
  * are passed in, uses them, otherwise uses findTextNode to find the nodes to
  * select. Selects a caret if opt_to and opt_toOffset are not given.
  * @param {Node|string} from Node or text of the node to start the selection at.
@@ -159,12 +157,12 @@ goog.testing.editor.TestHelper.prototype.findTextNode = function(textOrRegexp) {
 goog.testing.editor.TestHelper.prototype.select = function(
     from, fromOffset, opt_to, opt_toOffset) {
   var end;
-  var start = end = goog.isString(from) ? this.findTextNode(from) : from;
+  var start = end = (typeof from === 'string') ? this.findTextNode(from) : from;
   var endOffset;
   var startOffset = endOffset = fromOffset;
 
-  if (opt_to && goog.isNumber(opt_toOffset)) {
-    end = goog.isString(opt_to) ? this.findTextNode(opt_to) : opt_to;
+  if (opt_to && typeof opt_toOffset === 'number') {
+    end = (typeof opt_to === 'string') ? this.findTextNode(opt_to) : opt_to;
     endOffset = opt_toOffset;
   }
 

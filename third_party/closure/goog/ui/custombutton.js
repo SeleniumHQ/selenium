@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview A button rendered via {@link goog.ui.CustomButtonRenderer}.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.CustomButton');
@@ -29,7 +27,7 @@ goog.require('goog.ui.registry');
 /**
  * A custom button control.  Identical to {@link goog.ui.Button}, except it
  * defaults its renderer to {@link goog.ui.CustomButtonRenderer}.  One could
- * just as easily pass {@code goog.ui.CustomButtonRenderer.getInstance()} to
+ * just as easily pass `goog.ui.CustomButtonRenderer.getInstance()` to
  * the {@link goog.ui.Button} constructor and get the same result.  Provided
  * for convenience.
  *

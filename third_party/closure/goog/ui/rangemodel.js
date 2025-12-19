@@ -22,8 +22,6 @@
  * value is scrollTop and extent is clientHeight.
  *
  * Based on http://webfx.eae.net/dhtml/slider/js/range.js
- *
- * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.ui.RangeModel');

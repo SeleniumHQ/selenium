@@ -15,7 +15,6 @@
 /**
  * @fileoverview Utilities for dealing with POSIX path strings. Based on
  * Python's os.path and posixpath.
- * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.provide('goog.string.path');
@@ -78,11 +77,12 @@ goog.string.path.extension = function(path) {
 };
 
 
+// TODO(johnlenz): goog.string.path.join should not accept undefined
 /**
  * Joins one or more path components (e.g. 'foo/' and 'bar' make 'foo/bar').
  * An absolute component will discard all previous component.
  * See http://docs.python.org/library/os.path.html#os.path.join
- * @param {...string} var_args One of more path components.
+ * @param {...(string|undefined)} var_args One of more path components.
  * @return {string} The path components joined.
  */
 goog.string.path.join = function(var_args) {

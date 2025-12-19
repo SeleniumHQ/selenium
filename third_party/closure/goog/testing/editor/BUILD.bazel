@@ -1,0 +1,52 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "dom",
+    testonly = True,
+    srcs = ["dom.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom:abstractrange",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:tagiterator",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/testing:asserts",
+    ],
+)
+
+closure_js_library(
+    name = "fieldmock",
+    testonly = True,
+    srcs = ["fieldmock.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:range",
+        "//third_party/closure/goog/editor:field",
+        "//third_party/closure/goog/testing:loosemock",
+        "//third_party/closure/goog/testing:mockmatchers",
+    ],
+)
+
+closure_js_library(
+    name = "testhelper",
+    testonly = True,
+    srcs = ["testhelper.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:range",
+        "//third_party/closure/goog/editor:browserfeature",
+        "//third_party/closure/goog/editor:node",
+        "//third_party/closure/goog/editor/plugins:abstractbubbleplugin",
+        "//third_party/closure/goog/testing:dom",
+    ],
+)

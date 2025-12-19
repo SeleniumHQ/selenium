@@ -14,12 +14,12 @@
 
 /**
  * @fileoverview Defines the goog.dom.TagName class. Its constants enumerate
- * all HTML tag names specified in either the the W3C HTML 4.01 index of
- * elements or the HTML5 draft specification.
+ * all HTML tag names specified in either the W3C HTML 4.01 index of elements
+ * or the HTML5.1 specification.
  *
  * References:
- * http://www.w3.org/TR/html401/index/elements.html
- * http://dev.w3.org/html5/spec/section-index.html
+ * https://www.w3.org/TR/html401/index/elements.html
+ * https://www.w3.org/TR/html51/dom.html#elements
  */
 goog.provide('goog.dom.TagName');
 
@@ -342,6 +342,10 @@ goog.dom.TagName.LI = new goog.dom.TagName('LI');
 goog.dom.TagName.LINK = new goog.dom.TagName('LINK');
 
 
+/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+goog.dom.TagName.MAIN = new goog.dom.TagName('MAIN');
+
+
 /** @type {!goog.dom.TagName<!HTMLMapElement>} */
 goog.dom.TagName.MAP = new goog.dom.TagName('MAP');
 
@@ -356,6 +360,10 @@ goog.dom.TagName.MATH = new goog.dom.TagName('MATH');
 
 /** @type {!goog.dom.TagName<!HTMLMenuElement>} */
 goog.dom.TagName.MENU = new goog.dom.TagName('MENU');
+
+
+/** @type {!goog.dom.TagName<!HTMLMenuItemElement>} */
+goog.dom.TagName.MENUITEM = new goog.dom.TagName('MENUITEM');
 
 
 /** @type {!goog.dom.TagName<!HTMLMetaElement>} */
@@ -406,6 +414,10 @@ goog.dom.TagName.P = new goog.dom.TagName('P');
 goog.dom.TagName.PARAM = new goog.dom.TagName('PARAM');
 
 
+/** @type {!goog.dom.TagName<!HTMLPictureElement>} */
+goog.dom.TagName.PICTURE = new goog.dom.TagName('PICTURE');
+
+
 /** @type {!goog.dom.TagName<!HTMLPreElement>} */
 goog.dom.TagName.PRE = new goog.dom.TagName('PRE');
 
@@ -424,6 +436,10 @@ goog.dom.TagName.RP = new goog.dom.TagName('RP');
 
 /** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
 goog.dom.TagName.RT = new goog.dom.TagName('RT');
+
+
+/** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */
+goog.dom.TagName.RTC = new goog.dom.TagName('RTC');
 
 
 /** @type {!goog.dom.TagName<!goog.dom.HtmlElement>} */

@@ -14,11 +14,12 @@
 
 /**
  * @fileoverview Global renderer and decorator registry.
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.registry');
 
+goog.forwardDeclare('goog.ui.Component');
+goog.forwardDeclare('goog.ui.ControlRenderer');
 goog.require('goog.asserts');
 goog.require('goog.dom.classlist');
 
@@ -28,12 +29,13 @@ goog.require('goog.dom.classlist');
  * default renderer.  If the default renderer is a singleton, returns the
  * singleton instance; otherwise returns a new instance of the renderer class.
  * @param {Function} componentCtor Component constructor function (for example
- *     {@code goog.ui.Button}).
+ *     `goog.ui.Button`).
  * @return {goog.ui.ControlRenderer?} Renderer instance (for example the
- *     singleton instance of {@code goog.ui.ButtonRenderer}), or null if
+ *     singleton instance of `goog.ui.ButtonRenderer`), or null if
  *     no default renderer was found.
  */
 goog.ui.registry.getDefaultRenderer = function(componentCtor) {
+  // TODO(b/141512323): This should probably be implemented with a `WeakMap`.
   // Locate the default renderer based on the constructor's unique ID.  If no
   // renderer is registered for this class, walk up the superClass_ chain.
   var key;
@@ -64,19 +66,19 @@ goog.ui.registry.getDefaultRenderer = function(componentCtor) {
  * Sets the default renderer for the given {@link goog.ui.Component}
  * constructor.
  * @param {Function} componentCtor Component constructor function (for example
- *     {@code goog.ui.Button}).
+ *     `goog.ui.Button`).
  * @param {Function} rendererCtor Renderer constructor function (for example
- *     {@code goog.ui.ButtonRenderer}).
+ *     `goog.ui.ButtonRenderer`).
  * @throws {Error} If the arguments aren't functions.
  */
 goog.ui.registry.setDefaultRenderer = function(componentCtor, rendererCtor) {
   // In this case, explicit validation has negligible overhead (since each
   // renderer is only registered once), and helps catch subtle bugs.
   if (!goog.isFunction(componentCtor)) {
-    throw Error('Invalid component class ' + componentCtor);
+    throw new Error('Invalid component class ' + componentCtor);
   }
   if (!goog.isFunction(rendererCtor)) {
-    throw Error('Invalid renderer class ' + rendererCtor);
+    throw new Error('Invalid renderer class ' + rendererCtor);
   }
 
   // Map the component constructor's unique ID to the renderer constructor.
@@ -112,10 +114,10 @@ goog.ui.registry.setDecoratorByClassName = function(className, decoratorFn) {
   // In this case, explicit validation has negligible overhead (since each
   // decorator  is only registered once), and helps catch subtle bugs.
   if (!className) {
-    throw Error('Invalid class name ' + className);
+    throw new Error('Invalid class name ' + className);
   }
   if (!goog.isFunction(decoratorFn)) {
-    throw Error('Invalid decorator function ' + decoratorFn);
+    throw new Error('Invalid decorator function ' + decoratorFn);
   }
 
   goog.ui.registry.decoratorFunctions_[className] = decoratorFn;

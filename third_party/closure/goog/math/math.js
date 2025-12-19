@@ -23,7 +23,7 @@ goog.require('goog.asserts');
 
 
 /**
- * Returns a random integer greater than or equal to 0 and less than {@code a}.
+ * Returns a random integer greater than or equal to 0 and less than `a`.
  * @param {number} a  The upper bound for the random integer (exclusive).
  * @return {number} A random integer N such that 0 <= N < a.
  */
@@ -33,8 +33,8 @@ goog.math.randomInt = function(a) {
 
 
 /**
- * Returns a random number greater than or equal to {@code a} and less than
- * {@code b}.
+ * Returns a random number greater than or equal to `a` and less than
+ * `b`.
  * @param {number} a  The lower bound for the random number (inclusive).
  * @param {number} b  The upper bound for the random number (exclusive).
  * @return {number} A random number N such that a <= N < b.
@@ -98,7 +98,7 @@ goog.math.lerp = function(a, b, x) {
  * @param {number} b A number.
  * @param {number=} opt_tolerance Optional tolerance range. Defaults
  *     to 0.000001. If specified, should be greater than 0.
- * @return {boolean} Whether {@code a} and {@code b} are nearly equal.
+ * @return {boolean} Whether `a` and `b` are nearly equal.
  */
 goog.math.nearlyEquals = function(a, b, opt_tolerance) {
   return Math.abs(a - b) <= (opt_tolerance || 0.000001);
@@ -306,7 +306,7 @@ goog.math.longestCommonSubsequence = function(
  * Returns the sum of the arguments.
  * @param {...number} var_args Numbers to add.
  * @return {number} The sum of the arguments (0 if no arguments were provided,
- *     {@code NaN} if any of the arguments is not a valid number).
+ *     `NaN` if any of the arguments is not a valid number).
  */
 goog.math.sum = function(var_args) {
   return /** @type {number} */ (
@@ -318,7 +318,7 @@ goog.math.sum = function(var_args) {
 /**
  * Returns the arithmetic mean of the arguments.
  * @param {...number} var_args Numbers to average.
- * @return {number} The average of the arguments ({@code NaN} if no arguments
+ * @return {number} The average of the arguments (`NaN` if no arguments
  *     were provided or any of the arguments is not a valid number).
  */
 goog.math.average = function(var_args) {
@@ -331,7 +331,7 @@ goog.math.average = function(var_args) {
  * see e.g. http://en.wikipedia.org/wiki/Variance
  * @param {...number} var_args Number samples to analyze.
  * @return {number} The unbiased sample variance of the arguments (0 if fewer
- *     than two samples were provided, or {@code NaN} if any of the samples is
+ *     than two samples were provided, or `NaN` if any of the samples is
  *     not a valid number).
  */
 goog.math.sampleVariance = function(var_args) {
@@ -356,7 +356,7 @@ goog.math.sampleVariance = function(var_args) {
  * http://en.wikipedia.org/wiki/Standard_deviation
  * @param {...number} var_args Number samples to analyze.
  * @return {number} The sample standard deviation of the arguments (0 if fewer
- *     than two samples were provided, or {@code NaN} if any of the samples is
+ *     than two samples were provided, or `NaN` if any of the samples is
  *     not a valid number).
  */
 goog.math.standardDeviation = function(var_args) {
@@ -368,7 +368,7 @@ goog.math.standardDeviation = function(var_args) {
  * Returns whether the supplied number represents an integer, i.e. that is has
  * no fractional component.  No range-checking is performed on the number.
  * @param {number} num The number to test.
- * @return {boolean} Whether {@code num} is an integer.
+ * @return {boolean} Whether `num` is an integer.
  */
 goog.math.isInt = function(num) {
   return isFinite(num) && num % 1 == 0;
@@ -378,7 +378,7 @@ goog.math.isInt = function(num) {
 /**
  * Returns whether the supplied number is finite and not NaN.
  * @param {number} num The number to test.
- * @return {boolean} Whether {@code num} is a finite number.
+ * @return {boolean} Whether `num` is a finite number.
  * @deprecated Use {@link isFinite} instead.
  */
 goog.math.isFiniteNumber = function(num) {
@@ -418,7 +418,7 @@ goog.math.log10Floor = function(num) {
 
 
 /**
- * A tweaked variant of {@code Math.floor} which tolerates if the passed number
+ * A tweaked variant of `Math.floor` which tolerates if the passed number
  * is infinitesimally smaller than the closest integer. It often happens with
  * the results of floating point calculations because of the finite precision
  * of the intermediate results. For example {@code Math.floor(Math.log(1000) /
@@ -426,23 +426,23 @@ goog.math.log10Floor = function(num) {
  * @param {number} num A number.
  * @param {number=} opt_epsilon An infinitesimally small positive number, the
  *     rounding error to tolerate.
- * @return {number} The largest integer less than or equal to {@code num}.
+ * @return {number} The largest integer less than or equal to `num`.
  */
 goog.math.safeFloor = function(num, opt_epsilon) {
-  goog.asserts.assert(!goog.isDef(opt_epsilon) || opt_epsilon > 0);
+  goog.asserts.assert(opt_epsilon === undefined || opt_epsilon > 0);
   return Math.floor(num + (opt_epsilon || 2e-15));
 };
 
 
 /**
- * A tweaked variant of {@code Math.ceil}. See {@code goog.math.safeFloor} for
+ * A tweaked variant of `Math.ceil`. See `goog.math.safeFloor` for
  * details.
  * @param {number} num A number.
  * @param {number=} opt_epsilon An infinitesimally small positive number, the
  *     rounding error to tolerate.
- * @return {number} The smallest integer greater than or equal to {@code num}.
+ * @return {number} The smallest integer greater than or equal to `num`.
  */
 goog.math.safeCeil = function(num, opt_epsilon) {
-  goog.asserts.assert(!goog.isDef(opt_epsilon) || opt_epsilon > 0);
+  goog.asserts.assert(opt_epsilon === undefined || opt_epsilon > 0);
   return Math.ceil(num - (opt_epsilon || 2e-15));
 };

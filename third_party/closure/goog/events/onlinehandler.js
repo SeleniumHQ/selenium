@@ -14,7 +14,7 @@
 
 /**
  * @fileoverview This event handler will dispatch events when
- * {@code navigator.onLine} changes.  HTML5 defines two events, online and
+ * `navigator.onLine` changes.  HTML5 defines two events, online and
  * offline that is fired on the window.  As of today 3 browsers support these
  * events: Firefox 3 (Gecko 1.9), Opera 9.5, and IE8.  If we have any of these
  * we listen to the 'online' and 'offline' events on the current window
@@ -23,7 +23,6 @@
  * Note that this class only reflects what the browser tells us and this usually
  * only reflects changes to the File -> Work Offline menu item.
  *
- * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/onlinehandler.html
  */
 
@@ -89,7 +88,7 @@ goog.events.OnlineHandler.EventType = goog.net.NetworkStatusMonitor.EventType;
 
 
 /**
- * The time to wait before checking the {@code navigator.onLine} again.
+ * The time to wait before checking the `navigator.onLine` again.
  * @type {number}
  * @private
  */
@@ -137,7 +136,7 @@ goog.events.OnlineHandler.prototype.handleTick_ = function() {
 
 /**
  * Called when the online state changes.  This dispatches the
- * {@code ONLINE} and {@code OFFLINE} events respectively.
+ * `ONLINE` and `OFFLINE` events respectively.
  * @private
  */
 goog.events.OnlineHandler.prototype.handleChange_ = function() {

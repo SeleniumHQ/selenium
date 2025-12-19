@@ -643,6 +643,7 @@ goog.ui.Gauge.prototype.clear_ = function() {
 /**
  * Redraw the entire gauge.
  * @private
+ * @suppress {strictPrimitiveOperators} Part of the go/strict_warnings_migration
  */
 goog.ui.Gauge.prototype.draw_ = function() {
   if (!this.isInDocument()) {

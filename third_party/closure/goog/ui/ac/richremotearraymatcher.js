@@ -17,7 +17,6 @@
  * a structured list of lists, via an ajax call.  The first element of each
  * sublist is the name of a client-side javascript function that converts the
  * remaining sublist elements into rich rows.
- *
  */
 
 goog.provide('goog.ui.ac.RichRemoteArrayMatcher');
@@ -47,7 +46,7 @@ goog.ui.ac.RichRemoteArrayMatcher = function(url, opt_noSimilar) {
    * A function(rows) that is called before the array matches are returned.
    * It runs client-side and filters the results given by the server before
    * being rendered by the client.
-   * @type {Function}
+   * @type {?Function}
    * @private
    */
   this.rowFilter_ = null;
@@ -58,8 +57,7 @@ goog.ui.ac.RichRemoteArrayMatcher = function(url, opt_noSimilar) {
    * @private {goog.ui.ac.RichRemoteArrayMatcher.RowBuilder}
    */
   this.rowBuilder_ = function(type, response) {
-    var func = /** @type {!Function} */ (eval(type));
-    return func(response);
+    return /** @type {!Object} */ (response);
   };
 };
 goog.inherits(goog.ui.ac.RichRemoteArrayMatcher, goog.ui.ac.RemoteArrayMatcher);

@@ -15,7 +15,6 @@
 /**
  * @fileoverview A menu button control.
  *
- * @author attila@google.com (Attila Bodis)
  * @see ../demos/menubutton.html
  */
 
@@ -30,6 +29,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.math.Box');
+goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.positioning');
 goog.require('goog.positioning.Corner');
@@ -43,6 +43,7 @@ goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuButtonRenderer');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.MenuRenderer');
+goog.require('goog.ui.SubMenu');
 goog.require('goog.ui.registry');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
@@ -279,8 +280,8 @@ goog.ui.MenuButton.prototype.handleMouseUp = function(e) {
 
 /**
  * Performs the appropriate action when the menu button is activated by the
- * user.  Overrides the superclass implementation by not dispatching an {@code
- * ACTION} event, because menu buttons exist only to reveal menus, not to
+ * user.  Overrides the superclass implementation by not dispatching an
+ * `ACTION` event, because menu buttons exist only to reveal menus, not to
  * perform actions themselves.  Calls {@link #setActive} to deactivate the
  * button.
  * @param {goog.events.Event} e Mouse or key event that triggered the action.
@@ -340,10 +341,19 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
 
   if (this.menu_ && this.menu_.isVisible()) {
     // Menu is open.
-    var isEnterOrSpace = e.keyCode == goog.events.KeyCodes.ENTER ||
+    const isEnterOrSpace = e.keyCode == goog.events.KeyCodes.ENTER ||
         e.keyCode == goog.events.KeyCodes.SPACE;
-    var handledByMenu = this.menu_.handleKeyEvent(e);
-    if (e.keyCode == goog.events.KeyCodes.ESC || isEnterOrSpace) {
+    const handledByMenu = this.menu_.handleKeyEvent(e);
+    // If the submenu has handled the key event, then defer to it to close the
+    // menu if necessary and do not close it here. This is needed because the
+    // enter key should keep the submenu open, but should close other types of
+    // menu items.
+    // Check for this.menu_ again here because some widgets set this.dispose
+    // after handleKeyEvent. Example: go/widget-dispose-ex
+    const handledBySubMenu = handledByMenu && this.menu_ &&
+        this.menu_.getOpenItem() instanceof goog.ui.SubMenu;
+    if (!handledBySubMenu &&
+        (e.keyCode == goog.events.KeyCodes.ESC || isEnterOrSpace)) {
       // Dismiss the menu.
       this.setOpen(false);
       return true;
@@ -366,7 +376,7 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
 
 
 /**
- * Handles {@code ACTION} events dispatched by an activated menu item.
+ * Handles `ACTION` events dispatched by an activated menu item.
  * @param {goog.events.Event} e Action event to handle.
  * @protected
  */
@@ -377,7 +387,7 @@ goog.ui.MenuButton.prototype.handleMenuAction = function(e) {
 
 
 /**
- * Handles {@code BLUR} events dispatched by the popup menu by closing it.
+ * Handles `BLUR` events dispatched by the popup menu by closing it.
  * Only registered if the menu is focusable.
  * @param {goog.events.Event} e Blur event dispatched by a focusable menu.
  */
@@ -662,7 +672,7 @@ goog.ui.MenuButton.prototype.setScrollOnOverflow = function(scrollOnOverflow) {
 
 
 /**
- * @return {boolean} Wether the menu will scroll when it's to big to fit
+ * @return {boolean} Whether the menu will scroll when it's to big to fit
  *     vertically on the screen.
  */
 goog.ui.MenuButton.prototype.isScrollOnOverflow = function() {
@@ -789,7 +799,7 @@ goog.ui.MenuButton.prototype.setOpen = function(open, opt_e) {
       }
 
       // Clear any sizes that might have been stored.
-      if (goog.isDefAndNotNull(this.originalSize_)) {
+      if (this.originalSize_ != null) {
         this.originalSize_ = undefined;
         var elem = this.menu_.getElement();
         if (elem) {
@@ -868,12 +878,30 @@ goog.ui.MenuButton.prototype.onTick_ = function(e) {
   // changed, or if the window's viewport was changed.
   var currentButtonRect = goog.style.getBounds(this.getElement());
   var currentViewport = goog.style.getVisibleRectForElement(this.getElement());
-  if (!goog.math.Rect.equals(this.buttonRect_, currentButtonRect) ||
-      !goog.math.Box.equals(this.viewportBox_, currentViewport)) {
-    this.buttonRect_ = currentButtonRect;
-    this.viewportBox_ = currentViewport;
-    this.positionMenu();
+  if (goog.math.Rect.equals(this.buttonRect_, currentButtonRect) &&
+      goog.math.Box.equals(this.viewportBox_, currentViewport)) {
+    return;
   }
+
+  // Reduction in the viewport width (e.g. due to increasing the zoom) can
+  // cause the menu to get squashed against the right edge, distorting its
+  // shape. When we move the menu back where it belongs, we risk using the
+  // distorted size, causing mispositioning. To be safe, start by moving the
+  // menu to the top left to let it reassume its true shape.
+  if (this.menu_.isInDocument() && currentViewport && this.viewportBox_ &&
+      (currentViewport.getWidth() < this.viewportBox_.getWidth())) {
+    var elem = this.menu_.getElement();
+    if (!this.menu_.isVisible()) {
+      elem.style.visibility = 'hidden';
+      goog.style.setElementShown(elem, true);
+    }
+
+    goog.style.setPosition(elem, new goog.math.Coordinate(0, 0));
+  }
+
+  this.buttonRect_ = currentButtonRect;
+  this.viewportBox_ = currentViewport;
+  this.positionMenu();
 };
 
 
@@ -921,7 +949,7 @@ goog.ui.MenuButton.prototype.attachKeyDownEventListener_ = function(attach) {
 
 
 /**
- * Handles {@code HIGHLIGHT} events dispatched by the attached menu.
+ * Handles `HIGHLIGHT` events dispatched by the attached menu.
  * @param {goog.events.Event} e Highlight event to handle.
  */
 goog.ui.MenuButton.prototype.handleHighlightItem = function(e) {
@@ -933,7 +961,7 @@ goog.ui.MenuButton.prototype.handleHighlightItem = function(e) {
 
 
 /**
- * Handles {@code KEYDOWN} events dispatched by the button element. When the
+ * Handles `KEYDOWN` events dispatched by the button element. When the
  * button is focusable and the menu is present and visible, prevents the event
  * from propagating since the desired behavior is only to close the menu.
  * @param {goog.events.Event} e KeyDown event to handle.
@@ -962,7 +990,7 @@ goog.ui.MenuButton.prototype.handleUnHighlightItem = function(e) {
 
 
 /**
- * Handles {@code CLOSE} events dispatched by the associated menu.
+ * Handles `CLOSE` events dispatched by the associated menu.
  * @param {goog.events.Event} e Close event to handle.
  */
 goog.ui.MenuButton.prototype.handleCloseItem = function(e) {

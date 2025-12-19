@@ -15,8 +15,6 @@
 /**
  * @fileoverview Date range data structure. Based loosely on
  * com.google.common.util.DateRange.
- *
- * @author dpb@google.com (David P. Baker)
  */
 
 goog.provide('goog.date.DateRange');
@@ -355,7 +353,7 @@ goog.date.DateRange.standardDateRange = function(dateRangeKey, opt_today) {
       return goog.date.DateRange.allTime(opt_today);
 
     default:
-      throw Error('no such date range key: ' + dateRangeKey);
+      throw new Error('no such date range key: ' + dateRangeKey);
   }
 };
 

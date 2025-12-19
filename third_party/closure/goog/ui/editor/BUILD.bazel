@@ -1,0 +1,175 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":abstractdialog",
+        ":bubble",
+        ":defaulttoolbar",
+        ":linkdialog",
+        ":messages",
+        ":tabpane",
+        ":toolbarcontroller",
+        ":toolbarfactory",
+    ],
+)
+
+closure_js_library(
+    name = "abstractdialog",
+    srcs = ["abstractdialog.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/ui:dialog",
+        "//third_party/closure/goog/ui:popupbase",
+    ],
+)
+
+closure_js_library(
+    name = "bubble",
+    srcs = ["bubble.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/dom:viewportsizemonitor",
+        "//third_party/closure/goog/editor:style",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/functions",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/math:box",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/ui:component",
+        "//third_party/closure/goog/ui:popupbase",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "defaulttoolbar",
+    srcs = ["defaulttoolbar.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/editor:command",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/ui/editor:messages",
+        "//third_party/closure/goog/ui/editor:toolbarfactory",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "linkdialog",
+    srcs = ["linkdialog.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria",
+        "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:inputtype",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/editor:browserfeature",
+        "//third_party/closure/goog/editor:focus",
+        "//third_party/closure/goog/editor:link",
+        "//third_party/closure/goog/editor:node",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:inputhandler",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safehtmlformatter",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/ui:button",
+        "//third_party/closure/goog/ui:component",
+        "//third_party/closure/goog/ui:linkbuttonrenderer",
+        "//third_party/closure/goog/ui/editor:abstractdialog",
+        "//third_party/closure/goog/ui/editor:messages",
+        "//third_party/closure/goog/ui/editor:tabpane",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/window",
+    ],
+)
+
+closure_js_library(
+    name = "messages",
+    srcs = ["messages.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/html:safehtmlformatter"],
+)
+
+closure_js_library(
+    name = "tabpane",
+    srcs = ["tabpane.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:inputtype",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/ui:component",
+        "//third_party/closure/goog/ui:control",
+        "//third_party/closure/goog/ui:tab",
+        "//third_party/closure/goog/ui:tabbar",
+    ],
+)
+
+closure_js_library(
+    name = "toolbarcontroller",
+    srcs = ["toolbarcontroller.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/editor:field",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/ui:component",
+    ],
+)
+
+closure_js_library(
+    name = "toolbarfactory",
+    srcs = ["toolbarfactory.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/ui:component",
+        "//third_party/closure/goog/ui:container",
+        "//third_party/closure/goog/ui:option",
+        "//third_party/closure/goog/ui:toolbar",
+        "//third_party/closure/goog/ui:toolbarbutton",
+        "//third_party/closure/goog/ui:toolbarcolormenubutton",
+        "//third_party/closure/goog/ui:toolbarmenubutton",
+        "//third_party/closure/goog/ui:toolbarrenderer",
+        "//third_party/closure/goog/ui:toolbarselect",
+        "//third_party/closure/goog/useragent",
+    ],
+)

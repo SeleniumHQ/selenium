@@ -14,12 +14,11 @@
 
 /**
  * @fileoverview DOM pattern base class.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.AbstractPattern');
 
+goog.require('goog.dom.TagWalkType');
 goog.require('goog.dom.pattern.MatchType');
 
 
@@ -32,7 +31,7 @@ goog.require('goog.dom.pattern.MatchType');
 goog.dom.pattern.AbstractPattern = function() {
   /**
    * The first node matched by this pattern.
-   * @type {Node}
+   * @type {?Node}
    */
   this.matchedNode = null;
 };
@@ -51,7 +50,7 @@ goog.dom.pattern.AbstractPattern.prototype.reset = function() {
  *
  * @param {Node} token Token to match against.
  * @param {goog.dom.TagWalkType} type The type of token.
- * @return {goog.dom.pattern.MatchType} {@code MATCH} if the pattern matches.
+ * @return {goog.dom.pattern.MatchType} `MATCH` if the pattern matches.
  */
 goog.dom.pattern.AbstractPattern.prototype.matchToken = function(token, type) {
   return goog.dom.pattern.MatchType.NO_MATCH;

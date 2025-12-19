@@ -15,7 +15,6 @@
 /**
  * @fileoverview Generic tree node data structure with arbitrary number of child
  * nodes.
- *
  */
 
 goog.provide('goog.structs.TreeNode');
@@ -43,13 +42,13 @@ goog.structs.TreeNode = function(key, value) {
 
   /**
    * Reference to the parent node or null if it has no parent.
-   * @private {goog.structs.TreeNode<KEY, VALUE>}
+   * @private {?goog.structs.TreeNode<KEY, VALUE>}
    */
   this.parent_ = null;
 
   /**
    * Child nodes or null in case of leaf node.
-   * @private {Array<!goog.structs.TreeNode<KEY, VALUE>>}
+   * @private {?Array<!goog.structs.TreeNode<KEY, VALUE>>}
    */
   this.children_ = null;
 };
@@ -222,7 +221,7 @@ goog.structs.TreeNode.prototype.getSubtreeKeys = function() {
 /**
  * Tells whether this node is the ancestor of the given node.
  * @param {!goog.structs.TreeNode<KEY, VALUE>} node A node.
- * @return {boolean} Whether this node is the ancestor of {@code node}.
+ * @return {boolean} Whether this node is the ancestor of `node`.
  */
 goog.structs.TreeNode.prototype.contains = function(node) {
   var current = node;
@@ -296,8 +295,8 @@ goog.structs.TreeNode.prototype.getNodeByKey = function(key) {
  * @param {function(this:THIS, !goog.structs.TreeNode<KEY, VALUE>, number,
  *     !Array<!goog.structs.TreeNode<KEY, VALUE>>)} f Callback function. It
  *     takes the node, its index and the array of all child nodes as arguments.
- * @param {THIS=} opt_this The object to be used as the value of {@code this}
- *     within {@code f}.
+ * @param {THIS=} opt_this The object to be used as the value of `this`
+ *     within `f`.
  * @template THIS
  */
 goog.structs.TreeNode.prototype.forEachChild = function(f, opt_this) {
@@ -309,8 +308,8 @@ goog.structs.TreeNode.prototype.forEachChild = function(f, opt_this) {
  * Traverses all child nodes recursively in preorder.
  * @param {function(this:THIS, !goog.structs.TreeNode<KEY, VALUE>)} f Callback
  *     function.  It takes the node as argument.
- * @param {THIS=} opt_this The object to be used as the value of {@code this}
- *     within {@code f}.
+ * @param {THIS=} opt_this The object to be used as the value of `this`
+ *     within `f`.
  * @template THIS
  */
 goog.structs.TreeNode.prototype.forEachDescendant = function(f, opt_this) {
@@ -329,8 +328,8 @@ goog.structs.TreeNode.prototype.forEachDescendant = function(f, opt_this) {
  *     (boolean|undefined)} f Callback function. It takes the node as argument.
  *     The children of this node will be visited if the callback returns true or
  *     undefined, and will be skipped if the callback returns false.
- * @param {THIS=} opt_this The object to be used as the value of {@code this}
- *     within {@code f}.
+ * @param {THIS=} opt_this The object to be used as the value of `this`
+ *     within `f`.
  * @template THIS
  */
 goog.structs.TreeNode.prototype.traverse = function(f, opt_this) {
@@ -402,7 +401,7 @@ goog.structs.TreeNode.prototype.replaceChildAt = function(newChild, index) {
 /**
  * Replaces the given child node.
  * @param {!goog.structs.TreeNode<KEY, VALUE>} newChild New node to replace
- *     {@code oldChild}. It must not have parent node.
+ *     `oldChild`. It must not have parent node.
  * @param {!goog.structs.TreeNode<KEY, VALUE>} oldChild Existing child node to
  *     be replaced.
  * @return {!goog.structs.TreeNode<KEY, VALUE>} The replaced child node

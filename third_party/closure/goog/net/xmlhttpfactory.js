@@ -15,7 +15,6 @@
 /**
  * @fileoverview Interface for a factory for creating XMLHttpRequest objects
  * and metadata about them.
- * @author dbk@google.com (David Barrett-Kahn)
  */
 
 goog.provide('goog.net.XmlHttpFactory');
@@ -34,7 +33,7 @@ goog.net.XmlHttpFactory = function() {};
 
 /**
  * Cache of options - we only actually call internalGetOptions once.
- * @type {Object}
+ * @type {?Object}
  * @private
  */
 goog.net.XmlHttpFactory.prototype.cachedOptions_ = null;

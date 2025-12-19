@@ -1,0 +1,22 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [":pixeldensitymonitor"],
+)
+
+closure_js_library(
+    name = "pixeldensitymonitor",
+    srcs = ["pixeldensitymonitor.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventtarget",
+    ],
+)

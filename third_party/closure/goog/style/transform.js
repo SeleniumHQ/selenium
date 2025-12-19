@@ -198,13 +198,13 @@ goog.style.transform.getTransformProperty_ =
  */
 goog.style.transform.matrixConstructor_ =
     goog.functions.cacheReturnValue(function() {
-      if (goog.isDef(goog.global['WebKitCSSMatrix'])) {
+      if (goog.global['WebKitCSSMatrix'] !== undefined) {
         return goog.global['WebKitCSSMatrix'];
       }
-      if (goog.isDef(goog.global['MSCSSMatrix'])) {
+      if (goog.global['MSCSSMatrix'] !== undefined) {
         return goog.global['MSCSSMatrix'];
       }
-      if (goog.isDef(goog.global['CSSMatrix'])) {
+      if (goog.global['CSSMatrix'] !== undefined) {
         return goog.global['CSSMatrix'];
       }
       return null;

@@ -15,8 +15,6 @@
 /**
  * @fileoverview A custom button renderer that uses CSS voodoo to render a
  * button-like object with fake rounded corners.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.CustomButtonRenderer');
@@ -74,13 +72,11 @@ goog.ui.CustomButtonRenderer.CSS_CLASS = goog.getCssName('goog-custom-button');
 goog.ui.CustomButtonRenderer.prototype.createDom = function(control) {
   var button = /** @type {goog.ui.Button} */ (control);
   var classNames = this.getClassNames(button);
-  var attributes = {
-    'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' ')
-  };
   var buttonElement = button.getDomHelper().createDom(
-      goog.dom.TagName.DIV, attributes,
+      goog.dom.TagName.DIV,
+      goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' '),
       this.createButton(button.getContent(), button.getDomHelper()));
-  this.setTooltip(buttonElement, /** @type {!string}*/ (button.getTooltip()));
+  this.setTooltip(buttonElement, /** @type {string}*/ (button.getTooltip()));
 
   return buttonElement;
 };
