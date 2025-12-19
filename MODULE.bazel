@@ -67,6 +67,7 @@ npm.npm_translate_lock(
         "@//:pnpm-workspace.yaml",
         "@//javascript/atoms:package.json",
         "@//javascript/grid-ui:package.json",
+        "@//javascript/private:package.json",
         "@//javascript/selenium-webdriver:package.json",
     ],
     generate_bzl_library_targets = True,
