@@ -34,6 +34,10 @@ module Selenium
           def request: (*untyped) -> untyped
 
           def create_response: (Integer code, Hash[String, untyped] body, String content_type) -> Remote::Response
+
+          def ensure_utf8_encoding: (untyped obj) -> untyped
+
+          def encode_string_to_utf8: (String str) -> String
         end
       end
     end
