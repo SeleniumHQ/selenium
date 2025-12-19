@@ -15,8 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
-#!/usr/bin/env node
 /**
  * Wrapper for closure-make-deps that reads file arguments from a response file.
  *
