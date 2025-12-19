@@ -142,7 +142,7 @@ public class DriverService implements Closeable {
     return new URL(String.format(Locale.ROOT, "http://localhost:%d", port));
   }
 
-  protected Capabilities getDefaultDriverOptions() {
+  public Capabilities getDefaultDriverOptions() {
     return new ImmutableCapabilities();
   }
 

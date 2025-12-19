@@ -11,11 +11,8 @@ LARGE_TESTS = [
     "DistributedTest.java",
     "DistributedCdpTest.java",
     "NewSessionCreationTest.java",
-    "RemoteWebDriverDownloadTest.java",
-]
-
-FIREFOX_CHROMIUM_ONLY_LARGE_TESTS = [
     "RemoteWebDriverBiDiTest.java",
+    "RemoteWebDriverDownloadTest.java",
 ]
 
 java_library(
@@ -91,6 +88,10 @@ java_selenium_test_suite(
     ],
     deps = [
         ":support",
+        "//java/src/org/openqa/selenium/bidi",
+        "//java/src/org/openqa/selenium/bidi/browsingcontext",
+        "//java/src/org/openqa/selenium/bidi/log",
+        "//java/src/org/openqa/selenium/bidi/module",
         "//java/src/org/openqa/selenium/chrome",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid",
@@ -111,38 +112,12 @@ java_selenium_test_suite(
     ] + CDP_DEPS + JUNIT5_DEPS,
 )
 
-java_selenium_test_suite(
-    name = "firefox-chromium-only-large-tests",
-    size = "large",
-    srcs = FIREFOX_CHROMIUM_ONLY_LARGE_TESTS,
-    browsers = [
-        "firefox",
-        "chrome",
-        "edge",
-    ],
-    deps = [
-        ":support",
-        "//java/src/org/openqa/selenium/bidi",
-        "//java/src/org/openqa/selenium/bidi/browsingcontext",
-        "//java/src/org/openqa/selenium/bidi/log",
-        "//java/src/org/openqa/selenium/bidi/module",
-        "//java/src/org/openqa/selenium/firefox",
-        "//java/src/org/openqa/selenium/grid/config",
-        "//java/src/org/openqa/selenium/remote",
-        "//java/test/org/openqa/selenium/environment",
-        "//java/test/org/openqa/selenium/testing:annotations",
-        "//java/test/org/openqa/selenium/testing:test-base",
-        artifact("org.junit.jupiter:junit-jupiter-api"),
-        artifact("org.assertj:assertj-core"),
-    ] + CDP_DEPS + JUNIT5_DEPS,
-)
-
 java_test_suite(
     name = "medium-tests",
     size = "medium",
     srcs = glob(
         ["*Test.java"],
-        exclude = LARGE_TESTS + FIREFOX_CHROMIUM_ONLY_LARGE_TESTS + STRESS_TESTS,
+        exclude = LARGE_TESTS + STRESS_TESTS,
     ),
     tags = [
         "requires-network",

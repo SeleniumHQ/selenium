@@ -96,7 +96,7 @@ public class SafariDriverService extends DriverService {
   }
 
   @Override
-  protected Capabilities getDefaultDriverOptions() {
+  public Capabilities getDefaultDriverOptions() {
     return new SafariOptions();
   }
 

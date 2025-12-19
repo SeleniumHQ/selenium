@@ -5,71 +5,52 @@ on:
   workflow_dispatch:
 
 jobs:
-  browser-tests-windows:
+  browser-tests:
     name: Browser Tests
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: windows
+        os:
+          - ubuntu
+          - windows
+          - macos
     with:
-      name: Browser Tests (chrome, ${{ matrix.os }})
+      name: Browser Tests (${{ matrix.os }})
       os: ${{ matrix.os }}
-      browser: chrome
       cache-key: java-${{ matrix.os }}-tests
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
       java-version: 17
-      run: |
-        fsutil 8dot3name set 0
-        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
-            //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest `
-            //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest `
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
-            //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest `
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
-            //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
-
-  browser-tests-macos:
-    name: Browser Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos
-    with:
-      name: Browser Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      browser: chrome
-      cache-key: java-${{ matrix.os }}-tests
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
-      run: |
-        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
-            //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest \
-          //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest \
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest \
-            //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest \
-            //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-
-  remote-tests:
-    name: Remote Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos
-    with:
-      name: Remote Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      browser: chrome
-      cache-key: java-${{ matrix.os }}-remote-tests
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
-      run: |
-        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+      # Targets:
+      #   1. Browser functional tests (local & remote)
+      #   2. Selenium Manager tests
+      #   3. Tests skipped in .skipped-tests (cannot run on RBE)
+      run: >
+        bazel test
+        --flaky_test_attempts 3
+        --pin_browsers=false
+        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+        --test_env=SE_SKIP_DRIVER_IN_PATH=true
+        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
+        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+        //java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest
+        //java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-remote
+        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
+        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest-remote
+        //java/test/org/openqa/selenium/safari:SafariDriverTest
+        //java/test/org/openqa/selenium/safari:SafariDriverTest-remote
+        //java/test/org/openqa/selenium/manager:SeleniumManagerTest
+        //java/test/org/openqa/selenium/manager:SeleniumManagerTest-chrome
+        //java/test/org/openqa/selenium/manager:SeleniumManagerTest-edge
+        //java/test/org/openqa/selenium/manager:SeleniumManagerTest-safari
+        //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
+        //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest-remote
+        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
+        //java/test/org/openqa/selenium/grid/gridui:OverallGridTest
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-chrome
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-chrome-remote
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-edge
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-edge-remote
+        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
+        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
+        //java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote

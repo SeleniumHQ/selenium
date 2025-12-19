@@ -286,17 +286,19 @@ public class SeleniumManager {
     return level;
   }
 
-  private Path getBinaryInCache(String binaryName) throws IOException {
-
+  Path getCachePath() {
     // Look for cache path as system property or env
     String cachePath = System.getProperty(CACHE_PATH_ENV, "");
     if (cachePath.isEmpty()) cachePath = System.getenv(CACHE_PATH_ENV);
     if (cachePath == null) cachePath = DEFAULT_CACHE_PATH;
 
     cachePath = cachePath.replace(HOME, System.getProperty("user.home"));
+    return Paths.get(cachePath);
+  }
 
+  private Path getBinaryInCache(String binaryName) throws IOException {
     // If cache path is not writable, SM will be extracted to a temporal folder
-    Path cacheParent = Paths.get(cachePath);
+    Path cacheParent = getCachePath();
     if (!Files.isWritable(cacheParent)) {
       cacheParent = Files.createTempDirectory(SELENIUM_MANAGER);
       binaryInTemporalFolder = true;

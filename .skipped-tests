@@ -4,7 +4,6 @@
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
 -//java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest
--//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-edge
 -//java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-remote
 -//java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
 -//java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest-remote
