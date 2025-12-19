@@ -15,21 +15,17 @@
 /**
  * @fileoverview A pool of forward channel requests to enable real-time
  * messaging from the client to server.
- *
- * @visibility {:internal}
  */
 
+goog.module('goog.labs.net.webChannel.ForwardChannelRequestPool');
 
-goog.provide('goog.labs.net.webChannel.ForwardChannelRequestPool');
+goog.module.declareLegacyNamespace();
 
-goog.require('goog.array');
-goog.require('goog.string');
-goog.require('goog.structs.Set');
-
-goog.scope(function() {
-/** @suppress {missingRequire} type checking only */
-var ChannelRequest = goog.labs.net.webChannel.ChannelRequest;
-
+var ChannelRequest = goog.require('goog.labs.net.webChannel.ChannelRequest');
+var Set = goog.require('goog.structs.Set');
+var Wire = goog.require('goog.labs.net.webChannel.Wire');
+var array = goog.require('goog.array');
+var googString = goog.require('goog.string');
 
 
 /**
@@ -37,52 +33,55 @@ var ChannelRequest = goog.labs.net.webChannel.ChannelRequest;
  *
  * @param {number=} opt_maxPoolSize The maximum pool size.
  *
- * @constructor
- * @final
+ * @struct @constructor @final
  */
-goog.labs.net.webChannel.ForwardChannelRequestPool = function(opt_maxPoolSize) {
+var ForwardChannelRequestPool = function(opt_maxPoolSize) {
   /**
-   * THe max pool size as configured.
+   * The max pool size as configured.
    *
    * @private {number}
    */
-  this.maxPoolSizeConfigured_ = opt_maxPoolSize ||
-      goog.labs.net.webChannel.ForwardChannelRequestPool.MAX_POOL_SIZE_;
+  this.maxPoolSizeConfigured_ =
+      opt_maxPoolSize || ForwardChannelRequestPool.MAX_POOL_SIZE_;
 
   /**
    * The current size limit of the request pool. This limit is meant to be
    * read-only after the channel is fully opened.
    *
-   * If SPDY is enabled, set it to the max pool size, which is also
+   * If SPDY or HTTP2 is enabled, set it to the max pool size, which is also
    * configurable.
    *
    * @private {number}
    */
-  this.maxSize_ = ForwardChannelRequestPool.isSpdyEnabled_() ?
+  this.maxSize_ = ForwardChannelRequestPool.isSpdyOrHttp2Enabled_() ?
       this.maxPoolSizeConfigured_ :
       1;
 
   /**
    * The container for all the pending request objects.
    *
-   * @private {goog.structs.Set<ChannelRequest>}
+   * @private {?Set<?ChannelRequest>}
    */
   this.requestPool_ = null;
 
   if (this.maxSize_ > 1) {
-    this.requestPool_ = new goog.structs.Set();
+    this.requestPool_ = new Set();
   }
 
   /**
    * The single request object when the pool size is limited to one.
    *
-   * @private {ChannelRequest}
+   * @private {?ChannelRequest}
    */
   this.request_ = null;
-};
 
-var ForwardChannelRequestPool =
-    goog.labs.net.webChannel.ForwardChannelRequestPool;
+  /**
+   * Saved pending messages when the pool is cancelled.
+   *
+   * @private {!Array<Wire.QueuedMap>}
+   */
+  this.pendingMessages_ = [];
+};
 
 
 /**
@@ -94,11 +93,19 @@ ForwardChannelRequestPool.MAX_POOL_SIZE_ = 10;
 
 
 /**
- * @return {boolean} True if SPDY is enabled for the current page using
- *     chrome specific APIs.
+ * @return {boolean} True if SPDY or HTTP2 is enabled. Uses chrome-specific APIs
+ *     as a fallback and will always return false for other browsers where
+ *     PerformanceNavigationTiming is not available.
  * @private
  */
-ForwardChannelRequestPool.isSpdyEnabled_ = function() {
+ForwardChannelRequestPool.isSpdyOrHttp2Enabled_ = function() {
+  if (goog.global.PerformanceNavigationTiming) {
+    var entrys = /** @type {!Array<!PerformanceNavigationTiming>} */ (
+        goog.global.performance.getEntriesByType('navigation'));
+    return entrys.length > 0 &&
+        (entrys[0].nextHopProtocol == 'hq' ||
+         entrys[0].nextHopProtocol == 'h2');
+  }
   return !!(
       goog.global.chrome && goog.global.chrome.loadTimes &&
       goog.global.chrome.loadTimes() &&
@@ -119,11 +126,11 @@ ForwardChannelRequestPool.prototype.applyClientProtocol = function(
     return;
   }
 
-  if (goog.string.contains(clientProtocol, 'spdy') ||
-      goog.string.contains(clientProtocol, 'quic') ||
-      goog.string.contains(clientProtocol, 'h2')) {
+  if (googString.contains(clientProtocol, 'spdy') ||
+      googString.contains(clientProtocol, 'quic') ||
+      googString.contains(clientProtocol, 'h2')) {
     this.maxSize_ = this.maxPoolSizeConfigured_;
-    this.requestPool_ = new goog.structs.Set();
+    this.requestPool_ = new Set();
     if (this.request_) {
       this.addRequest(this.request_);
       this.request_ = null;
@@ -228,6 +235,9 @@ ForwardChannelRequestPool.prototype.removeRequest = function(req) {
  * Clears the pool and cancel all the pending requests.
  */
 ForwardChannelRequestPool.prototype.cancel = function() {
+  // save any pending messages
+  this.pendingMessages_ = this.getPendingMessages();
+
   if (this.request_) {
     this.request_.cancel();
     this.request_ = null;
@@ -235,8 +245,9 @@ ForwardChannelRequestPool.prototype.cancel = function() {
   }
 
   if (this.requestPool_ && !this.requestPool_.isEmpty()) {
-    goog.array.forEach(
-        this.requestPool_.getValues(), function(val) { val.cancel(); });
+    array.forEach(this.requestPool_.getValues(), function(val) {
+      val.cancel();
+    });
     this.requestPool_.clear();
   }
 };
@@ -248,6 +259,45 @@ ForwardChannelRequestPool.prototype.cancel = function() {
 ForwardChannelRequestPool.prototype.hasPendingRequest = function() {
   return (this.request_ != null) ||
       (this.requestPool_ != null && !this.requestPool_.isEmpty());
+};
+
+
+/**
+ * @return {!Array<Wire.QueuedMap>} All the pending messages from the pool,
+ *     as a new array.
+ */
+ForwardChannelRequestPool.prototype.getPendingMessages = function() {
+  if (this.request_ != null) {
+    return this.pendingMessages_.concat(this.request_.getPendingMessages());
+  }
+
+  if (this.requestPool_ != null && !this.requestPool_.isEmpty()) {
+    var result = this.pendingMessages_;
+    array.forEach(this.requestPool_.getValues(), function(val) {
+      result = result.concat(val.getPendingMessages());
+    });
+    return result;
+  }
+
+  return array.clone(this.pendingMessages_);
+};
+
+
+/**
+ * Records pending messages, e.g. when a request receives a failed response.
+ *
+ * @param {!Array<Wire.QueuedMap>} messages Pending messages.
+ */
+ForwardChannelRequestPool.prototype.addPendingMessages = function(messages) {
+  this.pendingMessages_ = this.pendingMessages_.concat(messages);
+};
+
+
+/**
+ * Clears any recorded pending messages.
+ */
+ForwardChannelRequestPool.prototype.clearPendingMessages = function() {
+  this.pendingMessages_.length = 0;
 };
 
 
@@ -268,7 +318,7 @@ ForwardChannelRequestPool.prototype.forceComplete = function(onComplete) {
   }
 
   if (this.requestPool_ && !this.requestPool_.isEmpty()) {
-    goog.array.forEach(this.requestPool_.getValues(), function(val) {
+    array.forEach(this.requestPool_.getValues(), function(val) {
       val.cancel();
       onComplete(val);
     });
@@ -277,4 +327,5 @@ ForwardChannelRequestPool.prototype.forceComplete = function(onComplete) {
 
   return false;
 };
-});  // goog.scope
+
+exports = ForwardChannelRequestPool;

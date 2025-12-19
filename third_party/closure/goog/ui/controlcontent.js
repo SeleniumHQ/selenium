@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Type declaration for control content.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 goog.provide('goog.ui.ControlContent');
 

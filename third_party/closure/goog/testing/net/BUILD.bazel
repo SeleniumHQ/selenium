@@ -1,0 +1,55 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "mockiframeio",
+    testonly = True,
+    srcs = ["mockiframeio.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:iframeio",
+        "//third_party/closure/goog/testing:testqueue",
+    ],
+)
+
+closure_js_library(
+    name = "xhrio",
+    testonly = True,
+    srcs = ["xhrio.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom:xml",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:httpstatus",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/net:xmlhttp",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/structs",
+        "//third_party/closure/goog/structs:map",
+        "//third_party/closure/goog/testing:testqueue",
+        "//third_party/closure/goog/uri",
+        "//third_party/closure/goog/uri:utils",
+    ],
+)
+
+closure_js_library(
+    name = "xhriopool",
+    testonly = True,
+    srcs = ["xhriopool.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/net:xhriopool",
+        "//third_party/closure/goog/testing/net:xhrio",
+    ],
+)

@@ -53,6 +53,7 @@ import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.Clock;
@@ -792,7 +793,10 @@ public class LocalNode extends Node implements Closeable {
     File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
     List<String> fileNames = Arrays.stream(files).map(File::getName).collect(Collectors.toList());
     List<DownloadedFile> fileInfos =
-        Arrays.stream(files).map(this::getFileInfo).collect(Collectors.toList());
+        Arrays.stream(files)
+            .map(this::getFileInfo)
+            .filter(file -> file.getLastModifiedTime() > 0)
+            .collect(Collectors.toList());
 
     Map<String, Object> data =
         Map.of(
@@ -810,6 +814,8 @@ public class LocalNode extends Node implements Closeable {
           attributes.creationTime().toMillis(),
           attributes.lastModifiedTime().toMillis(),
           attributes.size());
+    } catch (NoSuchFileException e) {
+      return new DownloadedFile(file.getName(), -1, -1, -1);
     } catch (IOException e) {
       throw new UncheckedIOException("Failed to get file attributes: " + file.getAbsolutePath(), e);
     }

@@ -17,7 +17,6 @@
  *
  * (Based loosly on my animation code for 13thparallel.org, with extra
  * inspiration from the DojoToolkit's modifications to my code)
- * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.fx.Animation');
@@ -51,11 +50,11 @@ goog.fx.Animation = function(start, end, duration, opt_acc) {
   goog.fx.Animation.base(this, 'constructor');
 
   if (!goog.isArray(start) || !goog.isArray(end)) {
-    throw Error('Start and end parameters must be arrays');
+    throw new Error('Start and end parameters must be arrays');
   }
 
   if (start.length != end.length) {
-    throw Error('Start and end points must be the same length');
+    throw new Error('Start and end points must be the same length');
   }
 
   /**
@@ -123,6 +122,14 @@ goog.fx.Animation = function(start, end, duration, opt_acc) {
   this.lastFrame = null;
 };
 goog.inherits(goog.fx.Animation, goog.fx.TransitionBase);
+
+
+/**
+ * @return {number} The duration of this animation in milliseconds.
+ */
+goog.fx.Animation.prototype.getDuration = function() {
+  return this.duration;
+};
 
 
 /**

@@ -25,7 +25,8 @@ goog.require('goog.labs.userAgent.platform');
  * @define {boolean} Whether the user agent is running with in an environment
  * that should use Mac-based keyboard shortcuts (Meta instead of Ctrl, etc.).
  */
-goog.define('goog.userAgent.keyboard.ASSUME_MAC_KEYBOARD', false);
+goog.userAgent.keyboard.ASSUME_MAC_KEYBOARD =
+    goog.define('goog.userAgent.keyboard.ASSUME_MAC_KEYBOARD', false);
 
 
 /**

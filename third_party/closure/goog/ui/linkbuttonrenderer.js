@@ -19,8 +19,6 @@
  * For accessibility reasons, it is best to use this with a goog.ui.Button
  * instead of an A element for links that perform actions in the page.  Links
  * that have an href and open a new page can and should remain as A elements.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.ui.LinkButtonRenderer');

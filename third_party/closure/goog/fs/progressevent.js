@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview A wrapper for the HTML5 File ProgressEvent objects.
- *
  */
 goog.provide('goog.fs.ProgressEvent');
 

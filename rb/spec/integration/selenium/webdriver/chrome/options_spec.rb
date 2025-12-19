@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Options, exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :chrome}] do
+      describe Options, exclusive: {browser: :chrome} do
         it 'passes emulated device correctly' do
           reset_driver!(emulation: {device_name: 'Nexus 5'}) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'
@@ -42,6 +42,39 @@ module Selenium
             ua = driver.execute_script 'return window.navigator.userAgent'
             expect(ua).to eq('foo;bar')
           end
+        end
+
+        it 'enables bidi', exclusive: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
+          quit_driver
+
+          options = Selenium::WebDriver::Options.chrome
+          expect(options.web_socket_url).to be_nil
+          expect(options.bidi?).to be false
+
+          options.enable_bidi!
+          expect(options.web_socket_url).to be true
+          expect(options.bidi?).to be true
+
+          driver = Selenium::WebDriver.for :chrome, options: options
+
+          expect(driver.capabilities.web_socket_url).to be_a String
+
+          driver.quit
+        end
+
+        it 'enables BiDi on initialization',
+           exclusive: {bidi: true, reason: 'bazel does not have dependencies otherwise'} do
+          quit_driver
+
+          options = Selenium::WebDriver::Options.chrome(bidi: true)
+          expect(options.web_socket_url).to be true
+          expect(options.bidi?).to be true
+
+          driver = Selenium::WebDriver.for :chrome, options: options
+
+          expect(driver.capabilities.web_socket_url).to be_a String
+
+          driver.quit
         end
       end
     end # Chrome

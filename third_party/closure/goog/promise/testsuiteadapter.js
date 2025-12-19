@@ -30,7 +30,7 @@ goog.setTestOnly('goog.promise.testSuiteAdapter');
 
 
 var promisesAplusTests = /** @type {function(!Object, function(*))} */ (
-    require('promises_aplus_tests'));
+    require('promises-aplus-tests'));
 
 
 /**

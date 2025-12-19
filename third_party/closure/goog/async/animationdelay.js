@@ -15,8 +15,6 @@
 /**
  * @fileoverview A delayed callback that pegs to the next animation frame
  * instead of a user-configurable timeout.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.async.AnimationDelay');
@@ -64,7 +62,7 @@ goog.async.AnimationDelay = function(listener, opt_window, opt_handler) {
   /**
    * Identifier of the active delay timeout, or event listener,
    * or null when inactive.
-   * @private {goog.events.Key|number}
+   * @private {?goog.events.Key|number}
    */
   this.id_ = null;
 

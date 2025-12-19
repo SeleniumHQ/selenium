@@ -21,8 +21,6 @@
  *
  * Note: these utilities are meant to operate on HTMLElements and
  * will not work on elements with differing interfaces (such as SVGElements).
- *
- * @author arv@google.com (Erik Arvidsson)
  */
 
 
@@ -38,23 +36,23 @@ goog.require('goog.array');
  * @deprecated Use goog.dom.classlist.set instead.
  */
 goog.dom.classes.set = function(element, className) {
-  element.className = className;
+  /** @type {!HTMLElement} */ (element).className = className;
 };
 
 
 /**
  * Gets an array of class names on an element
  * @param {Node} element DOM node to get class of.
- * @return {!Array<?>} Class names on {@code element}. Some browsers add extra
+ * @return {!Array<?>} Class names on `element`. Some browsers add extra
  *     properties to the array. Do not depend on any of these!
  * @deprecated Use goog.dom.classlist.get instead.
  */
 goog.dom.classes.get = function(element) {
-  var className = element.className;
+  var className = /** @type {!Element} */ (element).className;
   // Some types of elements don't have a className in IE (e.g. iframes).
   // Furthermore, in Firefox, className is not a string when the element is
   // an SVG element.
-  return goog.isString(className) && className.match(/\S+/g) || [];
+  return typeof className === 'string' && className.match(/\S+/g) || [];
 };
 
 
@@ -79,7 +77,7 @@ goog.dom.classes.add = function(element, var_args) {
  * Removes a class or classes from an element.
  * @param {Node} element DOM node to remove class from.
  * @param {...string} var_args Class name(s) to remove.
- * @return {boolean} Whether all classes in {@code var_args} were found and
+ * @return {boolean} Whether all classes in `var_args` were found and
  *     removed.
  * @deprecated Use goog.dom.classlist.remove or goog.dom.classlist.removeAll
  *     instead.
@@ -98,7 +96,7 @@ goog.dom.classes.remove = function(element, var_args) {
  * {@link goog.dom.classes.addRemove}. Adds one or more classes to the supplied
  * classes array.
  * @param {Array<string>} classes All class names for the element, will be
- *     updated to have the classes supplied in {@code args} added.
+ *     updated to have the classes supplied in `args` added.
  * @param {Array<string>} args Class names to add.
  * @private
  */
@@ -174,13 +172,13 @@ goog.dom.classes.swap = function(element, fromClass, toClass) {
  */
 goog.dom.classes.addRemove = function(element, classesToRemove, classesToAdd) {
   var classes = goog.dom.classes.get(element);
-  if (goog.isString(classesToRemove)) {
+  if (typeof classesToRemove === 'string') {
     goog.array.remove(classes, classesToRemove);
   } else if (goog.isArray(classesToRemove)) {
     classes = goog.dom.classes.getDifference_(classes, classesToRemove);
   }
 
-  if (goog.isString(classesToAdd) &&
+  if (typeof classesToAdd === 'string' &&
       !goog.array.contains(classes, classesToAdd)) {
     classes.push(classesToAdd);
   } else if (goog.isArray(classesToAdd)) {

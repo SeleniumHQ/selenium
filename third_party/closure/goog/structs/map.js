@@ -15,7 +15,6 @@
 /**
  * @fileoverview Datastructure: Hash Map.
  *
- * @author arv@google.com (Erik Arvidsson)
  *
  * This file contains an implementation of a Map structure. It implements a lot
  * of the methods used in goog.structs so those functions work on hashes. This
@@ -28,7 +27,6 @@ goog.provide('goog.structs.Map');
 
 goog.require('goog.iter.Iterator');
 goog.require('goog.iter.StopIteration');
-goog.require('goog.object');
 
 
 
@@ -39,6 +37,7 @@ goog.require('goog.object');
  *     will be used as key-value pairs.
  * @constructor
  * @template K, V
+ * @deprecated This type is misleading: use ES6 Map instead.
  */
 goog.structs.Map = function(opt_map, var_args) {
 
@@ -79,13 +78,13 @@ goog.structs.Map = function(opt_map, var_args) {
 
   if (argLength > 1) {
     if (argLength % 2) {
-      throw Error('Uneven number of arguments');
+      throw new Error('Uneven number of arguments');
     }
     for (var i = 0; i < argLength; i += 2) {
       this.set(arguments[i], arguments[i + 1]);
     }
   } else if (opt_map) {
-    this.addAll(/** @type {Object} */ (opt_map));
+    this.addAll(/** @type {!Object} */ (opt_map));
   }
 };
 
@@ -278,7 +277,7 @@ goog.structs.Map.prototype.cleanupKeysArray_ = function() {
 
 /**
  * Returns the value for the given key.  If the key is not found and the default
- * value is not given this will return {@code undefined}.
+ * value is not given this will return `undefined`.
  * @param {*} key The key to get the value for.
  * @param {DEFAULT=} opt_val The value to return if no item is found for the
  *     given key, defaults to undefined.
@@ -314,21 +313,18 @@ goog.structs.Map.prototype.set = function(key, value) {
 
 /**
  * Adds multiple key-value pairs from another goog.structs.Map or Object.
- * @param {Object} map  Object containing the data to add.
+ * @param {?Object} map Object containing the data to add.
  */
 goog.structs.Map.prototype.addAll = function(map) {
-  var keys, values;
   if (map instanceof goog.structs.Map) {
-    keys = map.getKeys();
-    values = map.getValues();
+    var keys = map.getKeys();
+    for (var i = 0; i < keys.length; i++) {
+      this.set(keys[i], map.get(keys[i]));
+    }
   } else {
-    keys = goog.object.getKeys(map);
-    values = goog.object.getValues(map);
-  }
-  // we could use goog.array.forEach here but I don't want to introduce that
-  // dependency just for this.
-  for (var i = 0; i < keys.length; i++) {
-    this.set(keys[i], values[i]);
+    for (var key in map) {
+      this.set(key, map[key]);
+    }
   }
 };
 
@@ -432,7 +428,7 @@ goog.structs.Map.prototype.__iterator__ = function(opt_keys) {
   var newIter = new goog.iter.Iterator;
   newIter.next = function() {
     if (version != selfObj.version_) {
-      throw Error('The map has changed since the iterator was created');
+      throw new Error('The map has changed since the iterator was created');
     }
     if (i >= selfObj.keys_.length) {
       throw goog.iter.StopIteration;
@@ -447,7 +443,7 @@ goog.structs.Map.prototype.__iterator__ = function(opt_keys) {
 /**
  * Safe way to test for hasOwnProperty.  It even allows testing for
  * 'hasOwnProperty'.
- * @param {Object} obj The object to test for presence of the given key.
+ * @param {!Object} obj The object to test for presence of the given key.
  * @param {*} key The key to check for.
  * @return {boolean} Whether the object has the key.
  * @private

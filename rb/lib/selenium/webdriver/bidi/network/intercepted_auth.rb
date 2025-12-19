@@ -20,6 +20,10 @@
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       class InterceptedAuth < InterceptedItem
         def authenticate(username, password)
           network.continue_with_auth(id, username, password)

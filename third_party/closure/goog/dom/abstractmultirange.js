@@ -15,8 +15,6 @@
 /**
  * @fileoverview Utilities for working with ranges comprised of multiple
  * sub-ranges.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 

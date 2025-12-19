@@ -369,10 +369,15 @@ bot.events.KeyboardEventFactory_.prototype.create = function (target, opt_args) 
     event.ctrlKey = args.ctrlKey;
     event.metaKey = args.metaKey;
     event.shiftKey = args.shiftKey;
-    event.keyCode = args.charCode || args.keyCode;
-    if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
-      event.charCode = (this == bot.events.EventType.KEYPRESS) ?
-        event.keyCode : 0;
+    if (goog.userAgent.GECKO) {
+      event.keyCode = args.charCode ? 0 : args.keyCode;
+      event.charCode = args.charCode;
+    } else {
+      event.keyCode = args.charCode || args.keyCode;
+      if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
+        event.charCode = (this == bot.events.EventType.KEYPRESS) ?
+          event.keyCode : 0;
+      }
     }
   }
 

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Definition of the ErrorReporter class, which creates an error
  * handler that reports any errors raised to a URL.
- *
  */
 
 goog.provide('goog.debug.ErrorReporter');
@@ -26,6 +25,7 @@ goog.require('goog.debug');
 goog.require('goog.debug.Error');
 goog.require('goog.debug.ErrorHandler');
 goog.require('goog.debug.entryPointRegistry');
+goog.require('goog.debug.errorcontext');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
@@ -104,7 +104,7 @@ goog.debug.ErrorReporter = function(
       /**
        * The internal error handler used to catch all errors.
        *
-       * @private {goog.debug.ErrorHandler}
+       * @private {?goog.debug.ErrorHandler}
        */
       this.errorHandler_ = null;
 
@@ -127,7 +127,8 @@ goog.inherits(goog.debug.ErrorReporter, goog.events.EventTarget);
  *     bringing in a lot of code from ErrorHandler and entryPointRegistry in
  *     compiled mode.
  */
-goog.define('goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT', true);
+goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT =
+    goog.define('goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT', true);
 
 
 
@@ -305,13 +306,24 @@ goog.debug.ErrorReporter.prototype.setXhrSender = function(xhrSender) {
  * @param {Object} e The exception.
  * @param {!Object<string, string>=} opt_context Context values to optionally
  *     include in the error report.
+ * @suppress {strictMissingProperties} error is not defined on Object
  */
 goog.debug.ErrorReporter.prototype.handleException = function(e, opt_context) {
-  var error = /** @type {!Error} */ (goog.debug.normalizeErrorObject(e));
-
+  // goog.debug.catchErrors passes the actual error object (in some browsers) in
+  // the error property. If we have that, use that instead of the incomplete set
+  // of random properties passed to window.onerror.
+  e = e.error || e;
   // Construct the context, possibly from the one provided in the argument, and
   // pass it to the context provider if there is one.
   var context = opt_context ? goog.object.clone(opt_context) : {};
+  if (e instanceof Error) {
+    goog.object.extend(
+        context,
+        goog.debug.errorcontext.getErrorContext(/** @type {!Error} */ (e)));
+  }
+
+  var error = /** @type {!Error} */ (goog.debug.normalizeErrorObject(e));
+
   if (this.contextProvider_) {
     try {
       this.contextProvider_(error, context);
@@ -376,7 +388,7 @@ goog.debug.ErrorReporter.prototype.sendErrorReport = function(
     var queryData = goog.uri.utils.buildQueryDataFromMap(queryMap);
 
     // Truncate if truncationLimit set.
-    if (goog.isNumber(this.truncationLimit_)) {
+    if (typeof this.truncationLimit_ === 'number') {
       queryData = queryData.substring(0, this.truncationLimit_);
     }
 
@@ -407,7 +419,7 @@ goog.debug.ErrorReporter.prototype.setContextPrefix = function(prefix) {
  */
 goog.debug.ErrorReporter.prototype.setTruncationLimit = function(limit) {
   goog.asserts.assert(
-      !goog.isNumber(limit) || limit >= 0,
+      typeof limit !== 'number' || limit >= 0,
       'Body limit must be valid number >= 0 or null');
   this.truncationLimit_ = limit;
 };

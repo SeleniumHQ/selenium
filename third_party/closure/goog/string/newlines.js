@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Utilities for string newlines.
- * @author nnaze@google.com (Nathan Naze)
  */
 
 

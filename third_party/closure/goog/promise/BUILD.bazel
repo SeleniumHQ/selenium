@@ -1,0 +1,58 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":nativeresolver",
+        ":promise",
+        ":resolver",
+        ":thenable",
+    ],
+)
+
+closure_js_library(
+    name = "nativeresolver",
+    srcs = ["nativeresolver.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "promise",
+    srcs = ["promise.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/async:freelist",
+        "//third_party/closure/goog/async:nexttick",
+        "//third_party/closure/goog/async:run",
+        "//third_party/closure/goog/debug:error",
+        "//third_party/closure/goog/promise:resolver",
+        "//third_party/closure/goog/promise:thenable",
+    ],
+)
+
+closure_js_library(
+    name = "resolver",
+    srcs = ["resolver.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "testsuiteadapter",
+    testonly = True,
+    srcs = ["testsuiteadapter.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/promise"],
+)
+
+closure_js_library(
+    name = "thenable",
+    srcs = ["thenable.js"],
+    lenient = True,
+)

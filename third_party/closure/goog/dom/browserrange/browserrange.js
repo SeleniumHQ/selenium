@@ -17,8 +17,6 @@
  * well as several useful utility functions.
  *
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 

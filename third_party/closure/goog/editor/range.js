@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Utilties for working with ranges.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.range');
@@ -495,7 +493,7 @@ goog.editor.range.Point.prototype.getParentPoint = function() {
  * @param {Node} node The node containing the point.
  * @param {number} offset The offset of the point from the node.
  * @param {boolean=} opt_trendLeft Notice that a (node, offset) pair may be
- *     equivalent to more than one descendent (node, offset) pair in the DOM.
+ *     equivalent to more than one descendant (node, offset) pair in the DOM.
  *     By default, we trend rightward. If this parameter is true, then we
  *     trend leftward. The tendency to fall rightward by default is for
  *     consistency with other range APIs (like placeCursorNextTo).

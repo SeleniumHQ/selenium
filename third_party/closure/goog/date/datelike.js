@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Typedefs for working with dates.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.date.DateLike');

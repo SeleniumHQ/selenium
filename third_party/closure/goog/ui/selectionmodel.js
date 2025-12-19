@@ -17,8 +17,6 @@
  *
  * TODO(attila): Add keyboard & mouse event hooks?
  * TODO(attila): Add multiple selection?
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 
@@ -42,7 +40,7 @@ goog.ui.SelectionModel = function(opt_items) {
 
   /**
    * Array of items controlled by the selection model.  If the items support
-   * the {@code setSelected(Boolean)} interface, they will be (de)selected
+   * the `setSelected(Boolean)` interface, they will be (de)selected
    * as needed.
    * @type {!Array<Object>}
    * @private
@@ -56,7 +54,7 @@ goog.tagUnsealableClass(goog.ui.SelectionModel);
 
 /**
  * The currently selected item (null if none).
- * @type {Object}
+ * @type {?Object}
  * @private
  */
 goog.ui.SelectionModel.prototype.selectedItem_ = null;
@@ -66,7 +64,7 @@ goog.ui.SelectionModel.prototype.selectedItem_ = null;
  * Selection handler function.  Called with two arguments (the item to be
  * selected or deselected, and a Boolean indicating whether the item is to
  * be selected or deselected).
- * @type {Function}
+ * @type {?Function}
  * @private
  */
 goog.ui.SelectionModel.prototype.selectionHandler_ = null;
@@ -88,7 +86,7 @@ goog.ui.SelectionModel.prototype.getSelectionHandler = function() {
  * function must take two arguments:  an item and a Boolean to indicate whether
  * the item is to be selected or deselected.  Selection handler functions are
  * only needed if the items in the selection model don't natively support the
- * {@code setSelected(Boolean)} interface.
+ * `setSelected(Boolean)` interface.
  * @param {Function} handler Selection handler function.
  */
 goog.ui.SelectionModel.prototype.setSelectionHandler = function(handler) {
@@ -183,7 +181,7 @@ goog.ui.SelectionModel.prototype.addItemAt = function(item, index) {
 
 
 /**
- * Removes the given item (if it exists).  Dispatches a {@code SELECT} event if
+ * Removes the given item (if it exists).  Dispatches a `SELECT` event if
  * the removed item was the currently selected item.
  * @param {Object} item Item to remove.
  */
@@ -224,7 +222,7 @@ goog.ui.SelectionModel.prototype.getItems = function() {
 
 /**
  * Selects the given item, deselecting any previously selected item, and
- * dispatches a {@code SELECT} event.
+ * dispatches a `SELECT` event.
  * @param {Object} item Item to select (null to clear the selection).
  */
 goog.ui.SelectionModel.prototype.setSelectedItem = function(item) {
@@ -251,7 +249,7 @@ goog.ui.SelectionModel.prototype.getSelectedIndex = function() {
 
 /**
  * Selects the item at the given index, deselecting any previously selected
- * item, and dispatches a {@code SELECT} event.
+ * item, and dispatches a `SELECT` event.
  * @param {number} index Index to select (-1 to clear the selection).
  */
 goog.ui.SelectionModel.prototype.setSelectedIndex = function(index) {
@@ -278,9 +276,9 @@ goog.ui.SelectionModel.prototype.disposeInternal = function() {
 
 /**
  * Private helper; selects or deselects the given item based on the value of
- * the {@code select} argument.  If a selection handler has been registered
+ * the `select` argument.  If a selection handler has been registered
  * (via {@link #setSelectionHandler}, calls it to update the internal selection
- * state of the item.  Otherwise, attempts to call {@code setSelected(Boolean)}
+ * state of the item.  Otherwise, attempts to call `setSelected(Boolean)`
  * on the item itself, provided the object supports that interface.
  * @param {Object} item Item to select or deselect.
  * @param {boolean} select If true, the object will be selected; if false, it

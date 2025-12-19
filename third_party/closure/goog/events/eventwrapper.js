@@ -14,11 +14,12 @@
 
 /**
  * @fileoverview Definition of the goog.events.EventWrapper interface.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.events.EventWrapper');
+
+goog.forwardDeclare('goog.events.EventHandler');
+goog.forwardDeclare('goog.events.ListenableType');
 
 
 

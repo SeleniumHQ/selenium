@@ -1,0 +1,19 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "proto2",
+    testonly = True,
+    srcs = ["proto2.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/proto2:message",
+        "//third_party/closure/goog/proto2:objectserializer",
+        "//third_party/closure/goog/testing:asserts",
+    ],
+)

@@ -28,6 +28,7 @@ goog.provide('goog.ui.media.MediaModel.Player');
 goog.provide('goog.ui.media.MediaModel.SubTitle');
 goog.provide('goog.ui.media.MediaModel.Thumbnail');
 
+goog.forwardDeclare('goog.math.Size');
 goog.require('goog.array');
 goog.require('goog.html.TrustedResourceUrl');
 
@@ -41,8 +42,8 @@ goog.require('goog.html.TrustedResourceUrl');
  *
  * The current common data shared by medias is to have URLs, mime types,
  * captions, descriptions, thumbnails and players. Some of these may not be
- * available, or applications may not want to render them, so {@code null}
- * values are allowed. {@code goog.ui.media.MediaRenderer} checks whether the
+ * available, or applications may not want to render them, so `null`
+ * values are allowed. `goog.ui.media.MediaRenderer` checks whether the
  * values are available before creating DOMs for them.
  *
  * @param {string=} opt_url An optional URL of the media.

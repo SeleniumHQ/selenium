@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Class that retrieves autocomplete matches via an ajax call.
- *
  */
 
 goog.provide('goog.ui.ac.RemoteArrayMatcher');
@@ -89,7 +88,7 @@ goog.ui.ac.RemoteArrayMatcher.prototype.content_ = undefined;
 
 /**
  * Headers to send with every HTTP request.
- * @type {Object|goog.structs.Map}
+ * @type {?Object|?goog.structs.Map}
  * @private
  */
 goog.ui.ac.RemoteArrayMatcher.prototype.headers_ = null;
@@ -97,7 +96,7 @@ goog.ui.ac.RemoteArrayMatcher.prototype.headers_ = null;
 
 /**
  * Key to the listener on XHR. Used to clear previous listeners.
- * @type {goog.events.Key}
+ * @type {?goog.events.Key}
  * @private
  */
 goog.ui.ac.RemoteArrayMatcher.prototype.lastListenerKey_ = null;
@@ -210,6 +209,7 @@ goog.ui.ac.RemoteArrayMatcher.prototype.parseResponseText = function(
  * @param {string} token The XHR autocomplete token.
  * @param {Function} matchHandler The AutoComplete match handler.
  * @param {goog.events.Event} event The XHR success event.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.ac.RemoteArrayMatcher.prototype.xhrCallback = function(
     token, matchHandler, event) {

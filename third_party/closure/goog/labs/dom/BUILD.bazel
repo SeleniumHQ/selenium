@@ -1,0 +1,27 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [":pagevisibilitymonitor"],
+)
+
+closure_js_library(
+    name = "pagevisibilitymonitor",
+    srcs = ["pagevisibilitymonitor.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:vendor",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/memoize",
+    ],
+)

@@ -39,7 +39,6 @@
  * TODO(user, jessan): create a goog.ui.media.BrowserInterfaceFlashObject that
  * subclasses goog.ui.media.FlashObject to provide all the goodness of
  * http://go/browserinterface.as
- *
  */
 
 goog.provide('goog.ui.media.FlashObject');
@@ -328,7 +327,7 @@ goog.ui.media.FlashObject.prototype.setFlashVar = function(key, value) {
  * @deprecated Use {@link #addFlashVars} or {@link #setFlashVar} instead.
  * @param {goog.structs.Map|Object|string} flashVar A map of variables (given
  *    as a goog.structs.Map or an Object literal) or a key to the optional
- *    {@code opt_value}.
+ *    `opt_value`.
  * @param {string=} opt_value The optional value for the flashVar key.
  * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
@@ -339,7 +338,7 @@ goog.ui.media.FlashObject.prototype.setFlashVars = function(
     this.addFlashVars(/**@type {!goog.structs.Map|!Object}*/ (flashVar));
   } else {
     goog.asserts.assert(
-        goog.isString(flashVar) && goog.isDef(opt_value),
+        typeof flashVar === 'string' && opt_value !== undefined,
         'Invalid argument(s)');
     this.setFlashVar(
         /**@type {string}*/ (flashVar),
@@ -405,8 +404,9 @@ goog.ui.media.FlashObject.prototype.getAllowScriptAccess = function() {
  * @return {!goog.ui.media.FlashObject} The flash object instance for chaining.
  */
 goog.ui.media.FlashObject.prototype.setSize = function(width, height) {
-  this.width_ = goog.isString(width) ? width : Math.round(width) + 'px';
-  this.height_ = goog.isString(height) ? height : Math.round(height) + 'px';
+  this.width_ = (typeof width === 'string') ? width : Math.round(width) + 'px';
+  this.height_ =
+      (typeof height === 'string') ? height : Math.round(height) + 'px';
   if (this.getElement()) {
     goog.style.setSize(this.getFlashElement(), this.width_, this.height_);
   }
@@ -446,7 +446,7 @@ goog.ui.media.FlashObject.prototype.hasRequiredVersion = function() {
 
 
 /**
- * Writes the Flash embedding {@code HTMLObjectElement} to this components root
+ * Writes the Flash embedding `HTMLObjectElement` to this components root
  * element and adds listeners for all events to handle them consistently.
  * @override
  */
@@ -501,7 +501,7 @@ goog.ui.media.FlashObject.prototype.createDom = function() {
     goog.log.warning(
         this.logger_,
         'Required flash version not found:' + this.getRequiredVersion());
-    throw Error(goog.ui.Component.Error.NOT_SUPPORTED);
+    throw new Error(goog.ui.Component.Error.NOT_SUPPORTED);
   }
 
   var element = this.getDomHelper().createElement(goog.dom.TagName.DIV);

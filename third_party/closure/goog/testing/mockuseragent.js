@@ -15,7 +15,6 @@
 /**
  * @fileoverview MockUserAgent overrides goog.userAgent.getUserAgentString()
  *     depending on a specified configuration.
- *
  */
 
 goog.setTestOnly('goog.testing.MockUserAgent');
@@ -54,10 +53,10 @@ goog.testing.MockUserAgent = function() {
 
   /**
    * The navigator object used by goog.userAgent
-   * @type {Object}
+   * @type {?Navigator}
    * @private
    */
-  this.navigator_ = goog.userAgent.getNavigator();
+  this.navigator_ = goog.userAgent.getNavigatorTyped();
 
   /**
    * The documentMode number used by goog.userAgent
@@ -95,6 +94,11 @@ goog.testing.MockUserAgent.prototype.install = function() {
     this.propertyReplacer_.replace(
         goog.userAgent, 'getNavigator', goog.bind(this.getNavigator, this));
 
+    // Stub out navigator functions.
+    this.propertyReplacer_.replace(
+        goog.userAgent, 'getNavigatorTyped',
+        goog.bind(this.getNavigator, this));
+
     // Stub out documentMode functions.
     this.propertyReplacer_.replace(
         goog.userAgent, 'getDocumentMode_',
@@ -125,7 +129,7 @@ goog.testing.MockUserAgent.prototype.setUserAgentString = function(userAgent) {
 
 
 /**
- * @return {Object} The Navigator set in this class.
+ * @return {?Object} The Navigator set in this class.
  */
 goog.testing.MockUserAgent.prototype.getNavigator = function() {
   return this.navigator_;
@@ -133,10 +137,17 @@ goog.testing.MockUserAgent.prototype.getNavigator = function() {
 
 
 /**
+ * @return {?Navigator} The Navigator set in this class.
+ */
+goog.testing.MockUserAgent.prototype.getNavigatorTyped = function() {
+  return this.navigator_;
+};
+
+/**
  * @param {Object} navigator The desired Navigator object to use.
  */
 goog.testing.MockUserAgent.prototype.setNavigator = function(navigator) {
-  this.navigator_ = navigator;
+  this.navigator_ = /** @type {?Navigator} */ (navigator);
 };
 
 /**

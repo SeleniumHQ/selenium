@@ -41,7 +41,6 @@
  * Note: In V8, queues, up to a certain size, can be implemented
  * just fine using Array.push and Array.shift, but other JavaScript
  * engines do not have the optimization of Array.shift.
- *
  */
 
 goog.provide('goog.structs.Queue');

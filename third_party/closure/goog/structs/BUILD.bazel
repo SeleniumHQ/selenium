@@ -1,0 +1,196 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":avltree",
+        ":circularbuffer",
+        ":collection",
+        ":heap",
+        ":inversionmap",
+        ":linkedmap",
+        ":map",
+        ":node",
+        ":pool",
+        ":prioritypool",
+        ":priorityqueue",
+        ":quadtree",
+        ":queue",
+        ":set",
+        ":simplepool",
+        ":stringset",
+        ":structs",
+        ":treenode",
+        ":trie",
+    ],
+)
+
+closure_js_library(
+    name = "avltree",
+    srcs = ["avltree.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/structs:collection",
+    ],
+)
+
+closure_js_library(
+    name = "circularbuffer",
+    srcs = ["circularbuffer.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "collection",
+    srcs = ["collection.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "heap",
+    srcs = ["heap.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/structs:node",
+    ],
+)
+
+closure_js_library(
+    name = "inversionmap",
+    srcs = ["inversionmap.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+    ],
+)
+
+closure_js_library(
+    name = "linkedmap",
+    srcs = ["linkedmap.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/structs:map"],
+)
+
+closure_js_library(
+    name = "map",
+    srcs = ["map.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/iter"],
+)
+
+closure_js_library(
+    name = "node",
+    srcs = ["node.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "pool",
+    srcs = ["pool.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/structs:queue",
+        "//third_party/closure/goog/structs:set",
+    ],
+)
+
+closure_js_library(
+    name = "prioritypool",
+    srcs = ["prioritypool.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/structs:pool",
+        "//third_party/closure/goog/structs:priorityqueue",
+    ],
+)
+
+closure_js_library(
+    name = "priorityqueue",
+    srcs = ["priorityqueue.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/structs:heap"],
+)
+
+closure_js_library(
+    name = "quadtree",
+    srcs = ["quadtree.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/math:coordinate"],
+)
+
+closure_js_library(
+    name = "queue",
+    srcs = ["queue.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/array"],
+)
+
+closure_js_library(
+    name = "set",
+    srcs = ["set.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/structs",
+        "//third_party/closure/goog/structs:collection",
+        "//third_party/closure/goog/structs:map",
+    ],
+)
+
+closure_js_library(
+    name = "simplepool",
+    srcs = ["simplepool.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/disposable"],
+)
+
+closure_js_library(
+    name = "stringset",
+    srcs = ["stringset.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/iter",
+    ],
+)
+
+closure_js_library(
+    name = "structs",
+    srcs = ["structs.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "treenode",
+    srcs = ["treenode.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/structs:node",
+    ],
+)
+
+closure_js_library(
+    name = "trie",
+    srcs = ["trie.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/structs",
+    ],
+)

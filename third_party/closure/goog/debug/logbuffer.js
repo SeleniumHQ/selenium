@@ -18,8 +18,6 @@
  * to eliminate the need for each app to implement their own log buffer. The
  * disadvantage to doing this is that log handlers cannot maintain references to
  * log records and expect that they are not overwriten at a later point.
- *
- * @author agrieve@google.com (Andrew Grieve)
  */
 
 goog.provide('goog.debug.LogBuffer');
@@ -62,7 +60,7 @@ goog.debug.LogBuffer.getInstance = function() {
  * @define {number} The number of log records to buffer. 0 means disable
  * buffering.
  */
-goog.define('goog.debug.LogBuffer.CAPACITY', 0);
+goog.debug.LogBuffer.CAPACITY = goog.define('goog.debug.LogBuffer.CAPACITY', 0);
 
 
 /**

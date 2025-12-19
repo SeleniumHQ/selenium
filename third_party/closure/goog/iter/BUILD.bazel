@@ -1,0 +1,34 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":es6",
+        ":iter",
+    ],
+)
+
+closure_js_library(
+    name = "es6",
+    srcs = ["es6.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/iter"],
+)
+
+closure_js_library(
+    name = "iter",
+    srcs = ["iter.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/functions",
+        "//third_party/closure/goog/math",
+    ],
+)

@@ -232,8 +232,8 @@ goog.math.Box.contains = function(box, other) {
  *
  * @param {goog.math.Box} box A Box.
  * @param {goog.math.Coordinate} coord A Coordinate.
- * @return {number} The x position of {@code coord} relative to the nearest
- *     side of {@code box}, or zero if {@code coord} is inside {@code box}.
+ * @return {number} The x position of `coord` relative to the nearest
+ *     side of `box`, or zero if `coord` is inside `box`.
  */
 goog.math.Box.relativePositionX = function(box, coord) {
   if (coord.x < box.left) {
@@ -251,8 +251,8 @@ goog.math.Box.relativePositionX = function(box, coord) {
  *
  * @param {goog.math.Box} box A Box.
  * @param {goog.math.Coordinate} coord A Coordinate.
- * @return {number} The y position of {@code coord} relative to the nearest
- *     side of {@code box}, or zero if {@code coord} is inside {@code box}.
+ * @return {number} The y position of `coord` relative to the nearest
+ *     side of `box`, or zero if `coord` is inside `box`.
  */
 goog.math.Box.relativePositionY = function(box, coord) {
   if (coord.y < box.top) {
@@ -270,9 +270,9 @@ goog.math.Box.relativePositionY = function(box, coord) {
  *
  * @param {goog.math.Box} box A Box.
  * @param {goog.math.Coordinate} coord A Coordinate.
- * @return {number} The distance between {@code coord} and the nearest
- *     corner/side of {@code box}, or zero if {@code coord} is inside
- *     {@code box}.
+ * @return {number} The distance between `coord` and the nearest
+ *     corner/side of `box`, or zero if `coord` is inside
+ *     `box`.
  */
 goog.math.Box.distance = function(box, coord) {
   var x = goog.math.Box.relativePositionX(box, coord);
@@ -353,10 +353,10 @@ goog.math.Box.prototype.round = function() {
 
 
 /**
- * Translates this box by the given offsets. If a {@code goog.math.Coordinate}
+ * Translates this box by the given offsets. If a `goog.math.Coordinate`
  * is given, then the left and right values are translated by the coordinate's
  * x value and the top and bottom values are translated by the coordinate's y
- * value.  Otherwise, {@code tx} and {@code opt_ty} are used to translate the x
+ * value.  Otherwise, `tx` and `opt_ty` are used to translate the x
  * and y dimension values.
  *
  * @param {number|goog.math.Coordinate} tx The value to translate the x
@@ -374,7 +374,7 @@ goog.math.Box.prototype.translate = function(tx, opt_ty) {
     goog.asserts.assertNumber(tx);
     this.left += tx;
     this.right += tx;
-    if (goog.isNumber(opt_ty)) {
+    if (typeof opt_ty === 'number') {
       this.top += opt_ty;
       this.bottom += opt_ty;
     }
@@ -385,15 +385,15 @@ goog.math.Box.prototype.translate = function(tx, opt_ty) {
 
 /**
  * Scales this coordinate by the given scale factors. The x and y dimension
- * values are scaled by {@code sx} and {@code opt_sy} respectively.
- * If {@code opt_sy} is not given, then {@code sx} is used for both x and y.
+ * values are scaled by `sx` and `opt_sy` respectively.
+ * If `opt_sy` is not given, then `sx` is used for both x and y.
  *
  * @param {number} sx The scale factor to use for the x dimension.
  * @param {number=} opt_sy The scale factor to use for the y dimension.
  * @return {!goog.math.Box} This box after scaling.
  */
 goog.math.Box.prototype.scale = function(sx, opt_sy) {
-  var sy = goog.isNumber(opt_sy) ? opt_sy : sx;
+  var sy = (typeof opt_sy === 'number') ? opt_sy : sx;
   this.left *= sx;
   this.right *= sx;
   this.top *= sy;

@@ -146,7 +146,7 @@ goog.ui.ComboBox.prototype.visibleCount_ = -1;
 
 /**
  * The input element.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.ComboBox.prototype.input_ = null;
@@ -163,7 +163,7 @@ goog.ui.ComboBox.prototype.matchFunction_ = goog.string.startsWith;
 
 /**
  * Element used as the combo boxes button.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.ComboBox.prototype.button_ = null;
@@ -446,8 +446,6 @@ goog.ui.ComboBox.prototype.getNumberOfVisibleItems_ = function() {
     this.visibleCount_ = count;
   }
 
-  goog.log.info(
-      this.logger_, 'getNumberOfVisibleItems() - ' + this.visibleCount_);
   return this.visibleCount_;
 };
 
@@ -523,7 +521,6 @@ goog.ui.ComboBox.prototype.setUseDropdownArrow = function(useDropdownArrow) {
  * @param {string} value The new value.
  */
 goog.ui.ComboBox.prototype.setValue = function(value) {
-  goog.log.info(this.logger_, 'setValue() - ' + value);
   if (this.labelInput_.getValue() != value) {
     this.labelInput_.setValue(value);
     this.handleInputChange_();
@@ -706,7 +703,6 @@ goog.ui.ComboBox.prototype.onDocClicked_ = function(e) {
  * @private
  */
 goog.ui.ComboBox.prototype.onMenuSelected_ = function(e) {
-  goog.log.info(this.logger_, 'onMenuSelected_()');
   var item = /** @type {!goog.ui.MenuItem} */ (e.target);
   // Stop propagation of the original event and redispatch to allow the menu
   // select to be cancelled at this level. i.e. if a menu item should cause
@@ -734,7 +730,6 @@ goog.ui.ComboBox.prototype.onMenuSelected_ = function(e) {
  * @private
  */
 goog.ui.ComboBox.prototype.onInputBlur_ = function(e) {
-  goog.log.info(this.logger_, 'onInputBlur_() - delayed dismiss');
   this.clearDismissTimer_();
   this.dismissTimer_ = goog.Timer.callOnce(
       this.dismiss, goog.ui.ComboBox.BLUR_DISMISS_TIMER_MS, this);
@@ -843,7 +838,6 @@ goog.ui.ComboBox.prototype.handleInputChange_ = function() {
  * @private
  */
 goog.ui.ComboBox.prototype.setItemVisibilityFromToken_ = function(token) {
-  goog.log.info(this.logger_, 'setItemVisibilityFromToken_() - ' + token);
   var isVisibleItem = false;
   var count = 0;
   var recheckHidden = !this.matchFunction_(token, this.lastToken_);
@@ -887,8 +881,6 @@ goog.ui.ComboBox.prototype.setItemVisibilityFromToken_ = function(token) {
  * @private
  */
 goog.ui.ComboBox.prototype.setItemHighlightFromToken_ = function(token) {
-  goog.log.info(this.logger_, 'setItemHighlightFromToken_() - ' + token);
-
   if (token == '') {
     this.menu_.setHighlightedIndex(-1);
     return;

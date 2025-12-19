@@ -20,7 +20,8 @@
 module Selenium
   module WebDriver
     class BiDi
-      # Implements the browsingContext Module of the WebDriver-BiDi specification
+      # Implements the BrowsingContext Module of the WebDriver-BiDi specification
+      # Continue to use functionality from existing `driver.navigate` method
       #
       # @api private
       #

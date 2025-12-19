@@ -22,11 +22,10 @@
  *      google.rpc.Status status = 2;
  *    }
  *
- * 2. In Protobuf-JSON format, StreamBody is represented as a Protobuf-JSON
- *    array (different than JSON array by emitting null elements):
+ * 2. In Protobuf-JSON format, StreamBody is represented as a JSON array:
  *
  *    - [ [ message1, message2, ..., messageN ] ]  (no status)
- *    - [ , status ]  (no message)
+ *    - [ null, status ]  (no message)
  *    - [ [ message1, message2, ..., messageN ] , status ]
  *
  * 3. All parsed messages and status will be delivered in a batch (array),
@@ -146,7 +145,7 @@ PbJsonStreamParser.prototype.parse = function(input) {
           parser.state_ = State.MESSAGES;
           resetJsonStreamParser();
           // Feed the '[' again in the next loop.
-        } else if (input[pos] === ',') {
+        } else if (input[pos] === ',' || input.substr(pos, 5) == 'null,') {
           parser.state_ = State.MESSAGES_DONE;
           // Feed the ',' again in the next loop.
         } else if (input[pos] === ']') {
@@ -175,12 +174,12 @@ PbJsonStreamParser.prototype.parse = function(input) {
         break;
       }
       case State.MESSAGES_DONE: {
-        if (input[pos] === ',') {
+        if (input[pos] === ',' || input.substr(pos, 5) == 'null,') {
           parser.state_ = State.STATUS;
           resetJsonStreamParser();
           // Feed a dummy "[" to match the ending "]".
           parser.jsonStreamParser_.parse('[');
-          pos++;
+          pos += (input[pos] === ',' ? 1 : 5);
           parser.streamPos_++;
         } else if (input[pos] === ']') {
           parser.state_ = State.ARRAY_END;
@@ -249,10 +248,8 @@ PbJsonStreamParser.prototype.parse = function(input) {
   }
 
   function resetJsonStreamParser() {
-    parser.jsonStreamParser_ = new JsonStreamParser({
-      'allowCompactJsonArrayFormat': true,
-      'deliverMessageAsRawString': true
-    });
+    parser.jsonStreamParser_ = new JsonStreamParser(
+        {allowCompactJsonArrayFormat: true, deliverMessageAsRawString: true});
   }
 
   /** @param {?Array<string>} messages Parsed messages */

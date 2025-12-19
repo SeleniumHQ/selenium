@@ -20,8 +20,6 @@
  *
  * Clients can still determine when the field has loaded by listening to
  * field's load event.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.editor.ClickToEditWrapper');
@@ -65,7 +63,7 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
       goog.dom.getDomHelper(fieldObj.getOriginalElement());
 
   /**
-   * @type {goog.dom.SavedCaretRange}
+   * @type {?goog.dom.SavedCaretRange}
    * @private
    */
   this.savedCaretRange_ = null;

@@ -14,11 +14,12 @@
 
 /**
  * @fileoverview An interface that all mocks should share.
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.setTestOnly('goog.testing.MockInterface');
 goog.provide('goog.testing.MockInterface');
+
+goog.require('goog.Promise');
 
 
 
@@ -38,6 +39,13 @@ goog.testing.MockInterface.prototype.$replay = function() {};
  * Reset the mock.
  */
 goog.testing.MockInterface.prototype.$reset = function() {};
+
+
+/**
+ * Waits for the Mock to gather expectations and then performs verify.
+ * @return {!goog.Promise<undefined>}
+ */
+goog.testing.MockInterface.prototype.$waitAndVerify = function() {};
 
 
 /**

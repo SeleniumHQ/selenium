@@ -23,7 +23,6 @@
  *   the last buffered dispatch.
  * You likely only need to listen to one of the three events.  But if you need
  * more, just be cautious of duplicating effort.
- *
  */
 
 goog.provide('goog.dom.BufferedViewportSizeMonitor');

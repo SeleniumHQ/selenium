@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview DOM pattern to match any children of a tag.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.AllChildren');
@@ -47,8 +45,8 @@ goog.inherits(goog.dom.pattern.AllChildren, goog.dom.pattern.AbstractPattern);
  *
  * @param {Node} token Token to match against.
  * @param {goog.dom.TagWalkType} type The type of token.
- * @return {goog.dom.pattern.MatchType} {@code MATCHING} if the token is on the
- *     same level or deeper and {@code BACKTRACK_MATCH} if not.
+ * @return {goog.dom.pattern.MatchType} `MATCHING` if the token is on the
+ *     same level or deeper and `BACKTRACK_MATCH` if not.
  * @override
  */
 goog.dom.pattern.AllChildren.prototype.matchToken = function(token, type) {

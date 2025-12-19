@@ -30,7 +30,6 @@
  * The BASENAME portion is the basename of the URL. It's used for the filename
  * proper so that the local filesystem: URL will be downloaded to a file with a
  * recognizable name.
- *
  */
 
 goog.provide('goog.net.FileDownloader');
@@ -697,7 +696,7 @@ goog.net.FileDownloader.Download_ = function(url, downloader) {
   /**
    * The XhrIo object for downloading the file. Only set once it's been
    * retrieved from the pool.
-   * @type {goog.net.XhrIo}
+   * @type {?goog.net.XhrIo}
    */
   this.xhr = null;
 
@@ -711,21 +710,21 @@ goog.net.FileDownloader.Download_ = function(url, downloader) {
   /**
    * The downloaded blob. Only set once the XHR has completed, if it completed
    * successfully.
-   * @type {Blob}
+   * @type {?Blob}
    */
   this.blob = null;
 
   /**
    * The file entry where the blob is to be stored. Only set once it's been
    * loaded from the filesystem.
-   * @type {goog.fs.FileEntry}
+   * @type {?goog.fs.FileEntry}
    */
   this.file = null;
 
   /**
    * The file writer for writing the blob to the filesystem. Only set once it's
    * been loaded from the filesystem.
-   * @type {goog.fs.FileWriter}
+   * @type {?goog.fs.FileWriter}
    */
   this.writer = null;
 };

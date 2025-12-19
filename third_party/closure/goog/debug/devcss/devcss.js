@@ -73,7 +73,8 @@ goog.debug.DevCss = function(opt_userAgent, opt_userAgentVersion) {
     case goog.debug.DevCss.UserAgent.EDGE:
       break;
     default:
-      throw Error('Could not determine the user agent from known UserAgents');
+      throw new Error(
+          'Could not determine the user agent from known UserAgents');
   }
 
   /**
@@ -121,8 +122,9 @@ goog.debug.DevCss = function(opt_userAgent, opt_userAgentVersion) {
  */
 goog.debug.DevCss.prototype.activateBrowserSpecificCssRules = function(
     opt_enableIe6ReadyHandler) {
-  var enableIe6EventHandler =
-      goog.isDef(opt_enableIe6ReadyHandler) ? opt_enableIe6ReadyHandler : true;
+  var enableIe6EventHandler = (opt_enableIe6ReadyHandler !== undefined) ?
+      opt_enableIe6ReadyHandler :
+      true;
   var cssRules = goog.cssom.getAllCssStyleRules();
 
   for (var i = 0, cssRule; cssRule = cssRules[i]; i++) {

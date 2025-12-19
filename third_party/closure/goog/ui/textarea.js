@@ -313,6 +313,7 @@ goog.ui.Textarea.prototype.setValue = function(value) {
 /**
  * Gets the textarea's value.
  * @return {string} value The value of the textarea.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Textarea.prototype.getValue = function() {
   // We potentially have the placeholder stored in the value.
@@ -342,7 +343,10 @@ goog.ui.Textarea.prototype.setContent = function(content) {
 };
 
 
-/** @override **/
+/**
+ * @override *
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
+ */
 goog.ui.Textarea.prototype.setEnabled = function(enable) {
   goog.ui.Textarea.superClass_.setEnabled.call(this, enable);
   this.getElement().disabled = !enable;
@@ -372,6 +376,7 @@ goog.ui.Textarea.prototype.supportsNativePlaceholder_ = function() {
 /**
  * Sets the value of the textarea element to the default text.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Textarea.prototype.restorePlaceholder_ = function() {
   if (!this.placeholderText_) {
@@ -483,6 +488,7 @@ goog.ui.Textarea.prototype.setHeight_ = function(height) {
  * This is necessary when the textarea is hidden, in which case scrollHeight
  * is not available.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Textarea.prototype.setHeightToEstimate_ = function() {
   var textarea = this.getElement();
@@ -579,6 +585,7 @@ goog.ui.Textarea.TEXTAREA_PLACEHOLDER_CLASS =
  * Called when the element goes out of focus.
  * @param {goog.events.Event=} opt_e The browser event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Textarea.prototype.blur_ = function(opt_e) {
   if (!this.supportsNativePlaceholder_()) {
@@ -597,6 +604,7 @@ goog.ui.Textarea.prototype.blur_ = function(opt_e) {
  * Resizes the textarea to grow/shrink to match its contents.
  * @param {goog.events.Event=} opt_e The browser event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Textarea.prototype.grow_ = function(opt_e) {
   if (this.isResizing_) {

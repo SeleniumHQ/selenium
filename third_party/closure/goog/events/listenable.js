@@ -14,17 +14,15 @@
 
 /**
  * @fileoverview An interface for a listenable JavaScript object.
- * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.events.Listenable');
 goog.provide('goog.events.ListenableKey');
 
-/** @suppress {extraRequire} */
-goog.require('goog.events.EventId');
-
 goog.forwardDeclare('goog.events.EventLike');
 goog.forwardDeclare('goog.events.EventTarget');
+/** @suppress {extraRequire} */
+goog.require('goog.events.EventId');
 
 
 
@@ -37,19 +35,19 @@ goog.forwardDeclare('goog.events.EventTarget');
  * to one offered by native browser event targets, such as
  * capture/bubble mechanism, stopping propagation, and preventing
  * default actions. Capture/bubble mechanism depends on the ancestor
- * tree constructed via {@code #getParentEventTarget}; this tree
+ * tree constructed via `#getParentEventTarget`; this tree
  * must be directed acyclic graph. The meaning of default action(s)
  * in preventDefault is specific to a particular use case.
  *
  * Implementations that do not support capture/bubble or can not have
  * a parent listenable can simply not implement any ability to set the
- * parent listenable (and have {@code #getParentEventTarget} return
+ * parent listenable (and have `#getParentEventTarget` return
  * null).
  *
  * Implementation of this class can be used with or independently from
  * goog.events.
  *
- * Implementation must call {@code #addImplementation(implClass)}.
+ * Implementation must call `#addImplementation(implClass)`.
  *
  * @interface
  * @see goog.events
@@ -73,10 +71,10 @@ goog.events.Listenable.IMPLEMENTED_BY_PROP =
 
 /**
  * Marks a given class (constructor) as an implementation of
- * Listenable, do that we can query that fact at runtime. The class
+ * Listenable, so that we can query that fact at runtime. The class
  * must have already implemented the interface.
- * @param {!Function} cls The class constructor. The corresponding
- *     class must have already implemented the interface.
+ * @param {function(new:goog.events.Listenable,...)} cls The class constructor.
+ *     The corresponding class must have already implemented the interface.
  */
 goog.events.Listenable.addImplementation = function(cls) {
   cls.prototype[goog.events.Listenable.IMPLEMENTED_BY_PROP] = true;
@@ -197,7 +195,7 @@ goog.events.Listenable.prototype.removeAllListeners;
  * mechanism.
  *
  * NOTE(chrishenry): The name reflects the original implementation of
- * custom event target ({@code goog.events.EventTarget}). We decided
+ * custom event target (`goog.events.EventTarget`). We decided
  * that changing the name is not worth it.
  *
  * @return {goog.events.Listenable} The parent EventTarget or null if
