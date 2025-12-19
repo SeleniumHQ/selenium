@@ -50,7 +50,7 @@ class RemoteLogsTest {
 
   @BeforeEach
   public void createMocksAndRemoteLogs() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
   }
 

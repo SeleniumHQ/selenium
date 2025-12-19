@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -240,7 +241,10 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
             "getCredential([]).then(arguments[arguments.length - 1]);");
 
     assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
-    assertThat(response).extracting("attestation.userHandle").asList().containsExactly(1L);
+    assertThat(response)
+        .extracting("attestation.userHandle")
+        .asInstanceOf(InstanceOfAssertFactories.LIST)
+        .containsExactly(1L);
   }
 
   @Test

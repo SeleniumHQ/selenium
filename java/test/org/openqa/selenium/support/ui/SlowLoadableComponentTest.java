@@ -62,7 +62,7 @@ class SlowLoadableComponentTest {
   private static class DetonatingSlowLoader extends SlowLoadableComponent<DetonatingSlowLoader> {
 
     public DetonatingSlowLoader() {
-      super(Clock.systemDefaultZone(), Duration.ofSeconds(1));
+      super(Clock.systemDefaultZone(), Duration.ofSeconds(1L));
     }
 
     @Override
@@ -148,7 +148,7 @@ class SlowLoadableComponentTest {
   private static class HasError extends SlowLoadableComponent<HasError> {
 
     public HasError() {
-      super(new TickingClock(), Duration.ofSeconds(1000));
+      super(new TickingClock(), Duration.ofSeconds(1000L));
     }
 
     @Override

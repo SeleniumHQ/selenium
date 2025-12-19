@@ -90,7 +90,7 @@ class ExpectedConditionsTest {
 
   @BeforeEach
   public void setUpMocks() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     wait =
         new FluentWait<>(mockDriver, mockClock, mockSleeper)

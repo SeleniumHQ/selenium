@@ -244,7 +244,7 @@ public class WebDriverDecorator<T extends WebDriver> {
     public T newInstance(Decorated<T> target) {
       T instance;
       try {
-        instance = (T) clazz.newInstance();
+        instance = clazz.getDeclaredConstructor().newInstance();
       } catch (ReflectiveOperationException e) {
         throw new AssertionError("Unable to create new proxy", e);
       }

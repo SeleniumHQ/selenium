@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -96,9 +97,12 @@ public class DescribedOption implements Comparable<DescribedOption> {
         ConfigValue configValue = field.getAnnotation(ConfigValue.class);
         String fieldValue = "";
         try {
-          Object fieldInstance = field.get(clazz.newInstance());
+          Object fieldInstance = field.get(clazz.getDeclaredConstructor().newInstance());
           fieldValue = fieldInstance == null ? "" : fieldInstance.toString();
-        } catch (IllegalAccessException | InstantiationException ignore) {
+        } catch (IllegalAccessException
+            | InstantiationException
+            | InvocationTargetException
+            | NoSuchMethodException ignore) {
           // We'll swallow this exception since we are just trying to get field's default value
         }
         if (param != null && configValue != null) {

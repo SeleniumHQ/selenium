@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node.local;
 
 import com.google.common.collect.ImmutableList;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -125,14 +126,17 @@ public class LocalNodeFactory {
                 // We do this to give each Node slot its own instance of the DriverService.Builder.
                 // This is important because the Node processes many new session requests
                 // and the DriverService creation needs to be thread safe.
-                Object driverBuilder = clazz.newInstance();
+                Object driverBuilder = clazz.getDeclaredConstructor().newInstance();
                 driverServiceBuilder =
                     ((DriverService.Builder<?, ?>) driverBuilder).usingAnyFreePort();
                 if (!webDriverExecutablePath.isEmpty()) {
                   driverServiceBuilder =
                       driverServiceBuilder.usingDriverExecutable(new File(webDriverExecutablePath));
                 }
-              } catch (InstantiationException | IllegalAccessException e) {
+              } catch (InstantiationException
+                  | IllegalAccessException
+                  | InvocationTargetException
+                  | NoSuchMethodException e) {
                 throw new IllegalArgumentException(
                     String.format("Class %s could not be found or instantiated", clazz));
               }

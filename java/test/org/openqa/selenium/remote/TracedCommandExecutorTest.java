@@ -47,7 +47,7 @@ class TracedCommandExecutorTest {
 
   @BeforeEach
   public void createMocksAndTracedCommandExecutor() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     when(tracer.getCurrentContext()).thenReturn(traceContext);
     when(traceContext.createSpan(anyString())).thenReturn(span);
     tracedCommandExecutor = new TracedCommandExecutor(commandExecutor, tracer);

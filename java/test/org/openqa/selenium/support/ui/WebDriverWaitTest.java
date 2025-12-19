@@ -55,7 +55,7 @@ class WebDriverWaitTest {
 
   @BeforeEach
   public void createMocks() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test
