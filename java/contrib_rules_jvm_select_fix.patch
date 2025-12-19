@@ -1,0 +1,28 @@
+diff --git a/java/private/create_jvm_test_suite.bzl b/java/private/create_jvm_test_suite.bzl
+--- a/java/private/create_jvm_test_suite.bzl
++++ b/java/private/create_jvm_test_suite.bzl
+@@ -117,8 +117,21 @@ def create_jvm_test_suite(
+     make_var_fields = (kwargs.get("jvm_flags", []) +
+                        kwargs.get("javacopts", []) +
+                        kwargs.get("args", []) +
+                        kwargs.get("env", {}).values())
+-    make_var_deps = collections.uniq([dep for dep in deps for flag in make_var_fields if dep in flag])
+-    make_var_runtime_deps = collections.uniq([dep for dep in runtime_deps for flag in make_var_fields if dep in flag])
++
++    # Handle select() in deps or make_var_fields - select is not iterable, so skip make_var extraction
++    # When any of deps, runtime_deps, or make_var_fields is a select(), we cannot iterate over them
++    # at loading time, so we skip the make_var optimization entirely.
++    can_extract_make_vars = (
++        type(deps) == "list" and
++        type(runtime_deps) == "list" and
++        type(make_var_fields) == "list"
++    )
++    if can_extract_make_vars:
++        make_var_deps = collections.uniq([dep for dep in deps for flag in make_var_fields if dep in flag])
++        make_var_runtime_deps = collections.uniq([dep for dep in runtime_deps for flag in make_var_fields if dep in flag])
++    else:
++        make_var_deps = []
++        make_var_runtime_deps = []
+ 
+     for src in test_srcs:
+         suffix = src.rfind(".")
