@@ -15,9 +15,18 @@
 /**
  * @fileoverview Utilities for working with IE control ranges.
  *
- * @author robbyw@google.com (Robby Walker)
+ * @suppress {strictMissingProperties}
  */
 
+
+
+// TODO(b/130421259): We're trying to migrate all ES5 subclasses of Closure
+// Library to ES6. In ES6 this cannot be referenced before super is called. This
+// file has at least one this before a super call (in ES5) and cannot be
+// automatically upgraded to ES6 as a result. Please fix this if you have a
+// chance. Note: This can sometimes be caused by not calling the super
+// constructor at all. You can run the conversion tool yourself to see what it
+// does on this file: blaze run //javascript/refactoring/es6_classes:convert.
 
 goog.provide('goog.dom.ControlRange');
 goog.provide('goog.dom.ControlRangeIterator');
@@ -46,19 +55,19 @@ goog.require('goog.userAgent');
 goog.dom.ControlRange = function() {
   /**
    * The IE control range obejct.
-   * @private {Object}
+   * @private {?Object}
    */
   this.range_ = null;
 
   /**
    * Cached list of elements.
-   * @private {Array<Element>}
+   * @private {?Array<?Element>}
    */
   this.elements_ = null;
 
   /**
    * Cached sorted list of elements.
-   * @private {Array<Element>}
+   * @private {?Array<?Element>}
    */
   this.sortedElements_ = null;
 };
@@ -392,19 +401,19 @@ goog.dom.DomSavedControlRange_.prototype.disposeInternal = function() {
 goog.dom.ControlRangeIterator = function(range) {
   /**
    * The first node in the selection.
-   * @private {Node}
+   * @private {?Node}
    */
   this.startNode_ = null;
 
   /**
    * The last node in the selection.
-   * @private {Node}
+   * @private {?Node}
    */
   this.endNode_ = null;
 
   /**
    * The list of elements left to traverse.
-   * @private {Array<Element>?}
+   * @private {Array<?Element>?}
    */
   this.elements_ = null;
 
@@ -453,7 +462,7 @@ goog.dom.ControlRangeIterator.prototype.isLast = function() {
 
 /**
  * Move to the next position in the selection.
- * Throws {@code goog.iter.StopIteration} when it passes the end of the range.
+ * Throws `goog.iter.StopIteration` when it passes the end of the range.
  * @return {Node} The node at the next position.
  * @override
  */
@@ -475,11 +484,12 @@ goog.dom.ControlRangeIterator.prototype.next = function() {
 
 /** @override */
 goog.dom.ControlRangeIterator.prototype.copyFrom = function(other) {
-  this.elements_ = other.elements_;
-  this.startNode_ = other.startNode_;
-  this.endNode_ = other.endNode_;
+  var that = /** @type {!goog.dom.ControlRangeIterator} */ (other);
+  this.elements_ = that.elements_;
+  this.startNode_ = that.startNode_;
+  this.endNode_ = that.endNode_;
 
-  goog.dom.ControlRangeIterator.superClass_.copyFrom.call(this, other);
+  goog.dom.ControlRangeIterator.superClass_.copyFrom.call(this, that);
 };
 
 

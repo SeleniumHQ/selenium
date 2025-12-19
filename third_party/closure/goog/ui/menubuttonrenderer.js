@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuButton}s and subclasses.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.MenuButtonRenderer');

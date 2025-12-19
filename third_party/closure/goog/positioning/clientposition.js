@@ -14,9 +14,6 @@
 
 /**
  * @fileoverview Client positioning class.
- *
- * @author eae@google.com (Emil A Eklund)
- * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.positioning.ClientPosition');
@@ -46,7 +43,7 @@ goog.require('goog.style');
 goog.positioning.ClientPosition = function(arg1, opt_arg2) {
   /**
    * Coordinate to position popup at.
-   * @type {goog.math.Coordinate}
+   * @type {!goog.math.Coordinate}
    */
   this.coordinate = arg1 instanceof goog.math.Coordinate ?
       arg1 :

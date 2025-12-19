@@ -58,15 +58,16 @@ goog.testing.style.hasVisibleDimensions = function(element) {
 
 /**
  * Determines whether the CSS style of the element renders it visible.
+ * Elements detached from the document are considered invisible.
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the CSS style of the element renders it visible.
  */
 goog.testing.style.isVisible = function(element) {
-  var visibilityStyle =
-      goog.testing.style.getAvailableStyle_(element, 'visibility');
-  var displayStyle = goog.testing.style.getAvailableStyle_(element, 'display');
-
-  return (visibilityStyle != 'hidden' && displayStyle != 'none');
+  if (!goog.dom.isInDocument(element)) {
+    return false;
+  }
+  var style = getComputedStyle(element);
+  return style.visibility != 'hidden' && style.display != 'none';
 };
 
 
@@ -81,21 +82,4 @@ goog.testing.style.isOnScreen = function(el) {
   var viewportRect = goog.math.Rect.createFromBox(viewport);
   return goog.dom.contains(doc, el) &&
       goog.style.getBounds(el).intersects(viewportRect);
-};
-
-
-/**
- * This is essentially goog.style.getStyle_. goog.style.getStyle_ is private
- * and is not a recommended way for general purpose style extractor. For the
- * purposes of layout testing, we only use this function for retrieving
- * 'visiblity' and 'display' style.
- * @param {!Element} element The element to retrieve the style from.
- * @param {string} style Style property name.
- * @return {string} Style value.
- * @private
- */
-goog.testing.style.getAvailableStyle_ = function(element, style) {
-  return goog.style.getComputedStyle(element, style) ||
-      goog.style.getCascadedStyle(element, style) ||
-      goog.style.getStyle(element, style);
 };

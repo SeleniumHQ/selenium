@@ -58,7 +58,7 @@ goog.structs.StringSet = function(opt_elements) {
 
 /**
  * Empty object. Referring to it is faster than creating a new empty object in
- * {@code goog.structs.StringSet.encode_}.
+ * `goog.structs.StringSet.encode_`.
  * @const {!Object}
  * @private
  */
@@ -84,7 +84,7 @@ goog.structs.StringSet.encode_ = function(element) {
 
 
 /**
- * Inverse function of {@code goog.structs.StringSet.encode_}.
+ * Inverse function of `goog.structs.StringSet.encode_`.
  * NOTE: forEach would be 30% faster in FF if the compiler inlined decode.
  * @param {string} key The escaped element used as the key of the internal
  *     object.
@@ -117,7 +117,7 @@ goog.structs.StringSet.prototype.addArray = function(arr) {
 
 
 /**
- * Adds the elements which are in {@code set1} but not in {@code set2} to this
+ * Adds the elements which are in `set1` but not in `set2` to this
  * set.
  * @param {!goog.structs.StringSet} set1 First set.
  * @param {!goog.structs.StringSet} set2 Second set.
@@ -202,7 +202,7 @@ goog.structs.StringSet.prototype.equals = function(stringSet) {
  *     to call for every element. It takes the element, undefined (because sets
  *     have no notion of keys), and the set.
  * @param {Object=} opt_obj The object to be used as the value of 'this'
- *     within {@code f}.
+ *     within `f`.
  */
 goog.structs.StringSet.prototype.forEach = function(f, opt_obj) {
   for (var key in this.elements_) {
@@ -221,21 +221,31 @@ goog.structs.StringSet.prototype.forEach = function(f, opt_obj) {
  * <li>if getCount is not called, adding and removing elements have no overhead.
  * @return {number} The number of elements in the set.
  */
-goog.structs.StringSet.prototype.getCount = Object.keys ? function() {
-  return Object.keys(this.elements_).length;
-} : function() {
-  var count = 0;
-  for (var key in this.elements_) {
-    count++;
-  }
-  return count;
-};
+goog.structs.StringSet.prototype.getCount = Object.keys ?
+    /**
+     * @this {!goog.structs.StringSet}
+     * @return {number}
+     */
+    function() {
+      return Object.keys(this.elements_).length;
+    } :
+    /**
+     * @this {!goog.structs.StringSet}
+     * @return {number}
+     */
+    function() {
+      var count = 0;
+      for (var key in this.elements_) {
+        count++;
+      }
+      return count;
+    };
 
 
 /**
  * Calculates the difference of two sets.
  * @param {!goog.structs.StringSet} stringSet The set to subtract from this set.
- * @return {!goog.structs.StringSet} {@code this} minus {@code stringSet}.
+ * @return {!goog.structs.StringSet} `this` minus `stringSet`.
  */
 goog.structs.StringSet.prototype.getDifference = function(stringSet) {
   var ret = new goog.structs.StringSet;
@@ -265,7 +275,7 @@ goog.structs.StringSet.prototype.getIntersection = function(stringSet) {
  * Calculates the symmetric difference of two sets.
  * @param {!goog.structs.StringSet} stringSet The other set.
  * @return {!goog.structs.StringSet} A new set with the elements in exactly one
- *     of {@code this} and {@code stringSet}.
+ *     of `this` and `stringSet`.
  */
 goog.structs.StringSet.prototype.getSymmetricDifference = function(stringSet) {
   var ret = new goog.structs.StringSet;
@@ -290,16 +300,27 @@ goog.structs.StringSet.prototype.getUnion = function(stringSet) {
 /**
  * @return {!Array<string>} The elements of the set.
  */
-goog.structs.StringSet.prototype.getValues = Object.keys ? function() {
-  // Object.keys was introduced in JavaScript 1.8.5, Array#map in 1.6.
-  return Object.keys(this.elements_).map(goog.structs.StringSet.decode_, this);
-} : function() {
-  var ret = [];
-  for (var key in this.elements_) {
-    ret.push(goog.structs.StringSet.decode_(key));
-  }
-  return ret;
-};
+goog.structs.StringSet.prototype.getValues = Object.keys ?
+    /**
+     * @this {!goog.structs.StringSet}
+     * @return {!Array<string>}
+     */
+    function() {
+      // Object.keys was introduced in JavaScript 1.8.5, Array#map in 1.6.
+      return Object.keys(this.elements_)
+          .map(goog.structs.StringSet.decode_, this);
+    } :
+    /**
+     * @this {!goog.structs.StringSet}
+     * @return {!Array<string>}
+     */
+    function() {
+      var ret = [];
+      for (var key in this.elements_) {
+        ret.push(goog.structs.StringSet.decode_(key));
+      }
+      return ret;
+    };
 
 
 /**

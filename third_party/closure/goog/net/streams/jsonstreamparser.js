@@ -20,8 +20,7 @@
  * 1. The stream represents a valid JSON array (must start with a "[" and close
  *    with the corresponding "]"). Each element of this array is assumed to be
  *    either an array or an object, and will be decoded as a JS object and
- *    delivered. Compact array format that is not valid JSON is also supported,
- *    e.g. [1,,2].
+ *    delivered.
  * 2. All JSON elements in the buffer will be decoded and delivered in a batch.
  * 3. If a high-level API does not support batch delivery (e.g. grpc), then
  *    a wrapper is expected to deliver individual elements separately
@@ -42,7 +41,6 @@ goog.provide('goog.net.streams.JsonStreamParser');
 goog.provide('goog.net.streams.JsonStreamParser.Options');
 
 goog.require('goog.asserts');
-goog.require('goog.json');
 goog.require('goog.net.streams.StreamParser');
 goog.require('goog.net.streams.utils');
 
@@ -132,13 +130,6 @@ goog.net.streams.JsonStreamParser = function(opt_options) {
   this.state_ = Parser.State_.INIT;
 
   /**
-   * Whether allows compact JSON array format, e.g. "[1, ,2]".
-   * @private {boolean}
-   */
-  this.allowCompactJsonArrayFormat_ =
-      !!(opt_options && opt_options.allowCompactJsonArrayFormat);
-
-  /**
    * Whether to deliver the raw message string without decoding into JS object.
    * @private {boolean}
    */
@@ -150,8 +141,7 @@ goog.net.streams.JsonStreamParser = function(opt_options) {
 /**
  * Configuration spec for newly created JSON stream parser:
  *
- * allowCompactJsonArrayFormat: whether allows compact JSON array format, where
- *     null is represented as empty string, e.g. "[1, ,2]".
+ * allowCompactJsonArrayFormat: ignored.
  *
  * deliverMessageAsRawString: whether to deliver the raw message string without
  *     decoding into JS object. Semantically insignificant whitespaces in the
@@ -237,7 +227,7 @@ Parser.prototype.done = function() {
 
 /**
  * Get the part of input that is after the end of the stream. Call this only
- * when {@code this.done()} is true.
+ * when `this.done()` is true.
  *
  * @return {string} The extra input
  *
@@ -259,7 +249,7 @@ Parser.prototype.error_ = function(input, pos) {
   this.streamState_ = Parser.StreamState_.INVALID;
   this.errorMessage_ = 'The stream is broken @' + this.pos_ + '/' + pos +
       '. With input:\n' + input;
-  throw Error(this.errorMessage_);
+  throw new Error(this.errorMessage_);
 };
 
 
@@ -475,12 +465,6 @@ Parser.prototype.parse = function(input) {
             // continue
           } else if ('0123456789'.indexOf(current) !== -1) {
             parser.state_ = State.NUM_DIGIT;
-          } else if (current === ',' && parser.allowCompactJsonArrayFormat_) {
-            parser.state_ = State.VALUE;
-          } else if (current === ']' && parser.allowCompactJsonArrayFormat_) {
-            i--;
-            parser.pos_--;
-            parser.state_ = nextState();
           } else {
             parser.error_(input, i);
           }
@@ -735,7 +719,7 @@ Parser.prototype.parse = function(input) {
       parser.result_.push(opt_data);
     } else {
       parser.result_.push(
-          goog.asserts.assertInstanceof(goog.json.parse(opt_data), Object));
+          goog.asserts.assertInstanceof(JSON.parse(opt_data), Object));
     }
     msgStart = i;
   }

@@ -15,7 +15,6 @@
 /**
  * @fileoverview Rich text spell checker implementation.
  *
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/richtextspellchecker.html
  */
 
@@ -170,15 +169,15 @@ goog.ui.RichTextSpellChecker.prototype.invalidWordCssText =
  * @override
  */
 goog.ui.RichTextSpellChecker.prototype.createDom = function() {
-  throw Error('Render not supported for goog.ui.RichTextSpellChecker.');
+  throw new Error('Render not supported for goog.ui.RichTextSpellChecker.');
 };
 
 
 /**
  * Decorates the element for the UI component.
- *
  * @param {Element} element Element to decorate.
  * @override
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.RichTextSpellChecker.prototype.decorateInternal = function(element) {
   this.setElementInternal(element);
@@ -387,10 +386,10 @@ goog.ui.RichTextSpellChecker.prototype.setExcludeMarker = function(marker) {
 
 /**
  * Determines if the node is excluded from checking.
- *
  * @param {Node} node The node to check.
  * @return {boolean} Whether the node is excluded.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.RichTextSpellChecker.prototype.isExcluded_ = function(node) {
   if (this.excludeMarker && node.className) {
@@ -411,10 +410,10 @@ goog.ui.RichTextSpellChecker.prototype.isExcluded_ = function(node) {
 
 /**
  * Processes nodes recursively.
- *
  * @param {Node} node Node where to start.
  * @return {goog.ui.AbstractSpellChecker.AsyncResult|undefined} Result code.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.RichTextSpellChecker.prototype.processNode_ = function(node) {
   delete this.currentNode_;
@@ -571,9 +570,9 @@ goog.ui.RichTextSpellChecker.prototype.resume = function() {
 /**
  * Processes nodes recursively, removes all spell checker markup, and
  * consolidates text nodes.
- *
  * @param {Node} node node on which to recurse.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.RichTextSpellChecker.prototype.restoreNode_ = function(node) {
   while (node) {
@@ -650,9 +649,9 @@ goog.ui.RichTextSpellChecker.prototype.getElementProperties = function(status) {
 
 /**
  * Handler for click events.
- *
  * @param {goog.events.BrowserEvent} event Event object.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.RichTextSpellChecker.prototype.onWordClick_ = function(event) {
   var target = /** @type {Element} */ (event.target);

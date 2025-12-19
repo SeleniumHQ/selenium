@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Useful compiler idioms.
- *
- * @author johnlenz@google.com (John Lenz)
  */
 
 goog.provide('goog.reflect');
@@ -102,20 +100,20 @@ goog.reflect.canAccessProperty = function(obj, prop) {
 /**
  * Retrieves a value from a cache given a key. The compiler provides special
  * consideration for this call such that it is generally considered side-effect
- * free. However, if the {@code opt_keyFn} or {@code valueFn} have side-effects
+ * free. However, if the `opt_keyFn` or `valueFn` have side-effects
  * then the entire call is considered to have side-effects.
  *
  * Conventionally storing the value on the cache would be considered a
  * side-effect and preclude unused calls from being pruned, ie. even if
  * the value was never used, it would still always be stored in the cache.
  *
- * Providing a side-effect free {@code valueFn} and {@code opt_keyFn}
- * allows unused calls to {@code goog.reflect.cache} to be pruned.
+ * Providing a side-effect free `valueFn` and `opt_keyFn`
+ * allows unused calls to `goog.reflect.cache` to be pruned.
  *
  * @param {!Object<K, V>} cacheObj The object that contains the cached values.
  * @param {?} key The key to lookup in the cache. If it is not string or number
- *     then a {@code opt_keyFn} should be provided. The key is also used as the
- *     parameter to the {@code valueFn}.
+ *     then a `opt_keyFn` should be provided. The key is also used as the
+ *     parameter to the `valueFn`.
  * @param {function(?):V} valueFn The value provider to use to calculate the
  *     value to store in the cache. This function should be side-effect free
  *     to take advantage of the optimization.
@@ -128,7 +126,7 @@ goog.reflect.canAccessProperty = function(obj, prop) {
  * @template V
  */
 goog.reflect.cache = function(cacheObj, key, valueFn, opt_keyFn) {
-  var storedKey = opt_keyFn ? opt_keyFn(key) : key;
+  const storedKey = opt_keyFn ? opt_keyFn(key) : key;
 
   if (Object.prototype.hasOwnProperty.call(cacheObj, storedKey)) {
     return cacheObj[storedKey];

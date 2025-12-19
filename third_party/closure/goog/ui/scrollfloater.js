@@ -98,21 +98,21 @@ goog.ui.ScrollFloater = function(opt_parentElement, opt_domHelper) {
   /**
    * An element used to define the boundaries within which the floater can
    * be positioned.
-   * @type {Element}
+   * @type {?Element}
    * @private
    */
   this.containerElement_ = null;
 
   /**
    * Container element's bounding rectangle.
-   * @type {goog.math.Rect}
+   * @type {?goog.math.Rect}
    * @private
    */
   this.containerBounds_ = null;
 
   /**
    * Element's original bounding rectangle.
-   * @type {goog.math.Rect}
+   * @type {?goog.math.Rect}
    * @private
    */
   this.originalBounds_ = null;
@@ -134,7 +134,7 @@ goog.ui.ScrollFloater = function(opt_parentElement, opt_domHelper) {
   /**
    * The placeholder element dropped in to hold the layout for
    * the floated element.
-   * @type {Element}
+   * @type {?Element}
    * @private
    */
   this.placeholder_ = null;

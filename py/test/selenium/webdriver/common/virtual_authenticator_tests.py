@@ -113,6 +113,9 @@ def test_add_and_remove_virtual_authenticator(driver, pages):
     driver = create_rk_disabled_ctap2_authenticator(driver)
     driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
+    # maximize window to have focus
+    driver.maximize_window()
+
     result = driver.execute_async_script(REGISTER_CREDENTIAL)
     assert result.get("status", "") == "OK"
 

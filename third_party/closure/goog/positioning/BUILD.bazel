@@ -1,0 +1,124 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":absoluteposition",
+        ":abstractposition",
+        ":anchoredposition",
+        ":anchoredviewportposition",
+        ":clientposition",
+        ":menuanchoredposition",
+        ":positioning",
+        ":viewportclientposition",
+        ":viewportposition",
+    ],
+)
+
+closure_js_library(
+    name = "absoluteposition",
+    srcs = ["absoluteposition.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:abstractposition",
+    ],
+)
+
+closure_js_library(
+    name = "abstractposition",
+    srcs = ["abstractposition.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "anchoredposition",
+    srcs = ["anchoredposition.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:abstractposition",
+    ],
+)
+
+closure_js_library(
+    name = "anchoredviewportposition",
+    srcs = ["anchoredviewportposition.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:anchoredposition",
+    ],
+)
+
+closure_js_library(
+    name = "clientposition",
+    srcs = ["clientposition.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:abstractposition",
+        "//third_party/closure/goog/style",
+    ],
+)
+
+closure_js_library(
+    name = "menuanchoredposition",
+    srcs = ["menuanchoredposition.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:anchoredviewportposition",
+    ],
+)
+
+closure_js_library(
+    name = "positioning",
+    srcs = ["positioning.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/math:size",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/style:bidi",
+    ],
+)
+
+closure_js_library(
+    name = "viewportclientposition",
+    srcs = ["viewportclientposition.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:clientposition",
+        "//third_party/closure/goog/style",
+    ],
+)
+
+closure_js_library(
+    name = "viewportposition",
+    srcs = ["viewportposition.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:abstractposition",
+        "//third_party/closure/goog/style",
+    ],
+)

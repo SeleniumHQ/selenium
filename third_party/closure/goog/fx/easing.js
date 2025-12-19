@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Easing functions for animations.
- *
- * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.fx.easing');

@@ -77,6 +77,7 @@ goog.net.MultiIframeLoadMonitor = function(iframes, callback, opt_hasContent) {
 /**
  * Handles a pending iframe load monitor load event.
  * @param {goog.events.Event} e The goog.net.IframeLoadMonitor.LOAD_EVENT event.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.net.MultiIframeLoadMonitor.prototype.handleEvent = function(e) {
   var iframeLoadMonitor = e.target;

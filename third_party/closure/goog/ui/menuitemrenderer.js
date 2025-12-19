@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuItem}s.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.MenuItemRenderer');
@@ -267,7 +265,7 @@ goog.ui.MenuItemRenderer.prototype.hasCheckBoxStructure = function(element) {
 /**
  * Adds or removes extra markup and CSS styling to the menu item to make it
  * selectable or non-selectable, depending on the value of the
- * {@code selectable} argument.
+ * `selectable` argument.
  * @param {!goog.ui.Control} item Menu item to update.
  * @param {!Element} element Menu item element to update.
  * @param {boolean} enable Whether to add or remove the checkbox structure.

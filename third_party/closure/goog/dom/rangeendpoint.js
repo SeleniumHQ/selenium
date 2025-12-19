@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Simple struct for endpoints of a range.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 

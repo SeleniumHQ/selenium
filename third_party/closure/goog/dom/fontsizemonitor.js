@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview A class that can be used to listen to font size changes.
- * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.dom.FontSizeMonitor');
@@ -34,7 +33,7 @@ goog.require('goog.userAgent');
 
 /**
  * This class can be used to monitor changes in font size.  Instances will
- * dispatch a {@code goog.dom.FontSizeMonitor.EventType.CHANGE} event.
+ * dispatch a `goog.dom.FontSizeMonitor.EventType.CHANGE` event.
  * Example usage:
  * <pre>
  * var fms = new goog.dom.FontSizeMonitor();
@@ -125,7 +124,7 @@ goog.dom.FontSizeMonitor.EventType = {
 /**
  * Constant for the change event.
  * @type {string}
- * @deprecated Use {@code goog.dom.FontSizeMonitor.EventType.CHANGE} instead.
+ * @deprecated Use `goog.dom.FontSizeMonitor.EventType.CHANGE` instead.
  */
 goog.dom.FontSizeMonitor.CHANGE_EVENT =
     goog.dom.FontSizeMonitor.EventType.CHANGE;

@@ -19,7 +19,6 @@
  * goog.editor.TableCell. Together these provide support for
  * high level table modifications: Adding and deleting rows and columns,
  * and merging and splitting cells.
- *
  */
 
 goog.provide('goog.editor.Table');
@@ -153,8 +152,7 @@ goog.editor.Table.getChildCellElements = function(tr) {
  * @return {!Element} The new row.
  */
 goog.editor.Table.prototype.insertRow = function(opt_rowIndex) {
-  var rowIndex =
-      goog.isDefAndNotNull(opt_rowIndex) ? opt_rowIndex : this.rows.length;
+  var rowIndex = (opt_rowIndex != null) ? opt_rowIndex : this.rows.length;
   var refRow;
   var insertAfter;
   if (rowIndex == 0) {
@@ -201,7 +199,7 @@ goog.editor.Table.prototype.insertRow = function(opt_rowIndex) {
  */
 goog.editor.Table.prototype.insertColumn = function(opt_colIndex) {
   // TODO(user): set column widths in a way that makes sense.
-  var colIndex = goog.isDefAndNotNull(opt_colIndex) ?
+  var colIndex = (opt_colIndex != null) ?
       opt_colIndex :
       (this.rows[0] && this.rows[0].columns.length) || 0;
   var newTds = [];

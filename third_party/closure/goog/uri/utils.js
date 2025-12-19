@@ -40,9 +40,6 @@
  *
  * Uses features of RFC 3986 for parsing/formatting URIs:
  *   http://www.ietf.org/rfc/rfc3986.txt
- *
- * @author gboyer@google.com (Garrett Boyer) - The "lightened" design.
- * @author msamuel@google.com (Mike Samuel) - Domain knowledge and regexes.
  */
 
 goog.provide('goog.uri.utils');
@@ -300,7 +297,7 @@ goog.uri.utils.getEffectiveScheme = function(uri) {
     var protocol = goog.global.self.location.protocol;
     scheme = protocol.substr(0, protocol.length - 1);
   }
-  // NOTE: When called from a web worker in Firefox 3.5, location maybe null.
+  // NOTE: When called from a web worker in Firefox 3.5, location may be null.
   // All other browsers with web workers support self.location from the worker.
   return scheme ? scheme.toLowerCase() : '';
 };
@@ -604,7 +601,7 @@ goog.uri.utils.parseQueryData = function(encodedQuery, callback) {
  * @private
  */
 goog.uri.utils.splitQueryData_ = function(uri) {
-  // Find the query data and and hash.
+  // Find the query data and hash.
   var hashIndex = uri.indexOf('#');
   if (hashIndex < 0) {
     hashIndex = uri.length;
@@ -800,9 +797,7 @@ goog.uri.utils.appendParamsFromMap = function(uri, map) {
  * @return {string} The URI with the query parameter added.
  */
 goog.uri.utils.appendParam = function(uri, key, opt_value) {
-  var value = goog.isDefAndNotNull(opt_value) ?
-      '=' + goog.string.urlEncode(opt_value) :
-      '';
+  var value = (opt_value != null) ? '=' + goog.string.urlEncode(opt_value) : '';
   return goog.uri.utils.appendQueryDataToUri_(uri, key + value);
 };
 

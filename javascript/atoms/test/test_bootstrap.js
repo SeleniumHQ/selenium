@@ -58,14 +58,14 @@
   // All the files to load. Files are specified in the order they must be
   // loaded, NOT alphabetical order.
   var files = [
-    '../../../third_party/closure/goog/base.js',
+    '/filez/_main/third_party/closure/goog/base.js',
     'deps.js'
   ];
 
   if (location.pathname.lastIndexOf('/filez/_main/javascript/', 0) === 0) {
     directoryPath = '';
     files = [
-      '/filez/com_google_javascript_closure_library/closure/goog/base.js',
+      '/filez/_main/third_party/closure/goog/base.js',
       '/filez/_main/javascript/atoms/deps.js',
     ];
   }

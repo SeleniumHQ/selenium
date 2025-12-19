@@ -133,7 +133,8 @@ goog.require('goog.i18n.DateTimeSymbols');
  */
 goog.i18n.DateTimeParse = function(pattern, opt_dateTimeSymbols) {
   goog.asserts.assert(
-      goog.isDef(opt_dateTimeSymbols) || goog.isDef(goog.i18n.DateTimeSymbols),
+      opt_dateTimeSymbols !== undefined ||
+          goog.i18n.DateTimeSymbols !== undefined,
       'goog.i18n.DateTimeSymbols or explicit symbols must be defined');
 
   this.patternParts_ = [];
@@ -1052,6 +1053,11 @@ goog.i18n.DateTimeParse.MyDate_.prototype.setTwoDigitYear_ = function(year) {
  */
 goog.i18n.DateTimeParse.MyDate_.prototype.calcDate_ = function(
     date, validation) {
+  // Throw exception if date if null.
+  if (date == null) {
+    throw new Error('Parameter \'date\' should not be null.');
+  }
+
   // year 0 is 1 BC, and so on.
   if (this.era != undefined && this.year != undefined && this.era == 0 &&
       this.year > 0) {

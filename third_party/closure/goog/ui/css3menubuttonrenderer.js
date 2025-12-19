@@ -23,7 +23,6 @@
  *
  * Tested and verified to work in Gecko 1.9.2+ and WebKit 528+.
  *
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/css3menubutton.html
  */
 

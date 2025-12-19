@@ -84,7 +84,7 @@ Base64PbStreamParser.prototype.getErrorMessage = function() {
 Base64PbStreamParser.prototype.error_ = function(input, errorMsg) {
   this.errorMessage_ = 'The stream is broken @' + this.streamPos_ +
       '. Error: ' + errorMsg + '. With input:\n' + input;
-  throw Error(this.errorMessage_);
+  throw new Error(this.errorMessage_);
 };
 
 

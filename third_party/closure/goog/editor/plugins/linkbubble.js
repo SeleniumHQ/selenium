@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Base class for bubble plugins.
- *
  */
 
 goog.provide('goog.editor.plugins.LinkBubble');
@@ -69,6 +68,10 @@ goog.editor.plugins.LinkBubble = function(var_args) {
 };
 goog.inherits(
     goog.editor.plugins.LinkBubble, goog.editor.plugins.AbstractBubblePlugin);
+
+
+/** @const @private {string} */
+goog.editor.plugins.LinkBubble.DISABLE_LINK_BUBBLE_DATA_ATTRIBUTE_ = 'data-dlb';
 
 
 /**
@@ -160,6 +163,17 @@ goog.editor.plugins.LinkBubble.MSG_LINK_BUBBLE_REMOVE = goog.getMsg('Remove');
  */
 goog.editor.plugins.LinkBubble.MSG_INVALID_URL_LINK_BUBBLE =
     goog.getMsg('invalid url');
+
+
+/**
+ * @param {!Element} targetElement
+ * @return {boolean}
+ * @private
+ */
+goog.editor.plugins.LinkBubble.shouldShowLinkBubble_ = function(targetElement) {
+  return !targetElement.hasAttribute(
+      goog.editor.plugins.LinkBubble.DISABLE_LINK_BUBBLE_DATA_ATTRIBUTE_);
+};
 
 
 /**
@@ -331,6 +345,21 @@ goog.editor.plugins.LinkBubble.prototype.getBubbleTitle = function() {
  */
 goog.editor.plugins.LinkBubble.prototype.getTestLinkMessage = function() {
   return goog.editor.plugins.LinkBubble.MSG_LINK_BUBBLE_TEST_LINK;
+};
+
+/** @override */
+goog.editor.plugins.LinkBubble.prototype.handleSelectionChangeInternal =
+    function(selectedElement) {
+  if (selectedElement) {
+    var bubbleTarget = this.getBubbleTargetFromSelection(selectedElement);
+    if (bubbleTarget &&
+        !goog.editor.plugins.LinkBubble.shouldShowLinkBubble_(bubbleTarget)) {
+      return false;
+    }
+  }
+
+  return goog.editor.plugins.LinkBubble.base(
+      this, 'handleSelectionChangeInternal', selectedElement);
 };
 
 

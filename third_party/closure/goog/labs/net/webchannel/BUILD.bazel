@@ -1,0 +1,192 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":basetestchannel",
+        ":channel",
+        ":channelrequest",
+        ":connectionstate",
+        ":environment",
+        ":forwardchannelrequestpool",
+        ":netutils",
+        ":requeststats",
+        ":webchannelbase",
+        ":webchannelbasetransport",
+        ":webchanneldebug",
+        ":wire",
+        ":wirev8",
+    ],
+)
+
+closure_js_library(
+    name = "basetestchannel",
+    srcs = ["basetestchannel.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/net:webchannel",
+        "//third_party/closure/goog/labs/net/webchannel:channel",
+        "//third_party/closure/goog/labs/net/webchannel:channelrequest",
+        "//third_party/closure/goog/labs/net/webchannel:requeststats",
+        "//third_party/closure/goog/labs/net/webchannel:webchanneldebug",
+    ],
+)
+
+closure_js_library(
+    name = "channel",
+    srcs = ["channel.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "channelrequest",
+    srcs = ["channelrequest.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/async:throttle",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/labs/net:webchannel",
+        "//third_party/closure/goog/labs/net/webchannel:channel",
+        "//third_party/closure/goog/labs/net/webchannel:environment",
+        "//third_party/closure/goog/labs/net/webchannel:requeststats",
+        "//third_party/closure/goog/labs/net/webchannel:webchanneldebug",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:xmlhttp",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "connectionstate",
+    srcs = ["connectionstate.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "environment",
+    srcs = ["environment.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/useragent"],
+)
+
+closure_js_library(
+    name = "forwardchannelrequestpool",
+    srcs = ["forwardchannelrequestpool.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/labs/net/webchannel:channelrequest",
+        "//third_party/closure/goog/labs/net/webchannel:wire",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/structs:set",
+    ],
+)
+
+closure_js_library(
+    name = "netutils",
+    srcs = ["netutils.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/net/webchannel:webchanneldebug",
+        "//third_party/closure/goog/uri",
+    ],
+)
+
+closure_js_library(
+    name = "requeststats",
+    srcs = ["requeststats.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventtarget",
+    ],
+)
+
+closure_js_library(
+    name = "webchannelbase",
+    srcs = ["webchannelbase.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/async:run",
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/labs/net:webchannel",
+        "//third_party/closure/goog/labs/net/webchannel:basetestchannel",
+        "//third_party/closure/goog/labs/net/webchannel:channel",
+        "//third_party/closure/goog/labs/net/webchannel:channelrequest",
+        "//third_party/closure/goog/labs/net/webchannel:connectionstate",
+        "//third_party/closure/goog/labs/net/webchannel:forwardchannelrequestpool",
+        "//third_party/closure/goog/labs/net/webchannel:netutils",
+        "//third_party/closure/goog/labs/net/webchannel:requeststats",
+        "//third_party/closure/goog/labs/net/webchannel:webchanneldebug",
+        "//third_party/closure/goog/labs/net/webchannel:wire",
+        "//third_party/closure/goog/labs/net/webchannel:wirev8",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/net:xmlhttpfactory",
+        "//third_party/closure/goog/net/rpc:httpcors",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/structs",
+        "//third_party/closure/goog/uri",
+    ],
+)
+
+closure_js_library(
+    name = "webchannelbasetransport",
+    srcs = ["webchannelbasetransport.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/labs/net:webchannel",
+        "//third_party/closure/goog/labs/net:webchanneltransport",
+        "//third_party/closure/goog/labs/net/webchannel:channelrequest",
+        "//third_party/closure/goog/labs/net/webchannel:webchannelbase",
+        "//third_party/closure/goog/labs/net/webchannel:wire",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:path",
+    ],
+)
+
+closure_js_library(
+    name = "webchanneldebug",
+    srcs = ["webchanneldebug.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/log",
+    ],
+)
+
+closure_js_library(
+    name = "wire",
+    srcs = ["wire.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "wirev8",
+    srcs = ["wirev8.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/json:nativejsonprocessor",
+        "//third_party/closure/goog/labs/net/webchannel:wire",
+        "//third_party/closure/goog/structs",
+    ],
+)

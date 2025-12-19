@@ -540,10 +540,21 @@ bot.dom.isShown_ = function (elem, ignoreOpacity, displayedFn) {
     // Zero-sized elements should still be considered to have positive size
     // if they have a child element or text node with positive size, unless
     // the element has an 'overflow' style of 'hidden'.
+    // Note: Text nodes containing only structural whitespace (with newlines
+    // or tabs) are ignored as they are likely just HTML formatting, not
+    // visible content.
     return bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden' &&
       goog.array.some(e.childNodes, function (n) {
-        return n.nodeType == goog.dom.NodeType.TEXT ||
-          (bot.dom.isElement(n) && positiveSize(n));
+        if (n.nodeType == goog.dom.NodeType.TEXT) {
+          var text = n.nodeValue;
+          // Ignore text nodes that are purely structural whitespace
+          // (contain newlines or tabs and nothing else besides spaces)
+          if (/^[\s]*$/.test(text) && /[\n\r\t]/.test(text)) {
+            return false;
+          }
+          return true;
+        }
+        return bot.dom.isElement(n) && positiveSize(n);
       });
   }
   if (!positiveSize(elem)) {
@@ -1412,9 +1423,13 @@ bot.dom.isNodeDistributedIntoShadowDom = function (node) {
 bot.dom.appendVisibleTextLinesFromElementInComposedDom_ = function (
   elem, lines) {
   if (elem.shadowRoot) {
+    // Get the effective styles from the shadow host element for text nodes in shadow DOM
+    var whitespace = bot.dom.getEffectiveStyle(elem, 'white-space');
+    var textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
+
     goog.array.forEach(elem.shadowRoot.childNodes, function (node) {
       bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-        node, lines, true, null, null);
+        node, lines, true, whitespace, textTransform);
     });
   }
 

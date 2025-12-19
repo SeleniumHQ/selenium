@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuHeader}s.
- *
  */
 
 goog.provide('goog.ui.MenuHeaderRenderer');

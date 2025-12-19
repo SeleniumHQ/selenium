@@ -62,6 +62,11 @@ goog.a11y.aria.State = {
   // undefined}.
   CHECKED: 'checked',
 
+  // ARIA state that defines an element's column index or position with respect
+  // to the total number of columns within a table, grid, or treegrid.
+  // Value: number.
+  COLINDEX: 'colindex',
+
   // ARIA property that identifies the element or elements whose contents or
   // presence are controlled by this element.
   // Value: space-separated IDs of other elements.
@@ -159,6 +164,11 @@ goog.a11y.aria.State = {
   // ARIA property indicating that user input is required on this element
   // before a form may be submitted. Value: one of {true, false}.
   REQUIRED: 'required',
+
+  // ARIA state that defines an element's row index or position with respect
+  // to the total number of rows within a table, grid, or treegrid.
+  // Value: number.
+  ROWINDEX: 'rowindex',
 
   // ARIA state for setting the currently selected item in the list.
   // Value: one of {true, false, undefined}.

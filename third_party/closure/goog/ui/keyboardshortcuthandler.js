@@ -15,7 +15,6 @@
 /**
  * @fileoverview Generic keyboard shortcut handler.
  *
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/keyboardshortcuts.html
  */
 
@@ -24,7 +23,6 @@ goog.provide('goog.ui.KeyboardShortcutHandler');
 goog.provide('goog.ui.KeyboardShortcutHandler.EventType');
 goog.provide('goog.ui.KeyboardShortcutHandler.Modifiers');
 
-goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.TagName');
@@ -36,6 +34,8 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyNames');
 goog.require('goog.events.Keys');
 goog.require('goog.object');
+goog.require('goog.ui.KeyboardEventData');
+goog.require('goog.ui.SyntheticKeyboardEvent');
 goog.require('goog.userAgent');
 
 
@@ -160,7 +160,7 @@ goog.tagUnsealableClass(goog.ui.KeyboardShortcutHandler);
  * 1. A terminal node with a non-nullable shortcut string which is the
  *    identifier for the shortcut triggered by traversing the tree to that node.
  * 2. An internal node with a null shortcut string and a
- *    {@code goog.ui.KeyboardShortcutHandler.SequenceTree_} representing the
+ *    `goog.ui.KeyboardShortcutHandler.SequenceTree_` representing the
  *    continued stroke sequences from this node.
  * For clarity, the static factory methods for creating internal and terminal
  * nodes below should be used rather than using this constructor directly.
@@ -280,20 +280,6 @@ goog.ui.KeyboardShortcutHandler.nameToKeyCodeCache_;
  * @private
  */
 goog.ui.KeyboardShortcutHandler.prototype.keyTarget_;
-
-
-/**
- * Due to a bug in the way that Gecko on Mac handles cut/copy/paste key events
- * using the meta key, it is necessary to fake the keyDown for the action key
- * (C,V,X) by capturing it on keyUp.
- * Because users will often release the meta key a slight moment before they
- * release the action key, we need this variable that will store whether the
- * meta key has been released recently.
- * It will be cleared after a short delay in the key handling logic.
- * @type {boolean}
- * @private
- */
-goog.ui.KeyboardShortcutHandler.prototype.metaKeyRecentlyReleased_;
 
 
 /**
@@ -561,7 +547,7 @@ goog.ui.KeyboardShortcutHandler.prototype.interpretStrokes_ = function(
   var strokes;
 
   // Build strokes array from string.
-  if (goog.isString(args[initialIndex])) {
+  if (typeof (args[initialIndex]) === 'string') {
     strokes = goog.array.map(
         goog.ui.KeyboardShortcutHandler.parseStringShortcut(args[initialIndex]),
         function(stroke) {
@@ -641,7 +627,7 @@ goog.ui.KeyboardShortcutHandler.prototype.getEventType = function(identifier) {
 /**
  * Builds stroke array from string representation of shortcut.
  * @param {string} s String representation of shortcut.
- * @return {!Array<!{key: ?string, keyCode: ?number, modifiers: number}>} The
+ * @return {!Array<{key: ?string, keyCode: ?number, modifiers: number}>} The
  *     stroke array.  A null keyCode means no non-modifier key was part of the
  *     stroke.
  */
@@ -674,7 +660,7 @@ goog.ui.KeyboardShortcutHandler.parseStringShortcut = function(s) {
           modifiers |= goog.ui.KeyboardShortcutHandler.Modifiers.META;
           continue;
       }
-      if (!goog.isNull(keyCode)) {
+      if (keyCode !== null) {
         goog.asserts.fail('At most one non-modifier key can be in a stroke.');
       }
       keyCode = goog.ui.KeyboardShortcutHandler.getKeyCode(key);
@@ -702,8 +688,11 @@ goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener = function(
   this.keyTarget_ = keyTarget;
 
   goog.events.listen(
-      this.keyTarget_, goog.events.EventType.KEYDOWN, this.handleKeyDown_,
-      undefined /* opt_capture */, this);
+      this.keyTarget_, goog.events.EventType.KEYDOWN,
+      this.handleBrowserKeyDown_, undefined /* opt_capture */, this);
+  goog.events.listen(
+      this.keyTarget_, goog.ui.SyntheticKeyboardEvent.Type.KEYDOWN,
+      this.handleSyntheticKeyDown_, undefined /* opt_capture */, this);
 
   // Windows uses ctrl+alt keys (a.k.a. alt-graph keys) for typing characters
   // on European keyboards (e.g. ctrl+alt+e for an an euro sign.) Unfortunately,
@@ -714,70 +703,70 @@ goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener = function(
   if (goog.userAgent.WINDOWS) {
     goog.events.listen(
         this.keyTarget_, goog.events.EventType.KEYPRESS,
-        this.handleWindowsKeyPress_, undefined /* opt_capture */, this);
+        this.handleWindowsBrowserKeyPress_, undefined /* opt_capture */, this);
+    goog.events.listen(
+        this.keyTarget_, goog.ui.SyntheticKeyboardEvent.Type.KEYPRESS,
+        this.handleWindowsSyntheticKeyPress_, undefined /* opt_capture */,
+        this);
   }
 
   goog.events.listen(
-      this.keyTarget_, goog.events.EventType.KEYUP, this.handleKeyUp_,
+      this.keyTarget_, goog.events.EventType.KEYUP, this.handleBrowserKeyUp_,
       undefined /* opt_capture */, this);
+  goog.events.listen(
+      this.keyTarget_, goog.ui.SyntheticKeyboardEvent.Type.KEYUP,
+      this.handleSyntheticKeyUp_, undefined /* opt_capture */, this);
+};
+
+
+/**
+ * Keyup handler for events initiated from the browser.
+ * @param {!goog.events.BrowserEvent} e The key event.
+ * @private
+ */
+goog.ui.KeyboardShortcutHandler.prototype.handleBrowserKeyUp_ = function(e) {
+  this.handleKeyUp_(goog.ui.KeyboardEventData.fromBrowserEvent(e));
+};
+
+
+/**
+ * Keyup handler for synthetic events.
+ * @param {!goog.ui.SyntheticKeyboardEvent} e
+ * @private
+ */
+goog.ui.KeyboardShortcutHandler.prototype.handleSyntheticKeyUp_ = function(e) {
+  this.handleKeyUp_(e.getData());
 };
 
 
 /**
  * Handler for when a keyup event is fired. Currently only handled on Windows
  * (all browsers) or Gecko (all platforms).
- * @param {!goog.events.BrowserEvent} e The key event.
+ * @param {!goog.ui.KeyboardEventData} data
  * @private
  */
-goog.ui.KeyboardShortcutHandler.prototype.handleKeyUp_ = function(e) {
+goog.ui.KeyboardShortcutHandler.prototype.handleKeyUp_ = function(data) {
   if (goog.userAgent.GECKO) {
-    this.handleGeckoKeyUp_(e);
+    this.handleGeckoKeyUp_(data);
   }
 
   if (goog.userAgent.WINDOWS) {
-    this.handleWindowsKeyUp_(e);
+    this.handleWindowsKeyUp_(data);
   }
 };
 
 
 /**
  * Handler for when a keyup event is fired in Firefox (Gecko).
- * @param {!goog.events.BrowserEvent} e The key event.
+ * @param {!goog.ui.KeyboardEventData} data
  * @private
  */
-goog.ui.KeyboardShortcutHandler.prototype.handleGeckoKeyUp_ = function(e) {
-  // Due to a bug in the way that Gecko on Mac handles cut/copy/paste key events
-  // using the meta key, it is necessary to fake the keyDown for the action keys
-  // (C,V,X) by capturing it on keyUp.
-  // This is because the keyDown events themselves are not fired by the browser
-  // in this case.
-  // Because users will often release the meta key a slight moment before they
-  // release the action key, we need to store whether the meta key has been
-  // released recently to avoid "flaky" cutting/pasting behavior.
-  if (goog.userAgent.MAC) {
-    if (e.keyCode == goog.events.KeyCodes.MAC_FF_META) {
-      this.metaKeyRecentlyReleased_ = true;
-      goog.Timer.callOnce(function() {
-        this.metaKeyRecentlyReleased_ = false;
-      }, 400, this);
-      return;
-    }
-
-    var metaKey = e.metaKey || this.metaKeyRecentlyReleased_;
-    if ((e.keyCode == goog.events.KeyCodes.C ||
-         e.keyCode == goog.events.KeyCodes.X ||
-         e.keyCode == goog.events.KeyCodes.V) &&
-        metaKey) {
-      e.metaKey = metaKey;
-      this.handleKeyDown_(e);
-    }
-  }
-
+goog.ui.KeyboardShortcutHandler.prototype.handleGeckoKeyUp_ = function(data) {
   // Firefox triggers buttons on space keyUp instead of keyDown.  So if space
   // keyDown activated a shortcut, do NOT also trigger the focused button.
   if (goog.events.KeyCodes.SPACE == this.activeShortcutKeyForGecko_ &&
-      goog.events.KeyCodes.SPACE == e.keyCode) {
-    e.preventDefault();
+      goog.events.KeyCodes.SPACE == data.getKeyCode()) {
+    data.getPreventDefaultFn()();
   }
   this.activeShortcutKeyForGecko_ = null;
 };
@@ -790,13 +779,13 @@ goog.ui.KeyboardShortcutHandler.prototype.handleGeckoKeyUp_ = function(e) {
  * whether ctrl+alt keys are used for typing characters, we need to check
  * whether Windows sends a keypress event to prevent firing shortcut event if
  * this event is used for typing characters.
- * @param {!goog.events.BrowserEvent} e The key event.
+ * @param {!goog.ui.KeyboardEventData} data
  * @return {boolean} Whether this event is a possible printable-key event.
  * @private
  */
 goog.ui.KeyboardShortcutHandler.prototype.isPossiblePrintableKey_ = function(
-    e) {
-  return goog.userAgent.WINDOWS && e.ctrlKey && e.altKey;
+    data) {
+  return goog.userAgent.WINDOWS && data.getCtrlKey() && data.getAltKey();
 };
 
 
@@ -805,12 +794,35 @@ goog.ui.KeyboardShortcutHandler.prototype.isPossiblePrintableKey_ = function(
  * @param {!goog.events.BrowserEvent} e The key event.
  * @private
  */
-goog.ui.KeyboardShortcutHandler.prototype.handleWindowsKeyPress_ = function(e) {
+goog.ui.KeyboardShortcutHandler.prototype.handleWindowsBrowserKeyPress_ =
+    function(e) {
+  this.handleWindowsKeyPress_(goog.ui.KeyboardEventData.fromBrowserEvent(e));
+};
+
+
+/**
+ * Handler for when a synthetic keypress event is fired on Windows.
+ * @param {!goog.ui.SyntheticKeyboardEvent} e
+ * @private
+ */
+goog.ui.KeyboardShortcutHandler.prototype.handleWindowsSyntheticKeyPress_ =
+    function(e) {
+  this.handleWindowsKeyPress_(e.getData());
+};
+
+
+/**
+ * Handler for when a keypress event is fired on Windows.
+ * @param {!goog.ui.KeyboardEventData} data
+ * @private
+ */
+goog.ui.KeyboardShortcutHandler.prototype.handleWindowsKeyPress_ = function(
+    data) {
   // When this keypress event consists of a printable character, set the flag to
   // prevent firing shortcut key events when we receive the succeeding keyup
   // event. We accept all Unicode characters except control ones since this
   // keyCode may be a non-ASCII character.
-  if (e.keyCode > 0x20 && this.isPossiblePrintableKey_(e)) {
+  if (data.getKeyCode() > 0x20 && this.isPossiblePrintableKey_(data)) {
     this.isPrintableKey_ = true;
   }
 };
@@ -818,14 +830,17 @@ goog.ui.KeyboardShortcutHandler.prototype.handleWindowsKeyPress_ = function(e) {
 
 /**
  * Handler for when a keyup event is fired on Windows.
- * @param {!goog.events.BrowserEvent} e The key event.
+ * @param {!goog.ui.KeyboardEventData} data
  * @private
  */
-goog.ui.KeyboardShortcutHandler.prototype.handleWindowsKeyUp_ = function(e) {
+goog.ui.KeyboardShortcutHandler.prototype.handleWindowsKeyUp_ = function(data) {
   // For possible printable-key events, try firing a shortcut-key event only
   // when this event is not used for typing a character.
-  if (!this.isPrintableKey_ && this.isPossiblePrintableKey_(e)) {
-    this.handleKeyDown_(e);
+  if (!this.isPrintableKey_ && this.isPossiblePrintableKey_(data)) {
+    // handleKeyDown should handle possible printable keys since we initially
+    // don't handle them in key down for windows, and instead wait until
+    // key up.
+    this.handleKeyDown_(data, true /* opt_handlePossiblePrintableKeys */);
   }
 };
 
@@ -836,16 +851,25 @@ goog.ui.KeyboardShortcutHandler.prototype.handleWindowsKeyUp_ = function(e) {
  */
 goog.ui.KeyboardShortcutHandler.prototype.clearKeyListener = function() {
   goog.events.unlisten(
-      this.keyTarget_, goog.events.EventType.KEYDOWN, this.handleKeyDown_,
-      false, this);
+      this.keyTarget_, goog.events.EventType.KEYDOWN,
+      this.handleBrowserKeyDown_, false, this);
+  goog.events.unlisten(
+      this.keyTarget_, goog.ui.SyntheticKeyboardEvent.Type.KEYDOWN,
+      this.handleSyntheticKeyDown_, false, this);
   if (goog.userAgent.WINDOWS) {
     goog.events.unlisten(
         this.keyTarget_, goog.events.EventType.KEYPRESS,
-        this.handleWindowsKeyPress_, false, this);
+        this.handleWindowsBrowserKeyPress_, false, this);
+    goog.events.unlisten(
+        this.keyTarget_, goog.ui.SyntheticKeyboardEvent.Type.KEYPRESS,
+        this.handleWindowsSyntheticKeyPress_, false, this);
   }
   goog.events.unlisten(
-      this.keyTarget_, goog.events.EventType.KEYUP, this.handleKeyUp_, false,
-      this);
+      this.keyTarget_, goog.events.EventType.KEYUP, this.handleBrowserKeyUp_,
+      false, this);
+  goog.events.unlisten(
+      this.keyTarget_, goog.ui.SyntheticKeyboardEvent.Type.KEYUP,
+      this.handleSyntheticKeyUp_, false, this);
   this.keyTarget_ = null;
 };
 
@@ -868,7 +892,7 @@ goog.ui.KeyboardShortcutHandler.setShortcut_ = function(
       // prefix (since the new strokes end at an existing node), or an existing
       // shortcut would be triggered by the prefix to this new shortcut (since
       // there is already a terminal node on the path we are trying to create).
-      throw Error('Keyboard shortcut conflicts with existing shortcut');
+      throw new Error('Keyboard shortcut conflicts with existing shortcut');
     }
   });
 
@@ -1011,23 +1035,60 @@ goog.ui.KeyboardShortcutHandler.makeStroke_ = function(
 
 
 /**
- * Keypress handler.
+ * Keydown handler for events initiated from the browser.
  * @param {!goog.events.BrowserEvent} event Keypress event.
  * @private
  */
-goog.ui.KeyboardShortcutHandler.prototype.handleKeyDown_ = function(event) {
-  if (!this.isValidShortcut_(event)) {
+goog.ui.KeyboardShortcutHandler.prototype.handleBrowserKeyDown_ = function(
+    event) {
+  this.handleKeyDown_(goog.ui.KeyboardEventData.fromBrowserEvent(event));
+};
+
+
+/**
+ * Keydown handler for synthetic events.
+ * @param {!goog.ui.SyntheticKeyboardEvent} event
+ * @private
+ */
+goog.ui.KeyboardShortcutHandler.prototype.handleSyntheticKeyDown_ = function(
+    event) {
+  this.handleKeyDown_(event.getData());
+};
+
+
+/**
+ * Keydown handler.
+ * @param {!goog.ui.KeyboardEventData} data
+ * @param {boolean=} opt_handlePossiblePrintableKeys Whether possible printable
+ *     keys should be handled. By default, they are ignored, but when the data
+ *     comes from keyup they should be handled.
+ * @private
+ * @suppress {strictPrimitiveOperators} Part of the go/strict_warnings_migration
+ */
+goog.ui.KeyboardShortcutHandler.prototype.handleKeyDown_ = function(
+    data, opt_handlePossiblePrintableKeys) {
+  if (!this.isValidShortcut_(data)) {
+    return;
+  }
+  // For possible printable-key events, we cannot identify whether the events
+  // are used for typing characters until we receive respective keyup events.
+  // Therefore, we handle this event when we receive a succeeding keyup event
+  // to verify this event is not used for typing characters. preventDefault is
+  // not called on the event to avoid disrupting a character input.
+  if (!opt_handlePossiblePrintableKeys && this.isPossiblePrintableKey_(data)) {
+    this.isPrintableKey_ = false;
     return;
   }
 
-  var keyCode = goog.events.KeyCodes.normalizeKeyCode(event.keyCode);
-  var keyName = event.key;
+  var keyCode = goog.events.KeyCodes.normalizeKeyCode(data.getKeyCode());
+  var keyName = data.getKey();
 
   var modifiers =
-      (event.shiftKey ? goog.ui.KeyboardShortcutHandler.Modifiers.SHIFT : 0) |
-      (event.ctrlKey ? goog.ui.KeyboardShortcutHandler.Modifiers.CTRL : 0) |
-      (event.altKey ? goog.ui.KeyboardShortcutHandler.Modifiers.ALT : 0) |
-      (event.metaKey ? goog.ui.KeyboardShortcutHandler.Modifiers.META : 0);
+      (data.getShiftKey() ? goog.ui.KeyboardShortcutHandler.Modifiers.SHIFT :
+                            0) |
+      (data.getCtrlKey() ? goog.ui.KeyboardShortcutHandler.Modifiers.CTRL : 0) |
+      (data.getAltKey() ? goog.ui.KeyboardShortcutHandler.Modifiers.ALT : 0) |
+      (data.getMetaKey() ? goog.ui.KeyboardShortcutHandler.Modifiers.META : 0);
   var stroke =
       goog.ui.KeyboardShortcutHandler.makeStroke_(keyName, keyCode, modifiers);
   var node = this.getNode_(this.currentTree_, stroke);
@@ -1047,21 +1108,13 @@ goog.ui.KeyboardShortcutHandler.prototype.handleKeyDown_ = function(event) {
     this.setCurrentTree_(node.next);
   }
 
-  // For possible printable-key events, we cannot identify whether the events
-  // are used for typing characters until we receive respective keyup events.
-  // Therefore, we handle this event when we receive a succeeding keyup event
-  // to verify this event is not used for typing characters. preventDefault is
-  // not called on the event to avoid disrupting a character input.
-  if (event.type == 'keydown' && this.isPossiblePrintableKey_(event)) {
-    this.isPrintableKey_ = false;
-    return;
-  } else if (!node) {
+  if (!node) {
     // This stroke does not correspond to a shortcut or continued sequence.
     return;
   } else if (node.next) {
     // Prevent default action so that the rest of the stroke sequence can be
     // completed.
-    event.preventDefault();
+    data.getPreventDefaultFn()();
     return;
   }
 
@@ -1073,32 +1126,31 @@ goog.ui.KeyboardShortcutHandler.prototype.handleKeyDown_ = function(event) {
   // keyboard shortcut event a more specific fine grained one, specific for the
   // shortcut identifier, is fired.
   if (this.alwaysPreventDefault_) {
-    event.preventDefault();
+    data.getPreventDefaultFn()();
   }
 
   if (this.alwaysStopPropagation_) {
-    event.stopPropagation();
+    data.getStopPropagationFn()();
   }
 
   var shortcut = goog.asserts.assertString(
       node.shortcut, 'A terminal node must have a string shortcut identifier.');
   // Dispatch SHORTCUT_TRIGGERED event
-  var target = /** @type {Node} */ (event.target);
   var triggerEvent = new goog.ui.KeyboardShortcutEvent(
       goog.ui.KeyboardShortcutHandler.EventType.SHORTCUT_TRIGGERED, shortcut,
-      target);
+      data.getTarget());
   var retVal = this.dispatchEvent(triggerEvent);
 
   // Dispatch SHORTCUT_PREFIX_<identifier> event
   var prefixEvent = new goog.ui.KeyboardShortcutEvent(
       goog.ui.KeyboardShortcutHandler.EventType.SHORTCUT_PREFIX + shortcut,
-      shortcut, target);
+      shortcut, data.getTarget());
   retVal &= this.dispatchEvent(prefixEvent);
 
   // The default action is prevented if 'preventDefault' was
   // called on either event, or if a listener returned false.
   if (!retVal) {
-    event.preventDefault();
+    data.getPreventDefaultFn()();
   }
 
   // For Firefox, track which shortcut key was pushed.
@@ -1110,15 +1162,16 @@ goog.ui.KeyboardShortcutHandler.prototype.handleKeyDown_ = function(event) {
 
 /**
  * Checks if a given keypress event may be treated as a shortcut.
- * @param {!goog.events.BrowserEvent} event Keypress event.
+ * @param {!goog.ui.KeyboardEventData} data
  * @return {boolean} Whether to attempt to process the event as a shortcut.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
-goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
+goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(data) {
   // Ignore Ctrl, Shift and ALT
-  var keyCode = event.keyCode;
-  if (event.key != '') {
-    var keyName = event.key;
+  var keyCode = data.getKeyCode();
+  if (data.getKey() != '') {
+    var keyName = data.getKey();
     if (keyName == goog.events.Keys.CTRL || keyName == goog.events.Keys.SHIFT ||
         keyName == goog.events.Keys.ALT ||
         keyName == goog.events.Keys.ALTGRAPH) {
@@ -1131,7 +1184,11 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
       return false;
     }
   }
-  var el = /** @type {Element} */ (event.target);
+
+  // RootTarget is used specifically to handle the case of shadow dom.
+  // Note, the type of shadow dom root is limited, and could never be
+  // INPUT, TEXTAREA, BUTTON, SELECT, etc.
+  var el = /** @type {!Element} */ (data.getRootTarget());
   var isFormElement = el.tagName == goog.dom.TagName.TEXTAREA ||
       el.tagName == goog.dom.TagName.INPUT ||
       el.tagName == goog.dom.TagName.BUTTON ||
@@ -1157,7 +1214,7 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
   // Event target is one of (TEXTAREA, INPUT, BUTTON, SELECT).
   // Allow modifier shortcuts, unless we shouldn't.
   if (this.modifierShortcutsAreGlobal_ &&
-      (event.altKey || event.ctrlKey || event.metaKey)) {
+      (data.getAltKey() || data.getCtrlKey() || data.getMetaKey())) {
     return true;
   }
   // Allow ENTER to be used as shortcut for text inputs.

@@ -16,10 +16,9 @@
  * @fileoverview Functions for formatting relative dates.  Such as "3 days ago"
  * "3 hours ago", "14 minutes ago", "12 days ago", "Today", "Yesterday".
  *
- * For better quality localization of plurals ("hours"/"minutes"/"days") and
- * to use local digits, goog.date.relativeWithPlurals can be loaded in addition
- * to this namespace.
- *
+ * Closure's I18N formatter for relative dates and times is by default to
+ * format strings function. It provides plural forms and many locales
+ * using standard data from the Common Data Locale Repository (CLDR).
  */
 
 goog.provide('goog.date.relative');
@@ -28,7 +27,12 @@ goog.provide('goog.date.relative.Unit');
 
 goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.i18n.DateTimePatterns');
+goog.require('goog.i18n.RelativeDateTimeFormat');
 
+goog.scope(function() {
+// For referencing this module.
+var RelativeDateTimeFormat =
+    goog.module.get('goog.i18n.RelativeDateTimeFormat');
 
 /**
  * Number of milliseconds in a minute.
@@ -47,6 +51,32 @@ goog.date.relative.DAY_MS_ = 86400000;
 
 
 /**
+ * Limit on number of days in past or future for formatting.
+ * Since the timestamp is in milliseconds, the difference in days
+ * is limited (10^9 milliseconds = 11.6 days.)
+ * @type {number}
+ * @private
+ */
+goog.date.relative.FORTNIGHT_ = 14;
+
+
+/**
+ * Unicode UTF-16 surrogate range minimum
+ * @type {number}
+ * @private
+ */
+goog.date.relative.SURROGATE_LOW_ = 0xd800;
+
+
+/**
+ * Unicode UTF-16 surrogate range maximum
+ * @type {number}
+ * @private
+ */
+goog.date.relative.SURROGATE_HIGH_ = 0xdfff;
+
+
+/**
  * Enumeration used to identify time units internally.
  * @enum {number}
  */
@@ -59,7 +89,7 @@ goog.date.relative.Unit = {
 
 /**
  * Full date formatter.
- * @type {goog.i18n.DateTimeFormat}
+ * @type {?goog.i18n.DateTimeFormat}
  * @private
  */
 goog.date.relative.fullDateFormatter_;
@@ -67,7 +97,7 @@ goog.date.relative.fullDateFormatter_;
 
 /**
  * Short time formatter.
- * @type {goog.i18n.DateTimeFormat}
+ * @type {?goog.i18n.DateTimeFormat}
  * @private
  */
 goog.date.relative.shortTimeFormatter_;
@@ -75,30 +105,43 @@ goog.date.relative.shortTimeFormatter_;
 
 /**
  * Month-date formatter.
- * @type {goog.i18n.DateTimeFormat}
+ * @type {?goog.i18n.DateTimeFormat}
  * @private
  */
 goog.date.relative.monthDateFormatter_;
 
 
 /**
- * @typedef {function(number, boolean, goog.date.relative.Unit): string}
+ * Casing mode: default true for backward compatibility
+ * True causes formatDay to capitalize first character of
+ * the returned string.
+ * If false, the string is not changed.
+ * @type {boolean}
+ * @private
  */
-goog.date.relative.TimeDeltaFormatter;
+goog.date.relative.casingMode_ = true;
 
 
 /**
  * Handles formatting of time deltas.
- * @private {goog.date.relative.TimeDeltaFormatter}
+ * @private {?goog.date.relative.TimeDeltaFormatter}
  */
 goog.date.relative.formatTimeDelta_;
+
+
+/**
+ * Caller-settable function for formatting time. Default is internal
+ * formatting using goog.i18n.RelativeDateTimeFormat
+ * @typedef {function(number, boolean, !goog.date.relative.Unit): string}
+ */
+goog.date.relative.TimeDeltaFormatter;
 
 
 /**
  * Sets a different formatting function for time deltas ("3 days ago").
  * While its visibility is public, this function is Closure-internal and should
  * not be used in application code.
- * @param {goog.date.relative.TimeDeltaFormatter} formatter The function to use
+ * @param {!goog.date.relative.TimeDeltaFormatter} formatter The function to use
  *     for formatting time deltas (i.e. relative times).
  */
 goog.date.relative.setTimeDeltaFormatter = function(formatter) {
@@ -107,8 +150,76 @@ goog.date.relative.setTimeDeltaFormatter = function(formatter) {
 
 
 /**
+ * Sets casing mode to a boolean.
+ * If true, the first letter of day formats ("today", "yesterday", "tommorow")
+ * is capitalized using locale-aware toUpper.
+ * If false, no casing is done on basic data.
+ * @param {boolean} capitalizeMode
+ */
+goog.date.relative.setCasingMode = function(capitalizeMode) {
+  goog.date.relative.casingMode_ = capitalizeMode;
+};
+
+
+/**
+ * Converts first letter of a string to upper case.
+ * @param {string} text
+ * @return {string}
+ * @package Visible for testing
+ */
+goog.date.relative.upcase = function(text) {
+  // Note: Casing is harder than just handling the first character, so
+  // this is an approximation.
+
+  var codepointLength = 1;
+  // Check for surrogate values.
+  var codePoint0 = text.charCodeAt(0);
+  if (codePoint0 >= goog.date.relative.SURROGATE_LOW_ &&
+      codePoint0 <= goog.date.relative.SURROGATE_HIGH_) {
+    // It's a surrogate.
+    codepointLength = 2;
+  }
+  text = text.substring(0, codepointLength).toLocaleUpperCase() +
+      text.substring(codepointLength);
+  return text;
+};
+
+
+/**
+ * Returns string with "sentence casing" for the input string, i.e.,
+ * Finds Day unit in relative date time compatible values, if available.
+ * then formats the result using that data.
+ * If codepoints are surrogate code points, returns the string unchanged.
+ * If no relative non-numeric data is available, returns null.
+ *
+ * @param {number} dayOffset Offset of day unit for lookup in rdtf symbols data.
+ * @return {string|null}
+ * @private
+ */
+goog.date.relative.relativeCasedString_ = function(dayOffset) {
+  var rdtf_formatter =
+      new RelativeDateTimeFormat(RelativeDateTimeFormat.NumericOption.AUTO);
+
+  var result =
+      rdtf_formatter.format(dayOffset, RelativeDateTimeFormat.Unit.DAY);
+
+  // Check for a digit in expected Auto results, which implies a Numeric
+  // result was actually returned.
+  // Limitation: This checks only for ASCII, Arabic, ArabicExtended digits.
+  if (!result || result.match(/[0-9\u0660-\u0669\u06f0-\u06f9]/g)) {
+    return null;
+  }
+
+  if (goog.date.relative.casingMode_) {
+    return goog.date.relative.upcase(result);
+  }
+  return result;
+};
+
+
+/**
  * Returns a date in month format, e.g. Mar 15.
- * @param {Date} date The date object.
+ * @param {!Date} date The date object.
  * @return {string} The formatted string.
  * @private
  */
@@ -123,7 +234,7 @@ goog.date.relative.formatMonth_ = function(date) {
 
 /**
  * Returns a date in short-time format, e.g. 2:50 PM.
- * @param {Date|goog.date.DateTime} date The date object.
+ * @param {!Date|!goog.date.DateTime} date The date object.
  * @return {string} The formatted string.
  * @private
  */
@@ -138,7 +249,7 @@ goog.date.relative.formatShortTime_ = function(date) {
 
 /**
  * Returns a date in full date format, e.g. Tuesday, March 24, 2009.
- * @param {Date|goog.date.DateTime} date The date object.
+ * @param {!Date|!goog.date.DateTime} date The date object.
  * @return {string} The formatted string.
  * @private
  */
@@ -148,6 +259,41 @@ goog.date.relative.formatFullDate_ = function(date) {
         new goog.i18n.DateTimeFormat(goog.i18n.DateTimeFormat.Format.FULL_DATE);
   }
   return goog.date.relative.fullDateFormatter_.format(date);
+};
+
+
+/**
+ * Formats quantity and relative unit using i18n.relativedatetimeformat.
+ * Converts absolute quantity and unit to relative date time compatible values,
+ * then formats the result using that data.
+ *
+ * @param {number} absQuantity
+ * @param {boolean} futureFlag
+ * @param {!goog.date.relative.Unit} relUnit
+ * @return {string}
+ * @private
+ */
+goog.date.relative.rdtformat_ = function(absQuantity, futureFlag, relUnit) {
+  // Convert absolute value to negative for past, non-negative for future.
+  var quantity = futureFlag ? absQuantity : -absQuantity;
+
+  var rdtfFormatter = new RelativeDateTimeFormat();
+
+  var rdtfUnit;
+  switch (relUnit) {
+    case goog.date.relative.Unit.MINUTES:
+      rdtfUnit = RelativeDateTimeFormat.Unit.MINUTE;
+      break;
+    case goog.date.relative.Unit.HOURS:
+      rdtfUnit = RelativeDateTimeFormat.Unit.HOUR;
+      break;
+    default:
+    case goog.date.relative.Unit.DAYS:
+      rdtfUnit = RelativeDateTimeFormat.Unit.DAY;
+      break;
+  }
+  // Use locale-aware relatve date time formatter, compatible with ICU4C/ICU4J.
+  return rdtfFormatter.format(quantity, rdtfUnit);
 };
 
 
@@ -198,7 +344,7 @@ goog.date.relative.format = function(dateMs) {
       }
 
       // Uses days for less than 2-weeks.
-      if (delta < 14) {
+      if (delta < goog.date.relative.FORTNIGHT_) {
         return goog.date.relative.formatTimeDelta_(
             delta, future, goog.date.relative.Unit.DAYS);
 
@@ -250,31 +396,21 @@ goog.date.relative.formatDay = function(dateMs, opt_formatter) {
   today.setSeconds(0);
   today.setMilliseconds(0);
 
-  var yesterday = new Date(today.getTime() - goog.date.relative.DAY_MS_);
-  var tomorrow = new Date(today.getTime() + goog.date.relative.DAY_MS_);
-  var dayAfterTomorrow =
-      new Date(today.getTime() + 2 * goog.date.relative.DAY_MS_);
+  var dayOffset = (dateMs - today.getTime()) / goog.date.relative.DAY_MS_;
 
-  var message;
-  if (dateMs >= tomorrow.getTime() && dateMs < dayAfterTomorrow.getTime()) {
-    /** @desc Tomorrow. */
-    var MSG_TOMORROW = goog.getMsg('Tomorrow');
-    message = MSG_TOMORROW;
-  } else if (dateMs >= today.getTime() && dateMs < tomorrow.getTime()) {
-    /** @desc Today. */
-    var MSG_TODAY = goog.getMsg('Today');
-    message = MSG_TODAY;
-  } else if (dateMs >= yesterday.getTime() && dateMs < today.getTime()) {
-    /** @desc Yesterday. */
-    var MSG_YESTERDAY = goog.getMsg('Yesterday');
-    message = MSG_YESTERDAY;
-  } else {
-    // If we don't have a special relative term for this date, then return the
-    // short date format (or a custom-formatted date).
-    var formatFunction = opt_formatter || goog.date.relative.formatMonth_;
-    message = formatFunction(new Date(dateMs));
+  dayOffset = Math.floor(dayOffset);
+
+  var relativeResult = goog.date.relative.relativeCasedString_(dayOffset);
+
+  if (relativeResult) {
+    // Return the non-numeric answer such as "ayer" or "tomorrow".
+    return relativeResult;
   }
-  return message;
+
+  // Use specialized formatting such as day and month when no
+  // special form for the offset is available.
+  var formatFunction = opt_formatter || goog.date.relative.formatMonth_;
+  return formatFunction(new Date(dateMs));
 };
 
 
@@ -286,7 +422,7 @@ goog.date.relative.formatDay = function(dateMs, opt_formatter) {
  *   Monday, February 27, 2009 (4 days ago)
  *   Tuesday, March 20, 2005    // Too long ago for a relative date.
  *
- * @param {Date|goog.date.DateTime} date A date object.
+ * @param {!Date|!goog.date.DateTime} date A date object.
  * @param {string=} opt_shortTimeMsg An optional short time message can be
  *     provided if available, so that it's not recalculated in this function.
  * @param {string=} opt_fullDateMsg An optional date message can be
@@ -361,130 +497,7 @@ goog.date.relative.getDateString_ = function(
         relativeDate;
   }
 };
+});  // End of scope for RelativeDateTimeFormat.
 
-
-/*
- * TODO(user):
- *
- * I think that this whole relative formatting should move to DateTimeFormat.
- * But we would have to wait for the next version of CLDR, which is cleaning
- * the data for relative dates (even ICU has incomplete support for this).
- */
-/**
- * Gets a localized relative date string for a given delta and unit.
- * @param {number} delta Number of minutes/hours/days.
- * @param {boolean} future Whether the delta is in the future.
- * @param {goog.date.relative.Unit} unit The units the delta is in.
- * @return {string} The message.
- * @private
- */
-goog.date.relative.getMessage_ = function(delta, future, unit) {
-  var deltaFormatted = goog.i18n.DateTimeFormat.localizeNumbers(delta);
-  if (!future && unit == goog.date.relative.Unit.MINUTES) {
-    /**
-     * @desc Relative date indicating how many minutes ago something happened
-     * (singular).
-     */
-    var MSG_MINUTES_AGO_SINGULAR =
-        goog.getMsg('{$num} minute ago', {'num': deltaFormatted});
-
-    /**
-     * @desc Relative date indicating how many minutes ago something happened
-     * (plural).
-     */
-    var MSG_MINUTES_AGO_PLURAL =
-        goog.getMsg('{$num} minutes ago', {'num': deltaFormatted});
-
-    return delta == 1 ? MSG_MINUTES_AGO_SINGULAR : MSG_MINUTES_AGO_PLURAL;
-
-  } else if (future && unit == goog.date.relative.Unit.MINUTES) {
-    /**
-     * @desc Relative date indicating in how many minutes something happens
-     * (singular).
-     */
-    var MSG_IN_MINUTES_SINGULAR =
-        goog.getMsg('in {$num} minute', {'num': deltaFormatted});
-
-    /**
-     * @desc Relative date indicating in how many minutes something happens
-     * (plural).
-     */
-    var MSG_IN_MINUTES_PLURAL =
-        goog.getMsg('in {$num} minutes', {'num': deltaFormatted});
-
-    return delta == 1 ? MSG_IN_MINUTES_SINGULAR : MSG_IN_MINUTES_PLURAL;
-
-  } else if (!future && unit == goog.date.relative.Unit.HOURS) {
-    /**
-     * @desc Relative date indicating how many hours ago something happened
-     * (singular).
-     */
-    var MSG_HOURS_AGO_SINGULAR =
-        goog.getMsg('{$num} hour ago', {'num': deltaFormatted});
-
-    /**
-     * @desc Relative date indicating how many hours ago something happened
-     * (plural).
-     */
-    var MSG_HOURS_AGO_PLURAL =
-        goog.getMsg('{$num} hours ago', {'num': deltaFormatted});
-
-    return delta == 1 ? MSG_HOURS_AGO_SINGULAR : MSG_HOURS_AGO_PLURAL;
-
-  } else if (future && unit == goog.date.relative.Unit.HOURS) {
-    /**
-     * @desc Relative date indicating in how many hours something happens
-     * (singular).
-     */
-    var MSG_IN_HOURS_SINGULAR =
-        goog.getMsg('in {$num} hour', {'num': deltaFormatted});
-
-    /**
-     * @desc Relative date indicating in how many hours something happens
-     * (plural).
-     */
-    var MSG_IN_HOURS_PLURAL =
-        goog.getMsg('in {$num} hours', {'num': deltaFormatted});
-
-    return delta == 1 ? MSG_IN_HOURS_SINGULAR : MSG_IN_HOURS_PLURAL;
-
-  } else if (!future && unit == goog.date.relative.Unit.DAYS) {
-    /**
-     * @desc Relative date indicating how many days ago something happened
-     * (singular).
-     */
-    var MSG_DAYS_AGO_SINGULAR =
-        goog.getMsg('{$num} day ago', {'num': deltaFormatted});
-
-    /**
-     * @desc Relative date indicating how many days ago something happened
-     * (plural).
-     */
-    var MSG_DAYS_AGO_PLURAL =
-        goog.getMsg('{$num} days ago', {'num': deltaFormatted});
-
-    return delta == 1 ? MSG_DAYS_AGO_SINGULAR : MSG_DAYS_AGO_PLURAL;
-
-  } else if (future && unit == goog.date.relative.Unit.DAYS) {
-    /**
-     * @desc Relative date indicating in how many days something happens
-     * (singular).
-     */
-    var MSG_IN_DAYS_SINGULAR =
-        goog.getMsg('in {$num} day', {'num': deltaFormatted});
-
-    /**
-     * @desc Relative date indicating in how many days something happens
-     * (plural).
-     */
-    var MSG_IN_DAYS_PLURAL =
-        goog.getMsg('in {$num} days', {'num': deltaFormatted});
-
-    return delta == 1 ? MSG_IN_DAYS_SINGULAR : MSG_IN_DAYS_PLURAL;
-
-  } else {
-    return '';
-  }
-};
-
-goog.date.relative.setTimeDeltaFormatter(goog.date.relative.getMessage_);
+// Set default formatter for date/time.
+goog.date.relative.setTimeDeltaFormatter(goog.date.relative.rdtformat_);

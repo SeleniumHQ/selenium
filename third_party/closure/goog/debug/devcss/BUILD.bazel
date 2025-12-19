@@ -1,0 +1,37 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":devcss",
+        ":devcssrunner",
+    ],
+)
+
+closure_js_library(
+    name = "devcss",
+    srcs = ["devcss.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/cssom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "devcssrunner",
+    srcs = ["devcssrunner.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/debug/devcss"],
+)

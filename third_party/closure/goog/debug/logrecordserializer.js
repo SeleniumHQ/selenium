@@ -16,7 +16,6 @@
  * @fileoverview Static methods for serializing and deserializing log
  * messages.  These methods are deliberately kept separate from logrecord.js
  * and logger.js because they add dependencies on goog.json and goog.object.
- *
  */
 
 goog.provide('goog.debug.logRecordSerializer');
@@ -48,6 +47,7 @@ goog.debug.logRecordSerializer.Param_ = {
  * exception is likely to be lost.
  * @param {goog.debug.LogRecord} record The record to serialize.
  * @return {string} Serialized JSON string of the log message.
+ * @suppress {strictMissingProperties} message is not defined on Object
  */
 goog.debug.logRecordSerializer.serialize = function(record) {
   var param = goog.debug.logRecordSerializer.Param_;
@@ -88,7 +88,7 @@ goog.debug.logRecordSerializer.reconstitute_ = function(o) {
       level, o[param.MSG], o[param.LOGGER_NAME], o[param.TIME],
       o[param.SEQUENCE_NUMBER]);
   var exceptionMessage = o[param.EXCEPTION];
-  if (goog.isDefAndNotNull(exceptionMessage)) {
+  if (exceptionMessage != null) {
     ret.setException(new Error(exceptionMessage));
   }
   return ret;

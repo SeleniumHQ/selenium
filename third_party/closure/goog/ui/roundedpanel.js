@@ -52,7 +52,7 @@ goog.require('goog.userAgent');
  *     document we want to render in.
  * @return {!goog.ui.BaseRoundedPanel} An instance of a
  *     goog.ui.BaseRoundedPanel subclass.
- * TODO(user): deprecate this class, which has <5 usages and only really
+ * TODO(sdh): deprecate this class, which has <5 usages and only really
  *            matters for IE8, and then only stylistically.
  */
 goog.ui.RoundedPanel.create = function(

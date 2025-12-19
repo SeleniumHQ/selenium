@@ -75,7 +75,7 @@ goog.structs.QuadTree.prototype.getRootNode = function() {
 goog.structs.QuadTree.prototype.set = function(x, y, value) {
   var root = this.root_;
   if (x < root.x || y < root.y || x > root.x + root.w || y > root.y + root.h) {
-    throw Error('Out of bounds : (' + x + ', ' + y + ')');
+    throw new Error('Out of bounds : (' + x + ', ' + y + ')');
   }
   if (this.insert_(root, new goog.structs.QuadTree.Point(x, y, value))) {
     this.count_++;
@@ -228,9 +228,9 @@ goog.structs.QuadTree.prototype.forEach = function(fn, opt_obj) {
  * order (NE, SE, SW, NW).  The provided function will be called for each
  * leaf node that is encountered.
  * @param {goog.structs.QuadTree.Node} node The current node.
- * @param {function(goog.structs.QuadTree.Node)} fn The function to call
- *     for each leaf node. This function takes the node as an argument, and its
- *     return value is irrelevant.
+ * @param {function(this:goog.structs.QuadTree, goog.structs.QuadTree.Node)} fn
+ *     The function to call for each leaf node. This function takes the node as
+ *     an argument, and its return value is irrelevant.
  * @private
  */
 goog.structs.QuadTree.prototype.traverse_ = function(node, fn) {
@@ -271,7 +271,7 @@ goog.structs.QuadTree.prototype.find_ = function(node, x, y) {
       return this.find_(this.getQuadrantForPoint_(node, x, y), x, y);
 
     default:
-      throw Error('Invalid nodeType');
+      throw new Error('Invalid nodeType');
   }
 };
 
@@ -306,7 +306,7 @@ goog.structs.QuadTree.prototype.insert_ = function(parent, point) {
           this.getQuadrantForPoint_(parent, point.x, point.y), point);
 
     default:
-      throw Error('Invalid nodeType in parent');
+      throw new Error('Invalid nodeType in parent');
   }
 };
 
@@ -435,7 +435,7 @@ goog.structs.QuadTree.prototype.getQuadrantForPoint_ = function(parent, x, y) {
  */
 goog.structs.QuadTree.prototype.setPointForNode_ = function(node, point) {
   if (node.nodeType == goog.structs.QuadTree.NodeType.POINTER) {
-    throw Error('Can not set point for node of type POINTER');
+    throw new Error('Can not set point for node of type POINTER');
   }
   node.nodeType = goog.structs.QuadTree.NodeType.LEAF;
   node.point = point;
@@ -566,5 +566,5 @@ goog.structs.QuadTree.Point = function(x, y, opt_value) {
    * Optional value associated with the point.
    * @type {*}
    */
-  this.value = goog.isDef(opt_value) ? opt_value : null;
+  this.value = (opt_value !== undefined) ? opt_value : null;
 };

@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Utilities for working with text ranges in HTML documents.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 
@@ -52,7 +50,7 @@ goog.dom.TextRange = function() {
   /**
    * The start node of the range.  This can be null if one of the other
    * representations of the range is specified.
-   * @private {Node}
+   * @private {?Node}
    */
   this.startNode_ = null;
 
@@ -66,7 +64,7 @@ goog.dom.TextRange = function() {
   /**
    * The end node of the range.  This can be null if one of the other
    * representations of the range is specified.
-   * @private {Node}
+   * @private {?Node}
    */
   this.endNode_ = null;
 

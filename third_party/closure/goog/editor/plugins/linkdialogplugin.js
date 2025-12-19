@@ -14,9 +14,6 @@
 
 /**
  * @fileoverview A plugin for the LinkDialog.
- *
- * @author nicksantos@google.com (Nick Santos)
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.LinkDialogPlugin');
@@ -88,6 +85,15 @@ goog.editor.plugins.LinkDialogPlugin.prototype.showOpenLinkInNewWindow_ = false;
 
 
 /**
+ * Whether to focus the text to display input instead of the url input if the
+ * text to display input is empty when the dialog opens.
+ * @type {boolean}
+ * @private
+ */
+goog.editor.plugins.LinkDialogPlugin.prototype
+    .focusTextToDisplayOnOpenIfEmpty_ = false;
+
+/**
  * Whether the "open link in new window" checkbox should be checked when the
  * dialog is shown, and also whether it was checked last time the dialog was
  * closed.
@@ -113,6 +119,14 @@ goog.editor.plugins.LinkDialogPlugin.prototype.showRelNoFollow_ = false;
  * @private
  */
 goog.editor.plugins.LinkDialogPlugin.prototype.stopReferrerLeaks_ = false;
+
+
+/**
+ * Whether to prevent access to the opener window in the new window to prevent
+ * reverse tabnabbing. Defaults to false.
+ * @private {boolean}
+ */
+goog.editor.plugins.LinkDialogPlugin.prototype.stopTabNabbing_ = false;
 
 
 /**
@@ -173,6 +187,16 @@ goog.editor.plugins.LinkDialogPlugin.prototype.showOpenLinkInNewWindow =
 
 
 /**
+ * Tells the dialog to focus the text to display input instead of the url field
+ * if the text to display input is empty when the dialog is opened.
+ */
+goog.editor.plugins.LinkDialogPlugin.prototype.focusTextToDisplayOnOpenIfEmpty =
+    function() {
+  this.focusTextToDisplayOnOpenIfEmpty_ = true;
+};
+
+
+/**
  * Tells the dialog to show a checkbox where the user can choose to have
  * 'rel=nofollow' attribute added to the link.
  */
@@ -205,6 +229,16 @@ goog.editor.plugins.LinkDialogPlugin.prototype
  */
 goog.editor.plugins.LinkDialogPlugin.prototype.stopReferrerLeaks = function() {
   this.stopReferrerLeaks_ = true;
+};
+
+
+/**
+ * Tells the plugin to stop leaving a reference to the current window in windows
+ * opened when "Test this link" is clicked. Otherwise, the reference can be used
+ * to launch a reverse tabnabbing attack.
+ */
+goog.editor.plugins.LinkDialogPlugin.prototype.stopTabNabbing = function() {
+  this.stopTabNabbing_ = true;
 };
 
 
@@ -289,10 +323,14 @@ goog.editor.plugins.LinkDialogPlugin.prototype.createDialog = function(
   if (this.showOpenLinkInNewWindow_) {
     dialog.showOpenLinkInNewWindow(this.isOpenLinkInNewWindowChecked_);
   }
+  if (this.focusTextToDisplayOnOpenIfEmpty_) {
+    dialog.focusTextToDisplayOnOpenIfEmpty();
+  }
   if (this.showRelNoFollow_) {
     dialog.showRelNoFollow();
   }
   dialog.setStopReferrerLeaks(this.stopReferrerLeaks_);
+  dialog.setStopTabNabbing(this.stopTabNabbing_);
   this.eventHandler_
       .listen(dialog, goog.ui.editor.AbstractDialog.EventType.OK, this.handleOk)
       .listen(

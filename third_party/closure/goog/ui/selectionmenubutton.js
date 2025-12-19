@@ -106,6 +106,7 @@ goog.ui.SelectionMenuButton.prototype.setEnabled = function(enable) {
  * Enables the embedded checkbox.
  * @param {boolean} enable Whether to enable or disable the checkbox.
  * @protected
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.SelectionMenuButton.prototype.setCheckboxEnabled = function(enable) {
   this.getCheckboxElement().disabled = !enable;
@@ -163,6 +164,7 @@ goog.ui.SelectionMenuButton.prototype.handleCheckboxClick = function(e) {
  * Menu action handler to update checkbox checked state.
  * @param {goog.events.Event} e Menu action event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.SelectionMenuButton.prototype.handleMenuAction_ = function(e) {
   if (e.target.getModel() == goog.ui.SelectionMenuButton.SelectionState.ALL) {
@@ -259,6 +261,7 @@ goog.ui.SelectionMenuButton.prototype.setMenu = function(menu) {
 /**
  * Set selection state and update checkbox.
  * @param {goog.ui.SelectionMenuButton.SelectionState} state Selection state.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.SelectionMenuButton.prototype.setSelectionState = function(state) {
   if (this.selectionState != state) {

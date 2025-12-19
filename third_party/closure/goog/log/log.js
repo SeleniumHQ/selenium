@@ -15,8 +15,6 @@
 /**
  * @fileoverview Basic strippable logging definitions.
  * @see http://go/closurelogging
- *
- * @author johnlenz@google.com (John Lenz)
  */
 
 goog.provide('goog.log');
@@ -31,7 +29,7 @@ goog.require('goog.debug.Logger');
 
 
 /** @define {boolean} Whether logging is enabled. */
-goog.define('goog.log.ENABLED', goog.debug.LOGGING_ENABLED);
+goog.log.ENABLED = goog.define('goog.log.ENABLED', goog.debug.LOGGING_ENABLED);
 
 
 /** @const {string} */

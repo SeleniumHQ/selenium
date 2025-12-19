@@ -22,14 +22,14 @@
  *
  * goog.ui.media.PicasaAlbum is actually a {@link goog.ui.ControlRenderer}, a
  * stateless class - that could/should be used as a Singleton with the static
- * method {@code goog.ui.media.PicasaAlbum.getInstance} -, that knows how to
+ * method `goog.ui.media.PicasaAlbum.getInstance` -, that knows how to
  * render picasa albums. It is designed to be used with a
  * {@link goog.ui.Control}, which will actually control the media renderer and
  * provide the {@link goog.ui.Component} base. This design guarantees that all
  * different types of medias will behave alike but will look different.
  *
- * goog.ui.media.PicasaAlbum expects {@code goog.ui.media.PicasaAlbumModel}s on
- * {@code goog.ui.Control.getModel} as data models, and render a flash object
+ * goog.ui.media.PicasaAlbum expects `goog.ui.media.PicasaAlbumModel`s on
+ * `goog.ui.Control.getModel` as data models, and render a flash object
  * that will show a slideshow with the contents of that album URL.
  *
  * Example of usage:
@@ -77,8 +77,8 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * This class knows how to parse picasa URLs, and render the DOM structure
  * of picasa album players and previews. This class is meant to be used as a
- * singleton static stateless class, that takes {@code goog.ui.media.Media}
- * instances and renders it. It expects {@code goog.ui.media.Media.getModel} to
+ * singleton static stateless class, that takes `goog.ui.media.Media`
+ * instances and renders it. It expects `goog.ui.media.Media.getModel` to
  * return a well formed, previously constructed, object with a user and album
  * fields {@see goog.ui.media.PicasaAlbum.parseUrl}, which is the data model
  * this renderer will use to construct the DOM structure.
@@ -171,8 +171,8 @@ goog.ui.media.PicasaAlbum.prototype.getCssClass = function() {
 
 
 /**
- * The {@code goog.ui.media.PicasaAlbum} media data model. It stores a required
- * {@code userId} and {@code albumId} fields, sets the picasa album URL, and
+ * The `goog.ui.media.PicasaAlbum` media data model. It stores a required
+ * `userId` and `albumId` fields, sets the picasa album URL, and
  * allows a few optional parameters.
  *
  * @param {string} userId The picasa userId associated with this album.
@@ -218,14 +218,14 @@ goog.ui.media.PicasaAlbumModel = function(
   var flashVars = {
     'host': 'picasaweb.google.com',
     'RGB': '0x000000',
-    'feed': 'https://picasaweb.google.com/data/feed/api/user/' + userId +
+    'feed': 'http://picasaweb.google.com/data/feed/api/user/' + userId +
         '/album/' + albumId + '?kind=photo&alt=rss' + authParam
   };
   flashVars[opt_autoplay ? 'autoplay' : 'noautoplay'] = '1';
 
   var flashUrl = goog.html.TrustedResourceUrl.fromConstant(
       goog.string.Const.from(
-          'https://picasaweb.google.com/s/c/bin/slideshow.swf'));
+          'http://picasaweb.google.com/s/c/bin/slideshow.swf'));
   var player = new goog.ui.media.MediaModel.Player(flashUrl, flashVars);
 
   this.setPlayer(player);
@@ -249,7 +249,7 @@ goog.ui.media.PicasaAlbumModel.MATCHER_ =
 
 
 /**
- * Gets a {@code picasaUrl} and extracts the user and album id.
+ * Gets a `picasaUrl` and extracts the user and album id.
  *
  * @param {string} picasaUrl A picasa album URL.
  * @param {string=} opt_caption An optional caption of the picasa album.
@@ -266,20 +266,21 @@ goog.ui.media.PicasaAlbumModel.newInstance = function(
     return new goog.ui.media.PicasaAlbumModel(
         data[1], data[2], data[3], opt_caption, opt_description, opt_autoplay);
   }
-  throw Error('failed to parse user and album from picasa url: ' + picasaUrl);
+  throw new Error(
+      'failed to parse user and album from picasa url: ' + picasaUrl);
 };
 
 
 /**
- * The opposite of {@code newInstance}: takes an {@code userId} and an
- * {@code albumId} and builds a URL.
+ * The opposite of `newInstance`: takes an `userId` and an
+ * `albumId` and builds a URL.
  *
  * @param {string} userId The user that owns the album.
  * @param {string} albumId The album id.
  * @return {string} The URL of the album.
  */
 goog.ui.media.PicasaAlbumModel.buildUrl = function(userId, albumId) {
-  return 'https://picasaweb.google.com/' + userId + '/' + albumId;
+  return 'http://picasaweb.google.com/' + userId + '/' + albumId;
 };
 
 

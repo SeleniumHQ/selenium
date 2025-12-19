@@ -20,7 +20,6 @@
  * palette. Without the styles from the demo css file, only a hex color label
  * and input field show up.
  *
- * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/hsvpalette.html
  */
 
@@ -188,6 +187,7 @@ goog.ui.HsvPalette.prototype.getAlpha = function() {
 /**
  * Updates the text entry field.
  * @protected
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.HsvPalette.prototype.updateInput = function() {
   var parsed;
@@ -205,12 +205,17 @@ goog.ui.HsvPalette.prototype.updateInput = function() {
 /**
  * Sets which color is selected and update the UI.
  * @param {string} color The selected color.
+ * @param {boolean=} opt_disableDispatchEvent (optional) Whether the event
+ * should not be fired.
  */
-goog.ui.HsvPalette.prototype.setColor = function(color) {
+goog.ui.HsvPalette.prototype.setColor = function(
+    color, opt_disableDispatchEvent) {
   if (color != this.color) {
     this.setColorInternal(color);
     this.updateUi();
-    this.dispatchEvent(goog.ui.Component.EventType.ACTION);
+    if (!opt_disableDispatchEvent) {
+      this.dispatchEvent(goog.ui.Component.EventType.ACTION);
+    }
   }
 };
 
@@ -317,6 +322,8 @@ goog.ui.HsvPalette.prototype.createDom = function() {
     'type': goog.dom.InputType.TEXT,
     'dir': 'ltr'
   });
+  // Spellcheck is not necessary, so setting it to false on the inputElement.
+  this.inputElement.spellcheck = false;
 
   var labelElement =
       dom.createDom(goog.dom.TagName.LABEL, null, this.inputElement);
@@ -520,6 +527,7 @@ goog.ui.HsvPalette.prototype.handleMouseUp = function(e) {
  * Handles input events on the hex value input field.
  * @param {goog.events.Event} e Event object.
  * @protected
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.HsvPalette.prototype.handleInput = function(e) {
   if (/^#?[0-9a-f]{6}$/i.test(this.inputElement.value)) {
