@@ -9,6 +9,8 @@ module Selenium
 
           DEFAULT_HEADERS: Hash[String, untyped]
 
+          BINARY_ENCODINGS: Array[Encoding]
+
           @common_headers: Hash[String, untyped]
 
           attr_accessor self.extra_headers: Hash[String, untyped]
