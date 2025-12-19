@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Bidi utility functions.
- *
  */
 
 goog.provide('goog.style.bidi');
@@ -22,6 +21,9 @@ goog.provide('goog.style.bidi');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.platform');
+goog.require('goog.userAgent.product');
+goog.require('goog.userAgent.product.isVersion');
 
 
 /**
@@ -33,9 +35,7 @@ goog.require('goog.userAgent');
  */
 goog.style.bidi.getScrollLeft = function(element) {
   var isRtl = goog.style.isRightToLeft(element);
-  if (isRtl && goog.userAgent.GECKO) {
-    // ScrollLeft starts at 0 and then goes negative as the element is scrolled
-    // towards the left.
+  if (isRtl && goog.style.bidi.usesNegativeScrollLeftInRtl_()) {
     return -element.scrollLeft;
   } else if (
       isRtl &&
@@ -105,9 +105,10 @@ goog.style.bidi.getOffsetStart = function(element) {
     return offsetLeftForReal;
   }
 
-  if (goog.userAgent.GECKO) {
-    // When calculating an element's offsetLeft, Firefox erroneously subtracts
-    // the border width from the actual distance.  So we need to add it back.
+  if (goog.userAgent.GECKO && !goog.userAgent.isVersionOrHigher(58)) {
+    // When calculating an element's offsetLeft, Firefox 57 and below
+    // erroneously subtracts the border width from the actual distance.
+    // So we need to add it back. (Fixed in FireFox 58+)
     var borderWidths = goog.style.getBorderBox(bestParent);
     offsetLeftForReal += borderWidths.left;
   } else if (
@@ -150,8 +151,7 @@ goog.style.bidi.setScrollOffset = function(element, offsetStart) {
   // Otherwise, in RTL, we need to account for different browser behavior.
   if (!goog.style.isRightToLeft(element)) {
     element.scrollLeft = offsetStart;
-  } else if (goog.userAgent.GECKO) {
-    // Negative scroll-left positions in RTL.
+  } else if (goog.style.bidi.usesNegativeScrollLeftInRtl_()) {
     element.scrollLeft = -offsetStart;
   } else if (
       !(goog.userAgent.EDGE_OR_IE && goog.userAgent.isVersionOrHigher('8'))) {
@@ -167,6 +167,20 @@ goog.style.bidi.setScrollOffset = function(element, offsetStart) {
 
 
 /**
+ * @return {boolean} Whether the current browser returns negative scrollLeft
+ *     values for RTL elements. If true, then scrollLeft starts at 0 and then
+ *     becomes more negative as the element is scrolled towards the left.
+ * @private
+ */
+goog.style.bidi.usesNegativeScrollLeftInRtl_ = function() {
+  var isSafari10Plus =
+      goog.userAgent.product.SAFARI && goog.userAgent.product.isVersion(10);
+  var isIOS10Plus = goog.userAgent.IOS && goog.userAgent.platform.isVersion(10);
+  return goog.userAgent.GECKO || isSafari10Plus || isIOS10Plus;
+};
+
+
+/**
  * Sets the element's left style attribute in LTR or right style attribute in
  * RTL.  Also clears the left attribute in RTL and the right attribute in LTR.
  * @param {Element} elem The element to position.
@@ -175,7 +189,7 @@ goog.style.bidi.setScrollOffset = function(element, offsetStart) {
  * @param {boolean} isRtl Whether we are in RTL mode.
  */
 goog.style.bidi.setPosition = function(elem, left, top, isRtl) {
-  if (!goog.isNull(top)) {
+  if (top !== null) {
     elem.style.top = top + 'px';
   }
   if (isRtl) {

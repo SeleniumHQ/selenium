@@ -15,15 +15,13 @@
 /**
  * @fileoverview Constant declarations for common key codes.
  *
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/keyhandler.html
  */
 
 goog.provide('goog.events.KeyCodes');
 
-goog.require('goog.userAgent');
-
 goog.forwardDeclare('goog.events.BrowserEvent');
+goog.require('goog.userAgent');
 
 
 /**
@@ -70,9 +68,16 @@ goog.events.KeyCodes = {
   SEVEN: 55,
   EIGHT: 56,
   NINE: 57,
-  FF_SEMICOLON: 59,   // Firefox (Gecko) fires this for semicolon instead of 186
-  FF_EQUALS: 61,      // Firefox (Gecko) fires this for equals instead of 187
-  FF_DASH: 173,       // Firefox (Gecko) fires this for dash instead of 189
+  FF_SEMICOLON: 59,  // Firefox (Gecko) fires this for semicolon instead of 186
+  FF_EQUALS: 61,     // Firefox (Gecko) fires this for equals instead of 187
+  FF_DASH: 173,      // Firefox (Gecko) fires this for dash instead of 189
+  // Firefox (Gecko) fires this for # on UK keyboards, rather than
+  // Shift+SINGLE_QUOTE.
+  FF_HASH: 163,
+  // Firefox (Gecko) fires this for ' (:) on JP keyboards, rather than
+  // SINGLE_QUOTE (US keyboard layout) or SEMICOLON (JP keyboard layout in
+  // chrome)
+  FF_JP_QUOTE: 58,
   QUESTION_MARK: 63,  // needs localization
   AT_SIGN: 64,
   A: 65,
@@ -191,9 +196,13 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
     return false;
   }
 
-  // The following keys are quite harmless, even in combination with
-  // CTRL, ALT or SHIFT.
+  if (goog.events.KeyCodes.isCharacterKey(e.keyCode)) {
+    return true;
+  }
+
   switch (e.keyCode) {
+    // The following keys are quite harmless, even in combination with
+    // CTRL, ALT or SHIFT.
     case goog.events.KeyCodes.ALT:
     case goog.events.KeyCodes.CAPS_LOCK:
     case goog.events.KeyCodes.CONTEXT_MENU:
@@ -261,8 +270,7 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
 goog.events.KeyCodes.firesKeyPressEvent = function(
     keyCode, opt_heldKeyCode, opt_shiftKey, opt_ctrlKey, opt_altKey,
     opt_metaKey) {
-  if (!goog.userAgent.IE && !goog.userAgent.EDGE &&
-      !(goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525'))) {
+  if (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('525')) {
     return true;
   }
 
@@ -276,20 +284,24 @@ goog.events.KeyCodes.firesKeyPressEvent = function(
   }
 
   // Saves Ctrl or Alt + key for IE and WebKit 525+, which won't fire keypress.
-  // Non-IE browsers and WebKit prior to 525 won't get this far so no need to
-  // check the user agent.
-  if (goog.isNumber(opt_heldKeyCode)) {
-    opt_heldKeyCode = goog.events.KeyCodes.normalizeKeyCode(opt_heldKeyCode);
-  }
-  var heldKeyIsModifier = opt_heldKeyCode == goog.events.KeyCodes.CTRL ||
-      opt_heldKeyCode == goog.events.KeyCodes.ALT ||
-      goog.userAgent.MAC && opt_heldKeyCode == goog.events.KeyCodes.META;
-  // The Shift key blocks keypresses on Mac iff accompanied by another modifier.
-  var modifiedShiftKey = opt_heldKeyCode == goog.events.KeyCodes.SHIFT &&
-      (opt_ctrlKey || opt_metaKey);
-  if ((!opt_shiftKey || goog.userAgent.MAC) && heldKeyIsModifier ||
-      goog.userAgent.MAC && modifiedShiftKey) {
-    return false;
+  // WebKit prior to 525 won't get this far so no need to check the user agent.
+  // Gecko doesn't need to use the held key for modifiers, it just checks the
+  // ctrl/meta/alt/shiftKey fields.
+  if (!goog.userAgent.GECKO) {
+    if (typeof opt_heldKeyCode === 'number') {
+      opt_heldKeyCode = goog.events.KeyCodes.normalizeKeyCode(opt_heldKeyCode);
+    }
+    var heldKeyIsModifier = opt_heldKeyCode == goog.events.KeyCodes.CTRL ||
+        opt_heldKeyCode == goog.events.KeyCodes.ALT ||
+        goog.userAgent.MAC && opt_heldKeyCode == goog.events.KeyCodes.META;
+    // The Shift key blocks keypresses on Mac iff accompanied by another
+    // modifier.
+    var modifiedShiftKey = opt_heldKeyCode == goog.events.KeyCodes.SHIFT &&
+        (opt_ctrlKey || opt_metaKey);
+    if ((!opt_shiftKey || goog.userAgent.MAC) && heldKeyIsModifier ||
+        goog.userAgent.MAC && modifiedShiftKey) {
+      return false;
+    }
   }
 
   // Some keys with Ctrl/Shift do not issue keypress in WEBKIT.
@@ -320,12 +332,29 @@ goog.events.KeyCodes.firesKeyPressEvent = function(
 
   switch (keyCode) {
     case goog.events.KeyCodes.ENTER:
-      return true;
+      if (goog.userAgent.GECKO) {
+        // Only Enter, Shift + Enter, Ctrl + Enter causes keypress event on
+        // Firefox.
+        if (opt_metaKey || opt_altKey) {
+          return false;
+        }
+        return !(opt_shiftKey && opt_ctrlKey);
+      } else {
+        return true;
+      }
     case goog.events.KeyCodes.ESC:
-      return !(goog.userAgent.WEBKIT || goog.userAgent.EDGE);
+      return !(
+          goog.userAgent.WEBKIT || goog.userAgent.EDGE || goog.userAgent.GECKO);
   }
 
-  return goog.events.KeyCodes.isCharacterKey(keyCode);
+  // Gecko won't fire a keypress event even when the key is a character key if
+  // ctrl, meta or alt are pressed. In all other cases, a keypress event is
+  // only fired when the key is a character.
+  if (goog.userAgent.GECKO && (opt_ctrlKey || opt_altKey || opt_metaKey)) {
+    return false;
+  } else {
+    return goog.events.KeyCodes.isCharacterKey(keyCode);
+  }
 };
 
 
@@ -378,7 +407,11 @@ goog.events.KeyCodes.isCharacterKey = function(keyCode) {
     case goog.events.KeyCodes.OPEN_SQUARE_BRACKET:
     case goog.events.KeyCodes.BACKSLASH:
     case goog.events.KeyCodes.CLOSE_SQUARE_BRACKET:
+    case goog.events.KeyCodes.FF_HASH:
+    case goog.events.KeyCodes.FF_JP_QUOTE:
       return true;
+    case goog.events.KeyCodes.FF_DASH:
+      return goog.userAgent.GECKO;
     default:
       return false;
   }

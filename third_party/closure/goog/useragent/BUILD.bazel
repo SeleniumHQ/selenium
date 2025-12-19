@@ -1,0 +1,128 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":adobereader",
+        ":flash",
+        ":iphoto",
+        ":jscript",
+        ":keyboard",
+        ":platform",
+        ":product",
+        ":product_isversion",
+        ":useragent",
+    ],
+)
+
+closure_js_library(
+    name = "adobereader",
+    srcs = ["adobereader.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "flash",
+    srcs = ["flash.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/string"],
+)
+
+closure_js_library(
+    name = "iphoto",
+    srcs = ["iphoto.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "jscript",
+    srcs = ["jscript.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/string"],
+)
+
+closure_js_library(
+    name = "keyboard",
+    srcs = ["keyboard.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/labs/useragent:platform"],
+)
+
+closure_js_library(
+    name = "platform",
+    srcs = ["platform.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "product",
+    srcs = ["product.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/useragent:browser",
+        "//third_party/closure/goog/labs/useragent:platform",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "product_isversion",
+    srcs = ["product_isversion.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/useragent:platform",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
+    ],
+)
+
+closure_js_library(
+    name = "useragent",
+    srcs = ["useragent.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/useragent:browser",
+        "//third_party/closure/goog/labs/useragent:engine",
+        "//third_party/closure/goog/labs/useragent:platform",
+        "//third_party/closure/goog/labs/useragent:util",
+        "//third_party/closure/goog/reflect",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "useragenttestutil",
+    testonly = True,
+    srcs = ["useragenttestutil.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/labs/useragent:browser",
+        "//third_party/closure/goog/labs/useragent:engine",
+        "//third_party/closure/goog/labs/useragent:platform",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:keyboard",
+        "//third_party/closure/goog/useragent:platform",
+        "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/useragent:product_isversion",
+    ],
+)

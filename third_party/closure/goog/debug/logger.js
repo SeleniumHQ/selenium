@@ -71,27 +71,27 @@ goog.debug.Logger = function(name) {
 
   /**
    * Parent Logger.
-   * @private {goog.debug.Logger}
+   * @private {?goog.debug.Logger}
    */
   this.parent_ = null;
 
   /**
    * Level that this logger only filters above. Null indicates it should
    * inherit from the parent.
-   * @private {goog.debug.Logger.Level}
+   * @private {?goog.debug.Logger.Level}
    */
   this.level_ = null;
 
   /**
    * Map of children loggers. The keys are the leaf names of the children and
    * the values are the child loggers.
-   * @private {Object}
+   * @private {?Object}
    */
   this.children_ = null;
 
   /**
    * Handlers that are listening to this logger.
-   * @private {Array<Function>}
+   * @private {?Array<?Function>}
    */
   this.handlers_ = null;
 };
@@ -106,7 +106,16 @@ goog.debug.Logger.ROOT_LOGGER_NAME = '';
  *     log handlers attached to them and whether they can have their log level
  *     set. Logging is a bit faster when this is set to false.
  */
-goog.define('goog.debug.Logger.ENABLE_HIERARCHY', true);
+goog.debug.Logger.ENABLE_HIERARCHY =
+    goog.define('goog.debug.Logger.ENABLE_HIERARCHY', true);
+
+
+/**
+ * @define {boolean} Toggles whether active log statements are also recorded
+ *     to the profiler.
+ */
+goog.debug.Logger.ENABLE_PROFILER_LOGGING =
+    goog.define('goog.debug.Logger.ENABLE_PROFILER_LOGGING', false);
 
 
 if (!goog.debug.Logger.ENABLE_HIERARCHY) {
@@ -275,7 +284,7 @@ goog.debug.Logger.Level.PREDEFINED_LEVELS = [
 /**
  * A lookup map used to find the level object based on the name or value of
  * the level object.
- * @type {Object}
+ * @type {?Object}
  * @private
  */
 goog.debug.Logger.Level.predefinedLevelsCache_ = null;
@@ -360,21 +369,23 @@ goog.debug.Logger.getLogger = function(name) {
  * @param {string} msg The message to log.
  */
 goog.debug.Logger.logToProfilers = function(msg) {
-  // Using goog.global, as loggers might be used in window-less contexts.
-  if (goog.global['console']) {
-    if (goog.global['console']['timeStamp']) {
-      // Logs a message to Firebug, Web Inspector, SpeedTracer, etc.
-      goog.global['console']['timeStamp'](msg);
-    } else if (goog.global['console']['markTimeline']) {
-      // TODO(user): markTimeline is deprecated. Drop this else clause entirely
-      // after Chrome M14 hits stable.
-      goog.global['console']['markTimeline'](msg);
+  // Some browsers also log timeStamp calls to the console, only log
+  // if actually asked.
+  if (goog.debug.Logger.ENABLE_PROFILER_LOGGING) {
+    var msWriteProfilerMark = goog.global['msWriteProfilerMark'];
+    if (msWriteProfilerMark) {
+      // Logs a message to the Microsoft profiler
+      // On IE, console['timeStamp'] may output to console
+      msWriteProfilerMark(msg);
+      return;
     }
-  }
 
-  if (goog.global['msWriteProfilerMark']) {
-    // Logs a message to the Microsoft profiler
-    goog.global['msWriteProfilerMark'](msg);
+    // Using goog.global, as loggers might be used in window-less contexts.
+    var console = goog.global['console'];
+    if (console && console['timeStamp']) {
+      // Logs a message to Firebug, Web Inspector, SpeedTracer, etc.
+      console['timeStamp'](msg);
+    }
   }
 };
 
@@ -699,7 +710,9 @@ goog.debug.Logger.prototype.logRecord = function(logRecord) {
  * @private
  */
 goog.debug.Logger.prototype.doLogRecord_ = function(logRecord) {
-  goog.debug.Logger.logToProfilers('log:' + logRecord.getMessage());
+  if (goog.debug.Logger.ENABLE_PROFILER_LOGGING) {
+    goog.debug.Logger.logToProfilers('log:' + logRecord.getMessage());
+  }
   if (goog.debug.Logger.ENABLE_HIERARCHY) {
     var target = this;
     while (target) {
@@ -769,7 +782,7 @@ goog.debug.LogManager.loggers_ = {};
 
 /**
  * The root logger which is the root of the logger tree.
- * @type {goog.debug.Logger}
+ * @type {?goog.debug.Logger}
  * @private
  */
 goog.debug.LogManager.rootLogger_ = null;

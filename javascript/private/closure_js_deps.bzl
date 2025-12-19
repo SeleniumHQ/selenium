@@ -98,8 +98,7 @@ def closure_js_deps(name, deps = [], testonly = None, **kwargs):
             $(location //javascript/private:closure_make_deps) \\
                 --closure-path $$(pwd)/external/com_google_javascript_closure_library/closure \\
                 --no-validate \\
-                $$FILES | \\
-            sed 's|../../../javascript/|../../../_main/javascript/|g' \\
+                $$FILES \\
                 > $@
         """,
         tools = ["//javascript/private:closure_make_deps"],

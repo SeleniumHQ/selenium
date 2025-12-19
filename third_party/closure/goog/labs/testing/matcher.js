@@ -66,7 +66,7 @@ goog.labs.testing.Matcher.makeMatcher = function(
    * @implements {goog.labs.testing.Matcher}
    * @final
    */
-  var matcherConstructor = function() {};
+  const matcherConstructor = function() {};
 
   /** @override */
   matcherConstructor.prototype.matches = matchesFunction;

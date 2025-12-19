@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview DOM pattern to match a text node.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.Text');

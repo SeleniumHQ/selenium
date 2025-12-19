@@ -1,0 +1,501 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":browserchannel",
+        ":browsertestchannel",
+        ":bulkloader",
+        ":bulkloaderhelper",
+        ":channeldebug",
+        ":channelrequest",
+        ":cookies",
+        ":corsxmlhttpfactory",
+        ":crossdomainrpc",
+        ":errorcode",
+        ":eventtype",
+        ":fetchxmlhttpfactory",
+        ":filedownloader",
+        ":httpstatus",
+        ":httpstatusname",
+        ":iframeio",
+        ":iframeloadmonitor",
+        ":imageloader",
+        ":ipaddress",
+        ":jsloader",
+        ":jsonp",
+        ":mockiframeio",
+        ":multiiframeloadmonitor",
+        ":networkstatusmonitor",
+        ":networktester",
+        ":tmpnetwork",
+        ":websocket",
+        ":wrapperxmlhttpfactory",
+        ":xhrio",
+        ":xhriopool",
+        ":xhrlike",
+        ":xhrmanager",
+        ":xmlhttp",
+        ":xmlhttpfactory",
+        "//third_party/closure/goog/net/rpc:all_js",
+        "//third_party/closure/goog/net/streams:all_js",
+        "//third_party/closure/goog/net/xpc:all_js",
+    ],
+)
+
+closure_js_library(
+    name = "browserchannel",
+    srcs = ["browserchannel.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:formatter",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/json:nativejsonprocessor",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:browsertestchannel",
+        "//third_party/closure/goog/net:channeldebug",
+        "//third_party/closure/goog/net:channelrequest",
+        "//third_party/closure/goog/net:tmpnetwork",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/structs",
+        "//third_party/closure/goog/structs:circularbuffer",
+        "//third_party/closure/goog/uri",
+    ],
+)
+
+closure_js_library(
+    name = "browsertestchannel",
+    srcs = ["browsertestchannel.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/json:nativejsonprocessor",
+        "//third_party/closure/goog/net:channelrequest",
+        "//third_party/closure/goog/net:tmpnetwork",
+        "//third_party/closure/goog/string:parser",
+    ],
+)
+
+closure_js_library(
+    name = "bulkloader",
+    srcs = ["bulkloader.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:bulkloaderhelper",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:xhrio",
+    ],
+)
+
+closure_js_library(
+    name = "bulkloaderhelper",
+    srcs = ["bulkloaderhelper.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/disposable"],
+)
+
+closure_js_library(
+    name = "channeldebug",
+    srcs = ["channeldebug.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/log",
+    ],
+)
+
+closure_js_library(
+    name = "channelrequest",
+    srcs = ["channelrequest.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/async:throttle",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/html:safeurl",
+        "//third_party/closure/goog/html:uncheckedconversions",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:xmlhttp",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "cookies",
+    srcs = ["cookies.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "corsxmlhttpfactory",
+    srcs = ["corsxmlhttpfactory.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/net:httpstatus",
+        "//third_party/closure/goog/net:xhrlike",
+        "//third_party/closure/goog/net:xmlhttp",
+        "//third_party/closure/goog/net:xmlhttpfactory",
+    ],
+)
+
+closure_js_library(
+    name = "crossdomainrpc",
+    srcs = ["crossdomainrpc.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:httpstatus",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/uri",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "errorcode",
+    srcs = ["errorcode.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "eventtype",
+    srcs = ["eventtype.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "fetchxmlhttpfactory",
+    srcs = ["fetchxmlhttpfactory.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/functions",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:xhrlike",
+        "//third_party/closure/goog/net:xmlhttpfactory",
+    ],
+)
+
+closure_js_library(
+    name = "filedownloader",
+    srcs = ["filedownloader.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/crypt:hash32",
+        "//third_party/closure/goog/debug:error",
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/fs",
+        "//third_party/closure/goog/fs:entry",
+        "//third_party/closure/goog/fs:error",
+        "//third_party/closure/goog/fs:filesaver",
+        "//third_party/closure/goog/mochikit/async:deferred",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/net:xhriopool",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "httpstatus",
+    srcs = ["httpstatus.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "httpstatusname",
+    srcs = ["httpstatusname.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "iframeio",
+    srcs = ["iframeio.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:formatter",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:inputtype",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/html:legacyconversions",
+        "//third_party/closure/goog/html:safeurl",
+        "//third_party/closure/goog/html:uncheckedconversions",
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/reflect",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/structs",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/uri",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "iframeloadmonitor",
+    srcs = ["iframeloadmonitor.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "imageloader",
+    srcs = ["imageloader.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "ipaddress",
+    srcs = ["ipaddress.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/math:integer",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "jsloader",
+    srcs = ["jsloader.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/debug:error",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/html:trustedresourceurl",
+        "//third_party/closure/goog/mochikit/async:deferred",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "jsonp",
+    srcs = ["jsonp.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/html:trustedresourceurl",
+        "//third_party/closure/goog/net:jsloader",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "mockiframeio",
+    srcs = ["mockiframeio.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:iframeio",
+    ],
+)
+
+closure_js_library(
+    name = "multiiframeloadmonitor",
+    srcs = ["multiiframeloadmonitor.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/net:iframeloadmonitor",
+    ],
+)
+
+closure_js_library(
+    name = "networkstatusmonitor",
+    srcs = ["networkstatusmonitor.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/events:listenable"],
+)
+
+closure_js_library(
+    name = "networktester",
+    srcs = ["networktester.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/uri",
+    ],
+)
+
+closure_js_library(
+    name = "tmpnetwork",
+    srcs = ["tmpnetwork.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/net:channeldebug",
+        "//third_party/closure/goog/uri",
+    ],
+)
+
+closure_js_library(
+    name = "websocket",
+    srcs = ["websocket.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:entrypointregistry",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/timer",
+    ],
+)
+
+closure_js_library(
+    name = "wrapperxmlhttpfactory",
+    srcs = ["wrapperxmlhttpfactory.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/net:xhrlike",
+        "//third_party/closure/goog/net:xmlhttpfactory",
+    ],
+)
+
+closure_js_library(
+    name = "xhrio",
+    srcs = ["xhrio.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:entrypointregistry",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/json:hybrid",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:httpstatus",
+        "//third_party/closure/goog/net:xmlhttp",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/structs",
+        "//third_party/closure/goog/structs:map",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/uri:utils",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "xhriopool",
+    srcs = ["xhriopool.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/structs:prioritypool",
+    ],
+)
+
+closure_js_library(
+    name = "xhrlike",
+    srcs = ["xhrlike.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "xhrmanager",
+    srcs = ["xhrmanager.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/net:xhriopool",
+        "//third_party/closure/goog/structs:map",
+    ],
+)
+
+closure_js_library(
+    name = "xmlhttp",
+    srcs = ["xmlhttp.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/net:wrapperxmlhttpfactory",
+        "//third_party/closure/goog/net:xmlhttpfactory",
+    ],
+)
+
+closure_js_library(
+    name = "xmlhttpfactory",
+    srcs = ["xmlhttpfactory.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/net:xhrlike"],
+)

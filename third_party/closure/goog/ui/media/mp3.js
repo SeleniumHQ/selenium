@@ -17,13 +17,13 @@
  *
  * goog.ui.media.Mp3 is actually a {@link goog.ui.ControlRenderer}, a stateless
  * class - that could/should be used as a Singleton with the static method
- * {@code goog.ui.media.Mp3.getInstance} -, that knows how to render Mp3s. It is
+ * `goog.ui.media.Mp3.getInstance` -, that knows how to render Mp3s. It is
  * designed to be used with a {@link goog.ui.Control}, which will actually
  * control the media renderer and provide the {@link goog.ui.Component} base.
  * This design guarantees that all different types of medias will behave alike
  * but will look different.
  *
- * goog.ui.media.Mp3 expects mp3 urls on {@code goog.ui.Control.getModel} as
+ * goog.ui.media.Mp3 expects mp3 urls on `goog.ui.Control.getModel` as
  * data models, and render a flash object that will play that URL.
  *
  * Example of usage:
@@ -49,11 +49,11 @@
  * </pre>
  *
  * Requires flash to actually work.
- *
  */
 
 goog.provide('goog.ui.media.Mp3');
 
+goog.forwardDeclare('goog.ui.media.MediaModel');
 goog.require('goog.string');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
@@ -67,8 +67,8 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * This class knows how to parse mp3 URLs, and render the DOM structure
  * of mp3 flash players. This class is meant to be used as a singleton static
- * stateless class, that takes {@code goog.ui.media.Media} instances and renders
- * it. It expects {@code goog.ui.media.Media.getModel} to return a well formed,
+ * stateless class, that takes `goog.ui.media.Media` instances and renders
+ * it. It expects `goog.ui.media.Media.getModel` to return a well formed,
  * previously checked, mp3 URL {@see goog.ui.media.PicasaAlbum.parseUrl},
  * which is the data model this renderer will use to construct the DOM
  * structure. {@see goog.ui.media.PicasaAlbum.newControl} for an example of
@@ -90,7 +90,7 @@ goog.addSingletonGetter(goog.ui.media.Mp3);
 
 
 /**
- * Flash player arguments. We expect that {@code flashUrl_} will contain a flash
+ * Flash player arguments. We expect that `flashUrl_` will contain a flash
  * movie that takes an audioUrl parameter on its URL, containing the URL of the
  * mp3 to be played.
  *
@@ -145,7 +145,7 @@ goog.ui.media.Mp3.MATCHER =
  * control over the configuration.
  *
  * @param {goog.ui.media.MediaModel} dataModel A media model that must contain
- *     an mp3 url on {@code dataModel.getUrl}.
+ *     an mp3 url on `dataModel.getUrl`.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @return {!goog.ui.media.Media} A goog.ui.Control subclass with the mp3
@@ -174,11 +174,11 @@ goog.ui.media.Mp3.setFlashUrl = function(flashUrl) {
 
 /**
  * A static method that builds a URL that will contain the flash player that
- * will play the {@code mp3Url}.
+ * will play the `mp3Url`.
  *
  * @param {string} mp3Url The URL of the mp3 music.
  * @return {string} An URL of a flash player that will know how to play the
- *     given {@code mp3Url}.
+ *     given `mp3Url`.
  */
 goog.ui.media.Mp3.buildFlashUrl = function(mp3Url) {
   var flashUrl = goog.ui.media.Mp3.flashUrl_ + '?' +

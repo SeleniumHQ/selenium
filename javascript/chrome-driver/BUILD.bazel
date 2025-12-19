@@ -15,11 +15,11 @@ closure_js_library(
     deps = [
         "//javascript/atoms:dom",
         "//javascript/atoms:locators",
-        "@io_bazel_rules_closure//closure/library/dom",
-        "@io_bazel_rules_closure//closure/library/math:coordinate",
-        "@io_bazel_rules_closure//closure/library/math:rect",
-        "@io_bazel_rules_closure//closure/library/math:size",
-        "@io_bazel_rules_closure//closure/library/style",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/math:size",
+        "//third_party/closure/goog/style",
     ],
 )
 
@@ -29,7 +29,7 @@ closure_fragment(
     function = "goog.style.getPageOffset",
     module = "goog.style",
     deps = [
-        "@io_bazel_rules_closure//closure/library/style",
+        "//third_party/closure/goog/style",
     ],
 )
 

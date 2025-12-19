@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview A toolbar-style renderer for {@link goog.ui.ColorMenuButton}.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ToolbarColorMenuButtonRenderer');

@@ -15,8 +15,6 @@
 /**
  * @fileoverview Abstract Editor plugin class to handle tab keys.  Has one
  * abstract method which should be overriden to handle a tab key press.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.AbstractTabHandler');

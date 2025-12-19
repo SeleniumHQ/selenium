@@ -65,7 +65,7 @@
       || location.pathname.lastIndexOf('/common/generated/javascript/', 0) === 0) {
     directoryPath = '';
     files = [
-      '/filez/com_google_javascript_closure_library/closure/goog/base.js',
+      '/filez/_main/third_party/closure/goog/base.js',
       '/filez/_main/javascript/atoms/deps.js',
       '/filez/_main/javascript/webdriver/deps.js',
     ];

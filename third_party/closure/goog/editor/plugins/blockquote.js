@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview goog.editor plugin to handle splitting block quotes.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.Blockquote');
@@ -221,7 +219,7 @@ goog.editor.plugins.Blockquote.prototype.isSupportedCommand = function(
  * @param {string} command The command to execute.
  * @param {...*} var_args Single additional argument representing the current
  *     cursor position. If BrowserFeature.HAS_W3C_RANGES it is an object with a
- *     {@code node} key and an {@code offset} key. In other cases (legacy IE)
+ *     `node` key and an `offset` key. In other cases (legacy IE)
  *     it is a single node.
  * @return {boolean|undefined} Boolean true when the quoted region has been
  *     split, false or undefined otherwise.
@@ -244,6 +242,7 @@ goog.editor.plugins.Blockquote.prototype.execCommandInternal = function(
  * @param {Object} anchorPos The current cursor position.
  * @return {boolean} Whether the blockquote was split.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.editor.plugins.Blockquote.prototype.splitQuotedBlockW3C_ = function(
     anchorPos) {

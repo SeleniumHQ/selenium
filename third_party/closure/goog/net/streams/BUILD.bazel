@@ -1,0 +1,141 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":base64pbstreamparser",
+        ":base64streamdecoder",
+        ":jsonstreamparser",
+        ":nodereadablestream",
+        ":pbjsonstreamparser",
+        ":pbstreamparser",
+        ":streamfactory",
+        ":streamparser",
+        ":utils",
+        ":xhrnodereadablestream",
+        ":xhrstreamreader",
+    ],
+)
+
+closure_js_library(
+    name = "base64pbstreamparser",
+    srcs = ["base64pbstreamparser.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/net/streams:base64streamdecoder",
+        "//third_party/closure/goog/net/streams:pbstreamparser",
+        "//third_party/closure/goog/net/streams:streamparser",
+    ],
+)
+
+closure_js_library(
+    name = "base64streamdecoder",
+    srcs = ["base64streamdecoder.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/crypt:base64",
+    ],
+)
+
+closure_js_library(
+    name = "jsonstreamparser",
+    srcs = ["jsonstreamparser.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/net/streams:streamparser",
+        "//third_party/closure/goog/net/streams:utils",
+    ],
+)
+
+closure_js_library(
+    name = "nodereadablestream",
+    srcs = ["nodereadablestream.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "pbjsonstreamparser",
+    srcs = ["pbjsonstreamparser.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/net/streams:jsonstreamparser",
+        "//third_party/closure/goog/net/streams:streamparser",
+        "//third_party/closure/goog/net/streams:utils",
+    ],
+)
+
+closure_js_library(
+    name = "pbstreamparser",
+    srcs = ["pbstreamparser.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/net/streams:streamparser",
+    ],
+)
+
+closure_js_library(
+    name = "streamfactory",
+    srcs = ["streamfactory.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/net/streams:xhrnodereadablestream",
+        "//third_party/closure/goog/net/streams:xhrstreamreader",
+    ],
+)
+
+closure_js_library(
+    name = "streamparser",
+    srcs = ["streamparser.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "utils",
+    srcs = ["utils.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "xhrnodereadablestream",
+    srcs = ["xhrnodereadablestream.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net/streams:nodereadablestream",
+        "//third_party/closure/goog/net/streams:xhrstreamreader",
+    ],
+)
+
+closure_js_library(
+    name = "xhrstreamreader",
+    srcs = ["xhrstreamreader.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:errorcode",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:httpstatus",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/net:xmlhttp",
+        "//third_party/closure/goog/net/streams:base64pbstreamparser",
+        "//third_party/closure/goog/net/streams:jsonstreamparser",
+        "//third_party/closure/goog/net/streams:pbjsonstreamparser",
+        "//third_party/closure/goog/net/streams:pbstreamparser",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+    ],
+)

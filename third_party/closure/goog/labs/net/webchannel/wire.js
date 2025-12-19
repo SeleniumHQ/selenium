@@ -15,12 +15,10 @@
 /**
  * @fileoverview Interface and shared data structures for implementing
  * different wire protocol versions.
- * @visibility {//closure/goog:__pkg__}
- * @visibility {//closure/goog/bin/sizetests:__pkg__}
  */
-
-
 goog.provide('goog.labs.net.webChannel.Wire');
+
+goog.forwardDeclare('goog.structs.Map');
 
 
 
@@ -32,17 +30,20 @@ goog.provide('goog.labs.net.webChannel.Wire');
 goog.labs.net.webChannel.Wire = function() {};
 
 
-goog.scope(function() {
-var Wire = goog.labs.net.webChannel.Wire;
-
-
 /**
  * The latest protocol version that this class supports. We request this version
  * from the server when opening the connection. Should match
  * LATEST_CHANNEL_VERSION on the server code.
  * @type {number}
  */
-Wire.LATEST_CHANNEL_VERSION = 8;
+goog.labs.net.webChannel.Wire.LATEST_CHANNEL_VERSION = 8;
+
+
+/**
+ * The JSON field key for the raw data wrapper object.
+ * @type {string}
+ */
+goog.labs.net.webChannel.Wire.RAW_DATA_KEY = '__data__';
 
 
 
@@ -54,7 +55,7 @@ Wire.LATEST_CHANNEL_VERSION = 8;
  * @constructor
  * @struct
  */
-Wire.QueuedMap = function(mapId, map, opt_context) {
+goog.labs.net.webChannel.Wire.QueuedMap = function(mapId, map, opt_context) {
   /**
    * The id for this map.
    * @type {number}
@@ -73,4 +74,19 @@ Wire.QueuedMap = function(mapId, map, opt_context) {
    */
   this.context = opt_context || null;
 };
-});  // goog.scope
+
+
+/**
+ * @return {number|undefined} the size of the raw JSON message or
+ * undefined if the message is not encoded as a raw JSON message
+ */
+goog.labs.net.webChannel.Wire.QueuedMap.prototype.getRawDataSize = function() {
+  if (goog.labs.net.webChannel.Wire.RAW_DATA_KEY in this.map) {
+    const data = this.map[goog.labs.net.webChannel.Wire.RAW_DATA_KEY];
+    if (typeof data === 'string') {
+      return data.length;
+    }
+  }
+
+  return undefined;
+};

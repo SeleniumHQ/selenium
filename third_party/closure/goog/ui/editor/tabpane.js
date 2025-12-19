@@ -15,8 +15,6 @@
 /**
  * @fileoverview Tabbed pane with style and functionality specific to
  * Editor dialogs.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.ui.editor.TabPane');
@@ -74,14 +72,14 @@ goog.ui.editor.TabPane = function(dom, opt_caption) {
 
   /**
    * The currently selected radio button.
-   * @type {Element}
+   * @type {?Element}
    * @private
    */
   this.selectedRadio_ = null;
 
   /**
    * The currently visible tab content.
-   * @type {Element}
+   * @type {?Element}
    * @private
    */
   this.visibleContent_ = null;
@@ -179,6 +177,7 @@ goog.ui.editor.TabPane.prototype.enterDocument = function() {
  * Handles a tab change.
  * @param {goog.events.Event} e The browser change event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.editor.TabPane.prototype.handleTabSelect_ = function(e) {
   var tab = /** @type {goog.ui.Tab} */ (e.target);

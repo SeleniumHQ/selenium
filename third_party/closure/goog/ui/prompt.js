@@ -80,7 +80,7 @@ goog.ui.Prompt = function(
   this.setSafeHtmlContent(goog.html.SafeHtml.concat(label, br, br));
 
   this.callback_ = callback;
-  this.defaultValue_ = goog.isDef(opt_defaultValue) ? opt_defaultValue : '';
+  this.defaultValue_ = (opt_defaultValue !== undefined) ? opt_defaultValue : '';
 
   /** @desc label for a dialog button. */
   var MSG_PROMPT_OK = goog.getMsg('OK');
@@ -149,7 +149,7 @@ goog.ui.Prompt.prototype.cols_ = 0;
 
 /**
  * The input decorator function.
- * @type {function(Element)?}
+ * @type {?function(?Element)}
  * @private
  */
 goog.ui.Prompt.prototype.inputDecoratorFn_ = null;
@@ -226,11 +226,11 @@ goog.ui.Prompt.prototype.setRows = function(rows) {
   if (this.isInDocument()) {
     if (this.userInputEl_.tagName == goog.dom.TagName.INPUT) {
       if (rows > 1) {
-        throw Error(goog.ui.Component.Error.ALREADY_RENDERED);
+        throw new Error(goog.ui.Component.Error.ALREADY_RENDERED);
       }
     } else {
       if (rows <= 1) {
-        throw Error(goog.ui.Component.Error.ALREADY_RENDERED);
+        throw new Error(goog.ui.Component.Error.ALREADY_RENDERED);
       }
       this.userInputEl_.rows = rows;
     }
@@ -281,14 +281,12 @@ goog.ui.Prompt.prototype.createDom = function() {
   var cls = this.getClass();
 
   // add input box to the content
-  var attrs = {
-    'className': goog.getCssName(cls, 'userInput'),
-    'value': this.defaultValue_
-  };
   if (this.rows_ == 1) {
     // If rows == 1 then use an input element.
-    this.userInputEl_ =
-        this.getDomHelper().createDom(goog.dom.TagName.INPUT, attrs);
+    this.userInputEl_ = this.getDomHelper().createDom(goog.dom.TagName.INPUT, {
+      'className': goog.getCssName(cls, 'userInput'),
+      'value': this.defaultValue_
+    });
     this.userInputEl_.type = goog.dom.InputType.TEXT;
     if (this.cols_) {
       this.userInputEl_.size = this.cols_;
@@ -296,7 +294,10 @@ goog.ui.Prompt.prototype.createDom = function() {
   } else {
     // If rows > 1 then use a textarea.
     this.userInputEl_ =
-        this.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, attrs);
+        this.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, {
+          'className': goog.getCssName(cls, 'userInput'),
+          'value': this.defaultValue_
+        });
     this.userInputEl_.rows = this.rows_;
     if (this.cols_) {
       this.userInputEl_.cols = this.cols_;

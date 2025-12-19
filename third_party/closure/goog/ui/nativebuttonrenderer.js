@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Native browser button renderer for {@link goog.ui.Button}s.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.NativeButtonRenderer');
@@ -153,7 +151,7 @@ goog.ui.NativeButtonRenderer.prototype.setFocusable = goog.nullFunction;
 /**
  * @override
  * Native buttons also expose the DISABLED state in the HTML button's
- * {@code disabled} attribute.
+ * `disabled` attribute.
  */
 goog.ui.NativeButtonRenderer.prototype.setState = function(
     button, state, enable) {
@@ -168,7 +166,7 @@ goog.ui.NativeButtonRenderer.prototype.setState = function(
 
 /**
  * @override
- * Native buttons store their value in the HTML button's {@code value}
+ * Native buttons store their value in the HTML button's `value`
  * attribute.
  */
 goog.ui.NativeButtonRenderer.prototype.getValue = function(element) {
@@ -181,7 +179,7 @@ goog.ui.NativeButtonRenderer.prototype.getValue = function(element) {
 
 /**
  * @override
- * Native buttons also expose their value in the HTML button's {@code value}
+ * Native buttons also expose their value in the HTML button's `value`
  * attribute.
  */
 goog.ui.NativeButtonRenderer.prototype.setValue = function(element, value) {

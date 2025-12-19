@@ -15,8 +15,6 @@
 /**
  * @fileoverview Definition of the goog.ui.tree.TreeNode class.
  *
- * @author arv@google.com (Erik Arvidsson)
- * @author eae@google.com (Emil A Eklund)
  *
  * This is a based on the webfx tree control. See file comment in
  * treecontrol.js.
@@ -24,9 +22,8 @@
 
 goog.provide('goog.ui.tree.TreeNode');
 
-goog.require('goog.ui.tree.BaseNode');
-
-goog.forwardDeclare('goog.ui.tree.TreeControl');  // circular
+goog.forwardDeclare('goog.ui.tree.TreeControl');
+goog.require('goog.ui.tree.BaseNode');  // circular
 
 
 

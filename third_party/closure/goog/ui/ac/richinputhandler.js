@@ -15,7 +15,6 @@
 /**
  * @fileoverview Class for managing the interactions between a rich autocomplete
  * object and a text-input or textarea.
- *
  */
 
 goog.provide('goog.ui.ac.RichInputHandler');

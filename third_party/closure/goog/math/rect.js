@@ -262,7 +262,7 @@ goog.math.Rect.difference = function(a, b) {
 
 
 /**
- * Computes the difference regions between this rectangle and {@code rect}. The
+ * Computes the difference regions between this rectangle and `rect`. The
  * return value is an array of 0 to 4 rectangles defining the remaining regions
  * of this rectangle after the other has been subtracted.
  * @param {goog.math.IRect} rect A Rectangle.
@@ -436,9 +436,9 @@ goog.math.Rect.prototype.round = function() {
 
 /**
  * Translates this rectangle by the given offsets. If a
- * {@code goog.math.Coordinate} is given, then the left and top values are
- * translated by the coordinate's x and y values. Otherwise, top and left are
- * translated by {@code tx} and {@code opt_ty} respectively.
+ * `goog.math.Coordinate` is given, then the left and top values are
+ * translated by the coordinate's x and y values. Otherwise, left and top are
+ * translated by `tx` and `opt_ty` respectively.
  * @param {number|goog.math.Coordinate} tx The value to translate left by or the
  *     the coordinate to translate this rect by.
  * @param {number=} opt_ty The value to translate top by.
@@ -450,7 +450,7 @@ goog.math.Rect.prototype.translate = function(tx, opt_ty) {
     this.top += tx.y;
   } else {
     this.left += goog.asserts.assertNumber(tx);
-    if (goog.isNumber(opt_ty)) {
+    if (typeof opt_ty === 'number') {
       this.top += opt_ty;
     }
   }
@@ -460,15 +460,15 @@ goog.math.Rect.prototype.translate = function(tx, opt_ty) {
 
 /**
  * Scales this rectangle by the given scale factors. The left and width values
- * are scaled by {@code sx} and the top and height values are scaled by
- * {@code opt_sy}.  If {@code opt_sy} is not given, then all fields are scaled
- * by {@code sx}.
+ * are scaled by `sx` and the top and height values are scaled by
+ * `opt_sy`.  If `opt_sy` is not given, then all fields are scaled
+ * by `sx`.
  * @param {number} sx The scale factor to use for the x dimension.
  * @param {number=} opt_sy The scale factor to use for the y dimension.
  * @return {!goog.math.Rect} This rectangle after scaling.
  */
 goog.math.Rect.prototype.scale = function(sx, opt_sy) {
-  var sy = goog.isNumber(opt_sy) ? opt_sy : sx;
+  var sy = (typeof opt_sy === 'number') ? opt_sy : sx;
   this.left *= sx;
   this.width *= sx;
   this.top *= sy;

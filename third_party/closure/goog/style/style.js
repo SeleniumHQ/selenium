@@ -15,8 +15,6 @@
 /**
  * @fileoverview Utilities for element styles.
  *
- * @author arv@google.com (Erik Arvidsson)
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/inline_block_quirks.html
  * @see ../demos/inline_block_standards.html
  * @see ../demos/style_viewport.html
@@ -25,6 +23,7 @@
 goog.provide('goog.style');
 
 
+goog.forwardDeclare('goog.events.Event');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -32,7 +31,6 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.vendor');
 goog.require('goog.html.SafeStyleSheet');
-goog.require('goog.html.legacyconversions');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
@@ -41,8 +39,6 @@ goog.require('goog.object');
 goog.require('goog.reflect');
 goog.require('goog.string');
 goog.require('goog.userAgent');
-
-goog.forwardDeclare('goog.events.Event');
 
 
 /**
@@ -62,7 +58,7 @@ goog.forwardDeclare('goog.events.Event');
  *     should be the value.
  */
 goog.style.setStyle = function(element, style, opt_value) {
-  if (goog.isString(style)) {
+  if (typeof style === 'string') {
     goog.style.setStyle_(element, opt_value, style);
   } else {
     for (var key in style) {
@@ -74,7 +70,7 @@ goog.style.setStyle = function(element, style, opt_value) {
 
 /**
  * Sets a style value on an element, with parameters swapped to work with
- * {@code goog.object.forEach()}. Prepends a vendor-specific prefix when
+ * `goog.object.forEach()`. Prepends a vendor-specific prefix when
  * necessary.
  * @param {Element} element The element to change.
  * @param {string|number|boolean|undefined} value Style value.
@@ -505,7 +501,9 @@ goog.style.getOffsetParent = function(element) {
        parent = parent.parentNode) {
     // Skip shadowDOM roots.
     if (parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT && parent.host) {
-      parent = parent.host;
+      // Cast because the assignment is not type safe, and without a cast we
+      // start typing parent loosely and get bad disambiguation.
+      parent = /** @type {!Element} */ (parent.host);
     }
     positionStyle =
         goog.style.getStyle_(/** @type {!Element} */ (parent), 'position');
@@ -580,8 +578,8 @@ goog.style.getVisibleRectForElement = function(element) {
 
 
 /**
- * Calculate the scroll position of {@code container} with the minimum amount so
- * that the content and the borders of the given {@code element} become visible.
+ * Calculate the scroll position of `container` with the minimum amount so
+ * that the content and the borders of the given `element` become visible.
  * If the element is bigger than the container, its top left corner will be
  * aligned as close to the container's top left corner as possible.
  *
@@ -647,8 +645,8 @@ goog.style.getContainerOffsetToScrollInto = function(
 
 
 /**
- * Changes the scroll position of {@code container} with the minimum amount so
- * that the content and the borders of the given {@code element} become visible.
+ * Changes the scroll position of `container` with the minimum amount so
+ * that the content and the borders of the given `element` become visible.
  * If the element is bigger than the container, its top left corner will be
  * aligned as close to the container's top left corner as possible.
  *
@@ -916,7 +914,7 @@ goog.style.setSize = function(element, w, opt_h) {
     w = w.width;
   } else {
     if (opt_h == undefined) {
-      throw Error('missing height argument');
+      throw new Error('missing height argument');
     }
     h = opt_h;
   }
@@ -975,7 +973,7 @@ goog.style.setWidth = function(element, width) {
  * irrespective of the box model in effect.
  *
  * Note that this function does not take CSS transforms into account. Please see
- * {@code goog.style.getTransformedSize}.
+ * `goog.style.getTransformedSize`.
  * @param {Element} element Element to get size of.
  * @return {!goog.math.Size} Object with width/height properties.
  */
@@ -986,14 +984,14 @@ goog.style.getSize = function(element) {
 
 
 /**
- * Call {@code fn} on {@code element} such that {@code element}'s dimensions are
- * accurate when it's passed to {@code fn}.
- * @param {function(!Element): T} fn Function to call with {@code element} as
- *     an argument after temporarily changing {@code element}'s display such
+ * Call `fn` on `element` such that `element`'s dimensions are
+ * accurate when it's passed to `fn`.
+ * @param {function(!Element): T} fn Function to call with `element` as
+ *     an argument after temporarily changing `element`'s display such
  *     that its dimensions are accurate.
  * @param {!Element} element Element (which may have display none) to use as
- *     argument to {@code fn}.
- * @return {T} Value returned by calling {@code fn} with {@code element}.
+ *     argument to `fn`.
+ * @return {T} Value returned by calling `fn` with `element`.
  * @template T
  * @private
  */
@@ -1032,7 +1030,7 @@ goog.style.getSizeWithDisplay_ = function(element) {
   var offsetHeight = /** @type {!HTMLElement} */ (element).offsetHeight;
   var webkitOffsetsZero =
       goog.userAgent.WEBKIT && !offsetWidth && !offsetHeight;
-  if ((!goog.isDef(offsetWidth) || webkitOffsetsZero) &&
+  if ((offsetWidth === undefined || webkitOffsetsZero) &&
       element.getBoundingClientRect) {
     // Fall back to calling getBoundingClientRect when offsetWidth or
     // offsetHeight are not defined, or when they are zero in WebKit browsers.
@@ -1051,11 +1049,11 @@ goog.style.getSizeWithDisplay_ = function(element) {
  * Gets the height and width of an element, post transform, even if its display
  * is none.
  *
- * This is like {@code goog.style.getSize}, except:
+ * This is like `goog.style.getSize`, except:
  * <ol>
  * <li>Takes webkitTransforms such as rotate and scale into account.
- * <li>Will return null if {@code element} doesn't respond to
- *     {@code getBoundingClientRect}.
+ * <li>Will return null if `element` doesn't respond to
+ *     `getBoundingClientRect`.
  * <li>Currently doesn't make sense on non-WebKit browsers which don't support
  *    webkitTransforms.
  * </ol>
@@ -1275,39 +1273,29 @@ goog.style.isElementShown = function(el) {
 
 
 /**
- * Installs the styles string into the window that contains opt_node.  If
- * opt_node is null, the main window is used.
- * @param {string} stylesString The style string to install.
- * @param {Node=} opt_node Node whose parent document should have the
- *     styles installed.
- * @return {!Element|!StyleSheet} The style element created.
- * @deprecated Use {@link #installSafeStyleSheet} instead.
- */
-goog.style.installStyles = function(stylesString, opt_node) {
-  return goog.style.installSafeStyleSheet(
-      goog.html.legacyconversions.safeStyleSheetFromString(stylesString),
-      opt_node);
-};
-
-
-/**
  * Installs the style sheet into the window that contains opt_node.  If
  * opt_node is null, the main window is used.
  * @param {!goog.html.SafeStyleSheet} safeStyleSheet The style sheet to install.
  * @param {?Node=} opt_node Node whose parent document should have the
  *     styles installed.
- * @return {!Element|!StyleSheet} The style element created.
+ * @return {!HTMLStyleElement|!StyleSheet} In IE<11, a StyleSheet object with no
+ *     owning &lt;style&gt; tag (this is how IE creates style sheets).  In every
+ *     other browser, a &lt;style&gt; element with an attached style.  This
+ *     doesn't return a StyleSheet object so that setSafeStyleSheet can replace
+ *     it (otherwise, if you pass a StyleSheet to setSafeStyleSheet, it will
+ *     make a new StyleSheet and leave the original StyleSheet orphaned).
  */
 goog.style.installSafeStyleSheet = function(safeStyleSheet, opt_node) {
   var dh = goog.dom.getDomHelper(opt_node);
-  var styleSheet = null;
 
   // IE < 11 requires createStyleSheet. Note that doc.createStyleSheet will be
   // undefined as of IE 11.
   var doc = dh.getDocument();
   if (goog.userAgent.IE && doc.createStyleSheet) {
-    styleSheet = doc.createStyleSheet();
+    /** @type {(!HTMLStyleElement|!StyleSheet)} */
+    var styleSheet = doc.createStyleSheet();
     goog.style.setSafeStyleSheet(styleSheet, safeStyleSheet);
+    return styleSheet;
   } else {
     var head = dh.getElementsByTagNameAndClass(goog.dom.TagName.HEAD)[0];
 
@@ -1318,15 +1306,15 @@ goog.style.installSafeStyleSheet = function(safeStyleSheet, opt_node) {
       head = dh.createDom(goog.dom.TagName.HEAD);
       body.parentNode.insertBefore(head, body);
     }
-    styleSheet = dh.createDom(goog.dom.TagName.STYLE);
+    var el = dh.createDom(goog.dom.TagName.STYLE);
     // NOTE(user): Setting styles after the style element has been appended
     // to the head results in a nasty Webkit bug in certain scenarios. Please
     // refer to https://bugs.webkit.org/show_bug.cgi?id=26307 for additional
     // details.
-    goog.style.setSafeStyleSheet(styleSheet, safeStyleSheet);
-    dh.appendChild(head, styleSheet);
+    goog.style.setSafeStyleSheet(el, safeStyleSheet);
+    dh.appendChild(head, el);
+    return el;
   }
-  return styleSheet;
 };
 
 
@@ -1345,21 +1333,6 @@ goog.style.uninstallStyles = function(styleSheet) {
 /**
  * Sets the content of a style element.  The style element can be any valid
  * style element.  This element will have its content completely replaced by
- * the stylesString.
- * @param {Element|StyleSheet} element A stylesheet element as returned by
- *     installStyles.
- * @param {string} stylesString The new content of the stylesheet.
- * @deprecated Use {@link #setSafeStyleSheet} instead.
- */
-goog.style.setStyles = function(element, stylesString) {
-  goog.style.setSafeStyleSheet(/** @type {!Element|!StyleSheet} */ (element),
-      goog.html.legacyconversions.safeStyleSheetFromString(stylesString));
-};
-
-
-/**
- * Sets the content of a style element.  The style element can be any valid
- * style element.  This element will have its content completely replaced by
  * the safeStyleSheet.
  * @param {!Element|!StyleSheet} element A stylesheet element as returned by
  *     installStyles.
@@ -1368,7 +1341,7 @@ goog.style.setStyles = function(element, stylesString) {
  */
 goog.style.setSafeStyleSheet = function(element, safeStyleSheet) {
   var stylesString = goog.html.SafeStyleSheet.unwrap(safeStyleSheet);
-  if (goog.userAgent.IE && goog.isDef(element.cssText)) {
+  if (goog.userAgent.IE && element.cssText !== undefined) {
     // Adding the selectors individually caused the browser to hang if the
     // selector was invalid or there were CSS comments.  Setting the cssText of
     // the style node works fine and ignores CSS that IE doesn't understand.
@@ -1376,6 +1349,7 @@ goog.style.setSafeStyleSheet = function(element, safeStyleSheet) {
     // cssText is a defined property and otherwise fall back to innerHTML.
     element.cssText = stylesString;
   } else {
+    // Setting textContent doesn't work in Safari, see b/29340337.
     element.innerHTML = stylesString;
   }
 };

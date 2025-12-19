@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Plugin to handle enter keys.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.editor.plugins.EnterHandler');
@@ -269,20 +267,33 @@ goog.editor.plugins.EnterHandler.prototype.deleteBrGecko = function(e) {
 
 
 /** @override */
-goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
-  // If a dialog doesn't have selectable field, Gecko grabs the event and
-  // performs actions in editor window. This solves that problem and allows
-  // the event to be passed on to proper handlers.
-  if (goog.userAgent.GECKO && this.getFieldObject().inModalMode()) {
-    return false;
+goog.editor.plugins.EnterHandler.prototype.handleKeyDown = function(e) {
+  if (goog.userAgent.GECKO) {
+    // If a dialog doesn't have selectable field, Gecko grabs the event and
+    // performs actions in editor window. This solves that problem and allows
+    // the event to be passed on to proper handlers.
+    if (this.getFieldObject().inModalMode()) {
+      return false;
+    }
+
+    // Firefox will allow the first node in an iframe to be deleted
+    // on a backspace.  Disallow it if the node is empty.
+    if (e.keyCode == goog.events.KeyCodes.BACKSPACE) {
+      this.handleBackspaceInternal(e, this.getFieldObject().getRange());
+    } else if (e.keyCode == goog.events.KeyCodes.DELETE) {
+      this.handleDeleteGecko(e);
+    }
   }
 
-  // Firefox will allow the first node in an iframe to be deleted
-  // on a backspace.  Disallow it if the node is empty.
-  if (e.keyCode == goog.events.KeyCodes.BACKSPACE) {
-    this.handleBackspaceInternal(e, this.getFieldObject().getRange());
+  return false;
+};
 
-  } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
+
+/** @override */
+goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
+  // ENTER must be handled in keyPress as it requires a beforechange event,
+  // which is fired in between keydown and keyup.
+  if (e.keyCode == goog.events.KeyCodes.ENTER) {
     if (goog.userAgent.GECKO) {
       if (!e.shiftKey) {
         // Behave similarly to IE's content editable return carriage:
@@ -313,9 +324,6 @@ goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
       this.processParagraphTagsInternal(e, split);
       this.getFieldObject().dispatchChange();
     }
-
-  } else if (goog.userAgent.GECKO && e.keyCode == goog.events.KeyCodes.DELETE) {
-    this.handleDeleteGecko(e);
   }
 
   return false;
@@ -450,7 +458,8 @@ goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(
   var container = range.getContainer();
   var field = this.getFieldObject().getElement();
 
-  var paragraph;
+  /** @type {!Node|undefined} */
+  var paragraph = undefined;
   while (container && container != field) {
     // We don't need to ensure a block if we are already in the same block, or
     // in another block level node that we don't want to change the format of

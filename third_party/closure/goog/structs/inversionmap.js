@@ -15,7 +15,6 @@
 /**
  * @fileoverview Provides inversion and inversion map functionality for storing
  * integer ranges and corresponding values.
- *
  */
 
 goog.provide('goog.structs.InversionMap');
@@ -37,7 +36,7 @@ goog.require('goog.asserts');
  */
 goog.structs.InversionMap = function(rangeArray, valueArray, opt_delta) {
   /**
-   * @protected {Array<number>}
+   * @protected {?Array<number>}
    */
   this.rangeArray = null;
 

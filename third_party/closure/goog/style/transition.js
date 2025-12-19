@@ -15,7 +15,6 @@
 /**
  * @fileoverview Utility methods to deal with CSS3 transitions
  * programmatically.
- * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.style.transition');
@@ -57,6 +56,7 @@ goog.style.transition.Css3Property;
  * @param {goog.style.transition.Css3Property|
  *     Array<goog.style.transition.Css3Property>} properties A single CSS3
  *     transition property or array of properties.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.style.transition.set = function(element, properties) {
   if (!goog.isArray(properties)) {
@@ -66,15 +66,15 @@ goog.style.transition.set = function(element, properties) {
       properties.length > 0, 'At least one Css3Property should be specified.');
 
   var values = goog.array.map(properties, function(p) {
-    if (goog.isString(p)) {
+    if (typeof p === 'string') {
       return p;
     } else {
       goog.asserts.assertObject(p, 'Expected css3 property to be an object.');
       var propString =
           p.property + ' ' + p.duration + 's ' + p.timing + ' ' + p.delay + 's';
       goog.asserts.assert(
-          p.property && goog.isNumber(p.duration) && p.timing &&
-              goog.isNumber(p.delay),
+          p.property && typeof p.duration === 'number' && p.timing &&
+              typeof p.delay === 'number',
           'Unexpected css3 property value: %s', propString);
       return propString;
     }

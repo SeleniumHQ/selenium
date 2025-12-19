@@ -63,9 +63,9 @@ goog.labs.useragent.verifier.detectIeVersionByBehavior = function() {
  * @return {number}
  */
 goog.labs.useragent.verifier.detectIeVersionByNavigator = function() {
-  var ua = navigator.userAgent.toLowerCase();
+  const ua = navigator.userAgent.toLowerCase();
   if (ua.indexOf('msie') != -1) {
-    var value = parseInt(ua.split('msie')[1], 10);
+    const value = parseInt(ua.split('msie')[1], 10);
     if (typeof value == 'number' && !isNaN(value)) {
       return value;
     }
@@ -81,7 +81,7 @@ goog.labs.useragent.verifier.detectIeVersionByNavigator = function() {
  * @return {number}
  */
 goog.labs.useragent.verifier.getCorrectedIEVersionByNavigator = function() {
-  var ua = navigator.userAgent;
+  const ua = navigator.userAgent;
   if (/Trident/.test(ua) || /MSIE/.test(ua)) {
     return goog.labs.useragent.verifier.getIEVersion_(ua);
   } else {
@@ -102,17 +102,17 @@ goog.labs.useragent.verifier.getIEVersion_ = function(userAgent) {
   // bug. Example UA:
   // Mozilla/5.0 (MSIE 9.0; Windows NT 6.1; WOW64; Trident/7.0; rv:11.0)
   // like Gecko.
-  var rv = /rv: *([\d\.]*)/.exec(userAgent);
+  const rv = /rv: *([\d\.]*)/.exec(userAgent);
   if (rv && rv[1]) {
     return Number(rv[1]);
   }
 
-  var msie = /MSIE +([\d\.]+)/.exec(userAgent);
+  const msie = /MSIE +([\d\.]+)/.exec(userAgent);
   if (msie && msie[1]) {
     // IE in compatibility mode usually identifies itself as MSIE 7.0; in this
     // case, use the Trident version to determine the version of IE. For more
     // details, see the links above.
-    var tridentVersion = /Trident\/(\d.\d)/.exec(userAgent);
+    const tridentVersion = /Trident\/(\d.\d)/.exec(userAgent);
     if (msie[1] == '7.0') {
       if (tridentVersion && tridentVersion[1]) {
         switch (tridentVersion[1]) {

@@ -14,7 +14,7 @@
 
 /**
  * @fileoverview A timer class to which other classes and objects can listen on.
- * This is only an abstraction above {@code setInterval}.
+ * This is only an abstraction above `setInterval`.
  *
  * @see ../demos/timers.html
  */
@@ -30,9 +30,9 @@ goog.require('goog.events.EventTarget');
  * Class for handling timing events.
  *
  * @param {number=} opt_interval Number of ms between ticks (default: 1ms).
- * @param {Object=} opt_timerObject  An object that has {@code setTimeout},
- *     {@code setInterval}, {@code clearTimeout} and {@code clearInterval}
- *     (e.g., {@code window}).
+ * @param {Object=} opt_timerObject  An object that has `setTimeout`,
+ *     `setInterval`, `clearTimeout` and `clearInterval`
+ *     (e.g., `window`).
  * @constructor
  * @extends {goog.events.EventTarget}
  */
@@ -46,18 +46,18 @@ goog.Timer = function(opt_interval, opt_timerObject) {
   this.interval_ = opt_interval || 1;
 
   /**
-   * An object that implements {@code setTimeout}, {@code setInterval},
-   * {@code clearTimeout} and {@code clearInterval}. We default to the window
+   * An object that implements `setTimeout`, `setInterval`,
+   * `clearTimeout` and `clearInterval`. We default to the window
    * object. Changing this on {@link goog.Timer.prototype} changes the object
    * for all timer instances which can be useful if your environment has some
-   * other implementation of timers than the {@code window} object.
+   * other implementation of timers than the `window` object.
    * @private {{setTimeout:!Function, clearTimeout:!Function}}
    */
   this.timerObject_ = /** @type {{setTimeout, clearTimeout}} */ (
       opt_timerObject || goog.Timer.defaultTimerObject);
 
   /**
-   * Cached {@code tick_} bound to the object for later use in the timer.
+   * Cached `tick_` bound to the object for later use in the timer.
    * @private {Function}
    * @const
    */
@@ -91,7 +91,7 @@ goog.Timer.MAX_TIMEOUT_ = 2147483647;
 
 /**
  * A timer ID that cannot be returned by any known implementation of
- * {@code window.setTimeout}. Passing this value to {@code window.clearTimeout}
+ * `window.setTimeout`. Passing this value to `window.clearTimeout`
  * should therefore be a no-op.
  *
  * @private {number}
@@ -108,9 +108,9 @@ goog.Timer.prototype.enabled = false;
 
 
 /**
- * An object that implements {@code setTimeout}, {@code setInterval},
- * {@code clearTimeout} and {@code clearInterval}. We default to the global
- * object. Changing {@code goog.Timer.defaultTimerObject} changes the object for
+ * An object that implements `setTimeout`, `setInterval`,
+ * `clearTimeout` and `clearInterval`. We default to the global
+ * object. Changing `goog.Timer.defaultTimerObject` changes the object for
  * all timer instances which can be useful if your environment has some other
  * implementation of timers you'd like to use.
  * @type {{setTimeout, clearTimeout}}
@@ -120,7 +120,7 @@ goog.Timer.defaultTimerObject = goog.global;
 
 /**
  * Variable that controls the timer error correction. If the timer is called
- * before the requested interval times {@code intervalScale}, which often
+ * before the requested interval times `intervalScale`, which often
  * happens on Mozilla, the timer is rescheduled.
  * @see {@link #last_}
  * @type {number}
@@ -129,7 +129,7 @@ goog.Timer.intervalScale = 0.8;
 
 
 /**
- * Variable for storing the result of {@code setInterval}.
+ * Variable for storing the result of `setInterval`.
  * @private {?number}
  */
 goog.Timer.prototype.timer_ = null;
@@ -161,7 +161,7 @@ goog.Timer.prototype.setInterval = function(interval) {
 
 
 /**
- * Callback for the {@code setTimeout} used by the timer.
+ * Callback for the `setTimeout` used by the timer.
  * @private
  */
 goog.Timer.prototype.tick_ = function() {
@@ -183,9 +183,10 @@ goog.Timer.prototype.tick_ = function() {
     this.dispatchTick();
     // The timer could be stopped in the timer event handler.
     if (this.enabled) {
-      this.timer_ =
-          this.timerObject_.setTimeout(this.boundTick_, this.interval_);
-      this.last_ = goog.now();
+      // Stop and start to ensure there is always only one timeout even if
+      // start is called in the timer event handler.
+      this.stop();
+      this.start();
     }
   }
 };
@@ -275,7 +276,7 @@ goog.Timer.callOnce = function(listener, opt_delay, opt_handler) {
     // using typeof to prevent strict js warning
     listener = goog.bind(listener.handleEvent, listener);
   } else {
-    throw Error('Invalid listener argument');
+    throw new Error('Invalid listener argument');
   }
 
   if (Number(opt_delay) > goog.Timer.MAX_TIMEOUT_) {

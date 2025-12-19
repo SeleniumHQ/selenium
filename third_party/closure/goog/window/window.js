@@ -19,6 +19,7 @@
 
 goog.provide('goog.window');
 
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.safe');
 goog.require('goog.html.SafeUrl');
@@ -62,14 +63,14 @@ goog.window.createFakeWindow_ = function() {
 /**
  * Opens a new window.
  *
- * @param {?goog.html.SafeUrl|string|?Object} linkRef If an Object with an 'href'
- *     attribute (such as HTMLAnchorElement) is passed then the value of 'href'
- *     is used, otherwise its toString method is called. Note that if a
+ * @param {!goog.html.SafeUrl|string|!Object|null} linkRef If an Object with an
+ *     'href' attribute (such as HTMLAnchorElement) is passed then the value of
+ *     'href' is used, otherwise its toString method is called. Note that if a
  *     string|Object is used, it will be sanitized with SafeUrl.sanitize().
  *
  * @param {?Object=} opt_options supports the following options:
  *  'target': (string) target (window name). If null, linkRef.target will
- *          be used.
+ *      be used.
  *  'width': (number) window width.
  *  'height': (number) window height.
  *  'top': (number) distance from top of screen
@@ -83,6 +84,10 @@ goog.window.createFakeWindow_ = function() {
  *  'noreferrer': (boolean) whether to attempt to remove the referrer header
  *      from the request headers. Does this by opening a blank window that
  *      then redirects to the target url, so users may see some flickering.
+ *  'noopener': (boolean) whether to remove the `opener` property from the
+ *      window object of the newly created window. The property contains a
+ *      reference to the original window, and can be used to launch a
+ *      reverse tabnabbing attack.
  *
  * @param {?Window=} opt_parentWin Parent window that should be used to open the
  *                 new window.
@@ -110,12 +115,17 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
     // goog.Uri in all browsers except for Safari, which returns
     // '[object HTMLAnchorElement]'.  We check for the href first, then
     // assume that it's a goog.Uri or String otherwise.
+    /**
+     * @type {string|!goog.string.TypedString}
+     * @suppress {missingProperties}
+     */
     var url =
         typeof linkRef.href != 'undefined' ? linkRef.href : String(linkRef);
     safeLinkRef = goog.html.SafeUrl.sanitize(url);
   }
 
-
+  /** @suppress {missingProperties} loose references to 'target' */
+  /** @suppress {strictMissingProperties} */
   var target = opt_options.target || linkRef.target;
 
   var sb = [];
@@ -128,6 +138,7 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
         sb.push(option + '=' + opt_options[option]);
         break;
       case 'target':
+      case 'noopener':
       case 'noreferrer':
         break;
       default:
@@ -140,19 +151,19 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
   if (goog.labs.userAgent.platform.isIos() && parentWin.navigator &&
       parentWin.navigator['standalone'] && target && target != '_self') {
     // iOS in standalone mode disregards "target" in window.open and always
-    // opens new URL in the same window. The workout around is to create an "A"
+    // opens new URL in the same window. The workaround is to create an "A"
     // element and send a click event to it.
     // Notice that the "A" tag does NOT have to be added to the DOM.
 
-    var a = /** @type {!HTMLAnchorElement} */
-        (parentWin.document.createElement(String(goog.dom.TagName.A)));
+    var a = goog.dom.createElement(goog.dom.TagName.A);
     goog.dom.safe.setAnchorHref(a, safeLinkRef);
 
     a.setAttribute('target', target);
     if (opt_options['noreferrer']) {
       a.setAttribute('rel', 'noreferrer');
     }
-    var click = document.createEvent('MouseEvent');
+
+    var click = /** @type {!MouseEvent} */ (document.createEvent('MouseEvent'));
     click.initMouseEvent(
         'click',
         true,  // canBubble
@@ -167,11 +178,17 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
     // is the most appropriate return value.
     newWin = goog.window.createFakeWindow_();
   } else if (opt_options['noreferrer']) {
-    // Use a meta-refresh to stop the referrer from being included in the
-    // request headers. This seems to be the only cross-browser way to
-    // remove the referrer. It also allows for the opener to be set to null
-    // in the new window, thus disallowing the opened window from navigating
-    // its opener.
+    // This code used to use meta-refresh to stop the referrer from being
+    // included in the request headers. This was the only cross-browser way
+    // to remove the referrer circa 2009. However, this never worked in Chrome,
+    // and, instead newWin.opener had to be set to null on this browser. This
+    // behavior is slated to be removed in Chrome and should not be relied
+    // upon. Referrer Policy is the only spec'd and supported way of stripping
+    // referrers and works across all current browsers. This is used in
+    // addition to the aforementioned tricks.
+    //
+    // We also set the opener to be set to null in the new window, thus
+    // disallowing the opened window from navigating its opener.
     //
     // Detecting user agent and then using a different strategy per browser
     // would allow the referrer to leak in case of an incorrect/missing user
@@ -216,14 +233,27 @@ goog.window.open = function(linkRef, opt_options, opt_parentWin) {
               .safeHtmlFromStringKnownToSatisfyTypeContract(
                   goog.string.Const.from(
                       'b/12014412, meta tag with sanitized URL'),
-                  '<META HTTP-EQUIV="refresh" content="0; url=' +
+                  '<meta name="referrer" content="no-referrer">' +
+                      '<meta http-equiv="refresh" content="0; url=' +
                       goog.string.htmlEscape(sanitizedLinkRef) + '">');
-      goog.dom.safe.documentWrite(newWin.document, safeHtml);
-      newWin.document.close();
+
+      // During window loading `newWin.document` may be unset in some browsers.
+      // Storing and checking a reference to the document prevents NPEs.
+      var newDoc = newWin.document;
+      if (newDoc) {
+        goog.dom.safe.documentWrite(newDoc, safeHtml);
+        newDoc.close();
+      }
     }
   } else {
     newWin = parentWin.open(
         goog.html.SafeUrl.unwrap(safeLinkRef), target, optionString);
+    // Passing in 'noopener' into the 'windowFeatures' param of window.open(...)
+    // will yield a feature-deprived browser. This is an known issue, tracked
+    // here: https://github.com/whatwg/html/issues/1902
+    if (newWin && opt_options['noopener']) {
+      newWin.opener = null;
+    }
   }
   // newWin is null if a popup blocker prevented the window open.
   return newWin;

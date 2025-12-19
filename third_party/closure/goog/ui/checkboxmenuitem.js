@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview A menu item class that supports checkbox semantics.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.CheckBoxMenuItem');

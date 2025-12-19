@@ -15,8 +15,6 @@
 /**
  * @fileoverview Anchored viewport positioning class with both adjust and
  *     resize options for the popup.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.positioning.MenuAnchoredPosition');

@@ -15,8 +15,6 @@
 /**
  * @fileoverview Definition of the goog.ui.tree.BaseNode class.
  *
- * @author arv@google.com (Erik Arvidsson)
- * @author eae@google.com (Emil A Eklund)
  *
  * This is a based on the webfx tree control. It since been updated to add
  * typeahead support, as well as accessibility support using ARIA framework.
@@ -26,6 +24,7 @@
 goog.provide('goog.ui.tree.BaseNode');
 goog.provide('goog.ui.tree.BaseNode.EventType');
 
+goog.forwardDeclare('goog.ui.tree.TreeControl');
 goog.require('goog.Timer');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.State');
@@ -38,9 +37,7 @@ goog.require('goog.html.SafeStyle');
 goog.require('goog.string');
 goog.require('goog.string.StringBuffer');
 goog.require('goog.style');
-goog.require('goog.ui.Component');
-
-goog.forwardDeclare('goog.ui.tree.TreeControl');  // circular
+goog.require('goog.ui.Component');  // circular
 
 
 
@@ -243,7 +240,7 @@ goog.ui.tree.BaseNode.prototype.exitDocument = function() {
 
 /**
  * The method assumes that the child doesn't have parent node yet.
- * The {@code opt_render} argument is not used. If the parent node is expanded,
+ * The `opt_render` argument is not used. If the parent node is expanded,
  * the child node's state will be the same as the parent's. Otherwise the
  * child's DOM tree won't be created.
  * @override
@@ -592,7 +589,7 @@ goog.ui.tree.BaseNode.prototype.select = function() {
 
 /**
  * Originally it was intended to deselect the node but never worked.
- * @deprecated Use {@code tree.setSelectedItem(null)}.
+ * @deprecated Use `tree.setSelectedItem(null)`.
  */
 goog.ui.tree.BaseNode.prototype.deselect = goog.nullFunction;
 

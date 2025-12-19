@@ -22,7 +22,6 @@
  * color picker will compose multiple color palettes.  In the simple case this
  * will be one grid, but may consistute 3 distinct grids, a custom color picker
  * or even a color wheel.
- *
  */
 
 goog.provide('goog.ui.ColorPicker');

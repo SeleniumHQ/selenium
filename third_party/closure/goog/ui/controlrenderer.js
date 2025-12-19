@@ -15,12 +15,11 @@
 /**
  * @fileoverview Base class for control renderers.
  * TODO(attila):  If the renderer framework works well, pull it into Component.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ControlRenderer');
 
+goog.forwardDeclare('goog.ui.Control');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
@@ -34,9 +33,7 @@ goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.ControlContent');
-goog.require('goog.userAgent');
-
-goog.forwardDeclare('goog.ui.Control');  // circular
+goog.require('goog.userAgent');  // circular
 
 
 
@@ -46,14 +43,14 @@ goog.forwardDeclare('goog.ui.Control');  // circular
  * tailored for them by extending this class.  Controls that use renderers
  * delegate one or more of the following API methods to the renderer:
  * <ul>
- *    <li>{@code createDom} - renders the DOM for the component
- *    <li>{@code canDecorate} - determines whether an element can be decorated
+ *    <li>`createDom` - renders the DOM for the component
+ *    <li>`canDecorate` - determines whether an element can be decorated
  *        by the component
- *    <li>{@code decorate} - decorates an existing element with the component
- *    <li>{@code setState} - updates the appearance of the component based on
+ *    <li>`decorate` - decorates an existing element with the component
+ *    <li>`setState` - updates the appearance of the component based on
  *        its state
- *    <li>{@code getContent} - returns the component's content
- *    <li>{@code setContent} - sets the component's content
+ *    <li>`getContent` - returns the component's content
+ *    <li>`setContent` - sets the component's content
  * </ul>
  * Controls are stateful; renderers, on the other hand, should be stateless and
  * reusable.
@@ -277,7 +274,7 @@ goog.ui.ControlRenderer.prototype.canDecorate = function(element) {
 
 
 /**
- * Default implementation of {@code decorate} for {@link goog.ui.Control}s.
+ * Default implementation of `decorate` for {@link goog.ui.Control}s.
  * Initializes the control's ID, content, and state based on the ID of the
  * element, its child nodes, and its CSS classes, respectively.  Returns the
  * element.
@@ -426,7 +423,7 @@ goog.ui.ControlRenderer.prototype.setAriaStates = function(control, element) {
   goog.asserts.assert(element);
 
   var ariaLabel = control.getAriaLabel();
-  if (goog.isDefAndNotNull(ariaLabel)) {
+  if (ariaLabel != null) {
     this.setAriaLabel(element, ariaLabel);
   }
 
@@ -495,7 +492,7 @@ goog.ui.ControlRenderer.prototype.setRightToLeft = function(
 
 /**
  * Returns true if the control's key event target supports keyboard focus
- * (based on its {@code tabIndex} attribute), false otherwise.
+ * (based on its `tabIndex` attribute), false otherwise.
  * @param {goog.ui.Control} control Control whose key event target is to be
  *     checked.
  * @return {boolean} Whether the control's key event target is focusable.
@@ -512,8 +509,8 @@ goog.ui.ControlRenderer.prototype.isFocusable = function(control) {
 
 /**
  * Updates the control's key event target to make it focusable or non-focusable
- * via its {@code tabIndex} attribute.  Does nothing if the control doesn't
- * support the {@code FOCUSED} state, or if it has no key event target.
+ * via its `tabIndex` attribute.  Does nothing if the control doesn't
+ * support the `FOCUSED` state, or if it has no key event target.
  * @param {goog.ui.Control} control Control whose key event target is to be
  *     updated.
  * @param {boolean} focusable Whether to enable keyboard focus support on the
@@ -660,14 +657,14 @@ goog.ui.ControlRenderer.prototype.setContent = function(element, content) {
   if (contentElem) {
     goog.dom.removeChildren(contentElem);
     if (content) {
-      if (goog.isString(content)) {
+      if (typeof content === 'string') {
         goog.dom.setTextContent(contentElem, content);
       } else {
         var childHandler = function(child) {
           if (child) {
             var doc = goog.dom.getOwnerDocument(contentElem);
             contentElem.appendChild(
-                goog.isString(child) ? doc.createTextNode(child) : child);
+                typeof child === 'string' ? doc.createTextNode(child) : child);
           }
         };
         if (goog.isArray(content)) {
@@ -759,7 +756,7 @@ goog.ui.ControlRenderer.prototype.getStructuralCssClass = function() {
  *       different from the renderer-specific CSS class), followed by
  *   <li>any state-specific classes returned by {@link #getClassNamesForState},
  *       followed by
- *   <li>any extra classes returned by the control's {@code getExtraClassNames}
+ *   <li>any extra classes returned by the control's `getExtraClassNames`
  *       method and
  *   <li>for IE6 and lower, additional combined classes from
  *       {@link getAppliedCombinedClassNames_}.

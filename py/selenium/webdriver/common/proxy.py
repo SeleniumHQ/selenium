@@ -17,8 +17,6 @@
 
 """The Proxy implementation."""
 
-import warnings
-
 
 class ProxyTypeFactory:
     """Factory for proxy types."""
@@ -66,14 +64,6 @@ class _ProxyTypeDescriptor:
     def __set__(self, obj, value):
         if self.name == "autodetect" and not isinstance(value, bool):
             raise ValueError("Autodetect proxy value needs to be a boolean")
-        if self.name == "ftpProxy":
-            # TODO: Remove ftpProxy in future version and remove deprecation warning
-            # https://github.com/SeleniumHQ/selenium/issues/15905
-            warnings.warn(
-                "ftpProxy is deprecated and will be removed in the future",
-                DeprecationWarning,
-                stacklevel=2,
-            )
         getattr(obj, "_verify_proxy_type_compatibility")(self.p_type)
         setattr(obj, "proxyType", self.p_type)
         setattr(obj, self.name, value)
@@ -84,7 +74,6 @@ class Proxy:
 
     proxyType = ProxyType.UNSPECIFIED
     autodetect = False
-    ftpProxy = ""  # TODO: Remove ftpProxy in future version and remove deprecation warning
     httpProxy = ""
     noProxy = ""
     proxyAutoconfigUrl = ""
@@ -97,10 +86,6 @@ class Proxy:
     # create descriptor type objects
     auto_detect = _ProxyTypeDescriptor("autodetect", ProxyType.AUTODETECT)
     """Proxy autodetection setting (boolean)."""
-
-    # TODO: Remove ftpProxy in future version and remove deprecation warning
-    ftp_proxy = _ProxyTypeDescriptor("ftpProxy", ProxyType.MANUAL)
-    """FTP proxy address (deprecated)."""
 
     http_proxy = _ProxyTypeDescriptor("httpProxy", ProxyType.MANUAL)
     """HTTP proxy address."""
@@ -135,15 +120,6 @@ class Proxy:
         if raw:
             if "proxyType" in raw and raw["proxyType"]:
                 self.proxy_type = ProxyType.load(raw["proxyType"])
-            # TODO: Remove ftpProxy in future version and remove deprecation warning
-            # https://github.com/SeleniumHQ/selenium/issues/15905
-            if "ftpProxy" in raw and raw["ftpProxy"]:
-                warnings.warn(
-                    "ftpProxy is deprecated and will be removed in the future",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                self.ftp_proxy = raw["ftpProxy"]
             if "httpProxy" in raw and raw["httpProxy"]:
                 self.http_proxy = raw["httpProxy"]
             if "noProxy" in raw and raw["noProxy"]:
@@ -186,10 +162,8 @@ class Proxy:
 
     def to_capabilities(self):
         proxy_caps = {"proxyType": self.proxyType["string"].lower()}
-        # TODO: Remove ftpProxy in future version and remove deprecation warning
         proxies = [
             "autodetect",
-            "ftpProxy",
             "httpProxy",
             "proxyAutoconfigUrl",
             "sslProxy",

@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Helper class to allow for expected unit test failures.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.setTestOnly('goog.testing.ExpectedFailures');

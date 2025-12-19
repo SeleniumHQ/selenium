@@ -734,6 +734,7 @@ public class RemoteWebDriver
 
     Contents.Supplier content = (Contents.Supplier) response.getValue();
     try (InputStream fileContent = content.get()) {
+      Files.createDirectories(targetLocation);
       Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
     }
   }

@@ -1,0 +1,260 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":console",
+        ":debug",
+        ":debugwindow",
+        ":divconsole",
+        ":entrypointregistry",
+        ":error",
+        ":errorcontext",
+        ":errorhandler",
+        ":errorhandlerweakdep",
+        ":errorreporter",
+        ":fancywindow",
+        ":formatter",
+        ":fpsdisplay",
+        ":logbuffer",
+        ":logger",
+        ":logrecord",
+        ":logrecordserializer",
+        ":relativetimeprovider",
+        ":tracer",
+        "//third_party/closure/goog/debug/devcss:all_js",
+    ],
+)
+
+closure_js_library(
+    name = "console",
+    srcs = ["console.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/debug:formatter",
+        "//third_party/closure/goog/debug:logger",
+    ],
+)
+
+closure_js_library(
+    name = "debug",
+    srcs = ["debug.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/debug:errorcontext",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "debugwindow",
+    srcs = ["debugwindow.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/debug:formatter",
+        "//third_party/closure/goog/debug:logger",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safestylesheet",
+        "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/structs:circularbuffer",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "divconsole",
+    srcs = ["divconsole.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/debug:formatter",
+        "//third_party/closure/goog/debug:logger",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safestylesheet",
+        "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/style",
+    ],
+)
+
+closure_js_library(
+    name = "entrypointregistry",
+    srcs = ["entrypointregistry.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/asserts"],
+)
+
+closure_js_library(
+    name = "error",
+    srcs = ["error.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "errorcontext",
+    srcs = ["errorcontext.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "errorhandler",
+    srcs = ["errorhandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/debug:entrypointregistry",
+        "//third_party/closure/goog/debug:error",
+        "//third_party/closure/goog/debug:tracer",
+        "//third_party/closure/goog/disposable",
+    ],
+)
+
+closure_js_library(
+    name = "errorhandlerweakdep",
+    srcs = ["errorhandlerweakdep.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "errorreporter",
+    srcs = ["errorreporter.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/debug:entrypointregistry",
+        "//third_party/closure/goog/debug:error",
+        "//third_party/closure/goog/debug:errorcontext",
+        "//third_party/closure/goog/debug:errorhandler",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/uri:utils",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "fancywindow",
+    srcs = ["fancywindow.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:debugwindow",
+        "//third_party/closure/goog/debug:logger",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safestylesheet",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "formatter",
+    srcs = ["formatter.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/debug:logger",
+        "//third_party/closure/goog/debug:relativetimeprovider",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safeurl",
+        "//third_party/closure/goog/html:uncheckedconversions",
+        "//third_party/closure/goog/string:const",
+    ],
+)
+
+closure_js_library(
+    name = "fpsdisplay",
+    srcs = ["fpsdisplay.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/async:animationdelay",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/ui:component",
+    ],
+)
+
+closure_js_library(
+    name = "logbuffer",
+    srcs = ["logbuffer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:logrecord",
+    ],
+)
+
+closure_js_library(
+    name = "logger",
+    srcs = ["logger.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/debug:logbuffer",
+        "//third_party/closure/goog/debug:logrecord",
+    ],
+)
+
+closure_js_library(
+    name = "logrecord",
+    srcs = ["logrecord.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "logrecordserializer",
+    srcs = ["logrecordserializer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/debug:logger",
+        "//third_party/closure/goog/debug:logrecord",
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "relativetimeprovider",
+    srcs = ["relativetimeprovider.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "tracer",
+    srcs = ["tracer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:logger",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/structs:map",
+        "//third_party/closure/goog/structs:simplepool",
+    ],
+)

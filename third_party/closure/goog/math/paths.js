@@ -15,7 +15,6 @@
 
 /**
  * @fileoverview Factories for common path types.
- * @author nicksantos@google.com (Nick Santos)
  */
 
 

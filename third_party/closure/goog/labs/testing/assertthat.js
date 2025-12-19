@@ -21,6 +21,7 @@
 goog.provide('goog.labs.testing.MatcherError');
 goog.provide('goog.labs.testing.assertThat');
 
+goog.forwardDeclare('goog.labs.testing.Matcher');
 goog.require('goog.debug.Error');
 
 
@@ -30,7 +31,6 @@ goog.require('goog.debug.Error');
  * @param {*} actual The object to assert by the matcher.
  * @param {!goog.labs.testing.Matcher} matcher A matcher to verify values.
  * @param {string=} opt_reason Description of what is asserted.
- *
  */
 goog.labs.testing.assertThat = function(actual, matcher, opt_reason) {
   if (!matcher.matches(actual)) {

@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Common CSS class name constants.
- *
- * @author mkretzschmar@google.com (Martin Kretzschmar)
  */
 
 goog.provide('goog.ui.INLINE_BLOCK_CLASSNAME');

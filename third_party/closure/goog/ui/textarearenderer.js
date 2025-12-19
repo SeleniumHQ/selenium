@@ -120,7 +120,7 @@ goog.ui.TextareaRenderer.prototype.setFocusable = goog.nullFunction;
 
 /**
  * Textareas also expose the DISABLED state in the HTML textarea's
- * {@code disabled} attribute.
+ * `disabled` attribute.
  * @override
  */
 goog.ui.TextareaRenderer.prototype.setState = function(

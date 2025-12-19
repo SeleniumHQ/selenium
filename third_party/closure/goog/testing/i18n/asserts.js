@@ -53,25 +53,62 @@ goog.require('goog.testing.jsunit');
  * @private
  */
 goog.testing.i18n.asserts.EXPECTED_VALUE_MAP_ = {
-    // Data to test the assert itself, old string as key, new string as value
+    // NOTE: Add mappings for each test file using addI18nMapping.
 };
 
 
 /**
- * Asserts that the two values are "almost equal" from i18n perspective
- * (based on a manually maintained and validated whitelist).
+ * Asserts that the two values are "almost equal" from i18n perspective.
+ * I18n-equivalent strings are set with addI18nMapping.
+ *
  * @param {string} expected The expected value.
  * @param {string} actual The actual value.
  */
 goog.testing.i18n.asserts.assertI18nEquals = function(expected, actual) {
-  if (expected == actual) {
+  if (expected === actual) {
     return;
   }
 
-  var newExpected = goog.testing.i18n.asserts.EXPECTED_VALUE_MAP_[expected];
-  if (newExpected == actual) {
+  const newExpected = goog.testing.i18n.asserts.EXPECTED_VALUE_MAP_[expected];
+  if (newExpected === actual) {
     return;
   }
 
   assertEquals(expected, actual);
+};
+
+
+/**
+ * Asserts that needle, or a string i18n-equivalent to needle, is a substring of
+ * haystack. I18n-equivalent strings are set with addI18nMapping.
+ *
+ * @param {string} needle The substring to search for.
+ * @param {string} haystack The string to search within.
+ */
+goog.testing.i18n.asserts.assertI18nContains = function(needle, haystack) {
+  if (needle === haystack) {
+    return;
+  }
+
+  const newNeedle = goog.testing.i18n.asserts.EXPECTED_VALUE_MAP_[needle];
+  if (haystack.indexOf(newNeedle) !== -1) {
+    return;
+  }
+
+  assertContains(needle, haystack);
+};
+
+
+/**
+ * Adds two strings as being i18n-equivalent. Call this
+ * method in your unit test file to add mappings scoped to the file.
+ *
+ * @param {string} expected The expected string in assertI18nEquals.
+ * @param {string} equivalent A string which is i18n-equal.
+ */
+goog.testing.i18n.asserts.addI18nMapping = function(expected, equivalent) {
+  if (goog.testing.i18n.asserts.EXPECTED_VALUE_MAP_.hasOwnProperty(expected)) {
+    throw new RangeError('Mapping for string already exists');
+  }
+  goog.testing.i18n.asserts.EXPECTED_VALUE_MAP_[expected] = equivalent;
 };

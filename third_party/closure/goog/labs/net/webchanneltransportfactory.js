@@ -15,7 +15,6 @@
 /**
  * @fileoverview Default factory for <code>WebChannelTransport</code> to
  * avoid exposing concrete classes to clients.
- *
  */
 
 goog.provide('goog.net.createWebChannelTransport');

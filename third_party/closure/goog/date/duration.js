@@ -15,7 +15,6 @@
 /**
  * @fileoverview Functions for formatting duration values.  Such as "3 days"
  * "3 hours", "14 minutes", "2 hours 45 minutes".
- *
  */
 
 goog.provide('goog.date.duration');

@@ -65,7 +65,7 @@ goog.inherits(goog.ui.emoji.PopupEmojiPicker, goog.ui.Component);
 
 /**
  * Instance of an emoji picker control.
- * @type {goog.ui.emoji.EmojiPicker}
+ * @type {?goog.ui.emoji.EmojiPicker}
  * @private
  */
 goog.ui.emoji.PopupEmojiPicker.prototype.emojiPicker_ = null;
@@ -73,7 +73,7 @@ goog.ui.emoji.PopupEmojiPicker.prototype.emojiPicker_ = null;
 
 /**
  * Instance of goog.ui.Popup used to manage the behavior of the emoji picker.
- * @type {goog.ui.Popup}
+ * @type {?goog.ui.Popup}
  * @private
  */
 goog.ui.emoji.PopupEmojiPicker.prototype.popup_ = null;
@@ -81,7 +81,7 @@ goog.ui.emoji.PopupEmojiPicker.prototype.popup_ = null;
 
 /**
  * Reference to the element that triggered the last popup.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.ui.emoji.PopupEmojiPicker.prototype.lastTarget_ = null;

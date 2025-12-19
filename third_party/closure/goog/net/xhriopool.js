@@ -16,7 +16,6 @@
  * @fileoverview Creates a pool of XhrIo objects to use. This allows multiple
  * XhrIo objects to be grouped together and requests will use next available
  * XhrIo object.
- *
  */
 
 goog.provide('goog.net.XhrIoPool');

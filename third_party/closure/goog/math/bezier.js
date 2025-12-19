@@ -22,8 +22,6 @@
  * Currently it uses an unrolled version of the algorithm for speed.  Eventually
  * it may be useful to use the loop form of the algorithm in order to support
  * curves of arbitrary degree.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.math.Bezier');
