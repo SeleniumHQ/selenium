@@ -14,4 +14,3 @@ alias(
     name = "plugin_impl",
     actual = ":field",
 )
-

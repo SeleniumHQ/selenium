@@ -41,4 +41,3 @@ closure_js_library(
         "//third_party/closure/goog/useragent",
     ],
 )
-

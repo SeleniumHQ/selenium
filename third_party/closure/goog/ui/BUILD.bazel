@@ -709,4 +709,3 @@ alias(
     name = "tristatemenuitemrenderer",
     actual = ":tristatemenuitem",
 )
-

@@ -9,4 +9,3 @@ closure_js_library(
     srcs = ["json.js"],
     lenient = True,
 )
-
