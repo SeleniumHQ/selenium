@@ -35,7 +35,7 @@ jobs:
         //java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest
         //java/test/org/openqa/selenium/edge:EdgeDriverFunctionalTest-remote
         //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
-        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest-remote
+        //java/test/org/openqa/selenium/firefox:RemoteFirefoxDriverTest
         //java/test/org/openqa/selenium/safari:SafariDriverTest
         //java/test/org/openqa/selenium/safari:SafariDriverTest-remote
         //java/test/org/openqa/selenium/manager:SeleniumManagerTest
