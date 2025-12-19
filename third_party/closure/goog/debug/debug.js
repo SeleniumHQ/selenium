@@ -1,16 +1,8 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Logging and debugging utilities.
@@ -22,7 +14,8 @@ goog.provide('goog.debug');
 
 goog.require('goog.array');
 goog.require('goog.debug.errorcontext');
-goog.require('goog.userAgent');
+
+goog.require('goog.utils');
 
 
 /** @define {boolean} Whether logging should be enabled. */
@@ -36,6 +29,14 @@ goog.debug.FORCE_SLOPPY_STACKS =
 
 
 /**
+ * @define {boolean} TODO(user): Remove this hack once bug is resolved.
+ */
+goog.debug.CHECK_FOR_THROWN_EVENT =
+    goog.define('goog.debug.CHECK_FOR_THROWN_EVENT', false);
+
+
+
+/**
  * Catches onerror events fired by windows and similar objects.
  * @param {function(Object)} logFunc The function to call with the error
  *    information.
@@ -46,18 +47,10 @@ goog.debug.FORCE_SLOPPY_STACKS =
  *    on Object.
  */
 goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
+  'use strict';
   var target = opt_target || goog.global;
   var oldErrorHandler = target.onerror;
   var retVal = !!opt_cancel;
-
-  // Chrome interprets onerror return value backwards (http://crbug.com/92062)
-  // until it was fixed in webkit revision r94061 (Webkit 535.3). This
-  // workaround still needs to be skipped in Safari after the webkit change
-  // gets pushed out in Safari.
-  // See https://bugs.webkit.org/show_bug.cgi?id=67119
-  if (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('535.3')) {
-    retVal = !retVal;
-  }
 
   /**
    * New onerror handler for this target. This onerror handler follows the spec
@@ -87,6 +80,7 @@ goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
    * @return {boolean} Whether to prevent the error from reaching the browser.
    */
   target.onerror = function(message, url, line, opt_col, opt_error) {
+    'use strict';
     if (oldErrorHandler) {
       oldErrorHandler(message, url, line, opt_col, opt_error);
     }
@@ -111,6 +105,7 @@ goog.debug.catchErrors = function(logFunc, opt_cancel, opt_target) {
  * @return {string} The string representation of `obj`.
  */
 goog.debug.expose = function(obj, opt_showFn) {
+  'use strict';
   if (typeof obj == 'undefined') {
     return 'undefined';
   }
@@ -120,7 +115,7 @@ goog.debug.expose = function(obj, opt_showFn) {
   var str = [];
 
   for (var x in obj) {
-    if (!opt_showFn && goog.isFunction(obj[x])) {
+    if (!opt_showFn && typeof obj[x] === 'function') {
       continue;
     }
     var s = x + ' = ';
@@ -147,6 +142,7 @@ goog.debug.expose = function(obj, opt_showFn) {
  * @return {string} A string representation of `obj`.
  */
 goog.debug.deepExpose = function(obj, opt_showFn) {
+  'use strict';
   var str = [];
 
   // Track any objects where deepExpose added a Uid, so they can be cleaned up
@@ -156,9 +152,11 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
   var ancestorUids = {};
 
   var helper = function(obj, space) {
+    'use strict';
     var nestspace = space + '  ';
 
     var indentMultiline = function(str) {
+      'use strict';
       return str.replace(/\n/g, '\n' + space);
     };
 
@@ -170,21 +168,21 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
         str.push('NULL');
       } else if (typeof obj === 'string') {
         str.push('"' + indentMultiline(obj) + '"');
-      } else if (goog.isFunction(obj)) {
+      } else if (typeof obj === 'function') {
         str.push(indentMultiline(String(obj)));
-      } else if (goog.isObject(obj)) {
+      } else if (goog.utils.isObject(obj)) {
         // Add a Uid if needed. The struct calls implicitly adds them.
-        if (!goog.hasUid(obj)) {
+        if (!goog.utils.hasUid(obj)) {
           uidsToCleanup.push(obj);
         }
-        var uid = goog.getUid(obj);
+        var uid = goog.utils.getUid(obj);
         if (ancestorUids[uid]) {
           str.push('*** reference loop detected (id=' + uid + ') ***');
         } else {
           ancestorUids[uid] = true;
           str.push('{');
           for (var x in obj) {
-            if (!opt_showFn && goog.isFunction(obj[x])) {
+            if (!opt_showFn && typeof obj[x] === 'function') {
               continue;
             }
             str.push('\n');
@@ -207,7 +205,7 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
 
   // Cleanup any Uids that were added by the deepExpose.
   for (var i = 0; i < uidsToCleanup.length; i++) {
-    goog.removeUid(uidsToCleanup[i]);
+    goog.utils.removeUid(uidsToCleanup[i]);
   }
 
   return str.join('');
@@ -220,9 +218,10 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
  * @return {string} String representing nested array.
  */
 goog.debug.exposeArray = function(arr) {
+  'use strict';
   var str = [];
   for (var i = 0; i < arr.length; i++) {
-    if (goog.isArray(arr[i])) {
+    if (Array.isArray(arr[i])) {
       str.push(goog.debug.exposeArray(arr[i]));
     } else {
       str.push(arr[i]);
@@ -241,10 +240,11 @@ goog.debug.exposeArray = function(arr) {
  *    lineNumber: (?|undefined),
  *    fileName: (?|undefined),
  *    stack: (?|undefined)
- * }} Normalized error object.
+ * }} Representation of err as an Object. It will never return err.
  * @suppress {strictMissingProperties} properties not defined on err
  */
 goog.debug.normalizeErrorObject = function(err) {
+  'use strict';
   var href = goog.getObjectByName('window.location.href');
   if (err == null) {
     err = 'Unknown Error of type "null/undefined"';
@@ -282,6 +282,8 @@ goog.debug.normalizeErrorObject = function(err) {
     threwError = true;
   }
 
+  var stack = goog.debug.serializeErrorStack_(err);
+
   // The IE Error object contains only the name and the message.
   // The Safari Error object uses the line and sourceURL fields.
   if (threwError || !err.lineNumber || !err.fileName || !err.stack ||
@@ -293,8 +295,23 @@ goog.debug.normalizeErrorObject = function(err) {
             err.constructor.name :
             goog.debug.getFunctionName(err.constructor);
         message = 'Unknown Error of type "' + ctorName + '"';
+        // TODO(user): Remove this hack once bug is resolved.
+        if (goog.debug.CHECK_FOR_THROWN_EVENT && ctorName == 'Event') {
+          try {
+            message = message + ' with Event.type "' + (err.type || '') + '"';
+          } catch (e) {
+            // Just give up on getting more information out of the error object.
+          }
+        }
       } else {
         message = 'Unknown Error of unknown type';
+      }
+
+      // Avoid TypeError since toString could be missing from the instance
+      // (e.g. if created Object.create(null)).
+      if (typeof err.toString === 'function' &&
+          Object.prototype.toString !== err.toString) {
+        message += ': ' + err.toString();
       }
     }
     return {
@@ -302,13 +319,74 @@ goog.debug.normalizeErrorObject = function(err) {
       'name': err.name || 'UnknownError',
       'lineNumber': lineNumber,
       'fileName': fileName,
-      'stack': err.stack || 'Not available'
+      'stack': stack || 'Not available'
     };
   }
-
   // Standards error object
   // Typed !Object. Should be a subtype of the return type, but it's not.
-  return /** @type {?} */ (err);
+  err.stack = stack;
+
+  // Return non-standard error to allow for consistent result (eg. enumerable).
+  return {
+    'message': err.message,
+    'name': err.name,
+    'lineNumber': err.lineNumber,
+    'fileName': err.fileName,
+    'stack': err.stack
+  };
+};
+
+
+/**
+ * Serialize stack by including the cause chain of the exception if it exists.
+ *
+ *
+ * @param {*} e an exception that may have a cause
+ * @param {!Object=} seen set of cause that have already been serialized
+ * @return {string}
+ * @private
+ * @suppress {missingProperties} properties not defined on cause and e
+ */
+goog.debug.serializeErrorStack_ = function(e, seen) {
+  'use strict';
+  if (!seen) {
+    seen = {};
+  }
+  seen[goog.debug.serializeErrorAsKey_(e)] = true;
+
+  var stack = e['stack'] || '';
+
+  // Add cause if exists.
+  var cause = e.cause;
+  if (cause && !seen[goog.debug.serializeErrorAsKey_(cause)]) {
+    stack += '\nCaused by: ';
+    // Some browsers like Chrome add the error message as the first frame of the
+    // stack, In this case we don't need to add it. Note: we don't use
+    // String.startsWith method because it might have to be polyfilled.
+    if (!cause.stack || cause.stack.indexOf(cause.toString()) != 0) {
+      stack += (typeof cause === 'string') ? cause : cause.message + '\n';
+    }
+    stack += goog.debug.serializeErrorStack_(cause, seen);
+  }
+
+  return stack;
+};
+
+/**
+ * Serialize an error to a string key.
+ * @param {*} e an exception
+ * @return {string}
+ * @private
+ */
+goog.debug.serializeErrorAsKey_ = function(e) {
+  'use strict';
+  var keyPrefix = '';
+
+  if (typeof e.toString === 'function') {
+    keyPrefix = '' + e;
+  }
+
+  return keyPrefix + e['stack'];
 };
 
 
@@ -323,6 +401,7 @@ goog.debug.normalizeErrorObject = function(err) {
  *     it is converted to an Error which is enhanced and returned.
  */
 goog.debug.enhanceError = function(err, opt_message) {
+  'use strict';
   var error;
   if (!(err instanceof Error)) {
     error = Error(err);
@@ -360,6 +439,7 @@ goog.debug.enhanceError = function(err, opt_message) {
  *     it is converted to an Error which is enhanced and returned.
  */
 goog.debug.enhanceErrorWithContext = function(err, opt_context) {
+  'use strict';
   var error = goog.debug.enhanceError(err);
   if (opt_context) {
     for (var key in opt_context) {
@@ -379,6 +459,7 @@ goog.debug.enhanceErrorWithContext = function(err, opt_context) {
  * @suppress {es5Strict}
  */
 goog.debug.getStacktraceSimple = function(opt_depth) {
+  'use strict';
   if (!goog.debug.FORCE_SLOPPY_STACKS) {
     var stack = goog.debug.getNativeStackTrace_(goog.debug.getStacktraceSimple);
     if (stack) {
@@ -431,6 +512,7 @@ goog.debug.MAX_STACK_DEPTH = 50;
  * @private
  */
 goog.debug.getNativeStackTrace_ = function(fn) {
+  'use strict';
   var tempErr = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(tempErr, fn);
@@ -461,6 +543,7 @@ goog.debug.getNativeStackTrace_ = function(fn) {
  * @suppress {es5Strict}
  */
 goog.debug.getStacktrace = function(fn) {
+  'use strict';
   var stack;
   if (!goog.debug.FORCE_SLOPPY_STACKS) {
     // Try to get the stack trace from the environment if it is available.
@@ -487,6 +570,7 @@ goog.debug.getStacktrace = function(fn) {
  * @private
  */
 goog.debug.getStacktraceHelper_ = function(fn, visited) {
+  'use strict';
   var sb = [];
 
   // Circular reference, certain functions like bind seem to cause a recursive
@@ -534,7 +618,7 @@ goog.debug.getStacktraceHelper_ = function(fn, visited) {
       }
 
       if (argDesc.length > 40) {
-        argDesc = argDesc.substr(0, 40) + '...';
+        argDesc = argDesc.slice(0, 40) + '...';
       }
       sb.push(argDesc);
     }
@@ -562,6 +646,7 @@ goog.debug.getStacktraceHelper_ = function(fn, visited) {
  * @return {string} Function's name.
  */
 goog.debug.getFunctionName = function(fn) {
+  'use strict';
   if (goog.debug.fnNameCache_[fn]) {
     return goog.debug.fnNameCache_[fn];
   }
@@ -590,6 +675,7 @@ goog.debug.getFunctionName = function(fn) {
  * @return {string} string whose whitespace is made visible.
  */
 goog.debug.makeWhitespaceVisible = function(string) {
+  'use strict';
   return string.replace(/ /g, '[_]')
       .replace(/\f/g, '[f]')
       .replace(/\n/g, '[n]\n')
@@ -608,6 +694,7 @@ goog.debug.makeWhitespaceVisible = function(string) {
  * @return {string} The best display name for the value, or 'unknown type name'.
  */
 goog.debug.runtimeType = function(value) {
+  'use strict';
   if (value instanceof Function) {
     return value.displayName || value.name || 'unknown type name';
   } else if (value instanceof Object) {
@@ -635,6 +722,7 @@ goog.debug.fnNameCache_ = {};
  * @private
  */
 goog.debug.freezeInternal_ = goog.DEBUG && Object.freeze || function(arg) {
+  'use strict';
   return arg;
 };
 
@@ -648,11 +736,13 @@ goog.debug.freezeInternal_ = goog.DEBUG && Object.freeze || function(arg) {
  * @template T
  */
 goog.debug.freeze = function(arg) {
+  'use strict';
   // NOTE: this compiles to nothing, but hides the possible side effect of
   // freezeInternal_ from the compiler so that the entire call can be
   // removed if the result is not used.
   return {
     valueOf: function() {
+      'use strict';
       return goog.debug.freezeInternal_(arg);
     }
   }.valueOf();

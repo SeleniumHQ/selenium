@@ -1,0 +1,46 @@
+/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/*
+ * Styling for dimension pickers rendered by goog.ui.DimensionPickerRenderer.
+ */
+
+@provide 'goog.css.dimensionpicker';
+
+.goog-dimension-picker {
+  font-size: 18px;
+  padding: 4px;
+}
+
+.goog-dimension-picker div {
+  position: relative;
+}
+
+.goog-dimension-picker div.goog-dimension-picker-highlighted {
+/* Client apps must provide the URL at which they serve the image. */
+  /* background: url(dimension-highlighted.png); */
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+}
+
+.goog-dimension-picker-unhighlighted {
+  /* Client apps must provide the URL at which they serve the image. */
+  /* background: url(dimension-unhighlighted.png); */
+}
+
+.goog-dimension-picker-status {
+  font-size: 10pt;
+  text-align: center;
+}
+
+.goog-dimension-picker div.goog-dimension-picker-mousecatcher {
+  left: 0;
+  position: absolute !important;
+  top: 0;
+}

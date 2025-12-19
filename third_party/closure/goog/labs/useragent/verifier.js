@@ -1,34 +1,26 @@
-// Copyright 2016 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Methods to verify IE versions.
  * TODO(johnlenz): delete this remove this file on the experiment is complete.
  */
-goog.provide('goog.labs.useragent.verifier');
 
+goog.module('goog.labs.useragent.verifier');
+goog.module.declareLegacyNamespace();
 
 /** @const */
-goog.labs.useragent.verifier.NOT_IE = 0;
-
+const NOT_IE = 0;
 
 /**
- * Detect the the current IE version using runtime behavior, returns 0
- * if a version of IE is not detected.
+ * Detect the current IE version using runtime behavior, returns 0 if a version
+ * of IE is not detected.
  * @return {number}
  */
-goog.labs.useragent.verifier.detectIeVersionByBehavior = function() {
+function detectIeVersionByBehavior() {
   if (document.all) {
     if (!document.compatMode) {
       return 5;
@@ -52,17 +44,16 @@ goog.labs.useragent.verifier.detectIeVersionByBehavior = function() {
     return 11;
   }
 
-  return goog.labs.useragent.verifier.NOT_IE;
-};
-
+  return NOT_IE;
+}
 
 /**
- * Detect the the current IE version using MSIE version presented in the
- * user agent string (This will not detected IE 11 which does not present a
- * MSIE version), or zero if IE is not detected.
+ * Detect the current IE version using MSIE version presented in the user agent
+ * string (This will not detected IE 11 which does not present a MSIE version),
+ * or zero if IE is not detected.
  * @return {number}
  */
-goog.labs.useragent.verifier.detectIeVersionByNavigator = function() {
+function detectIeVersionByNavigator() {
   const ua = navigator.userAgent.toLowerCase();
   if (ua.indexOf('msie') != -1) {
     const value = parseInt(ua.split('msie')[1], 10);
@@ -71,33 +62,29 @@ goog.labs.useragent.verifier.detectIeVersionByNavigator = function() {
     }
   }
 
-  return goog.labs.useragent.verifier.NOT_IE;
-};
-
+  return NOT_IE;
+}
 
 /**
  * Correct the actual IE version based on the Trident version in the user agent
  * string.  This adjusts for IE's "compatiblity modes".
  * @return {number}
  */
-goog.labs.useragent.verifier.getCorrectedIEVersionByNavigator = function() {
+function getCorrectedIEVersionByNavigator() {
   const ua = navigator.userAgent;
   if (/Trident/.test(ua) || /MSIE/.test(ua)) {
-    return goog.labs.useragent.verifier.getIEVersion_(ua);
+    return getIEVersion(ua);
   } else {
-    return goog.labs.useragent.verifier.NOT_IE;
+    return NOT_IE;
   }
-};
-
+}
 
 /**
  * Get corrected IE version, see goog.labs.userAgent.browser.getIEVersion_
- *
  * @param {string} userAgent the User-Agent.
  * @return {number}
- * @private
  */
-goog.labs.useragent.verifier.getIEVersion_ = function(userAgent) {
+function getIEVersion(userAgent) {
   // IE11 may identify itself as MSIE 9.0 or MSIE 10.0 due to an IE 11 upgrade
   // bug. Example UA:
   // Mozilla/5.0 (MSIE 9.0; Windows NT 6.1; WOW64; Trident/7.0; rv:11.0)
@@ -132,5 +119,12 @@ goog.labs.useragent.verifier.getIEVersion_ = function(userAgent) {
       return Number(msie[1]);
     }
   }
-  return goog.labs.useragent.verifier.NOT_IE;
+  return NOT_IE;
+}
+
+exports = {
+  NOT_IE,
+  detectIeVersionByBehavior,
+  detectIeVersionByNavigator,
+  getCorrectedIEVersionByNavigator,
 };

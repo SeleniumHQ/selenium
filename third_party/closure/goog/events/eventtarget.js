@@ -1,16 +1,8 @@
-// Copyright 2005 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview A disposable implementation of a custom
@@ -30,6 +22,9 @@ goog.require('goog.events.Event');
 goog.require('goog.events.Listenable');
 goog.require('goog.events.ListenerMap');
 goog.require('goog.object');
+goog.requireType('goog.events.EventId');
+goog.requireType('goog.events.EventLike');
+goog.requireType('goog.events.ListenableKey');
 
 
 
@@ -66,6 +61,7 @@ goog.require('goog.object');
  * @implements {goog.events.Listenable}
  */
 goog.events.EventTarget = function() {
+  'use strict';
   goog.Disposable.call(this);
 
   /**
@@ -113,6 +109,7 @@ goog.events.EventTarget.MAX_ANCESTORS_ = 1000;
  * @override
  */
 goog.events.EventTarget.prototype.getParentEventTarget = function() {
+  'use strict';
   return this.parentEventTarget_;
 };
 
@@ -123,6 +120,7 @@ goog.events.EventTarget.prototype.getParentEventTarget = function() {
  * @param {goog.events.EventTarget} parent Parent listenable (null if none).
  */
 goog.events.EventTarget.prototype.setParentEventTarget = function(parent) {
+  'use strict';
   this.parentEventTarget_ = parent;
 };
 
@@ -148,6 +146,7 @@ goog.events.EventTarget.prototype.setParentEventTarget = function(parent) {
  */
 goog.events.EventTarget.prototype.addEventListener = function(
     type, handler, opt_capture, opt_handlerScope) {
+  'use strict';
   goog.events.listen(this, type, handler, opt_capture, opt_handlerScope);
 };
 
@@ -157,7 +156,7 @@ goog.events.EventTarget.prototype.addEventListener = function(
  * same object as the one added. If the handler has not been added then
  * nothing is done.
  *
- * @param {string} type The type of the event to listen for.
+ * @param {string|!goog.events.EventId} type The type of the event to listen for
  * @param {function(?):?|{handleEvent:function(?):?}|null} handler The function
  *     to handle the event. The handler can also be an object that implements
  *     the handleEvent method which takes the event object as argument.
@@ -172,12 +171,19 @@ goog.events.EventTarget.prototype.addEventListener = function(
  */
 goog.events.EventTarget.prototype.removeEventListener = function(
     type, handler, opt_capture, opt_handlerScope) {
+  'use strict';
   goog.events.unlisten(this, type, handler, opt_capture, opt_handlerScope);
 };
 
 
-/** @override */
+/**
+ * @param {?goog.events.EventLike} e Event object.
+ * @return {boolean} If anyone called preventDefault on the event object (or
+ *     if any of the listeners returns false) this will also return false.
+ * @override
+ */
 goog.events.EventTarget.prototype.dispatchEvent = function(e) {
+  'use strict';
   this.assertInitialized_();
 
   var ancestorsTree, ancestor = this.getParentEventTarget();
@@ -205,6 +211,7 @@ goog.events.EventTarget.prototype.dispatchEvent = function(e) {
  * @protected
  */
 goog.events.EventTarget.prototype.disposeInternal = function() {
+  'use strict';
   goog.events.EventTarget.superClass_.disposeInternal.call(this);
 
   this.removeAllListeners();
@@ -212,9 +219,21 @@ goog.events.EventTarget.prototype.disposeInternal = function() {
 };
 
 
-/** @override */
+/**
+ * @param {string|!goog.events.EventId<EVENTOBJ>} type The event type id.
+ * @param {function(this:SCOPE, EVENTOBJ):(boolean|undefined)} listener Callback
+ *     method.
+ * @param {boolean=} opt_useCapture Whether to fire in capture phase
+ *     (defaults to false).
+ * @param {SCOPE=} opt_listenerScope Object in whose scope to call the
+ *     listener.
+ * @return {!goog.events.ListenableKey} Unique key for the listener.
+ * @template SCOPE,EVENTOBJ
+ * @override
+ */
 goog.events.EventTarget.prototype.listen = function(
     type, listener, opt_useCapture, opt_listenerScope) {
+  'use strict';
   this.assertInitialized_();
   return this.eventTargetListeners_.add(
       String(type), listener, false /* callOnce */, opt_useCapture,
@@ -222,31 +241,67 @@ goog.events.EventTarget.prototype.listen = function(
 };
 
 
-/** @override */
+/**
+ * @param {string|!goog.events.EventId<EVENTOBJ>} type The event type id.
+ * @param {function(this:SCOPE, EVENTOBJ):(boolean|undefined)} listener Callback
+ *     method.
+ * @param {boolean=} opt_useCapture Whether to fire in capture phase
+ *     (defaults to false).
+ * @param {SCOPE=} opt_listenerScope Object in whose scope to call the
+ *     listener.
+ * @return {!goog.events.ListenableKey} Unique key for the listener.
+ * @template SCOPE,EVENTOBJ
+ * @override
+ */
 goog.events.EventTarget.prototype.listenOnce = function(
     type, listener, opt_useCapture, opt_listenerScope) {
+  'use strict';
   return this.eventTargetListeners_.add(
       String(type), listener, true /* callOnce */, opt_useCapture,
       opt_listenerScope);
 };
 
 
-/** @override */
+/**
+ * @param {string|!goog.events.EventId<EVENTOBJ>} type The event type id.
+ * @param {function(this:SCOPE, EVENTOBJ):(boolean|undefined)} listener Callback
+ *     method.
+ * @param {boolean=} opt_useCapture Whether to fire in capture phase
+ *     (defaults to false).
+ * @param {SCOPE=} opt_listenerScope Object in whose scope to call
+ *     the listener.
+ * @return {boolean} Whether any listener was removed.
+ * @template SCOPE,EVENTOBJ
+ * @override
+ */
 goog.events.EventTarget.prototype.unlisten = function(
     type, listener, opt_useCapture, opt_listenerScope) {
+  'use strict';
   return this.eventTargetListeners_.remove(
       String(type), listener, opt_useCapture, opt_listenerScope);
 };
 
 
-/** @override */
+/**
+ * @param {!goog.events.ListenableKey} key The key returned by
+ *     listen() or listenOnce().
+ * @return {boolean} Whether any listener was removed.
+ * @override
+ */
 goog.events.EventTarget.prototype.unlistenByKey = function(key) {
+  'use strict';
   return this.eventTargetListeners_.removeByKey(key);
 };
 
 
-/** @override */
+/**
+ * @param {string|!goog.events.EventId=} opt_type Type of event to remove,
+ *     default is to remove all types.
+ * @return {number} Number of listeners removed.
+ * @override
+ */
 goog.events.EventTarget.prototype.removeAllListeners = function(opt_type) {
+  'use strict';
   // TODO(chrishenry): Previously, removeAllListeners can be called on
   // uninitialized EventTarget, so we preserve that behavior. We
   // should remove this when usages that rely on that fact are purged.
@@ -257,9 +312,21 @@ goog.events.EventTarget.prototype.removeAllListeners = function(opt_type) {
 };
 
 
-/** @override */
+/**
+ * @param {string|!goog.events.EventId<EVENTOBJ>} type The type of the
+ *     listeners to fire.
+ * @param {boolean} capture The capture mode of the listeners to fire.
+ * @param {EVENTOBJ} eventObject The event object to fire.
+ * @return {boolean} Whether all listeners succeeded without
+ *     attempting to prevent default behavior. If any listener returns
+ *     false or called goog.events.Event#preventDefault, this returns
+ *     false.
+ * @template EVENTOBJ
+ * @override
+ */
 goog.events.EventTarget.prototype.fireListeners = function(
     type, capture, eventObject) {
+  'use strict';
   // TODO(chrishenry): Original code avoids array creation when there
   // is no listener, so we do the same. If this optimization turns
   // out to be not required, we can replace this with
@@ -285,27 +352,56 @@ goog.events.EventTarget.prototype.fireListeners = function(
     }
   }
 
-  return rv && eventObject.returnValue_ != false;
+  return rv && !eventObject.defaultPrevented;
 };
 
 
-/** @override */
+/**
+ * @param {string|!goog.events.EventId} type The type of the listeners to fire.
+ * @param {boolean} capture The capture mode of the listeners to fire.
+ * @return {!Array<!goog.events.ListenableKey>} An array of registered
+ *     listeners.
+ * @template EVENTOBJ
+ * @override
+ */
 goog.events.EventTarget.prototype.getListeners = function(type, capture) {
+  'use strict';
   return this.eventTargetListeners_.getListeners(String(type), capture);
 };
 
 
-/** @override */
+/**
+ * @param {string|!goog.events.EventId<EVENTOBJ>} type The name of the event
+ *     without the 'on' prefix.
+ * @param {function(this:SCOPE, EVENTOBJ):(boolean|undefined)} listener The
+ *     listener function to get.
+ * @param {boolean} capture Whether the listener is a capturing listener.
+ * @param {SCOPE=} opt_listenerScope Object in whose scope to call the
+ *     listener.
+ * @return {?goog.events.ListenableKey} the found listener or null if not found.
+ * @template SCOPE,EVENTOBJ
+ * @override
+ */
 goog.events.EventTarget.prototype.getListener = function(
     type, listener, capture, opt_listenerScope) {
+  'use strict';
   return this.eventTargetListeners_.getListener(
       String(type), listener, capture, opt_listenerScope);
 };
 
 
-/** @override */
+/**
+ * @param {string|!goog.events.EventId<EVENTOBJ>=} opt_type Event type.
+ * @param {boolean=} opt_capture Whether to check for capture or bubble
+ *     listeners.
+ * @return {boolean} Whether there is any active listeners matching
+ *     the requested type and/or capture phase.
+ * @template EVENTOBJ
+ * @override
+ */
 goog.events.EventTarget.prototype.hasListener = function(
     opt_type, opt_capture) {
+  'use strict';
   var id = (opt_type !== undefined) ? String(opt_type) : undefined;
   return this.eventTargetListeners_.hasListener(id, opt_capture);
 };
@@ -318,6 +414,7 @@ goog.events.EventTarget.prototype.hasListener = function(
  * @param {!Object} target The target.
  */
 goog.events.EventTarget.prototype.setTargetForTesting = function(target) {
+  'use strict';
   this.actualEventTarget_ = target;
 };
 
@@ -327,6 +424,7 @@ goog.events.EventTarget.prototype.setTargetForTesting = function(target) {
  * @private
  */
 goog.events.EventTarget.prototype.assertInitialized_ = function() {
+  'use strict';
   goog.asserts.assert(
       this.eventTargetListeners_,
       'Event target is not initialized. Did you call the superclass ' +
@@ -348,6 +446,7 @@ goog.events.EventTarget.prototype.assertInitialized_ = function() {
  */
 goog.events.EventTarget.dispatchEventInternal_ = function(
     target, e, opt_ancestorsTree) {
+  'use strict';
   /** @suppress {missingProperties} */
   var type = e.type || /** @type {string} */ (e);
 
@@ -367,25 +466,26 @@ goog.events.EventTarget.dispatchEventInternal_ = function(
 
   // Executes all capture listeners on the ancestors, if any.
   if (opt_ancestorsTree) {
-    for (var i = opt_ancestorsTree.length - 1; !e.propagationStopped_ && i >= 0;
-         i--) {
+    for (var i = opt_ancestorsTree.length - 1;
+         !e.hasPropagationStopped() && i >= 0; i--) {
       currentTarget = e.currentTarget = opt_ancestorsTree[i];
       rv = currentTarget.fireListeners(type, true, e) && rv;
     }
   }
 
   // Executes capture and bubble listeners on the target.
-  if (!e.propagationStopped_) {
+  if (!e.hasPropagationStopped()) {
     currentTarget = /** @type {?} */ (e.currentTarget = target);
     rv = currentTarget.fireListeners(type, true, e) && rv;
-    if (!e.propagationStopped_) {
+    if (!e.hasPropagationStopped()) {
       rv = currentTarget.fireListeners(type, false, e) && rv;
     }
   }
 
   // Executes all bubble listeners on the ancestors, if any.
   if (opt_ancestorsTree) {
-    for (i = 0; !e.propagationStopped_ && i < opt_ancestorsTree.length; i++) {
+    for (i = 0; !e.hasPropagationStopped() && i < opt_ancestorsTree.length;
+         i++) {
       currentTarget = e.currentTarget = opt_ancestorsTree[i];
       rv = currentTarget.fireListeners(type, false, e) && rv;
     }

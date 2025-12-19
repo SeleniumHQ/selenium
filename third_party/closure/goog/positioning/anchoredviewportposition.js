@@ -1,16 +1,8 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Anchored viewport positioning class.
@@ -22,6 +14,8 @@ goog.require('goog.positioning');
 goog.require('goog.positioning.AnchoredPosition');
 goog.require('goog.positioning.Overflow');
 goog.require('goog.positioning.OverflowStatus');
+goog.requireType('goog.math.Box');
+goog.requireType('goog.math.Size');
 
 
 
@@ -49,6 +43,7 @@ goog.require('goog.positioning.OverflowStatus');
  */
 goog.positioning.AnchoredViewportPosition = function(
     anchorElement, corner, opt_adjust, opt_overflowConstraint) {
+  'use strict';
   goog.positioning.AnchoredPosition.call(this, anchorElement, corner);
 
   /**
@@ -85,6 +80,7 @@ goog.inherits(
  */
 goog.positioning.AnchoredViewportPosition.prototype.getOverflowConstraint =
     function() {
+  'use strict';
   return this.overflowConstraint_;
 };
 
@@ -95,6 +91,7 @@ goog.positioning.AnchoredViewportPosition.prototype.getOverflowConstraint =
  */
 goog.positioning.AnchoredViewportPosition.prototype.setOverflowConstraint =
     function(overflowConstraint) {
+  'use strict';
   this.overflowConstraint_ = overflowConstraint;
 };
 
@@ -104,6 +101,7 @@ goog.positioning.AnchoredViewportPosition.prototype.setOverflowConstraint =
  */
 goog.positioning.AnchoredViewportPosition.prototype.getLastResortOverflow =
     function() {
+  'use strict';
   return this.lastResortOverflow_;
 };
 
@@ -114,6 +112,7 @@ goog.positioning.AnchoredViewportPosition.prototype.getLastResortOverflow =
  */
 goog.positioning.AnchoredViewportPosition.prototype.setLastResortOverflow =
     function(lastResortOverflow) {
+  'use strict';
   this.lastResortOverflow_ = lastResortOverflow;
 };
 
@@ -131,6 +130,7 @@ goog.positioning.AnchoredViewportPosition.prototype.setLastResortOverflow =
  */
 goog.positioning.AnchoredViewportPosition.prototype.reposition = function(
     movableElement, movableCorner, opt_margin, opt_preferredSize) {
+  'use strict';
   var status = goog.positioning.positionAtAnchor(
       this.element, this.corner, movableElement, movableCorner, null,
       opt_margin,
@@ -173,6 +173,7 @@ goog.positioning.AnchoredViewportPosition.prototype.reposition = function(
  */
 goog.positioning.AnchoredViewportPosition.prototype.adjustCorner = function(
     status, corner) {
+  'use strict';
   if (status & goog.positioning.OverflowStatus.FAILED_HORIZONTAL) {
     corner = goog.positioning.flipCornerHorizontal(corner);
   }

@@ -14,12 +14,15 @@ def _closure_js_srcs_aspect_impl(target, ctx):
     for d in getattr(ctx.rule.attr, "deps", []):
         if ClosureJsSrcsInfo in d:
             trans.append(d[ClosureJsSrcsInfo].files)
+    for d in getattr(ctx.rule.attr, "exports", []):
+        if ClosureJsSrcsInfo in d:
+            trans.append(d[ClosureJsSrcsInfo].files)
 
     return [ClosureJsSrcsInfo(files = depset(direct = direct, transitive = trans))]
 
 closure_js_srcs_aspect = aspect(
     implementation = _closure_js_srcs_aspect_impl,
-    attr_aspects = ["deps"],
+    attr_aspects = ["deps", "exports"],
 )
 
 def _collect_srcs_impl(ctx):

@@ -1,16 +1,8 @@
-// Copyright 2010 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Helper class for recording the calls of a function.
@@ -46,6 +38,7 @@ goog.provide('goog.testing.recordConstructor');
 goog.provide('goog.testing.recordFunction');
 
 goog.require('goog.Promise');
+goog.require('goog.functions');
 goog.require('goog.promise.Resolver');
 goog.require('goog.testing.asserts');
 
@@ -111,11 +104,12 @@ goog.testing.recordedFunction_.reset = function() {};
  * inherit the original function's prototype and static fields.
  *
  * @param {!Function=} opt_f The function to wrap and record. Defaults to
- *     {@link goog.nullFunction}.
+ *     goog.functions.UNDEFINED.
  * @return {!goog.testing.recordFunction.Type} The wrapped function.
  */
 goog.testing.recordFunction = function(opt_f) {
-  var f = opt_f || goog.nullFunction;
+  'use strict';
+  var f = opt_f || goog.functions.UNDEFINED;
   var calls = [];
   /** @type {?goog.promise.Resolver} */
   var waitForCallsResolver = null;
@@ -149,7 +143,10 @@ goog.testing.recordFunction = function(opt_f) {
   /**
    * @return {number} Total number of calls.
    */
-  recordedFunction.getCallCount = function() { return calls.length; };
+  recordedFunction.getCallCount = function() {
+    'use strict';
+    return calls.length;
+  };
 
   /**
    * Asserts that the function was called a certain number of times.
@@ -158,6 +155,7 @@ goog.testing.recordFunction = function(opt_f) {
    * @param {number=} opt_b The expected number of calls (2 args only).
    */
   recordedFunction.assertCallCount = function(a, opt_b) {
+    'use strict';
     var actual = calls.length;
     var expected = arguments.length == 1 ? a : opt_b;
     var message = arguments.length == 1 ? '' : ' ' + a;
@@ -170,7 +168,10 @@ goog.testing.recordFunction = function(opt_f) {
    * @return {!Array<!goog.testing.FunctionCall>} All calls of the recorded
    *     function.
    */
-  recordedFunction.getCalls = function() { return calls; };
+  recordedFunction.getCalls = function() {
+    'use strict';
+    return calls;
+  };
 
 
   /**
@@ -178,6 +179,7 @@ goog.testing.recordFunction = function(opt_f) {
    *     null if it hasn't been called.
    */
   recordedFunction.getLastCall = function() {
+    'use strict';
     return calls[calls.length - 1] || null;
   };
 
@@ -186,7 +188,10 @@ goog.testing.recordFunction = function(opt_f) {
    * @return {goog.testing.FunctionCall} Last call of the recorded function or
    *     null if it hasn't been called.
    */
-  recordedFunction.popLastCall = function() { return calls.pop() || null; };
+  recordedFunction.popLastCall = function() {
+    'use strict';
+    return calls.pop() || null;
+  };
 
   /**
    * Returns a goog.Promise that resolves when the recorded function has equal
@@ -195,6 +200,7 @@ goog.testing.recordFunction = function(opt_f) {
    * @return {!goog.Promise<undefined>}
    */
   recordedFunction.waitForCalls = function(num) {
+    'use strict';
     waitForCallsCount = num;
     waitForCallsResolver = goog.Promise.withResolver();
     var promise = waitForCallsResolver.promise;
@@ -206,6 +212,7 @@ goog.testing.recordFunction = function(opt_f) {
    * Resets the recorded function and removes all calls.
    */
   recordedFunction.reset = function() {
+    'use strict';
     calls.length = 0;
     waitForCallsResolver = null;
     waitForCallsCount = 0;
@@ -227,9 +234,14 @@ goog.testing.recordFunction.Type;
  * @return {!Function} The wrapped function.
  */
 goog.testing.recordConstructor = function(ctor) {
+  'use strict';
   var recordedConstructor = goog.testing.recordFunction(ctor);
   recordedConstructor.prototype = ctor.prototype;
-  goog.mixin(recordedConstructor, ctor);
+
+  // NOTE: This does not handle non-enumerable properties, should it?
+  for (var x in ctor) {
+    recordedConstructor[x] = ctor[x];
+  }
   return recordedConstructor;
 };
 
@@ -245,6 +257,7 @@ goog.testing.recordConstructor = function(ctor) {
  * @constructor
  */
 goog.testing.FunctionCall = function(func, thisContext, args, ret, error) {
+  'use strict';
   this.function_ = func;
   this.thisContext_ = thisContext;
   this.arguments_ = Array.prototype.slice.call(args);
@@ -257,6 +270,7 @@ goog.testing.FunctionCall = function(func, thisContext, args, ret, error) {
  * @return {!Function} The called function.
  */
 goog.testing.FunctionCall.prototype.getFunction = function() {
+  'use strict';
   return this.function_;
 };
 
@@ -266,6 +280,7 @@ goog.testing.FunctionCall.prototype.getFunction = function() {
  *     the created object if the function is a constructor.
  */
 goog.testing.FunctionCall.prototype.getThis = function() {
+  'use strict';
   return this.thisContext_;
 };
 
@@ -274,6 +289,7 @@ goog.testing.FunctionCall.prototype.getThis = function() {
  * @return {!Array<?>} Arguments of the called function.
  */
 goog.testing.FunctionCall.prototype.getArguments = function() {
+  'use strict';
   return this.arguments_;
 };
 
@@ -284,6 +300,7 @@ goog.testing.FunctionCall.prototype.getArguments = function() {
  * @return {*} The argument value or undefined if there is no such argument.
  */
 goog.testing.FunctionCall.prototype.getArgument = function(index) {
+  'use strict';
   return this.arguments_[index];
 };
 
@@ -292,6 +309,7 @@ goog.testing.FunctionCall.prototype.getArgument = function(index) {
  * @return {*} Return value of the function or undefined in case of error.
  */
 goog.testing.FunctionCall.prototype.getReturnValue = function() {
+  'use strict';
   return this.returnValue_;
 };
 
@@ -300,5 +318,6 @@ goog.testing.FunctionCall.prototype.getReturnValue = function() {
  * @return {*} The error thrown by the function or null if none.
  */
 goog.testing.FunctionCall.prototype.getError = function() {
+  'use strict';
   return this.error_;
 };

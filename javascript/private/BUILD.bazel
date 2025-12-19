@@ -13,5 +13,8 @@ py_binary(
 
 closure_bin.closure_make_deps_binary(
     name = "closure_make_deps",
-    visibility = ["//javascript:__subpackages__"],
+    visibility = [
+        "//javascript:__subpackages__",
+        "//third_party/closure/goog:__pkg__",
+    ],
 )

@@ -1,26 +1,18 @@
-// Copyright 2017 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Shims between goog.iter.Iterator and ES6 iterator.
  */
 
 goog.module('goog.iter.es6');
+goog.module.declareLegacyNamespace();
 
 const GoogIterable = goog.require('goog.iter.Iterable');
 const GoogIterator = goog.require('goog.iter.Iterator');
-const StopIteration = goog.require('goog.iter.StopIteration');
 
 
 /**
@@ -66,44 +58,17 @@ class ShimIterable {
       return iter;
     } else if (typeof iter.next == 'function') {
       return new ShimIterableImpl(
-          () => wrapGoog(/** @type {!Iterator|!GoogIterator} */ (iter)));
+          () => /** @type {!Iterator|!GoogIterator} */ (iter));
     } else if (typeof iter[Symbol.iterator] == 'function') {
       return new ShimIterableImpl(() => iter[Symbol.iterator]());
     } else if (typeof iter.__iterator__ == 'function') {
       return new ShimIterableImpl(
-          () => wrapGoog(
-              /** @type {{__iterator__:function(this:?, boolean=)}} */ (iter)
-                  .__iterator__()));
+          () => /** @type {{__iterator__:function(this:?, boolean=)}} */ (iter)
+                    .__iterator__());
     }
     throw new Error('Not an iterator or iterable.');
   }
 }
-
-
-/**
- * @param {!GoogIterator<VALUE>|!Iterator<VALUE>} iter
- * @return {!Iterator<VALUE>}
- * @template VALUE
- */
-const wrapGoog = (iter) => {
-  if (!(iter instanceof GoogIterator)) return iter;
-  let done = false;
-  return /** @type {?} */ ({
-    next() {
-      let value;
-      while (!done) {
-        try {
-          value = iter.next();
-          break;
-        } catch (err) {
-          if (err !== StopIteration) throw err;
-          done = true;
-        }
-      }
-      return {value, done};
-    },
-  });
-};
 
 
 /**
@@ -155,19 +120,14 @@ class ShimGoogIterator extends GoogIterator {
     this.iter_ = iter;
   }
 
-  /** @override */
-  __iterator__() {
-    // TODO(sdh): this seems ridiculous, but the compiler complains
-    // that it's not implemented if we don't have it.
-    return super.__iterator__();
+  /**
+   * @override @see {!goog.iter.Iterator}
+   * @return {!IIterableResult<VALUE>}
+   */
+  next() {
+    return this.iter_.next();
   }
 
-  /** @override */
-  next() {
-    const result = this.iter_.next();
-    if (result.done) throw StopIteration;
-    return result.value;
-  }
 
   /** @override */
   toGoog() {

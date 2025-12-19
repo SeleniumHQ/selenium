@@ -1,4 +1,4 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
@@ -45,6 +45,9 @@ closure_js_library(
         "//third_party/closure/goog/math:coordinate",
         "//third_party/closure/goog/math:vec2",
         "//third_party/closure/goog/style",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -78,8 +81,6 @@ closure_js_library(
     ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_MISSING_CONST_PROPERTY",
-        "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
@@ -100,6 +101,7 @@ closure_js_library(
         "//third_party/closure/goog/structs:set",
         "//third_party/closure/goog/useragent",
         "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -160,10 +162,12 @@ closure_js_library(
     ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_MISSING_CONST_PROPERTY",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
+    ],
+    deps = [
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -172,7 +176,6 @@ closure_js_library(
     srcs = ["events.js"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_MISSING_CONST_PROPERTY",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
@@ -189,6 +192,7 @@ closure_js_library(
         "//third_party/closure/goog/style",
         "//third_party/closure/goog/useragent",
         "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -197,7 +201,6 @@ closure_js_library(
     srcs = ["frame.js"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
@@ -219,7 +222,6 @@ closure_js_library(
     srcs = glob(["html5/*.js"]),
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
@@ -228,7 +230,8 @@ closure_js_library(
         ":errors",
         ":json",
         ":useragent",
-        "//third_party/closure/goog/useragent:all_js",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
     ],
 )
 
@@ -254,6 +257,7 @@ closure_js_library(
         "//third_party/closure/goog/dom:nodetype",
         "//third_party/closure/goog/object",
         "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -279,7 +283,6 @@ closure_js_library(
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_LATE_PROVIDE_ERROR",
-        "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
@@ -293,10 +296,12 @@ closure_js_library(
         "//third_party/closure/goog/array",
         "//third_party/closure/goog/dom",
         "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:tagname",
         "//third_party/closure/goog/math:rect",
         "//third_party/closure/goog/string",
         "//third_party/closure/goog/useragent",
         "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -350,6 +355,7 @@ closure_js_library(
         "//third_party/closure/goog/dom:nodetype",
         "//third_party/closure/goog/string",
         "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -391,6 +397,8 @@ closure_js_deps(
         ":test_util",
         ":useragent",
         ":window",
+        "//third_party/closure/goog:library",
+        "//third_party/closure/goog:testing",
     ],
 )
 

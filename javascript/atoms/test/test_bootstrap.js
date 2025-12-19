@@ -40,6 +40,9 @@
  */
 
 (function() {
+  // Enable the debug loader for the Closure Library (required for goog.require to work)
+  window.CLOSURE_UNCOMPILED_DEFINES = {'goog.ENABLE_DEBUG_LOADER': true};
+
   window.errors = [];
   window.onerror = function() { window.errors.push(arguments); console.log(arguments); };
   var scripts = document.getElementsByTagName('script');

@@ -1,16 +1,8 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Factory functions for creating a default editing toolbar.
@@ -30,6 +22,16 @@ goog.require('goog.style');
 goog.require('goog.ui.editor.ToolbarFactory');
 goog.require('goog.ui.editor.messages');
 goog.require('goog.userAgent');
+goog.requireType('goog.ui.Button');
+goog.requireType('goog.ui.ButtonRenderer');
+goog.requireType('goog.ui.ColorMenuButtonRenderer');
+goog.requireType('goog.ui.Control');
+goog.requireType('goog.ui.ControlContent');
+goog.requireType('goog.ui.MenuButtonRenderer');
+goog.requireType('goog.ui.MenuItem');
+goog.requireType('goog.ui.Select');
+goog.requireType('goog.ui.Toolbar');
+goog.requireType('goog.ui.ToolbarColorMenuButton');
 
 // Font menu creation.
 
@@ -119,6 +121,7 @@ goog.ui.editor.DefaultToolbar.locale_ = 'en-us';
  * @param {string} locale Locale to use for the toolbar font names.
  */
 goog.ui.editor.DefaultToolbar.setLocale = function(locale) {
+  'use strict';
   goog.ui.editor.DefaultToolbar.locale_ = locale;
 };
 
@@ -131,11 +134,12 @@ goog.ui.editor.DefaultToolbar.setLocale = function(locale) {
  * @param {!goog.ui.Select} button Font menu button.
  */
 goog.ui.editor.DefaultToolbar.addDefaultFonts = function(button) {
+  'use strict';
   // Normalize locale to lowercase, with a hyphen (see bug 1036165).
-  var locale =
+  const locale =
       goog.ui.editor.DefaultToolbar.locale_.replace(/_/, '-').toLowerCase();
   // Add locale-specific default fonts, if any.
-  var fontlist = [];
+  let fontlist = [];
 
   if (locale in goog.ui.editor.DefaultToolbar.I18N_FONTS_) {
     fontlist = goog.ui.editor.DefaultToolbar.I18N_FONTS_[locale];
@@ -191,6 +195,7 @@ goog.ui.editor.DefaultToolbar.FONT_SIZES_ = [
  * @param {!goog.ui.Select} button Font size menu button.
  */
 goog.ui.editor.DefaultToolbar.addDefaultFontSizes = function(button) {
+  'use strict';
   goog.ui.editor.ToolbarFactory.addFontSizes(
       button, goog.ui.editor.DefaultToolbar.FONT_SIZES_);
 };
@@ -252,6 +257,7 @@ goog.ui.editor.DefaultToolbar.FORMAT_OPTIONS_ = [
  * @param {!goog.ui.Select} button "Format block" menu button.
  */
 goog.ui.editor.DefaultToolbar.addDefaultFormatOptions = function(button) {
+  'use strict';
   goog.ui.editor.ToolbarFactory.addFormatOptions(
       button, goog.ui.editor.DefaultToolbar.FORMAT_OPTIONS_);
 };
@@ -270,8 +276,9 @@ goog.ui.editor.DefaultToolbar.addDefaultFormatOptions = function(button) {
  */
 goog.ui.editor.DefaultToolbar.makeDefaultToolbar = function(
     elem, opt_isRightToLeft) {
-  var isRightToLeft = opt_isRightToLeft || goog.style.isRightToLeft(elem);
-  var buttons = isRightToLeft ?
+  'use strict';
+  const isRightToLeft = opt_isRightToLeft || goog.style.isRightToLeft(elem);
+  const buttons = isRightToLeft ?
       goog.ui.editor.DefaultToolbar.DEFAULT_BUTTONS_RTL :
       goog.ui.editor.DefaultToolbar.DEFAULT_BUTTONS;
   return goog.ui.editor.DefaultToolbar.makeToolbar(
@@ -296,10 +303,11 @@ goog.ui.editor.DefaultToolbar.makeDefaultToolbar = function(
  */
 goog.ui.editor.DefaultToolbar.makeToolbar = function(
     items, elem, opt_isRightToLeft) {
-  var domHelper = goog.dom.getDomHelper(elem);
-  var controls = [];
+  'use strict';
+  const domHelper = goog.dom.getDomHelper(elem);
+  const controls = [];
 
-  for (var i = 0, button; button = items[i]; i++) {
+  for (let i = 0, button; button = items[i]; i++) {
     if (typeof button === 'string') {
       button = goog.ui.editor.DefaultToolbar.makeBuiltInToolbarButton(
           button, domHelper);
@@ -327,21 +335,22 @@ goog.ui.editor.DefaultToolbar.makeToolbar = function(
  */
 goog.ui.editor.DefaultToolbar.makeBuiltInToolbarButton = function(
     command, opt_domHelper) {
-  var button = null;
-  var descriptor = goog.ui.editor.DefaultToolbar.buttons_[command];
+  'use strict';
+  let button = null;
+  const descriptor = goog.ui.editor.DefaultToolbar.buttons_[command];
   if (descriptor) {
     // Default the factory method to makeToggleButton, since most built-in
     // toolbar buttons are toggle buttons. See also
     // goog.ui.editor.DefaultToolbar.button_list_.
     /** @type {!Function} */
-    var factory =
+    const factory =
         descriptor.factory || goog.ui.editor.ToolbarFactory.makeToggleButton;
-    var id = descriptor.command;
-    var tooltip = descriptor.tooltip;
-    var caption = descriptor.caption;
-    var classNames = descriptor.classes;
+    const id = descriptor.command;
+    const tooltip = descriptor.tooltip;
+    const caption = descriptor.caption;
+    const classNames = descriptor.classes;
     // Default the DOM helper to the one for the current document.
-    var domHelper = opt_domHelper || goog.dom.getDomHelper();
+    const domHelper = opt_domHelper || goog.dom.getDomHelper();
     // Instantiate the button based on the descriptor.
     button = factory(id, tooltip, caption, classNames, null, domHelper);
     // If this button's state should be queried when updating the toolbar,
@@ -404,11 +413,13 @@ goog.ui.editor.DefaultToolbar.DEFAULT_BUTTONS_RTL = [
  */
 goog.ui.editor.DefaultToolbar.rtlButtonFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
-  var button = goog.ui.editor.ToolbarFactory.makeToggleButton(
+  'use strict';
+  const button = goog.ui.editor.ToolbarFactory.makeToggleButton(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   button.updateFromValue = function(value) {
+    'use strict';
     // Enable/disable right-to-left text editing mode in the toolbar.
-    var isRtl = !!value;
+    const isRtl = !!value;
     // Enable/disable a marker class on the toolbar's root element; the rest is
     // done using CSS scoping in editortoolbar.css.  This changes
     // direction-senitive toolbar icons (like indent/outdent)
@@ -441,9 +452,11 @@ goog.ui.editor.DefaultToolbar.rtlButtonFactory_ = function(
  */
 goog.ui.editor.DefaultToolbar.undoRedoButtonFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
-  var button = goog.ui.editor.ToolbarFactory.makeButton(
+  'use strict';
+  const button = goog.ui.editor.ToolbarFactory.makeButton(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   button.updateFromValue = function(value) {
+    'use strict';
     button.setEnabled(value);
   };
   return button;
@@ -470,7 +483,8 @@ goog.ui.editor.DefaultToolbar.undoRedoButtonFactory_ = function(
  */
 goog.ui.editor.DefaultToolbar.fontFaceFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
-  var button = goog.ui.editor.ToolbarFactory.makeSelectButton(
+  'use strict';
+  const button = goog.ui.editor.ToolbarFactory.makeSelectButton(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   goog.ui.editor.DefaultToolbar.addDefaultFonts(button);
   button.setDefaultCaption(goog.ui.editor.DefaultToolbar.MSG_FONT_NORMAL);
@@ -481,18 +495,19 @@ goog.ui.editor.DefaultToolbar.fontFaceFactory_ = function(
 
   // How to update this button's state.
   button.updateFromValue = function(value) {
+    'use strict';
     // Normalize value to null or a non-empty string (sometimes we get
     // the empty string, sometimes we get false...), extract the substring
     // up to the first comma to get the primary font name, and normalize
     // to lowercase.  This allows us to map a font spec like "Arial,
     // Helvetica, sans-serif" to a font menu item.
     // TODO (attila): Try to make this more robust.
-    var item = null;
+    let item = null;
     if (value && value.length > 0) {
       item = /** @type {goog.ui.MenuItem} */ (button.getMenu().getChild(
           goog.ui.editor.ToolbarFactory.getPrimaryFont(value)));
     }
-    var selectedItem = button.getSelectedItem();
+    const selectedItem = button.getSelectedItem();
     if (item != selectedItem) {
       button.setSelectedItem(item);
     }
@@ -521,7 +536,8 @@ goog.ui.editor.DefaultToolbar.fontFaceFactory_ = function(
  */
 goog.ui.editor.DefaultToolbar.fontSizeFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
-  var button = goog.ui.editor.ToolbarFactory.makeSelectButton(
+  'use strict';
+  const button = goog.ui.editor.ToolbarFactory.makeSelectButton(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   goog.ui.editor.DefaultToolbar.addDefaultFontSizes(button);
   button.setDefaultCaption(goog.ui.editor.DefaultToolbar.MSG_FONT_SIZE_NORMAL);
@@ -531,6 +547,7 @@ goog.ui.editor.DefaultToolbar.fontSizeFactory_ = function(
       goog.getCssName('goog-menu-noaccel'));
   // How to update this button's state.
   button.updateFromValue = function(value) {
+    'use strict';
     // Webkit pre-534.7 returns a string like '32px' instead of the equivalent
     // integer, so normalize that first.
     // NOTE(user): Gecko returns "6" so can't just normalize all
@@ -559,14 +576,15 @@ goog.ui.editor.DefaultToolbar.fontSizeFactory_ = function(
  * @private
  */
 goog.ui.editor.DefaultToolbar.colorUpdateFromValue_ = function(button, color) {
-  var value = color;
+  'use strict';
+  let value = color;
 
   try {
     if (goog.userAgent.IE) {
       // IE returns a number that, converted to hex, is a BGR color.
       // Convert from decimal to BGR to RGB.
-      var hex = '000000' + value.toString(16);
-      var bgr = hex.substr(hex.length - 6, 6);
+      const hex = '000000' + value.toString(16);
+      const bgr = hex.slice(-6);
       value =
           '#' + bgr.substring(4, 6) + bgr.substring(2, 4) + bgr.substring(0, 2);
     }
@@ -600,7 +618,8 @@ goog.ui.editor.DefaultToolbar.colorUpdateFromValue_ = function(button, color) {
  */
 goog.ui.editor.DefaultToolbar.fontColorFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
-  var button = goog.ui.editor.ToolbarFactory.makeColorMenuButton(
+  'use strict';
+  const button = goog.ui.editor.ToolbarFactory.makeColorMenuButton(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   // Initialize default foreground color.
   button.setSelectedColor('#000');
@@ -632,7 +651,8 @@ goog.ui.editor.DefaultToolbar.fontColorFactory_ = function(
  */
 goog.ui.editor.DefaultToolbar.backgroundColorFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
-  var button = goog.ui.editor.ToolbarFactory.makeColorMenuButton(
+  'use strict';
+  const button = goog.ui.editor.ToolbarFactory.makeColorMenuButton(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   // Initialize default background color.
   button.setSelectedColor('#FFF');
@@ -664,7 +684,8 @@ goog.ui.editor.DefaultToolbar.backgroundColorFactory_ = function(
  */
 goog.ui.editor.DefaultToolbar.formatBlockFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
-  var button = goog.ui.editor.ToolbarFactory.makeSelectButton(
+  'use strict';
+  const button = goog.ui.editor.ToolbarFactory.makeSelectButton(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   goog.ui.editor.DefaultToolbar.addDefaultFormatOptions(button);
   button.setDefaultCaption(goog.ui.editor.DefaultToolbar.MSG_FORMAT_NORMAL);
@@ -674,6 +695,7 @@ goog.ui.editor.DefaultToolbar.formatBlockFactory_ = function(
       goog.getCssName('goog-menu-noaccel'));
   // How to update this button.
   button.updateFromValue = function(value) {
+    'use strict';
     // Normalize value to null or a nonempty string (sometimes we get
     // the empty string, sometimes we get false...)
     value = value && value.length > 0 ? value : null;
@@ -1066,9 +1088,10 @@ goog.ui.editor.DefaultToolbar.button_list_ = [
 
 
 (function() {
+'use strict';
 // Create the goog.ui.editor.DefaultToolbar.buttons_ map from
 // goog.ui.editor.DefaultToolbar.button_list_.
-for (var i = 0, button; button = goog.ui.editor.DefaultToolbar.button_list_[i];
+for (let i = 0, button; button = goog.ui.editor.DefaultToolbar.button_list_[i];
      i++) {
   goog.ui.editor.DefaultToolbar.buttons_[button.command] = button;
 }

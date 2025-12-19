@@ -1,15 +1,8 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-closure_js_library(
-    name = "all_js",
-    exports = [":anim"],
-)
 
 closure_js_library(
     name = "anim",
@@ -18,6 +11,7 @@ closure_js_library(
     deps = [
         "//third_party/closure/goog/async:animationdelay",
         "//third_party/closure/goog/async:delay",
+        "//third_party/closure/goog/disposable",
         "//third_party/closure/goog/object",
     ],
 )
