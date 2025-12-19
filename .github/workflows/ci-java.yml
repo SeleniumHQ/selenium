@@ -73,3 +73,17 @@ jobs:
       java-version: 17
       run: |
         bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+
+  safari-tests:
+    name: Safari Tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Safari Tests (macos)
+      os: macos
+      cache-key: java-macos-safari-tests
+      java-version: 17
+      run: >
+        bazel test
+        --flaky_test_attempts 3
+        --test_tag_filters=safari
+        //java/test/...
