@@ -30,13 +30,16 @@ module Selenium
 
         after { service_manager.stop }
 
-        it 'auto uses edgedriver' do
-          service.executable_path = DriverFinder.new(Options.new, described_class.new).driver_path
+        it 'selenium manager gets browser and driver' do
+          driver_finder = DriverFinder.new(Options.new, service)
+          driver_path = driver_finder.driver_path
+          browser_path = driver_finder.browser_path
 
-          expect(service_manager.uri).to be_a(URI)
-        end
+          expect { Platform.assert_executable(driver_path) }.not_to raise_error
+          expect { Platform.assert_executable(browser_path) }.not_to raise_error
 
-        it 'can be started outside driver' do
+          service.executable_path = driver_path
+
           expect(service_manager.uri).to be_a(URI)
         end
       end
