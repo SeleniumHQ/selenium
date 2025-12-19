@@ -19,9 +19,6 @@
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote
--//javascript/atoms:test-chrome
--//javascript/atoms:test-edge
--//javascript/atoms:test-firefox-beta
 -//javascript/chrome-driver/...
 -//javascript/selenium-webdriver:test-builder-test.js-chrome
 -//javascript/selenium-webdriver:test-chrome-devtools-test.js-chrome
