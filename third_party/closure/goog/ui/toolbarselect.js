@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview A toolbar select control.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ToolbarSelect');

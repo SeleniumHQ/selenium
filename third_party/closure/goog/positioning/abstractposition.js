@@ -14,11 +14,13 @@
 
 /**
  * @fileoverview Abstract base class for positioning implementations.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.positioning.AbstractPosition');
+
+goog.forwardDeclare('goog.math.Box');
+goog.forwardDeclare('goog.math.Size');
+goog.forwardDeclare('goog.positioning.Corner');
 
 
 

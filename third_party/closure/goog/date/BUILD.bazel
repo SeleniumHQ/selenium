@@ -1,0 +1,75 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":date",
+        ":datelike",
+        ":daterange",
+        ":duration",
+        ":relative",
+        ":utcdatetime",
+    ],
+)
+
+closure_js_library(
+    name = "date",
+    srcs = ["date.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/date:datelike",
+        "//third_party/closure/goog/i18n:datetimesymbols",
+        "//third_party/closure/goog/string",
+    ],
+)
+
+closure_js_library(
+    name = "datelike",
+    srcs = ["datelike.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "daterange",
+    srcs = ["daterange.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/date",
+        "//third_party/closure/goog/iter",
+    ],
+)
+
+closure_js_library(
+    name = "duration",
+    srcs = ["duration.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/i18n:datetimeformat",
+        "//third_party/closure/goog/i18n:messageformat",
+    ],
+)
+
+closure_js_library(
+    name = "relative",
+    srcs = ["relative.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/i18n:datetimeformat",
+        "//third_party/closure/goog/i18n:datetimepatterns",
+        "//third_party/closure/goog/i18n:relativedatetimeformat",
+    ],
+)
+
+closure_js_library(
+    name = "utcdatetime",
+    srcs = ["utcdatetime.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/date"],
+)

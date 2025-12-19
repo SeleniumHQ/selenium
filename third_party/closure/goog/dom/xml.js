@@ -15,13 +15,14 @@
 /**
  * @fileoverview
  * XML utilities.
- *
  */
 
 goog.provide('goog.dom.xml');
 
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
+goog.require('goog.dom.safe');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.userAgent');
 
 
@@ -87,7 +88,7 @@ goog.dom.xml.ACTIVEX_SUPPORT =
 goog.dom.xml.createDocument = function(
     opt_rootTagName, opt_namespaceUri, opt_preferActiveX) {
   if (opt_namespaceUri && !opt_rootTagName) {
-    throw Error("Can't create document with namespace and no root tag");
+    throw new Error('Can\'t create document with namespace and no root tag');
   }
   // If document.implementation.createDocument is available and they haven't
   // explicitly opted to use ActiveXObject when possible.
@@ -107,7 +108,7 @@ goog.dom.xml.createDocument = function(
       return doc;
     }
   }
-  throw Error('Your browser does not support creating new documents');
+  throw new Error('Your browser does not support creating new documents');
 };
 
 
@@ -124,13 +125,15 @@ goog.dom.xml.createDocument = function(
 goog.dom.xml.loadXml = function(xml, opt_preferActiveX) {
   if (typeof DOMParser != 'undefined' &&
       !(goog.dom.xml.ACTIVEX_SUPPORT && opt_preferActiveX)) {
-    return new DOMParser().parseFromString(xml, 'application/xml');
+    return goog.dom.safe.parseFromString(
+        new DOMParser(), goog.html.legacyconversions.safeHtmlFromString(xml),
+        'application/xml');
   } else if (goog.dom.xml.ACTIVEX_SUPPORT) {
     var doc = goog.dom.xml.createMsXmlDocument_();
     doc.loadXML(xml);
     return doc;
   }
-  throw Error('Your browser does not support loading xml documents');
+  throw new Error('Your browser does not support loading xml documents');
 };
 
 
@@ -150,7 +153,7 @@ goog.dom.xml.serialize = function(xml) {
   if (typeof XMLSerializer != 'undefined') {
     return new XMLSerializer().serializeToString(xml);
   }
-  throw Error('Your browser does not support serializing XML documents');
+  throw new Error('Your browser does not support serializing XML documents');
 };
 
 
@@ -234,14 +237,14 @@ goog.dom.xml.setAttributes = function(element, attributes) {
 
 /**
  * Creates an instance of the MSXML2.DOMDocument.
- * @return {Document} The new document.
+ * @return {!XMLDOMDocument} The new document.
  * @private
  */
 goog.dom.xml.createMsXmlDocument_ = function() {
   var doc = new ActiveXObject('MSXML2.DOMDocument');
   if (doc) {
     // Prevent potential vulnerabilities exposed by MSXML2, see
-    // http://b/1707300 and http://wiki/Main/ISETeamXMLAttacks for details.
+    // http://b/1707300 and http://go/xxe-attacks for details.
     doc.resolveExternals = false;
     doc.validateOnParse = false;
     // Add a try catch block because accessing these properties will throw an

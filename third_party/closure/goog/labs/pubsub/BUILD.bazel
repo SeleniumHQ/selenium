@@ -1,0 +1,33 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [":broadcastpubsub"],
+)
+
+closure_js_library(
+    name = "broadcastpubsub",
+    srcs = ["broadcastpubsub.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/async:run",
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/pubsub",
+        "//third_party/closure/goog/storage",
+        "//third_party/closure/goog/storage/mechanism:html5localstorage",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/useragent",
+    ],
+)

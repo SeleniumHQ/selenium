@@ -61,15 +61,13 @@
  * which it is prohibitively expensive to refactor to use goog.html types.
  * Generally, this is code where safety from XSS is either hopeless or
  * unimportant.
- *
- * @visibility {//closure/goog/html:approved_for_legacy_conversion}
- * @visibility {//closure/goog/bin/sizetests:__pkg__}
  */
 
 
 goog.provide('goog.html.legacyconversions');
 
 goog.require('goog.html.SafeHtml');
+goog.require('goog.html.SafeScript');
 goog.require('goog.html.SafeStyle');
 goog.require('goog.html.SafeStyleSheet');
 goog.require('goog.html.SafeUrl');
@@ -90,6 +88,23 @@ goog.html.legacyconversions.safeHtmlFromString = function(html) {
   goog.html.legacyconversions.reportCallback_();
   return goog.html.SafeHtml.createSafeHtmlSecurityPrivateDoNotAccessOrElse(
       html, null /* dir */);
+};
+
+
+/**
+ * Performs an "unchecked conversion" from string to SafeScript for legacy API
+ * purposes.
+ *
+ * Please read fileoverview documentation before using.
+ *
+ * @param {string} script A string to be converted to SafeScript.
+ * @return {!goog.html.SafeScript} The value of script, wrapped in a SafeScript
+ *     object.
+ */
+goog.html.legacyconversions.safeScriptFromString = function(script) {
+  goog.html.legacyconversions.reportCallback_();
+  return goog.html.SafeScript.createSafeScriptSecurityPrivateDoNotAccessOrElse(
+      script);
 };
 
 

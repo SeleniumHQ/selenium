@@ -120,7 +120,7 @@ bot.action.clear = function (element) {
     // able to interact with this element anymore in Firefox.
     bot.action.LegacyDevice_.focusOnElement(element);
     if (goog.userAgent.GECKO) {
-      element.innerHTML = ' ';
+      element.textContent = ' ';
     } else {
       element.textContent = '';
     }

@@ -15,9 +15,8 @@
 /**
  * @fileoverview A disposable implementation of a custom
  * listenable/event target. See also: documentation for
- * {@code goog.events.Listenable}.
+ * `goog.events.Listenable`.
  *
- * @author arv@google.com (Erik Arvidsson) [Original implementation]
  * @see ../demos/eventtarget.html
  * @see goog.events.Listenable
  */
@@ -35,7 +34,7 @@ goog.require('goog.object');
 
 
 /**
- * An implementation of {@code goog.events.Listenable} with full W3C
+ * An implementation of `goog.events.Listenable` with full W3C
  * EventTarget-like support (capture/bubble mechanism, stopping event
  * propagation, preventing default actions).
  *
@@ -43,8 +42,8 @@ goog.require('goog.object');
  *
  * Unless propagation is stopped, an event dispatched by an
  * EventTarget will bubble to the parent returned by
- * {@code getParentEventTarget}. To set the parent, call
- * {@code setParentEventTarget}. Subclasses that don't support
+ * `getParentEventTarget`. To set the parent, call
+ * `setParentEventTarget`. Subclasses that don't support
  * changing the parent can override the setter to throw an error.
  *
  * Example usage:
@@ -89,7 +88,7 @@ goog.events.EventTarget = function() {
    * currently breaks people who expect getParentEventTarget to return
    * goog.events.EventTarget.
    *
-   * @private {goog.events.EventTarget}
+   * @private {?goog.events.EventTarget}
    */
   this.parentEventTarget_ = null;
 };
@@ -143,8 +142,8 @@ goog.events.EventTarget.prototype.setParentEventTarget = function(parent) {
  *     of the event.
  * @param {Object=} opt_handlerScope Object in whose scope to call
  *     the listener.
- * @deprecated Use {@code #listen} instead, when possible. Otherwise, use
- *     {@code goog.events.listen} if you are passing Object
+ * @deprecated Use `#listen` instead, when possible. Otherwise, use
+ *     `goog.events.listen` if you are passing Object
  *     (instead of Function) as handler.
  */
 goog.events.EventTarget.prototype.addEventListener = function(
@@ -167,8 +166,8 @@ goog.events.EventTarget.prototype.addEventListener = function(
  *     of the event.
  * @param {Object=} opt_handlerScope Object in whose scope to call
  *     the listener.
- * @deprecated Use {@code #unlisten} instead, when possible. Otherwise, use
- *     {@code goog.events.unlisten} if you are passing Object
+ * @deprecated Use `#unlisten` instead, when possible. Otherwise, use
+ *     `goog.events.unlisten` if you are passing Object
  *     (instead of Function) as handler.
  */
 goog.events.EventTarget.prototype.removeEventListener = function(
@@ -203,6 +202,7 @@ goog.events.EventTarget.prototype.dispatchEvent = function(e) {
  * need to override this method in order to remove references to DOM Elements
  * and additional listeners.
  * @override
+ * @protected
  */
 goog.events.EventTarget.prototype.disposeInternal = function() {
   goog.events.EventTarget.superClass_.disposeInternal.call(this);
@@ -306,15 +306,15 @@ goog.events.EventTarget.prototype.getListener = function(
 /** @override */
 goog.events.EventTarget.prototype.hasListener = function(
     opt_type, opt_capture) {
-  var id = goog.isDef(opt_type) ? String(opt_type) : undefined;
+  var id = (opt_type !== undefined) ? String(opt_type) : undefined;
   return this.eventTargetListeners_.hasListener(id, opt_capture);
 };
 
 
 /**
- * Sets the target to be used for {@code event.target} when firing
+ * Sets the target to be used for `event.target` when firing
  * event. Mainly used for testing. For example, see
- * {@code goog.testing.events.mixinListenable}.
+ * `goog.testing.events.mixinListenable`.
  * @param {!Object} target The target.
  */
 goog.events.EventTarget.prototype.setTargetForTesting = function(target) {
@@ -348,11 +348,12 @@ goog.events.EventTarget.prototype.assertInitialized_ = function() {
  */
 goog.events.EventTarget.dispatchEventInternal_ = function(
     target, e, opt_ancestorsTree) {
+  /** @suppress {missingProperties} */
   var type = e.type || /** @type {string} */ (e);
 
   // If accepting a string or object, create a custom event object so that
   // preventDefault and stopPropagation work with the event.
-  if (goog.isString(e)) {
+  if (typeof e === 'string') {
     e = new goog.events.Event(e, target);
   } else if (!(e instanceof goog.events.Event)) {
     var oldEvent = e;

@@ -16,9 +16,6 @@
  * @fileoverview A table for showing the results of performance testing.
  *
  * {@see goog.testing.benchmark} for an easy way to use this functionality.
- *
- * @author attila@google.com (Attila Bodis)
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.setTestOnly('goog.testing.PerformanceTable');
@@ -96,6 +93,7 @@ goog.testing.PerformanceTable.prototype.initRoot_ = function() {
       '    </tr>' +
       '    <tr>' +
       '      <th>Average</th>' +
+      '      <th>Median</th>' +
       '      <th>Std Dev</th>' +
       '      <th>Minimum</th>' +
       '      <th>Maximum</th>' +
@@ -155,7 +153,7 @@ goog.testing.PerformanceTable.prototype.runTask = function(task, opt_desc) {
 
 /**
  * Record a performance timer results object to the performance table. See
- * {@code goog.testing.PerformanceTimer} for details of the format of this
+ * `goog.testing.PerformanceTimer` for details of the format of this
  * object.
  * @param {Object} results The performance timer results object.
  * @param {string=} opt_desc A description to associate with these results.
@@ -166,13 +164,16 @@ goog.testing.PerformanceTable.prototype.recordResults = function(
   var standardDeviation = results['standardDeviation'];
   var isSuspicious = average < 0 || standardDeviation > average * .5;
   var resultsRow = goog.dom.createDom(
-      goog.dom.TagName.TR, null, goog.dom.createDom(
-                                     goog.dom.TagName.TD, 'test-description',
-                                     opt_desc || 'No description'),
+      goog.dom.TagName.TR, null,
+      goog.dom.createDom(
+          goog.dom.TagName.TD, 'test-description',
+          opt_desc || 'No description'),
       goog.dom.createDom(
           goog.dom.TagName.TD, 'test-count', String(results['count'])),
       goog.dom.createDom(
           goog.dom.TagName.TD, 'test-average', this.round_(average)),
+      goog.dom.createDom(
+          goog.dom.TagName.TD, 'test-median', String(results['median'])),
       goog.dom.createDom(
           goog.dom.TagName.TD, 'test-standard-deviation',
           this.round_(standardDeviation)),

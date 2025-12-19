@@ -463,7 +463,7 @@ DirectTransport.prototype.executeScheduledSend_ = function(message) {
     return;
   }
 
-  if (goog.isNull(peerProxy)) {
+  if (peerProxy === null) {
     goog.log.warning(
         goog.net.xpc.logger, 'Peer window had no global function.');
     return;

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Mock filesystem object.
- *
  */
 
 goog.setTestOnly('goog.testing.fs.FileSystem');

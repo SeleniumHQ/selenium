@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Iterators over DOM nodes.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.iter.AncestorIterator');
@@ -82,7 +80,7 @@ goog.dom.iter.SiblingIterator.prototype.next = function() {
  * @final
  */
 goog.dom.iter.ChildIterator = function(element, opt_reverse, opt_startIndex) {
-  if (!goog.isDef(opt_startIndex)) {
+  if (opt_startIndex === undefined) {
     opt_startIndex = opt_reverse && element.childNodes.length ?
         element.childNodes.length - 1 :
         0;

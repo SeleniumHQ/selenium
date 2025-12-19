@@ -25,6 +25,7 @@
 
 goog.provide('goog.labs.storage.BoundedCollectableStorage');
 
+goog.forwardDeclare('goog.storage.mechanism.IterableMechanism');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.iter');
@@ -259,7 +260,7 @@ goog.labs.storage.BoundedCollectableStorage.prototype.set = function(
   var keys = this.getKeys_(true);
   goog.array.remove(keys, key);
 
-  if (goog.isDef(value)) {
+  if (value !== undefined) {
     keys.push(key);
     if (keys.length >= this.maxItems_) {
       var keysToRemove = this.collectInternal(keys);
@@ -282,7 +283,7 @@ goog.labs.storage.BoundedCollectableStorage.prototype.remove = function(key) {
   goog.labs.storage.BoundedCollectableStorage.base(this, 'remove', key);
 
   var keys = this.getKeys_(false);
-  if (goog.isDef(keys)) {
+  if (keys !== undefined) {
     goog.array.remove(keys, key);
     this.setKeys_(keys);
   }

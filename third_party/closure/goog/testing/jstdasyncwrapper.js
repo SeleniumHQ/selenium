@@ -57,9 +57,11 @@ goog.testing.JsTdAsyncWrapper.REAL_SET_TIMEOUT_ = function(fn, timeout) {
  * Wraps an object's methods by passing in a Queue that is based on the JSTD
  * async API. The queue exposes a promise that resolves when the queue
  * completes. This promise can be used in JsUnit tests.
- * @param {!Object} original The original JSTD test object. The object should
+ *
+ * @template T
+ * @param {T} original The original JSTD test object. The object should
  *     contain methods such as testXyz or setUp.
- * @return {!Object} A object that has all test methods wrapped in a fake
+ * @return {T} A object that has all test methods wrapped in a fake
  *     testing queue.
  */
 goog.testing.JsTdAsyncWrapper.convertToAsyncTestObj = function(original) {
@@ -67,8 +69,9 @@ goog.testing.JsTdAsyncWrapper.convertToAsyncTestObj = function(original) {
   // into the test function.
   var queueWrapperFn = function(fn) {
     return function() {
-      var queue = new goog.testing.JsTdAsyncWrapper.Queue(this);
-      fn.call(this, queue);
+      var self = /** @type {?} */ (this);  // T this is expected
+      var queue = new goog.testing.JsTdAsyncWrapper.Queue(self);
+      fn.call(self, queue);
       return queue.startExecuting();
     };
   };
@@ -299,7 +302,7 @@ goog.testing.JsTdAsyncWrapper.Pool_.prototype.addCallback = function(
     fn, opt_n, opt_timeout, opt_description) {
   // TODO(mtragut): This could be fixed if required by test cases.
   if (opt_timeout || opt_description) {
-    throw Error(
+    throw new Error(
         'Setting timeout or description in a pool callback is not supported.');
   }
   var numCallbacks = opt_n || 1;

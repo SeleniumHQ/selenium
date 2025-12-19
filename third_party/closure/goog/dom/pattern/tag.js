@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview DOM pattern to match a tag.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.Tag');
@@ -50,7 +48,7 @@ goog.dom.pattern.Tag = function(tag, type, opt_attrs, opt_styles, opt_test) {
    *
    * @private {string|RegExp}
    */
-  this.tag_ = goog.isString(tag) ? tag.toUpperCase() : tag;
+  this.tag_ = (typeof tag === 'string') ? tag.toUpperCase() : tag;
 
   /**
    * The type of token to match.
@@ -87,12 +85,12 @@ goog.inherits(goog.dom.pattern.Tag, goog.dom.pattern.AbstractPattern);
 /**
  * Test whether the given token is a tag token which matches the tag name,
  * style, and attributes provided in the constructor.
- *
  * @param {Node} token Token to match against.
  * @param {goog.dom.TagWalkType} type The type of token.
  * @return {goog.dom.pattern.MatchType} <code>MATCH</code> if the pattern
  *     matches, <code>NO_MATCH</code> otherwise.
  * @override
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.dom.pattern.Tag.prototype.matchToken = function(token, type) {
   // Check the direction and tag name.

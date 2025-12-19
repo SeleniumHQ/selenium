@@ -133,7 +133,7 @@ goog.color.hexToRgbStyle = function(hexColor) {
 
 /**
  * Regular expression for extracting the digits in a hex color triplet.
- * @type {RegExp}
+ * @type {!RegExp}
  * @private
  */
 goog.color.hexTripletRe_ = /#(.)(.)(.)/;
@@ -163,9 +163,10 @@ goog.color.normalizeHex = function(hexColor) {
  */
 goog.color.hexToRgb = function(hexColor) {
   hexColor = goog.color.normalizeHex(hexColor);
-  var r = parseInt(hexColor.substr(1, 2), 16);
-  var g = parseInt(hexColor.substr(3, 2), 16);
-  var b = parseInt(hexColor.substr(5, 2), 16);
+  var rgb = parseInt(hexColor.substr(1), 16);
+  var r = rgb >> 16;
+  var g = (rgb >> 8) & 255;
+  var b = rgb & 255;
 
   return [r, g, b];
 };
@@ -185,10 +186,11 @@ goog.color.rgbToHex = function(r, g, b) {
   if (r != (r & 255) || g != (g & 255) || b != (b & 255)) {
     throw Error('"(' + r + ',' + g + ',' + b + '") is not a valid RGB color');
   }
-  var hexR = goog.color.prependZeroIfNecessaryHelper(r.toString(16));
-  var hexG = goog.color.prependZeroIfNecessaryHelper(g.toString(16));
-  var hexB = goog.color.prependZeroIfNecessaryHelper(b.toString(16));
-  return '#' + hexR + hexG + hexB;
+  var rgb = (r << 16) | (g << 8) | b;
+  if (r < 0x10) {
+    return '#' + (0x1000000 | rgb).toString(16).substr(1);
+  }
+  return '#' + rgb.toString(16);
 };
 
 
@@ -327,7 +329,7 @@ goog.color.hslArrayToRgb = function(hsl) {
 
 /**
  * Helper for isValidHexColor_.
- * @type {RegExp}
+ * @type {!RegExp}
  * @private
  */
 goog.color.validHexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
@@ -346,30 +348,9 @@ goog.color.isValidHexColor_ = function(str) {
 
 
 /**
- * Helper for isNormalizedHexColor_.
- * @type {RegExp}
- * @private
- */
-goog.color.normalizedHexColorRe_ = /^#[0-9a-f]{6}$/;
-
-
-/**
- * Checks if a string is a normalized hex color.
- * We expect strings of the format #RRGGBB (ex: #1b3d5f)
- * using only lowercase letters.
- * @param {string} str String to check.
- * @return {boolean} Whether the string is a normalized hex color.
- * @private
- */
-goog.color.isNormalizedHexColor_ = function(str) {
-  return goog.color.normalizedHexColorRe_.test(str);
-};
-
-
-/**
  * Regular expression for matching and capturing RGB style strings. Helper for
  * isValidRgbColor_.
- * @type {RegExp}
+ * @type {!RegExp}
  * @private
  */
 goog.color.rgbColorRe_ =
@@ -495,7 +476,7 @@ goog.color.hsvToRgb = function(h, s, brightness) {
     }
   }
 
-  return [Math.floor(red), Math.floor(green), Math.floor(blue)];
+  return [Math.round(red), Math.round(green), Math.round(blue)];
 };
 
 
@@ -672,9 +653,9 @@ goog.color.blend = function(rgb1, rgb2, factor) {
   factor = goog.math.clamp(factor, 0, 1);
 
   return [
-    Math.round(factor * rgb1[0] + (1.0 - factor) * rgb2[0]),
-    Math.round(factor * rgb1[1] + (1.0 - factor) * rgb2[1]),
-    Math.round(factor * rgb1[2] + (1.0 - factor) * rgb2[2])
+    Math.round(rgb2[0] + factor * (rgb1[0] - rgb2[0])),
+    Math.round(rgb2[1] + factor * (rgb1[1] - rgb2[1])),
+    Math.round(rgb2[2] + factor * (rgb1[2] - rgb2[2]))
   ];
 };
 

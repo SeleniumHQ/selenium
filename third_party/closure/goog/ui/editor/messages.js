@@ -14,14 +14,11 @@
 
 /**
  * @fileoverview Messages common to Editor UI components.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.ui.editor.messages');
 
-goog.require('goog.html.uncheckedconversions');
-goog.require('goog.string.Const');
+goog.require('goog.html.SafeHtmlFormatter');
 
 
 /** @desc Link button / bubble caption. */
@@ -57,31 +54,30 @@ goog.ui.editor.messages.MSG_TEST_THIS_LINK = goog.getMsg('Test this link');
 
 
 /**
- * @desc Explanation for how to create a link with the link-editing dialog.
- */
-goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION = goog.getMsg(
-    '{$startBold}Not sure what to put in the box?{$endBold} ' +
-        'First, find the page on the web that you want to ' +
-        'link to. (A {$searchEngineLink}search engine{$endLink} ' +
-        'might be useful.) Then, copy the web address from ' +
-        "the box in your browser's address bar, and paste it into " +
-        'the box above.',
-    {
-      'startBold': '<b>',
-      'endBold': '</b>',
-      'searchEngineLink': "<a href='http://www.google.com/' target='_new'>",
-      'endLink': '</a>'
-    });
-
-
-/**
  * @return {!goog.html.SafeHtml} SafeHtml version of MSG_TR_LINK_EXPLANATION.
  */
 goog.ui.editor.messages.getTrLinkExplanationSafeHtml = function() {
-  return goog.html.uncheckedconversions
-      .safeHtmlFromStringKnownToSatisfyTypeContract(
-          goog.string.Const.from('Parameterless translation'),
-          goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION);
+  var formatter = new goog.html.SafeHtmlFormatter();
+
+  /**
+   * @desc Explanation for how to create a link with the link-editing dialog.
+   */
+  var MSG_TR_LINK_EXPLANATION = goog.getMsg(
+      '{$startBold}Not sure what to put in the box?{$endBold} ' +
+          'First, find the page on the web that you want to ' +
+          'link to. (A {$searchEngineLink}search engine{$endLink} ' +
+          'might be useful.) Then, copy the web address from ' +
+          'the box in your browser\'s address bar, and paste it into ' +
+          'the box above.',
+      {
+        'startBold': formatter.startTag('b'),
+        'endBold': formatter.endTag('b'),
+        'searchEngineLink': formatter.startTag(
+            'a', {'href': 'http://www.google.com/', 'target': '_new'}),
+        'endLink': formatter.endTag('a')
+      });
+
+  return formatter.format(MSG_TR_LINK_EXPLANATION);
 };
 
 
@@ -118,24 +114,22 @@ goog.ui.editor.messages.MSG_WHAT_EMAIL =
 
 
 /**
- * @desc Warning about the dangers of creating links with email
- *     addresses in them.
- */
-goog.ui.editor.messages.MSG_EMAIL_EXPLANATION = goog.getMsg(
-    '{$preb}Be careful.{$postb} ' +
-        'Remember that any time you include an email address on a web page, ' +
-        'nasty spammers can find it too.',
-    {'preb': '<b>', 'postb': '</b>'});
-
-
-/**
  * @return {!goog.html.SafeHtml} SafeHtml version of MSG_EMAIL_EXPLANATION.
  */
 goog.ui.editor.messages.getEmailExplanationSafeHtml = function() {
-  return goog.html.uncheckedconversions
-      .safeHtmlFromStringKnownToSatisfyTypeContract(
-          goog.string.Const.from('Parameterless translation'),
-          goog.ui.editor.messages.MSG_EMAIL_EXPLANATION);
+  var formatter = new goog.html.SafeHtmlFormatter();
+
+  /**
+   * @desc Warning about the dangers of creating links with email
+   *     addresses in them.
+   */
+  var MSG_EMAIL_EXPLANATION = goog.getMsg(
+      '{$preb}Be careful.{$postb} ' +
+          'Remember that any time you include an email address on a web ' +
+          'page, nasty spammers can find it too.',
+      {'preb': formatter.startTag('b'), 'postb': formatter.endTag('b')});
+
+  return formatter.format(MSG_EMAIL_EXPLANATION);
 };
 
 

@@ -21,6 +21,7 @@
 goog.provide('goog.html.SafeScript');
 
 goog.require('goog.asserts');
+goog.require('goog.html.trustedtypes');
 goog.require('goog.string.Const');
 goog.require('goog.string.TypedString');
 
@@ -33,7 +34,7 @@ goog.require('goog.string.TypedString');
  * in a browser.
  *
  * Instances of this type must be created via the factory method
- * {@code goog.html.SafeScript.fromConstant} and not by invoking its
+ * `goog.html.SafeScript.fromConstant` and not by invoking its
  * constructor. The constructor intentionally takes no parameters and the type
  * is immutable; hence only a default instance corresponding to the empty string
  * can be obtained via constructor invocation.
@@ -55,7 +56,7 @@ goog.require('goog.string.TypedString');
  * always be forbidden or JavaScript escaped in user controlled input. For
  * example, if {@code &lt;/script&gt;&lt;script&gt;evil&lt;/script&gt;"} were
  * interpolated inside a JavaScript string, it would break out of the context
- * of the original script element and {@code evil} would execute. Also note
+ * of the original script element and `evil` would execute. Also note
  * that within an HTML script (raw text) element, HTML character references,
  * such as "&lt;" are not allowed. See
  * http://www.w3.org/TR/html5/scripting-1.html#restrictions-for-contents-of-script-elements.
@@ -71,7 +72,7 @@ goog.html.SafeScript = function() {
    * The contained value of this SafeScript.  The field has a purposely
    * ugly name to make (non-compiled) code that attempts to directly access this
    * field stand out.
-   * @private {string}
+   * @private {!TrustedScript|string}
    */
   this.privateDoNotAccessOrElseSafeScriptWrappedValue_ = '';
 
@@ -108,7 +109,7 @@ goog.html.SafeScript.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};
  * @param {!goog.string.Const} script A compile-time-constant string from which
  *     to create a SafeScript.
  * @return {!goog.html.SafeScript} A SafeScript object initialized to
- *     {@code script}.
+ *     `script`.
  */
 goog.html.SafeScript.fromConstant = function(script) {
   var scriptString = goog.string.Const.unwrap(script);
@@ -121,10 +122,53 @@ goog.html.SafeScript.fromConstant = function(script) {
 
 
 /**
+ * Creates a SafeScript from a compile-time constant string but with arguments
+ * that can vary at run-time. The code argument should be formatted as an
+ * inline function (see example below). The arguments will be JSON-encoded and
+ * provided as input to the function specified in code.
+ *
+ * Example Usage:
+ *
+ *     let safeScript = SafeScript.fromConstantAndArgs(
+ *         Const.from('function(arg1, arg2) { doSomething(arg1, arg2); }'),
+ *         arg1,
+ *         arg2);
+ *
+ * This produces a SafeScript equivalent to the following:
+ *
+ *     (function(arg1, arg2) { doSomething(arg1, arg2); })("value1", "value2");
+ *
+ * @param {!goog.string.Const} code
+ * @param {...*} var_args
+ * @return {!goog.html.SafeScript}
+ */
+goog.html.SafeScript.fromConstantAndArgs = function(code, var_args) {
+  var args = [];
+  for (var i = 1; i < arguments.length; i++) {
+    args.push(goog.html.SafeScript.stringify_(arguments[i]));
+  }
+  return goog.html.SafeScript.createSafeScriptSecurityPrivateDoNotAccessOrElse(
+      '(' + goog.string.Const.unwrap(code) + ')(' + args.join(', ') + ');');
+};
+
+
+/**
+ * Creates a SafeScript JSON representation from anything that could be passed
+ * to JSON.stringify.
+ * @param {*} val
+ * @return {!goog.html.SafeScript}
+ */
+goog.html.SafeScript.fromJson = function(val) {
+  return goog.html.SafeScript.createSafeScriptSecurityPrivateDoNotAccessOrElse(
+      goog.html.SafeScript.stringify_(val));
+};
+
+
+/**
  * Returns this SafeScript's value as a string.
  *
  * IMPORTANT: In code where it is security relevant that an object's type is
- * indeed {@code SafeScript}, use {@code goog.html.SafeScript.unwrap} instead of
+ * indeed `SafeScript`, use `goog.html.SafeScript.unwrap` instead of
  * this method. If in doubt, assume that it's security relevant. In particular,
  * note that goog.html functions which return a goog.html type do not guarantee
  * the returned instance is of the right type. For example:
@@ -142,7 +186,7 @@ goog.html.SafeScript.fromConstant = function(script) {
  * @override
  */
 goog.html.SafeScript.prototype.getTypedStringValue = function() {
-  return this.privateDoNotAccessOrElseSafeScriptWrappedValue_;
+  return this.privateDoNotAccessOrElseSafeScriptWrappedValue_.toString();
 };
 
 
@@ -151,7 +195,7 @@ if (goog.DEBUG) {
    * Returns a debug string-representation of this value.
    *
    * To obtain the actual string value wrapped in a SafeScript, use
-   * {@code goog.html.SafeScript.unwrap}.
+   * `goog.html.SafeScript.unwrap`.
    *
    * @see goog.html.SafeScript#unwrap
    * @override
@@ -169,11 +213,22 @@ if (goog.DEBUG) {
  *
  * @param {!goog.html.SafeScript} safeScript The object to extract from.
  * @return {string} The safeScript object's contained string, unless
- *     the run-time type check fails. In that case, {@code unwrap} returns an
+ *     the run-time type check fails. In that case, `unwrap` returns an
  *     innocuous string, or, if assertions are enabled, throws
- *     {@code goog.asserts.AssertionError}.
+ *     `goog.asserts.AssertionError`.
  */
 goog.html.SafeScript.unwrap = function(safeScript) {
+  return goog.html.SafeScript.unwrapTrustedScript(safeScript).toString();
+};
+
+
+/**
+ * Unwraps value as TrustedScript if supported or as a string if not.
+ * @param {!goog.html.SafeScript} safeScript
+ * @return {!TrustedScript|string}
+ * @see goog.html.SafeScript.unwrap
+ */
+goog.html.SafeScript.unwrapTrustedScript = function(safeScript) {
   // Perform additional Run-time type-checking to ensure that
   // safeScript is indeed an instance of the expected type.  This
   // provides some additional protection against security bugs due to
@@ -196,6 +251,20 @@ goog.html.SafeScript.unwrap = function(safeScript) {
   }
 };
 
+
+/**
+ * Converts the given value to a embeddabel JSON string and returns it. The
+ * resulting string can be embedded in HTML because the '<' character is
+ * encoded.
+ *
+ * @param {*} val
+ * @return {string}
+ * @private
+ */
+goog.html.SafeScript.stringify_ = function(val) {
+  var json = JSON.stringify(val);
+  return json.replace(/</g, '\\x3c');
+};
 
 /**
  * Package-internal utility method to create SafeScript instances.
@@ -221,7 +290,11 @@ goog.html.SafeScript.createSafeScriptSecurityPrivateDoNotAccessOrElse =
  */
 goog.html.SafeScript.prototype.initSecurityPrivateDoNotAccessOrElse_ = function(
     script) {
-  this.privateDoNotAccessOrElseSafeScriptWrappedValue_ = script;
+  this.privateDoNotAccessOrElseSafeScriptWrappedValue_ =
+      goog.html.trustedtypes.PRIVATE_DO_NOT_ACCESS_OR_ELSE_POLICY ?
+      goog.html.trustedtypes.PRIVATE_DO_NOT_ACCESS_OR_ELSE_POLICY.createScript(
+          script) :
+      script;
   return this;
 };
 

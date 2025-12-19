@@ -18,7 +18,6 @@
  *
  * @see ../demos/popupemojipicker.html or emojipicker_test.html for examples
  * of how to use this class.
- *
  */
 goog.provide('goog.ui.emoji.SpriteInfo');
 
@@ -50,7 +49,7 @@ goog.ui.emoji.SpriteInfo = function(
     if (opt_url == undefined || opt_width === undefined ||
         opt_height === undefined || opt_xOffset == undefined ||
         opt_yOffset === undefined) {
-      throw Error('Sprite info is not fully specified');
+      throw new Error('Sprite info is not fully specified');
     }
 
     this.url_ = opt_url;
@@ -209,6 +208,6 @@ goog.ui.emoji.SpriteInfo.getCssPixelValue_ = function(value) {
  * @private
  */
 goog.ui.emoji.SpriteInfo.getOffsetCssValue_ = function(posOffset) {
-  var offset = goog.ui.emoji.SpriteInfo.getCssPixelValue_(posOffset);
+  const offset = goog.ui.emoji.SpriteInfo.getCssPixelValue_(posOffset);
   return offset == '0' ? offset : '-' + offset;
 };

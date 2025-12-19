@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Options for rendering matches.
- *
  */
 
 goog.provide('goog.ui.ac.RenderOptions');

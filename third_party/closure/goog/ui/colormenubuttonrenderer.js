@@ -14,9 +14,6 @@
 
 /**
  * @fileoverview Renderer for {@link goog.ui.ColorMenuButton}s.
- *
- * @author robbyw@google.com (Robby Walker)
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ColorMenuButtonRenderer');

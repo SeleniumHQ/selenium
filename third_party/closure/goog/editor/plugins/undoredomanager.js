@@ -15,7 +15,6 @@
 /**
  * @fileoverview Code for managing series of undo-redo actions in the form of
  * {@link goog.editor.plugins.UndoRedoState}s.
- *
  */
 
 
@@ -29,7 +28,7 @@ goog.require('goog.events.EventTarget');
 
 
 /**
- * Manages undo and redo operations through a series of {@code UndoRedoState}s
+ * Manages undo and redo operations through a series of `UndoRedoState`s
  * maintained on undo and redo stacks.
  *
  * @constructor
@@ -87,14 +86,14 @@ goog.editor.plugins.UndoRedoManager.EventType = {
 
   /**
    * Signifies that a state was just added to the undo stack. Events of this
-   * type will have a {@code state} property whose value is the state that
+   * type will have a `state` property whose value is the state that
    * was just added.
    */
   STATE_ADDED: 'state_added',
 
   /**
    * Signifies that the undo method of a state is about to be called.
-   * Events of this type will have a {@code state} property whose value is the
+   * Events of this type will have a `state` property whose value is the
    * state whose undo action is about to be performed. If the event is cancelled
    * the action does not proceed, but the state will still transition between
    * stacks.
@@ -103,7 +102,7 @@ goog.editor.plugins.UndoRedoManager.EventType = {
 
   /**
    * Signifies that the redo method of a state is about to be called.
-   * Events of this type will have a {@code state} property whose value is the
+   * Events of this type will have a `state` property whose value is the
    * state whose redo action is about to be performed. If the event is cancelled
    * the action does not proceed, but the state will still transition between
    * stacks.
@@ -115,7 +114,7 @@ goog.editor.plugins.UndoRedoManager.EventType = {
 /**
  * The key for the listener for the completion of the asynchronous state whose
  * undo or redo action is in progress. Null if no action is in progress.
- * @type {goog.events.Key}
+ * @type {?goog.events.Key}
  * @private
  */
 goog.editor.plugins.UndoRedoManager.prototype.inProgressActionKey_ = null;
@@ -269,6 +268,7 @@ goog.editor.plugins.UndoRedoManager.prototype.addAction_ = function(action) {
  * Executes the action at the front of the pending actions queue. If an action
  * is already in progress or the queue is empty, does nothing.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.editor.plugins.UndoRedoManager.prototype.doAction_ = function() {
   if (this.inProgressActionKey_ || this.pendingActions_.length == 0) {

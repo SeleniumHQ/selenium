@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview DOM pattern to match a sequence of other patterns.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.pattern.Sequence');

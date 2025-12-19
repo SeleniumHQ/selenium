@@ -30,8 +30,6 @@
  * chunks that have been processed after the very beginning, and returns every
  * so often so that the calling function could reschedule its execution on a
  * different stack (for example by calling setInterval(0)).
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.ui.AbstractSpellChecker');
@@ -405,6 +403,7 @@ goog.ui.AbstractSpellChecker.prototype.check = function() {
 /**
  * Hides correction UI.
  * Should be overridden by implementation.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.AbstractSpellChecker.prototype.resume = function() {
   this.isVisible_ = false;
@@ -552,11 +551,11 @@ goog.ui.AbstractSpellChecker.prototype.getSuggestions_ = function() {
 
 /**
  * Displays suggestions menu.
- *
  * @param {Element} el Element to display menu for.
  * @param {goog.events.BrowserEvent|goog.math.Coordinate=} opt_pos Position to
  *     display menu at relative to the viewport (in client coordinates), or a
  *     mouse event.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.AbstractSpellChecker.prototype.showSuggestionsMenu = function(
     el, opt_pos) {
@@ -661,9 +660,9 @@ goog.ui.AbstractSpellChecker.prototype.initSuggestionsMenu = function() {
 
 /**
  * Handles correction menu actions.
- *
  * @param {goog.events.Event} event Action event.
  * @protected
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.AbstractSpellChecker.prototype.onCorrectionAction = function(event) {
   var word = /** @type {string} */ (this.activeWord_);
@@ -908,7 +907,7 @@ goog.ui.AbstractSpellChecker.prototype.populateDictionary = function(
  */
 goog.ui.AbstractSpellChecker.prototype.processWord = function(
     node, text, status) {
-  throw Error('Need to override processWord_ in derivative class');
+  throw new Error('Need to override processWord_ in derivative class');
 };
 
 
@@ -921,7 +920,7 @@ goog.ui.AbstractSpellChecker.prototype.processWord = function(
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.processRange = function(node, text) {
-  throw Error('Need to override processRange_ in derivative class');
+  throw new Error('Need to override processRange_ in derivative class');
 };
 
 
@@ -933,7 +932,7 @@ goog.ui.AbstractSpellChecker.prototype.processRange = function(node, text) {
 goog.ui.AbstractSpellChecker.prototype.initializeAsyncMode = function() {
   if (this.asyncMode_ || this.processedElementsCount_ ||
       this.asyncText_ != null || this.asyncNode_) {
-    throw Error('Async mode already in progress.');
+    throw new Error('Async mode already in progress.');
   }
   this.asyncMode_ = true;
   this.processedElementsCount_ = 0;
@@ -954,7 +953,8 @@ goog.ui.AbstractSpellChecker.prototype.initializeAsyncMode = function() {
  */
 goog.ui.AbstractSpellChecker.prototype.finishAsyncProcessing = function() {
   if (!this.asyncMode_ || this.asyncText_ != null || this.asyncNode_) {
-    throw Error('Async mode not started or there is still text to process.');
+    throw new Error(
+        'Async mode not started or there is still text to process.');
   }
   this.asyncMode_ = false;
   this.processedElementsCount_ = 0;
@@ -1002,7 +1002,8 @@ goog.ui.AbstractSpellChecker.prototype.unblockReadyEvents = function() {
  */
 goog.ui.AbstractSpellChecker.prototype.processTextAsync = function(node, text) {
   if (!this.asyncMode_ || this.asyncText_ != null || this.asyncNode_) {
-    throw Error('Not in async mode or previous text has not been processed.');
+    throw new Error(
+        'Not in async mode or previous text has not been processed.');
   }
 
   this.splitRegex_.lastIndex = 0;
@@ -1054,7 +1055,7 @@ goog.ui.AbstractSpellChecker.prototype.processTextAsync = function(node, text) {
  */
 goog.ui.AbstractSpellChecker.prototype.continueAsyncProcessing = function() {
   if (!this.asyncMode_ || this.asyncText_ == null || !this.asyncNode_) {
-    throw Error('Not in async mode or processing not started.');
+    throw new Error('Not in async mode or processing not started.');
   }
   var node = /** @type {Node} */ (this.asyncNode_);
   var stringSegmentStart = this.asyncRangeStart_;

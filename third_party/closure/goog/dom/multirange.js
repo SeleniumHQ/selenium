@@ -14,10 +14,17 @@
 
 /**
  * @fileoverview Utilities for working with W3C multi-part ranges.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
+
+
+// TODO(b/130421259): We're trying to migrate all ES5 subclasses of Closure
+// Library to ES6. In ES6 this cannot be referenced before super is called. This
+// file has at least one this before a super call (in ES5) and cannot be
+// automatically upgraded to ES6 as a result. Please fix this if you have a
+// chance. Note: This can sometimes be caused by not calling the super
+// constructor at all. You can run the conversion tool yourself to see what it
+// does on this file: blaze run //javascript/refactoring/es6_classes:convert.
 
 goog.provide('goog.dom.MultiRange');
 goog.provide('goog.dom.MultiRangeIterator');
@@ -64,13 +71,13 @@ goog.dom.MultiRange = function() {
 
   /**
    * Lazily computed sorted version of ranges_, sorted by start point.
-   * @private {Array<goog.dom.TextRange>?}
+   * @private {Array<?goog.dom.TextRange>?}
    */
   this.sortedRanges_ = null;
 
   /**
    * Lazily computed container node.
-   * @private {Node}
+   * @private {?Node}
    */
   this.container_ = null;
 };
@@ -423,7 +430,7 @@ goog.dom.DomSavedMultiRange_.prototype.disposeInternal = function() {
 goog.dom.MultiRangeIterator = function(range) {
   /**
    * The list of range iterators left to traverse.
-   * @private {Array<goog.dom.RangeIterator>}
+   * @private {?Array<?goog.dom.RangeIterator>}
    */
   this.iterators_ = null;
 

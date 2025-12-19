@@ -16,12 +16,12 @@
  * @fileoverview A class for representing items in menus.
  * @see goog.ui.Menu
  *
- * @author attila@google.com (Attila Bodis)
  * @see ../demos/menuitem.html
  */
 
 goog.provide('goog.ui.MenuItem');
 
+goog.forwardDeclare('goog.ui.Menu');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.array');
 goog.require('goog.dom');
@@ -31,9 +31,7 @@ goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.MenuItemRenderer');
-goog.require('goog.ui.registry');
-
-goog.forwardDeclare('goog.ui.Menu'); // circular
+goog.require('goog.ui.registry');  // circular
 
 
 
@@ -242,7 +240,7 @@ goog.ui.MenuItem.prototype.handleMouseUp = function(e) {
     // Clear out the saved opening coords immediately so they're not used twice.
     parentMenu.openingCoords = null;
 
-    if (oldCoords && goog.isNumber(e.clientX)) {
+    if (oldCoords && typeof e.clientX === 'number') {
       var newCoords = new goog.math.Coordinate(e.clientX, e.clientY);
       if (goog.math.Coordinate.equals(oldCoords, newCoords)) {
         // This menu was opened by a mousedown and we're handling the consequent

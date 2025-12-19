@@ -15,7 +15,6 @@
 /**
  * @fileoverview Factory functions for creating a default editing toolbar.
  *
- * @author attila@google.com (Attila Bodis)
  * @see ../../demos/editor/editor.html
  */
 
@@ -48,8 +47,8 @@ goog.ui.editor.DefaultToolbar.MSG_FONT_NORMAL_SERIF =
  * Common font descriptors for all locales.  Each descriptor has the following
  * attributes:
  * <ul>
- *   <li>{@code caption} - Caption to show in the font menu (e.g. 'Tahoma')
- *   <li>{@code value} - Value for the corresponding 'font-family' CSS style
+ *   <li>`caption` - Caption to show in the font menu (e.g. 'Tahoma')
+ *   <li>`value` - Value for the corresponding 'font-family' CSS style
  *       (e.g. 'Tahoma, Arial, sans-serif')
  * </ul>
  * @type {!Array<{caption:string, value:string}>}
@@ -172,8 +171,8 @@ goog.ui.editor.DefaultToolbar.MSG_FONT_SIZE_HUGE = goog.getMsg('Huge');
 /**
  * Font size descriptors, each with the following attributes:
  * <ul>
- *   <li>{@code caption} - Caption to show in the font size menu (e.g. 'Huge')
- *   <li>{@code value} - Value for the corresponding HTML font size (e.g. 6)
+ *   <li>`caption` - Caption to show in the font size menu (e.g. 'Huge')
+ *   <li>`value` - Value for the corresponding HTML font size (e.g. 6)
  * </ul>
  * @type {!Array<{caption:string, value:number}>}
  * @private
@@ -220,8 +219,8 @@ goog.ui.editor.DefaultToolbar.MSG_FORMAT_NORMAL = goog.getMsg('Normal');
 /**
  * Format option descriptors, each with the following attributes:
  * <ul>
- *   <li>{@code caption} - Caption to show in the menu (e.g. 'Minor heading')
- *   <li>{@code command} - Corresponding {@link goog.dom.TagName} (e.g.
+ *   <li>`caption` - Caption to show in the menu (e.g. 'Minor heading')
+ *   <li>`command` - Corresponding {@link goog.dom.TagName} (e.g.
  *       'H4')
  * </ul>
  * @type {!Array<{caption: string, command: !goog.dom.TagName}>}
@@ -283,7 +282,7 @@ goog.ui.editor.DefaultToolbar.makeDefaultToolbar = function(
 /**
  * Creates a {@link goog.ui.Toolbar} containing the specified set of
  * toolbar buttons, and renders it into the given parent element.  Each
- * item in the {@code items} array must either be a
+ * item in the `items` array must either be a
  * {@link goog.editor.Command} (to create a built-in button) or a subclass
  * of {@link goog.ui.Control} (to create a custom control).
  * @param {!Array<string|goog.ui.Control>} items Toolbar items; each must
@@ -301,7 +300,7 @@ goog.ui.editor.DefaultToolbar.makeToolbar = function(
   var controls = [];
 
   for (var i = 0, button; button = items[i]; i++) {
-    if (goog.isString(button)) {
+    if (typeof button === 'string') {
       button = goog.ui.editor.DefaultToolbar.makeBuiltInToolbarButton(
           button, domHelper);
     }
@@ -328,12 +327,13 @@ goog.ui.editor.DefaultToolbar.makeToolbar = function(
  */
 goog.ui.editor.DefaultToolbar.makeBuiltInToolbarButton = function(
     command, opt_domHelper) {
-  var button;
+  var button = null;
   var descriptor = goog.ui.editor.DefaultToolbar.buttons_[command];
   if (descriptor) {
     // Default the factory method to makeToggleButton, since most built-in
     // toolbar buttons are toggle buttons. See also
     // goog.ui.editor.DefaultToolbar.button_list_.
+    /** @type {!Function} */
     var factory =
         descriptor.factory || goog.ui.editor.ToolbarFactory.makeToggleButton;
     var id = descriptor.command;
@@ -400,6 +400,7 @@ goog.ui.editor.DefaultToolbar.DEFAULT_BUTTONS_RTL = [
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toolbar button.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.editor.DefaultToolbar.rtlButtonFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
@@ -436,12 +437,15 @@ goog.ui.editor.DefaultToolbar.rtlButtonFactory_ = function(
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toolbar button.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.editor.DefaultToolbar.undoRedoButtonFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
   var button = goog.ui.editor.ToolbarFactory.makeButton(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
-  button.updateFromValue = function(value) { button.setEnabled(value); };
+  button.updateFromValue = function(value) {
+    button.setEnabled(value);
+  };
   return button;
 };
 
@@ -462,6 +466,7 @@ goog.ui.editor.DefaultToolbar.undoRedoButtonFactory_ = function(
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toolbar button.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.editor.DefaultToolbar.fontFaceFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
@@ -484,9 +489,8 @@ goog.ui.editor.DefaultToolbar.fontFaceFactory_ = function(
     // TODO (attila): Try to make this more robust.
     var item = null;
     if (value && value.length > 0) {
-      item = /** @type {goog.ui.MenuItem} */ (
-          button.getMenu().getChild(
-              goog.ui.editor.ToolbarFactory.getPrimaryFont(value)));
+      item = /** @type {goog.ui.MenuItem} */ (button.getMenu().getChild(
+          goog.ui.editor.ToolbarFactory.getPrimaryFont(value)));
     }
     var selectedItem = button.getSelectedItem();
     if (item != selectedItem) {
@@ -513,6 +517,7 @@ goog.ui.editor.DefaultToolbar.fontFaceFactory_ = function(
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toolbar button.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.editor.DefaultToolbar.fontSizeFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
@@ -530,7 +535,7 @@ goog.ui.editor.DefaultToolbar.fontSizeFactory_ = function(
     // integer, so normalize that first.
     // NOTE(user): Gecko returns "6" so can't just normalize all
     // strings, only ones ending in "px".
-    if (goog.isString(value) && goog.style.getLengthUnits(value) == 'px') {
+    if (typeof value === 'string' && goog.style.getLengthUnits(value) == 'px') {
       value = goog.ui.editor.ToolbarFactory.getLegacySizeFromPx(
           parseInt(value, 10));
     }
@@ -591,6 +596,7 @@ goog.ui.editor.DefaultToolbar.colorUpdateFromValue_ = function(button, color) {
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toolbar button.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.editor.DefaultToolbar.fontColorFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
@@ -598,8 +604,9 @@ goog.ui.editor.DefaultToolbar.fontColorFactory_ = function(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   // Initialize default foreground color.
   button.setSelectedColor('#000');
-  button.updateFromValue =
-      goog.partial(goog.ui.editor.DefaultToolbar.colorUpdateFromValue_, button);
+  button.updateFromValue = goog.partial(
+      goog.ui.editor.DefaultToolbar.colorUpdateFromValue_,
+      /** @type {!goog.ui.ToolbarColorMenuButton} */ (button));
   return button;
 };
 
@@ -621,6 +628,7 @@ goog.ui.editor.DefaultToolbar.fontColorFactory_ = function(
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toolbar button.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.editor.DefaultToolbar.backgroundColorFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
@@ -628,8 +636,9 @@ goog.ui.editor.DefaultToolbar.backgroundColorFactory_ = function(
       id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper);
   // Initialize default background color.
   button.setSelectedColor('#FFF');
-  button.updateFromValue =
-      goog.partial(goog.ui.editor.DefaultToolbar.colorUpdateFromValue_, button);
+  button.updateFromValue = goog.partial(
+      goog.ui.editor.DefaultToolbar.colorUpdateFromValue_,
+      /** @type {!goog.ui.ToolbarColorMenuButton} */ (button));
   return button;
 };
 
@@ -651,6 +660,7 @@ goog.ui.editor.DefaultToolbar.backgroundColorFactory_ = function(
  *     creation; defaults to the current document if unspecified.
  * @return {!goog.ui.Button} A toolbar button.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.editor.DefaultToolbar.formatBlockFactory_ = function(
     id, tooltip, caption, opt_classNames, opt_renderer, opt_domHelper) {
@@ -809,24 +819,24 @@ goog.ui.editor.DefaultToolbar.MSG_EDIT_HTML_CAPTION = goog.getMsg('Edit HTML');
 
 
 /**
- * Map of {@code goog.editor.Command}s to toolbar button descriptor objects,
+ * Map of `goog.editor.Command`s to toolbar button descriptor objects,
  * each of which has the following attributes:
  * <ul>
- *   <li>{@code command} - The command corresponding to the
+ *   <li>`command` - The command corresponding to the
  *       button (mandatory)
- *   <li>{@code tooltip} - Tooltip text (optional); if unspecified, the button
+ *   <li>`tooltip` - Tooltip text (optional); if unspecified, the button
  *       has no hover text
- *   <li>{@code caption} - Caption to display on the button (optional); if
+ *   <li>`caption` - Caption to display on the button (optional); if
  *       unspecified, the button has no text caption
- *   <li>{@code classes} - CSS class name(s) to be applied to the button's
+ *   <li>`classes` - CSS class name(s) to be applied to the button's
  *       element when rendered (optional); if unspecified, defaults to
  *       'tr-icon'
  *       plus 'tr-' followed by the command ID, but without any leading '+'
- *       character (e.g. if the command ID is '+undo', then {@code classes}
+ *       character (e.g. if the command ID is '+undo', then `classes`
  *       defaults to 'tr-icon tr-undo')
- *   <li>{@code factory} - factory function used to create the button, which
- *       must accept {@code id}, {@code tooltip}, {@code caption}, and
- *       {@code classes} as arguments, and must return an instance of
+ *   <li>`factory` - factory function used to create the button, which
+ *       must accept `id`, `tooltip`, `caption`, and
+ *       `classes` as arguments, and must return an instance of
  *       {@link goog.ui.Button} or an appropriate subclass (optional); if
  *       unspecified, defaults to
  *       {@link goog.ui.editor.DefaultToolbar.makeToggleButton},
@@ -837,17 +847,19 @@ goog.ui.editor.DefaultToolbar.MSG_EDIT_HTML_CAPTION = goog.getMsg('Edit HTML');
  * Note that this object is only used for creating toolbar buttons for
  * built-in editor commands; custom buttons aren't listed here.  Please don't
  * try to hack this!
- * @private {!Object<!goog.ui.editor.ButtonDescriptor>}.
+ * @private {!Object<string, !goog.ui.editor.ButtonDescriptor>}.
  */
 goog.ui.editor.DefaultToolbar.buttons_ = {};
 
 
 /**
- * @typedef {{command: string, tooltip: ?string,
- *   caption: ?goog.ui.ControlContent, classes: ?string,
- *   factory: ?function(string, string, goog.ui.ControlContent, ?string,
- *       goog.ui.ButtonRenderer, goog.dom.DomHelper):goog.ui.Button,
- *   queryable:?boolean}}
+ * @typedef {{
+ *   command: string,
+ *   tooltip: (undefined|string),
+ *   caption: (undefined|goog.ui.ControlContent),
+ *   classes: (undefined|string),
+ *   factory: (undefined|!Function),
+ *   queryable:(undefined|boolean)}}
  */
 goog.ui.editor.ButtonDescriptor;
 
@@ -1054,14 +1066,14 @@ goog.ui.editor.DefaultToolbar.button_list_ = [
 
 
 (function() {
-  // Create the goog.ui.editor.DefaultToolbar.buttons_ map from
-  // goog.ui.editor.DefaultToolbar.button_list_.
-  for (var i = 0, button;
-       button = goog.ui.editor.DefaultToolbar.button_list_[i]; i++) {
-    goog.ui.editor.DefaultToolbar.buttons_[button.command] = button;
-  }
+// Create the goog.ui.editor.DefaultToolbar.buttons_ map from
+// goog.ui.editor.DefaultToolbar.button_list_.
+for (var i = 0, button; button = goog.ui.editor.DefaultToolbar.button_list_[i];
+     i++) {
+  goog.ui.editor.DefaultToolbar.buttons_[button.command] = button;
+}
 
-  // goog.ui.editor.DefaultToolbar.button_list_ is no longer needed
-  // once the map is ready.
-  goog.ui.editor.DefaultToolbar.button_list_ = null;
+// goog.ui.editor.DefaultToolbar.button_list_ is no longer needed
+// once the map is ready.
+goog.ui.editor.DefaultToolbar.button_list_ = null;
 })();

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Provides a fake storage mechanism for testing.
- * @author chrishenry@google.com (Chris Henry)
  */
 
 goog.provide('goog.testing.storage.FakeMechanism');

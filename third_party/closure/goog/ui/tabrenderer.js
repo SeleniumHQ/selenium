@@ -14,9 +14,7 @@
 
 /**
  * @fileoverview Default renderer for {@link goog.ui.Tab}s.  Based on the
- * original {@code TabPane} code.
- *
- * @author attila@google.com (Attila Bodis)
+ * original `TabPane` code.
  */
 
 goog.provide('goog.ui.TabRenderer');
@@ -28,7 +26,7 @@ goog.require('goog.ui.ControlRenderer');
 
 
 /**
- * Default renderer for {@link goog.ui.Tab}s, based on the {@code TabPane} code.
+ * Default renderer for {@link goog.ui.Tab}s, based on the `TabPane` code.
  * @constructor
  * @extends {goog.ui.ControlRenderer}
  */

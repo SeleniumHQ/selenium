@@ -18,7 +18,6 @@
  * of {@link goog.ui.MenuItem}.
  * TODO(attila):  If the renderer framework works well, pull it into Component.
  *
- * @author attila@google.com (Attila Bodis)
  * @see ../demos/control.html
  * @see http://code.google.com/p/closure-library/wiki/IntroToControls
  */
@@ -36,6 +35,7 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
+goog.require('goog.ui.ComponentUtil');
 /** @suppress {extraRequire} */
 goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.ControlRenderer');
@@ -78,7 +78,7 @@ goog.ui.Control = function(opt_content, opt_renderer, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
   this.renderer_ =
       opt_renderer || goog.ui.registry.getDefaultRenderer(this.constructor);
-  this.setContentInternal(goog.isDef(opt_content) ? opt_content : null);
+  this.setContentInternal(opt_content !== undefined ? opt_content : null);
 
   /** @private {?string} The control's aria-label. */
   this.ariaLabel_ = null;
@@ -133,7 +133,7 @@ goog.ui.Control.prototype.renderer_;
 
 /**
  * Text caption or DOM structure displayed in the component.
- * @type {goog.ui.ControlContent}
+ * @type {?goog.ui.ControlContent}
  * @private
  */
 goog.ui.Control.prototype.content_ = null;
@@ -313,7 +313,7 @@ goog.ui.Control.prototype.getRenderer = function() {
 goog.ui.Control.prototype.setRenderer = function(renderer) {
   if (this.isInDocument()) {
     // Too late.
-    throw Error(goog.ui.Component.Error.ALREADY_RENDERED);
+    throw new Error(goog.ui.Component.Error.ALREADY_RENDERED);
   }
 
   if (this.getElement()) {
@@ -579,14 +579,24 @@ goog.ui.Control.prototype.enterDocument = function() {
  * @private
  */
 goog.ui.Control.prototype.enableMouseEventHandling_ = function(enable) {
+  var MouseEventType = goog.ui.ComponentUtil.getMouseEventType(this);
+
   var handler = this.getHandler();
   var element = this.getElement();
   if (enable) {
-    handler
+    handler.listen(element, MouseEventType.MOUSEDOWN, this.handleMouseDown)
+        .listen(
+            element, [MouseEventType.MOUSEUP, MouseEventType.MOUSECANCEL],
+            this.handleMouseUp)
         .listen(element, goog.events.EventType.MOUSEOVER, this.handleMouseOver)
-        .listen(element, goog.events.EventType.MOUSEDOWN, this.handleMouseDown)
-        .listen(element, goog.events.EventType.MOUSEUP, this.handleMouseUp)
         .listen(element, goog.events.EventType.MOUSEOUT, this.handleMouseOut);
+    if (this.pointerEventsEnabled()) {
+      // Prevent pointer events from capturing the target element so they behave
+      // more like mouse events.
+      handler.listen(
+          element, goog.events.EventType.GOTPOINTERCAPTURE,
+          this.preventPointerCapture_);
+    }
     if (this.handleContextMenu != goog.nullFunction) {
       handler.listen(
           element, goog.events.EventType.CONTEXTMENU, this.handleContextMenu);
@@ -606,13 +616,18 @@ goog.ui.Control.prototype.enableMouseEventHandling_ = function(enable) {
       }
     }
   } else {
-    handler
+    handler.unlisten(element, MouseEventType.MOUSEDOWN, this.handleMouseDown)
+        .unlisten(
+            element, [MouseEventType.MOUSEUP, MouseEventType.MOUSECANCEL],
+            this.handleMouseUp)
         .unlisten(
             element, goog.events.EventType.MOUSEOVER, this.handleMouseOver)
-        .unlisten(
-            element, goog.events.EventType.MOUSEDOWN, this.handleMouseDown)
-        .unlisten(element, goog.events.EventType.MOUSEUP, this.handleMouseUp)
         .unlisten(element, goog.events.EventType.MOUSEOUT, this.handleMouseOut);
+    if (this.pointerEventsEnabled()) {
+      handler.unlisten(
+          element, goog.events.EventType.GOTPOINTERCAPTURE,
+          this.preventPointerCapture_);
+    }
     if (this.handleContextMenu != goog.nullFunction) {
       handler.unlisten(
           element, goog.events.EventType.CONTEXTMENU, this.handleContextMenu);
@@ -714,7 +729,7 @@ goog.ui.Control.prototype.getCaption = function() {
   if (!content) {
     return '';
   }
-  var caption = goog.isString(content) ?
+  var caption = (typeof content === 'string') ?
       content :
       goog.isArray(content) ?
       goog.array.map(content, goog.dom.getRawTextContent).join('') :
@@ -956,8 +971,8 @@ goog.ui.Control.prototype.setChecked = function(check) {
 
 /**
  * Returns true if the component is styled to indicate that it has keyboard
- * focus, false otherwise.  Note that {@code isFocused()} returning true
- * doesn't guarantee that the component's key event target has keyborad focus,
+ * focus, false otherwise.  Note that `isFocused()` returning true
+ * doesn't guarantee that the component's key event target has keyboard focus,
  * only that it is styled as such.
  * @return {boolean} Whether the component is styled to indicate as having
  *     keyboard focus.
@@ -971,7 +986,7 @@ goog.ui.Control.prototype.isFocused = function() {
  * Applies or removes styling indicating that the component has keyboard focus.
  * Note that unlike the other "set" methods, this method is called as a result
  * of the component's element having received or lost keyboard focus, not the
- * other way around, so calling {@code setFocused(true)} doesn't guarantee that
+ * other way around, so calling `setFocused(true)` doesn't guarantee that
  * the component's key event target has keyboard focus, only that it is styled
  * as such.
  * @param {boolean} focused Whether to apply or remove styling to indicate that
@@ -1084,7 +1099,7 @@ goog.ui.Control.prototype.isSupportedState = function(state) {
 goog.ui.Control.prototype.setSupportedState = function(state, support) {
   if (this.isInDocument() && this.hasState(state) && !support) {
     // Since we hook up event handlers in enterDocument(), this is an error.
-    throw Error(goog.ui.Component.Error.ALREADY_RENDERED);
+    throw new Error(goog.ui.Component.Error.ALREADY_RENDERED);
   }
 
   if (!support && this.hasState(state)) {
@@ -1222,6 +1237,18 @@ goog.ui.Control.prototype.handleMouseOut = function(e) {
 
 
 /**
+ * @param {!goog.events.BrowserEvent} e Event to handle.
+ * @private
+ */
+goog.ui.Control.prototype.preventPointerCapture_ = function(e) {
+  var elem = /** @type {!Element} */ (e.target);
+  if (!!elem.releasePointerCapture) {
+    elem.releasePointerCapture(e.pointerId);
+  }
+};
+
+
+/**
  * Handles contextmenu events.
  * @param {goog.events.BrowserEvent} e Event to handle.
  */
@@ -1234,7 +1261,7 @@ goog.ui.Control.prototype.handleContextMenu = goog.nullFunction;
  *     mouseout).
  * @param {Element} elem The ancestor element.
  * @return {boolean} Whether the event has a relatedTarget (the element the
- *     mouse is coming from) and it's a descendent of elem.
+ *     mouse is coming from) and it's a descendant of elem.
  * @private
  */
 goog.ui.Control.isMouseEventWithinElement_ = function(e, elem) {
@@ -1466,9 +1493,10 @@ goog.ui.Control.IeMouseEventSequenceSimulator_ = function(control) {
   this.registerDisposable(this.handler_);
 
   var element = this.control_.getElementStrict();
-  this.handler_
-      .listen(element, goog.events.EventType.MOUSEDOWN, this.handleMouseDown_)
-      .listen(element, goog.events.EventType.MOUSEUP, this.handleMouseUp_)
+  var MouseEventType = goog.ui.ComponentUtil.getMouseEventType(control);
+
+  this.handler_.listen(element, MouseEventType.MOUSEDOWN, this.handleMouseDown_)
+      .listen(element, MouseEventType.MOUSEUP, this.handleMouseUp_)
       .listen(element, goog.events.EventType.CLICK, this.handleClick_);
 };
 goog.inherits(goog.ui.Control.IeMouseEventSequenceSimulator_, goog.Disposable);

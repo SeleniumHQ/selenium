@@ -1,0 +1,365 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":actioneventwrapper",
+        ":actionhandler",
+        ":browserevent",
+        ":browserfeature",
+        ":event",
+        ":eventhandler",
+        ":eventid",
+        ":events",
+        ":eventtarget",
+        ":eventtype",
+        ":eventwrapper",
+        ":filedrophandler",
+        ":focushandler",
+        ":imehandler",
+        ":inputhandler",
+        ":keycodes",
+        ":keyhandler",
+        ":keynames",
+        ":keys",
+        ":listenable",
+        ":listener",
+        ":listenermap",
+        ":mousewheelhandler",
+        ":onlinehandler",
+        ":pastehandler",
+        ":wheelevent",
+        ":wheelhandler",
+    ],
+)
+
+closure_js_library(
+    name = "actioneventwrapper",
+    srcs = ["actioneventwrapper.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria",
+        "//third_party/closure/goog/a11y/aria:roles",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/events:eventwrapper",
+        "//third_party/closure/goog/events:keycodes",
+    ],
+)
+
+closure_js_library(
+    name = "actionhandler",
+    srcs = ["actionhandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "browserevent",
+    srcs = ["browserevent.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/events:browserfeature",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/reflect",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "browserfeature",
+    srcs = ["browserfeature.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/useragent"],
+)
+
+closure_js_library(
+    name = "event",
+    srcs = ["event.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/events:eventid",
+    ],
+)
+
+closure_js_library(
+    name = "eventhandler",
+    srcs = ["eventhandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "eventid",
+    srcs = ["eventid.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "events",
+    srcs = ["events.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:entrypointregistry",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:browserfeature",
+        "//third_party/closure/goog/events:listenable",
+        "//third_party/closure/goog/events:listenermap",
+    ],
+)
+
+closure_js_library(
+    name = "eventtarget",
+    srcs = ["eventtarget.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:listenable",
+        "//third_party/closure/goog/events:listenermap",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "eventtargettester",
+    testonly = True,
+    srcs = ["eventtargettester.js"],
+    lenient = True,
+    suppress = ["strictMissingRequire"],
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:listenable",
+        "//third_party/closure/goog/testing:asserts",
+        "//third_party/closure/goog/testing:recordfunction",
+    ],
+)
+
+closure_js_library(
+    name = "eventtype",
+    srcs = ["eventtype.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:browserfeature",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "eventwrapper",
+    srcs = ["eventwrapper.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "filedrophandler",
+    srcs = ["filedrophandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/log",
+    ],
+)
+
+closure_js_library(
+    name = "focushandler",
+    srcs = ["focushandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "imehandler",
+    srcs = ["imehandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "inputhandler",
+    srcs = ["inputhandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "keycodes",
+    srcs = ["keycodes.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/useragent"],
+)
+
+closure_js_library(
+    name = "keyhandler",
+    srcs = ["keyhandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "keynames",
+    srcs = ["keynames.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "keys",
+    srcs = ["keys.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "listenable",
+    srcs = ["listenable.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/events:eventid"],
+)
+
+closure_js_library(
+    name = "listener",
+    srcs = ["listener.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/events:listenable"],
+)
+
+closure_js_library(
+    name = "listenermap",
+    srcs = ["listenermap.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/events:listener",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "mousewheelhandler",
+    srcs = ["mousewheelhandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "onlinehandler",
+    srcs = ["onlinehandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:browserfeature",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/net:networkstatusmonitor",
+        "//third_party/closure/goog/timer",
+    ],
+)
+
+closure_js_library(
+    name = "pastehandler",
+    srcs = ["pastehandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/async:conditionaldelay",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "wheelevent",
+    srcs = ["wheelevent.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/events:browserevent",
+    ],
+)
+
+closure_js_library(
+    name = "wheelhandler",
+    srcs = ["wheelhandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:wheelevent",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/useragent:product_isversion",
+    ],
+)

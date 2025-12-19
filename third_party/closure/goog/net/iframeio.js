@@ -129,7 +129,6 @@
  *   function() { alert('request complete'); });
  * io.sendFromForm(...);
  * </pre>
- *
  */
 
 goog.provide('goog.net.IframeIo');
@@ -148,6 +147,8 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('goog.html.SafeUrl');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.html.uncheckedconversions');
 goog.require('goog.json');
 goog.require('goog.log');
@@ -390,7 +391,7 @@ goog.net.IframeIo.prototype.logger_ = goog.log.getLogger('goog.net.IframeIo');
 
 /**
  * Reference to form element that gets reused for requests to the iframe.
- * @type {HTMLFormElement}
+ * @type {?HTMLFormElement}
  * @private
  */
 goog.net.IframeIo.prototype.form_ = null;
@@ -399,7 +400,7 @@ goog.net.IframeIo.prototype.form_ = null;
 /**
  * Reference to the iframe being used for the current request, or null if no
  * request is currently active.
- * @type {HTMLIFrameElement}
+ * @type {?HTMLIFrameElement}
  * @private
  */
 goog.net.IframeIo.prototype.iframe_ = null;
@@ -448,7 +449,7 @@ goog.net.IframeIo.prototype.success_ = false;
 
 /**
  * The URI for the last request.
- * @type {goog.Uri}
+ * @type {?goog.Uri}
  * @private
  */
 goog.net.IframeIo.prototype.lastUri_ = null;
@@ -538,7 +539,7 @@ goog.net.IframeIo.prototype.send = function(
     uri, opt_method, opt_noCache, opt_data) {
 
   if (this.active_) {
-    throw Error('[goog.net.IframeIo] Unable to send, already active.');
+    throw new Error('[goog.net.IframeIo] Unable to send, already active.');
   }
 
   var uriObj = new goog.Uri(uri);
@@ -568,7 +569,9 @@ goog.net.IframeIo.prototype.send = function(
   }
 
   // Set the URI that the form will be posted
-  this.form_.action = uriObj.toString();
+  goog.dom.safe.setFormElementAction(
+      this.form_,
+      goog.html.legacyconversions.safeUrlFromString(uriObj.toString()));
   this.form_.method = method;
 
   this.sendFormInternal_();
@@ -601,7 +604,7 @@ goog.net.IframeIo.prototype.send = function(
 goog.net.IframeIo.prototype.sendFromForm = function(
     form, opt_uri, opt_noCache) {
   if (this.active_) {
-    throw Error('[goog.net.IframeIo] Unable to send, already active.');
+    throw new Error('[goog.net.IframeIo] Unable to send, already active.');
   }
 
   var uri = new goog.Uri(opt_uri || form.action);
@@ -613,7 +616,8 @@ goog.net.IframeIo.prototype.sendFromForm = function(
 
   this.lastUri_ = uri;
   this.form_ = form;
-  this.form_.action = uri.toString();
+  goog.dom.safe.setFormElementAction(
+      goog.asserts.assert(this.form_), uri.toString());
   this.sendFormInternal_();
 };
 
@@ -822,6 +826,7 @@ goog.net.IframeIo.prototype.setIgnoreResponse = function(ignore) {
 /**
  * Submits the internal form to the iframe.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.net.IframeIo.prototype.sendFormInternal_ = function() {
   this.active_ = true;
@@ -915,7 +920,7 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
     }
 
     // Append a cloned form to the iframe
-    var clone = doc.importNode(this.form_, true);
+    var clone = doc.importNode(goog.asserts.assert(this.form_), true);
     clone.target = innerFrameName;
     // Work around crbug.com/66987
     clone.action = this.form_.action;
@@ -1158,7 +1163,7 @@ goog.net.IframeIo.prototype.handleError_ = function(
     this.complete_ = true;
     this.lastErrorCode_ = errorCode;
     if (errorCode == goog.net.ErrorCode.CUSTOM_ERROR) {
-      goog.asserts.assert(goog.isDef(opt_customError));
+      goog.asserts.assert(opt_customError !== undefined);
       this.lastCustomError_ = opt_customError;
     }
     this.dispatchEvent(goog.net.EventType.COMPLETE);
@@ -1205,15 +1210,19 @@ goog.net.IframeIo.prototype.createIframe_ = function() {
 
   this.iframeName_ = this.name_ + '_' + (this.nextIframeId_++).toString(36);
 
-  var iframeAttributes = {'name': this.iframeName_, 'id': this.iframeName_};
+  var dom = goog.dom.getDomHelper(this.form_);
+  this.iframe_ = dom.createDom(
+      goog.dom.TagName.IFRAME,
+      {'name': this.iframeName_, 'id': this.iframeName_});
+
   // Setting the source to javascript:"" is a fix to remove IE6 mixed content
   // warnings when being used in an https page.
   if (goog.userAgent.IE && Number(goog.userAgent.VERSION) < 7) {
-    iframeAttributes.src = 'javascript:""';
+    goog.dom.safe.setFormElementAction(
+        this.iframe_,
+        goog.html.SafeUrl.fromConstant(
+            goog.string.Const.from('javascript:""')));
   }
-
-  this.iframe_ = goog.dom.getDomHelper(this.form_).createDom(
-      goog.dom.TagName.IFRAME, iframeAttributes);
 
   var s = this.iframe_.style;
   s.visibility = 'hidden';
@@ -1250,6 +1259,7 @@ goog.net.IframeIo.prototype.appendIframe_ = function() {
  * will not detect that the response has correctly finished and the loading bar
  * will stay active forever.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.net.IframeIo.prototype.scheduleIframeDisposal_ = function() {
   var iframe = this.iframe_;

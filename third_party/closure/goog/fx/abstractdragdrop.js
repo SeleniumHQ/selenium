@@ -17,8 +17,6 @@
  *
  * Provides functionality for implementing drag and drop classes. Also provides
  * support classes and events.
- *
- * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.fx.AbstractDragDrop');
@@ -47,7 +45,7 @@ goog.require('goog.style');
  * and drop functionality.
  *
  * This class also allows clients to define their own subtargeting function
- * so that drop areas can have finer granularity then a singe element. This is
+ * so that drop areas can have finer granularity than a single element. This is
  * accomplished by using a client provided function to map from element and
  * coordinates to a subregion id.
  *
@@ -864,7 +862,7 @@ goog.fx.AbstractDragDrop.prototype.getDragger = function() {
  * Creates copy of node being dragged.
  *
  * @param {Element} sourceEl Element to copy.
- * @return {!Element} The clone of {@code sourceEl}.
+ * @return {!Element} The clone of `sourceEl`.
  * @deprecated Use goog.fx.Dragger.cloneNode().
  * @private
  */
@@ -877,7 +875,7 @@ goog.fx.AbstractDragDrop.prototype.cloneNode_ = function(sourceEl) {
  * Generates an element to follow the cursor during dragging, given a drag
  * source element.  The default behavior is simply to clone the source element,
  * but this may be overridden in subclasses.  This method is called by
- * {@code createDragElement()} before the drag class is added.
+ * `createDragElement()` before the drag class is added.
  *
  * @param {Element} sourceEl Drag source element.
  * @return {!Element} The new drag element.
@@ -1070,7 +1068,7 @@ goog.fx.AbstractDragDrop.prototype.maybeCreateDummyTargetForPosition_ =
     // If both clippings are possible, choose one that gives us larger distance
     // to mouse pointer (mark the shorter clipping as impossible, by setting it
     // to null).
-    if (!goog.isNull(horizontalClip) && !goog.isNull(verticalClip)) {
+    if (horizontalClip !== null && verticalClip !== null) {
       if (Math.abs(horizontalClip - x) > Math.abs(verticalClip - y)) {
         verticalClip = null;
       } else {
@@ -1080,13 +1078,13 @@ goog.fx.AbstractDragDrop.prototype.maybeCreateDummyTargetForPosition_ =
 
     // Clip none or one of fake target box sides (at most one clipping
     // coordinate can be active).
-    if (!goog.isNull(horizontalClip)) {
+    if (horizontalClip !== null) {
       if (horizontalClip <= x) {
         fakeTargetBox.left = horizontalClip;
       } else {
         fakeTargetBox.right = horizontalClip;
       }
-    } else if (!goog.isNull(verticalClip)) {
+    } else if (verticalClip !== null) {
       if (verticalClip <= y) {
         fakeTargetBox.top = verticalClip;
       } else {
@@ -1138,7 +1136,7 @@ goog.fx.AbstractDragDrop.prototype.getTargetFromPosition_ = function(position) {
  * @param {number} x Cursor position on the x-axis.
  * @param {number} y Cursor position on the y-axis.
  * @param {goog.math.Box} box Box to check position against.
- * @return {boolean} Whether the given point is inside {@code box}.
+ * @return {boolean} Whether the given point is inside `box`.
  * @protected
  * @deprecated Use goog.math.Box.contains.
  */
@@ -1171,7 +1169,10 @@ goog.fx.AbstractDragDrop.prototype.getEventPosition = function(event) {
 };
 
 
-/** @override */
+/**
+ * @override
+ * @protected
+ */
 goog.fx.AbstractDragDrop.prototype.disposeInternal = function() {
   goog.fx.AbstractDragDrop.base(this, 'disposeInternal');
   this.removeItems();
@@ -1329,7 +1330,7 @@ goog.fx.DragDropItem = function(element, opt_data) {
   this.startPosition_;
 
   if (!this.element) {
-    throw Error('Invalid argument');
+    throw new Error('Invalid argument');
   }
 };
 goog.inherits(goog.fx.DragDropItem, goog.events.EventTarget);
@@ -1346,7 +1347,7 @@ goog.fx.DragDropItem.prototype.getData = function() {
 
 /**
  * Gets the element that is actually draggable given that the given target was
- * attempted to be dragged. This should be overriden when the element that was
+ * attempted to be dragged. This should be overridden when the element that was
  * given actually contains many items that can be dragged. From the target, you
  * can determine what element should actually be dragged.
  *
@@ -1568,7 +1569,7 @@ goog.fx.ScrollableContainer_ = function(element) {
 
   /**
    * The space occupied by the container.
-   * @type {goog.math.Box}
+   * @type {?goog.math.Box}
    * @private
    */
   this.box_ = null;

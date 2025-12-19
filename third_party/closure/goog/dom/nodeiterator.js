@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Iterator subclass for DOM tree traversal.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.NodeIterator');

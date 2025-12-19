@@ -1,0 +1,180 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":ac",
+        ":arraymatcher",
+        ":autocomplete",
+        ":cachingmatcher",
+        ":inputhandler",
+        ":remote",
+        ":remotearraymatcher",
+        ":renderer",
+        ":renderoptions",
+        ":richinputhandler",
+        ":richremote",
+        ":richremotearraymatcher",
+    ],
+)
+
+closure_js_library(
+    name = "ac",
+    srcs = ["ac.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/ui/ac:arraymatcher",
+        "//third_party/closure/goog/ui/ac:autocomplete",
+        "//third_party/closure/goog/ui/ac:inputhandler",
+        "//third_party/closure/goog/ui/ac:renderer",
+    ],
+)
+
+closure_js_library(
+    name = "arraymatcher",
+    srcs = ["arraymatcher.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/string"],
+)
+
+closure_js_library(
+    name = "autocomplete",
+    srcs = ["autocomplete.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/ui/ac:renderoptions",
+    ],
+)
+
+closure_js_library(
+    name = "cachingmatcher",
+    srcs = ["cachingmatcher.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/async:throttle",
+        "//third_party/closure/goog/ui/ac:arraymatcher",
+        "//third_party/closure/goog/ui/ac:renderoptions",
+    ],
+)
+
+closure_js_library(
+    name = "inputhandler",
+    srcs = ["inputhandler.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria",
+        "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/a11y/aria:roles",
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:selection",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/events:keyhandler",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/timer",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
+    ],
+)
+
+closure_js_library(
+    name = "remote",
+    srcs = ["remote.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/ui/ac:autocomplete",
+        "//third_party/closure/goog/ui/ac:inputhandler",
+        "//third_party/closure/goog/ui/ac:remotearraymatcher",
+        "//third_party/closure/goog/ui/ac:renderer",
+    ],
+)
+
+closure_js_library(
+    name = "remotearraymatcher",
+    srcs = ["remotearraymatcher.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/net:eventtype",
+        "//third_party/closure/goog/net:xhrio",
+        "//third_party/closure/goog/uri",
+    ],
+)
+
+closure_js_library(
+    name = "renderer",
+    srcs = ["renderer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/a11y/aria",
+        "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/a11y/aria:roles",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/fx:dom",
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/ui:idgenerator",
+        "//third_party/closure/goog/ui/ac:autocomplete",
+    ],
+)
+
+closure_js_library(
+    name = "renderoptions",
+    srcs = ["renderoptions.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "richinputhandler",
+    srcs = ["richinputhandler.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/ui/ac:inputhandler"],
+)
+
+closure_js_library(
+    name = "richremote",
+    srcs = ["richremote.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/ui/ac:autocomplete",
+        "//third_party/closure/goog/ui/ac:remote",
+        "//third_party/closure/goog/ui/ac:renderer",
+        "//third_party/closure/goog/ui/ac:richinputhandler",
+        "//third_party/closure/goog/ui/ac:richremotearraymatcher",
+    ],
+)
+
+closure_js_library(
+    name = "richremotearraymatcher",
+    srcs = ["richremotearraymatcher.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/ui/ac:remotearraymatcher",
+    ],
+)

@@ -16,7 +16,6 @@
  * @fileoverview Utilities for working with selections in input boxes and text
  * areas.
  *
- * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/dom_selection.html
  */
 
@@ -325,7 +324,7 @@ goog.dom.selection.setText = function(textfield, text) {
     selectionRange.setEndPoint('StartToStart', range2);
     selectionRange.select();
   } else {
-    throw Error('Cannot set the selection end');
+    throw new Error('Cannot set the selection end');
   }
 };
 
@@ -355,7 +354,7 @@ goog.dom.selection.getText = function(textfield) {
     return selectionRange.text;
   }
 
-  throw Error('Cannot get the selection text');
+  throw new Error('Cannot get the selection text');
 };
 
 
@@ -463,7 +462,7 @@ goog.dom.selection.canonicalizePositionIe_ = function(textfield, pos) {
  *
  * @param {Element} el The element to check for.
  * @return {boolean} Whether it's okay to use the selectionStart and
- *     selectionEnd properties on {@code el}.
+ *     selectionEnd properties on `el`.
  * @private
  */
 goog.dom.selection.useSelectionProperties_ = function(el) {

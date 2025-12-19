@@ -19,7 +19,6 @@
  * of the WebChannel are limited to what's supported by the implementation.
  * Particularly, multiplexing is not possible, and only strings are
  * supported as message types.
- *
  */
 
 goog.provide('goog.labs.net.webChannel.WebChannelBaseTransport');
@@ -29,6 +28,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.json');
 goog.require('goog.labs.net.webChannel.ChannelRequest');
 goog.require('goog.labs.net.webChannel.WebChannelBase');
+goog.require('goog.labs.net.webChannel.Wire');
 goog.require('goog.log');
 goog.require('goog.net.WebChannel');
 goog.require('goog.net.WebChannelTransport');
@@ -58,6 +58,7 @@ goog.labs.net.webChannel.WebChannelBaseTransport = function() {
 goog.scope(function() {
 var WebChannelBaseTransport = goog.labs.net.webChannel.WebChannelBaseTransport;
 var WebChannelBase = goog.labs.net.webChannel.WebChannelBase;
+var Wire = goog.labs.net.webChannel.Wire;
 
 
 /**
@@ -137,6 +138,31 @@ WebChannelBaseTransport.Channel = function(url, opt_options) {
   this.channel_.setExtraHeaders(messageHeaders);
 
   var initHeaders = (opt_options && opt_options.initMessageHeaders) || null;
+
+  if (opt_options && opt_options.messageContentType) {
+    if (initHeaders) {
+      goog.object.set(
+          initHeaders, goog.net.WebChannel.X_WEBCHANNEL_CONTENT_TYPE,
+          opt_options.messageContentType);
+    } else {
+      initHeaders = goog.object.create(
+          goog.net.WebChannel.X_WEBCHANNEL_CONTENT_TYPE,
+          opt_options.messageContentType);
+    }
+  }
+
+  if (opt_options && opt_options.clientProfile) {
+    if (initHeaders) {
+      goog.object.set(
+          initHeaders, goog.net.WebChannel.X_WEBCHANNEL_CLIENT_PROFILE,
+          opt_options.clientProfile);
+    } else {
+      initHeaders = goog.object.create(
+          goog.net.WebChannel.X_WEBCHANNEL_CLIENT_PROFILE,
+          opt_options.clientProfile);
+    }
+  }
+
   this.channel_.setInitHeaders(initHeaders);
 
   var httpHeadersOverwriteParam =
@@ -228,6 +254,15 @@ WebChannelBaseTransport.Channel.prototype.close = function() {
 
 
 /**
+ * @override
+ */
+WebChannelBaseTransport.Channel.prototype.halfClose = function() {
+  // to be implemented
+  throw new Error('Not implemented');
+};
+
+
+/**
  * The WebChannelBase only supports object types.
  *
  * @param {!goog.net.WebChannel.MessageData} message The message to send.
@@ -235,11 +270,17 @@ WebChannelBaseTransport.Channel.prototype.close = function() {
  * @override
  */
 WebChannelBaseTransport.Channel.prototype.send = function(message) {
-  goog.asserts.assert(goog.isObject(message), 'only object type expected');
+  goog.asserts.assert(
+      goog.isObject(message) || typeof message === 'string',
+      'only object type or raw string is supported');
 
-  if (this.sendRawJson_) {
+  if (typeof message === 'string') {
     var rawJson = {};
-    rawJson['__data__'] = goog.json.serialize(message);
+    rawJson[Wire.RAW_DATA_KEY] = message;
+    this.channel_.sendMap(rawJson);
+  } else if (this.sendRawJson_) {
+    var rawJson = {};
+    rawJson[Wire.RAW_DATA_KEY] = goog.json.serialize(message);
     this.channel_.sendMap(rawJson);
   } else {
     this.channel_.sendMap(message);
@@ -264,7 +305,7 @@ WebChannelBaseTransport.Channel.prototype.disposeInternal = function() {
 /**
  * The message event.
  *
- * @param {!Array<?>} array The data array from the underlying channel.
+ * @param {!Array<?>|!Object} array The data array from the underlying channel.
  * @constructor
  * @extends {goog.net.WebChannel.MessageEvent}
  * @final
@@ -272,7 +313,18 @@ WebChannelBaseTransport.Channel.prototype.disposeInternal = function() {
 WebChannelBaseTransport.Channel.MessageEvent = function(array) {
   WebChannelBaseTransport.Channel.MessageEvent.base(this, 'constructor');
 
-  this.data = array;
+  // single-metadata only
+  var metadata = array['__sm__'];
+  if (metadata) {
+    this.metadataKey = goog.object.getAnyKey(metadata);
+    if (this.metadataKey) {
+      this.data = goog.object.get(metadata, this.metadataKey);
+    } else {
+      this.data = metadata;  // empty
+    }
+  } else {
+    this.data = array;
+  }
 };
 goog.inherits(
     WebChannelBaseTransport.Channel.MessageEvent,
@@ -422,6 +474,15 @@ WebChannelBaseTransport.ChannelProperties.prototype.isSpdyEnabled = function() {
 /**
  * @override
  */
+WebChannelBaseTransport.ChannelProperties.prototype.getPendingRequestCount =
+    function() {
+  return this.channel_.getForwardChannelRequestPool().getRequestCount();
+};
+
+
+/**
+ * @override
+ */
 WebChannelBaseTransport.ChannelProperties.prototype.getHttpSessionId =
     function() {
   return this.channel_.getHttpSessionId();
@@ -431,8 +492,10 @@ WebChannelBaseTransport.ChannelProperties.prototype.getHttpSessionId =
 /**
  * @override
  */
-WebChannelBaseTransport.ChannelProperties.prototype.commit =
-    goog.abstractMethod;
+WebChannelBaseTransport.ChannelProperties.prototype.commit = function(
+    callback) {
+  this.channel_.setForwardChannelFlushCallback(callback);
+};
 
 
 /**

@@ -20,6 +20,8 @@ goog.setTestOnly('goog.testing.StrictMock');
 goog.provide('goog.testing.StrictMock');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
+goog.require('goog.structs.Set');
 goog.require('goog.testing.Mock');
 
 
@@ -47,17 +49,23 @@ goog.testing.StrictMock = function(
 
   /**
    * An array of MockExpectations.
-   * @type {Array<goog.testing.MockExpectation>}
+   * @type {!Array<!goog.testing.MockExpectation>}
    * @private
    */
   this.$expectations_ = [];
+
+  /** @private {!goog.structs.Set<!goog.testing.MockExpectation>} */
+  this.awaitingExpectations_ = new goog.structs.Set();
 };
 goog.inherits(goog.testing.StrictMock, goog.testing.Mock);
 
 
 /** @override */
 goog.testing.StrictMock.prototype.$recordExpectation = function() {
-  this.$expectations_.push(this.$pendingExpectation);
+  if (this.$pendingExpectation) {
+    this.$expectations_.push(this.$pendingExpectation);
+    this.awaitingExpectations_.add(this.$pendingExpectation);
+  }
 };
 
 
@@ -78,6 +86,8 @@ goog.testing.StrictMock.prototype.$recordCall = function(name, args) {
     }
 
     this.$expectations_.shift();
+    this.awaitingExpectations_.remove(currentExpectation);
+    this.maybeFinishedWithExpectations_();
     if (this.$expectations_.length < 1) {
       // Nothing left, but this may be a failed attempt to call the previous
       // item on the list, which may have been between its min and max.
@@ -96,6 +106,10 @@ goog.testing.StrictMock.prototype.$recordCall = function(name, args) {
   if (currentExpectation.actualCalls == currentExpectation.maxCalls) {
     this.$expectations_.shift();
   }
+  if (currentExpectation.actualCalls >= currentExpectation.minCalls) {
+    this.awaitingExpectations_.remove(currentExpectation);
+    this.maybeFinishedWithExpectations_();
+  }
 
   return this.$do(currentExpectation, args);
 };
@@ -106,6 +120,36 @@ goog.testing.StrictMock.prototype.$reset = function() {
   goog.testing.StrictMock.superClass_.$reset.call(this);
 
   goog.array.clear(this.$expectations_);
+  this.awaitingExpectations_.clear();
+};
+
+
+/** @override */
+goog.testing.StrictMock.prototype.$waitAndVerify = function() {
+  for (var i = 0; i < this.$expectations_.length; i++) {
+    var expectation = this.$expectations_[i];
+    goog.asserts.assert(
+        !isFinite(expectation.maxCalls) ||
+            expectation.minCalls == expectation.maxCalls,
+        'Mock expectations cannot have a loose number of expected calls to ' +
+            'use $waitAndVerify.');
+  }
+  var promise = goog.testing.StrictMock.base(this, '$waitAndVerify');
+  this.maybeFinishedWithExpectations_();
+  return promise;
+};
+
+/**
+ * @private
+ */
+goog.testing.StrictMock.prototype.maybeFinishedWithExpectations_ = function() {
+  var unresolvedExpectations =
+      goog.array.count(this.$expectations_, function(expectation) {
+        return expectation.actualCalls < expectation.minCalls;
+      });
+  if (this.waitingForExpectations && !unresolvedExpectations) {
+    this.waitingForExpectations.resolve();
+  }
 };
 
 

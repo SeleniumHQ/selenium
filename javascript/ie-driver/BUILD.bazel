@@ -23,8 +23,8 @@ closure_js_library(
         "//javascript/atoms:errors",
         "//javascript/atoms:locators",
         "//javascript/atoms:useragent",
-        "@io_bazel_rules_closure//closure/library/math:coordinate",
-        "@io_bazel_rules_closure//closure/library/style",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/style",
     ],
 )
 
