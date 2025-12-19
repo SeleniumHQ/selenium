@@ -4,7 +4,8 @@
 target :lib do
   signature 'sig', '.gem_rbs_collection/rubyzip' # Signature directory
   check 'lib' # Directory name
-  # Total amount of errors ignore 66 in 31 files
+
+  # Total amount of errors ignore 64 in 29 files
   ignore(
     # Ignore all files in the bidi directory until we decide the implementation
     'lib/selenium/webdriver/bidi/**/*.rb',
@@ -41,9 +42,7 @@ target :lib do
     'lib/selenium/webdriver/common/child_process.rb',
     # Ignore due to Net::HTTP not being found on line 49
     'lib/selenium/webdriver/chromium/driver.rb',
-    # Ignore due to error on line 37 with include?
-    'lib/selenium/webdriver/support/guards/guard_condition.rb',
-    # Ignore due to positional argument error on line 69
+    # Ignore due to positional argument error with TCPServer rescue on line 69
     'lib/selenium/webdriver/common/socket_lock.rb',
     # Ignore due to is_a? bot error on line 70
     'lib/selenium/webdriver/remote/driver.rb',
@@ -61,9 +60,7 @@ target :lib do
     'lib/selenium/webdriver/common/wait.rb',
     # Kwargs issue on line 74
     'lib/selenium/webdriver/common/driver.rb',
-    # issue with the Zipper RBS library on line 54
-    'lib/selenium/webdriver/firefox/extension.rb',
-    # Ignored due to return of last match in line 57 and 59
+    # Ignore due to Regexp.last_match(1) possibly returning nil on lines 57-59
     'lib/selenium/webdriver/firefox/profiles_ini.rb',
     # Ignored due to error on line 100 of response being nillable
     'lib/selenium/webdriver/remote/http/default.rb',
