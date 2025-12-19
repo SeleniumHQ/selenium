@@ -28,7 +28,7 @@ module.exports = {
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/src/tests/__mocks__/styleMock.js'
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(pretty-ms|parse-ms)/)'
+    'node_modules/(?!(\\.aspect_rules_js/.*/)?(pretty-ms|parse-ms)/)'
   ],
   setupFilesAfterEnv: [
     '<rootDir>/src/setupTests.tsx',
