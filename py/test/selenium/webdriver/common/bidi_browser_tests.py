@@ -15,10 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import http.server
 import os
-import socketserver
-import threading
 
 import pytest
 
@@ -28,27 +25,8 @@ from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.session import UserPromptHandler, UserPromptHandlerType
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.proxy import Proxy, ProxyType
-from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.common.window import WindowTypes
 from selenium.webdriver.support.ui import WebDriverWait
-
-
-def start_local_http_server(port, response_content=b"local server response", log_prefix=None):
-    class Handler(http.server.SimpleHTTPRequestHandler):
-        def do_GET(self):
-            if log_prefix:
-                print(f"[{log_prefix}] Intercepted request to: {self.path}")
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(response_content)
-
-    server = socketserver.TCPServer(("localhost", port), Handler)
-    threading.Thread(target=server.serve_forever, daemon=True).start()
-    return server
-
-
-def start_fake_proxy(port):
-    return start_local_http_server(port, response_content=b"proxied response", log_prefix="Fake Proxy")
 
 
 def test_browser_initialized(driver):
@@ -168,15 +146,13 @@ def test_create_user_context_with_direct_proxy(driver):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
-def test_create_user_context_with_manual_proxy_all_params(driver):
+def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
     """Test creating a user context with manual proxy configuration."""
-    # Start a fake proxy server
-    proxy_port = free_port()
-    fake_proxy_server = start_fake_proxy(port=proxy_port)
+    create_proxy_server = proxy_server(response_content=b"proxied response")
+    no_proxy_server = proxy_server(response_content=b"direct connection - not proxied")
 
-    # Start a local HTTP server for the no_proxy test
-    no_proxy_port = free_port()
-    no_proxy_server = start_local_http_server(port=no_proxy_port, response_content=b"direct connection - not proxied")
+    proxy_port = create_proxy_server["port"]
+    no_proxy_port = no_proxy_server["port"]
 
     proxy = Proxy()
     proxy.proxy_type = ProxyType.MANUAL
@@ -206,18 +182,13 @@ def test_create_user_context_with_manual_proxy_all_params(driver):
 
     finally:
         driver.browser.remove_user_context(user_context)
-        no_proxy_server.shutdown()
-        no_proxy_server.server_close()
-        fake_proxy_server.shutdown()
-        fake_proxy_server.server_close()
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
-def test_create_user_context_with_proxy_and_accept_insecure_certs(driver):
+def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_server):
     """Test creating a user context with both acceptInsecureCerts and proxy parameters."""
-    # Start fake proxy server
-    port = free_port()
-    fake_proxy_server = start_fake_proxy(port=port)
+    create_proxy_server = proxy_server(response_content=b"proxied response")
+    port = create_proxy_server["port"]
 
     proxy = Proxy()
     proxy.proxy_type = ProxyType.MANUAL
@@ -243,8 +214,6 @@ def test_create_user_context_with_proxy_and_accept_insecure_certs(driver):
 
     finally:
         driver.browser.remove_user_context(user_context)
-        fake_proxy_server.shutdown()
-        fake_proxy_server.server_close()
 
 
 def test_create_user_context_with_unhandled_prompt_behavior(driver, pages):
