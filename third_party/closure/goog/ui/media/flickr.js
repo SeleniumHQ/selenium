@@ -19,14 +19,14 @@
  *
  * goog.ui.media.FlickrSet is actually a {@link goog.ui.ControlRenderer}, a
  * stateless class - that could/should be used as a Singleton with the static
- * method {@code goog.ui.media.FlickrSet.getInstance} -, that knows how to
+ * method `goog.ui.media.FlickrSet.getInstance` -, that knows how to
  * render Flickr sets. It is designed to be used with a {@link goog.ui.Control},
  * which will actually control the media renderer and provide the
  * {@link goog.ui.Component} base. This design guarantees that all different
  * types of medias will behave alike but will look different.
  *
- * goog.ui.media.FlickrSet expects a {@code goog.ui.media.FlickrSetModel} on
- * {@code goog.ui.Control.getModel} as data models, and renders a flash object
+ * goog.ui.media.FlickrSet expects a `goog.ui.media.FlickrSetModel` on
+ * `goog.ui.Control.getModel` as data models, and renders a flash object
  * that will show the contents of that set.
  *
  * Example of usage:
@@ -77,8 +77,8 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * This class knows how to parse FlickrSet URLs, and render the DOM structure
  * of flickr set players. This class is meant to be used as a singleton static
- * stateless class, that takes {@code goog.ui.media.Media} instances and renders
- * it. It expects {@code goog.ui.media.Media.getModel} to return a well formed,
+ * stateless class, that takes `goog.ui.media.Media` instances and renders
+ * it. It expects `goog.ui.media.Media.getModel` to return a well formed,
  * previously constructed, set id {@see goog.ui.media.FlickrSet.parseUrl},
  * which is the data model this renderer will use to construct the DOM
  * structure. {@see goog.ui.media.FlickrSet.newControl} for a example of
@@ -132,7 +132,7 @@ goog.ui.media.FlickrSet.flashUrl_ = goog.html.TrustedResourceUrl.fromConstant(
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @return {!goog.ui.media.Media} A Control binded to the FlickrSet renderer.
- * @throws exception in case {@code flickrSetUrl} is an invalid flickr set URL.
+ * @throws exception in case `flickrSetUrl` is an invalid flickr set URL.
  * TODO(user): use {@link goog.ui.media.MediaModel} once it is checked in.
  */
 goog.ui.media.FlickrSet.newControl = function(dataModel, opt_domHelper) {
@@ -194,8 +194,8 @@ goog.ui.media.FlickrSet.prototype.getCssClass = function() {
 
 
 /**
- * The {@code goog.ui.media.FlickrAlbum} media data model. It stores a required
- * {@code userId} and {@code setId} fields, sets the flickr Set URL, and
+ * The `goog.ui.media.FlickrAlbum` media data model. It stores a required
+ * `userId` and `setId` fields, sets the flickr Set URL, and
  * allows a few optional parameters.
  *
  * @param {string} userId The flickr userId associated with this set.
@@ -257,7 +257,7 @@ goog.ui.media.FlickrSetModel.MATCHER_ =
 
 
 /**
- * Takes a {@code flickrSetUrl} and extracts the flickr username and set id.
+ * Takes a `flickrSetUrl` and extracts the flickr username and set id.
  *
  * @param {string} flickrSetUrl A Flickr set URL.
  * @param {string=} opt_caption An optional caption of the flickr set.
@@ -273,7 +273,7 @@ goog.ui.media.FlickrSetModel.newInstance = function(
     return new goog.ui.media.FlickrSetModel(
         data[1], data[2], opt_caption, opt_description);
   }
-  throw Error('failed to parse flickr url: ' + flickrSetUrl);
+  throw new Error('failed to parse flickr url: ' + flickrSetUrl);
 };
 
 

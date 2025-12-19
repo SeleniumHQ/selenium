@@ -13,19 +13,12 @@
 // limitations under the License.
 
 /**
- * @fileoverview A collection similar to
- * {@code goog.labs.structs.Map}, but also allows associating multiple
- * values with a single key.
- *
- * This implementation ensures that you can use any string keys.
- *
- * @author chrishenry@google.com (Chris Henry)
+ * @fileoverview A Map that associates multiple values with a single key.
  */
 
 goog.provide('goog.labs.structs.Multimap');
 
 goog.require('goog.array');
-goog.require('goog.labs.structs.Map');
 goog.require('goog.object');
 
 
@@ -35,6 +28,7 @@ goog.require('goog.object');
  * @constructor
  * @struct
  * @final
+ * @template K, V
  */
 goog.labs.structs.Multimap = function() {
   this.clear();
@@ -43,15 +37,13 @@ goog.labs.structs.Multimap = function() {
 
 /**
  * The backing map.
- * @type {!goog.labs.structs.Map}
- * @private
+ * @private {!Map<K, !Array<V>>}
  */
 goog.labs.structs.Multimap.prototype.map_;
 
 
 /**
- * @type {number}
- * @private
+ * @private {number}
  */
 goog.labs.structs.Multimap.prototype.count_ = 0;
 
@@ -61,13 +53,13 @@ goog.labs.structs.Multimap.prototype.count_ = 0;
  */
 goog.labs.structs.Multimap.prototype.clear = function() {
   this.count_ = 0;
-  this.map_ = new goog.labs.structs.Map();
+  this.map_ = new Map();
 };
 
 
 /**
  * Clones this multimap.
- * @return {!goog.labs.structs.Multimap} A multimap that contains all
+ * @return {!goog.labs.structs.Multimap<K, V>} A multimap that contains all
  *     the mapping this multimap has.
  */
 goog.labs.structs.Multimap.prototype.clone = function() {
@@ -80,8 +72,8 @@ goog.labs.structs.Multimap.prototype.clone = function() {
 /**
  * Adds the given (key, value) pair to the map. The (key, value) pair
  * is guaranteed to be added.
- * @param {string} key The key to add.
- * @param {*} value The value to add.
+ * @param {K} key The key to add.
+ * @param {V} value The value to add.
  */
 goog.labs.structs.Multimap.prototype.add = function(key, value) {
   var values = this.map_.get(key);
@@ -97,8 +89,8 @@ goog.labs.structs.Multimap.prototype.add = function(key, value) {
 /**
  * Stores a collection of values to the given key. Does not replace
  * existing (key, value) pairs.
- * @param {string} key The key to add.
- * @param {!Array<*>} values The values to add.
+ * @param {K} key The key to add.
+ * @param {!Array<V>} values The values to add.
  */
 goog.labs.structs.Multimap.prototype.addAllValues = function(key, values) {
   goog.array.forEach(values, function(v) { this.add(key, v); }, this);
@@ -107,7 +99,7 @@ goog.labs.structs.Multimap.prototype.addAllValues = function(key, values) {
 
 /**
  * Adds the contents of the given map/multimap to this multimap.
- * @param {!(goog.labs.structs.Map|goog.labs.structs.Multimap)} map The
+ * @param {!goog.labs.structs.Multimap<K, V>} map The
  *     map to add.
  */
 goog.labs.structs.Multimap.prototype.addAllFromMultimap = function(map) {
@@ -119,9 +111,9 @@ goog.labs.structs.Multimap.prototype.addAllFromMultimap = function(map) {
 
 /**
  * Replaces all the values for the given key with the given values.
- * @param {string} key The key whose values are to be replaced.
- * @param {!Array<*>} values The new values. If empty, this is
- *     equivalent to {@code removaAll(key)}.
+ * @param {K} key The key whose values are to be replaced.
+ * @param {!Array<V>} values The new values. If empty, this is
+ *     equivalent to `removeAll(key)`.
  */
 goog.labs.structs.Multimap.prototype.replaceValues = function(key, values) {
   this.removeAll(key);
@@ -131,25 +123,25 @@ goog.labs.structs.Multimap.prototype.replaceValues = function(key, values) {
 
 /**
  * Gets the values correspond to the given key.
- * @param {string} key The key to retrieve.
- * @return {!Array<*>} An array of values corresponding to the given
+ * @param {K} key The key to retrieve.
+ * @return {!Array<V>} An array of values corresponding to the given
  *     key. May be empty. Note that the ordering of values are not
  *     guaranteed to be consistent.
  */
 goog.labs.structs.Multimap.prototype.get = function(key) {
-  var values = /** @type {Array<*>} */ (this.map_.get(key));
+  var values = this.map_.get(key);
   return values ? goog.array.clone(values) : [];
 };
 
 
 /**
  * Removes a single occurrence of (key, value) pair.
- * @param {string} key The key to remove.
- * @param {*} value The value to remove.
+ * @param {K} key The key to remove.
+ * @param {V} value The value to remove.
  * @return {boolean} Whether any matching (key, value) pair is removed.
  */
 goog.labs.structs.Multimap.prototype.remove = function(key, value) {
-  var values = /** @type {Array<*>} */ (this.map_.get(key));
+  var values = this.map_.get(key);
   if (!values) {
     return false;
   }
@@ -160,7 +152,7 @@ goog.labs.structs.Multimap.prototype.remove = function(key, value) {
   if (removed) {
     this.count_--;
     if (values.length == 0) {
-      this.map_.remove(key);
+      this.map_.delete(key);
     }
   }
   return removed;
@@ -169,7 +161,7 @@ goog.labs.structs.Multimap.prototype.remove = function(key, value) {
 
 /**
  * Removes all values corresponding to the given key.
- * @param {string} key The key whose values are to be removed.
+ * @param {K} key The key whose values are to be removed.
  * @return {boolean} Whether any value is removed.
  */
 goog.labs.structs.Multimap.prototype.removeAll = function(key) {
@@ -177,7 +169,7 @@ goog.labs.structs.Multimap.prototype.removeAll = function(key) {
   // we need to keep track of count (and correctly calculates the
   // return value). values may be undefined.
   var values = this.map_.get(key);
-  if (this.map_.remove(key)) {
+  if (this.map_.delete(key)) {
     this.count_ -= values.length;
     return true;
   }
@@ -203,12 +195,12 @@ goog.labs.structs.Multimap.prototype.getCount = function() {
 
 
 /**
- * @param {string} key The key to check.
- * @param {*} value The value to check.
+ * @param {K} key The key to check.
+ * @param {V} value The value to check.
  * @return {boolean} Whether the (key, value) pair exists in the multimap.
  */
 goog.labs.structs.Multimap.prototype.containsEntry = function(key, value) {
-  var values = /** @type {Array<*>} */ (this.map_.get(key));
+  var values = this.map_.get(key);
   if (!values) {
     return false;
   }
@@ -220,47 +212,43 @@ goog.labs.structs.Multimap.prototype.containsEntry = function(key, value) {
 
 
 /**
- * @param {string} key The key to check.
+ * @param {K} key The key to check.
  * @return {boolean} Whether the multimap contains at least one (key,
  *     value) pair with the given key.
  */
 goog.labs.structs.Multimap.prototype.containsKey = function(key) {
-  return this.map_.containsKey(key);
+  return this.getKeys().includes(key);
 };
 
 
 /**
- * @param {*} value The value to check.
+ * @param {V} value The value to check.
  * @return {boolean} Whether the multimap contains at least one (key,
  *     value) pair with the given value.
  */
 goog.labs.structs.Multimap.prototype.containsValue = function(value) {
-  return goog.array.some(this.map_.getValues(), function(values) {
-    return goog.array.some(/** @type {Array<?>} */ (values), function(v) {
-      return goog.object.is(v, value);
-    });
-  });
+  return this.getValues().includes(value);
 };
 
 
 /**
- * @return {!Array<string>} An array of unique keys.
+ * @return {!Array<K>} An array of unique keys.
  */
 goog.labs.structs.Multimap.prototype.getKeys = function() {
-  return this.map_.getKeys();
+  return [...this.map_.keys()];
 };
 
 
 /**
- * @return {!Array<*>} An array of values. There may be duplicates.
+ * @return {!Array<V>} An array of values. There may be duplicates.
  */
 goog.labs.structs.Multimap.prototype.getValues = function() {
-  return goog.array.flatten(this.map_.getValues());
+  return goog.array.flatten([...this.map_.values()]);
 };
 
 
 /**
- * @return {!Array<!Array<?>>} An array of entries. Each entry is of the
+ * @return {!Array<!Array<K|V>>} An array of entries. Each entry is of the
  *     form [key, value].
  */
 goog.labs.structs.Multimap.prototype.getEntries = function() {

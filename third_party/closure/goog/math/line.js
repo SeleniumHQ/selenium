@@ -15,8 +15,6 @@
 
 /**
  * @fileoverview Represents a line in 2D space.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.math.Line');

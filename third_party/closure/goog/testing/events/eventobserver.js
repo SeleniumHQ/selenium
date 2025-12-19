@@ -28,14 +28,13 @@
  * assertEquals(3, observer.getEvents('select').length);
  * assertEquals(2, observer.getEvents('submit').length);
  * </pre>
- *
- * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.setTestOnly('goog.testing.events.EventObserver');
 goog.provide('goog.testing.events.EventObserver');
 
 goog.require('goog.array');
+goog.require('goog.events.Event');
 
 
 
@@ -72,15 +71,17 @@ goog.testing.events.EventObserver.prototype.handleEvent = function(e) {
 
 
 /**
- * @param {string=} opt_type If given, only return events of this type.
+ * @param {string|!goog.events.EventId=} opt_type If given, only return events
+ *     of this type.
  * @return {!Array<!goog.events.Event>} The events handled, oldest to newest.
  */
 goog.testing.events.EventObserver.prototype.getEvents = function(opt_type) {
   var events = goog.array.clone(this.events_);
 
   if (opt_type) {
-    events = goog.array.filter(
-        events, function(event) { return event.type == opt_type; });
+    events = goog.array.filter(events, function(event) {
+      return event.type == String(opt_type);
+    });
   }
 
   return events;

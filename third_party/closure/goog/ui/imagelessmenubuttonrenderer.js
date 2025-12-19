@@ -21,7 +21,6 @@
  * Based on the Custom Buttons 3.1 visual specification, see
  * http://go/custombuttons
  *
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/imagelessmenubutton.html
  */
 

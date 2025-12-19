@@ -1,0 +1,58 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":interpolator1",
+        ":linear1",
+        ":pchip1",
+        ":spline1",
+    ],
+)
+
+closure_js_library(
+    name = "interpolator1",
+    srcs = ["interpolator1.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "linear1",
+    srcs = ["linear1.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/math/interpolator:interpolator1",
+    ],
+)
+
+closure_js_library(
+    name = "pchip1",
+    srcs = ["pchip1.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/math/interpolator:spline1",
+    ],
+)
+
+closure_js_library(
+    name = "spline1",
+    srcs = ["spline1.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/math:tdma",
+        "//third_party/closure/goog/math/interpolator:interpolator1",
+    ],
+)

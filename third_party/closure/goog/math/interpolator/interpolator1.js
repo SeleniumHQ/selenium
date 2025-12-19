@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview The base interface for one-dimensional data interpolation.
- *
  */
 
 goog.provide('goog.math.interpolator.Interpolator1');

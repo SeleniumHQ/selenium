@@ -19,8 +19,6 @@
  * default) or ordered from most recent to least recent use. By setting a fixed
  * size, the LRU version of the LinkedMap makes an effective object cache. This
  * data structure is similar to Java's LinkedHashMap.
- *
- * @author brenneman@google.com (Shawn Brenneman)
  */
 
 
@@ -210,7 +208,7 @@ goog.structs.LinkedMap.prototype.remove = function(key) {
 
 
 /**
- * Removes a node from the {@code LinkedMap}. It can be overridden to do
+ * Removes a node from the `LinkedMap`. It can be overridden to do
  * further cleanup such as disposing of the node value.
  * @param {!goog.structs.LinkedMap.Node_<string, VALUE>} node The node to
  *     remove.

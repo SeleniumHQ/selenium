@@ -15,11 +15,11 @@
 /**
  * @fileoverview Generics method for collection-like classes and objects.
  *
- * @author arv@google.com (Erik Arvidsson)
  *
  * This file contains functions to work with collections. It supports using
  * Map, Set, Array and Object and other classes that implement collection-like
  * methods.
+ * @suppress {strictMissingProperties}
  */
 
 
@@ -42,7 +42,7 @@ goog.structs.getCount = function(col) {
   if (col.getCount && typeof col.getCount == 'function') {
     return col.getCount();
   }
-  if (goog.isArrayLike(col) || goog.isString(col)) {
+  if (goog.isArrayLike(col) || typeof col === 'string') {
     return col.length;
   }
   return goog.object.getCount(col);
@@ -58,7 +58,7 @@ goog.structs.getValues = function(col) {
   if (col.getValues && typeof col.getValues == 'function') {
     return col.getValues();
   }
-  if (goog.isString(col)) {
+  if (typeof col === 'string') {
     return col.split('');
   }
   if (goog.isArrayLike(col)) {
@@ -87,7 +87,7 @@ goog.structs.getKeys = function(col) {
   if (col.getValues && typeof col.getValues == 'function') {
     return undefined;
   }
-  if (goog.isArrayLike(col) || goog.isString(col)) {
+  if (goog.isArrayLike(col) || typeof col === 'string') {
     var rv = [];
     var l = col.length;
     for (var i = 0; i < l; i++) {
@@ -114,7 +114,7 @@ goog.structs.contains = function(col, val) {
   if (col.containsValue && typeof col.containsValue == 'function') {
     return col.containsValue(val);
   }
-  if (goog.isArrayLike(col) || goog.isString(col)) {
+  if (goog.isArrayLike(col) || typeof col === 'string') {
     return goog.array.contains(/** @type {!Array<?>} */ (col), val);
   }
   return goog.object.containsValue(col, val);
@@ -135,7 +135,7 @@ goog.structs.isEmpty = function(col) {
   // string as
   // collection and as such even whitespace matters
 
-  if (goog.isArrayLike(col) || goog.isString(col)) {
+  if (goog.isArrayLike(col) || typeof col === 'string') {
     return goog.array.isEmpty(/** @type {!Array<?>} */ (col));
   }
   return goog.object.isEmpty(col);
@@ -168,7 +168,7 @@ goog.structs.clear = function(col) {
  *     3 arguments (the value, the key or undefined if the collection has no
  *     notion of keys, and the collection) and the return value is irrelevant.
  * @param {T=} opt_obj The object to be used as the value of 'this'
- *     within {@code f}.
+ *     within `f`.
  * @template T,S
  * @deprecated Use a more specific method, e.g. goog.array.forEach,
  *     goog.object.forEach, or for-of.
@@ -176,7 +176,7 @@ goog.structs.clear = function(col) {
 goog.structs.forEach = function(col, f, opt_obj) {
   if (col.forEach && typeof col.forEach == 'function') {
     col.forEach(f, opt_obj);
-  } else if (goog.isArrayLike(col) || goog.isString(col)) {
+  } else if (goog.isArrayLike(col) || typeof col === 'string') {
     goog.array.forEach(/** @type {!Array<?>} */ (col), f, opt_obj);
   } else {
     var keys = goog.structs.getKeys(col);
@@ -201,7 +201,7 @@ goog.structs.forEach = function(col, f, opt_obj) {
  *     return value is true the value is added to the result collection. If it
  *     is false the value is not included.
  * @param {T=} opt_obj The object to be used as the value of 'this'
- *     within {@code f}.
+ *     within `f`.
  * @return {!Object|!Array<?>} A new collection where the passed values are
  *     present. If col is a key-less collection an array is returned.  If col
  *     has keys and values a plain old JS object is returned.
@@ -211,7 +211,7 @@ goog.structs.filter = function(col, f, opt_obj) {
   if (typeof col.filter == 'function') {
     return col.filter(f, opt_obj);
   }
-  if (goog.isArrayLike(col) || goog.isString(col)) {
+  if (goog.isArrayLike(col) || typeof col === 'string') {
     return goog.array.filter(/** @type {!Array<?>} */ (col), f, opt_obj);
   }
 
@@ -251,7 +251,7 @@ goog.structs.filter = function(col, f, opt_obj) {
  *     collection has no notion of keys, and the collection) and should return
  *     something. The result will be used as the value in the new collection.
  * @param {T=} opt_obj  The object to be used as the value of 'this'
- *     within {@code f}.
+ *     within `f`.
  * @return {!Object<V>|!Array<V>} A new collection with the new values.  If
  *     col is a key-less collection an array is returned.  If col has keys and
  *     values a plain old JS object is returned.
@@ -261,7 +261,7 @@ goog.structs.map = function(col, f, opt_obj) {
   if (typeof col.map == 'function') {
     return col.map(f, opt_obj);
   }
-  if (goog.isArrayLike(col) || goog.isString(col)) {
+  if (goog.isArrayLike(col) || typeof col === 'string') {
     return goog.array.map(/** @type {!Array<?>} */ (col), f, opt_obj);
   }
 
@@ -297,7 +297,7 @@ goog.structs.map = function(col, f, opt_obj) {
  *     if the collection has no notion of keys, and the collection) and should
  *     return a boolean.
  * @param {T=} opt_obj  The object to be used as the value of 'this'
- *     within {@code f}.
+ *     within `f`.
  * @return {boolean} True if any value passes the test.
  * @template T,S
  */
@@ -305,7 +305,7 @@ goog.structs.some = function(col, f, opt_obj) {
   if (typeof col.some == 'function') {
     return col.some(f, opt_obj);
   }
-  if (goog.isArrayLike(col) || goog.isString(col)) {
+  if (goog.isArrayLike(col) || typeof col === 'string') {
     return goog.array.some(/** @type {!Array<?>} */ (col), f, opt_obj);
   }
   var keys = goog.structs.getKeys(col);
@@ -331,7 +331,7 @@ goog.structs.some = function(col, f, opt_obj) {
  *     undefined if the collection has no notion of keys, and the collection)
  *     and should return a boolean.
  * @param {T=} opt_obj  The object to be used as the value of 'this'
- *     within {@code f}.
+ *     within `f`.
  * @return {boolean} True if all key-value pairs pass the test.
  * @template T,S
  */
@@ -339,7 +339,7 @@ goog.structs.every = function(col, f, opt_obj) {
   if (typeof col.every == 'function') {
     return col.every(f, opt_obj);
   }
-  if (goog.isArrayLike(col) || goog.isString(col)) {
+  if (goog.isArrayLike(col) || typeof col === 'string') {
     return goog.array.every(/** @type {!Array<?>} */ (col), f, opt_obj);
   }
   var keys = goog.structs.getKeys(col);

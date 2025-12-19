@@ -16,17 +16,21 @@
  * @fileoverview Provides a function to schedule running a function as soon
  * as possible after the current JS execution stops and yields to the event
  * loop.
- *
  */
 
 goog.provide('goog.async.nextTick');
 goog.provide('goog.async.throwException');
 
 goog.require('goog.debug.entryPointRegistry');
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.functions');
+goog.require('goog.html.SafeHtml');
+goog.require('goog.html.TrustedResourceUrl');
 goog.require('goog.labs.userAgent.browser');
 goog.require('goog.labs.userAgent.engine');
+goog.require('goog.string.Const');
 
 
 /**
@@ -100,6 +104,7 @@ goog.async.nextTick = function(callback, opt_context, opt_useSetImmediate) {
  * @return {boolean} Whether to use the implementation of setImmediate defined
  *     on Window.
  * @private
+ * @suppress {missingProperties} For "Window.prototype.setImmediate"
  */
 goog.async.nextTick.useSetImmediate_ = function() {
   // Not a browser environment.
@@ -157,15 +162,16 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
     /** @constructor */
     Channel = function() {
       // Make an empty, invisible iframe.
-      var iframe = /** @type {!HTMLIFrameElement} */ (
-          document.createElement(String(goog.dom.TagName.IFRAME)));
+      var iframe = goog.dom.createElement(goog.dom.TagName.IFRAME);
       iframe.style.display = 'none';
-      iframe.src = '';
+      goog.dom.safe.setIframeSrc(
+          iframe,
+          goog.html.TrustedResourceUrl.fromConstant(goog.string.Const.EMPTY));
       document.documentElement.appendChild(iframe);
       var win = iframe.contentWindow;
       var doc = win.document;
       doc.open();
-      doc.write('');
+      goog.dom.safe.documentWrite(doc, goog.html.SafeHtml.EMPTY);
       doc.close();
       // Do not post anything sensitive over this channel, as the workaround for
       // pages with file: origin could allow that information to be modified or
@@ -173,7 +179,6 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       var message = 'callImmediate' + Math.random();
       // The same origin policy rejects attempts to postMessage from file: urls
       // unless the origin is '*'.
-      // TODO(b/16335441): Use '*' origin for data: and other similar protocols.
       var origin = win.location.protocol == 'file:' ?
           '*' :
           win.location.protocol + '//' + win.location.host;
@@ -205,7 +210,7 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
     var head = {};
     var tail = head;
     channel['port1'].onmessage = function() {
-      if (goog.isDef(head.next)) {
+      if (head.next !== undefined) {
         head = head.next;
         var cb = head.cb;
         head.cb = null;
@@ -221,10 +226,9 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
   // Implementation for IE6 to IE10: Script elements fire an asynchronous
   // onreadystatechange event when inserted into the DOM.
   if (typeof document !== 'undefined' &&
-      'onreadystatechange' in
-          document.createElement(String(goog.dom.TagName.SCRIPT))) {
+      'onreadystatechange' in goog.dom.createElement(goog.dom.TagName.SCRIPT)) {
     return function(cb) {
-      var script = document.createElement(String(goog.dom.TagName.SCRIPT));
+      var script = goog.dom.createElement(goog.dom.TagName.SCRIPT);
       script.onreadystatechange = function() {
         // Clean up and call the callback.
         script.onreadystatechange = null;

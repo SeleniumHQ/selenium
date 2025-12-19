@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview A toolbar menu button renderer.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ToolbarMenuButtonRenderer');

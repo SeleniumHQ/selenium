@@ -15,7 +15,6 @@
 /**
  * @fileoverview Utilities for creating and working with iframes
  * cross-browser.
- * @author gboyer@google.com (Garry Boyer)
  */
 
 
@@ -58,7 +57,7 @@ goog.dom.iframe.BLANK_SOURCE =
 
 /**
  * Safe source for a new blank iframe that may not cause a new load of the
- * iframe. This is different from {@code goog.dom.iframe.BLANK_SOURCE} in that
+ * iframe. This is different from `goog.dom.iframe.BLANK_SOURCE` in that
  * it will allow an iframe to be loaded synchronously in more browsers, notably
  * Gecko, following the javascript protocol spec.
  *
@@ -67,7 +66,7 @@ goog.dom.iframe.BLANK_SOURCE =
  *
  * Due to cross-browser differences, the load is not guaranteed  to be
  * synchronous. If code depends on the load of the iframe,
- * then {@code goog.net.IframeLoadMonitor} or a similar technique should be
+ * then `goog.net.IframeLoadMonitor` or a similar technique should be
  * used.
  *
  * According to
@@ -131,13 +130,14 @@ goog.dom.iframe.createBlank = function(domHelper, opt_styles) {
   } else {  // undefined.
     styles = '';
   }
-  return domHelper.createDom(goog.dom.TagName.IFRAME, {
+  var iframe = domHelper.createDom(goog.dom.TagName.IFRAME, {
     'frameborder': 0,
     // Since iframes are inline elements, we must align to bottom to
     // compensate for the line descent.
-    'style': goog.dom.iframe.STYLES_ + styles,
-    'src': goog.dom.iframe.BLANK_SOURCE
+    'style': goog.dom.iframe.STYLES_ + styles
   });
+  goog.dom.safe.setIframeSrc(iframe, goog.dom.iframe.BLANK_SOURCE_URL);
+  return iframe;
 };
 
 
@@ -164,7 +164,7 @@ goog.dom.iframe.writeSafeContent = function(iframe, content) {
  * Creates a same-domain iframe containing preloaded content.
  *
  * This is primarily useful for DOM sandboxing.  One use case is to embed
- * a trusted Javascript app with potentially conflicting CSS styles.  The
+ * a trusted JavaScript app with potentially conflicting CSS styles.  The
  * second case is to reduce the cost of layout passes by the browser -- for
  * example, you can perform sandbox sizing of characters in an iframe while
  * manipulating a heavy DOM in the main window.  The iframe and parent frame
@@ -186,9 +186,10 @@ goog.dom.iframe.createWithContent = function(
   var domHelper = goog.dom.getDomHelper(parentElement);
 
   var content = goog.html.SafeHtml.create(
-      'html', {}, goog.html.SafeHtml.concat(
-                      goog.html.SafeHtml.create('head', {}, opt_headContents),
-                      goog.html.SafeHtml.create('body', {}, opt_bodyContents)));
+      'html', {},
+      goog.html.SafeHtml.concat(
+          goog.html.SafeHtml.create('head', {}, opt_headContents),
+          goog.html.SafeHtml.create('body', {}, opt_bodyContents)));
   if (!opt_quirks) {
     content =
         goog.html.SafeHtml.concat(goog.html.SafeHtml.DOCTYPE_HTML, content);

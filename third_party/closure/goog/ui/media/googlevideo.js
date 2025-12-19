@@ -18,21 +18,21 @@
  *
  * goog.ui.media.GoogleVideo is actually a {@link goog.ui.ControlRenderer}, a
  * stateless class - that could/should be used as a Singleton with the static
- * method {@code goog.ui.media.GoogleVideo.getInstance} -, that knows how to
+ * method `goog.ui.media.GoogleVideo.getInstance` -, that knows how to
  * render GoogleVideo videos. It is designed to be used with a
  * {@link goog.ui.Control}, which will actually control the media renderer and
  * provide the {@link goog.ui.Component} base. This design guarantees that all
  * different types of medias will behave alike but will look different.
  *
- * goog.ui.media.GoogleVideo expects {@code goog.ui.media.GoogleVideoModel} on
- * {@code goog.ui.Control.getModel} as data models, and renders a flash object
+ * goog.ui.media.GoogleVideo expects `goog.ui.media.GoogleVideoModel` on
+ * `goog.ui.Control.getModel` as data models, and renders a flash object
  * that will show the contents of that video.
  *
  * Example of usage:
  *
  * <pre>
  *   var video = goog.ui.media.GoogleVideoModel.newInstance(
- *       'http://video.google.com/videoplay?docid=6698933542780842398');
+ *       'https://video.google.com/videoplay?docid=6698933542780842398');
  *   goog.ui.media.GoogleVideo.newControl(video).render();
  * </pre>
  *
@@ -59,8 +59,9 @@
 goog.provide('goog.ui.media.GoogleVideo');
 goog.provide('goog.ui.media.GoogleVideoModel');
 
-goog.require('goog.html.uncheckedconversions');
+goog.require('goog.html.TrustedResourceUrl');
 goog.require('goog.string');
+goog.require('goog.string.Const');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
@@ -74,8 +75,8 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * This class knows how to parse GoogleVideo URLs, and render the DOM structure
  * of GoogleVideo video players. This class is meant to be used as a singleton
- * static stateless class, that takes {@code goog.ui.media.Media} instances and
- * renders it. It expects {@code goog.ui.media.Media.getModel} to return a well
+ * static stateless class, that takes `goog.ui.media.Media` instances and
+ * renders it. It expects `goog.ui.media.Media.getModel` to return a well
  * formed, previously constructed, GoogleVideo video id, which is the data model
  * this renderer will use to construct the DOM structure.
  * {@see goog.ui.media.GoogleVideo.newControl} for a example of constructing a
@@ -166,8 +167,8 @@ goog.ui.media.GoogleVideo.prototype.getCssClass = function() {
 
 
 /**
- * The {@code goog.ui.media.GoogleVideo} media data model. It stores a required
- * {@code videoId} field, sets the GoogleVideo URL, and allows a few optional
+ * The `goog.ui.media.GoogleVideo` media data model. It stores a required
+ * `videoId` field, sets the GoogleVideo URL, and allows a few optional
  * parameters.
  *
  * @param {string} videoId The GoogleVideo video id.
@@ -208,7 +209,7 @@ goog.inherits(goog.ui.media.GoogleVideoModel, goog.ui.media.MediaModel);
  * @const
  */
 goog.ui.media.GoogleVideoModel.MATCHER_ =
-    /^http:\/\/(?:www\.)?video\.google\.com\/videoplay.*[\?#]docid=(-?[0-9]+)#?$/i;
+    /^https?:\/\/(?:www\.)?video\.google\.com\/videoplay.*[\?#]docid=(-?[0-9]+)#?$/i;
 
 
 /**
@@ -233,20 +234,20 @@ goog.ui.media.GoogleVideoModel.newInstance = function(
         data[1], opt_caption, opt_description, opt_autoplay);
   }
 
-  throw Error(
+  throw new Error(
       'failed to parse video id from GoogleVideo url: ' + googleVideoUrl);
 };
 
 
 /**
- * The opposite of {@code goog.ui.media.GoogleVideo.newInstance}: it takes a
+ * The opposite of `goog.ui.media.GoogleVideo.newInstance`: it takes a
  * videoId and returns a GoogleVideo URL.
  *
  * @param {string} videoId The GoogleVideo video ID.
  * @return {string} The GoogleVideo URL.
  */
 goog.ui.media.GoogleVideoModel.buildUrl = function(videoId) {
-  return 'http://video.google.com/videoplay?docid=' +
+  return 'https://video.google.com/videoplay?docid=' +
       goog.string.urlEncode(videoId);
 };
 
@@ -262,12 +263,14 @@ goog.ui.media.GoogleVideoModel.buildUrl = function(videoId) {
  *     page.
  */
 goog.ui.media.GoogleVideoModel.buildFlashUrl = function(videoId, opt_autoplay) {
-  var autoplay = opt_autoplay ? '&autoplay=1' : '';
-    return goog.html.uncheckedconversions.
-      trustedResourceUrlFromStringKnownToSatisfyTypeContract(
-          goog.string.Const.from('Fixed domain, encoded path.'),
-          'http://video.google.com/googleplayer.swf?docid=' +
-              goog.string.urlEncode(videoId) + '&hl=en&fs=true' + autoplay);
+  return goog.html.TrustedResourceUrl.format(
+      goog.string.Const.from(
+          'https://video.google.com/googleplayer.swf?docid=%{docid}' +
+          '&hl=en&fs=true%{autoplay}'),
+      {
+        'docid': videoId,
+        'autoplay': opt_autoplay ? goog.string.Const.from('&autoplay=1') : ''
+      });
 };
 
 

@@ -25,8 +25,6 @@
  * https://html.spec.whatwg.org/multipage/forms.html#dom-button-type
  * https://html.spec.whatwg.org/multipage/forms.html#dom-select-type
  * https://html.spec.whatwg.org/multipage/forms.html#dom-textarea-type
- *
- * @author mpn@google.com (Michal Nazarewicz)
  */
 goog.provide('goog.dom.InputType');
 

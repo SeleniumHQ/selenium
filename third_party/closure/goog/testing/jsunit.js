@@ -18,7 +18,6 @@
  *
  * Testing code should not have dependencies outside of goog.testing so as to
  * reduce the chance of masking missing dependencies.
- *
  */
 
 goog.setTestOnly('goog.testing.jsunit');
@@ -27,21 +26,25 @@ goog.provide('goog.testing.jsunit');
 goog.require('goog.dom.TagName');
 goog.require('goog.testing.TestCase');
 goog.require('goog.testing.TestRunner');
+goog.require('goog.userAgent');
 
 
 /**
  * @define {boolean} If this code is being parsed by JsTestC, we let it disable
  * the onload handler to avoid running the test in JsTestC.
  */
-goog.define('goog.testing.jsunit.AUTO_RUN_ONLOAD', true);
+goog.testing.jsunit.AUTO_RUN_ONLOAD =
+    goog.define('goog.testing.jsunit.AUTO_RUN_ONLOAD', true);
 
 
 /**
  * @define {number} Sets a delay in milliseconds after the window onload event
- * and running the tests. Used to prevent interference with Selenium and give
- * tests with asynchronous operations time to finish loading.
+ * and running the tests. Used as a workaround for IE failing to report load
+ * event if the page has iframes.  The appropriate value is zero;
+ * maximum should be 500.  Do not use this value to support asynchronous tests.
  */
-goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
+goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS =
+    goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 0);
 
 
 (function() {
@@ -68,6 +71,7 @@ goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
   goog.exportSymbol('G_testRunner.initialize', tr.initialize);
   goog.exportSymbol('G_testRunner.isInitialized', tr.isInitialized);
   goog.exportSymbol('G_testRunner.isFinished', tr.isFinished);
+  goog.exportSymbol('G_testRunner.getUniqueId', tr.getUniqueId);
   goog.exportSymbol('G_testRunner.isSuccess', tr.isSuccess);
   goog.exportSymbol('G_testRunner.getReport', tr.getReport);
   goog.exportSymbol('G_testRunner.getRunTime', tr.getRunTime);
@@ -92,14 +96,8 @@ goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
   }
 
   var maybeGetStack = function(error) {
-    if (typeof error == 'object') {
-      var stack = error.stack;
-      if (stack && typeof stack == 'string') {
-        // non-empty string
-        return stack;
-      }
-    }
-    return '';
+    var stack = error && error.stack;
+    return typeof stack === 'string' ? stack : '';
   };
 
   // Add an error handler to report errors that may occur during
@@ -117,9 +115,9 @@ goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
     }
     var stack = maybeGetStack(errObj || messageOrEvent);
     if (stack) {
-      tr.logError(stack);
+      tr.logError(String(messageOrEvent) + '\n' + stack);
     } else if (typeof messageOrEvent == 'object') {
-      var error = messageOrEvent;
+      var error = /** @type {{target: ?}} */ (messageOrEvent);
       // Some older webkit browsers pass an event object as the only argument
       // to window.onerror.  It doesn't contain an error message, url or line
       // number.  We therefore log as much info as we can.
@@ -170,14 +168,23 @@ goog.define('goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS', 500);
       if (onload) {
         onload(e);
       }
-      // Wait so that we don't interfere with WebDriver.
+      // Execute the test on the next turn, to allow the WebDriver.get()
+      // operation to return to the test runner and begin polling.
+      var executionDelayAfterLoad = goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS;
+      if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('11')) {
+        // Older IE Webdriver will not return onload if the page uses iframes.
+        executionDelayAfterLoad =
+            Math.max(goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS, 500);
+      }
+
       realTimeout(function() {
         if (!tr.initialized) {
           var testCase = new goog.testing.TestCase(document.title);
-          goog.testing.TestCase.initializeTestRunner(testCase);
+          goog.testing.TestCase.initializeTestCase(testCase);
+          tr.initialize(testCase);
         }
         tr.execute();
-      }, goog.testing.jsunit.AUTO_RUN_DELAY_IN_MS);
+      }, executionDelayAfterLoad);
       window.onload = null;
     };
   }

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview NetworkStatusMonitor test double.
- * @author dbk@google.com (David Barrett-Kahn)
  */
 
 goog.setTestOnly('goog.testing.events.OnlineHandler');

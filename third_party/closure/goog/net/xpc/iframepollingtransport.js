@@ -24,6 +24,7 @@ goog.provide('goog.net.xpc.IframePollingTransport.Sender');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.log');
 goog.require('goog.log.Level');
 goog.require('goog.net.xpc');
@@ -133,7 +134,7 @@ goog.net.xpc.IframePollingTransport.prototype.initialized_ = false;
 
 /**
  * Reconnection iframe created by inner peer.
- * @type {Element}
+ * @type {?Element}
  * @private
  */
 goog.net.xpc.IframePollingTransport.prototype.reconnectFrame_ = null;
@@ -884,7 +885,7 @@ goog.net.xpc.IframePollingTransport.Sender = function(url, windowObj) {
   // elsewhere than IframePollingTransport the url needs to be sanitized
   // here too.
   if (!/^https?:\/\//.test(url)) {
-    throw Error('URL ' + url + ' is invalid');
+    throw new Error('URL ' + url + ' is invalid');
   }
 
   /**
@@ -930,7 +931,7 @@ goog.net.xpc.IframePollingTransport.Sender.prototype.send = function(payload) {
   try {
     // safari doesn't allow to call location.replace()
     if (goog.userAgent.WEBKIT) {
-      this.sendFrame_.location.href = url;
+      goog.dom.safe.setLocationHref(this.sendFrame_.location, url);
     } else {
       this.sendFrame_.location.replace(url);
     }

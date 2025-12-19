@@ -187,7 +187,7 @@ goog.labs.testing.IsNullOrUndefinedMatcher = function() {};
  */
 goog.labs.testing.IsNullOrUndefinedMatcher.prototype.matches = function(
     actualValue) {
-  return !goog.isDefAndNotNull(actualValue);
+  return actualValue == null;
 };
 
 
@@ -218,7 +218,7 @@ goog.labs.testing.IsNullMatcher = function() {};
  * @override
  */
 goog.labs.testing.IsNullMatcher.prototype.matches = function(actualValue) {
-  return goog.isNull(actualValue);
+  return actualValue === null;
 };
 
 
@@ -248,7 +248,7 @@ goog.labs.testing.IsUndefinedMatcher = function() {};
  * @override
  */
 goog.labs.testing.IsUndefinedMatcher.prototype.matches = function(actualValue) {
-  return !goog.isDef(actualValue);
+  return actualValue === undefined;
 };
 
 
@@ -262,9 +262,9 @@ goog.labs.testing.IsUndefinedMatcher.prototype.describe = function(
 
 
 /** @return {!goog.labs.testing.AnyObjectMatcher} */
-function anyObject() {
+var anyObject = goog.labs.testing.AnyObjectMatcher.anyObject = function() {
   return new goog.labs.testing.AnyObjectMatcher();
-}
+};
 
 
 /**
@@ -277,9 +277,10 @@ function anyObject() {
  * @return {!goog.labs.testing.ObjectEqualsMatcher} A
  *     ObjectEqualsMatcher.
  */
-function equalsObject(object) {
-  return new goog.labs.testing.ObjectEqualsMatcher(object);
-}
+var equalsObject =
+    goog.labs.testing.ObjectEqualsMatcher.equalsObject = function(object) {
+      return new goog.labs.testing.ObjectEqualsMatcher(object);
+    };
 
 
 /**
@@ -289,9 +290,10 @@ function equalsObject(object) {
  *
  * @return {!goog.labs.testing.HasPropertyMatcher} A HasPropertyMatcher.
  */
-function hasProperty(property) {
-  return new goog.labs.testing.HasPropertyMatcher(property);
-}
+var hasProperty =
+    goog.labs.testing.HasPropertyMatcher.hasProperty = function(property) {
+      return new goog.labs.testing.HasPropertyMatcher(property);
+    };
 
 
 /**
@@ -302,9 +304,10 @@ function hasProperty(property) {
  * @return {!goog.labs.testing.InstanceOfMatcher} A
  *     InstanceOfMatcher.
  */
-function instanceOfClass(object) {
-  return new goog.labs.testing.InstanceOfMatcher(object);
-}
+var instanceOfClass =
+    goog.labs.testing.InstanceOfMatcher.instanceOfClass = function(object) {
+      return new goog.labs.testing.InstanceOfMatcher(object);
+    };
 
 
 /**
@@ -312,9 +315,9 @@ function instanceOfClass(object) {
  *
  * @return {!goog.labs.testing.IsNullMatcher} A IsNullMatcher.
  */
-function isNull() {
+var isNull = goog.labs.testing.IsNullMatcher.isNull = function() {
   return new goog.labs.testing.IsNullMatcher();
-}
+};
 
 
 /**
@@ -323,9 +326,10 @@ function isNull() {
  * @return {!goog.labs.testing.IsNullOrUndefinedMatcher} A
  *     IsNullOrUndefinedMatcher.
  */
-function isNullOrUndefined() {
-  return new goog.labs.testing.IsNullOrUndefinedMatcher();
-}
+var isNullOrUndefined =
+    goog.labs.testing.IsNullOrUndefinedMatcher.isNullOrUndefined = function() {
+      return new goog.labs.testing.IsNullOrUndefinedMatcher();
+    };
 
 
 /**
@@ -333,6 +337,7 @@ function isNullOrUndefined() {
  *
  * @return {!goog.labs.testing.IsUndefinedMatcher} A IsUndefinedMatcher.
  */
-function isUndefined() {
-  return new goog.labs.testing.IsUndefinedMatcher();
-}
+var isUndefined =
+    goog.labs.testing.IsUndefinedMatcher.isUndefined = function() {
+      return new goog.labs.testing.IsUndefinedMatcher();
+    };

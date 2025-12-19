@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Constant declarations for common key values.
- *
  */
 
 goog.provide('goog.events.Keys');
@@ -27,8 +26,20 @@ goog.provide('goog.events.Keys');
  * @enum {string}
  */
 goog.events.Keys = {
-  CTRL: 'Control',
-  SHIFT: 'Shift',
   ALT: 'Meta',
-  ALTGRAPH: 'AltGraph'
+  ALTGRAPH: 'AltGraph',
+  CTRL: 'Control',
+  DOWN: 'ArrowDown',
+  END: 'End',
+  ENTER: 'Enter',
+  ESCAPE: 'Escape',
+  HOME: 'Home',
+  LEFT: 'ArrowLeft',
+  PAGE_DOWN: 'PageDown',
+  PAGE_UP: 'PageUp',
+  RIGHT: 'ArrowRight',
+  SHIFT: 'Shift',
+  SPACE: ' ',
+  TAB: 'Tab',
+  UP: 'ArrowUp',
 };

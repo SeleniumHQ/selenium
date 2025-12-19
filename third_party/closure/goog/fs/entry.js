@@ -18,12 +18,15 @@
  *
  * When adding or modifying functionality in this namespace, be sure to update
  * the mock counterparts in goog.testing.fs.
- *
  */
 goog.provide('goog.fs.DirectoryEntry');
 goog.provide('goog.fs.DirectoryEntry.Behavior');
 goog.provide('goog.fs.Entry');
 goog.provide('goog.fs.FileEntry');
+
+goog.forwardDeclare('goog.async.Deferred');
+goog.forwardDeclare('goog.fs.FileSystem');
+goog.forwardDeclare('goog.fs.FileWriter');
 
 
 

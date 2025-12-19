@@ -19,14 +19,14 @@
  *
  * goog.ui.media.Photo is actually a {@link goog.ui.ControlRenderer},
  * a stateless class - that could/should be used as a Singleton with the static
- * method {@code goog.ui.media.Photo.getInstance} -, that knows how to render
+ * method `goog.ui.media.Photo.getInstance` -, that knows how to render
  * Photos. It is designed to be used with a {@link goog.ui.Control}, which will
  * actually control the media renderer and provide the {@link goog.ui.Component}
  * base. This design guarantees that all different types of medias will behave
  * alike but will look different.
  *
- * goog.ui.media.Photo expects {@code goog.ui.media.MediaModel} on
- * {@code goog.ui.Control.getModel} as data models.
+ * goog.ui.media.Photo expects `goog.ui.media.MediaModel` on
+ * `goog.ui.Control.getModel` as data models.
  *
  * Example of usage:
  *
@@ -49,11 +49,11 @@
  *   photo.setHighlighted(true);
  *   photo.setSelected(true);
  * </pre>
- *
  */
 
 goog.provide('goog.ui.media.Photo');
 
+goog.forwardDeclare('goog.ui.media.MediaModel');
 goog.require('goog.dom.TagName');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaRenderer');
@@ -66,7 +66,7 @@ goog.require('goog.ui.media.MediaRenderer');
  * photos.
  *
  * This class is meant to be used as a singleton static stateless class, that
- * takes {@code goog.ui.media.Media} instances and renders it.
+ * takes `goog.ui.media.Media` instances and renders it.
  *
  * This design is patterned after
  * http://go/closure_control_subclassing
@@ -93,7 +93,7 @@ goog.ui.media.Photo.CSS_CLASS = goog.getCssName('goog-ui-media-photo');
 
 /**
  * A static convenient method to construct a goog.ui.media.Media control out of
- * a photo {@code goog.ui.media.MediaModel}. It sets it as the data model
+ * a photo `goog.ui.media.MediaModel`. It sets it as the data model
  * goog.ui.media.Photo renderer uses, sets the states supported by the renderer,
  * and returns a Control that binds everything together. This is what you
  * should be using for constructing Photos, except if you need finer control

@@ -40,11 +40,6 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.Popup');
 
 
-goog.scope(function() {
-var SafeHtml = goog.html.SafeHtml;
-
-
-
 /**
  * The Bubble provides a general purpose bubble implementation that can be
  * anchored to a particular element and displayed for a period of time.
@@ -62,7 +57,7 @@ var SafeHtml = goog.html.SafeHtml;
 goog.ui.Bubble = function(message, opt_config, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
-  if (goog.isString(message)) {
+  if (typeof message === 'string') {
     message = goog.html.SafeHtml.htmlEscape(message);
   }
 
@@ -130,7 +125,7 @@ goog.ui.Bubble.prototype.timerId_ = 0;
 
 /**
  * Key returned by the listen function for the close button.
- * @type {goog.events.Key}
+ * @type {?goog.events.Key}
  * @private
  */
 goog.ui.Bubble.prototype.listener_ = null;
@@ -185,7 +180,7 @@ goog.ui.Bubble.prototype.setPosition = function(position) {
   } else if (position instanceof goog.positioning.AnchoredPosition) {
     this.setAnchoredPosition_(position.element, position.corner);
   } else {
-    throw Error('Bubble only supports absolute and anchored positions!');
+    throw new Error('Bubble only supports absolute and anchored positions!');
   }
 };
 
@@ -251,7 +246,7 @@ goog.ui.Bubble.prototype.disposeInternal = function() {
  */
 goog.ui.Bubble.prototype.configureElement_ = function() {
   if (!this.isInDocument()) {
-    throw Error('You must render the bubble before showing it!');
+    throw new Error('You must render the bubble before showing it!');
   }
 
   var element = this.getElement();
@@ -259,7 +254,7 @@ goog.ui.Bubble.prototype.configureElement_ = function() {
   goog.dom.safe.setInnerHtml(
       /** @type {!Element} */ (element), this.computeHtmlForCorner_(corner));
 
-  if (!(this.message_ instanceof SafeHtml)) {
+  if (!(this.message_ instanceof goog.html.SafeHtml)) {
     var messageDiv = this.getDomHelper().getElement(this.messageId_);
     this.getDomHelper().appendChild(messageDiv, this.message_);
   }
@@ -341,10 +336,10 @@ goog.ui.Bubble.prototype.getComputedAnchoredPosition = function(anchorElement) {
 
 /**
  * Computes the pinned corner for the bubble.
- *
  * @param {Element} anchorElement The element to which the button is attached.
  * @return {goog.positioning.Corner} The pinned corner.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Bubble.prototype.computePinnedCorner_ = function(anchorElement) {
   var doc = this.getDomHelper().getOwnerDocument(anchorElement);
@@ -372,11 +367,11 @@ goog.ui.Bubble.prototype.computePinnedCorner_ = function(anchorElement) {
  * Computes the right offset for a given bubble corner
  * and creates a margin element for it. This is done to have the
  * button anchor element on its frame rather than on the corner.
- *
  * @param {goog.positioning.Corner} corner The corner.
  * @return {!goog.math.Box} the computed margin. Only left or right fields are
  *     non-zero, but they may be negative.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Bubble.prototype.createMarginForCorner_ = function(corner) {
   var margin = new goog.math.Box(0, 0, 0, 0);
@@ -391,11 +386,11 @@ goog.ui.Bubble.prototype.createMarginForCorner_ = function(corner) {
 
 /**
  * Computes the HTML string for a given bubble orientation.
- *
  * @param {goog.positioning.Corner} corner The corner.
  * @return {!goog.html.SafeHtml} The HTML string to place inside the
  *     bubble's popup.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Bubble.prototype.computeHtmlForCorner_ = function(corner) {
   var bubbleTopClass;
@@ -418,40 +413,44 @@ goog.ui.Bubble.prototype.computeHtmlForCorner_ = function(corner) {
       bubbleBottomClass = this.config_.cssBubbleBottomRightAnchor;
       break;
     default:
-      throw Error('This corner type is not supported by bubble!');
+      throw new Error('This corner type is not supported by bubble!');
   }
   var message = null;
-  if (this.message_ instanceof SafeHtml) {
+  if (this.message_ instanceof goog.html.SafeHtml) {
     message = this.message_;
   } else {
-    message = SafeHtml.create('div', {'id': this.messageId_});
+    message = goog.html.SafeHtml.create('div', {'id': this.messageId_});
   }
 
   var tableRows = goog.html.SafeHtml.concat(
-      SafeHtml.create(
+      goog.html.SafeHtml.create(
           'tr', {},
-          SafeHtml.create('td', {'colspan': 4, 'class': bubbleTopClass})),
-      SafeHtml.create(
+          goog.html.SafeHtml.create(
+              'td', {'colspan': 4, 'class': bubbleTopClass})),
+      goog.html.SafeHtml.create(
           'tr', {},
-          SafeHtml.concat(
-              SafeHtml.create('td', {'class': this.config_.cssBubbleLeft}),
-              SafeHtml.create(
+          goog.html.SafeHtml.concat(
+              goog.html.SafeHtml.create(
+                  'td', {'class': this.config_.cssBubbleLeft}),
+              goog.html.SafeHtml.create(
                   'td', {
                     'class': this.config_.cssBubbleFont,
                     'style':
                         goog.string.Const.from('padding:0 4px;background:white')
                   },
                   message),
-              SafeHtml.create('td', {
+              goog.html.SafeHtml.create('td', {
                 'id': this.closeButtonId_,
                 'class': this.config_.cssCloseButton
               }),
-              SafeHtml.create('td', {'class': this.config_.cssBubbleRight}))),
-      SafeHtml.create(
+              goog.html.SafeHtml.create(
+                  'td', {'class': this.config_.cssBubbleRight}))),
+      goog.html.SafeHtml.create(
           'tr', {},
-          SafeHtml.create('td', {'colspan': 4, 'class': bubbleBottomClass})));
+          goog.html.SafeHtml.create(
+              'td', {'colspan': 4, 'class': bubbleBottomClass})));
 
-  return SafeHtml.create(
+  return goog.html.SafeHtml.create(
       'table', {
         'border': 0,
         'cellspacing': 0,
@@ -495,4 +494,3 @@ goog.ui.Bubble.corners_ = [
   goog.positioning.Corner.BOTTOM_RIGHT, goog.positioning.Corner.BOTTOM_LEFT,
   goog.positioning.Corner.TOP_RIGHT, goog.positioning.Corner.TOP_LEFT
 ];
-});  // goog.scope

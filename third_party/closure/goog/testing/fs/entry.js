@@ -15,14 +15,23 @@
 /**
  * @fileoverview Mock filesystem objects. These are all in the same file to
  * avoid circular dependency issues.
- *
  */
 
 goog.setTestOnly('goog.testing.fs.DirectoryEntry');
+
+// TODO(b/130421259): We're trying to migrate all ES5 subclasses of Closure
+// Library to ES6. In ES6 this cannot be referenced before super is called. This
+// file has at least one this before a super call (in ES5) and cannot be
+// automatically upgraded to ES6 as a result. Please fix this if you have a
+// chance. Note: This can sometimes be caused by not calling the super
+// constructor at all. You can run the conversion tool yourself to see what it
+// does on this file: blaze run //javascript/refactoring/es6_classes:convert.
+
 goog.provide('goog.testing.fs.DirectoryEntry');
 goog.provide('goog.testing.fs.Entry');
 goog.provide('goog.testing.fs.FileEntry');
 
+goog.forwardDeclare('goog.testing.fs.FileSystem');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.asserts');
@@ -144,6 +153,7 @@ goog.testing.fs.Entry.prototype.copyTo = function(parent, opt_newName) {
       (opt_newName ? ', renaming to ' + opt_newName : '');
   var self = this;
   return this.checkNotDeleted(msg).addCallback(function() {
+    goog.asserts.assert(parent instanceof goog.testing.fs.DirectoryEntry);
     var name = opt_newName || self.getName();
     var entry = self.clone();
     /** @type {!goog.testing.fs.DirectoryEntry} */ (parent).children[name] =
@@ -286,7 +296,7 @@ goog.testing.fs.DirectoryEntry.prototype.isDirectory = function() {
 goog.testing.fs.DirectoryEntry.prototype.getLastModified = function() {
   var msg = 'reading last modified date for ' + this.getFullPath();
   return this.checkNotDeleted(msg).addCallback(function() {
-    return new Date(this.lastModifiedTimestamp_)
+    return new Date(this.lastModifiedTimestamp_);
   });
 };
 
@@ -295,7 +305,7 @@ goog.testing.fs.DirectoryEntry.prototype.getLastModified = function() {
 goog.testing.fs.DirectoryEntry.prototype.getMetadata = function() {
   var msg = 'reading metadata for ' + this.getFullPath();
   return this.checkNotDeleted(msg).addCallback(function() {
-    return this.getMetadata_()
+    return this.getMetadata_();
   });
 };
 
@@ -371,14 +381,13 @@ goog.testing.fs.DirectoryEntry.prototype.getFileSync = function(
     path, opt_behavior, opt_data, opt_type) {
   opt_behavior = opt_behavior || goog.fs.DirectoryEntry.Behavior.DEFAULT;
   return (
-      /** @type {!goog.testing.fs.FileEntry} */ (
-          this.getEntry_(
-              path, opt_behavior, true /* isFile */,
-              goog.bind(function(parent, name) {
-                return new goog.testing.fs.FileEntry(
-                    this.getFileSystem(), parent, name,
-                    goog.isDef(opt_data) ? opt_data : '', opt_type);
-              }, this))));
+      /** @type {!goog.testing.fs.FileEntry} */ (this.getEntry_(
+          path, opt_behavior, true /* isFile */,
+          goog.bind(function(parent, name) {
+            return new goog.testing.fs.FileEntry(
+                this.getFileSystem(), parent, name,
+                opt_data !== undefined ? opt_data : '', opt_type);
+          }, this))));
 };
 
 

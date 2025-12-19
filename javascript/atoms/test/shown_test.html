@@ -300,7 +300,7 @@
       assertFalse(bot.dom.isShown(select));
       assertTrue('Select should be visible when ignoring opacity',
         bot.dom.isShown(select, true));
-      assertTrue(bot.dom.isShown(select.firstChild));
+      assertTrue(bot.dom.isShown(select.firstElementChild));
     }
 
     /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
@@ -374,7 +374,7 @@
     function testTableRowDefaultVisibility() {
       var elem = findElement({ id: 'visible-row' });
       assertTrue(isShown(elem));
-      assertTrue(isShown(elem.firstChild));
+      assertTrue(isShown(elem.firstElementChild));
     }
 
     function testTableRowCollapsedVisibility() {
@@ -384,14 +384,14 @@
       var elem = findElement({ id: 'collapsed-row' });
       expectedFailures.run(function () {
         assertFalse(isShown(elem));
-        assertFalse(isShown(elem.firstChild));
+        assertFalse(isShown(elem.firstElementChild));
       });
     }
 
     function testVisibleTableRowAfterCollapsedRow() {
       var elem = findElement({ id: 'post-collapsed-row' });
       assertTrue(isShown(elem));
-      assertTrue(isShown(elem.firstChild));
+      assertTrue(isShown(elem.firstElementChild));
     }
 
     function testDisplayContentsOverflowIgnored() {
@@ -406,7 +406,7 @@
     function testDetailsNonSummaryDescendantsVisibility() {
       var contents = findElement({ id: 'non-summary' });
       assertFalse(isShown(contents));
-      assertFalse(isShown(contents.firstChild));
+      assertFalse(isShown(contents.firstElementChild));
     }
 
     function testContentVisibleHidden() {

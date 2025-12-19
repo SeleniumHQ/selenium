@@ -17,8 +17,6 @@
  * functionality from W3CRange, but adds exceptions as necessary.
  *
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 

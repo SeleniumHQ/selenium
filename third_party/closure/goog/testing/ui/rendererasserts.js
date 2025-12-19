@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Additional asserts for testing ControlRenderers.
- *
- * @author mkretzschmar@google.com (Martin Kretzschmar)
  */
 
 goog.setTestOnly('goog.testing.ui.rendererasserts');

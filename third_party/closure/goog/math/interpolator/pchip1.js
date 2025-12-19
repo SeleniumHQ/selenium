@@ -16,7 +16,6 @@
  * @fileoverview A one dimensional monotone cubic spline interpolator.
  *
  * See http://en.wikipedia.org/wiki/Monotone_cubic_interpolation.
- *
  */
 
 goog.provide('goog.math.interpolator.Pchip1');

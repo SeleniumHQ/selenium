@@ -14,8 +14,6 @@
 
 /**
  * @fileoverview Iterator subclass for DOM tree traversal.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 goog.provide('goog.dom.TagIterator');
@@ -30,9 +28,9 @@ goog.require('goog.iter.StopIteration');
 /**
  * There are three types of token:
  *  <ol>
- *    <li>{@code START_TAG} - The beginning of a tag.
- *    <li>{@code OTHER} - Any non-element node position.
- *    <li>{@code END_TAG} - The end of a tag.
+ *    <li>`START_TAG` - The beginning of a tag.
+ *    <li>`OTHER` - Any non-element node position.
+ *    <li>`END_TAG` - The end of a tag.
  *  </ol>
  * Users of this enumeration can rely on {@code START_TAG + END_TAG = 0} and
  * that {@code OTHER = 0}.
@@ -107,7 +105,7 @@ goog.dom.TagIterator = function(
 
   /**
    * The node this position is located on.
-   * @type {Node}
+   * @type {?Node}
    */
   this.node = null;
 
@@ -166,7 +164,7 @@ goog.dom.TagIterator.prototype.setPosition = function(
   this.node = node;
 
   if (node) {
-    if (goog.isNumber(opt_tagType)) {
+    if (typeof opt_tagType === 'number') {
       this.tagType = opt_tagType;
     } else {
       // Auto-determine the proper type
@@ -177,7 +175,7 @@ goog.dom.TagIterator.prototype.setPosition = function(
     }
   }
 
-  if (goog.isNumber(opt_depth)) {
+  if (typeof opt_depth === 'number') {
     this.depth = opt_depth;
   }
 };

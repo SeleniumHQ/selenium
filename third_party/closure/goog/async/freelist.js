@@ -26,13 +26,13 @@ goog.provide('goog.async.FreeList');
 /**
  * @template ITEM
  */
-goog.async.FreeList = goog.defineClass(null, {
+goog.async.FreeList = class {
   /**
    * @param {function():ITEM} create
    * @param {function(ITEM):void} reset
    * @param {number} limit
    */
-  constructor: function(create, reset, limit) {
+  constructor(create, reset, limit) {
     /** @private @const {number} */
     this.limit_ = limit;
     /** @private @const {function()} */
@@ -44,13 +44,13 @@ goog.async.FreeList = goog.defineClass(null, {
     this.occupants_ = 0;
     /** @private {ITEM} */
     this.head_ = null;
-  },
+  }
 
   /**
    * @return {ITEM}
    */
-  get: function() {
-    var item;
+  get() {
+    let item;
     if (this.occupants_ > 0) {
       this.occupants_--;
       item = this.head_;
@@ -60,24 +60,26 @@ goog.async.FreeList = goog.defineClass(null, {
       item = this.create_();
     }
     return item;
-  },
+  }
 
   /**
    * @param {ITEM} item An item available for possible future reuse.
    */
-  put: function(item) {
+  put(item) {
     this.reset_(item);
     if (this.occupants_ < this.limit_) {
       this.occupants_++;
       item.next = this.head_;
       this.head_ = item;
     }
-  },
+  }
 
   /**
    * Visible for testing.
    * @package
    * @return {number}
    */
-  occupants: function() { return this.occupants_; }
-});
+  occupants() {
+    return this.occupants_;
+  }
+};

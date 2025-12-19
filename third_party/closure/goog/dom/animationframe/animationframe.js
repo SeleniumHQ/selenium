@@ -31,16 +31,17 @@
  *
  * Programmatic:
  * <pre>
- * var animationTask = goog.dom.animationFrame.createTask({
- *     measure: function(state) {
- *       state.width = goog.style.getSize(elem).width;
- *       this.animationTask();
+ * let animationTask = goog.dom.animationFrame.createTask(
+ *     {
+ *       measure: function(state) {
+ *         state.width = goog.style.getSize(elem).width;
+ *         this.animationTask();
+ *       },
+ *       mutate: function(state) {
+ *         goog.style.setWidth(elem, Math.floor(state.width / 2));
+ *       },
  *     },
- *     mutate: function(state) {
- *       goog.style.setWidth(elem, Math.floor(state.width / 2));
- *     }
- *   }, this);
- * });
+ *     this);
  * </pre>
  *
  * See also

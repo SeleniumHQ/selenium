@@ -15,7 +15,6 @@
 /**
  * @fileoverview Definition of the Popup class.
  *
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/popup.html
  */
 

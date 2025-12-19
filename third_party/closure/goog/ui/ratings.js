@@ -96,7 +96,7 @@ goog.ui.Ratings = function(opt_ratings, opt_domHelper) {
 
   /**
    * An attached form field to set the value to
-   * @type {HTMLInputElement|HTMLSelectElement|null}
+   * @type {?HTMLInputElement|?HTMLSelectElement|null}
    * @private
    */
   this.attachedFormField_ = null;
@@ -146,7 +146,7 @@ goog.ui.Ratings.prototype.decorateInternal = function(el) {
   var select = goog.dom.getElementsByTagName(
       goog.dom.TagName.SELECT, goog.asserts.assert(el))[0];
   if (!select) {
-    throw Error(
+    throw new Error(
         'Can not decorate ' + el + ', with Ratings. Must ' +
         'contain select box');
   }
@@ -167,6 +167,7 @@ goog.ui.Ratings.prototype.decorateInternal = function(el) {
  * Render the rating widget inside the provided element. This will override the
  * current content of the element.
  * @override
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Ratings.prototype.enterDocument = function() {
   var el = this.getElement();
@@ -361,12 +362,13 @@ goog.ui.Ratings.prototype.isEnabled = function() {
  * Handle the mouse moving over a star.
  * @param {goog.events.BrowserEvent} e The browser event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Ratings.prototype.onMouseOver_ = function(e) {
   if (!this.isEnabled()) {
     return;
   }
-  if (goog.isDef(e.target.index)) {
+  if (e.target.index !== undefined) {
     var n = e.target.index;
     if (this.highlightedIndex_ != n) {
       this.highlightIndex_(n);
@@ -382,10 +384,11 @@ goog.ui.Ratings.prototype.onMouseOver_ = function(e) {
  * Handle the mouse moving over a star.
  * @param {goog.events.BrowserEvent} e The browser event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Ratings.prototype.onMouseOut_ = function(e) {
   // Only remove the highlight if the mouse is not moving to another star
-  if (e.relatedTarget && !goog.isDef(e.relatedTarget.index)) {
+  if (e.relatedTarget && e.relatedTarget.index === undefined) {
     this.resetHighlights_();
   }
 };
@@ -395,13 +398,14 @@ goog.ui.Ratings.prototype.onMouseOut_ = function(e) {
  * Handle the mouse moving over a star.
  * @param {goog.events.BrowserEvent} e The browser event.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.Ratings.prototype.onClick_ = function(e) {
   if (!this.isEnabled()) {
     return;
   }
 
-  if (goog.isDef(e.target.index)) {
+  if (e.target.index !== undefined) {
     this.setSelectedIndex(e.target.index);
   }
 };

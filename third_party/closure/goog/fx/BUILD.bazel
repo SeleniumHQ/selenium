@@ -1,0 +1,207 @@
+# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "all_js",
+    exports = [
+        ":abstractdragdrop",
+        ":animation",
+        ":animationqueue",
+        ":cssspriteanimation",
+        ":dom",
+        ":dragdrop",
+        ":dragdropgroup",
+        ":dragger",
+        ":draglistgroup",
+        ":dragscrollsupport",
+        ":easing",
+        ":fx",
+        ":transition",
+        ":transitionbase",
+        "//third_party/closure/goog/fx/anim:all_js",
+        "//third_party/closure/goog/fx/css3:all_js",
+    ],
+)
+
+closure_js_library(
+    name = "abstractdragdrop",
+    srcs = ["abstractdragdrop.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/fx:dragger",
+        "//third_party/closure/goog/math:box",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/style",
+    ],
+)
+
+closure_js_library(
+    name = "animation",
+    srcs = ["animation.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/fx:transition",
+        "//third_party/closure/goog/fx:transitionbase",
+        "//third_party/closure/goog/fx/anim",
+    ],
+)
+
+closure_js_library(
+    name = "animationqueue",
+    srcs = ["animationqueue.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/fx:animation",
+        "//third_party/closure/goog/fx:transition",
+        "//third_party/closure/goog/fx:transitionbase",
+    ],
+)
+
+closure_js_library(
+    name = "cssspriteanimation",
+    srcs = ["cssspriteanimation.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/fx:animation"],
+)
+
+closure_js_library(
+    name = "dom",
+    srcs = ["dom.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/color",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/fx:animation",
+        "//third_party/closure/goog/fx:transition",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/style:bidi",
+    ],
+)
+
+closure_js_library(
+    name = "dragdrop",
+    srcs = ["dragdrop.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/fx:abstractdragdrop"],
+)
+
+closure_js_library(
+    name = "dragdropgroup",
+    srcs = ["dragdropgroup.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/fx:abstractdragdrop",
+    ],
+)
+
+closure_js_library(
+    name = "dragger",
+    srcs = ["dragger.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/style:bidi",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "draglistgroup",
+    srcs = ["draglistgroup.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventid",
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/fx:dragger",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/style",
+    ],
+)
+
+closure_js_library(
+    name = "dragscrollsupport",
+    srcs = ["dragscrollsupport.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/timer",
+    ],
+)
+
+closure_js_library(
+    name = "easing",
+    srcs = ["easing.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "fx",
+    srcs = ["fx.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/fx:animation",
+        "//third_party/closure/goog/fx:easing",
+        "//third_party/closure/goog/fx:transition",
+    ],
+)
+
+closure_js_library(
+    name = "transition",
+    srcs = ["transition.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "transitionbase",
+    srcs = ["transitionbase.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/fx:transition",
+    ],
+)

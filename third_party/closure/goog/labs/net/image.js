@@ -14,14 +14,15 @@
 
 /**
  * @fileoverview Simple image loader, used for preloading.
- * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.provide('goog.labs.net.image');
 
 goog.require('goog.Promise');
+goog.require('goog.dom.safe');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
+goog.require('goog.html.SafeUrl');
 goog.require('goog.net.EventType');
 goog.require('goog.userAgent');
 
@@ -29,7 +30,7 @@ goog.require('goog.userAgent');
 /**
  * Loads a single image.  Useful for preloading images.
  *
- * @param {string} uri URI of the image.
+ * @param {!goog.html.SafeUrl|string} uri URI of the image.
  * @param {(!Image|function(): !Image)=} opt_image If present, instead of
  *     creating a new Image instance the function will use the passed Image
  *     instance or the result of calling the Image factory respectively. This
@@ -40,9 +41,10 @@ goog.require('goog.userAgent');
  *     given image if the image successfully loads.
  */
 goog.labs.net.image.load = function(uri, opt_image) {
-  return new goog.Promise(function(resolve, reject) {
+  return new goog.Promise(/** @suppress {strictPrimitiveOperators} Part of the go/strict_warnings_migration */
+                          function(resolve, reject) {
     var image;
-    if (!goog.isDef(opt_image)) {
+    if (opt_image === undefined) {
       image = new Image();
     } else if (goog.isFunction(opt_image)) {
       image = opt_image();
@@ -89,6 +91,6 @@ goog.labs.net.image.load = function(uri, opt_image) {
         });
 
     // Initiate the image request.
-    image.src = uri;
+    goog.dom.safe.setImageSrc(image, uri);
   });
 };

@@ -496,7 +496,7 @@ bot.Keyboard.prototype.maybeSubmitForm_ = function (key) {
   if (key != bot.Keyboard.Keys.ENTER) {
     return;
   }
-  if (goog.userAgent.GECKO ||
+  if ((goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(93)) ||
     !bot.dom.isElement(this.getElement(), goog.dom.TagName.INPUT)) {
     return;
   }

@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Detects the specific browser and not just the rendering engine.
- *
  */
 
 goog.provide('goog.userAgent.product');
@@ -27,41 +26,47 @@ goog.require('goog.userAgent');
 /**
  * @define {boolean} Whether the code is running on the Firefox web browser.
  */
-goog.define('goog.userAgent.product.ASSUME_FIREFOX', false);
+goog.userAgent.product.ASSUME_FIREFOX =
+    goog.define('goog.userAgent.product.ASSUME_FIREFOX', false);
 
 
 /**
  * @define {boolean} Whether we know at compile-time that the product is an
  *     iPhone.
  */
-goog.define('goog.userAgent.product.ASSUME_IPHONE', false);
+goog.userAgent.product.ASSUME_IPHONE =
+    goog.define('goog.userAgent.product.ASSUME_IPHONE', false);
 
 
 /**
  * @define {boolean} Whether we know at compile-time that the product is an
  *     iPad.
  */
-goog.define('goog.userAgent.product.ASSUME_IPAD', false);
+goog.userAgent.product.ASSUME_IPAD =
+    goog.define('goog.userAgent.product.ASSUME_IPAD', false);
 
 
 /**
  * @define {boolean} Whether we know at compile-time that the product is an
  *     AOSP browser or WebView inside a pre KitKat Android phone or tablet.
  */
-goog.define('goog.userAgent.product.ASSUME_ANDROID', false);
+goog.userAgent.product.ASSUME_ANDROID =
+    goog.define('goog.userAgent.product.ASSUME_ANDROID', false);
 
 
 /**
  * @define {boolean} Whether the code is running on the Chrome web browser on
  * any platform or AOSP browser or WebView in a KitKat+ Android phone or tablet.
  */
-goog.define('goog.userAgent.product.ASSUME_CHROME', false);
+goog.userAgent.product.ASSUME_CHROME =
+    goog.define('goog.userAgent.product.ASSUME_CHROME', false);
 
 
 /**
  * @define {boolean} Whether the code is running on the Safari web browser.
  */
-goog.define('goog.userAgent.product.ASSUME_SAFARI', false);
+goog.userAgent.product.ASSUME_SAFARI =
+    goog.define('goog.userAgent.product.ASSUME_SAFARI', false);
 
 
 /**
@@ -94,7 +99,7 @@ goog.userAgent.product.IE = goog.userAgent.IE;
 
 
 /**
- * Whether the code is running on an Edge web browser.
+ * Whether the code is running on an Edge web browser (EdgeHTML based).
  * @type {boolean}
  */
 goog.userAgent.product.EDGE = goog.userAgent.EDGE;
@@ -151,7 +156,7 @@ goog.userAgent.product.ANDROID = goog.userAgent.product.PRODUCT_KNOWN_ ?
 
 
 /**
- * Whether the code is running on the Chrome web browser on any platform
+ * Whether the code is running on any Chromium-based web browser on any platform
  * or AOSP browser or WebView in a KitKat+ Android phone or tablet.
  * @type {boolean}
  */

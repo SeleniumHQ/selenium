@@ -89,7 +89,7 @@ goog.ui.DrilldownRow = function(opt_properties, opt_domHelper) {
   // Initialize instance variables.
 
   var html;
-  if (!goog.isDefAndNotNull(properties.html)) {
+  if (properties.html == null) {
     html = goog.html.SafeHtml.EMPTY;
   } else {
     goog.asserts.assert(properties.html instanceof goog.html.SafeHtml);
@@ -249,11 +249,11 @@ goog.ui.DrilldownRow.prototype.removeChild = function(child) {
  */
 goog.ui.DrilldownRow.prototype.render = function() {
   if (arguments.length) {
-    throw Error('A DrilldownRow cannot be placed under a specific parent.');
+    throw new Error('A DrilldownRow cannot be placed under a specific parent.');
   } else {
     var parent = this.getParent();
     if (!parent.isInDocument()) {
-      throw Error('Cannot render child of un-rendered parent');
+      throw new Error('Cannot render child of un-rendered parent');
     }
     // The new child's TR node needs to go just after the last TR
     // of the part of the parent's subtree that is to the left
@@ -290,7 +290,7 @@ goog.ui.DrilldownRow.prototype.render = function() {
 goog.ui.DrilldownRow.prototype.findIndex = function() {
   var parent = this.getParent();
   if (!parent) {
-    throw Error('Component has no parent');
+    throw new Error('Component has no parent');
   }
   return parent.indexOfChild(this);
 };
@@ -367,15 +367,15 @@ goog.ui.DrilldownRow.prototype.getDepth = function() {
  * }
  *
  * These background images show whether the DrilldownRow is expanded.
- *
  * @param {goog.ui.DrilldownRow} selfObj DrilldownRow to be decorated.
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.DrilldownRow.decorate = function(selfObj) {
   var depth = selfObj.getDepth();
   var row = selfObj.getElement();
   goog.asserts.assert(row);
   if (!row.cells) {
-    throw Error('No cells');
+    throw new Error('No cells');
   }
   var cell = row.cells[0];
   var dom = selfObj.getDomHelper();
@@ -454,11 +454,11 @@ goog.ui.DrilldownRow.prototype.isVisible_ = function() {
 /**
  * Create and return a TR element from HTML that looks like
  * "<tr> ... </tr>".
- *
  * @param {!goog.html.SafeHtml} html for one row.
  * @param {!goog.dom.DomHelper} dom DOM to hold the Element.
  * @return {Element} table row node created from the HTML.
  * @private
+ * @suppress {strictMissingProperties} Part of the go/strict_warnings_migration
  */
 goog.ui.DrilldownRow.createRowNode_ = function(html, dom) {
   // Note: this may be slow.

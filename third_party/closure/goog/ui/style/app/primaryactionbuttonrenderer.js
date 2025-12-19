@@ -16,7 +16,6 @@
  * @fileoverview Renderer for {@link goog.ui.Button}s in App style. This
  * type of button is typically used for an application's "primary action," eg
  * in Gmail, it's "Compose," in Calendar, it's "Create Event".
- *
  */
 
 goog.provide('goog.ui.style.app.PrimaryActionButtonRenderer');

@@ -15,8 +15,6 @@
 
 /**
  * @fileoverview A driver for testing renderers.
- *
- * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.setTestOnly('goog.testing.ui.RendererHarness');
@@ -26,6 +24,8 @@ goog.require('goog.Disposable');
 goog.require('goog.dom.NodeType');
 goog.require('goog.testing.asserts');
 goog.require('goog.testing.dom');
+goog.require('goog.ui.Control');
+goog.require('goog.ui.ControlRenderer');
 
 
 

@@ -18,7 +18,6 @@
  *
  * Derived from jsUnitMockTimeout.js, contributed to JsUnit by
  * Pivotal Computer Systems, www.pivotalsf.com
- *
  */
 
 goog.setTestOnly('goog.testing.MockClock');
@@ -69,7 +68,7 @@ goog.testing.MockClock = function(opt_autoInstall) {
    * right.  For example, the expiration times for each element of the queue
    * might be in the order 300, 200, 200.
    *
-   * @type {Array<Object>}
+   * @type {?Array<!goog.testing.MockClock.QueueObjType_>}
    * @private
    */
   this.queue_ = [];
@@ -86,12 +85,25 @@ goog.testing.MockClock = function(opt_autoInstall) {
    */
   this.deletedKeys_ = {};
 
+  /**
+   * Whether we should skip mocking Date.now().
+   * @private {boolean}
+   */
+  this.unmockDateNow_ = false;
+
   if (opt_autoInstall) {
     this.install();
   }
 };
 goog.inherits(goog.testing.MockClock, goog.Disposable);
 
+
+/**
+ * @typedef {{
+ *    timeoutKey: number, millis: number,
+ *    runAtMillis: number, funcToCall: Function, recurring: boolean}}
+ */
+goog.testing.MockClock.QueueObjType_;
 
 /**
  * Default wait timeout for mocking requestAnimationFrame (in milliseconds).
@@ -131,7 +143,7 @@ goog.testing.MockClock.prototype.callbacksTriggered_ = 0;
 /**
  * PropertyReplacer instance which overwrites and resets setTimeout,
  * setInterval, etc. or null if the MockClock is not installed.
- * @type {goog.testing.PropertyReplacer}
+ * @type {?goog.testing.PropertyReplacer}
  * @private
  */
 goog.testing.MockClock.prototype.replacer_ = null;
@@ -163,6 +175,9 @@ goog.testing.MockClock.prototype.timeoutDelay_ = 0;
 goog.testing.MockClock.REAL_SETTIMEOUT_ = goog.global.setTimeout;
 
 
+/** @type {function():number} */
+goog.testing.MockClock.prototype.oldGoogNow_;
+
 /**
  * Installs the MockClock by overriding the global object's implementation of
  * setTimeout, setInterval, clearTimeout and clearInterval.
@@ -185,6 +200,9 @@ goog.testing.MockClock.prototype.install = function() {
     r.set(goog.global, 'setImmediate', goog.bind(this.setImmediate_, this));
     r.set(goog.global, 'clearTimeout', goog.bind(this.clearTimeout_, this));
     r.set(goog.global, 'clearInterval', goog.bind(this.clearInterval_, this));
+    if (!this.unmockDateNow_) {
+      r.set(Date, 'now', goog.bind(this.getCurrentTime, this));
+    }
     // goog.Promise uses goog.async.run. In order to be able to test
     // Promise-based code, we need to make sure that goog.async.run uses
     // nextTick instead of native browser Promises. This means that it will
@@ -200,6 +218,23 @@ goog.testing.MockClock.prototype.install = function() {
     // PropertyReplacer#set can't be called with renameable functions.
     this.oldGoogNow_ = goog.now;
     goog.now = goog.bind(this.getCurrentTime, this);
+  }
+};
+
+
+/**
+ * Unmocks the Date.now() function for tests that aren't expecting it to be
+ * mocked. See b/141619890.
+ * @deprecated
+ */
+goog.testing.MockClock.prototype.unmockDateNow = function() {
+  this.unmockDateNow_ = true;
+  if (this.replacer_) {
+    try {
+      this.replacer_.restore(Date, 'now');
+    } catch (e) {
+      // Ignore error thrown if Date.now was not already mocked.
+    }
   }
 };
 
@@ -333,6 +368,8 @@ goog.testing.MockClock.prototype.tick = function(opt_millis) {
  * rejected, it throws the rejection as an exception. If the promise is not
  * resolved at all, throws an exception.
  * Also ticks the general clock by the specified amount.
+ * Only works with goog.Thenable, hence goog.Promise. Does NOT work with native
+ * browser promises.
  *
  * @param {!goog.Thenable<T>} promise A promise that should be resolved after
  *     the mockClock is ticked for the given opt_millis.
@@ -340,6 +377,12 @@ goog.testing.MockClock.prototype.tick = function(opt_millis) {
  *     If not specified, clock ticks 1 millisecond.
  * @return {T}
  * @template T
+ *
+ * @deprecated Treating Promises as synchronous values is incompatible with
+ *     native promises and async functions. More generally, this code relies on
+ *     promises "pumped" by setTimeout which is not done in production code,
+ *     even for goog.Promise and results unnatural timing between resolved
+ *     promises callback and setTimeout/setInterval callbacks in tests.
  */
 goog.testing.MockClock.prototype.tickPromise = function(promise, opt_millis) {
   var value;
@@ -455,7 +498,7 @@ goog.testing.MockClock.prototype.scheduleFunction_ = function(
         'The provided callback must be a function, not a ' + typeof funcToCall);
   }
 
-  var timeout = {
+  var /** !goog.testing.MockClock.QueueObjType_ */ timeout = {
     runAtMillis: this.nowMillis_ + millis,
     funcToCall: funcToCall,
     recurring: recurring,
@@ -473,10 +516,10 @@ goog.testing.MockClock.prototype.scheduleFunction_ = function(
  * Later-inserted duplicates appear at lower indices.  For example, the
  * asterisk in (5,4,*,3,2,1) would be the insertion point for 3.
  *
- * @param {Object} timeout The timeout to insert, with numerical runAtMillis
- *     property.
- * @param {Array<Object>} queue The queue to insert into, with each element
- *     having a numerical runAtMillis property.
+ * @param {goog.testing.MockClock.QueueObjType_} timeout The timeout to insert,
+ *     with numerical runAtMillis property.
+ * @param {Array<!goog.testing.MockClock.QueueObjType_>} queue The queue to
+ *     insert into, with each element having a numerical runAtMillis property.
  * @private
  */
 goog.testing.MockClock.insert_ = function(timeout, queue) {
@@ -514,7 +557,7 @@ goog.testing.MockClock.MAX_INT_ = 2147483647;
 
 
 /**
- * Schedules a function to be called after {@code millis} milliseconds.
+ * Schedules a function to be called after `millis` milliseconds.
  * Mock implementation for setTimeout.
  * @param {Function} funcToCall The function to call.
  * @param {number=} opt_millis The number of milliseconds to call it after.
@@ -525,7 +568,7 @@ goog.testing.MockClock.prototype.setTimeout_ = function(
     funcToCall, opt_millis) {
   var millis = opt_millis || 0;
   if (millis > goog.testing.MockClock.MAX_INT_) {
-    throw Error(
+    throw new Error(
         'Bad timeout value: ' + millis + '.  Timeouts over MAX_INT ' +
         '(24.8 days) cause timeouts to be fired ' +
         'immediately in most browsers, except for IE.');
@@ -538,7 +581,7 @@ goog.testing.MockClock.prototype.setTimeout_ = function(
 
 
 /**
- * Schedules a function to be called every {@code millis} milliseconds.
+ * Schedules a function to be called every `millis` milliseconds.
  * Mock implementation for setInterval.
  * @param {Function} funcToCall The function to call.
  * @param {number=} opt_millis The number of milliseconds between calls.

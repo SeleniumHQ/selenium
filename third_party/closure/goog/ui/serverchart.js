@@ -43,6 +43,7 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.safe');
 goog.require('goog.events.Event');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
@@ -335,7 +336,8 @@ goog.ui.ServerChart.prototype.createDom = function() {
  * @override
  */
 goog.ui.ServerChart.prototype.decorateInternal = function(img) {
-  img.src = this.getUri();
+  goog.dom.safe.setImageSrc(
+      /** @type {!HTMLImageElement} */ (img), this.getUri().toString());
   this.setElementInternal(img);
 };
 
@@ -345,7 +347,9 @@ goog.ui.ServerChart.prototype.decorateInternal = function(img) {
  */
 goog.ui.ServerChart.prototype.updateChart = function() {
   if (this.getElement()) {
-    this.getElement().src = this.getUri();
+    goog.dom.safe.setImageSrc(
+        /** @type {!HTMLImageElement} */ (this.getElement()),
+        this.getUri().toString());
   }
 };
 
@@ -649,7 +653,7 @@ goog.ui.ServerChart.prototype.getBackgroundFill = function() {
   var value =
       this.uri_.getParameterValue(goog.ui.ServerChart.UriParam.BACKGROUND_FILL);
   var result = [];
-  if (goog.isDefAndNotNull(value)) {
+  if (value != null) {
     var fillSpecifications = value.split('|');
     var valid = true;
     goog.array.forEach(fillSpecifications, function(spec) {
@@ -1090,7 +1094,7 @@ goog.ui.ServerChart.prototype.getNumVisibleDataSets = function() {
 goog.ui.ServerChart.prototype.setVennSeries = function(
     weights, opt_legendText, opt_colors) {
   if (this.getType() != goog.ui.ServerChart.ChartType.VENN) {
-    throw Error('Can only set a weight function for a Venn diagram.');
+    throw new Error('Can only set a weight function for a Venn diagram.');
   }
   var dataMin = this.arrayMin_(weights);
   if (dataMin < this.minValue_) {
@@ -1100,7 +1104,7 @@ goog.ui.ServerChart.prototype.setVennSeries = function(
   if (dataMax > this.maxValue_) {
     this.maxValue_ = dataMax;
   }
-  if (goog.isDef(opt_legendText)) {
+  if (opt_legendText !== undefined) {
     goog.array.forEach(opt_legendText, goog.bind(function(legend) {
       this.setLegendTexts_.push(legend);
     }, this));
@@ -1116,7 +1120,7 @@ goog.ui.ServerChart.prototype.setVennSeries = function(
     weights[2] = 0.0;
   }
   this.dataSets_.push(weights);
-  if (goog.isDef(opt_colors)) {
+  if (opt_colors !== undefined) {
     goog.array.forEach(opt_colors, goog.bind(function(color) {
       this.setColors_.push(color);
     }, this));
@@ -1197,7 +1201,7 @@ goog.ui.ServerChart.prototype.setLegend = function(legend) {
 /**
  * Sets the data scaling.
  * NOTE: This also changes the encoding type because data scaling will
- *     only work with {@code goog.ui.ServerChart.EncodingType.TEXT}
+ *     only work with `goog.ui.ServerChart.EncodingType.TEXT`
  *     encoding.
  * @param {number} minimum The lowest number to apply to the data.
  * @param {number} maximum The highest number to apply to the data.
@@ -1225,10 +1229,10 @@ goog.ui.ServerChart.prototype.setDataScaling = function(minimum, maximum) {
 goog.ui.ServerChart.prototype.setBarSpaceWidths = function(
     barWidth, opt_spaceBars, opt_spaceGroups) {
   var widths = [barWidth];
-  if (goog.isDef(opt_spaceBars)) {
+  if (opt_spaceBars !== undefined) {
     widths.push(opt_spaceBars);
   }
-  if (goog.isDef(opt_spaceGroups)) {
+  if (opt_spaceGroups !== undefined) {
     widths.push(opt_spaceGroups);
   }
   this.uri_.setParameterValue(
@@ -1252,10 +1256,10 @@ goog.ui.ServerChart.prototype.setBarSpaceWidths = function(
 goog.ui.ServerChart.prototype.setAutomaticBarWidth = function(
     opt_spaceBars, opt_spaceGroups) {
   var widths = ['a'];
-  if (goog.isDef(opt_spaceBars)) {
+  if (opt_spaceBars !== undefined) {
     widths.push(opt_spaceBars);
   }
-  if (goog.isDef(opt_spaceGroups)) {
+  if (opt_spaceGroups !== undefined) {
     widths.push(opt_spaceGroups);
   }
   this.uri_.setParameterValue(
@@ -1291,7 +1295,7 @@ goog.ui.ServerChart.prototype.addMultiAxis = function(axisType) {
  *     axis number is not given.
  */
 goog.ui.ServerChart.prototype.getMultiAxisType = function(opt_axisNumber) {
-  if (goog.isDef(opt_axisNumber)) {
+  if (opt_axisNumber !== undefined) {
     return this.multiAxisType_[opt_axisNumber];
   }
   return this.multiAxisType_;
@@ -1325,7 +1329,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelText = function(
  *     two-dimensional array if the axis number is not given.
  */
 goog.ui.ServerChart.prototype.getMultiAxisLabelText = function(opt_axisNumber) {
-  if (goog.isDef(opt_axisNumber)) {
+  if (opt_axisNumber !== undefined) {
     return this.multiAxisLabelText_[opt_axisNumber];
   }
   return this.multiAxisLabelText_;
@@ -1362,7 +1366,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelPosition = function(
  */
 goog.ui.ServerChart.prototype.getMultiAxisLabelPosition = function(
     opt_axisNumber) {
-  if (goog.isDef(opt_axisNumber)) {
+  if (opt_axisNumber !== undefined) {
     return this.multiAxisLabelPosition_[opt_axisNumber];
   }
   return this.multiAxisLabelPosition_;
@@ -1388,7 +1392,7 @@ goog.ui.ServerChart.prototype.setMultiAxisRange = function(
       isFinite(rangeStart) && isFinite(rangeEnd),
       'Range start and end must be finite numbers.');
   this.multiAxisRange_[axisNumber] = [rangeStart, rangeEnd];
-  if (goog.isDef(opt_interval)) {
+  if (opt_interval !== undefined) {
     this.multiAxisRange_[axisNumber].push(opt_interval);
   }
   var rangeString =
@@ -1409,7 +1413,7 @@ goog.ui.ServerChart.prototype.setMultiAxisRange = function(
  *     two-dimensional array if the axis number is not given.
  */
 goog.ui.ServerChart.prototype.getMultiAxisRange = function(opt_axisNumber) {
-  if (goog.isDef(opt_axisNumber)) {
+  if (opt_axisNumber !== undefined) {
     return this.multiAxisRange_[opt_axisNumber];
   }
   return this.multiAxisRange_;
@@ -1435,10 +1439,10 @@ goog.ui.ServerChart.prototype.getMultiAxisRange = function(opt_axisNumber) {
 goog.ui.ServerChart.prototype.setMultiAxisLabelStyle = function(
     axisNumber, color, opt_fontSize, opt_alignment, opt_axisDisplay) {
   var style = [color];
-  if (goog.isDef(opt_fontSize) || goog.isDef(opt_alignment)) {
+  if (opt_fontSize !== undefined || opt_alignment !== undefined) {
     style.push(opt_fontSize || '');
   }
-  if (goog.isDef(opt_alignment)) {
+  if (opt_alignment !== undefined) {
     style.push(opt_alignment);
   }
   if (opt_axisDisplay) {
@@ -1464,7 +1468,7 @@ goog.ui.ServerChart.prototype.setMultiAxisLabelStyle = function(
  */
 goog.ui.ServerChart.prototype.getMultiAxisLabelStyle = function(
     opt_axisNumber) {
-  if (goog.isDef(opt_axisNumber)) {
+  if (opt_axisNumber !== undefined) {
     return this.multiAxisLabelStyle_[opt_axisNumber];
   }
   return this.multiAxisLabelStyle_;
@@ -1494,9 +1498,9 @@ goog.ui.ServerChart.prototype.addDataSet = function(
     this.maxValue_ = dataMax;
   }
 
-  if (goog.isDef(opt_legendText)) {
+  if (opt_legendText !== undefined) {
     if (this.setLegendTexts_.length < this.dataSets_.length) {
-      throw Error('Cannot start adding legends text after first element.');
+      throw new Error('Cannot start adding legends text after first element.');
     }
     this.setLegendTexts_.push(opt_legendText);
     this.uri_.setParameterValue(
@@ -1536,7 +1540,7 @@ goog.ui.ServerChart.prototype.clearDataSets = function() {
  *     array if the set number is not given.
  */
 goog.ui.ServerChart.prototype.getData = function(opt_setNumber) {
-  if (goog.isDef(opt_setNumber)) {
+  if (opt_setNumber !== undefined) {
     return this.dataSets_[opt_setNumber];
   }
   return this.dataSets_;
@@ -1675,7 +1679,7 @@ goog.ui.ServerChart.prototype.getConvertedValue_ = function(
       'minValue should be less than or equal to maxValue');
   var isExtended = (encoding == goog.ui.ServerChart.EncodingType.EXTENDED);
 
-  if (goog.isNull(value) || !goog.isDef(value) || isNaN(value) ||
+  if (value === null || value === undefined || isNaN(value) ||
       value < minValue || value > maxValue) {
     return isExtended ? '__' : '_';
   }

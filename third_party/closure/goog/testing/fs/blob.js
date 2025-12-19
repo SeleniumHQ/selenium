@@ -14,7 +14,6 @@
 
 /**
  * @fileoverview Mock blob object.
- *
  */
 
 goog.setTestOnly('goog.testing.fs.Blob');
@@ -76,14 +75,14 @@ goog.testing.fs.Blob = function(opt_data, opt_type) {
 goog.testing.fs.Blob.prototype.slice = function(
     opt_start, opt_end, opt_contentType) {
   var relativeStart;
-  if (goog.isNumber(opt_start)) {
+  if (typeof opt_start === 'number') {
     relativeStart = (opt_start < 0) ? Math.max(this.size + opt_start, 0) :
                                       Math.min(opt_start, this.size);
   } else {
     relativeStart = 0;
   }
   var relativeEnd;
-  if (goog.isNumber(opt_end)) {
+  if (typeof opt_end === 'number') {
     relativeEnd = (opt_end < 0) ? Math.max(this.size + opt_end, 0) :
                                   Math.min(opt_end, this.size);
   } else {
@@ -130,7 +129,7 @@ goog.testing.fs.Blob.prototype.toDataUrl = function() {
 
 /**
  * Sets the internal contents of the blob to an Array of bytes. This should
- *     only be called by other functions inside the {@code goog.testing.fs}
+ *     only be called by other functions inside the `goog.testing.fs`
  *     namespace.
  * @param {string|Array<string|number|!Uint8Array>} data The data to write
  *     into the blob.
@@ -142,12 +141,13 @@ goog.testing.fs.Blob.prototype.setDataInternal = function(data) {
     this.appendString_(data);
   } else if (data instanceof Array) {
     for (var i = 0; i < data.length; i++) {
-      if (typeof data[i] === 'string') {
-        this.appendString_(data[i]);
-      } else if (typeof data[i] === 'number') {  // Assume Bytes array.
-        this.appendByte_(data[i]);
-      } else if (data[i] instanceof Uint8Array) {
-        this.appendUint8_(data[i]);
+      var value = data[i];
+      if (typeof value === 'string') {
+        this.appendString_(value);
+      } else if (typeof value === 'number') {  // Assume Bytes array.
+        this.appendByte_(value);
+      } else if (value instanceof Uint8Array) {
+        this.appendUint8_(value);
       }
     }
   }

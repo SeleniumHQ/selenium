@@ -16,8 +16,6 @@
  * @fileoverview Definition of the W3C spec following range wrapper.
  *
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
- *
- * @author robbyw@google.com (Robby Walker)
  */
 
 
