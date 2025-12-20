@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.router;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.StringReader;
 import java.time.Duration;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -46,13 +46,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.ConnectionFailedException;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.*;
 import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -131,9 +125,7 @@ class DistributedTest {
 
     try {
       // provoke the client to run into a http timeout
-      SessionNotCreatedException nce =
-          Assertions.assertThrows(
-              SessionNotCreatedException.class,
+      assertThatThrownBy(
               () ->
                   RemoteWebDriver.builder()
                       .oneOf(browser.getCapabilities())
@@ -141,9 +133,9 @@ class DistributedTest {
                           ClientConfig.defaultConfig()
                               .baseUrl(server.getUrl())
                               .readTimeout(Duration.ofMillis(600)))
-                      .build());
-
-      assertThat(nce.getMessage()).contains("TimeoutException");
+                      .build())
+          .isInstanceOf(SessionNotCreatedException.class)
+          .hasMessageContaining("TimeoutException");
 
       // ensure the grid has some time to start the browser and shutdown the browser
       Thread.sleep(Duration.ofNanos((end - start) * 3).toMillis());
@@ -191,7 +183,7 @@ class DistributedTest {
           }
         }
 
-        Assertions.assertEquals(1, sessionCount);
+        assertThat(sessionCount).isEqualTo(1);
       } finally {
         Safely.safelyCall(client::close);
       }
@@ -216,23 +208,23 @@ class DistributedTest {
       BiDi cnn2 = biDiProvider.getImplementation(caps, null).getBiDi();
       BiDi cnn3 = biDiProvider.getImplementation(caps, null).getBiDi();
 
-      Assertions.assertThrows(
-          ConnectionFailedException.class,
-          () -> biDiProvider.getImplementation(caps, null).getBiDi());
+      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, null).getBiDi())
+          .isInstanceOf(ConnectionFailedException.class)
+          .hasMessageStartingWith("JdkWebSocket initial request execution error");
       cnn1.close();
       BiDi cnn4 = biDiProvider.getImplementation(caps, null).getBiDi();
 
-      Assertions.assertThrows(
-          ConnectionFailedException.class,
-          () -> biDiProvider.getImplementation(caps, null).getBiDi());
+      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, null).getBiDi())
+          .isInstanceOf(ConnectionFailedException.class)
+          .hasMessageStartingWith("JdkWebSocket initial request execution error");
       cnn2.close();
       cnn3.close();
       BiDi cnn5 = biDiProvider.getImplementation(caps, null).getBiDi();
       BiDi cnn6 = biDiProvider.getImplementation(caps, null).getBiDi();
 
-      Assertions.assertThrows(
-          ConnectionFailedException.class,
-          () -> biDiProvider.getImplementation(caps, null).getBiDi());
+      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, null).getBiDi())
+          .isInstanceOf(ConnectionFailedException.class)
+          .hasMessageStartingWith("JdkWebSocket initial request execution error");
 
       cnn4.close();
       cnn5.close();

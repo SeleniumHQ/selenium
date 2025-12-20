@@ -691,7 +691,7 @@ class NodeTest {
       HttpResponse deleteResponse = node.execute(deleteRequest);
       assertThat(deleteResponse.isSuccessful()).isTrue();
 
-      assertThat(listFileDownloads(session.getId()).isEmpty()).isTrue();
+      assertThat(listFileDownloads(session.getId())).isEmpty();
     } finally {
       node.stop(session.getId());
     }

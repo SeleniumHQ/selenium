@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static java.net.URI.create;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
@@ -30,7 +31,6 @@ import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.StringReader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -655,8 +655,7 @@ class NodeOptionsTest {
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     NodeOptions nodeOptions = new NodeOptions(config);
-    assertThat(nodeOptions.getPublicGridUri())
-        .isEqualTo(Optional.of(URI.create("http://cheese.com:4444")));
+    assertThat(nodeOptions.getPublicGridUri()).contains(create("http://cheese.com:4444"));
   }
 
   @Test
@@ -669,8 +668,7 @@ class NodeOptionsTest {
     String nonLoopbackAddress = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
     String nonLoopbackAddressUrl = String.format("http://%s:4444", nonLoopbackAddress);
     NodeOptions nodeOptions = new NodeOptions(config);
-    assertThat(nodeOptions.getPublicGridUri())
-        .isEqualTo(Optional.of(URI.create(nonLoopbackAddressUrl)));
+    assertThat(nodeOptions.getPublicGridUri()).contains(create(nonLoopbackAddressUrl));
   }
 
   @Test

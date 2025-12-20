@@ -76,10 +76,10 @@ class CdpVersionFinderTest {
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84, v85));
 
     Optional<CdpInfo> info = finder.match(chrome85);
-    assertThat(info).isEqualTo(Optional.of(v85));
+    assertThat(info).contains(v85);
 
     info = finder.match(edge84);
-    assertThat(info).isEqualTo(Optional.of(v84));
+    assertThat(info).contains(v84);
   }
 
   @Test
@@ -89,7 +89,7 @@ class CdpVersionFinderTest {
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84));
 
     Optional<CdpInfo> info = finder.match(chrome85);
-    assertThat(info).isEqualTo(Optional.of(v84));
+    assertThat(info).contains(v84);
   }
 
   @Test
@@ -112,9 +112,9 @@ class CdpVersionFinderTest {
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84, v85));
 
     Optional<CdpInfo> info = finder.match(chromeVersion);
-    assertThat(info).isEqualTo(Optional.of(v85));
+    assertThat(info).contains(v85);
 
     info = finder.match(edgeVersion);
-    assertThat(info).isEqualTo(Optional.of(v84));
+    assertThat(info).contains(v84);
   }
 }

@@ -18,11 +18,6 @@
 package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -46,12 +41,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.data.Availability;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.RequestId;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.data.SessionRequest;
+import org.openqa.selenium.grid.data.*;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
@@ -86,7 +76,7 @@ class RouterTest {
   private static Map<String, Object> getStatus(Router router) {
     HttpResponse response = router.execute(new HttpRequest(GET, "/status"));
     Map<String, Object> status = Values.get(response, MAP_TYPE);
-    assertNotNull(status);
+    assertThat(status).isNotNull();
     return status;
   }
 
@@ -156,7 +146,7 @@ class RouterTest {
   @Test
   void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() {
     Map<String, Object> status = getStatus(router);
-    assertFalse((Boolean) status.get("ready"));
+    assertThat((Boolean) status.get("ready")).isFalse();
   }
 
   @Test
@@ -173,7 +163,7 @@ class RouterTest {
     waitUntilNotReady(router, Duration.ofSeconds(5));
 
     Map<String, Object> status = getStatus(router);
-    assertFalse((Boolean) status.get("ready"), status.toString());
+    assertThat(status.get("ready")).as(() -> status.toString()).isEqualTo(false);
   }
 
   @Test
@@ -229,12 +219,12 @@ class RouterTest {
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> nodes = (List<Map<String, Object>>) status.get("nodes");
 
-    assertEquals(2, nodes.size());
+    assertThat(nodes).hasSize(2);
 
     String firstNodeId = (String) nodes.get(0).get("id");
     String secondNodeId = (String) nodes.get(1).get("id");
 
-    assertNotEquals(firstNodeId, secondNodeId);
+    assertThat(secondNodeId).isNotEqualTo(firstNodeId);
   }
 
   @Test
@@ -266,7 +256,7 @@ class RouterTest {
     waitUntilReady(router, Duration.ofSeconds(5));
 
     Map<String, Object> status = getStatus(router);
-    assertTrue((Boolean) status.get("ready"), status.toString());
+    assertThat((Boolean) status.get("ready")).as(() -> status.toString()).isEqualTo(true);
 
     SessionRequest sessionRequest =
         new SessionRequest(
@@ -280,7 +270,7 @@ class RouterTest {
     Either<SessionNotCreatedException, CreateSessionResponse> response =
         distributor.newSession(sessionRequest);
 
-    assertTrue(response.isRight());
+    assertThat(response.isRight()).isTrue();
     Session session = response.right().getSession();
     assertThat(session).isNotNull();
 

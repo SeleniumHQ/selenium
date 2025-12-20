@@ -18,7 +18,6 @@
 package org.openqa.selenium.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
@@ -45,7 +44,7 @@ class TemporaryFilesystemTest {
   public void tearDown() throws IOException {
     if (baseForTest.exists()) {
       tmpFs.deleteTemporaryFiles();
-      assertTrue(baseForTest.delete());
+      assertThat(baseForTest.delete()).isTrue();
     }
   }
 
