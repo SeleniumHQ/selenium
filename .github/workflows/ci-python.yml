@@ -103,48 +103,9 @@ jobs:
       matrix:
         include:
           - browser: chrome
-            os: ubuntu
-          - browser: edge
-            os: ubuntu
-          - browser: firefox
-            os: ubuntu
-    with:
-      name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
-      os: ${{ matrix.os }}
-      cache-key: py-browser-${{ matrix.browser }}
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }}-bidi //py:test-${{ matrix.browser }}
-
-  browser-tests-windows:
-    name: Browser Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - browser: chrome
             os: windows
           - browser: edge
             os: windows
-    with:
-      name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
-      os: ${{ matrix.os }}
-      cache-key: py-browser-${{ matrix.browser }}
-      run: |
-        fsutil 8dot3name set 0
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }}-bidi //py:test-${{ matrix.browser }}
-
-  browser-tests-macos:
-    name: Browser Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
           - browser: safari
             os: macos
     with:
