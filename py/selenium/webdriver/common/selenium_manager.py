@@ -62,7 +62,13 @@ class SeleniumManager:
 
         1. location set in an environment variable
         2. location where setuptools-rust places the compiled binary (built from the sdist package)
-        3. location where we ship binaries in the wheel package for the platform this is running on
+        3. location where we ship binaries in the wheel package for each platform and architecture
+             - `linux/selenium-manager`
+             - `linux/selenium-manager-arm64`
+             - `macos/selenium-manager`
+             - `macos/selenium-manager-arm64`
+             - `windows/selenium-manager.exe`
+             - `windows/selenium-manager-arm64.exe`
         4. give up
 
         Returns:
