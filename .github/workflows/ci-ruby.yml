@@ -124,7 +124,7 @@ jobs:
           - macos
           - linux
     with:
-      name: Selenium Manager Tests ${{ matrix.os }})
+      name: Manager Tests ${{ matrix.os }})
       cache-key: rb-manager-${{ matrix.os }}-test
       os: ${{ matrix.os }}
       run: >
