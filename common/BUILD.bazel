@@ -7,6 +7,13 @@ bool_flag(
     build_setting_default = True,
 )
 
+config_setting(
+    name = "use_pinned_browser",
+    flag_values = {
+        ":pin_browsers": "true",
+    },
+)
+
 bool_flag(
     name = "headless",
     build_setting_default = False,
@@ -38,13 +45,6 @@ config_setting(
 config_setting(
     name = "stamp",
     values = {"stamp": "true"},
-)
-
-config_setting(
-    name = "use_pinned_browser",
-    flag_values = {
-        ":pin_browsers": "true",
-    },
 )
 
 alias(
