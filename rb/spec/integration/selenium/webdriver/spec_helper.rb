@@ -73,6 +73,7 @@ RSpec.configure do |c|
     guards.add_condition(:bidi, !ENV['WEBDRIVER_BIDI'].nil?)
     guards.add_condition(:rbe, GlobalTestEnv.rbe?)
     guards.add_condition(:version, GlobalTestEnv.browser_version)
+    guards.add_condition(:manager, !ENV['SE_FORCE_BROWSER_DOWNLOAD']).nil?
 
     results = guards.disposition
     send(*results) if results

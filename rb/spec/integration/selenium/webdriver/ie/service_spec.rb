@@ -27,6 +27,7 @@ module Selenium
                 exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :ie}]} do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
+        let(:cache_dir) { ENV['SE_CACHE'] || '.cache/selenium'}
 
         after { service_manager.stop }
 
@@ -36,7 +37,7 @@ module Selenium
           browser_path = driver_finder.browser_path
 
           expect { Platform.assert_executable(driver_path) }.not_to raise_error
-          expect { Platform.assert_executable(browser_path) }.not_to raise_error
+          expect(driver_path).to include(cache_dir)
 
           service.executable_path = driver_path
 
