@@ -110,7 +110,7 @@ def test_errors_if_invalid_os(monkeypatch):
 
     with pytest.raises(WebDriverException) as excinfo:
         SeleniumManager()._get_binary()
-    assert "Unsupported platform/architecture combination" in str(excinfo.value)
+    assert "Unsupported platform" in str(excinfo.value)
 
 
 def test_error_if_invalid_env_path(monkeypatch):

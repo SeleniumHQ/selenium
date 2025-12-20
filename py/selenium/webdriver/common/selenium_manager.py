@@ -87,37 +87,27 @@ class SeleniumManager:
         elif compiled_path.is_file():
             path = compiled_path
         else:
-            allowed = {
-                ("darwin", "any"): "macos/selenium-manager",
-                ("win32", "amd64"): "windows/selenium-manager.exe",
-                ("win32", "x86_64"): "windows/selenium-manager.exe",
-                ("win32", "arm64"): "windows/selenium-manager-arm64.exe",
-                ("win32", "aarch64"): "windows/selenium-manager-arm64.exe",
-                ("cygwin", "amd64"): "windows/selenium-manager.exe",
-                ("cygwin", "x86_64"): "windows/selenium-manager.exe",
-                ("cygwin", "arm64"): "windows/selenium-manager-arm64.exe",
-                ("cygwin", "aarch64"): "windows/selenium-manager-arm64.exe",
-                ("linux", "amd64"): "linux/selenium-manager",
-                ("linux", "x86_64"): "linux/selenium-manager",
-                ("linux", "arm64"): "linux/selenium-manager-arm64",
-                ("linux", "aarch64"): "linux/selenium-manager-arm64",
-                ("freebsd", "amd64"): "linux/selenium-manager",
-                ("freebsd", "x86_64"): "linux/selenium-manager",
-                ("freebsd", "arm64"): "linux/selenium-manager-arm64",
-                ("freebsd", "aarch64"): "linux/selenium-manager-arm64",
-                ("openbsd", "amd64"): "linux/selenium-manager",
-                ("openbsd", "x86_64"): "linux/selenium-manager",
-                ("openbsd", "arm64"): "linux/selenium-manager-arm64",
-                ("openbsd", "aarch64"): "linux/selenium-manager-arm64",
-            }
+            is_windows = any(("win" in sys.platform, "cygwin" in sys.platform))
 
-            arch = "any" if sys.platform == "darwin" else platform.machine().lower()
-            if sys.platform in ["freebsd", "openbsd"]:
+            # choose the binary name for the architecture and platform/os
+            bin_name = "selenium-manager"
+            if platform.machine() in ("aarch64", "arm64"):
+                bin_name = f"{bin_name}-arm64"
+            if is_windows:
+                bin_name = f"{bin_name}.exe"
+
+            # choose the directory of the binary for the platform/os
+            if is_windows:
+                location = f"windows/{bin_name}"
+            elif sys.platform == "darwin":
+                location = f"macos/{bin_name}"
+            elif sys.platform == "linux":
+                location = f"linux/{bin_name}"
+            elif "bsd" in sys.platform:
+                location = f"linux/{bin_name}"
                 logger.warning(f"Selenium Manager binary may not be compatible with {sys.platform}; verify settings")
-
-            location = allowed.get((sys.platform, arch))
-            if location is None:
-                raise WebDriverException(f"Unsupported platform/architecture combination: {sys.platform}/{arch}")
+            else:
+                raise WebDriverException(f"Unsupported platform: {sys.platform}")
 
             path = Path(__file__).parent.joinpath(location)
 
