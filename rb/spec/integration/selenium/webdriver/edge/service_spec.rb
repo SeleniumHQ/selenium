@@ -27,7 +27,7 @@ module Selenium
                 exclusive: [{bidi: false, reason: 'Not yet implemented with BiDi'}, {browser: :edge}]} do
         let(:service) { described_class.new }
         let(:service_manager) { service.launch }
-        let(:cache_dir) { ENV['SE_CACHE'] || '.cache/selenium'}
+        let(:cache_dir) { ENV['SE_CACHE'] || '.cache/selenium' }
 
         after { service_manager.stop }
 
