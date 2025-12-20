@@ -31,7 +31,7 @@ module Selenium
 
         after { service_manager.stop }
 
-        it 'selenium manager gets browser and driver' do
+        it 'selenium manager gets browser and driver', exclusive: {manager: true} do
           driver_finder = DriverFinder.new(Options.new, service)
           driver_path = driver_finder.driver_path
           browser_path = driver_finder.browser_path

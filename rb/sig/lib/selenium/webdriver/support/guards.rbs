@@ -20,7 +20,7 @@ module Selenium
 
         def initialize: (untyped example, ?bug_tracker: String, ?conditions: untyped?) -> void
 
-        def add_condition: (untyped name, ?untyped? condition) { () -> untyped } -> untyped
+        def add_condition: (untyped name, ?untyped? condition) ?{ () -> untyped } -> untyped
 
         def add_message: (untyped name, untyped message) -> untyped
 

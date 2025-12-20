@@ -33,7 +33,7 @@ module Selenium
 
       attr_accessor options: Hash[String | Symbol, String | Numeric | bool?]
 
-      def initialize: (Hash[String | Symbol, String | Numeric | bool] opts) -> void
+      def initialize: ?(Hash[String | Symbol, String | Numeric | bool] opts) -> void
 
       def add_option: (String | Symbol name, String | Numeric | bool? value) -> (String | Numeric | bool)?
 
