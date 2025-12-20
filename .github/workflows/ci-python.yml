@@ -114,4 +114,4 @@ jobs:
       os: ${{ matrix.os }}
       cache-key: py-browser-${{ matrix.browser }}
       run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }} //py:test-${{ matrix.browser }}
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }} //py:test-${{ matrix.browser }} //py:test-${{ matrix.browser }}-bidi
