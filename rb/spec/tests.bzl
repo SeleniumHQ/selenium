@@ -175,11 +175,14 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
         visibility = ["//rb:__subpackages__"],
     )
 
+    # Selenium manager tests are lighter weight (no full browser session needed)
+    size = "medium" if "manager" in tags else "large"
+
     for browser in browsers:
         # Generate a test target for local browser execution.
         rb_test(
             name = "{}-{}".format(name, browser),
-            size = "large",
+            size = size,
             srcs = srcs,
             args = ["rb/spec/"],
             data = BROWSERS[browser]["data"] + data + ["//common/src/web"],
@@ -218,7 +221,7 @@ def rb_integration_test(name, srcs, deps = [], data = [], browsers = BROWSERS.ke
         if "bidi" in tags:
             rb_test(
                 name = "{}-{}-bidi".format(name, browser),
-                size = "large",
+                size = size,
                 srcs = srcs,
                 args = ["rb/spec/"],
                 data = BROWSERS[browser]["data"] + data + ["//common/src/web"],

@@ -6,5 +6,15 @@ load("//rb/spec:tests.bzl", "rb_integration_test")
         srcs = [file],
         browsers = ["edge"],  # No need to run in other browsers.
     )
-    for file in glob(["*_spec.rb"])
+    for file in glob(
+        ["*_spec.rb"],
+        exclude = ["service_spec.rb"],
+    )
 ]
+
+rb_integration_test(
+    name = "service",
+    srcs = ["service_spec.rb"],
+    browsers = ["edge"],
+    tags = ["manager"],
+)

@@ -1,0 +1,8 @@
+load("//rb/spec:tests.bzl", "rb_integration_test")
+
+rb_integration_test(
+    name = "service",
+    srcs = ["service_spec.rb"],
+    browsers = ["ie"],
+    tags = ["manager"],
+)
