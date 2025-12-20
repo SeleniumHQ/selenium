@@ -41,6 +41,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.drivers.Browser;
 
+@Ignore(value = Browser.SAFARI, reason = "Safari does not support BiDi")
 class WebNetworkTest extends JupiterTestBase {
 
   private String page;

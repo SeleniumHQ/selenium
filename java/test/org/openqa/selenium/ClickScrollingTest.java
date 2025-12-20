@@ -160,7 +160,6 @@ class ClickScrollingTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
   @Ignore(
       value = FIREFOX,
       reason = "frame not scrolled into view",
@@ -185,7 +184,6 @@ class ClickScrollingTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -215,7 +213,6 @@ class ClickScrollingTest extends JupiterTestBase {
       value = FIREFOX,
       reason = "horizontal scroll bar gets in the way",
       issue = "https://github.com/mozilla/geckodriver/issues/2013")
-  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
     driver.get(
         appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
@@ -242,7 +239,6 @@ class ClickScrollingTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
   @Ignore(
       value = FIREFOX,
       reason = "frame not scrolled into view",

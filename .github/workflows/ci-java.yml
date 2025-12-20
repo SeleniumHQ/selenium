@@ -78,9 +78,9 @@ jobs:
     name: Safari Tests
     uses: ./.github/workflows/bazel.yml
     with:
-      name: Safari Tests (macos)
+      name: Safari Tests
       os: macos
-      cache-key: java-macos-safari-tests
+      cache-key: java-safari-tests
       java-version: 17
       run: >
         bazel test

@@ -34,9 +34,12 @@ import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.remote.DomMutation;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.drivers.Browser;
 
+@Ignore(value = Browser.SAFARI, reason = "Safari does not support BiDi")
 class WebScriptTest extends JupiterTestBase {
 
   String page;

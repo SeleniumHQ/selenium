@@ -106,7 +106,6 @@ class FormHandlingTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(SAFARI)
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
