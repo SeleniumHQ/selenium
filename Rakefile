@@ -579,9 +579,6 @@ namespace :py do
   task :local_dev do
     Bazel.execute('build', [], '//py:selenium')
     Rake::Task['grid'].invoke
-
-    FileUtils.rm_rf('py/selenium/webdriver/common/devtools/')
-    FileUtils.cp_r('bazel-bin/py/selenium/webdriver/.', 'py/selenium/webdriver', remove_destination: true)
   end
 
   desc 'Update generated Python files for local development'

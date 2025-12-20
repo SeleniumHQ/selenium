@@ -22,11 +22,18 @@ from pathlib import Path
 
 import pytest
 
+import selenium
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
+
+# Allow local sources to override, and fall back to Bazel-generated files when present.
+_repo_root = Path(__file__).resolve().parents[1]
+_bazel_pkg = _repo_root / "bazel-bin" / "py" / "selenium"
+if _bazel_pkg.is_dir() and str(_bazel_pkg) not in selenium.__path__:
+    selenium.__path__.append(str(_bazel_pkg))
 
 drivers = (
     "chrome",
