@@ -1,0 +1,86 @@
+/*
+ * Copyright 2010 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+@provide 'goog.css.bubble';
+
+.goog-bubble-font {
+  font-size: 80%;
+  color: #888888;
+}
+
+.goog-bubble-close-button {
+  background-image:url(//ssl.gstatic.com/closure/bubble_close.jpg);
+  background-color: white;
+  background-position: top right;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.goog-bubble-left {
+  background-image:url(//ssl.gstatic.com/closure/bubble_left.gif);
+  background-position:left;
+  background-repeat:repeat-y;
+  width: 4px;
+}
+
+.goog-bubble-right {
+  background-image:url(//ssl.gstatic.com/closure/bubble_right.gif);
+  background-position: right;
+  background-repeat: repeat-y;
+  width: 4px;
+}
+
+.goog-bubble-top-right-anchor {
+  background-image:url(//ssl.gstatic.com/closure/right_anchor_bubble_top.gif);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 147px;
+  height: 16px;
+}
+
+.goog-bubble-top-left-anchor {
+  background-image:url(//ssl.gstatic.com/closure/left_anchor_bubble_top.gif);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 147px;
+  height: 16px;
+}
+
+.goog-bubble-top-no-anchor {
+  background-image:url(//ssl.gstatic.com/closure/no_anchor_bubble_top.gif);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 147px;
+  height: 6px;
+}
+
+.goog-bubble-bottom-right-anchor {
+  background-image:url(//ssl.gstatic.com/closure/right_anchor_bubble_bot.gif);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 147px;
+  height: 16px;
+}
+
+.goog-bubble-bottom-left-anchor {
+  background-image:url(//ssl.gstatic.com/closure/left_anchor_bubble_bot.gif);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 147px;
+  height: 16px;
+}
+
+.goog-bubble-bottom-no-anchor {
+  background-image:url(//ssl.gstatic.com/closure/no_anchor_bubble_bot.gif);
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 147px;
+  height: 8px;
+}
+
+

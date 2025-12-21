@@ -145,7 +145,7 @@ bot.window.forward = function (opt_numPages) {
  * @private
  */
 bot.window.checkNumPages_ = function (maxPages, opt_numPages) {
-  var numPages = goog.isDef(opt_numPages) ? opt_numPages : 1;
+  var numPages = opt_numPages !== undefined ? opt_numPages : 1;
   if (numPages <= 0) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
       'number of pages must be positive');
@@ -380,7 +380,7 @@ bot.window.scrollIntoView = function (position, opt_win) {
  */
 bot.window.getCurrentOrientationDegrees_ = function () {
   var win = bot.getWindow();
-  if (!goog.isDef(win.orientation)) {
+  if (win.orientation === undefined) {
     // If window.orientation is not defined, assume a default orientation of 0.
     // A value of 0 indicates a portrait orientation except for android tablets
     // where 0 indicates a landscape orientation.
@@ -401,7 +401,7 @@ bot.window.changeOrientation = function (orientation) {
   var currentOrientationDegrees = bot.window.getCurrentOrientationDegrees_();
   var newOrientationDegrees = bot.window.getOrientationDegrees_(orientation);
   if (currentOrientationDegrees == newOrientationDegrees ||
-    !goog.isDef(newOrientationDegrees)) {
+    newOrientationDegrees === undefined) {
     return;
   }
 

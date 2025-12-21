@@ -1,16 +1,8 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview String functions called from Closure packages that couldn't
@@ -30,6 +22,7 @@ goog.provide('goog.string.internal');
  * @see goog.string.startsWith
  */
 goog.string.internal.startsWith = function(str, prefix) {
+  'use strict';
   return str.lastIndexOf(prefix, 0) == 0;
 };
 
@@ -42,6 +35,7 @@ goog.string.internal.startsWith = function(str, prefix) {
  * @see goog.string.endsWith
  */
 goog.string.internal.endsWith = function(str, suffix) {
+  'use strict';
   const l = str.length - suffix.length;
   return l >= 0 && str.indexOf(suffix, l) == l;
 };
@@ -56,8 +50,10 @@ goog.string.internal.endsWith = function(str, suffix) {
  * @see goog.string.caseInsensitiveStartsWith
  */
 goog.string.internal.caseInsensitiveStartsWith = function(str, prefix) {
-  return goog.string.internal.caseInsensitiveCompare(
-             prefix, str.substr(0, prefix.length)) == 0;
+  'use strict';
+  return (
+      goog.string.internal.caseInsensitiveCompare(
+          prefix, str.slice(0, prefix.length)) == 0);
 };
 
 
@@ -70,9 +66,10 @@ goog.string.internal.caseInsensitiveStartsWith = function(str, prefix) {
  * @see goog.string.caseInsensitiveEndsWith
  */
 goog.string.internal.caseInsensitiveEndsWith = function(str, suffix) {
+  'use strict';
   return (
       goog.string.internal.caseInsensitiveCompare(
-          suffix, str.substr(str.length - suffix.length, suffix.length)) == 0);
+          suffix, str.slice(str.length - suffix.length)) == 0);
 };
 
 
@@ -85,6 +82,7 @@ goog.string.internal.caseInsensitiveEndsWith = function(str, suffix) {
  * @see goog.string.caseInsensitiveEquals
  */
 goog.string.internal.caseInsensitiveEquals = function(str1, str2) {
+  'use strict';
   return str1.toLowerCase() == str2.toLowerCase();
 };
 
@@ -96,6 +94,7 @@ goog.string.internal.caseInsensitiveEquals = function(str1, str2) {
  * @see goog.string.isEmptyOrWhitespace
  */
 goog.string.internal.isEmptyOrWhitespace = function(str) {
+  'use strict';
   // testing length == 0 first is actually slower in all browsers (about the
   // same in Opera).
   // Since IE doesn't include non-breaking-space (0xa0) in their \s character
@@ -112,8 +111,10 @@ goog.string.internal.isEmptyOrWhitespace = function(str) {
  */
 goog.string.internal.trim =
     (goog.TRUSTED_SITE && String.prototype.trim) ? function(str) {
+      'use strict';
       return str.trim();
     } : function(str) {
+      'use strict';
       // Since IE doesn't include non-breaking-space (0xa0) in their \s
       // character class (as required by section 7.2 of the ECMAScript spec),
       // we explicitly include it in the regexp to enforce consistent
@@ -136,6 +137,7 @@ goog.string.internal.trim =
  * @see goog.string.caseInsensitiveCompare
  */
 goog.string.internal.caseInsensitiveCompare = function(str1, str2) {
+  'use strict';
   const test1 = String(str1).toLowerCase();
   const test2 = String(str2).toLowerCase();
 
@@ -157,6 +159,7 @@ goog.string.internal.caseInsensitiveCompare = function(str1, str2) {
  * @see goog.string.newLineToBr
  */
 goog.string.internal.newLineToBr = function(str, opt_xml) {
+  'use strict';
   return str.replace(/(\r\n|\r|\n)/g, opt_xml ? '<br />' : '<br>');
 };
 
@@ -172,6 +175,7 @@ goog.string.internal.newLineToBr = function(str, opt_xml) {
  */
 goog.string.internal.htmlEscape = function(
     str, opt_isLikelyToContainHtmlChars) {
+  'use strict';
   if (opt_isLikelyToContainHtmlChars) {
     str = str.replace(goog.string.internal.AMP_RE_, '&amp;')
               .replace(goog.string.internal.LT_RE_, '&lt;')
@@ -275,6 +279,7 @@ goog.string.internal.ALL_RE_ = /[\x00&<>"']/;
  * @see goog.string.whitespaceEscape
  */
 goog.string.internal.whitespaceEscape = function(str, opt_xml) {
+  'use strict';
   // This doesn't use goog.string.preserveSpaces for backwards compatibility.
   return goog.string.internal.newLineToBr(
       str.replace(/  /g, ' &#160;'), opt_xml);
@@ -289,6 +294,7 @@ goog.string.internal.whitespaceEscape = function(str, opt_xml) {
  * @see goog.string.contains
  */
 goog.string.internal.contains = function(str, subString) {
+  'use strict';
   return str.indexOf(subString) != -1;
 };
 
@@ -301,6 +307,7 @@ goog.string.internal.contains = function(str, subString) {
  * @see goog.string.caseInsensitiveContains
  */
 goog.string.internal.caseInsensitiveContains = function(str, subString) {
+  'use strict';
   return goog.string.internal.contains(
       str.toLowerCase(), subString.toLowerCase());
 };
@@ -318,6 +325,7 @@ goog.string.internal.caseInsensitiveContains = function(str, subString) {
  * @see goog.string.compareVersions
  */
 goog.string.internal.compareVersions = function(version1, version2) {
+  'use strict';
   let order = 0;
   // Trim leading and trailing whitespace and split the versions into
   // subversions.
@@ -377,6 +385,7 @@ goog.string.internal.compareVersions = function(version1, version2) {
  * @private
  */
 goog.string.internal.compareElements_ = function(left, right) {
+  'use strict';
   if (left < right) {
     return -1;
   } else if (left > right) {

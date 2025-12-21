@@ -1,29 +1,16 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 closure_js_library(
-    name = "all_js",
-    exports = [
-        ":bidi",
-        ":cursor",
-        ":style",
-        ":transform",
-        ":transition",
-    ],
-)
-
-closure_js_library(
     name = "bidi",
     srcs = ["bidi.js"],
     lenient = True,
     deps = [
+        ":style",
         "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/style",
         "//third_party/closure/goog/useragent",
         "//third_party/closure/goog/useragent:platform",
         "//third_party/closure/goog/useragent:product",
@@ -32,23 +19,17 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "cursor",
-    srcs = ["cursor.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/useragent"],
-)
-
-closure_js_library(
     name = "style",
     srcs = ["style.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/array",
         "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
         "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:safe",
         "//third_party/closure/goog/dom:tagname",
         "//third_party/closure/goog/dom:vendor",
+        "//third_party/closure/goog/events:event",
         "//third_party/closure/goog/html:safestylesheet",
         "//third_party/closure/goog/math:box",
         "//third_party/closure/goog/math:coordinate",
@@ -57,51 +38,6 @@ closure_js_library(
         "//third_party/closure/goog/object",
         "//third_party/closure/goog/reflect",
         "//third_party/closure/goog/string",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "stylescrollbartester",
-    testonly = True,
-    srcs = ["stylescrollbartester.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/testing:asserts",
-    ],
-)
-
-closure_js_library(
-    name = "transform",
-    srcs = ["transform.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/functions",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/math:coordinate3",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/useragent",
-        "//third_party/closure/goog/useragent:product_isversion",
-    ],
-)
-
-closure_js_library(
-    name = "transition",
-    srcs = ["transition.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/dom:vendor",
-        "//third_party/closure/goog/functions",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/style",
         "//third_party/closure/goog/useragent",
     ],
 )

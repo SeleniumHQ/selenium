@@ -1,15 +1,8 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-closure_js_library(
-    name = "all_js",
-    exports = [":window"],
-)
 
 closure_js_library(
     name = "window",
@@ -24,6 +17,7 @@ closure_js_library(
         "//third_party/closure/goog/labs/useragent:platform",
         "//third_party/closure/goog/string",
         "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/string:typedstring",
         "//third_party/closure/goog/useragent",
     ],
 )

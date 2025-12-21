@@ -1,62 +1,17 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 closure_js_library(
-    name = "all_js",
-    exports = [
-        ":affinetransform",
-        ":bezier",
-        ":box",
-        ":coordinate",
-        ":coordinate3",
-        ":exponentialbackoff",
-        ":integer",
-        ":irect",
-        ":line",
-        ":long",
-        ":math",
-        ":matrix",
-        ":path",
-        ":paths",
-        ":range",
-        ":rangeset",
-        ":rect",
-        ":size",
-        ":tdma",
-        ":vec2",
-        ":vec3",
-        "//third_party/closure/goog/math/interpolator:all_js",
-    ],
-)
-
-closure_js_library(
-    name = "affinetransform",
-    srcs = ["affinetransform.js"],
-    lenient = True,
-)
-
-closure_js_library(
-    name = "bezier",
-    srcs = ["bezier.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:coordinate",
-    ],
-)
-
-closure_js_library(
     name = "box",
     srcs = ["box.js"],
     lenient = True,
     deps = [
+        ":coordinate",
         "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -64,27 +19,7 @@ closure_js_library(
     name = "coordinate",
     srcs = ["coordinate.js"],
     lenient = True,
-    deps = ["//third_party/closure/goog/math"],
-)
-
-closure_js_library(
-    name = "coordinate3",
-    srcs = ["coordinate3.js"],
-    lenient = True,
-)
-
-closure_js_library(
-    name = "exponentialbackoff",
-    srcs = ["exponentialbackoff.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/asserts"],
-)
-
-closure_js_library(
-    name = "integer",
-    srcs = ["integer.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/reflect"],
+    deps = [":math"],
 )
 
 closure_js_library(
@@ -94,85 +29,10 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "line",
-    srcs = ["line.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:coordinate",
-    ],
-)
-
-closure_js_library(
-    name = "long",
-    srcs = ["long.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/reflect",
-    ],
-)
-
-closure_js_library(
     name = "math",
     srcs = ["math.js"],
     lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-    ],
-)
-
-closure_js_library(
-    name = "matrix",
-    srcs = ["matrix.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:size",
-        "//third_party/closure/goog/string",
-    ],
-)
-
-closure_js_library(
-    name = "path",
-    srcs = ["path.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:affinetransform",
-    ],
-)
-
-closure_js_library(
-    name = "paths",
-    srcs = ["paths.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/math:path",
-    ],
-)
-
-closure_js_library(
-    name = "range",
-    srcs = ["range.js"],
-    lenient = True,
     deps = ["//third_party/closure/goog/asserts"],
-)
-
-closure_js_library(
-    name = "rangeset",
-    srcs = ["rangeset.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/iter",
-        "//third_party/closure/goog/math:range",
-    ],
 )
 
 closure_js_library(
@@ -180,11 +40,11 @@ closure_js_library(
     srcs = ["rect.js"],
     lenient = True,
     deps = [
+        ":box",
+        ":coordinate",
+        ":irect",
+        ":size",
         "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/math:box",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/math:irect",
-        "//third_party/closure/goog/math:size",
     ],
 )
 
@@ -195,27 +55,12 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "tdma",
-    srcs = ["tdma.js"],
-    lenient = True,
-)
-
-closure_js_library(
     name = "vec2",
     srcs = ["vec2.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:coordinate",
-    ],
-)
-
-closure_js_library(
-    name = "vec3",
-    srcs = ["vec3.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:coordinate3",
+        ":coordinate",
+        ":math",
+        "//third_party/closure/goog/utils",
     ],
 )

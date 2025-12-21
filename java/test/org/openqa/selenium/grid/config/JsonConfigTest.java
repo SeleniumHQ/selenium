@@ -33,7 +33,7 @@ class JsonConfigTest {
     String raw = "{\"cheeses\": {\"selected\": \"brie\"}}";
     Config config = new JsonConfig(new StringReader(raw));
 
-    assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
+    assertThat(config.get("cheeses", "selected")).contains("brie");
   }
 
   @Test
@@ -52,7 +52,7 @@ class JsonConfigTest {
 
     List<String> expected = Arrays.asList("2", "{\"browserName\": \"chrome\"}");
     Optional<List<String>> content = config.getAll("relay", "configs");
-    assertThat(content).isEqualTo(Optional.of(expected));
+    assertThat(content).contains(expected);
   }
 
   @Test
@@ -79,7 +79,7 @@ class JsonConfigTest {
             .replace("`", "\"");
     Config config = new JsonConfig(new StringReader(raw));
 
-    assertThat(config.get("cheeses", "default")).isEqualTo(Optional.of("manchego"));
+    assertThat(config.get("cheeses", "default")).contains("manchego");
 
     List<String> expected =
         Arrays.asList(
@@ -123,7 +123,7 @@ class JsonConfigTest {
             "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}",
             Config.DELIMITER);
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
-    assertThat(content).isEqualTo(Optional.of(expected));
+    assertThat(content).contains(expected);
   }
 
   @Test

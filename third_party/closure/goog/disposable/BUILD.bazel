@@ -1,28 +1,26 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 closure_js_library(
-    name = "all_js",
-    exports = [
-        ":disposable",
-        ":idisposable",
-    ],
-)
-
-closure_js_library(
     name = "disposable",
-    srcs = ["disposable.js"],
+    srcs = [
+        "disposable.js",
+        "dispose.js",
+        "disposeall.js",
+    ],
     lenient = True,
-    deps = ["//third_party/closure/goog/disposable:idisposable"],
+    deps = [
+        ":idisposable",
+        "//third_party/closure/goog/utils",
+    ],
 )
 
 closure_js_library(
     name = "idisposable",
     srcs = ["idisposable.js"],
     lenient = True,
+    deps = ["//third_party/closure/goog/utils"],
 )

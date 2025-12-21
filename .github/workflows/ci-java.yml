@@ -23,7 +23,7 @@ jobs:
       java-version: 17
       run: |
         fsutil 8dot3name set 0
-        bazel test --flaky_test_attempts 3 --pin_browsers=true //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
+        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest `
             //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest `
             //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest `
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest `
@@ -48,7 +48,7 @@ jobs:
       # https://github.com/bazelbuild/rules_jvm_external/issues/1046
       java-version: 17
       run: |
-        bazel test --flaky_test_attempts 3 --pin_browsers=true //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
+        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote \
             //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest \
           //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest \
             //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest \
@@ -72,4 +72,4 @@ jobs:
       # https://github.com/bazelbuild/rules_jvm_external/issues/1046
       java-version: 17
       run: |
-        bazel test --flaky_test_attempts 3 --pin_browsers=true //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+        bazel test --flaky_test_attempts 3 //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote

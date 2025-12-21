@@ -15,15 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import http.client as http_client
 
 from selenium.webdriver.common.driver_finder import DriverFinder
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.wpewebkit.options import Options
 from selenium.webdriver.wpewebkit.service import Service
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Controls the WPEWebKitDriver and allows you to drive the browser."""
 
     def __init__(
@@ -45,22 +44,3 @@ class WebDriver(RemoteWebDriver):
         self.service.start()
 
         super().__init__(command_executor=self.service.service_url, options=options)
-        self._is_remote = False
-
-    def quit(self):
-        """Close the browser and shut down the WPEWebKit driver executable."""
-        try:
-            super().quit()
-        except http_client.BadStatusLine:
-            pass
-        finally:
-            self.service.stop()
-
-    def download_file(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError

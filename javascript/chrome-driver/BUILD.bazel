@@ -1,4 +1,4 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_fragment", "closure_js_deps", "closure_lang_file", "closure_test_suite")
 
 closure_js_library(

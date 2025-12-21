@@ -21,6 +21,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -40,7 +41,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
@@ -72,8 +72,9 @@ class RetryRequestTest {
                   throw new UnsupportedOperationException("Testing");
                 });
 
-    Assertions.assertThrows(
-        UnsupportedOperationException.class, () -> handler.execute(new HttpRequest(GET, "/")));
+    assertThatThrownBy(() -> handler.execute(new HttpRequest(GET, "/")))
+        .isInstanceOf(UnsupportedOperationException.class)
+        .hasMessage("Testing");
   }
 
   @Test
@@ -90,13 +91,15 @@ class RetryRequestTest {
                   }
                 });
 
-    Assertions.assertThrows(
-        StackOverflowError.class, () -> handler.execute(new HttpRequest(GET, "/")));
-    Assertions.assertEquals(1, count.get());
+    assertThatThrownBy(() -> handler.execute(new HttpRequest(GET, "/")))
+        .isInstanceOf(StackOverflowError.class)
+        .hasMessage("Testing");
+    assertThat(count).hasValue(1);
 
-    Assertions.assertThrows(
-        UncheckedIOException.class, () -> handler.execute(new HttpRequest(GET, "/")));
-    Assertions.assertEquals(2, count.get());
+    assertThatThrownBy(() -> handler.execute(new HttpRequest(GET, "/")))
+        .isInstanceOf(UncheckedIOException.class)
+        .hasMessage("More testing");
+    assertThat(count).hasValue(2);
   }
 
   @Test
@@ -105,18 +108,18 @@ class RetryRequestTest {
         new RetryRequest()
             .andFinally(
                 (HttpRequest request) -> {
-                  throw new TimeoutException();
+                  throw new TimeoutException("Failed to load in time");
                 });
 
-    Assertions.assertThrows(
-        TimeoutException.class, () -> handler1.execute(new HttpRequest(GET, "/")));
+    assertThatThrownBy(() -> handler1.execute(new HttpRequest(GET, "/")))
+        .isInstanceOf(TimeoutException.class)
+        .hasMessageStartingWith("Failed to load in time");
 
     HttpHandler handler2 =
         new RetryRequest()
             .andFinally((HttpRequest request) -> new HttpResponse().setStatus(HTTP_UNAVAILABLE));
 
-    Assertions.assertEquals(
-        HTTP_UNAVAILABLE, handler2.execute(new HttpRequest(GET, "/")).getStatus());
+    assertThat(handler2.execute(new HttpRequest(GET, "/")).getStatus()).isEqualTo(HTTP_UNAVAILABLE);
   }
 
   @Test
@@ -144,8 +147,8 @@ class RetryRequestTest {
 
     for (int i = 0; i < 1024; i++) {
       int offset = i * 2;
-      Assertions.assertThrows(ExecutionException.class, () -> results.get(offset).get());
-      Assertions.assertEquals(HTTP_UNAVAILABLE, results.get(offset + 1).get().getStatus());
+      assertThatThrownBy(() -> results.get(offset).get()).isInstanceOf(ExecutionException.class);
+      assertThat(results.get(offset + 1).get().getStatus()).isEqualTo(HTTP_UNAVAILABLE);
     }
 
     executorService.shutdown();
@@ -330,10 +333,9 @@ class RetryRequestTest {
                   throw lastThrown.get();
                 });
 
-    UncheckedIOException thrown =
-        Assertions.assertThrows(
-            UncheckedIOException.class, () -> handler.execute(new HttpRequest(GET, "/")));
-    assertThat(thrown).isSameAs(lastThrown.get());
+    assertThatThrownBy(() -> handler.execute(new HttpRequest(GET, "/")))
+        .isInstanceOf(UncheckedIOException.class)
+        .isSameAs(lastThrown.get());
     assertThat(count).hasValue(4);
   }
 

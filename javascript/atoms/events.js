@@ -40,6 +40,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
+goog.require('goog.utils');
 
 
 /**
@@ -250,13 +251,16 @@ bot.events.EventFactory_.prototype.toString = function () {
  * @private
  */
 bot.events.MouseEventFactory_ = function (type, bubbles, cancelable) {
-  goog.base(this, type, bubbles, cancelable);
+  bot.events.EventFactory_.call(this, type, bubbles, cancelable);
 };
-goog.inherits(bot.events.MouseEventFactory_, bot.events.EventFactory_);
+goog.utils.inherits(bot.events.MouseEventFactory_, bot.events.EventFactory_);
 
 
 /**
  * @override
+ * @param {!Element|!Window} target Target element of the event.
+ * @param {bot.events.EventArgs=} opt_args Event arguments.
+ * @return {!Event} Newly created event.
  */
 bot.events.MouseEventFactory_.prototype.create = function (target, opt_args) {
   // Only Gecko supports the mouse pixel scroll event.
@@ -338,13 +342,16 @@ bot.events.MouseEventFactory_.prototype.create = function (target, opt_args) {
  * @private
  */
 bot.events.KeyboardEventFactory_ = function (type, bubbles, cancelable) {
-  goog.base(this, type, bubbles, cancelable);
+  bot.events.EventFactory_.call(this, type, bubbles, cancelable);
 };
-goog.inherits(bot.events.KeyboardEventFactory_, bot.events.EventFactory_);
+goog.utils.inherits(bot.events.KeyboardEventFactory_, bot.events.EventFactory_);
 
 
 /**
  * @override
+ * @param {!Element|!Window} target Target element of the event.
+ * @param {bot.events.EventArgs=} opt_args Event arguments.
+ * @return {!Event} Newly created event.
  */
 bot.events.KeyboardEventFactory_.prototype.create = function (target, opt_args) {
   var args = /** @type {!bot.events.KeyboardArgs} */ (opt_args);
@@ -410,13 +417,16 @@ bot.events.TouchEventStrategy_ = {
  * @private
  */
 bot.events.TouchEventFactory_ = function (type, bubbles, cancelable) {
-  goog.base(this, type, bubbles, cancelable);
+  bot.events.EventFactory_.call(this, type, bubbles, cancelable);
 };
-goog.inherits(bot.events.TouchEventFactory_, bot.events.EventFactory_);
+goog.utils.inherits(bot.events.TouchEventFactory_, bot.events.EventFactory_);
 
 
 /**
  * @override
+ * @param {!Element|!Window} target Target element of the event.
+ * @param {bot.events.EventArgs=} opt_args Event arguments.
+ * @return {!Event} Newly created event.
  */
 bot.events.TouchEventFactory_.prototype.create = function (target, opt_args) {
   if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
@@ -576,13 +586,16 @@ bot.events.TouchEventFactory_.prototype.create = function (target, opt_args) {
  * @private
  */
 bot.events.MSGestureEventFactory_ = function (type, bubbles, cancelable) {
-  goog.base(this, type, bubbles, cancelable);
+  bot.events.EventFactory_.call(this, type, bubbles, cancelable);
 };
-goog.inherits(bot.events.MSGestureEventFactory_, bot.events.EventFactory_);
+goog.utils.inherits(bot.events.MSGestureEventFactory_, bot.events.EventFactory_);
 
 
 /**
  * @override
+ * @param {!Element|!Window} target Target element of the event.
+ * @param {bot.events.EventArgs=} opt_args Event arguments.
+ * @return {!Event} Newly created event.
  */
 bot.events.MSGestureEventFactory_.prototype.create = function (target,
   opt_args) {
@@ -621,13 +634,16 @@ bot.events.MSGestureEventFactory_.prototype.create = function (target,
  * @private
  */
 bot.events.MSPointerEventFactory_ = function (type, bubbles, cancelable) {
-  goog.base(this, type, bubbles, cancelable);
+  bot.events.EventFactory_.call(this, type, bubbles, cancelable);
 };
-goog.inherits(bot.events.MSPointerEventFactory_, bot.events.EventFactory_);
+goog.utils.inherits(bot.events.MSPointerEventFactory_, bot.events.EventFactory_);
 
 
 /**
  * @override
+ * @param {!Element|!Window} target Target element of the event.
+ * @param {bot.events.EventArgs=} opt_args Event arguments.
+ * @return {!Event} Newly created event.
  * @suppress {checkTypes} Closure compiler externs don't know about pointer
  *     events
  */
@@ -664,7 +680,7 @@ bot.events.MSPointerEventFactory_.prototype.create = function (target,
  * http://en.wikipedia.org/wiki/DOM_events and
  * http://www.w3.org/Submission/pointer-events/#pointer-event-types
  *
- * @enum {!bot.events.EventFactory_}
+ * @const {!Object<string, !bot.events.EventFactory_>}
  */
 bot.events.EventType = {
   BLUR: new bot.events.EventFactory_('blur', false, false),
@@ -742,13 +758,12 @@ bot.events.EventType = {
  * Fire a named event on a particular element.
  *
  * @param {!Element|!Window} target The element on which to fire the event.
- * @param {!bot.events.EventType} type Event type.
+ * @param {!bot.events.EventFactory_} type Event type.
  * @param {bot.events.EventArgs=} opt_args Arguments to initialize the event.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  */
 bot.events.fire = function (target, type, opt_args) {
-  var factory = /** @type {!bot.events.EventFactory_} */ (type);
-  var event = factory.create(target, opt_args);
+  var event = type.create(target, opt_args);
 
   // Ensure the event's isTrusted property is set to false, so that
   // bot.events.isSynthetic() can identify synthetic events from native ones.

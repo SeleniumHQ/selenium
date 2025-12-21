@@ -11,12 +11,10 @@ bazel_dep(name = "buildifier_prebuilt", version = "7.3.1")
 bazel_dep(name = "contrib_rules_jvm", version = "0.27.0")
 bazel_dep(name = "platforms", version = "1.0.0")
 
-# Required for the closure rules
-bazel_dep(name = "protobuf", version = "29.2", dev_dependency = True, repo_name = "com_google_protobuf")
-
 # Required for rules_rust to import the crates properly
 bazel_dep(name = "rules_cc", version = "0.2.8", dev_dependency = True)
 
+bazel_dep(name = "rules_closure", version = "0.15.0")
 bazel_dep(name = "rules_dotnet", version = "0.20.5")
 bazel_dep(name = "rules_java", version = "8.7.1")
 bazel_dep(name = "rules_jvm_external", version = "6.8")
@@ -69,6 +67,7 @@ npm.npm_translate_lock(
         "@//:pnpm-workspace.yaml",
         "@//javascript/atoms:package.json",
         "@//javascript/grid-ui:package.json",
+        "@//javascript/private:package.json",
         "@//javascript/selenium-webdriver:package.json",
     ],
     generate_bzl_library_targets = True,
@@ -211,6 +210,7 @@ maven.install(
         "io.opentelemetry:opentelemetry-sdk-testing",
         "io.opentelemetry:opentelemetry-sdk-trace",
         "it.ozimov:embedded-redis:0.7.3",
+        "javax.inject:javax.inject:1",
         "net.bytebuddy:byte-buddy:1.18.2",
         "org.htmlunit:htmlunit-core-js:4.19.0",
         "org.apache.commons:commons-exec:1.6.0",
@@ -250,6 +250,11 @@ maven.install(
     fail_if_repin_required = True,
     fail_on_missing_checksum = True,
     fetch_sources = True,
+    known_contributing_modules = [
+        "rules_closure",
+        "rules_web_testing_java",
+        "selenium",
+    ],
     lock_file = "//java:maven_install.json",
     repositories = [
         "https://repo1.maven.org/maven2",

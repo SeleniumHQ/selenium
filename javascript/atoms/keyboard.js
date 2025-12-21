@@ -36,6 +36,7 @@ goog.require('goog.dom.selection');
 goog.require('goog.structs.Map');
 goog.require('goog.structs.Set');
 goog.require('goog.userAgent');
+goog.require('goog.utils');
 
 
 
@@ -48,7 +49,7 @@ goog.require('goog.userAgent');
  * @suppress {deprecated}
  */
 bot.Keyboard = function (opt_state) {
-  goog.base(this);
+  bot.Device.call(this);
 
   /** @private {boolean} */
   this.editable_ = bot.dom.isEditable(this.getElement());
@@ -69,7 +70,7 @@ bot.Keyboard = function (opt_state) {
     this.currentPos_ = opt_state['currentPos'] || 0;
   }
 };
-goog.inherits(bot.Keyboard, bot.Device);
+goog.utils.inherits(bot.Keyboard, bot.Device);
 
 
 /**
@@ -103,14 +104,14 @@ bot.Keyboard.CHAR_TO_KEY_ = {};
  * @private
  */
 bot.Keyboard.newKey_ = function (code, opt_char, opt_shiftChar) {
-  if (goog.isObject(code)) {
+  if (goog.utils.isObject(code)) {
     if (goog.userAgent.GECKO) {
       code = code.gecko;
     } else {  // IE and Webkit
       code = code.ieWebkit;
     }
   }
-  var key = new bot.Keyboard.Key(code, opt_char, opt_shiftChar);
+  var key = new bot.Keyboard.Key(/** @type {?number} */ (code), opt_char, opt_shiftChar);
 
   // For a character key, potentially map the character to the key in the
   // CHAR_TO_KEY_ map. Because of numpad, multiple keys may have the same
@@ -152,11 +153,119 @@ bot.Keyboard.Key = function (code, opt_char, opt_shiftChar) {
 
 
 /**
- * An enumeration of keys known to this module.
- *
- * @enum {!bot.Keyboard.Key}
+ * Type definition for the keyboard keys object.
+ * @typedef {{
+ *   BACKSPACE: !bot.Keyboard.Key,
+ *   TAB: !bot.Keyboard.Key,
+ *   ENTER: !bot.Keyboard.Key,
+ *   SHIFT: !bot.Keyboard.Key,
+ *   CONTROL: !bot.Keyboard.Key,
+ *   ALT: !bot.Keyboard.Key,
+ *   PAUSE: !bot.Keyboard.Key,
+ *   CAPS_LOCK: !bot.Keyboard.Key,
+ *   ESC: !bot.Keyboard.Key,
+ *   SPACE: !bot.Keyboard.Key,
+ *   PAGE_UP: !bot.Keyboard.Key,
+ *   PAGE_DOWN: !bot.Keyboard.Key,
+ *   END: !bot.Keyboard.Key,
+ *   HOME: !bot.Keyboard.Key,
+ *   LEFT: !bot.Keyboard.Key,
+ *   UP: !bot.Keyboard.Key,
+ *   RIGHT: !bot.Keyboard.Key,
+ *   DOWN: !bot.Keyboard.Key,
+ *   PRINT_SCREEN: !bot.Keyboard.Key,
+ *   INSERT: !bot.Keyboard.Key,
+ *   DELETE: !bot.Keyboard.Key,
+ *   ZERO: !bot.Keyboard.Key,
+ *   ONE: !bot.Keyboard.Key,
+ *   TWO: !bot.Keyboard.Key,
+ *   THREE: !bot.Keyboard.Key,
+ *   FOUR: !bot.Keyboard.Key,
+ *   FIVE: !bot.Keyboard.Key,
+ *   SIX: !bot.Keyboard.Key,
+ *   SEVEN: !bot.Keyboard.Key,
+ *   EIGHT: !bot.Keyboard.Key,
+ *   NINE: !bot.Keyboard.Key,
+ *   A: !bot.Keyboard.Key,
+ *   B: !bot.Keyboard.Key,
+ *   C: !bot.Keyboard.Key,
+ *   D: !bot.Keyboard.Key,
+ *   E: !bot.Keyboard.Key,
+ *   F: !bot.Keyboard.Key,
+ *   G: !bot.Keyboard.Key,
+ *   H: !bot.Keyboard.Key,
+ *   I: !bot.Keyboard.Key,
+ *   J: !bot.Keyboard.Key,
+ *   K: !bot.Keyboard.Key,
+ *   L: !bot.Keyboard.Key,
+ *   M: !bot.Keyboard.Key,
+ *   N: !bot.Keyboard.Key,
+ *   O: !bot.Keyboard.Key,
+ *   P: !bot.Keyboard.Key,
+ *   Q: !bot.Keyboard.Key,
+ *   R: !bot.Keyboard.Key,
+ *   S: !bot.Keyboard.Key,
+ *   T: !bot.Keyboard.Key,
+ *   U: !bot.Keyboard.Key,
+ *   V: !bot.Keyboard.Key,
+ *   W: !bot.Keyboard.Key,
+ *   X: !bot.Keyboard.Key,
+ *   Y: !bot.Keyboard.Key,
+ *   Z: !bot.Keyboard.Key,
+ *   META: !bot.Keyboard.Key,
+ *   META_RIGHT: !bot.Keyboard.Key,
+ *   CONTEXT_MENU: !bot.Keyboard.Key,
+ *   NUM_ZERO: !bot.Keyboard.Key,
+ *   NUM_ONE: !bot.Keyboard.Key,
+ *   NUM_TWO: !bot.Keyboard.Key,
+ *   NUM_THREE: !bot.Keyboard.Key,
+ *   NUM_FOUR: !bot.Keyboard.Key,
+ *   NUM_FIVE: !bot.Keyboard.Key,
+ *   NUM_SIX: !bot.Keyboard.Key,
+ *   NUM_SEVEN: !bot.Keyboard.Key,
+ *   NUM_EIGHT: !bot.Keyboard.Key,
+ *   NUM_NINE: !bot.Keyboard.Key,
+ *   NUM_MULTIPLY: !bot.Keyboard.Key,
+ *   NUM_PLUS: !bot.Keyboard.Key,
+ *   NUM_MINUS: !bot.Keyboard.Key,
+ *   NUM_PERIOD: !bot.Keyboard.Key,
+ *   NUM_DIVISION: !bot.Keyboard.Key,
+ *   NUM_LOCK: !bot.Keyboard.Key,
+ *   F1: !bot.Keyboard.Key,
+ *   F2: !bot.Keyboard.Key,
+ *   F3: !bot.Keyboard.Key,
+ *   F4: !bot.Keyboard.Key,
+ *   F5: !bot.Keyboard.Key,
+ *   F6: !bot.Keyboard.Key,
+ *   F7: !bot.Keyboard.Key,
+ *   F8: !bot.Keyboard.Key,
+ *   F9: !bot.Keyboard.Key,
+ *   F10: !bot.Keyboard.Key,
+ *   F11: !bot.Keyboard.Key,
+ *   F12: !bot.Keyboard.Key,
+ *   EQUALS: !bot.Keyboard.Key,
+ *   SEPARATOR: !bot.Keyboard.Key,
+ *   HYPHEN: !bot.Keyboard.Key,
+ *   COMMA: !bot.Keyboard.Key,
+ *   PERIOD: !bot.Keyboard.Key,
+ *   SLASH: !bot.Keyboard.Key,
+ *   BACKTICK: !bot.Keyboard.Key,
+ *   OPEN_BRACKET: !bot.Keyboard.Key,
+ *   BACKSLASH: !bot.Keyboard.Key,
+ *   CLOSE_BRACKET: !bot.Keyboard.Key,
+ *   SEMICOLON: !bot.Keyboard.Key,
+ *   APOSTROPHE: !bot.Keyboard.Key
+ * }}
  */
-bot.Keyboard.Keys = {
+bot.Keyboard.KeysType;
+
+
+/**
+ * The set of keys known to this module.
+ *
+ * @const {!bot.Keyboard.KeysType}
+ */
+bot.Keyboard.Keys = /** @type {!bot.Keyboard.KeysType} */ ({
   BACKSPACE: bot.Keyboard.newKey_(8),
   TAB: bot.Keyboard.newKey_(9),
   ENTER: bot.Keyboard.newKey_(13),
@@ -286,7 +395,7 @@ bot.Keyboard.Keys = {
   SEMICOLON: bot.Keyboard.newKey_(
     { gecko: 59, ieWebkit: 186 }, ';', ':'),
   APOSTROPHE: bot.Keyboard.newKey_(222, '\'', '"')
-};
+});
 
 
 /**
@@ -430,7 +539,7 @@ bot.Keyboard.prototype.pressKey = function (key) {
   // Note that GECKO is special-cased below because of
   // https://bugzilla.mozilla.org/show_bug.cgi?id=501496. "preventDefault on
   // keydown does not cancel following keypress"
-  var performDefault = !goog.isNull(key.code) &&
+  var performDefault = key.code !== null &&
     this.fireKeyEvent_(bot.events.EventType.KEYDOWN, key);
 
   // Fires keydown and stops if unsuccessful.
@@ -559,7 +668,7 @@ bot.Keyboard.prototype.releaseKey = function (key) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
       'Cannot release a key that is not pressed. (' + key.code + ')');
   }
-  if (!goog.isNull(key.code)) {
+  if (key.code !== null) {
     this.fireKeyEvent_(bot.events.EventType.KEYUP, key);
   }
 
@@ -859,7 +968,7 @@ bot.Keyboard.prototype.updateCurrentPos_ = function (pos) {
 
 
 /**
-* @param {bot.events.EventType} type Event type.
+* @param {!bot.events.EventFactory_} type Event type.
 * @param {!bot.Keyboard.Key} key Key.
 * @param {boolean=} opt_preventDefault Whether the default event should be
 *     prevented. Defaults to false.
@@ -867,7 +976,7 @@ bot.Keyboard.prototype.updateCurrentPos_ = function (pos) {
 * @private
 */
 bot.Keyboard.prototype.fireKeyEvent_ = function (type, key, opt_preventDefault) {
-  if (goog.isNull(key.code)) {
+  if (key.code === null) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
       'Key must have a keycode to be fired.');
   }
