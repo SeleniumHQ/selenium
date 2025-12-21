@@ -95,6 +95,7 @@ java_library(
         "//java/src/org/openqa/selenium/remote/http",
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
     ] + JUNIT5_DEPS,
 )

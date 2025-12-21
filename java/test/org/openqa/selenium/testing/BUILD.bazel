@@ -82,6 +82,7 @@ java_test_suite(
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing/drivers",
         "//java/test/org/openqa/selenium/testing/drivers:browser",
+        artifact("org.assertj:assertj-core"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.mockito:mockito-core"),
     ] + JUNIT5_DEPS,
