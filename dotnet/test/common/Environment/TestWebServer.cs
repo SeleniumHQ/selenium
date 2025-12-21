@@ -18,6 +18,7 @@
 // </copyright>
 
 using Bazel;
+using OpenQA.Selenium.Utilities;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -46,7 +47,7 @@ public class TestWebServer(string projectRoot, TestWebServerConfig config)
 
                 var standaloneAppserverProbingPath = @"_main/java/test/org/openqa/selenium/environment/appserver";
 
-                if (OperatingSystem.IsWindows())
+                if (PlatformUtilities.IsWindows())
                 {
                     standaloneAppserverProbingPath += ".exe";
                 }

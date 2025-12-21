@@ -223,7 +223,7 @@ internal class CallFunctionLocalValueTest : BiDiTestFixture
     [Test]
     public async Task CanCallFunctionWithArgumentNumberNegativeZero()
     {
-        var arg = new NumberLocalValue(double.NegativeZero);
+        var arg = new NumberLocalValue(-0.0d);
 
         var result = await context.Script.CallFunctionAsync($$"""
             (arg) => {

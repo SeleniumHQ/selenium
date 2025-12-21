@@ -130,9 +130,10 @@ public class UrlBuilder
 
         // The response string from the Java remote server has trailing null
         // characters. This is due to the fix for issue 288.
-        if (responseString.Contains('\0'))
+        int terminator = responseString.IndexOf('\0');
+        if (terminator >= 0)
         {
-            responseString = responseString[..responseString.IndexOf('\0')];
+            responseString = responseString.Substring(0, terminator);
         }
 
         if (responseString.Contains("localhost"))

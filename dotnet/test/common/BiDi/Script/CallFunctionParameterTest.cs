@@ -229,7 +229,9 @@ internal class CallFunctionParameterTest : BiDiTestFixture
         var element = (WebElement)driver.FindElement(selector);
         return ReflectElementId(element);
 
-        [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "get_Id")]
-        static extern string ReflectElementId(WebElement element);
+        static string ReflectElementId(WebElement element)
+        {
+            return (string)typeof(WebElement).GetProperty("Id").GetValue(element, null);
+        }
     }
 }

@@ -18,6 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
+using OpenQA.Selenium.Extensions;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -135,7 +136,7 @@ public class CallFunctionRemoteValueTest : BiDiTestFixture
 
         var actualNumberValue = ((NumberRemoteValue)response.AsSuccessResult()).Value;
         Assert.That(actualNumberValue, Is.Zero);
-        Assert.That(double.IsNegative(actualNumberValue), Is.True);
+        Assert.That(actualNumberValue.IsNegative(), Is.True);
     }
 
     [Test]
