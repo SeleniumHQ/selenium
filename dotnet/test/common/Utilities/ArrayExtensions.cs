@@ -27,5 +27,5 @@ internal static class ArrayExtensions
     public static IEnumerable<T> Reverse<T>(this T[] array)
     {
         return Enumerable.Reverse(array);
-    }    
+    }
 }
