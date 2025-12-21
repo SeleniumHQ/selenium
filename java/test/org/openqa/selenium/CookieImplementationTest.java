@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -311,9 +311,7 @@ class CookieImplementationTest extends JupiterTestBase {
     assertThat(driver.manage().getCookieNamed("rodent")).isNull();
 
     Set<Cookie> cookies = driver.manage().getCookies();
-    assertThat(cookies).hasSize(2);
-    assertThat(cookies).contains(cookie1);
-    assertThat(cookies).contains(cookie3);
+    assertThat(cookies).containsExactlyInAnyOrder(cookie1, cookie3);
 
     driver.manage().deleteAllCookies();
     driver.get(domainHelper.getUrlForFirstValidHostname("child/grandchild/grandchildPage.html"));
@@ -485,14 +483,22 @@ class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   public void testDeleteEmptyNamedCookie() {
-    assertThrows(IllegalArgumentException.class, () -> driver.manage().deleteCookieNamed(""));
-    assertThrows(IllegalArgumentException.class, () -> driver.manage().deleteCookieNamed(" "));
+    assertThatThrownBy(() -> driver.manage().deleteCookieNamed(""))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Cookie name cannot be empty");
+    assertThatThrownBy(() -> driver.manage().deleteCookieNamed(" "))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Cookie name cannot be empty");
   }
 
   @Test
   public void testGetEmptyNamedCookie() {
-    assertThrows(IllegalArgumentException.class, () -> driver.manage().getCookieNamed(""));
-    assertThrows(IllegalArgumentException.class, () -> driver.manage().getCookieNamed(" "));
+    assertThatThrownBy(() -> driver.manage().getCookieNamed(""))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Cookie name cannot be empty");
+    assertThatThrownBy(() -> driver.manage().getCookieNamed(" "))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("Cookie name cannot be empty");
   }
 
   @Test
@@ -554,7 +560,7 @@ class CookieImplementationTest extends JupiterTestBase {
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
       assertThat(documentCookie)
-          .as("Cookie was not present with name " + key + ", got: " + documentCookie)
+          .as(() -> "Cookie was not present with name " + key + ", got: " + documentCookie)
           .contains(key + "=");
     }
   }

@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
 import java.net.URI;
@@ -33,11 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.*;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.node.Node;
@@ -322,7 +317,7 @@ public class SessionSchedulingTest extends DistributorTestBase {
       boolean inChromeNodes =
           chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
       // This could be either, or, or both
-      assertTrue(inFirefoxNodes || inChromeNodes);
+      assertThat(inFirefoxNodes || inChromeNodes).isTrue();
     }
 
     // The Chrome Nodes should be full at this point, but Firefox isn't... so send an Edge session
@@ -331,7 +326,8 @@ public class SessionSchedulingTest extends DistributorTestBase {
         local.newSession(createRequest(edge));
     assertThatEither(edgeResult).isRight();
     Session edgeSession = edgeResult.right().getSession();
-    assertTrue(edgeNodes.stream().anyMatch(node -> node.getUri().equals(edgeSession.getUri())));
+    assertThat(edgeNodes.stream().anyMatch(node -> node.getUri().equals(edgeSession.getUri())))
+        .isTrue();
   }
 
   private Set<Node> createNodeSet(

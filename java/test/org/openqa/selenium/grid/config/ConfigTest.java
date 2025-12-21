@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.grid.config;
 
+import static java.lang.System.getProperty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -40,14 +38,14 @@ class ConfigTest {
             new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "foo"))),
             new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "bar"))));
 
-    assertEquals("foo", config.get("section", "option").get());
+    assertThat(config.get("section", "option").get()).isEqualTo("foo");
   }
 
   @Test
   void shouldReturnEmptyIfConfigValueIsMissing() {
     Config config = new MapConfig(ImmutableMap.of());
 
-    assertFalse(config.get("section", "option").isPresent());
+    assertThat(config.get("section", "option").isPresent()).isFalse();
   }
 
   @Test
@@ -57,7 +55,7 @@ class ConfigTest {
             new MapConfig(ImmutableMap.of()),
             new ConcatenatingConfig("", '.', System.getProperties()));
 
-    assertEquals(System.getProperty("user.home"), config.get("user", "home").get());
+    assertThat(config.get("user", "home").get()).isEqualTo(getProperty("user.home"));
   }
 
   @Test
@@ -68,9 +66,9 @@ class ConfigTest {
             new MapConfig(ImmutableMap.of("section", ImmutableMap.of("cake", "fish"))),
             new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "bar"))));
 
-    assertEquals(Optional.empty(), config.getAll("cheese", "brie"));
-    assertEquals(Optional.of(ImmutableList.of("fish")), config.getAll("section", "cake"));
-    assertEquals(Optional.of(ImmutableList.of("foo", "bar")), config.getAll("section", "option"));
+    assertThat(config.getAll("cheese", "brie")).isEmpty();
+    assertThat(config.getAll("section", "cake")).contains(ImmutableList.of("fish"));
+    assertThat(config.getAll("section", "option")).contains(ImmutableList.of("foo", "bar"));
   }
 
   @Test
@@ -91,7 +89,7 @@ class ConfigTest {
 
     Config config = new AnnotatedConfig(settable);
 
-    assertEquals(Optional.of(settable.field), config.getAll("food", "kinds"));
+    assertThat(config.getAll("food", "kinds")).contains(settable.field);
   }
 
   @Test

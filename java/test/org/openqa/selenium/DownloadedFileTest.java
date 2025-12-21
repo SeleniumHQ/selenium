@@ -15,36 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.HasDownloads.DownloadedFile;
 
-class TeeReaderTest {
-
+class DownloadedFileTest {
   @Test
-  void shouldDuplicateStreams() {
-    String expected = "{\"key\": \"value\"}";
-    Reader source = new StringReader(expected);
+  void hasExtension() {
+    DownloadedFile file = new DownloadedFile("hello.pdf", 0, 0, 15);
+    assertThat(file.hasExtension("pdf")).isTrue();
+    assertThat(file.hasExtension(".pdf")).isTrue();
 
-    StringWriter writer = new StringWriter();
+    assertThat(file.hasExtension("df")).isFalse();
+    assertThat(file.hasExtension("f")).isFalse();
+    assertThat(file.hasExtension("p")).isFalse();
+    assertThat(file.hasExtension(".p")).isFalse();
 
-    Reader tee = new TeeReader(source, writer);
-
-    try (JsonInput reader = new Json().newInput(tee)) {
-
-      reader.beginObject();
-      assertThat(reader.nextName()).isEqualTo("key");
-      reader.skipValue();
-      reader.endObject();
-
-      assertThat(writer.toString()).isEqualTo(expected);
-    }
+    assertThat(file.hasExtension(".txt")).isFalse();
+    assertThat(file.hasExtension("txt")).isFalse();
+    assertThat(file.hasExtension("")).isFalse();
   }
 }

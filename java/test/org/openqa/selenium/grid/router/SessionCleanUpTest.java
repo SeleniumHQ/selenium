@@ -328,7 +328,7 @@ class SessionCleanUpTest {
                   ImmutableMap.of(),
                   ImmutableMap.of()));
       assertThat(sessionResponse.isLeft()).isTrue();
-      assertThat(distributor.getStatus().getNodes().isEmpty()).isTrue();
+      assertThat(distributor.getStatus().getNodes()).isEmpty();
     }
   }
 

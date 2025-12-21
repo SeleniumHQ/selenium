@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -60,11 +58,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.*;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
@@ -237,19 +231,20 @@ class EndToEndTest {
 
     HttpResponse response = client.execute(request);
 
-    assertEquals(200, response.getStatus());
+    assertThat(response.getStatus()).isEqualTo(200);
 
     Map<String, Object> topLevel = json.toType(string(response), MAP_TYPE);
 
-    // There should not be a numeric status field
-    assertFalse(topLevel.containsKey("status"), string(request));
+    assertThat(topLevel)
+        .as("There should not be a numeric status field")
+        .doesNotContainKey("status");
 
     // And the value should have all the good stuff in it: the session id and the capabilities
     Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
     assertThat(value.get("sessionId")).isInstanceOf(String.class);
 
     Map<?, ?> caps = (Map<?, ?>) value.get("capabilities");
-    assertEquals("cheese", caps.get("browserName"));
+    assertThat(caps.get("browserName")).isEqualTo("cheese");
   }
 
   @ParameterizedTest
