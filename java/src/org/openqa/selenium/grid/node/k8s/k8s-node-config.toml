@@ -1,0 +1,76 @@
+# Kubernetes Node Configuration Example
+# This configuration file demonstrates how to set up a Selenium Grid Node
+# that creates Kubernetes Jobs for browser sessions
+
+[node]
+# Maximum number of concurrent sessions
+max-sessions = 5
+
+# Session timeout in seconds
+session-timeout = 300
+
+# Heartbeat period in seconds
+heartbeat-period = 60
+
+# Enable CDP (Chrome DevTools Protocol)
+enable-cdp = true
+
+# Enable BiDi (WebDriver BiDi)
+enable-bidi = true
+
+[k8s]
+# Kubernetes namespace to create Jobs/Pods in
+namespace = "selenium"
+
+# Path to kubeconfig file (optional, will use default or in-cluster config if not specified)
+# kubeconfig = "/home/user/.kube/config"
+
+# Server startup timeout in seconds
+server-start-timeout = 60
+
+# Browser image configurations
+# Format: image-name capability-json
+configs = [
+    "selenium/standalone-chrome:latest", "{\"browserName\": \"chrome\"}",
+    "selenium/standalone-firefox:latest", "{\"browserName\": \"firefox\"}",
+    "selenium/standalone-edge:latest", "{\"browserName\": \"MicrosoftEdge\"}"
+]
+
+# Resource requests for browser pods
+cpu-request = "500m"
+memory-request = "1Gi"
+
+# Resource limits for browser pods
+cpu-limit = "1"
+memory-limit = "2Gi"
+
+# Custom labels for browser Jobs/Pods
+# Format: key value pairs
+labels = [
+    "environment", "production",
+    "team", "qa",
+    "managed-by", "selenium-grid"
+]
+
+# Custom annotations for browser Jobs/Pods
+annotations = [
+    "prometheus.io/scrape", "true",
+    "prometheus.io/port", "4444"
+]
+
+# Video recording image (set to "false" to disable)
+video-image = "selenium/video:latest"
+
+# Assets path for storing logs and videos
+assets-path = "/opt/selenium/assets"
+
+# Image pull policy (Always, IfNotPresent, Never)
+image-pull-policy = "IfNotPresent"
+
+[server]
+# Grid Node server port
+port = 5555
+
+[network]
+# Hostname or IP address of this node
+# hostname = "node-hostname"

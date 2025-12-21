@@ -34,6 +34,7 @@ import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.docker.DockerOptions;
+import org.openqa.selenium.grid.node.k8s.KubernetesOptions;
 import org.openqa.selenium.grid.node.relay.RelayOptions;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -91,6 +92,12 @@ public class LocalNodeFactory {
     if (config.getAll("docker", "configs").isPresent()) {
       new DockerOptions(config)
           .getDockerSessionFactories(tracer, clientFactory, nodeOptions)
+          .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
+    }
+
+    if (config.getAll("k8s", "configs").isPresent()) {
+      new KubernetesOptions(config)
+          .getKubernetesSessionFactories(tracer, clientFactory, nodeOptions)
           .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
     }
 

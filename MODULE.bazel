@@ -193,6 +193,8 @@ maven.install(
         "com.uber.nullaway:nullaway:0.12.13",
         "dev.failsafe:failsafe:3.3.2",
         "io.grpc:grpc-context:1.77.0",
+        "io.kubernetes:client-java:25.0.0",
+        "io.kubernetes:client-java-api:25.0.0",
         "io.lettuce:lettuce-core:7.1.0.RELEASE",
         "io.netty:netty-buffer",
         "io.netty:netty-codec-http",
@@ -246,6 +248,7 @@ maven.install(
         "org.hamcrest:hamcrest-all",  # Replaced by hamcrest 2
         "org.hamcrest:hamcrest-core",
         "io.netty:netty-all",  # Depend on the actual things you need
+        "javax.annotation:javax.annotation-api",  # Conflicts with java.annotation module
     ],
     fail_if_repin_required = True,
     fail_on_missing_checksum = True,

@@ -22,6 +22,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/node",
         "//java/src/org/openqa/selenium/grid/node/config",
         "//java/src/org/openqa/selenium/grid/node/docker",
+        "//java/src/org/openqa/selenium/grid/node/k8s",
         "//java/src/org/openqa/selenium/grid/node/relay",
         "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/grid/server",
