@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -41,11 +40,11 @@ class DefaultWheelTest extends JupiterTestBase {
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement iframe = driver.findElement(By.tagName("iframe"));
 
-    assertFalse(inViewport(iframe));
+    assertThat(inViewport(iframe)).isFalse();
 
     getBuilder(driver).scrollToElement(iframe).perform();
 
-    assertTrue(inViewport(iframe));
+    assertThat(inViewport(iframe)).isTrue();
   }
 
   @Test
@@ -59,7 +58,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertTrue(inViewport(checkbox));
+    assertThat(inViewport(checkbox)).isTrue();
   }
 
   @Test
@@ -74,22 +73,24 @@ class DefaultWheelTest extends JupiterTestBase {
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertTrue(inViewport(checkbox));
+    assertThat(inViewport(checkbox)).isTrue();
   }
 
   @Test
   void throwErrorWhenElementOriginIsOutOfViewport() {
-    assertThrows(
-        MoveTargetOutOfBoundsException.class,
-        () -> {
-          driver.get(
-              appServer.whereIs(
-                  "scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
-          WebElement footer = driver.findElement(By.tagName("footer"));
-          WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, 50);
+    assertThatThrownBy(
+            () -> {
+              driver.get(
+                  appServer.whereIs(
+                      "scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
+              WebElement footer = driver.findElement(By.tagName("footer"));
+              WheelInput.ScrollOrigin scrollOrigin =
+                  WheelInput.ScrollOrigin.fromElement(footer, 0, 50);
 
-          getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
-        });
+              getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
+            })
+        .isInstanceOf(MoveTargetOutOfBoundsException.class)
+        .hasMessageContaining("move target out of bounds");
   }
 
   @Test
@@ -101,7 +102,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
     getBuilder(driver).scrollByAmount(0, deltaY).perform();
 
-    assertTrue(inViewport(footer));
+    assertThat(inViewport(footer)).isTrue();
   }
 
   @Test
@@ -114,19 +115,21 @@ class DefaultWheelTest extends JupiterTestBase {
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertTrue(inViewport(checkbox));
+    assertThat(inViewport(checkbox)).isTrue();
   }
 
   @Test
   void throwErrorWhenOriginOffsetIsOutOfViewport() {
-    assertThrows(
-        MoveTargetOutOfBoundsException.class,
-        () -> {
-          driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
-          WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);
+    assertThatThrownBy(
+            () -> {
+              driver.get(
+                  appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
+              WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);
 
-          getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
-        });
+              getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
+            })
+        .isInstanceOf(MoveTargetOutOfBoundsException.class)
+        .hasMessageContaining("move target out of bounds");
   }
 
   private boolean inViewport(WebElement element) {

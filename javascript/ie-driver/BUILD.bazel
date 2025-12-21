@@ -1,5 +1,5 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
-load("//javascript:defs.bzl", "closure_fragment", "closure_lang_file")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//javascript:defs.bzl", "closure_fragment", "closure_js_deps", "closure_lang_file")
 
 closure_js_deps(
     name = "deps",
@@ -23,8 +23,8 @@ closure_js_library(
         "//javascript/atoms:errors",
         "//javascript/atoms:locators",
         "//javascript/atoms:useragent",
-        "@io_bazel_rules_closure//closure/library/math:coordinate",
-        "@io_bazel_rules_closure//closure/library/style",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/style",
     ],
 )
 

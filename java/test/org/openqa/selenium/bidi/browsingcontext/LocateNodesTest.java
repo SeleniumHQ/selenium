@@ -92,11 +92,10 @@ public class LocateNodesTest extends JupiterTestBase {
 
     RemoteValue value = elements.get(0);
     assertThat(value.getType()).isEqualTo("node");
-    assertThat(value.getValue().isPresent()).isTrue();
+    assertThat(value.getValue()).isPresent();
     NodeProperties properties = (NodeProperties) value.getValue().get();
     assertThat(properties.getLocalName()).hasValue("div");
-    assertThat(properties.getAttributes().get()).hasSize(1);
-    assertThat(properties.getAttributes().get().get("class")).isEqualTo("content");
+    assertThat(properties.getAttributes()).hasValue(Map.of("class", "content"));
   }
 
   @Test
@@ -115,11 +114,10 @@ public class LocateNodesTest extends JupiterTestBase {
 
     RemoteValue value = elements.get(0);
     assertThat(value.getType()).isEqualTo("node");
-    assertThat(value.getValue().isPresent()).isTrue();
+    assertThat(value.getValue()).isPresent();
     NodeProperties properties = (NodeProperties) value.getValue().get();
     assertThat(properties.getLocalName()).hasValue("div");
-    assertThat(properties.getAttributes().get()).hasSize(1);
-    assertThat(properties.getAttributes().get().get("class")).isEqualTo("content");
+    assertThat(properties.getAttributes()).hasValue(Map.of("class", "content"));
   }
 
   @Test
@@ -139,7 +137,7 @@ public class LocateNodesTest extends JupiterTestBase {
 
     RemoteValue value = elements.get(0);
     assertThat(value.getType()).isEqualTo("node");
-    assertThat(value.getValue().isPresent()).isTrue();
+    assertThat(value.getValue()).isPresent();
   }
 
   @Test

@@ -299,7 +299,7 @@ class WebNetworkTest extends JupiterTestBase {
 
     driver.get(page);
 
-    assertThat(driver.getPageSource().contains("Received response for the request")).isTrue();
+    assertThat(driver.getPageSource()).contains("Received response for the request");
   }
 
   @Test

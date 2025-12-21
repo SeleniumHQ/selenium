@@ -54,15 +54,18 @@ limitations under the License.
       if (type == 'closed') {
         document.querySelector(`closed-shadow-element`)._shadowRoot.innerHTML = html;
       } else {
-        document.querySelector(`open-shadow-element`).shadowRoot.innerHTML = html;
+        // Set shadow DOM on ALL open-shadow-element instances
+        document.querySelectorAll(`open-shadow-element`).forEach(elem => {
+          elem.shadowRoot.innerHTML = html;
+        });
       }
     }
 
     function tearDown() {
-      let open = document.querySelector('open-shadow-element');
+      document.querySelectorAll('open-shadow-element').forEach(elem => {
+        elem.shadowRoot.innerHTML = '';
+      });
       let closed = document.querySelector('closed-shadow-element');
-
-      open.shadowRoot.innerHTML = '';
       closed._shadowRoot.innerHTML = '';
     }
 

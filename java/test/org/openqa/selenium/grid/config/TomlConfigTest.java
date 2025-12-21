@@ -33,7 +33,7 @@ class TomlConfigTest {
   void shouldUseATableAsASection() {
     String raw = "[cheeses]\nselected=\"brie\"";
     Config config = new TomlConfig(new StringReader(raw));
-    assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
+    assertThat(config.get("cheeses", "selected")).contains("brie");
   }
 
   @Test
@@ -58,7 +58,7 @@ class TomlConfigTest {
         };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
-    assertThat(config.get("cheeses", "default")).isEqualTo(Optional.of("manchego"));
+    assertThat(config.get("cheeses", "default")).contains("manchego");
 
     List<String> expected =
         Arrays.asList(
@@ -81,7 +81,7 @@ class TomlConfigTest {
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
     List<String> expected = Arrays.asList("2", "{\"browserName\": \"chrome\"}");
     Optional<List<String>> content = config.getAll("relay", "configs");
-    assertThat(content).isEqualTo(Optional.of(expected));
+    assertThat(content).contains(expected);
   }
 
   @Test
@@ -103,7 +103,7 @@ class TomlConfigTest {
             "stereotype={\"browserVersion\": \"chrome\",\"browserName\": \"htmlunit\"}",
             Config.DELIMITER);
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
-    assertThat(content).isEqualTo(Optional.of(expected));
+    assertThat(content).contains(expected);
   }
 
   @Test

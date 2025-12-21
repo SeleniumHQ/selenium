@@ -5,6 +5,8 @@
  * See the COPYING file for details.
  */
 
+@provide 'goog.css.tooltip';
+
 .goog-tooltip {
   background: #ffe;
   border: 1px solid #999;

@@ -74,6 +74,79 @@ module Selenium
               .with(:post, URI.parse('http://server/session'),
                     hash_including('User-Agent' => 'rspec/1.0 (ruby 3.2)'), '{}')
           end
+
+          context 'when encoding strings to UTF-8' do
+            it 'converts binary-encoded strings that are valid UTF-8' do
+              binary_string = +'return navigator.userAgent;'
+              binary_string.force_encoding(Encoding::BINARY)
+              command_hash = {script: binary_string, args: []}
+
+              common.call(:post, 'execute', command_hash)
+
+              expect(common).to have_received(:request) do |_verb, _url, _headers, payload|
+                expect { JSON.parse(payload) }.not_to raise_error
+                parsed = JSON.parse(payload)
+                expect(parsed['script']).to eq('return navigator.userAgent;')
+                expect(parsed['script'].encoding).to eq(Encoding::UTF_8)
+              end
+            end
+
+            it 'converts binary-encoded strings in nested hashes' do
+              binary_string = +'test value'
+              binary_string.force_encoding(Encoding::BINARY)
+              command_hash = {
+                outer: {
+                  inner: binary_string,
+                  another: 'utf8 string'
+                }
+              }
+
+              common.call(:post, 'test', command_hash)
+
+              expect(common).to have_received(:request) do |_verb, _url, _headers, payload|
+                expect { JSON.parse(payload) }.not_to raise_error
+                parsed = JSON.parse(payload)
+                expect(parsed['outer']['inner']).to eq('test value')
+              end
+            end
+
+            it 'converts binary-encoded strings in arrays' do
+              binary_string = +'array item'
+              binary_string.force_encoding(Encoding::BINARY)
+              command_hash = {items: [binary_string, 'utf8 item']}
+
+              common.call(:post, 'test', command_hash)
+
+              expect(common).to have_received(:request) do |_verb, _url, _headers, payload|
+                expect { JSON.parse(payload) }.not_to raise_error
+                parsed = JSON.parse(payload)
+                expect(parsed['items']).to eq(['array item', 'utf8 item'])
+              end
+            end
+
+            it 'raises error for invalid byte sequences' do
+              # Create an invalid UTF-8 byte sequence
+              invalid_string = +"\xFF\xFE"
+              invalid_string.force_encoding(Encoding::BINARY)
+              command_hash = {script: invalid_string}
+
+              expect { common.call(:post, 'execute', command_hash) }
+                .to raise_error(WebDriver::Error::WebDriverError, /Unable to encode string to UTF-8/)
+            end
+
+            it 'handles already UTF-8 encoded strings' do
+              utf8_string = 'already utf-8'
+              command_hash = {script: utf8_string}
+
+              common.call(:post, 'execute', command_hash)
+
+              expect(common).to have_received(:request) do |_verb, _url, _headers, payload|
+                expect { JSON.parse(payload) }.not_to raise_error
+                parsed = JSON.parse(payload)
+                expect(parsed['script']).to eq('already utf-8')
+              end
+            end
+          end
         end
       end # Http
     end # Remote

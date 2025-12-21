@@ -297,7 +297,7 @@ There are a number of bazel configurations specific for testing.
 ### Common Options Examples
 
 Here are examples of arguments we make use of in testing the Selenium code:
-* `--pin_browsers` - run specific browser versions defined in the build (versions are updated regularly)
+* `--pin_browsers=false` - use Selenium Manager to locate browsers/drivers
 * `--headless` - run browsers in headless mode (supported be Chrome, Edge and Firefox)
 * `--flaky_test_attempts 3` - re-run failed tests up to 3 times
 * `--local_test_jobs 1` - control parallelism of tests
@@ -491,19 +491,19 @@ echo '<X.Y.Z>' > rb/.ruby-version
 Run all tests with:
 
 ```shell
-bazel test //dotnet/test/common:AllTests --pin_browsers=true
+bazel test //dotnet/test/common:AllTests
 ```
 
 You can run specific tests by specifying the class name:
 
 ```shell
-bazel test //dotnet/test/common:ElementFindingTest --pin_browsers=true
+bazel test //dotnet/test/common:ElementFindingTest
 ```
 
 If the module supports multiple browsers:
 
 ```shell
-bazel test //dotnet/test/common:ElementFindingTest-edge --pin_browsers=true
+bazel test //dotnet/test/common:ElementFindingTest-edge
 ```
 
 </details>

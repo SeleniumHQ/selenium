@@ -49,7 +49,11 @@ class CrossDomainTest extends JupiterTestBase {
 
   @AfterAll
   public static void stopSecondServer() {
-    otherServer.stop();
+    if (otherServer != null) {
+      otherServer.stop();
+      otherServer = null;
+    }
+    otherPages = null;
   }
 
   @Test

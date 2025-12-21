@@ -56,10 +56,8 @@ public class ScriptEventsTest extends JupiterTestBase {
       Message message = future.get(5, TimeUnit.SECONDS);
       assertThat(message.getChannel()).isEqualTo("channel_name");
       assertThat(message.getData().getType()).isEqualTo("string");
-      assertThat(message.getData().getValue().isPresent()).isTrue();
       assertThat(message.getData().getValue()).hasValue("foo");
       assertThat(message.getSource().getRealm()).isNotNull();
-      assertThat(message.getSource().getBrowsingContext().isPresent()).isTrue();
       assertThat(message.getSource().getBrowsingContext()).hasValue(driver.getWindowHandle());
     }
   }

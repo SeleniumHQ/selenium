@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class LocalValueConversionTests
+internal class LocalValueConversionTests
 {
     [Test]
     public void CanConvertNullBoolToLocalValue()

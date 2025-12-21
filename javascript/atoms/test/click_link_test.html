@@ -11,7 +11,7 @@
     goog.require('goog.Promise');
     goog.require('goog.Uri');
     goog.require('goog.debug.DivConsole');
-    goog.require('goog.debug.Logger');
+    goog.require('goog.log');
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
@@ -27,7 +27,7 @@
     var link, link2;
     var findElement = bot.locators.findElement;
     var findElements = bot.locators.findElements;
-    var log = goog.debug.Logger.getLogger('click_link_test');
+    var log = goog.log.getLogger('click_link_test');
 
     function setUp() {
       iframe = bot.locators.findElement({id: 'iframe'});

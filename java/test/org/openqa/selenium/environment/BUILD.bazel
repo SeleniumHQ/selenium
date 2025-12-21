@@ -34,7 +34,6 @@ java_library(
         "//javascript/atoms:deps",
         "//third_party/closure/goog",
         "//third_party/js/sizzle",
-        "@com_google_javascript_closure_library",
     ],
     javacopts = [
         "--release",

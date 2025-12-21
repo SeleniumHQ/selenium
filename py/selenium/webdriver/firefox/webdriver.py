@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+
 import base64
 import os
 import warnings
@@ -22,13 +24,13 @@ from contextlib import contextmanager
 from io import BytesIO
 
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Controls the GeckoDriver and allows you to drive the browser."""
 
     CONTEXT_CHROME = "chrome"
@@ -69,18 +71,6 @@ class WebDriver(RemoteWebDriver):
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
-
-    def quit(self) -> None:
-        """Closes the browser and shuts down the GeckoDriver executable."""
-        try:
-            super().quit()
-        except Exception:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
 
     def set_context(self, context) -> None:
         """Sets the context that Selenium commands are running in.
@@ -223,15 +213,3 @@ class WebDriver(RemoteWebDriver):
             driver.get_full_page_screenshot_as_base64()
         """
         return self.execute("FULL_PAGE_SCREENSHOT")["value"]
-
-    def download_file(self, *args, **kwargs):
-        """Download file functionality is not implemented for Firefox driver."""
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        """Get downloadable files functionality is not implemented for Firefox driver."""
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        """Delete downloadable files functionality is not implemented for Firefox driver."""
-        raise NotImplementedError

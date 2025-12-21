@@ -108,7 +108,7 @@ closure_fragment(
         "//javascript/chrome-driver:__pkg__",
     ],
     deps = [
-        "@io_bazel_rules_closure//closure/library/style",
+        "//third_party/closure/goog/style",
     ],
 )
 

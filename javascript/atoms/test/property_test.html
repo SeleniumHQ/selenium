@@ -31,14 +31,14 @@ limitations under the License.
       var chips = bot.locators.findElement({id: 'chips'});
 
       assertTrue('Chips has the "selected" property, but not the attribute',
-                 goog.isDef(bot.dom.getProperty(chips, 'selected')));
+                 bot.dom.getProperty(chips, 'selected') !== undefined);
     }
 
     function testSelectedShouldBeFalseIfNotSet() {
       var chips = bot.locators.findElement({id: 'chips'});
 
       var result = bot.dom.getProperty(chips, 'selected');
-      assertTrue(goog.isBoolean(result));
+      assertTrue(typeof result === 'boolean');
       assertFalse(result);
     }
 
@@ -46,7 +46,7 @@ limitations under the License.
       var e = bot.locators.findElement({id: 'peas'});
 
       var result = bot.dom.getProperty(e, 'selected');
-      assertTrue(goog.isBoolean(result));
+      assertTrue(typeof result === 'boolean');
       assertTrue(result);
     }
 

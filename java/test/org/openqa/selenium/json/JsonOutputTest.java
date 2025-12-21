@@ -348,8 +348,8 @@ class JsonOutputTest {
     String json = convert(new JsonAware(raw));
 
     // The JSON spec says that we should encode the forward stroke ("solidus"). Decode the string
-    assertThat(json.startsWith("\"")).isTrue();
-    assertThat(json.endsWith("\"")).isTrue();
+    assertThat(json).startsWith("\"");
+    assertThat(json).endsWith("\"");
     json = JsonParser.parseString(json).getAsString();
 
     assertThat(json).isEqualTo("gnu/linux");

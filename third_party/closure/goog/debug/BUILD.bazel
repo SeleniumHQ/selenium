@@ -1,0 +1,94 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "asyncstacktag",
+    srcs = ["asyncstacktag.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/asserts"],
+)
+
+closure_js_library(
+    name = "debug",
+    srcs = ["debug.js"],
+    lenient = True,
+    deps = [
+        ":errorcontext",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/utils",
+    ],
+)
+
+closure_js_library(
+    name = "divconsole",
+    srcs = ["divconsole.js"],
+    lenient = True,
+    deps = [
+        ":formatter",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safestylesheet",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/style",
+    ],
+)
+
+closure_js_library(
+    name = "entrypointregistry",
+    srcs = ["entrypointregistry.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/asserts"],
+)
+
+closure_js_library(
+    name = "error",
+    srcs = ["error.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/utils"],
+)
+
+closure_js_library(
+    name = "errorcontext",
+    srcs = ["errorcontext.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "errorhandler",
+    srcs = ["errorhandler.js"],
+    lenient = True,
+    deps = [
+        ":entrypointregistry",
+        ":error",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/disposable",
+    ],
+)
+
+closure_js_library(
+    name = "formatter",
+    srcs = ["formatter.js"],
+    lenient = True,
+    deps = [
+        ":debug",
+        ":relativetimeprovider",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safeurl",
+        "//third_party/closure/goog/html:uncheckedconversions",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/string:const",
+    ],
+)
+
+closure_js_library(
+    name = "relativetimeprovider",
+    srcs = ["relativetimeprovider.js"],
+    lenient = True,
+)

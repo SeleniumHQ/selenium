@@ -19,6 +19,7 @@
 
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Support.UI;
 using System;
 using static NUnit.Framework.Interfaces.ResultState;
 
@@ -141,61 +142,37 @@ public abstract class DriverTestFixture
         }
     }
 
-    /*
-     *  Exists because a given test might require a fresh driver
-     */
+    /// <summary>
+    /// Exists because a given test might require a fresh driver.
+    /// </summary>
     protected void CreateFreshDriver()
     {
         driver = EnvironmentManager.Instance.CreateFreshDriver();
     }
 
-    protected bool WaitFor(Func<bool> waitFunction, string timeoutMessage)
+    protected void WaitFor(Func<bool> waitFunction, string timeoutMessage)
     {
-        return WaitFor<bool>(waitFunction, timeoutMessage);
+        WaitFor<bool>(waitFunction, timeoutMessage);
     }
 
     protected T WaitFor<T>(Func<T> waitFunction, string timeoutMessage)
     {
-        return this.WaitFor<T>(waitFunction, TimeSpan.FromSeconds(5), timeoutMessage);
+        return WaitFor(waitFunction, TimeSpan.FromSeconds(5), timeoutMessage);
     }
 
     protected T WaitFor<T>(Func<T> waitFunction, TimeSpan timeout, string timeoutMessage)
     {
-        DateTime endTime = DateTime.Now.Add(timeout);
-        T value = default;
-        Exception lastException = null;
-        while (DateTime.Now < endTime)
+        var waiter = new WebDriverWait(driver, timeout)
         {
-            try
-            {
-                value = waitFunction();
-                if (typeof(T) == typeof(bool))
-                {
-                    if ((bool)(object)value)
-                    {
-                        return value;
-                    }
-                }
-                else if (value != null)
-                {
-                    return value;
-                }
+            PollingInterval = TimeSpan.FromMilliseconds(100),
+            Message = $"Condition timed out: {timeoutMessage}",
+        };
 
-                System.Threading.Thread.Sleep(100);
-            }
-            catch (Exception e)
-            {
-                // Swallow for later re-throwing
-                lastException = e;
-            }
-        }
+        waiter.IgnoreExceptionTypes(typeof(Exception));
 
-        if (lastException != null)
+        return waiter.Until((driver) =>
         {
-            throw new WebDriverException("Operation timed out", lastException);
-        }
-
-        Assert.Fail("Condition timed out: " + timeoutMessage);
-        return default;
+            return waitFunction();
+        });
     }
 }
