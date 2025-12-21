@@ -36,11 +36,11 @@ jobs:
             os: windows
           - ruby-version: 3.2.8
             os: macos
-          - ruby-version: 3.4.3
+          - ruby-version: 4.0.0-preview3
             os: ubuntu
-          - ruby-version: jruby-10.0.0.0
+          - ruby-version: jruby-10.0.2.0
             os: ubuntu
-          - ruby-version: truffleruby-24.2.1
+          - ruby-version: truffleruby-25.0.0
             os: ubuntu
     with:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
@@ -55,26 +55,23 @@ jobs:
         //rb/spec/...
 
   integration-tests-local:
-    name: Local Tests
+    name: Integration Tests
     needs: build
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        browser:
-          - chrome
-          - edge
-          - firefox
-        os:
-          - windows
-          - macos
-        exclude:
-          - browser: edge
-            os: macos
+        browser: ['chrome', 'edge', 'firefox']
+        os: ['windows']
+        include:
+          - browser: edge-remote
+            os: windows
+            java-version: 17
     with:
-      name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      name: Integration (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
       cache-key: rb-${{ matrix.browser }}-${{ matrix.os }}-test
+      java-version: ${{ matrix.java-version }}
       os: ${{ matrix.os }}
       run: >
         bazel test
@@ -84,32 +81,6 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
-        //rb/spec/...
-
-  integration-tests-remote:
-    name: Remote Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - browser: edge
-            os: macos
-    with:
-      name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
-      cache-key: rb-remote-${{ matrix.browser }}-${{ matrix.os }}-test
-      os: ${{ matrix.os }}
-      java-version: 17
-      run: >
-        bazel test
-        --keep_going
-        --build_tests_only
-        --flaky_test_attempts 3
-        --local_test_jobs 1
-        --test_size_filters large
-        --test_tag_filters ${{ matrix.browser }}-remote
         //rb/spec/...
 
   selenium-manager-tests:
@@ -122,7 +93,7 @@ jobs:
         os:
           - windows
           - macos
-          - linux
+          - ubuntu
     with:
       name: Manager Tests ${{ matrix.os }})
       cache-key: rb-manager-${{ matrix.os }}-test
