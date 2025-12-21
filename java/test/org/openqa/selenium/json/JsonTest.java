@@ -28,7 +28,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 import java.io.StringReader;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -70,7 +69,7 @@ class JsonTest {
   @Test
   void canRoundTripNumbers() {
     Map<String, Object> original =
-        ImmutableMap.of("options", ImmutableMap.of("args", Arrays.asList(1L, "hello")));
+        ImmutableMap.of("options", ImmutableMap.of("args", List.of(1L, "hello")));
 
     Json json = new Json();
     String converted = json.toJson(original);
@@ -97,7 +96,7 @@ class JsonTest {
   void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
     // This is needed since Grid expects each of the capabilities to be mutable
     List<Capabilities> expected =
-        Arrays.asList(
+        List.of(
             new ImmutableCapabilities("cheese", "brie"), new ImmutableCapabilities("peas", 42L));
 
     Json json = new Json();

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -32,7 +31,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -129,7 +127,7 @@ public abstract class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese", singletonList("cheddar"));
+    assertThat(values).containsEntry("cheese", List.of("cheddar"));
   }
 
   @Test
@@ -140,7 +138,7 @@ public abstract class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese type", singletonList("tasty cheese"));
+    assertThat(values).containsEntry("cheese type", List.of("tasty cheese"));
   }
 
   @Test
@@ -153,8 +151,8 @@ public abstract class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese", Arrays.asList("cheddar", "gouda"));
-    assertThat(values).containsEntry("vegetable", singletonList("peas"));
+    assertThat(values).containsEntry("cheese", List.of("cheddar", "gouda"));
+    assertThat(values).containsEntry("vegetable", List.of("peas"));
   }
 
   @Test

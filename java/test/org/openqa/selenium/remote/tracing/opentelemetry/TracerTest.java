@@ -38,9 +38,7 @@ import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -574,9 +572,7 @@ class TracerTest {
                 () ->
                     req -> {
                       try (Span span = HttpTracing.newSpanAsChildOf(tracer, req, "status")) {
-                        executors
-                            .submit(span.wrap(() -> new HashSet<>(Arrays.asList("cheese", "peas"))))
-                            .get();
+                        executors.submit(span.wrap(() -> Set.of("cheese", "peas"))).get();
 
                         CompletableFuture<String> toReturn = new CompletableFuture<>();
                         executors.submit(

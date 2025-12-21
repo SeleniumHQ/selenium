@@ -38,7 +38,6 @@ import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,7 +211,7 @@ class FirefoxOptionsTest {
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
         .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("args", Arrays.asList("-a", "-b"));
+        .containsEntry("args", List.of("-a", "-b"));
   }
 
   @Test
@@ -392,7 +391,7 @@ class FirefoxOptionsTest {
 
     MutableCapabilities browserCaps = new MutableCapabilities();
 
-    browserCaps.setCapability("args", Arrays.asList("verbose", "silent"));
+    browserCaps.setCapability("args", List.of("verbose", "silent"));
     browserCaps.setCapability("prefs", prefs);
     browserCaps.setCapability("profile", profile.toJson());
     browserCaps.setCapability("binary", binary.getPath());

@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.config;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +66,7 @@ class MapConfigTest {
     assertThat(config.get("cheeses", "default")).contains("manchego");
 
     List<String> expected =
-        Arrays.asList(
+        List.of(
             "name=\"soft cheese\"",
             "default=\"brie\"",
             Config.DELIMITER,
@@ -95,7 +94,7 @@ class MapConfigTest {
     Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
     Config config = new MapConfig(raw);
 
-    List<String> expected = Arrays.asList("2", "{\"browserName\": \"chrome\"}");
+    List<String> expected = List.of("2", "{\"browserName\": \"chrome\"}");
     Optional<List<String>> content = config.getAll("relay", "configs");
     assertThat(content).contains(expected);
   }
@@ -125,7 +124,7 @@ class MapConfigTest {
     Config config = new MapConfig(raw);
 
     List<String> expected =
-        Arrays.asList(
+        List.of(
             "display-name=\"htmlunit\"",
             "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}",
             Config.DELIMITER);
@@ -159,9 +158,9 @@ class MapConfigTest {
     Config config = new MapConfig(raw);
 
     List<List<String>> expected =
-        Arrays.asList(
-            Arrays.asList("name=\"soft cheese\"", "default=\"brie\""),
-            Arrays.asList("name=\"Medium-hard cheese\"", "default=\"Emmental\""));
+        List.of(
+            List.of("name=\"soft cheese\"", "default=\"brie\""),
+            List.of("name=\"Medium-hard cheese\"", "default=\"Emmental\""));
     assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()))
         .isEqualTo(expected);
     assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()).subList(0, 1))

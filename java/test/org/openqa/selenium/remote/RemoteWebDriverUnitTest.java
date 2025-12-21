@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -38,7 +39,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -123,7 +123,7 @@ class RemoteWebDriverUnitTest {
     fixture.verifyCommands(
         new CommandPayload(
             DriverCommand.EXECUTE_SCRIPT,
-            ImmutableMap.of("script", "return 1", "args", Arrays.asList(1, "2"))));
+            ImmutableMap.of("script", "return 1", "args", List.of(1, "2"))));
   }
 
   @Test
@@ -136,7 +136,7 @@ class RemoteWebDriverUnitTest {
     fixture.verifyCommands(
         new CommandPayload(
             DriverCommand.EXECUTE_ASYNC_SCRIPT,
-            ImmutableMap.of("script", "return 1", "args", Arrays.asList(1, "2"))));
+            ImmutableMap.of("script", "return 1", "args", List.of(1, "2"))));
   }
 
   @Test
@@ -161,7 +161,7 @@ class RemoteWebDriverUnitTest {
         new By() {
           @Override
           public List<WebElement> findElements(SearchContext context) {
-            return Arrays.asList(element1, element2);
+            return List.of(element1, element2);
           }
         };
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities);
@@ -177,9 +177,9 @@ class RemoteWebDriverUnitTest {
         new WebDriverFixture(
             echoCapabilities,
             valueResponder(
-                Arrays.asList(
-                    ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()),
-                    ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()))));
+                List.of(
+                    ImmutableMap.of(ELEMENT_KEY, randomUUID().toString()),
+                    ImmutableMap.of(ELEMENT_KEY, randomUUID().toString()))));
 
     assertThat(fixture.driver.findElements(By.id("cheese"))).hasSize(2);
 
@@ -196,7 +196,7 @@ class RemoteWebDriverUnitTest {
         new By() {
           @Override
           public List<WebElement> findElements(SearchContext context) {
-            return Arrays.asList(element1, element2);
+            return List.of(element1, element2);
           }
         };
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities);
@@ -236,8 +236,7 @@ class RemoteWebDriverUnitTest {
   @Test
   void canHandleGetWindowHandlesCommand() {
     WebDriverFixture fixture =
-        new WebDriverFixture(
-            echoCapabilities, valueResponder(Arrays.asList("window 1", "window 2")));
+        new WebDriverFixture(echoCapabilities, valueResponder(List.of("window 1", "window 2")));
 
     assertThat(fixture.driver.getWindowHandles()).hasSize(2).contains("window 1", "window 2");
 
@@ -322,9 +321,9 @@ class RemoteWebDriverUnitTest {
         new WebDriverFixture(
             echoCapabilities,
             valueResponder(
-                Arrays.asList(
+                List.of(
                     ImmutableMap.of(ELEMENT_KEY, elementId),
-                    ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()))));
+                    ImmutableMap.of(ELEMENT_KEY, randomUUID().toString()))));
 
     WebDriver driver2 = fixture.driver.switchTo().frame("frameName");
 
@@ -472,7 +471,7 @@ class RemoteWebDriverUnitTest {
         new WebDriverFixture(
             echoCapabilities,
             valueResponder(
-                Arrays.asList(
+                List.of(
                     ImmutableMap.of("name", "cookie1", "value", "value1", "sameSite", "Lax"),
                     ImmutableMap.of("name", "cookie2", "value", "value2"))));
 
@@ -492,7 +491,7 @@ class RemoteWebDriverUnitTest {
         new WebDriverFixture(
             echoCapabilities,
             valueResponder(
-                Arrays.asList(
+                List.of(
                     ImmutableMap.of("name", "cookie1", "value", "value1"),
                     ImmutableMap.of("name", "cookie2", "value", "value2"))));
 
@@ -811,7 +810,7 @@ class RemoteWebDriverUnitTest {
 
   @Test
   void getDownloadableFilesReturnsType() {
-    List<String> expectedFiles = Arrays.asList("file1.txt", "file2.pdf");
+    List<String> expectedFiles = List.of("file1.txt", "file2.pdf");
 
     WebDriverFixture fixture =
         new WebDriverFixture(

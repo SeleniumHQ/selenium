@@ -87,8 +87,8 @@ class WebElementToJsonConverterTest {
 
   @Test
   void convertsNestedCollections_simpleValues() {
-    List<?> innerList = asList(123, "abc");
-    List<Object> outerList = asList("apples", "oranges", innerList);
+    List<?> innerList = List.of(123, "abc");
+    List<Object> outerList = List.of("apples", "oranges", innerList);
 
     Object converted = CONVERTER.apply(outerList);
     assertThat(converted).isInstanceOf(Collection.class);
@@ -159,7 +159,7 @@ class WebElementToJsonConverterTest {
     RemoteWebElement element2 = new RemoteWebElement();
     element2.setId("anotherId");
 
-    Object value = CONVERTER.apply(asList(element, element2));
+    Object value = CONVERTER.apply(List.of(element, element2));
     assertThat(value).isInstanceOf(Collection.class);
 
     List<Object> list = new ArrayList<>((Collection<Object>) value);

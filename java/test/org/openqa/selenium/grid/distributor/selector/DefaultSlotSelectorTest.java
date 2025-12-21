@@ -93,7 +93,7 @@ class DefaultSlotSelectorTest {
 
     NodeStatus node1 =
         createNodeWithStereotypes(
-            Arrays.asList(
+            List.of(
                 ImmutableMap.of("browserName", "chrome", "browserVersion", "131.0"),
                 ImmutableMap.of("browserName", "chrome", "browserVersion", "132.0")));
     NodeStatus node2 =

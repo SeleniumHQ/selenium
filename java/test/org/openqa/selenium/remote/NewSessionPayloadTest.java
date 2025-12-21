@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_MAP;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
@@ -83,7 +82,7 @@ class NewSessionPayloadTest {
                 "capabilities",
                 singletonMap(
                     "firstMatch",
-                    asList(
+                    List.of(
                         singletonMap("browserName", "cheese"),
                         singletonMap("browserName", "peas")))));
 
@@ -111,11 +110,12 @@ class NewSessionPayloadTest {
             singletonMap(
                 "capabilities",
                 ImmutableMap.of(
-                    "alwaysMatch", singletonMap("se:cake", "also cheese"),
+                    "alwaysMatch",
+                    singletonMap("se:cake", "also cheese"),
                     "firstMatch",
-                        asList(
-                            singletonMap("browserName", "cheese"),
-                            singletonMap("browserName", "peas")))));
+                    List.of(
+                        singletonMap("browserName", "cheese"),
+                        singletonMap("browserName", "peas")))));
 
     assertThat(capabilities).as(() -> capabilities.toString()).hasSize(2);
     assertThat(capabilities.get(0).getBrowserName()).isEqualTo("cheese");
@@ -166,16 +166,16 @@ class NewSessionPayloadTest {
             ImmutableMap.of(
                 "capabilities",
                 ImmutableMap.of(
-                    "alwaysMatch", singletonMap("platformName", "macos"),
+                    "alwaysMatch",
+                    singletonMap("platformName", "macos"),
                     "firstMatch",
-                        asList(
-                            singletonMap("browserName", "foo"),
-                            singletonMap("browserName", "firefox")))));
+                    List.of(
+                        singletonMap("browserName", "foo"),
+                        singletonMap("browserName", "firefox")))));
 
     assertThat(capabilities)
         .isEqualTo(
-            asList(
-                // From the actual W3C capabilities
+            List.of(
                 new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
                 new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")));
   }

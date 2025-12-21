@@ -33,7 +33,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -85,7 +84,7 @@ public class NodeOptions {
   static final boolean DEFAULT_USE_SELENIUM_MANAGER = false;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
   static final List<String> DEFAULT_VNC_ENV_VARS =
-      Arrays.asList("SE_START_XVFB", "SE_START_VNC", "SE_START_NO_VNC");
+      List.of("SE_START_XVFB", "SE_START_VNC", "SE_START_NO_VNC");
   static final int DEFAULT_NO_VNC_PORT = 7900;
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;

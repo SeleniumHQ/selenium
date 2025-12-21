@@ -38,7 +38,6 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -101,7 +100,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat(result).isInstanceOf(Boolean.class).isEqualTo(true);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
     driver.get(pages.javascriptPage);
@@ -155,12 +153,14 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
     Map<String, Object> expectedResult =
         ImmutableMap.of(
-            "foo", "bar",
-            "baz", Arrays.asList("a", "b", "c"),
+            "foo",
+            "bar",
+            "baz",
+            List.of("a", "b", "c"),
             "person",
-                ImmutableMap.of(
-                    "first", "John",
-                    "last", "Doe"));
+            ImmutableMap.of(
+                "first", "John",
+                "last", "Doe"));
 
     Object result =
         executeScript(
@@ -170,7 +170,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     Map<String, Object> map = (Map<String, Object>) result;
     assertThat(map.size()).isGreaterThanOrEqualTo(3);
     assertThat(map.get("foo")).isEqualTo("bar");
-    assertThat((List<?>) map.get("baz")).isEqualTo((List<?>) expectedResult.get("baz"));
+    assertThat((List<?>) map.get("baz")).isEqualTo(expectedResult.get("baz"));
 
     Map<String, String> person = (Map<String, String>) map.get("person");
     assertThat(person.size()).isGreaterThanOrEqualTo(2);
@@ -190,24 +190,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     Map<String, Object> map = (Map<String, Object>) result;
     assertThat(map.get("protocol")).isEqualTo("http:");
     assertThat(map.get("href")).isEqualTo(pages.javascriptPage);
-  }
-
-  private static boolean compareLists(List<?> first, List<?> second) {
-    if (first.size() != second.size()) {
-      return false;
-    }
-    for (int i = 0; i < first.size(); ++i) {
-      if (first.get(i) instanceof List<?>) {
-        if (!compareLists((List<?>) first.get(i), (List<?>) second.get(i))) {
-          return false;
-        }
-      } else {
-        if (!first.get(i).equals(second.get(i))) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   @Test
@@ -462,7 +444,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
 
-    List<Integer> nums = Arrays.asList(1, 2);
+    List<Integer> nums = List.of(1, 2);
     Map<String, Object> args = ImmutableMap.of("bar", "test", "foo", nums);
 
     Object res = ((JavascriptExecutor) driver).executeScript("return arguments[0]['foo'][1]", args);
@@ -481,7 +463,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
     Map<String, Object> args =
         ImmutableMap.of(
-            "key", Arrays.asList("a", new Object[] {"zero", 1, true, 42.4242, false, el}, "c"));
+            "key", List.of("a", new Object[] {"zero", 1, true, 42.4242, false, el}, "c"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
         .isThrownBy(() -> executeScript("return undefined;", args));

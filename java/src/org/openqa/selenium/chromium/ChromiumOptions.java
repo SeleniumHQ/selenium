@@ -98,7 +98,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    * @see #addArguments(List)
    */
   public T addArguments(String... arguments) {
-    addArguments(Arrays.asList(arguments));
+    addArguments(List.of(arguments));
     return (T) this;
   }
 
@@ -126,7 +126,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    * @see #addExtensions(List)
    */
   public T addExtensions(File... paths) {
-    addExtensions(Arrays.asList(paths));
+    addExtensions(List.of(paths));
     return (T) this;
   }
 
@@ -147,7 +147,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
    * @see #addEncodedExtensions(List)
    */
   public T addEncodedExtensions(String... encoded) {
-    addEncodedExtensions(Arrays.asList(encoded));
+    addEncodedExtensions(List.of(encoded));
     return (T) this;
   }
 

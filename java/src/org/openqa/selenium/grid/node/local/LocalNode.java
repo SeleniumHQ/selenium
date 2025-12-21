@@ -21,7 +21,6 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.nio.file.Files.readAttributes;
 import static java.time.ZoneOffset.UTC;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
-import static java.util.Arrays.asList;
 import static java.util.Locale.US;
 import static java.util.Objects.requireNonNullElseGet;
 import static org.openqa.selenium.HasDownloads.DownloadedFile;
@@ -869,7 +868,7 @@ public class LocalNode extends Node implements Closeable {
   private File findDownloadedFile(File downloadsDirectory, String filename)
       throws WebDriverException {
     List<File> matchingFiles =
-        asList(
+        List.of(
             requireNonNullElseGet(
                 downloadsDirectory.listFiles((dir, name) -> name.equals(filename)),
                 () -> new File[0]));
@@ -891,7 +890,7 @@ public class LocalNode extends Node implements Closeable {
 
   private static List<File> downloadedFiles(File downloadsDirectory) {
     File[] files = requireNonNullElseGet(downloadsDirectory.listFiles(), () -> new File[0]);
-    return asList(files);
+    return List.of(files);
   }
 
   private HttpResponse deleteDownloadedFile(File downloadsDirectory) {

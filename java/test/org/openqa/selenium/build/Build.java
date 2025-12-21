@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import org.openqa.selenium.Platform;
@@ -34,7 +33,7 @@ public class Build {
   private final List<String> targets = new ArrayList<>();
 
   public Build of(String... targets) {
-    this.targets.addAll(Arrays.asList(targets));
+    this.targets.addAll(List.of(targets));
     return this;
   }
 

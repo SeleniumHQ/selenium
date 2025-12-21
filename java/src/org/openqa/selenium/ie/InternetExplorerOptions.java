@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.ie;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.ie.InternetExplorerDriver.BROWSER_ATTACH_TIMEOUT;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR;
@@ -33,10 +34,8 @@ import static org.openqa.selenium.remote.Browser.IE;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,8 +67,8 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private static final String EDGE_EXECUTABLE_PATH = "ie.edgepath";
   private static final String IGNORE_PROCESS_MATCH = "ie.ignoreprocessmatch";
 
-  private static final List<String> CAPABILITY_NAMES =
-      Arrays.asList(
+  private static final Set<String> CAPABILITY_NAMES =
+      Set.of(
           BROWSER_ATTACH_TIMEOUT,
           ELEMENT_SCROLL_BEHAVIOR,
           ENABLE_PERSISTENT_HOVERING,
@@ -149,16 +148,19 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   }
 
   public InternetExplorerOptions addCommandSwitches(String... switches) {
-    Object raw = getCapability(IE_SWITCHES);
+    final Object raw = getCapability(IE_SWITCHES);
+    final List<?> rawSwitches;
     if (raw == null) {
-      raw = new LinkedList<>();
+      rawSwitches = emptyList();
     } else if (raw instanceof String) {
-      raw = Arrays.asList(((String) raw).split(" "));
+      rawSwitches = List.of(((String) raw).split(" "));
+    } else {
+      rawSwitches = (List<?>) raw;
     }
 
     return amend(
         IE_SWITCHES,
-        Stream.concat(((List<?>) raw).stream(), Stream.of(switches))
+        Stream.concat(rawSwitches.stream(), Stream.of(switches))
             .filter(i -> i instanceof String)
             .map(String.class::cast)
             .collect(toList()));
@@ -261,8 +263,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
           .forEach(
               entry -> {
                 if (IE_SWITCHES.equals(entry.getKey())) {
-                  setCapability(
-                      entry.getKey(), Arrays.asList((entry.getValue().toString()).split(" ")));
+                  setCapability(entry.getKey(), List.of((entry.getValue().toString()).split(" ")));
                 } else {
                   setCapability(entry.getKey(), entry.getValue());
                 }

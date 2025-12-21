@@ -31,10 +31,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Tag;
@@ -67,7 +64,7 @@ class EdgeOptionsTest {
     assertThat(options.asMap())
         .extracting(EdgeOptions.CAPABILITY)
         .asInstanceOf(MAP)
-        .containsEntry("args", Arrays.asList("--arg1", "--arg2"))
+        .containsEntry("args", List.of("--arg1", "--arg2"))
         .containsEntry("extensions", Collections.emptyList());
   }
 
@@ -181,8 +178,8 @@ class EdgeOptionsTest {
     browserCaps.setCapability("binary", binary.getPath());
     browserCaps.setCapability("opt1", "val1");
     browserCaps.setCapability("opt2", "val4");
-    browserCaps.setCapability("args", Arrays.asList("silent", "verbose"));
-    browserCaps.setCapability("extensions", Arrays.asList(ext1, ext2));
+    browserCaps.setCapability("args", List.of("silent", "verbose"));
+    browserCaps.setCapability("extensions", List.of(ext1, ext2));
 
     MutableCapabilities one = new MutableCapabilities();
     one.setCapability(EdgeOptions.CAPABILITY, browserCaps);

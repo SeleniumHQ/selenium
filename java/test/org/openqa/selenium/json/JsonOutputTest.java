@@ -19,7 +19,6 @@ package org.openqa.selenium.json;
 
 import static java.lang.Integer.valueOf;
 import static java.time.format.DateTimeFormatter.ISO_INSTANT;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
@@ -45,7 +44,6 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -518,7 +516,7 @@ class JsonOutputTest {
     long timestamp = new Date().getTime();
     final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
     final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
-    LogEntries entries = new LogEntries(asList(entry1, entry2));
+    LogEntries entries = new LogEntries(List.of(entry1, entry2));
 
     String json = convert(entries);
 
@@ -592,7 +590,7 @@ class JsonOutputTest {
     }
 
     assertThat((Object) new Json().toType(builder.toString(), Object.class))
-        .isEqualTo(Arrays.asList("brie", "peas"));
+        .isEqualTo(List.of("brie", "peas"));
   }
 
   @Test
@@ -628,7 +626,7 @@ class JsonOutputTest {
   void canDisablePrettyPrintingToGetSingleLineOutput() {
     Map<String, Object> toEncode =
         ImmutableMap.of(
-            "ary", Arrays.asList("one", "two"),
+            "ary", List.of("one", "two"),
             "map", ImmutableMap.of("cheese", "cheddar"),
             "string", "This has a \nnewline in it");
 
@@ -662,7 +660,7 @@ class JsonOutputTest {
 
   @Test
   void shouldNotWriteOptionalsThatAreNotPresentToAList() {
-    String json = convert(Arrays.asList(Optional.of("cheese"), Optional.empty()));
+    String json = convert(List.of(Optional.of("cheese"), Optional.empty()));
 
     JsonArray converted = JsonParser.parseString(json).getAsJsonArray();
 
