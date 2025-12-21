@@ -25,16 +25,15 @@ namespace System;
 
 internal static class TaskExtensions
 {
-    public static Task<T> WaitAsync<T>(this Task<T> task, TimeSpan timeout)
+    public static async Task<T> WaitAsync<T>(this Task<T> task, TimeSpan timeout)
     {
-        // Good enough implementation
-        var success = task.Wait(timeout);
-        if (!success)
+        var timeoutTask = Task.Delay(timeout);
+        var completedTask = await Task.WhenAny(task, timeoutTask);
+        if (completedTask == timeoutTask)
         {
             throw new TimeoutException();
         }
-
-        return Task.FromResult(task.Result);
+        return await task;
     }
 }
 
