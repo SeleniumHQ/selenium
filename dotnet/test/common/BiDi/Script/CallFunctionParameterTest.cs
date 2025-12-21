@@ -18,7 +18,7 @@
 // </copyright>
 
 using NUnit.Framework;
-using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -231,7 +231,7 @@ internal class CallFunctionParameterTest : BiDiTestFixture
 
         static string ReflectElementId(WebElement element)
         {
-            return (string)typeof(WebElement).GetProperty("Id").GetValue(element, null);
+            return (string)typeof(WebElement).GetProperty("Id", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(element, null);
         }
     }
 }
