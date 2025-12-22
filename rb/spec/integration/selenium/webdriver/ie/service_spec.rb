@@ -36,7 +36,7 @@ module Selenium
           driver_path = driver_finder.driver_path
 
           expect { Platform.assert_executable(driver_path) }.not_to raise_error
-          expect(driver_path).to include(cache_dir)
+          expect(Platform.includes_path?(driver_path, cache_dir)).to be(true)
 
           service.executable_path = driver_path
 

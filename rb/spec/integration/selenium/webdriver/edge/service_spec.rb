@@ -38,8 +38,8 @@ module Selenium
 
           expect { Platform.assert_executable(driver_path) }.not_to raise_error
           expect { Platform.assert_executable(browser_path) }.not_to raise_error
-          expect(browser_path).to include(cache_dir)
-          expect(driver_path).to include(cache_dir)
+          expect(Platform.includes_path?(driver_path, cache_dir)).to be(true)
+          expect(Platform.includes_path?(browser_path, cache_dir)).to be(true)
 
           service.executable_path = driver_path
 

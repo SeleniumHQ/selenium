@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'pathname'
 require 'rbconfig'
 require 'socket'
 
@@ -124,6 +125,12 @@ module Selenium
 
       def windows_path(path)
         path.tr(File::SEPARATOR, File::ALT_SEPARATOR)
+      end
+
+      def includes_path?(path, root)
+        path_name = Pathname.new(unix_path(path)).cleanpath
+        root_name = Pathname.new(unix_path(root)).cleanpath
+        path_name.ascend.any? { |ancestor| ancestor == root_name }
       end
 
       def make_writable(file)
