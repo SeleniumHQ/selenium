@@ -35,7 +35,7 @@ namespace OpenQA.Selenium;
 [IgnoreBrowser(Browser.Remote, "Remote does not use Selenium Manager directly")]
 public class SeleniumManagerTest
 {
-    private static readonly string CacheDirectory = System.Environment.GetEnvironmentVariable("SE_CACHE") ?? ".cache/selenium";
+    private static readonly string CacheDirectory = System.Environment.GetEnvironmentVariable("SE_CACHE") ?? Path.Combine(".cache", "selenium");
 
     private DriverOptions CreateOptionsForCurrentBrowser()
     {
