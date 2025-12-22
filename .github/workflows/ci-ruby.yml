@@ -25,16 +25,25 @@ jobs:
   steep-check:
     name: Type Check (Steep)
     needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Type Check (Steep)
-      cache-key: rb-steep-check
-      ruby-version: 3.2.8
-      os: ubuntu
-      run: |
-        cd rb
-        bazel run @bundle -- exec rbs collection install
-        bazel run @bundle -- exec rake steep
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.8
+          bundler-cache: true
+          working-directory: rb
+      
+      - name: Install RBS collection
+        working-directory: rb
+        run: bundle exec rbs collection install
+      
+      - name: Run Steep type check
+        working-directory: rb
+        run: bundle exec rake steep
 
   unit-tests:
     name: Unit Tests
