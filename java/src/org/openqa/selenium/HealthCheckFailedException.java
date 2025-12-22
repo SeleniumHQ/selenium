@@ -18,7 +18,9 @@
 package org.openqa.selenium;
 
 import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 /** Indicates that a Node health check failed. */
 public class HealthCheckFailedException extends WebDriverException {
 
