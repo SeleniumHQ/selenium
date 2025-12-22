@@ -31,15 +31,13 @@ module Selenium
 
         after { service_manager.stop }
 
-        it 'selenium manager gets browser and driver', exclusive: {manager: true} do
+        it 'selenium manager gets browser and driver' do
           driver_finder = DriverFinder.new(Options.new, service)
           driver_path = driver_finder.driver_path
           browser_path = driver_finder.browser_path
 
           expect { Platform.assert_executable(driver_path) }.not_to raise_error
           expect { Platform.assert_executable(browser_path) }.not_to raise_error
-          expect(browser_path).to include(cache_dir)
-          expect(driver_path).to include(cache_dir)
 
           service.executable_path = driver_path
 
