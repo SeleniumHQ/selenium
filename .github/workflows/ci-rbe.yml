@@ -55,6 +55,7 @@ jobs:
             exit 0
           fi
           git apply changes.patch
+          rm changes.patch
           # For same-repo PRs, commit the fix
           if [ "${{ github.event_name }}" = "pull_request" ] && \
              [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
