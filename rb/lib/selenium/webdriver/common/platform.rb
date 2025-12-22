@@ -120,7 +120,7 @@ module Selenium
       end
 
       def unix_path(path)
-        path.tr(File::ALT_SEPARATOR, File::SEPARATOR)
+        File::ALT_SEPARATOR.nil? ? path : path.tr(File::ALT_SEPARATOR, File::SEPARATOR)
       end
 
       def windows_path(path)
@@ -128,9 +128,10 @@ module Selenium
       end
 
       def includes_path?(path, root)
-        path_name = Pathname.new(unix_path(path)).cleanpath
-        root_name = Pathname.new(unix_path(root)).cleanpath
-        path_name.ascend.any?(root_name)
+        path_name = unix_path(path)
+        root_name = unix_path(root)
+        WebDriver.logger.debug("Checking if #{path_name} includes #{root_name}", id: :platform)
+        unix_path(path).include?("/#{unix_path(root)}/")
       end
 
       def make_writable(file)
