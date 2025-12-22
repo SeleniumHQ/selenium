@@ -130,7 +130,7 @@ module Selenium
       def includes_path?(path, root)
         path_name = Pathname.new(unix_path(path)).cleanpath
         root_name = Pathname.new(unix_path(root)).cleanpath
-        path_name.ascend.any? { |ancestor| ancestor == root_name }
+        path_name.ascend.any?(root_name)
       end
 
       def make_writable(file)
