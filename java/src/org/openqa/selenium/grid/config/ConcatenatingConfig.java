@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.config;
 import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.*;
 import org.openqa.selenium.internal.Require;
@@ -57,7 +56,7 @@ public class ConcatenatingConfig implements Config {
         .filter(entry -> key.equalsIgnoreCase(entry.getKey()))
         .map(Map.Entry::getValue)
         .findFirst()
-        .map(ImmutableList::of);
+        .map(List::of);
   }
 
   @Override

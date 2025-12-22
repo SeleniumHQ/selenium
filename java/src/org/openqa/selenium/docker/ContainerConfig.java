@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.docker;
 
+import static java.util.Collections.emptyList;
+
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import java.util.HashMap;
 import java.util.List;
@@ -148,7 +149,7 @@ public class ContainerConfig {
         HashMultimap.create(),
         Map.of(),
         Map.of(),
-        ImmutableList.of(),
+        emptyList(),
         DEFAULT_DOCKER_NETWORK,
         DEFAULT_SHM_SIZE);
   }

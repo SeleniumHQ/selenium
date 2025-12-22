@@ -17,12 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.openqa.selenium.json.Json;
@@ -95,7 +90,7 @@ public interface Config {
     // add record separator
     entryList.add(DELIMITER);
     // return immutable config settings list
-    return ImmutableList.<String>builder().addAll(entryList).build();
+    return List.copyOf(entryList);
   }
 
   default String toJson(Object value) {

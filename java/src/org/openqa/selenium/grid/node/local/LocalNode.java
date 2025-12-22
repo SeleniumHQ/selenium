@@ -43,7 +43,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.Ticker;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
 import com.google.common.net.MediaType;
 import java.io.Closeable;
 import java.io.File;
@@ -59,13 +58,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -189,7 +182,7 @@ public class LocalNode extends Node implements Closeable {
     this.maxSessionCount =
         Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.heartbeatPeriod = heartbeatPeriod;
-    this.factories = ImmutableList.copyOf(factories);
+    this.factories = List.copyOf(factories);
     Require.nonNull("Registration secret", registrationSecret);
     this.configuredSessionCount = drainAfterSessionCount;
     this.drainAfterSessions = this.configuredSessionCount > 0;
@@ -1189,7 +1182,7 @@ public class LocalNode extends Node implements Closeable {
     private final URI uri;
     private final URI gridUri;
     private final Secret registrationSecret;
-    private final ImmutableList.Builder<SessionSlot> factories;
+    private final List<SessionSlot> factories;
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
@@ -1207,7 +1200,7 @@ public class LocalNode extends Node implements Closeable {
       this.uri = Require.nonNull("Remote node URI", uri);
       this.gridUri = Require.nonNull("Grid URI", gridUri);
       this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
-      this.factories = ImmutableList.builder();
+      this.factories = new ArrayList<>();
     }
 
     public Builder add(Capabilities stereotype, SessionFactory factory) {
@@ -1273,7 +1266,7 @@ public class LocalNode extends Node implements Closeable {
           ticker,
           sessionTimeout,
           heartbeatPeriod,
-          factories.build(),
+          List.copyOf(factories),
           registrationSecret,
           managedDownloadsEnabled,
           connectionLimitPerSession);
@@ -1286,13 +1279,7 @@ public class LocalNode extends Node implements Closeable {
     public class Advanced {
 
       public Advanced clock(Clock clock) {
-        ticker =
-            new Ticker() {
-              @Override
-              public long read() {
-                return clock.instant().toEpochMilli() * Duration.ofMillis(1).toNanos();
-              }
-            };
+        ticker = () -> clock.instant().toEpochMilli() * Duration.ofMillis(1).toNanos();
         return this;
       }
 

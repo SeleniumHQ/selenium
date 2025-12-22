@@ -18,16 +18,12 @@
 package org.openqa.selenium.grid.config;
 
 import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import org.openqa.selenium.internal.Require;
 
 public class MapConfig implements Config {
@@ -80,21 +76,21 @@ public class MapConfig implements Config {
                 .map(item -> (Map<String, Object>) item)
                 .map(this::toEntryList)
                 .flatMap(Collection::stream)
-                .collect(ImmutableList.toImmutableList()));
+                .collect(toUnmodifiableList()));
       }
 
       return Optional.of(
           collection.stream()
               .filter(item -> (!(item instanceof Collection)))
               .map(String::valueOf)
-              .collect(ImmutableList.toImmutableList()));
+              .collect(toUnmodifiableList()));
     }
 
     if (value instanceof Map) {
       return Optional.of(toEntryList((Map<String, Object>) value));
     }
 
-    return Optional.of(ImmutableList.of(String.valueOf(value)));
+    return Optional.of(List.of(String.valueOf(value)));
   }
 
   @Override

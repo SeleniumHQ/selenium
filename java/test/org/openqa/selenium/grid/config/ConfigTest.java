@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -66,8 +65,8 @@ class ConfigTest {
             new MapConfig(Map.of("section", Map.of("option", "bar"))));
 
     assertThat(config.getAll("cheese", "brie")).isEmpty();
-    assertThat(config.getAll("section", "cake")).contains(ImmutableList.of("fish"));
-    assertThat(config.getAll("section", "option")).contains(ImmutableList.of("foo", "bar"));
+    assertThat(config.getAll("section", "cake")).contains(List.of("fish"));
+    assertThat(config.getAll("section", "option")).contains(List.of("foo", "bar"));
   }
 
   @Test

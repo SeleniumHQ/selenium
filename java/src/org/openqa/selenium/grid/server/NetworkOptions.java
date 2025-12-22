@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.grid.server;
 
-import com.google.common.collect.ImmutableList;
+import static java.util.Collections.emptyList;
+
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +69,7 @@ public class NetworkOptions {
     if (checkOrigin || allowedOrigins.isPresent()) {
       toReturn =
           toReturn.andThen(
-              new CheckOriginHeader(allowedOrigins.orElse(ImmutableList.of()), SKIP_CHECKS_ON));
+              new CheckOriginHeader(allowedOrigins.orElse(emptyList()), SKIP_CHECKS_ON));
     }
 
     return toReturn;

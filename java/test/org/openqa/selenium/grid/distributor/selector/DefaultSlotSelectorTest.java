@@ -21,7 +21,6 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -166,9 +165,9 @@ class DefaultSlotSelectorTest {
   void theNodeWhichHasExceededMaxSessionsIsNotSelected() {
     Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
 
-    NodeStatus lightLoad = createNode(ImmutableList.of(chrome), 12, 2);
-    NodeStatus mediumLoad = createNode(ImmutableList.of(chrome), 12, 5);
-    NodeStatus maximumLoad = createNode(ImmutableList.of(chrome), 12, 12);
+    NodeStatus lightLoad = createNode(List.of(chrome), 12, 2);
+    NodeStatus mediumLoad = createNode(List.of(chrome), 12, 5);
+    NodeStatus maximumLoad = createNode(List.of(chrome), 12, 12);
 
     Set<SlotId> ids =
         selector.selectSlot(
@@ -193,11 +192,10 @@ class DefaultSlotSelectorTest {
     Capabilities firefox = new ImmutableCapabilities("browserName", "firefox");
     Capabilities safari = new ImmutableCapabilities("browserName", "safari");
 
-    NodeStatus lightLoadAndThreeBrowsers =
-        createNode(ImmutableList.of(chrome, firefox, safari), 12, 2);
-    NodeStatus mediumLoadAndTwoBrowsers = createNode(ImmutableList.of(chrome, firefox), 12, 5);
-    NodeStatus mediumLoadAndOtherTwoBrowsers = createNode(ImmutableList.of(safari, chrome), 12, 6);
-    NodeStatus highLoadAndOneBrowser = createNode(ImmutableList.of(chrome), 12, 8);
+    NodeStatus lightLoadAndThreeBrowsers = createNode(List.of(chrome, firefox, safari), 12, 2);
+    NodeStatus mediumLoadAndTwoBrowsers = createNode(List.of(chrome, firefox), 12, 5);
+    NodeStatus mediumLoadAndOtherTwoBrowsers = createNode(List.of(safari, chrome), 12, 6);
+    NodeStatus highLoadAndOneBrowser = createNode(List.of(chrome), 12, 8);
 
     Set<SlotId> ids =
         selector.selectSlot(

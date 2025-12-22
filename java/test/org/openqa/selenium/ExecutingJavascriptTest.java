@@ -30,7 +30,6 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -106,7 +105,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     Object result = ((JavascriptExecutor) driver).executeScript("return ['zero', 'one', 'two'];");
 
     assertThat(result).isInstanceOf(List.class);
-    assertThat((List<?>) result).isEqualTo(ImmutableList.of("zero", "one", "two"));
+    assertThat((List<?>) result).isEqualTo(List.of("zero", "one", "two"));
   }
 
   @SuppressWarnings("unchecked")
