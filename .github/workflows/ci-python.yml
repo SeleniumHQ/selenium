@@ -68,10 +68,7 @@ jobs:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
       cache-key: python-unit-test-${{ matrix.python-version }}
-      run: >
-        bazel test //py:unit
-        --test_output=streamed
-        --test_arg=-s
+      run: bazel test --local_test_jobs 1 //py:unit
 
   remote-tests:
     name: Remote Tests
