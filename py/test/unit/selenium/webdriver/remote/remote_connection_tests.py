@@ -57,6 +57,12 @@ def test_execute_custom_command(mock_request, remote_connection):
     assert response == {"status": 200, "value": "OK"}
 
 
+def test_default_websocket_settings():
+    config = ClientConfig(remote_server_addr="http://localhost:4444")
+    assert config.websocket_timeout == 30.0
+    assert config.websocket_interval == 0.1
+
+
 def test_get_remote_connection_headers_defaults():
     url = "http://remote"
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url))
@@ -564,7 +570,7 @@ def test_proxy_auth_with_special_characters_url_encoded():
     conn = remote_connection._get_connection_manager()
     assert isinstance(conn, ProxyManager)
 
-    expected_auth = base64.b64encode("user:passw#rd".encode()).decode()  # Decoded password
+    expected_auth = base64.b64encode(b"user:passw#rd").decode()  # Decoded password
     expected_headers = make_headers(proxy_basic_auth="user:passw#rd")  # Unquoted password
 
     assert conn.proxy_headers == expected_headers

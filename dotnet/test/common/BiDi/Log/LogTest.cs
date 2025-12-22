@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
-class LogTest : BiDiTestFixture
+internal class LogTest : BiDiTestFixture
 {
     [Test]
     public async Task CanListenToConsoleLog()

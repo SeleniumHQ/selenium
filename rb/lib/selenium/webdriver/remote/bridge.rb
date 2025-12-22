@@ -206,12 +206,20 @@ module Selenium
           switch_to_frame nil
         end
 
-        QUIT_ERRORS = [IOError].freeze
+        QUIT_ERRORS = [IOError, EOFError, WebSocket::Error].freeze
 
         def quit
-          execute :delete_session
-          http.close
-        rescue *QUIT_ERRORS
+          begin
+            execute :delete_session
+          rescue *QUIT_ERRORS => e
+            WebDriver.logger.debug "delete_session failed during quit: #{e.class}: #{e.message}", id: :quit
+          ensure
+            begin
+              http.close
+            rescue *QUIT_ERRORS => e
+              WebDriver.logger.debug "http.close failed during quit: #{e.class}: #{e.message}", id: :quit
+            end
+          end
           nil
         end
 

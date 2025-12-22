@@ -7,9 +7,9 @@
 
 /*
  * Standard styles for RoundedPanel.
- *
- * @author pallosp@google.com (Peter Pallos)
  */
+
+@provide 'goog.css.roundedpanel';
 
 .goog-roundedpanel {
   position: relative;

@@ -15,36 +15,33 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.ie.options import Options
 from selenium.webdriver.ie.service import Service
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
-class WebDriver(RemoteWebDriver):
-    """Controls the IEServerDriver and allows you to drive Internet
-    Explorer."""
+class WebDriver(LocalWebDriver):
+    """Control the IEServerDriver and drive Internet Explorer."""
 
     def __init__(
         self,
-        options: Optional[Options] = None,
-        service: Optional[Service] = None,
+        options: Options | None = None,
+        service: Service | None = None,
         keep_alive: bool = True,
     ) -> None:
         """Creates a new instance of the Ie driver.
 
         Starts the service and then creates new instance of Ie driver.
 
-        :Args:
-         - options - IE Options instance, providing additional IE options
-         - service - (Optional) service instance for managing the starting and stopping of the driver.
-         - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
+        Args:
+            options: IE Options instance, providing additional IE options
+            service: (Optional) service instance for managing the starting and stopping of the driver.
+            keep_alive: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-
         self.service = service if service else Service()
         options = options if options else Options()
 
@@ -62,21 +59,3 @@ class WebDriver(RemoteWebDriver):
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
-
-    def quit(self) -> None:
-        """Closes the browser and shuts down the IEServerDriver executable."""
-        try:
-            super().quit()
-        except Exception:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
-
-    def download_file(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError

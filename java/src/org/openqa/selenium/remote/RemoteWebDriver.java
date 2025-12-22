@@ -20,11 +20,15 @@ package org.openqa.selenium.remote;
 import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
+import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -79,7 +83,6 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
@@ -87,6 +90,7 @@ import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
@@ -572,10 +576,14 @@ public class RemoteWebDriver
         if (e instanceof SessionNotCreatedException) {
           toThrow = (WebDriverException) e;
         } else {
+          // When this exception comes from a remote end, the real cause is usually hidden in the
+          // cause. Let's try to rescue it and display it at the top level.
+          String cause = e.getCause() != null ? " " + e.getCause().getMessage() : "";
           toThrow =
               new SessionNotCreatedException(
                   "Possible causes are invalid address of the remote server or browser start-up"
-                      + " failure.",
+                      + " failure."
+                      + cause,
                   e);
         }
       } else if (e instanceof WebDriverException) {
@@ -668,19 +676,46 @@ public class RemoteWebDriver
   }
 
   /**
-   * Retrieves the names of the downloadable files.
+   * Retrieves the names of the files downloaded by browser.
    *
-   * @return A list containing the names of the downloadable files.
+   * @return A list containing the names of the downloaded files.
    * @throws WebDriverException if capability to enable downloads is not set
+   * @deprecated Use method {@link #getDownloadedFiles()} instead
    */
   @Override
   @SuppressWarnings("unchecked")
+  @Deprecated
   public List<String> getDownloadableFiles() {
     requireDownloadsEnabled(capabilities);
 
     Response response = execute(DriverCommand.GET_DOWNLOADABLE_FILES);
-    Map<String, List<String>> value = (Map<String, List<String>>) response.getValue();
-    return value.get("names");
+    Map<String, Object> value = (Map<String, Object>) response.getValue();
+    return (List<String>) value.get("names");
+  }
+
+  /**
+   * Retrieves the list of files downloaded by browser.
+   *
+   * @return A list containing the names, size etc. of the downloaded files.
+   * @throws WebDriverException if capability to enable downloads is not set
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public List<DownloadedFile> getDownloadedFiles() {
+    requireDownloadsEnabled(capabilities);
+
+    Response response = execute(DriverCommand.GET_DOWNLOADABLE_FILES);
+    Map<String, Object> value = (Map<String, Object>) response.getValue();
+    List<Map<String, Object>> files = (List<Map<String, Object>>) value.get("files");
+    return files.stream()
+        .map(
+            file ->
+                new DownloadedFile(
+                    (String) file.get("name"),
+                    (Long) file.get("creationTime"),
+                    (Long) file.get("lastModifiedTime"),
+                    (Long) file.get("size")))
+        .collect(Collectors.toUnmodifiableList());
   }
 
   /**
@@ -695,9 +730,13 @@ public class RemoteWebDriver
   public void downloadFile(String fileName, Path targetLocation) throws IOException {
     requireDownloadsEnabled(capabilities);
 
-    Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
-    String contents = ((Map<String, String>) response.getValue()).get("contents");
-    Zip.unzip(contents, targetLocation.toFile());
+    Response response = execute(DriverCommand.GET_DOWNLOADED_FILE, Map.of("name", fileName));
+
+    Contents.Supplier content = (Contents.Supplier) response.getValue();
+    try (InputStream fileContent = content.get()) {
+      Files.createDirectories(targetLocation);
+      Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
+    }
   }
 
   /**

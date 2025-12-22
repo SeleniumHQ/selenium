@@ -63,8 +63,9 @@ build --incompatible_strict_action_env
 
 # Required to get `protobuf` compiling, which is required for `rules_closure`
 build --incompatible_enable_cc_toolchain_resolution
-build --cxxopt=-std=c++14
-build --host_cxxopt=-std=c++14
+build --cxxopt=-std=c++17
+build --host_cxxopt=-std=c++17
+common --define=protobuf_allow_msvc=true
 
 # For build stamping
 
@@ -87,7 +88,6 @@ test --test_env=FIREFOX_NIGHTLY_BINARY
 test --test_env=GITHUB_ACTIONS
 test --test_env=MOZ_HEADLESS
 test --test_env=SELENIUM_BROWSER
-test --test_env=TRAVIS
 test --test_env=PYTHON_VERSION
 test --test_env=SE_AVOID_STATS=true
 

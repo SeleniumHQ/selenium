@@ -25,6 +25,7 @@ goog.require('bot.userAgent');
 goog.require('goog.dom.NodeType');
 goog.require('goog.string');
 goog.require('goog.userAgent');
+goog.require('goog.utils');
 
 
 /**
@@ -37,10 +38,10 @@ goog.require('goog.userAgent');
  *     such element could be found.
  */
 bot.locators.css.single = function (target, root) {
-  if (!goog.isFunction(root['querySelector']) &&
+  if (typeof root['querySelector'] !== 'function' &&
     // IE8 in non-compatibility mode reports querySelector as an object.
     goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
-    !goog.isObject(root['querySelector'])) {
+    !goog.utils.isObject(root['querySelector'])) {
     throw Error('CSS selection is not supported');
   }
 
@@ -73,10 +74,10 @@ bot.locators.css.single = function (target, root) {
  * @return {!IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.css.many = function (target, root) {
-  if (!goog.isFunction(root['querySelectorAll']) &&
+  if (typeof root['querySelectorAll'] !== 'function' &&
     // IE8 in non-compatibility mode reports querySelector as an object.
     goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
-    !goog.isObject(root['querySelector'])) {
+    !goog.utils.isObject(root['querySelector'])) {
     throw Error('CSS selection is not supported');
   }
 

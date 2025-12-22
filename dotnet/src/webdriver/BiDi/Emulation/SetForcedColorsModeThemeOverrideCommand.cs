@@ -17,15 +17,14 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetForcedColorsModeThemeOverrideCommand(SetForcedColorsModeThemeOverrideParameters @params)
-    : Command<SetForcedColorsModeThemeOverrideParameters, EmptyResult>(@params, "emulation.setForcedColorsModeThemeOverride");
+    : Command<SetForcedColorsModeThemeOverrideParameters, SetForcedColorsModeThemeOverrideResult>(@params, "emulation.setForcedColorsModeThemeOverride");
 
 internal sealed record SetForcedColorsModeThemeOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ForcedColorsModeTheme? Theme, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
@@ -42,3 +41,5 @@ public enum ForcedColorsModeTheme
     Light,
     Dark
 }
+
+public sealed record SetForcedColorsModeThemeOverrideResult : EmptyResult;

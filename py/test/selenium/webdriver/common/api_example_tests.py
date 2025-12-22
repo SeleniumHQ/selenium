@@ -258,19 +258,20 @@ def test_move_window_position(driver, pages):
     assert loc["y"] == new_y
 
 
-@pytest.mark.xfail_edge(reason="Window does not resize")
+@pytest.mark.xfail_edge(reason="Window sometimes does not resize")
+@pytest.mark.xfail_remote(reason="Window sometimes does not resize")
 def test_change_window_size(driver, pages):
     pages.load("blank.html")
     size = driver.get_window_size()
-    newSize = [600, 600]
+    new_size = [600, 600]
     if size["width"] == 600:
-        newSize[0] = 500
+        new_size[0] = 500
     if size["height"] == 600:
-        newSize[1] = 500
-    driver.set_window_size(newSize[0], newSize[1])
+        new_size[1] = 500
+    driver.set_window_size(new_size[0], new_size[1])
     size = driver.get_window_size()
-    assert size["width"] == newSize[0]
-    assert size["height"] == newSize[1]
+    assert size["width"] == new_size[0]
+    assert size["height"] == new_size[1]
 
 
 @pytest.mark.xfail_ie(raises=AttributeError, reason="Logging API is no longer available")

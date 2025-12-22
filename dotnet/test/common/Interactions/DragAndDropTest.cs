@@ -31,8 +31,7 @@ public class DragAndDropTest : DriverTestFixture
     [SetUp]
     public void SetupTest()
     {
-        IActionExecutor actionExecutor = driver as IActionExecutor;
-        if (actionExecutor != null)
+        if (driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }
@@ -114,7 +113,7 @@ public class DragAndDropTest : DriverTestFixture
     [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
     public void DragAndDropElementWithOffsetInScrolledDiv()
     {
-        if (TestUtilities.IsFirefox(driver) && TestUtilities.IsNativeEventsEnabled(driver))
+        if (TestUtilities.IsFirefox(driver) && IsNativeEventsEnabled)
         {
             return;
         }

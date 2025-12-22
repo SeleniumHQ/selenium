@@ -16,7 +16,6 @@
 # under the License.
 
 from collections.abc import Sequence
-from typing import Optional
 
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
@@ -27,27 +26,28 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        host: Optional[str] = None,
-        service_args: Optional[Sequence[str]] = None,
-        log_level: Optional[str] = None,
-        log_output: Optional[SubprocessStdAlias] = None,
-        driver_path_env_key: Optional[str] = None,
+        host: str | None = None,
+        service_args: Sequence[str] | None = None,
+        log_level: str | None = None,
+        log_output: SubprocessStdAlias | None = None,
+        driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:
         """Creates a new instance of the Service.
 
-        :Args:
-         - executable_path : Path to the IEDriver
-         - port : Port the service is running on
-         - host : (Optional) IP address the service port is bound
-         - service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-         - log_level : (Optional) Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG",
-           "TRACE". Default is "FATAL".
-         - log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
-           Default is "stdout".
-         - driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+        Args:
+            executable_path: Path to the IEDriver
+            port: Port the service is running on
+            host: (Optional) IP address the service port is bound
+            service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+            log_level: (Optional) Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG",
+                "TRACE". Default is "FATAL".
+            log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+                Default is "stdout".
+            driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.
+            **kwargs: Additional keyword arguments to pass to the parent Service class.
         """
         self._service_args = list(service_args or [])
         driver_path_env_key = driver_path_env_key or "SE_IEDRIVER"
@@ -70,6 +70,7 @@ class Service(service.Service):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

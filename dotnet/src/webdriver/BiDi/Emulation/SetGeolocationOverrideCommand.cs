@@ -19,12 +19,11 @@
 
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetGeolocationOverrideCommand(SetGeolocationOverrideParameters @params)
-    : Command<SetGeolocationOverrideParameters, EmptyResult>(@params, "emulation.setGeolocationOverride");
+    : Command<SetGeolocationOverrideParameters, SetGeolocationOverrideResult>(@params, "emulation.setGeolocationOverride");
 
 [JsonDerivedType(typeof(SetGeolocationOverrideCoordinatesParameters))]
 [JsonDerivedType(typeof(SetGeolocationOverridePositionErrorParameters))]
@@ -59,3 +58,5 @@ public sealed class SetGeolocationCoordinatesOverrideOptions : SetGeolocationOve
 }
 
 public sealed class SetGeolocationPositionErrorOverrideOptions : SetGeolocationOverrideOptions;
+
+public sealed record SetGeolocationOverrideResult : EmptyResult;

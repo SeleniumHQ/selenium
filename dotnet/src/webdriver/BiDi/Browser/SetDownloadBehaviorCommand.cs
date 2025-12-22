@@ -17,14 +17,13 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Browser;
 
 internal sealed class SetDownloadBehaviorCommand(SetDownloadBehaviorParameters @params)
-    : Command<SetDownloadBehaviorParameters, EmptyResult>(@params, "browser.setDownloadBehavior");
+    : Command<SetDownloadBehaviorParameters, SetDownloadBehaviorResult>(@params, "browser.setDownloadBehavior");
 
 internal sealed record SetDownloadBehaviorParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] DownloadBehavior? DownloadBehavior, IEnumerable<UserContext>? UserContexts) : Parameters;
 
@@ -41,3 +40,5 @@ public sealed class SetDownloadBehaviorOptions : CommandOptions
 {
     public IEnumerable<UserContext>? UserContexts { get; set; }
 }
+
+public sealed record SetDownloadBehaviorResult : EmptyResult;

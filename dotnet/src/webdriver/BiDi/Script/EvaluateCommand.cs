@@ -17,9 +17,10 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters.Polymorphic;
+using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
+using OpenQA.Selenium.Internal;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Script;
@@ -27,7 +28,7 @@ namespace OpenQA.Selenium.BiDi.Script;
 internal sealed class EvaluateCommand(EvaluateParameters @params)
     : Command<EvaluateParameters, EvaluateResult>(@params, "script.evaluate");
 
-internal sealed record EvaluateParameters(string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : Parameters;
+internal sealed record EvaluateParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string Expression, Target Target, bool AwaitPromise, ResultOwnership? ResultOwnership, SerializationOptions? SerializationOptions, bool? UserActivation) : Parameters;
 
 public sealed class EvaluateOptions : CommandOptions
 {

@@ -15,33 +15,31 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Optional
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.driver_finder import DriverFinder
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.safari.options import Options
 from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 from selenium.webdriver.safari.service import Service
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Controls the SafariDriver and allows you to drive the browser."""
 
     def __init__(
         self,
         keep_alive=True,
-        options: Optional[Options] = None,
-        service: Optional[Service] = None,
+        options: Options | None = None,
+        service: Service | None = None,
     ) -> None:
-        """Creates a new Safari driver instance and launches or finds a running
-        safaridriver service.
+        """Create a new Safari driver instance and launch or find a running safaridriver service.
 
-        :Args:
-         - keep_alive - Whether to configure SafariRemoteConnection to use
-             HTTP keep-alive. Defaults to True.
-         - options - Instance of ``options.Options``.
-         - service - Service object for handling the browser driver if you need to pass extra details
+        Args:
+            keep_alive: Whether to configure SafariRemoteConnection to use
+                HTTP keep-alive. Defaults to True.
+            options: Instance of ``options.Options``.
+            service: Service object for handling the browser driver if you need to pass extra details
         """
         self.service = service if service else Service()
         options = options if options else Options()
@@ -62,8 +60,6 @@ class WebDriver(RemoteWebDriver):
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
 
     def quit(self):
         """Closes the browser and shuts down the SafariDriver executable."""
@@ -107,9 +103,3 @@ class WebDriver(RemoteWebDriver):
     def debug(self):
         self.execute("ATTACH_DEBUGGER")
         self.execute_script("debugger;")
-
-    def download_file(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError

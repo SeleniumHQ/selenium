@@ -12,10 +12,11 @@
  * best to avoid using this file in extremely large, or performance
  * critical applications.
  *
- * @author: eae@google.com (Emil A Eklund)
- * @author: gboyer@google.com (Garrett Boyer)
  */
 
+@provide 'goog.css.imagelessbutton';
+
+@require './common';
 
 /* Imageless button styles. */
 
@@ -152,9 +153,11 @@
   zoom: 1;
 }
 
+/* rtl:begin:ignore */
 * html .goog-imageless-button-outer-box {
   /* In RTL mode, IE is off by one pixel.  To fix, override the left: -1px
    * (which was flipped to right) without having any effect on LTR mode
    * (where IE ignores right when left is specified). */
   /* @noflip */ right: 0;
 }
+/* rtl:end:ignore */

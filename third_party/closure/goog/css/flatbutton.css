@@ -7,9 +7,11 @@
 
 /*
  * Styling for flat buttons created by goog.ui.FlatButtonRenderer.
- *
- * @author brianp@google.com (Brian Peterson)
  */
+
+@provide 'goog.css.flatbutton';
+
+@require './common';
 
 .goog-flat-button {
   position: relative;

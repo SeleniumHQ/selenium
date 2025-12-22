@@ -18,7 +18,8 @@
 package org.openqa.selenium.grid.distributor;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
@@ -30,31 +31,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DefaultSlotMatcher;
-import org.openqa.selenium.grid.data.NodeId;
-import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.NodeStatusEvent;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.data.SessionClosedEvent;
-import org.openqa.selenium.grid.data.Slot;
-import org.openqa.selenium.grid.data.SlotId;
+import org.openqa.selenium.grid.data.*;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
@@ -155,7 +139,7 @@ class AddingNodesTest {
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, getStereotypes(status).get(CAPS));
+    assertThat(getStereotypes(status).get(CAPS)).isEqualTo(1);
   }
 
   @Test
@@ -196,8 +180,8 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(status).get(CAPS));
-      assertEquals(Duration.ofSeconds(300), status.getSessionTimeout());
+      assertThat(getStereotypes(status).get(CAPS)).isEqualTo(1);
+      assertThat(status.getSessionTimeout()).isEqualTo(ofSeconds(300));
     }
   }
 
@@ -237,7 +221,7 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(status).get(CAPS));
+      assertThat(getStereotypes(status).get(CAPS)).isEqualTo(1);
     }
   }
 
@@ -289,7 +273,7 @@ class AddingNodesTest {
 
       Set<NodeStatus> nodes = distributor.getStatus().getNodes();
 
-      assertEquals(1, nodes.size());
+      assertThat(nodes).hasSize(1);
     }
   }
 
@@ -331,7 +315,7 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus nodeStatus = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(nodeStatus).get(CAPS));
+      assertThat(getStereotypes(nodeStatus).get(CAPS)).isEqualTo(1);
 
       // Craft a status that makes it look like the node is busy, and post it on the bus.
       NodeStatus status = node.getStatus();

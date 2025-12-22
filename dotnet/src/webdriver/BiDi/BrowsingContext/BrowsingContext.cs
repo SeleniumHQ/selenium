@@ -17,57 +17,71 @@
 // under the License.
 // </copyright>
 
-using System.Threading.Tasks;
 using System;
-using OpenQA.Selenium.BiDi.Communication;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
-public sealed class BrowsingContext
+public sealed record BrowsingContext
 {
-    internal BrowsingContext(BiDi bidi, string id)
+    public BrowsingContext(BiDi bidi, string id)
+        : this(id)
     {
-        BiDi = bidi;
-        Id = id;
-
-        _logModule = new Lazy<BrowsingContextLogModule>(() => new BrowsingContextLogModule(this, BiDi.Log));
-        _networkModule = new Lazy<BrowsingContextNetworkModule>(() => new BrowsingContextNetworkModule(this, BiDi.Network));
-        _scriptModule = new Lazy<BrowsingContextScriptModule>(() => new BrowsingContextScriptModule(this, BiDi.Script));
-        _storageModule = new Lazy<BrowsingContextStorageModule>(() => new BrowsingContextStorageModule(this, BiDi.Storage));
-        _inputModule = new Lazy<BrowsingContextInputModule>(() => new BrowsingContextInputModule(this, BiDi.InputModule));
+        BiDi = bidi ?? throw new ArgumentNullException(nameof(bidi));
     }
 
-    private readonly Lazy<BrowsingContextLogModule> _logModule;
-    private readonly Lazy<BrowsingContextNetworkModule> _networkModule;
-    private readonly Lazy<BrowsingContextScriptModule> _scriptModule;
-    private readonly Lazy<BrowsingContextStorageModule> _storageModule;
-    private readonly Lazy<BrowsingContextInputModule> _inputModule;
+    [JsonConstructor]
+    internal BrowsingContext(string id)
+    {
+        Id = id;
+    }
+
+    private BrowsingContextLogModule? _logModule;
+    private BrowsingContextNetworkModule? _networkModule;
+    private BrowsingContextScriptModule? _scriptModule;
+    private BrowsingContextStorageModule? _storageModule;
+    private BrowsingContextInputModule? _inputModule;
 
     internal string Id { get; }
 
-    public BiDi BiDi { get; }
+    private BiDi? _bidi;
 
-    public BrowsingContextLogModule Log => _logModule.Value;
+    [JsonIgnore]
+    public BiDi BiDi
+    {
+        get => _bidi ?? throw new InvalidOperationException($"{nameof(BiDi)} instance has not been hydrated.");
+        internal set => _bidi = value;
+    }
 
-    public BrowsingContextNetworkModule Network => _networkModule.Value;
+    [JsonIgnore]
+    public BrowsingContextLogModule Log => _logModule ?? Interlocked.CompareExchange(ref _logModule, new BrowsingContextLogModule(this, BiDi.Log), null) ?? _logModule;
 
-    public BrowsingContextScriptModule Script => _scriptModule.Value;
+    [JsonIgnore]
+    public BrowsingContextNetworkModule Network => _networkModule ?? Interlocked.CompareExchange(ref _networkModule, new BrowsingContextNetworkModule(this, BiDi.Network), null) ?? _networkModule;
 
-    public BrowsingContextStorageModule Storage => _storageModule.Value;
+    [JsonIgnore]
+    public BrowsingContextScriptModule Script => _scriptModule ?? Interlocked.CompareExchange(ref _scriptModule, new BrowsingContextScriptModule(this, BiDi.Script), null) ?? _scriptModule;
 
-    public BrowsingContextInputModule Input => _inputModule.Value;
+    [JsonIgnore]
+    public BrowsingContextStorageModule Storage => _storageModule ?? Interlocked.CompareExchange(ref _storageModule, new BrowsingContextStorageModule(this, BiDi.Storage), null) ?? _storageModule;
+
+    [JsonIgnore]
+    public BrowsingContextInputModule Input => _inputModule ?? Interlocked.CompareExchange(ref _inputModule, new BrowsingContextInputModule(this, BiDi.InputModule), null) ?? _inputModule;
 
     public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null)
     {
         return BiDi.BrowsingContext.NavigateAsync(this, url, options);
     }
 
-    public Task<NavigateResult> ReloadAsync(ReloadOptions? options = null)
+    public Task<ReloadResult> ReloadAsync(ReloadOptions? options = null)
     {
         return BiDi.BrowsingContext.ReloadAsync(this, options);
     }
 
-    public Task<EmptyResult> ActivateAsync(ActivateOptions? options = null)
+    public Task<ActivateResult> ActivateAsync(ActivateOptions? options = null)
     {
         return BiDi.BrowsingContext.ActivateAsync(this, options);
     }
@@ -82,7 +96,7 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.CaptureScreenshotAsync(this, options);
     }
 
-    public Task<EmptyResult> CloseAsync(CloseOptions? options = null)
+    public Task<CloseResult> CloseAsync(CloseOptions? options = null)
     {
         return BiDi.BrowsingContext.CloseAsync(this, options);
     }
@@ -92,7 +106,7 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.TraverseHistoryAsync(this, delta, options);
     }
 
-    public Task<EmptyResult> SetViewportAsync(SetViewportOptions? options = null)
+    public Task<SetViewportResult> SetViewportAsync(SetViewportOptions? options = null)
     {
         return BiDi.BrowsingContext.SetViewportAsync(this, options);
     }
@@ -102,7 +116,7 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.PrintAsync(this, options);
     }
 
-    public Task<EmptyResult> HandleUserPromptAsync(HandleUserPromptOptions? options = null)
+    public Task<HandleUserPromptResult> HandleUserPromptAsync(HandleUserPromptOptions? options = null)
     {
         return BiDi.BrowsingContext.HandleUserPromptAsync(this, options);
     }
@@ -117,115 +131,120 @@ public sealed class BrowsingContext
         return BiDi.BrowsingContext.GetTreeAsync(getTreeOptions);
     }
 
-    public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnNavigationStartedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationStartedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnNavigationStartedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDomContentLoadedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnDomContentLoadedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDomContentLoadedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnDomContentLoadedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnLoadAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnLoadAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnLoadAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnLoadAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadEndAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnDownloadEndAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadEndAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnDownloadEndAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationAbortedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnNavigationAbortedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationAbortedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnNavigationAbortedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationFailedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnNavigationFailedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationFailedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnNavigationFailedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnNavigationCommittedAsync(Action<NavigationInfo> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationCommittedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, options.WithContext(this));
     }
 
-    public Task<Subscription> OnNavigationCommittedAsync(Func<NavigationInfo, Task> handler, SubscriptionOptions? options = null)
+    public Task<Subscription> OnNavigationCommittedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, new BrowsingContextsSubscriptionOptions(options) { Contexts = [this] });
+        return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, options.WithContext(this));
     }
 
-    public override bool Equals(object? obj)
+    public bool Equals(BrowsingContext? other)
     {
-        if (obj is BrowsingContext browsingContextObj) return browsingContextObj.Id == Id;
-
-        return false;
+        return other is not null && string.Equals(Id, other.Id, StringComparison.Ordinal);
     }
 
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
+    }
+
+    // Includes Id only for brevity
+    private bool PrintMembers(StringBuilder builder)
+    {
+        builder.Append($"Id = {Id}");
+        return true;
     }
 }

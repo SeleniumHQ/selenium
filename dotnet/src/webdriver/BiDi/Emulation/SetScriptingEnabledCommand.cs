@@ -19,12 +19,11 @@
 
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetScriptingEnabledCommand(SetScriptingEnabledParameters @params)
-    : Command<SetScriptingEnabledParameters, EmptyResult>(@params, "emulation.setScriptingEnabled");
+    : Command<SetScriptingEnabledParameters, SetScriptingEnabledResult>(@params, "emulation.setScriptingEnabled");
 
 internal sealed record SetScriptingEnabledParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] bool? Enabled, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
@@ -34,3 +33,5 @@ public sealed class SetScriptingEnabledOptions : CommandOptions
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
+
+public sealed record SetScriptingEnabledResult : EmptyResult;

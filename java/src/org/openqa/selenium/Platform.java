@@ -447,7 +447,7 @@ public enum Platform {
     String previousMatch = null;
     for (Platform os : Platform.values()) {
       for (String matcher : os.partOfOsName) {
-        if ("".equals(matcher)) {
+        if (matcher.isEmpty()) {
           continue;
         }
         matcher = matcher.toLowerCase(Locale.ENGLISH);

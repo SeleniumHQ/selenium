@@ -17,15 +17,14 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed class SetCacheBehaviorCommand(SetCacheBehaviorParameters @params)
-    : Command<SetCacheBehaviorParameters, EmptyResult>(@params, "network.setCacheBehavior");
+    : Command<SetCacheBehaviorParameters, SetCacheBehaviorResult>(@params, "network.setCacheBehavior");
 
 internal sealed record SetCacheBehaviorParameters(CacheBehavior CacheBehavior, IEnumerable<BrowsingContext.BrowsingContext>? Contexts) : Parameters;
 
@@ -52,3 +51,5 @@ public enum CacheBehavior
     Default,
     Bypass
 }
+
+public sealed record SetCacheBehaviorResult : EmptyResult;

@@ -17,15 +17,14 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Emulation;
 
 internal sealed class SetScreenOrientationOverrideCommand(SetScreenOrientationOverrideParameters @params)
-    : Command<SetScreenOrientationOverrideParameters, EmptyResult>(@params, "emulation.setScreenOrientationOverride");
+    : Command<SetScreenOrientationOverrideParameters, SetScreenOrientationOverrideResult>(@params, "emulation.setScreenOrientationOverride");
 
 internal sealed record SetScreenOrientationOverrideParameters([property: JsonIgnore(Condition = JsonIgnoreCondition.Never)] ScreenOrientation? ScreenOrientation, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
@@ -53,3 +52,5 @@ public enum ScreenOrientationType
 }
 
 public sealed record ScreenOrientation(ScreenOrientationNatural Natural, ScreenOrientationType Type);
+
+public sealed record SetScreenOrientationOverrideResult : EmptyResult;

@@ -17,11 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters.Enumerable;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
@@ -49,21 +45,4 @@ public sealed record BrowsingContextGetTreeOptions
     public long? MaxDepth { get; set; }
 }
 
-[JsonConverter(typeof(GetTreeResultConverter))]
-public sealed record GetTreeResult : EmptyResult, IReadOnlyList<BrowsingContextInfo>
-{
-    internal GetTreeResult(IReadOnlyList<BrowsingContextInfo> contexts)
-    {
-        Contexts = contexts;
-    }
-
-    public IReadOnlyList<BrowsingContextInfo> Contexts { get; }
-
-    public BrowsingContextInfo this[int index] => Contexts[index];
-
-    public int Count => Contexts.Count;
-
-    public IEnumerator<BrowsingContextInfo> GetEnumerator() => Contexts.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => (Contexts as IEnumerable).GetEnumerator();
-}
+public sealed record GetTreeResult(IReadOnlyList<BrowsingContextInfo> Contexts) : EmptyResult;

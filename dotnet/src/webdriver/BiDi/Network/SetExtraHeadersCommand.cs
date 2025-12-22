@@ -18,12 +18,11 @@
 // </copyright>
 
 using System.Collections.Generic;
-using OpenQA.Selenium.BiDi.Communication;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
 internal sealed class SetExtraHeadersCommand(SetExtraHeadersParameters @params)
-    : Command<SetExtraHeadersParameters, EmptyResult>(@params, "network.setExtraHeaders");
+    : Command<SetExtraHeadersParameters, SetExtraHeadersResult>(@params, "network.setExtraHeaders");
 
 internal sealed record SetExtraHeadersParameters(IEnumerable<Header> Headers, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
@@ -33,3 +32,5 @@ public sealed class SetExtraHeadersOptions : CommandOptions
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }
+
+public sealed record SetExtraHeadersResult : EmptyResult;
