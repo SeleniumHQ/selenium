@@ -7,10 +7,9 @@
 
 /*
  * Standard styling for buttons created by goog.ui.ImagelessMenuButtonRenderer.
- *
- * @author attila@google.com (Attila Bodis)
- * @author dalewis@google.com (Darren Lewis)
  */
+
+@provide 'goog.css.imagelessmenubutton';
 
 /* Dropdown arrow style. */
 .goog-imageless-button-dropdown {

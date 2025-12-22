@@ -20,7 +20,7 @@ package org.openqa.selenium.grid.router;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import java.io.StringReader;
@@ -164,28 +164,23 @@ class StressTest {
                 // note: As soon as the session cleanup of the node is performed, the grid is unable
                 // to route the request. All commands to a session in this state will fail with:
                 // "Unable to find session with ID:"
-                NoSuchSessionException exception =
-                    assertThrows(NoSuchSessionException.class, driver::getTitle);
-                assertThat(exception.getMessage())
+
+                assertThatThrownBy(driver::getTitle)
+                    .isInstanceOf(NoSuchSessionException.class)
+                    .as("the session timed out. Either cleanup is pending, or cleanup is done.")
                     .matches(
-                        (msg) ->
-                            // the session timed out, the cleanup is pending
-                            msg.startsWith("Cannot find session with id:")
-                                // the session timed out, the cleanup is done
-                                || msg.startsWith("Unable to find session with ID:"),
-                        "Cannot find session … / Unable to find session …");
-                WebDriverException webDriverException =
-                    assertThrows(
-                        WebDriverException.class,
-                        () -> ((RemoteWebDriver) driver).getDownloadableFiles());
-                assertThat(webDriverException.getMessage())
+                        e ->
+                            e.getMessage().startsWith("Cannot find session with id:")
+                                || e.getMessage().startsWith("Unable to find session with ID:"));
+
+                assertThatThrownBy(() -> ((RemoteWebDriver) driver).getDownloadedFiles())
+                    .isInstanceOf(WebDriverException.class)
+                    .as("The session timed out. Either the cleanup is pending or cleanup is done.")
                     .matches(
-                        (msg) ->
-                            // the session timed out, the cleanup is pending
-                            msg.startsWith("Cannot find downloads file system for session id:")
-                                // the session timed out, the cleanup is done
-                                || msg.startsWith("Unable to find session with ID:"),
-                        "Cannot find downloads … / Unable to find session …");
+                        e ->
+                            e.getMessage()
+                                    .startsWith("Cannot find downloads file system for session id:")
+                                || e.getMessage().startsWith("Unable to find session with ID:"));
               },
               executor);
     }

@@ -7,9 +7,12 @@
 
 /*
  * Styling for buttons rendered by goog.ui.ButtonRenderer.
- *
- * @author attila@google.com (Attila Bodis)
  */
+
+@provide 'goog.css.button';
+
+@require './custombutton';
+@require './flatbutton';
 
 .goog-button {
   color: #036;

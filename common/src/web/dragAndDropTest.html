@@ -2,12 +2,10 @@
 <body>
 
 <style>
-<!--
-.dragme{position:relative;}
--->
+  .dragme{position:relative;}
+  .hidden{visibility: hidden;}
 </style>
-<script language="JavaScript1.2">
-<!--
+<script>
 
 var ie=document.all;
 var nn6=document.getElementById&&!document.all;
@@ -83,20 +81,27 @@ function selectmouse(e)
   }
 }
 
-document.onmousedown=selectmouse;
-document.onmouseup=new Function("isdrag=false");
-
-//-->
+document.onmousedown = selectmouse;
+document.onmouseup = new Function("isdrag=false");
 </script>
 
 
 
-<img src="icon.gif" class="dragme" id="test1"><br>
-<img src="icon.gif" class="dragme" id="test2"><br>
+<img src="icon.gif" class="dragme hidden" id="test1"><br>
+<img src="icon.gif" class="dragme hidden" id="test2"><br>
 <b>"Hi there</b>
 <div style="position: absolute; left: 210px; top: 80px; height: 400px; width: 100px; padding: 10em;">
-<img src="icon.gif" class="dragme" id="test3"><br>
-<img src="icon.gif" class="dragme" id="test4"><br>
+<img src="icon.gif" class="dragme hidden" id="test3"><br>
+<img src="icon.gif" class="dragme hidden" id="test4"><br>
 </div>
+
+<script>
+  (() => {
+    document.querySelectorAll('.hidden').forEach(item => {
+      item.classList.remove('hidden');
+    })
+  })()
+</script>
+
 </body>
 </html>

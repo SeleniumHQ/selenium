@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,24 +25,25 @@ using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using OpenQA.Selenium.BiDi.Json.Converters;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-[JsonDerivedType(typeof(NumberLocalValue), "number")]
-[JsonDerivedType(typeof(StringLocalValue), "string")]
-[JsonDerivedType(typeof(NullLocalValue), "null")]
-[JsonDerivedType(typeof(UndefinedLocalValue), "undefined")]
-[JsonDerivedType(typeof(BooleanLocalValue), "boolean")]
-[JsonDerivedType(typeof(BigIntLocalValue), "bigint")]
-[JsonDerivedType(typeof(ChannelLocalValue), "channel")]
-[JsonDerivedType(typeof(ArrayLocalValue), "array")]
-[JsonDerivedType(typeof(DateLocalValue), "date")]
-[JsonDerivedType(typeof(MapLocalValue), "map")]
-[JsonDerivedType(typeof(ObjectLocalValue), "object")]
-[JsonDerivedType(typeof(RegExpLocalValue), "regexp")]
-[JsonDerivedType(typeof(SetLocalValue), "set")]
+[JsonPolymorphic]
+[JsonDerivedType(typeof(SharedReferenceLocalValue))]
+[JsonDerivedType(typeof(RemoteObjectReferenceLocalValue))]
+[JsonDerivedType(typeof(NumberLocalValue))]
+[JsonDerivedType(typeof(StringLocalValue))]
+[JsonDerivedType(typeof(NullLocalValue))]
+[JsonDerivedType(typeof(UndefinedLocalValue))]
+[JsonDerivedType(typeof(BooleanLocalValue))]
+[JsonDerivedType(typeof(BigIntLocalValue))]
+[JsonDerivedType(typeof(ChannelLocalValue))]
+[JsonDerivedType(typeof(ArrayLocalValue))]
+[JsonDerivedType(typeof(DateLocalValue))]
+[JsonDerivedType(typeof(MapLocalValue))]
+[JsonDerivedType(typeof(ObjectLocalValue))]
+[JsonDerivedType(typeof(RegExpLocalValue))]
+[JsonDerivedType(typeof(SetLocalValue))]
 public abstract record LocalValue
 {
     public static implicit operator LocalValue(bool? value) { return ConvertFrom(value); }
@@ -279,40 +281,92 @@ public abstract record LocalValue
 
         return new ObjectLocalValue(values);
     }
+
+    [JsonInclude]
+    internal abstract string Type { get; }
+}
+
+public abstract record RemoteReferenceLocalValue : LocalValue, IRemoteReference;
+
+public sealed record SharedReferenceLocalValue(string SharedId) : RemoteReferenceLocalValue, ISharedReference
+{
+    public Handle? Handle { get; set; }
+
+    internal override string Type { get; } = null!;
+}
+
+public sealed record RemoteObjectReferenceLocalValue(Handle Handle) : RemoteReferenceLocalValue, IRemoteObjectReference
+{
+    public string? SharedId { get; set; }
+
+    internal override string Type { get; } = null!;
 }
 
 public abstract record PrimitiveProtocolLocalValue : LocalValue;
 
 public sealed record NumberLocalValue([property: JsonConverter(typeof(SpecialNumberConverter))] double Value) : PrimitiveProtocolLocalValue
 {
+    internal override string Type { get; } = "number";
+
     public static explicit operator NumberLocalValue(double n) => new NumberLocalValue(n);
 }
 
-public sealed record StringLocalValue(string Value) : PrimitiveProtocolLocalValue;
+public sealed record StringLocalValue(string Value) : PrimitiveProtocolLocalValue
+{
+    internal override string Type { get; } = "string";
+}
 
-public sealed record NullLocalValue : PrimitiveProtocolLocalValue;
+public sealed record NullLocalValue : PrimitiveProtocolLocalValue
+{
+    internal override string Type { get; } = "null";
+}
 
-public sealed record UndefinedLocalValue : PrimitiveProtocolLocalValue;
+public sealed record UndefinedLocalValue : PrimitiveProtocolLocalValue
+{
+    internal override string Type { get; } = "undefined";
+}
 
-public sealed record BooleanLocalValue(bool Value) : PrimitiveProtocolLocalValue;
+public sealed record BooleanLocalValue(bool Value) : PrimitiveProtocolLocalValue
+{
+    internal override string Type { get; } = "boolean";
+}
 
-public sealed record BigIntLocalValue(string Value) : PrimitiveProtocolLocalValue;
+public sealed record BigIntLocalValue(string Value) : PrimitiveProtocolLocalValue
+{
+    internal override string Type { get; } = "bigint";
+}
 
 public sealed record ChannelLocalValue(ChannelProperties Value) : LocalValue
 {
-    // AddPreloadScript takes arguments typed as ChannelLocalValue but still requires "type":"channel"
-    [JsonInclude]
-    internal string Type => "channel";
+    internal override string Type { get; } = "channel";
 }
 
-public sealed record ArrayLocalValue(IEnumerable<LocalValue> Value) : LocalValue;
+public sealed record ArrayLocalValue(IEnumerable<LocalValue> Value) : LocalValue
+{
+    internal override string Type { get; } = "array";
+}
 
-public sealed record DateLocalValue(string Value) : LocalValue;
+public sealed record DateLocalValue(string Value) : LocalValue
+{
+    internal override string Type { get; } = "date";
+}
 
-public sealed record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
+public sealed record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue
+{
+    internal override string Type { get; } = "map";
+}
 
-public sealed record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
+public sealed record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue
+{
+    internal override string Type { get; } = "object";
+}
 
-public sealed record RegExpLocalValue(RegExpValue Value) : LocalValue;
+public sealed record RegExpLocalValue(RegExpValue Value) : LocalValue
+{
+    internal override string Type { get; } = "regexp";
+}
 
-public sealed record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue;
+public sealed record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue
+{
+    internal override string Type { get; } = "set";
+}

@@ -53,6 +53,7 @@ import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.Clock;
@@ -95,6 +96,7 @@ import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedReason;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -334,12 +336,17 @@ public class LocalNode extends Node implements Closeable {
         attributeMap.put("session.id", id.toString());
         attributeMap.put("session.timeout_in_seconds", getSessionTimeout().toSeconds());
         attributeMap.put("session.remove.cause", cause.name());
+
+        // Determine the SessionClosedReason based on RemovalCause
+        SessionClosedReason closeReason;
         if (cause == RemovalCause.EXPIRED) {
+          closeReason = SessionClosedReason.TIMEOUT;
           // Session is timing out, stopping it by sending a DELETE
           LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
           span.setStatus(Status.CANCELLED);
           span.addEvent(String.format("Stopping the the timed session %s", id), attributeMap);
         } else {
+          closeReason = SessionClosedReason.QUIT_COMMAND;
           LOG.log(Level.INFO, () -> String.format("Session id %s is stopping on demand...", id));
           span.addEvent(String.format("Stopping the session %s on demand", id), attributeMap);
         }
@@ -354,8 +361,8 @@ public class LocalNode extends Node implements Closeable {
                 String.format("Exception while trying to stop session %s", id), attributeMap);
           }
         }
-        // Attempt to stop the session
-        slot.stop();
+        // Attempt to stop the session with the appropriate reason
+        slot.stop(closeReason);
         // Decrement pending sessions if Node is draining
         if (this.isDraining()) {
           int done = pendingSessions.decrementAndGet();
@@ -786,7 +793,10 @@ public class LocalNode extends Node implements Closeable {
     File[] files = Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[] {});
     List<String> fileNames = Arrays.stream(files).map(File::getName).collect(Collectors.toList());
     List<DownloadedFile> fileInfos =
-        Arrays.stream(files).map(this::getFileInfo).collect(Collectors.toList());
+        Arrays.stream(files)
+            .map(this::getFileInfo)
+            .filter(file -> file.getLastModifiedTime() > 0)
+            .collect(Collectors.toList());
 
     Map<String, Object> data =
         Map.of(
@@ -804,6 +814,8 @@ public class LocalNode extends Node implements Closeable {
           attributes.creationTime().toMillis(),
           attributes.lastModifiedTime().toMillis(),
           attributes.size());
+    } catch (NoSuchFileException e) {
+      return new DownloadedFile(file.getName(), -1, -1, -1);
     } catch (IOException e) {
       throw new UncheckedIOException("Failed to get file attributes: " + file.getAbsolutePath(), e);
     }

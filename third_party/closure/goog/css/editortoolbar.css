@@ -5,12 +5,11 @@
  * See the COPYING file for details.
  */
 
-
 /*
  * Editor toolbar styles.
- *
- * @author attila@google.com (Attila Bodis)
  */
+
+@provide 'goog.css.editortoolbar';
 
 /* Common base style for all icons. */
 .tr-icon {

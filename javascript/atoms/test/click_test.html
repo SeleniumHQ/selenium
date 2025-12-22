@@ -12,7 +12,7 @@
     goog.require('bot.userAgent');
     goog.require('goog.Uri');
     goog.require('goog.debug.DivConsole');
-    goog.require('goog.debug.Logger');
+    goog.require('goog.log');
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
@@ -28,7 +28,7 @@
 
     var findElement = bot.locators.findElement;
     var findElements = bot.locators.findElements;
-    var log = goog.debug.Logger.getLogger('click_test');
+    var log = goog.log.getLogger('click_test');
 
     var FIRST_EVENT_OF_CLICK = goog.userAgent.IE ?
       goog.events.EventType.MOUSEMOVE : goog.events.EventType.MOUSEOVER;
@@ -56,7 +56,7 @@
         goog.events.EventType.BLUR,
         goog.events.EventType.FOCUS],
         function (e) {
-          log.info(e.type);
+          goog.log.info(log, e.type);
         });
       blurClicker();
     }

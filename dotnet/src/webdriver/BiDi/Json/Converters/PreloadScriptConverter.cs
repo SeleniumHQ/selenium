@@ -24,20 +24,13 @@ using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Json.Converters;
 
-internal class PreloadScriptConverter : JsonConverter<PreloadScript>
+internal class PreloadScriptConverter(BiDi bidi) : JsonConverter<PreloadScript>
 {
-    private readonly BiDi _bidi;
-
-    public PreloadScriptConverter(BiDi bidi)
-    {
-        _bidi = bidi;
-    }
-
     public override PreloadScript? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var id = reader.GetString();
 
-        return new PreloadScript(_bidi, id!);
+        return new PreloadScript(id!) { BiDi = bidi };
     }
 
     public override void Write(Utf8JsonWriter writer, PreloadScript value, JsonSerializerOptions options)

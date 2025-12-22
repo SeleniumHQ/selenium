@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -252,9 +253,14 @@ public sealed class BrowsingContextModule : Module
         return await Broker.SubscribeAsync("browsingContext.userPromptClosed", handler, options, _jsonContext.UserPromptClosedEventArgs).ConfigureAwait(false);
     }
 
-    protected override void Initialize(JsonSerializerOptions options)
+    protected override void Initialize(JsonSerializerOptions jsonSerializerOptions)
     {
-        _jsonContext = new BrowsingContextJsonSerializerContext(options);
+        jsonSerializerOptions.Converters.Add(new BrowsingContextConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new InternalIdConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new HandleConverter(BiDi));
+        jsonSerializerOptions.Converters.Add(new BrowserUserContextConverter(BiDi));
+
+        _jsonContext = new BrowsingContextJsonSerializerContext(jsonSerializerOptions);
     }
 }
 
@@ -292,4 +298,5 @@ public sealed class BrowsingContextModule : Module
 [JsonSerializable(typeof(NavigationInfo))]
 [JsonSerializable(typeof(UserPromptOpenedEventArgs))]
 [JsonSerializable(typeof(UserPromptClosedEventArgs))]
+
 internal partial class BrowsingContextJsonSerializerContext : JsonSerializerContext;

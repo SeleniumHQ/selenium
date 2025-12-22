@@ -31,14 +31,9 @@ namespace OpenQA.Selenium.Environment;
 public class EnvironmentManager
 {
     private static EnvironmentManager instance;
-    private Type driverType;
-    private Browser browser;
+    private readonly Type driverType;
     private IWebDriver driver;
-    private UrlBuilder urlBuilder;
-    private TestWebServer webServer;
-    private DriverFactory driverFactory;
-    private RemoteSeleniumServer remoteServer;
-    private string remoteCapabilities;
+    private readonly DriverFactory driverFactory;
 
     private EnvironmentManager()
     {
@@ -94,10 +89,10 @@ public class EnvironmentManager
             throw new ArgumentOutOfRangeException($"Unable to find driver type {driverConfig.DriverTypeName}");
         }
 
-        browser = driverConfig.BrowserValue;
-        remoteCapabilities = driverConfig.RemoteCapabilities;
+        Browser = driverConfig.BrowserValue;
+        RemoteCapabilities = driverConfig.RemoteCapabilities;
 
-        urlBuilder = new UrlBuilder(websiteConfig);
+        UrlBuilder = new UrlBuilder(websiteConfig);
 
         // When run using the `bazel test` command, the following environment
         // variable will be set. If not set, we're running from a build system
@@ -188,48 +183,28 @@ public class EnvironmentManager
             // Use the default one.
         }
 
-        webServer = new TestWebServer(projectRoot, webServerConfig);
+        WebServer = new TestWebServer(projectRoot, webServerConfig);
         bool autoStartRemoteServer = false;
-        if (browser == Browser.Remote)
+        if (Browser == Browser.Remote)
         {
             autoStartRemoteServer = driverConfig.AutoStartRemoteServer;
         }
 
-        remoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer);
+        RemoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer);
     }
 
     ~EnvironmentManager()
     {
-        if (remoteServer != null)
-        {
-            remoteServer.StopAsync().Wait();
-        }
-        if (webServer != null)
-        {
-            webServer.StopAsync().Wait();
-        }
+        RemoteServer?.StopAsync().Wait();
+        WebServer?.StopAsync().Wait();
         CloseCurrentDriver();
     }
 
     public event EventHandler<DriverStartingEventArgs> DriverStarting;
 
-    public static EnvironmentManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = new EnvironmentManager();
-            }
+    public static EnvironmentManager Instance => instance ??= new EnvironmentManager();
 
-            return instance;
-        }
-    }
-
-    public Browser Browser
-    {
-        get { return browser; }
-    }
+    public Browser Browser { get; }
 
     public string CurrentDirectory
     {
@@ -245,39 +220,17 @@ public class EnvironmentManager
         }
     }
 
-    public TestWebServer WebServer
-    {
-        get { return webServer; }
-    }
+    public TestWebServer WebServer { get; }
 
-    public RemoteSeleniumServer RemoteServer
-    {
-        get { return remoteServer; }
-    }
+    public RemoteSeleniumServer RemoteServer { get; }
 
-    public string RemoteCapabilities
-    {
-        get { return remoteCapabilities; }
-    }
+    public string RemoteCapabilities { get; }
 
-    public UrlBuilder UrlBuilder
-    {
-        get
-        {
-            return urlBuilder;
-        }
-    }
+    public UrlBuilder UrlBuilder { get; }
 
     public IWebDriver GetCurrentDriver()
     {
-        if (driver != null)
-        {
-            return driver;
-        }
-        else
-        {
-            return CreateFreshDriver();
-        }
+        return driver ?? CreateFreshDriver();
     }
 
     public IWebDriver CreateDriverInstance()
@@ -299,10 +252,7 @@ public class EnvironmentManager
 
     public void CloseCurrentDriver()
     {
-        if (driver != null)
-        {
-            driver.Quit();
-        }
+        driver?.Quit();
         driver = null;
     }
 
