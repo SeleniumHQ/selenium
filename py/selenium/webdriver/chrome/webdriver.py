@@ -16,6 +16,8 @@
 # under the License.
 
 
+from typing import Optional
+
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
@@ -53,10 +55,8 @@ class WebDriver(ChromiumDriver):
             With custom config::
 
                 from selenium.webdriver.remote.client_config import ClientConfig
-                config = ClientConfig(
-                    remote_server_addr="http://localhost:9515",
-                    websocket_timeout=10
-                )
+
+                config = ClientConfig(remote_server_addr="http://localhost:9515", websocket_timeout=10)
                 driver = webdriver.Chrome(client_config=config)
         """
         service = service if service else Service()

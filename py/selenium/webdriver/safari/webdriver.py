@@ -19,8 +19,8 @@
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.utils import normalize_local_driver_config
-from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.common.webdriver import LocalWebDriver
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.safari.options import Options
 from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 from selenium.webdriver.safari.service import Service
@@ -55,6 +55,7 @@ class WebDriver(LocalWebDriver):
             With custom config::
 
                 from selenium.webdriver.remote.client_config import ClientConfig
+
                 config = ClientConfig(websocket_timeout=10)
                 driver = webdriver.Safari(client_config=config)
         """

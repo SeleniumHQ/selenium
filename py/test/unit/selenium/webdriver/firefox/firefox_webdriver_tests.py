@@ -57,10 +57,7 @@ class TestFirefoxDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "firefox",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "firefox", "browserVersion": "91.0"},
             }
         }
 
@@ -95,10 +92,7 @@ class TestFirefoxDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "firefox",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "firefox", "browserVersion": "91.0"},
             }
         }
 
@@ -133,10 +127,7 @@ class TestFirefoxDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "firefox",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "firefox", "browserVersion": "91.0"},
             }
         }
 
@@ -165,10 +156,7 @@ class TestFirefoxDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "firefox",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "firefox", "browserVersion": "91.0"},
             }
         }
 

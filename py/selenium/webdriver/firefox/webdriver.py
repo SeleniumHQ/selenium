@@ -22,10 +22,11 @@ import warnings
 import zipfile
 from contextlib import contextmanager
 from io import BytesIO
+from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
-from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.common.utils import normalize_local_driver_config
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.firefox.service import Service
@@ -63,6 +64,7 @@ class WebDriver(LocalWebDriver):
             With custom config::
 
                 from selenium.webdriver.remote.client_config import ClientConfig
+
                 config = ClientConfig(websocket_timeout=10)
                 driver = webdriver.Firefox(client_config=config)
         """

@@ -16,6 +16,8 @@
 # under the License.
 
 
+from typing import Optional
+
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.edge.options import Options
@@ -54,6 +56,7 @@ class WebDriver(ChromiumDriver):
             With custom config::
 
                 from selenium.webdriver.remote.client_config import ClientConfig
+
                 config = ClientConfig(websocket_timeout=10)
                 driver = webdriver.Edge(client_config=config)
         """

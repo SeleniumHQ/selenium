@@ -21,8 +21,7 @@ These tests verify that ClientConfig.timeout is actually applied and used when
 creating WebDriver sessions. Similar to Java tests that validate timeout behavior.
 """
 
-from unittest.mock import Mock, patch, MagicMock
-from urllib3.exceptions import ConnectTimeoutError, ReadTimeoutError
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -30,7 +29,6 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.service import ChromiumService
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.remote.client_config import ClientConfig
-from selenium.common.exceptions import SessionNotCreatedException, TimeoutException
 
 
 @pytest.fixture

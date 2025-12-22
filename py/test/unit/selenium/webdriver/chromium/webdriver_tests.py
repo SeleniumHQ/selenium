@@ -57,10 +57,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -95,10 +92,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -131,10 +125,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -168,10 +159,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -208,10 +196,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -255,10 +240,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -313,10 +295,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -353,10 +332,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -384,10 +360,7 @@ class TestChromiumDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 

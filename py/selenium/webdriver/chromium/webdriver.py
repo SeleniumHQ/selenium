@@ -16,13 +16,15 @@
 # under the License.
 
 
+from typing import Optional
+
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.chromium.service import ChromiumService
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.utils import normalize_local_driver_config
-from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.common.webdriver import LocalWebDriver
+from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
 
 

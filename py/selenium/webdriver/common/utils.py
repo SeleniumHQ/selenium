@@ -20,6 +20,7 @@
 import socket
 import urllib.request
 from collections.abc import Iterable
+from typing import Optional
 
 from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
@@ -174,8 +175,6 @@ def normalize_local_driver_config(
         return ClientConfig(remote_server_addr=service_url, **defaults)
 
     # Programmatically copy attributes to avoid brittleness
-    config_args = {
-        key.lstrip("_"): value for key, value in vars(user_config).items()
-    }
+    config_args = {key.lstrip("_"): value for key, value in vars(user_config).items()}
     config_args["remote_server_addr"] = service_url
     return ClientConfig(**config_args)

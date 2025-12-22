@@ -47,19 +47,14 @@ class TestIEDriverClientConfig:
 
     @patch("selenium.webdriver.ie.webdriver.DriverFinder")
     @patch("selenium.webdriver.ie.webdriver.RemoteConnection")
-    def test_ie_driver_accepts_client_config(
-        self, mock_remote_connection, mock_finder, mock_ie_service, ie_options
-    ):
+    def test_ie_driver_accepts_client_config(self, mock_remote_connection, mock_finder, mock_ie_service, ie_options):
         """Test that IE Driver accepts ClientConfig parameter."""
         mock_finder.return_value.get_driver_path.return_value = "/path/to/IEDriverServer"
 
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "internet explorer",
-                    "browserVersion": "11.0"
-                }
+                "capabilities": {"browserName": "internet explorer", "browserVersion": "11.0"},
             }
         }
 
@@ -84,19 +79,14 @@ class TestIEDriverClientConfig:
 
     @patch("selenium.webdriver.ie.webdriver.DriverFinder")
     @patch("selenium.webdriver.ie.webdriver.RemoteConnection")
-    def test_ie_driver_passes_client_config(
-        self, mock_remote_connection, mock_finder, mock_ie_service, ie_options
-    ):
+    def test_ie_driver_passes_client_config(self, mock_remote_connection, mock_finder, mock_ie_service, ie_options):
         """Test that IE Driver properly passes ClientConfig to RemoteConnection."""
         mock_finder.return_value.get_driver_path.return_value = "/path/to/IEDriverServer"
 
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "internet explorer",
-                    "browserVersion": "11.0"
-                }
+                "capabilities": {"browserName": "internet explorer", "browserVersion": "11.0"},
             }
         }
 
@@ -134,10 +124,7 @@ class TestIEDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "internet explorer",
-                    "browserVersion": "11.0"
-                }
+                "capabilities": {"browserName": "internet explorer", "browserVersion": "11.0"},
             }
         }
 
@@ -165,10 +152,7 @@ class TestIEDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "internet explorer",
-                    "browserVersion": "11.0"
-                }
+                "capabilities": {"browserName": "internet explorer", "browserVersion": "11.0"},
             }
         }
 

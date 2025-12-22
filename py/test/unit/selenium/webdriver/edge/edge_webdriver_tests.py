@@ -57,10 +57,7 @@ class TestEdgeDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "msedge",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "msedge", "browserVersion": "91.0"},
             }
         }
 
@@ -95,10 +92,7 @@ class TestEdgeDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "msedge",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "msedge", "browserVersion": "91.0"},
             }
         }
 
@@ -137,10 +131,7 @@ class TestEdgeDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "msedge",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "msedge", "browserVersion": "91.0"},
             }
         }
 
@@ -169,10 +160,7 @@ class TestEdgeDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "msedge",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "msedge", "browserVersion": "91.0"},
             }
         }
 

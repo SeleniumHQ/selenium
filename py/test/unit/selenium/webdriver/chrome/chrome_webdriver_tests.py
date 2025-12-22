@@ -57,10 +57,7 @@ class TestChromeDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -87,7 +84,6 @@ class TestChromeDriverClientConfig:
 
             driver.quit()
 
-
     @patch("selenium.webdriver.chromium.webdriver.DriverFinder")
     @patch("selenium.webdriver.chromium.webdriver.ChromiumRemoteConnection")
     def test_chrome_driver_passes_client_config_to_parent(
@@ -100,10 +96,7 @@ class TestChromeDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -142,10 +135,7 @@ class TestChromeDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
@@ -174,10 +164,7 @@ class TestChromeDriverClientConfig:
         mock_remote_connection.return_value.execute.return_value = {
             "value": {
                 "sessionId": "test-session-id",
-                "capabilities": {
-                    "browserName": "chrome",
-                    "browserVersion": "91.0"
-                }
+                "capabilities": {"browserName": "chrome", "browserVersion": "91.0"},
             }
         }
 
