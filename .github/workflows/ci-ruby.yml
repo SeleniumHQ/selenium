@@ -68,7 +68,7 @@ jobs:
         os: ['windows']
         include:
           - browser: edge-remote
-            os: windows
+            os: macos
             java-version: 17
     with:
       name: Integration (${{ matrix.browser }}, ${{ matrix.os }})
