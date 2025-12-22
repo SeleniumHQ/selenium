@@ -77,6 +77,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Integration Tests Remote
+      browser: yes
       cache-key: py-remote
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
