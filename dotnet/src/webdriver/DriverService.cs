@@ -254,6 +254,11 @@ public abstract class DriverService : ICommandServer
         this.driverServiceProcess.StartInfo.UseShellExecute = false;
         this.driverServiceProcess.StartInfo.CreateNoWindow = this.HideCommandPromptWindow;
 
+        if (this.HideCommandPromptWindow)
+        {
+            this.driverServiceProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+        }
+
         this.driverServiceProcess.StartInfo.RedirectStandardOutput = true;
         this.driverServiceProcess.StartInfo.RedirectStandardError = true;
 
