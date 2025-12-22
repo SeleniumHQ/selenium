@@ -47,8 +47,11 @@ public interface HttpClient extends Closeable, HttpHandler {
    * @param handler the BodyHandler that determines how to handle the response body
    * @return a CompletableFuture containing the HTTP response
    */
-  <T> CompletableFuture<java.net.http.HttpResponse<T>> sendAsyncNative(
-      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler);
+  default <T> CompletableFuture<java.net.http.HttpResponse<T>> sendAsyncNative(
+    java.net.http.HttpRequest request,
+    java.net.http.HttpResponse.BodyHandler<T> handler) {
+    throw new UnsupportedOperationException("sendAsyncNative is not supported by this HttpClient implementation");
+  }
 
   /**
    * Sends an HTTP request using java.net.http.HttpClient and allows specifying the BodyHandler.
@@ -60,10 +63,12 @@ public interface HttpClient extends Closeable, HttpHandler {
    * @throws java.io.IOException if an I/O error occurs
    * @throws InterruptedException if the operation is interrupted
    */
-  <T> java.net.http.HttpResponse<T> sendNative(
-      java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler)
-      throws java.io.IOException, InterruptedException;
-
+  default <T> java.net.http.HttpResponse<T> sendNative(
+    java.net.http.HttpRequest request,
+    java.net.http.HttpResponse.BodyHandler<T> handler)
+    throws java.io.IOException, InterruptedException {
+    throw new UnsupportedOperationException("sendNative is not supported by this HttpClient implementation");
+  }
   interface Factory {
 
     /**
