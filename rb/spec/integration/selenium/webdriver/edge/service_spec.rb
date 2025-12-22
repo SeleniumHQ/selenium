@@ -19,7 +19,7 @@
 
 require_relative '../spec_helper'
 
-module Selenium
+      module Selenium
   module WebDriver
     module Edge
       describe Service,

@@ -25,12 +25,37 @@ jobs:
   format:
     name: Format
     if: github.event.repository.fork == false && startsWith(github.head_ref, 'renovate/') != true
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Check format script run
-      caching: false
-      ruby-version: jruby-10.0.0.0
-      run: ./scripts/github-actions/check-format.sh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          token: ${{ secrets.SELENIUM_CI_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Run format script
+        run: ./scripts/format.sh
+
+      - name: Commit fixes and fail
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No formatting changes needed"
+            exit 0
+          fi
+          # For same-repo PRs, commit the fix
+          if [ "${{ github.event_name }}" = "pull_request" ] && \
+             [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+            git config --local user.name "Selenium CI Bot"
+            git config --local user.email "selenium-ci@users.noreply.github.com"
+            git add -A
+            git commit -m "Auto-format code"
+            git push
+            echo "::notice::Auto-formatted and pushed. New CI run will start."
+          else
+            echo "::error::Code needs formatting. Run ./scripts/format.sh locally."
+            git diff
+          fi
+          exit 1
 
   test:
     name: Test
