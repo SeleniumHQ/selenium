@@ -58,7 +58,17 @@ query --@aspect_rules_ts//ts:default_to_tsc_transpiler
 
 build --incompatible_strict_action_env
 
+# Required for prebuilt protoc to be used
+common --incompatible_enable_proto_toolchain_resolution
+
+# Ensure that we don't accidentally build protobuf or gRPC
+common --per_file_copt=external/.*protobuf.*@--PROTOBUF_WAS_NOT_SUPPOSED_TO_BE_BUILT
+common --host_per_file_copt=external/.*protobuf.*@--PROTOBUF_WAS_NOT_SUPPOSED_TO_BE_BUILT
+common --per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUILT
+common --host_per_file_copt=external/.*grpc.*@--GRPC_WAS_NOT_SUPPOSED_TO_BE_BUILT
+
 # Required to get `protobuf` compiling, which is required for `rules_closure`
+common --incompatible_enable_proto_toolchain_resolution
 build --incompatible_enable_cc_toolchain_resolution
 build:linux --cxxopt=-std=c++17
 build:linux --host_cxxopt=-std=c++17

@@ -12,6 +12,9 @@ bazel_dep(name = "buildifier_prebuilt", version = "8.2.1.1")
 bazel_dep(name = "contrib_rules_jvm", version = "0.31.1")
 bazel_dep(name = "platforms", version = "1.0.0")
 
+# If you update this, also update the prebuilt version of `protoc` we use below
+bazel_dep(name = "protobuf", version = "32.1")
+
 # Required for rules_rust to import the crates properly
 bazel_dep(name = "rules_cc", version = "0.2.16", dev_dependency = True)
 
@@ -27,12 +30,13 @@ bazel_dep(name = "rules_python", version = "1.8.3")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.22.1")
 bazel_dep(name = "rules_rust", version = "0.68.1")
+bazel_dep(name = "toolchains_protoc", version = "0.6.0")
 
 # Provide mechanisms to group javadocs together.
 single_version_override(
     module_name = "rules_jvm_external",
     patch_strip = 1,
-    patches = ["//java:rules_jvm_external_javadoc.patch"],
+    patches = ["//third_party/bazel:rules_jvm_external_javadoc.patch"],
 )
 
 # Work around `contrib_rules_jvm` not properly handling non-iterable
@@ -40,7 +44,15 @@ single_version_override(
 single_version_override(
     module_name = "contrib_rules_jvm",
     patch_strip = 1,
-    patches = ["//java:contrib_rules_jvm_select_fix.patch"],
+    patches = ["//third_party/bazel:contrib_rules_jvm_select_fix.patch"],
+)
+
+# Patch protobuf to use toolchain resolution for internal_gen_well_known_protos_java
+# instead of hardcoding //:protoc dependency, enabling prebuilt protoc usage.
+single_version_override(
+    module_name = "protobuf",
+    patch_strip = 1,
+    patches = ["//third_party/bazel:protobuf_toolchain_resolution.patch"],
 )
 
 multitool = use_extension("@rules_multitool//multitool:extension.bzl", "multitool")
@@ -387,6 +399,13 @@ crate.from_cargo(
     manifests = ["//rust:Cargo.toml"],
 )
 use_repo(crate, "crates")
+
+# Override the toolchain registration from the protobuf module
+protoc = use_extension("@toolchains_protoc//protoc:extensions.bzl", "protoc")
+protoc.toolchain(version = "v32.1")
+use_repo(protoc, "toolchains_protoc_hub")
+
+register_toolchains("@toolchains_protoc_hub//:all")
 
 selenium_manager_artifacts = use_extension("//common:selenium_manager.bzl", "selenium_manager_artifacts")
 use_repo(
