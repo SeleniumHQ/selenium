@@ -9,6 +9,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "dependencies": {
-    "google-closure-deps": "^20230802.0.0"
+    "google-closure-deps": "^20230802.0.0",
+    "minimatch": "^10.1.1"
   }
 }
