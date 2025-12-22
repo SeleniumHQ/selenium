@@ -109,7 +109,7 @@ jobs:
         --local_test_jobs 1
         --test_size_filters medium
         --pin_browsers=false
-        --test_tag_filters=manager,-safari
+        --test_tag_filters="manager,-safari"
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true
         //rb/spec/...
