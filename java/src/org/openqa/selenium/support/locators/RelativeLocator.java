@@ -20,7 +20,6 @@ package org.openqa.selenium.support.locators;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
