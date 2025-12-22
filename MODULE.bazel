@@ -20,7 +20,9 @@ bazel_dep(name = "rules_cc", version = "0.2.16", dev_dependency = True)
 
 bazel_dep(name = "rules_closure", version = "0.15.0")
 bazel_dep(name = "rules_dotnet", version = "0.21.5")
-bazel_dep(name = "rules_java", version = "9.3.0")
+
+# See below for actual version used
+bazel_dep(name = "rules_java", version = "0.0.0")
 bazel_dep(name = "rules_jvm_external", version = "6.9")
 bazel_dep(name = "rules_multitool", version = "1.11.1")
 bazel_dep(name = "rules_nodejs", version = "6.6.2")
@@ -31,6 +33,12 @@ bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "rules_ruby", version = "0.22.1")
 bazel_dep(name = "rules_rust", version = "0.68.1")
 bazel_dep(name = "toolchains_protoc", version = "0.6.0")
+
+# Force rules_java version to avoid Unsafe warnings in remote_java_tools
+single_version_override(
+    module_name = "rules_java",
+    version = "8.15.2",
+)
 
 # Provide mechanisms to group javadocs together.
 single_version_override(
