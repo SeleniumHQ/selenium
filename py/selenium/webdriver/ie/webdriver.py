@@ -18,14 +18,14 @@
 
 from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.common.utils import normalize_local_driver_config
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.ie.options import Options
 from selenium.webdriver.ie.service import Service
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.remote_connection import RemoteConnection
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Control the IEServerDriver and drive Internet Explorer."""
 
     def __init__(
@@ -78,24 +78,3 @@ class WebDriver(RemoteWebDriver):
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
-
-    def quit(self) -> None:
-        """Closes the browser and shuts down the IEServerDriver executable."""
-        try:
-            super().quit()
-        except Exception:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
-
-    def download_file(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError

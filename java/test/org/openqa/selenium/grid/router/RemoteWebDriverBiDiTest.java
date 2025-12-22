@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.io.StringReader;
 import java.util.Objects;
@@ -95,8 +96,6 @@ class RemoteWebDriverBiDiTest {
   @Ignore(IE)
   @Ignore(SAFARI)
   void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
-    driver = new Augmenter().augment(driver);
-
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
       logInspector.onConsoleEntry(future::complete);
@@ -111,7 +110,7 @@ class RemoteWebDriverBiDiTest {
       assertThat(source.getBrowsingContext().isPresent()).isTrue();
       assertThat(source.getRealm()).isNotNull();
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
-      assertThat(logEntry.getArgs().size()).isEqualTo(1);
+      assertThat(logEntry.getArgs()).hasSize(1);
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
@@ -134,11 +133,14 @@ class RemoteWebDriverBiDiTest {
 
   @AfterEach
   void clean() {
-    driver.quit();
+    if (driver != null) {
+      driver.quit();
+    }
   }
 
   @AfterAll
   static void stopServer() {
     server.stop();
+    server = null;
   }
 }

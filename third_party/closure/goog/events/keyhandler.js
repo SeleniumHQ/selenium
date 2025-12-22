@@ -1,16 +1,8 @@
-// Copyright 2007 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview This file contains a class for working with keyboard events
@@ -99,12 +91,10 @@
  * p:     undefined      80 undefined
  * P:     undefined      80 undefined
  *
- * @author arv@google.com (Erik Arvidsson)
- * @author eae@google.com (Emil A Eklund)
  * @see ../demos/keyhandler.html
  */
 
-goog.provide('goog.events.KeyEvent');
+
 goog.provide('goog.events.KeyHandler');
 goog.provide('goog.events.KeyHandler.EventType');
 
@@ -113,6 +103,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.events.KeyEvent');
 goog.require('goog.userAgent');
 
 
@@ -127,6 +118,7 @@ goog.require('goog.userAgent');
  * @final
  */
 goog.events.KeyHandler = function(opt_element, opt_capture) {
+  'use strict';
   goog.events.EventTarget.call(this);
 
   if (opt_element) {
@@ -138,7 +130,7 @@ goog.inherits(goog.events.KeyHandler, goog.events.EventTarget);
 
 /**
  * This is the element that we will listen to the real keyboard events on.
- * @type {Element|Document|null}
+ * @type {?Element|?Document|null}
  * @private
  */
 goog.events.KeyHandler.prototype.element_ = null;
@@ -146,7 +138,7 @@ goog.events.KeyHandler.prototype.element_ = null;
 
 /**
  * The key for the key press listener.
- * @type {goog.events.Key}
+ * @type {?goog.events.Key}
  * @private
  */
 goog.events.KeyHandler.prototype.keyPressKey_ = null;
@@ -154,7 +146,7 @@ goog.events.KeyHandler.prototype.keyPressKey_ = null;
 
 /**
  * The key for the key down listener.
- * @type {goog.events.Key}
+ * @type {?goog.events.Key}
  * @private
  */
 goog.events.KeyHandler.prototype.keyDownKey_ = null;
@@ -162,7 +154,7 @@ goog.events.KeyHandler.prototype.keyDownKey_ = null;
 
 /**
  * The key for the key up listener.
- * @type {goog.events.Key}
+ * @type {?goog.events.Key}
  * @private
  */
 goog.events.KeyHandler.prototype.keyUpKey_ = null;
@@ -196,11 +188,10 @@ goog.events.KeyHandler.prototype.altKey_ = false;
 
 /**
  * Enum type for the events fired by the key handler
- * @enum {string}
+ * @const
+ * @deprecated use `goog.events.KeyEvent.EventType` instead.
  */
-goog.events.KeyHandler.EventType = {
-  KEY: 'key'
-};
+goog.events.KeyHandler.EventType = goog.events.KeyEvent.EventType;
 
 
 /**
@@ -273,15 +264,6 @@ goog.events.KeyHandler.keyIdentifier_ = {
 };
 
 
-/**
- * If true, the KeyEvent fires on keydown. Otherwise, it fires on keypress.
- *
- * @type {boolean}
- * @private
- */
-goog.events.KeyHandler.USES_KEYDOWN_ = goog.userAgent.IE ||
-    goog.userAgent.EDGE ||
-    goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525');
 
 
 /**
@@ -303,6 +285,7 @@ goog.events.KeyHandler.SAVE_ALT_FOR_KEYPRESS_ =
  * @private
  */
 goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
+  'use strict';
   // Ctrl-Tab and Alt-Tab can cause the focus to be moved to another window
   // before we've caught a key-up event.  If the last-key was one of these we
   // reset the state.
@@ -325,8 +308,7 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
     }
   }
 
-  if (goog.events.KeyHandler.USES_KEYDOWN_ &&
-      !goog.events.KeyCodes.firesKeyPressEvent(
+  if (!goog.events.KeyCodes.firesKeyPressEvent(
           e.keyCode, this.lastKey_, e.shiftKey, e.ctrlKey, e.altKey,
           e.metaKey)) {
     this.handleEvent(e);
@@ -345,6 +327,7 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
  * when having finished with repeat key possibilities.
  */
 goog.events.KeyHandler.prototype.resetState = function() {
+  'use strict';
   this.lastKey_ = -1;
   this.keyCode_ = -1;
 };
@@ -358,6 +341,7 @@ goog.events.KeyHandler.prototype.resetState = function() {
  * @private
  */
 goog.events.KeyHandler.prototype.handleKeyup_ = function(e) {
+  'use strict';
   this.resetState();
   this.altKey_ = e.altKey;
 };
@@ -367,8 +351,10 @@ goog.events.KeyHandler.prototype.handleKeyup_ = function(e) {
  * Handles the events on the element.
  * @param {goog.events.BrowserEvent} e  The keyboard event sent from the
  *     browser.
+ * @suppress {strictMissingProperties} Added to tighten compiler checks
  */
 goog.events.KeyHandler.prototype.handleEvent = function(e) {
+  'use strict';
   var be = e.getBrowserEvent();
   var keyCode, charCode;
   var altKey = be.altKey;
@@ -394,19 +380,43 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
         0;
 
     // Opera reports the keycode or the character code in the keyCode field.
-  } else if (goog.userAgent.OPERA && !goog.userAgent.WEBKIT) {
-    keyCode = this.keyCode_;
-    charCode = goog.events.KeyCodes.isCharacterKey(keyCode) ? be.keyCode : 0;
-
-    // Mozilla reports the character code in the charCode field.
   } else {
-    keyCode = be.keyCode || this.keyCode_;
-    charCode = be.charCode || 0;
-    if (goog.events.KeyHandler.SAVE_ALT_FOR_KEYPRESS_) {
-      altKey = this.altKey_;
+    if (e.type == goog.events.EventType.KEYPRESS) {
+      if (goog.events.KeyHandler.SAVE_ALT_FOR_KEYPRESS_) {
+        altKey = this.altKey_;
+      }
+
+      // Newer versions of Firefox will set the keyCode of non-function keys to
+      // be the same as charCode. We need to account for this and update the
+      // key event values accordingly. See
+      // https://github.com/google/closure-library/issues/932 for more details.
+      if (be.keyCode == be.charCode) {
+        // Adjust any function key (ie. non-printable, such as ESC or
+        // backspace) to not have a charCode. We don't want these keys to
+        // accidentally be interpreted as insertable characters.
+        if (be.keyCode < 0x20) {
+          keyCode = be.keyCode;
+          charCode = 0;
+        } else {
+          // For character keys, we want to use the preserved key code rather
+          // than the keyCode on the browser event, which now uses the charCode.
+          // These differ (eg. pressing 'a' gives keydown with keyCode = 65,
+          // keypress with keyCode = charCode = 97) and so we need to account
+          // for this.
+          keyCode = this.keyCode_;
+          charCode = be.charCode;
+        }
+      } else {
+        keyCode = be.keyCode || this.keyCode_;
+        charCode = be.charCode || 0;
+      }
+    } else {
+      keyCode = be.keyCode || this.keyCode_;
+      charCode = be.charCode || 0;
     }
+
     // On the Mac, shift-/ triggers a question mark char code and no key code
-    // (normalized to WIN_KEY), so we synthesize the latter.
+    // (WIN_KEY_FF_LINUX), so we synthesize the latter.
     if (goog.userAgent.MAC && charCode == goog.events.KeyCodes.QUESTION_MARK &&
         keyCode == goog.events.KeyCodes.WIN_KEY) {
       keyCode = goog.events.KeyCodes.SLASH;
@@ -436,6 +446,17 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
     key = goog.events.KeyHandler.keyIdentifier_[be.keyIdentifier];
   }
 
+  // If this was a redundant keypress event, we ignore it to avoid double-firing
+  // an event as the event would've been handled by KEYDOWN. Gecko is currently
+  // in the process of removing keypress events for non-printable characters
+  // (https://bugzilla.mozilla.org/show_bug.cgi?id=968056) so we simulate this
+  // logic here for older Gecko versions which still fire the events.
+  if (goog.userAgent.GECKO && e.type == goog.events.EventType.KEYPRESS &&
+      !goog.events.KeyCodes.firesKeyPressEvent(
+          key, this.lastKey_, e.shiftKey, e.ctrlKey, altKey, e.metaKey)) {
+    return;
+  }
+
   // If we get the same keycode as a keydown/keypress without having seen a
   // keyup event, then this event was caused by key repeat.
   var repeat = key == this.lastKey_;
@@ -453,6 +474,7 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
  *     keyboard events.
  */
 goog.events.KeyHandler.prototype.getElement = function() {
+  'use strict';
   return this.element_;
 };
 
@@ -464,6 +486,7 @@ goog.events.KeyHandler.prototype.getElement = function() {
  *     capture phase (defaults to false).
  */
 goog.events.KeyHandler.prototype.attach = function(element, opt_capture) {
+  'use strict';
   if (this.keyUpKey_) {
     this.detach();
   }
@@ -492,6 +515,7 @@ goog.events.KeyHandler.prototype.attach = function(element, opt_capture) {
  * Removes the listeners that may exist.
  */
 goog.events.KeyHandler.prototype.detach = function() {
+  'use strict';
   if (this.keyPressKey_) {
     goog.events.unlistenByKey(this.keyPressKey_);
     goog.events.unlistenByKey(this.keyDownKey_);
@@ -508,44 +532,7 @@ goog.events.KeyHandler.prototype.detach = function() {
 
 /** @override */
 goog.events.KeyHandler.prototype.disposeInternal = function() {
+  'use strict';
   goog.events.KeyHandler.superClass_.disposeInternal.call(this);
   this.detach();
 };
-
-
-
-/**
- * This class is used for the goog.events.KeyHandler.EventType.KEY event and
- * it overrides the key code with the fixed key code.
- * @param {number} keyCode The adjusted key code.
- * @param {number} charCode The unicode character code.
- * @param {boolean} repeat Whether this event was generated by keyboard repeat.
- * @param {Event} browserEvent Browser event object.
- * @constructor
- * @extends {goog.events.BrowserEvent}
- * @final
- */
-goog.events.KeyEvent = function(keyCode, charCode, repeat, browserEvent) {
-  goog.events.BrowserEvent.call(this, browserEvent);
-  this.type = goog.events.KeyHandler.EventType.KEY;
-
-  /**
-   * Keycode of key press.
-   * @type {number}
-   */
-  this.keyCode = keyCode;
-
-  /**
-   * Unicode character code.
-   * @type {number}
-   */
-  this.charCode = charCode;
-
-  /**
-   * True if this event was generated by keyboard auto-repeat (i.e., the user is
-   * holding the key down.)
-   * @type {boolean}
-   */
-  this.repeat = repeat;
-};
-goog.inherits(goog.events.KeyEvent, goog.events.BrowserEvent);

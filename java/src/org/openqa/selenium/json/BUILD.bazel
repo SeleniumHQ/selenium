@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_export")
+load("//java:defs.bzl", "artifact", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
 java_export(
@@ -14,5 +14,6 @@ java_export(
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
+        artifact("org.jspecify:jspecify"),
     ],
 )

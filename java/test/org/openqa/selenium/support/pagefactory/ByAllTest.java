@@ -17,18 +17,13 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -39,12 +34,7 @@ import org.openqa.selenium.WebElement;
 @Tag("UnitTests")
 class ByAllTest {
 
-  private WebDriver driver;
-
-  @BeforeEach
-  public void initDriver() {
-    driver = mock(WebDriver.class);
-  }
+  private final WebDriver driver = mock();
 
   @Test
   void findElementZeroBy() {
@@ -56,18 +46,14 @@ class ByAllTest {
   @Test
   void findElementsZeroBy() {
     ByAll by = new ByAll();
-    assertThat(by.findElements(driver).isEmpty()).isTrue();
+    assertThat(by.findElements(driver)).isEmpty();
   }
 
   @Test
   void findElementOneBy() {
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems12 = new ArrayList<>();
-    elems12.add(elem1);
-    elems12.add(elem2);
-
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElements(By.name("cheese"))).thenReturn(List.of(elem1, elem2));
 
     ByAll by = new ByAll(By.name("cheese"));
     assertThat(by.findElement(driver)).isEqualTo(elem1);
@@ -77,21 +63,16 @@ class ByAllTest {
   void findElementsOneBy() {
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> elems12 = new ArrayList<>();
-    elems12.add(elem1);
-    elems12.add(elem2);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElements(By.name("cheese"))).thenReturn(List.of(elem1, elem2));
 
     ByAll by = new ByAll(By.name("cheese"));
-    assertThat(by.findElements(driver)).isEqualTo(elems12);
+    assertThat(by.findElements(driver)).containsExactly(elem1, elem2);
   }
 
   @Test
   void findElementOneByEmpty() {
-    final List<WebElement> elems = new ArrayList<>();
-
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
+    when(driver.findElements(By.name("cheese"))).thenReturn(emptyList());
 
     ByAll by = new ByAll(By.name("cheese"));
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -100,7 +81,7 @@ class ByAllTest {
 
   @Test
   void findElementsOneByEmpty() {
-    when(driver.findElements(By.name("cheese"))).thenReturn(new ArrayList<>());
+    when(driver.findElements(By.name("cheese"))).thenReturn(emptyList());
 
     ByAll by = new ByAll(By.name("cheese"));
     assertThat(by.findElements(driver)).isEmpty();
@@ -112,15 +93,9 @@ class ByAllTest {
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final WebElement elem3 = mock(WebElement.class, "webElement3");
     final WebElement elem4 = mock(WebElement.class, "webElement4");
-    final List<WebElement> elems12 = new ArrayList<>();
-    elems12.add(elem1);
-    elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList<>();
-    elems34.add(elem3);
-    elems34.add(elem4);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
-    when(driver.findElements(By.name("photo"))).thenReturn(elems34);
+    when(driver.findElements(By.name("cheese"))).thenReturn(List.of(elem1, elem2));
+    when(driver.findElements(By.name("photo"))).thenReturn(List.of(elem3, elem4));
 
     ByAll by = new ByAll(By.name("cheese"), By.name("photo"));
     assertThat(by.findElement(driver)).isEqualTo(elem1);
@@ -135,15 +110,9 @@ class ByAllTest {
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final WebElement elem3 = mock(WebElement.class, "webElement3");
     final WebElement elem4 = mock(WebElement.class, "webElement4");
-    final List<WebElement> elems12 = new ArrayList<>();
-    elems12.add(elem1);
-    elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList<>();
-    elems34.add(elem3);
-    elems34.add(elem4);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
-    when(driver.findElements(By.name("photo"))).thenReturn(elems34);
+    when(driver.findElements(By.name("cheese"))).thenReturn(List.of(elem1, elem2));
+    when(driver.findElements(By.name("photo"))).thenReturn(List.of(elem3, elem4));
 
     ByAll by = new ByAll(By.name("photo"), By.name("cheese"));
     assertThat(by.findElement(driver)).isEqualTo(elem3);
@@ -158,21 +127,12 @@ class ByAllTest {
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final WebElement elem3 = mock(WebElement.class, "webElement3");
     final WebElement elem4 = mock(WebElement.class, "webElement4");
-    final List<WebElement> elems12 = new ArrayList<>();
-    elems12.add(elem1);
-    elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList<>();
-    elems34.add(elem3);
-    elems34.add(elem4);
-    final List<WebElement> elems1234 = new ArrayList<>();
-    elems1234.addAll(elems12);
-    elems1234.addAll(elems34);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
-    when(driver.findElements(By.name("photo"))).thenReturn(elems34);
+    when(driver.findElements(By.name("cheese"))).thenReturn(List.of(elem1, elem2));
+    when(driver.findElements(By.name("photo"))).thenReturn(List.of(elem3, elem4));
 
     ByAll by = new ByAll(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElements(driver)).isEqualTo(elems1234);
+    assertThat(by.findElements(driver)).containsExactly(elem1, elem2, elem3, elem4);
 
     verify(driver, times(2)).findElements(any(By.class));
     verifyNoMoreInteractions(driver);
@@ -184,21 +144,12 @@ class ByAllTest {
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final WebElement elem3 = mock(WebElement.class, "webElement3");
     final WebElement elem4 = mock(WebElement.class, "webElement4");
-    final List<WebElement> elems12 = new ArrayList<>();
-    elems12.add(elem1);
-    elems12.add(elem2);
-    final List<WebElement> elems34 = new ArrayList<>();
-    elems34.add(elem3);
-    elems34.add(elem4);
-    final List<WebElement> elems3412 = new ArrayList<>();
-    elems3412.addAll(elems34);
-    elems3412.addAll(elems12);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
-    when(driver.findElements(By.name("photo"))).thenReturn(elems34);
+    when(driver.findElements(By.name("cheese"))).thenReturn(List.of(elem1, elem2));
+    when(driver.findElements(By.name("photo"))).thenReturn(List.of(elem3, elem4));
 
     ByAll by = new ByAll(By.name("photo"), By.name("cheese"));
-    assertThat(by.findElements(driver)).isEqualTo(elems3412);
+    assertThat(by.findElements(driver)).containsExactly(elem3, elem4, elem1, elem2);
 
     verify(driver, times(2)).findElements(any(By.class));
     verifyNoMoreInteractions(driver);

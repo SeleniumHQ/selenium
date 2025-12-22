@@ -12,8 +12,8 @@ load(
 
 exports_files([
     "WebDriver.csproj",
-    "Internal/StringSyntaxAttribute.cs",
-    "Internal/StringSyntaxConstants.cs",
+    "Properties/StringSyntaxAttribute.cs",
+    "Properties/StringSyntaxConstants.cs",
 ])
 
 generated_assembly_info(
@@ -40,6 +40,38 @@ generated_resource_utilities(
 )
 
 csharp_library(
+    name = "webdriver-net462",
+    srcs = [
+        ":assembly-info",
+        ":resource-utilities",
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
+    out = "WebDriver",
+    internals_visible_to = [
+        "WebDriver.Common.Tests",
+    ],
+    langversion = "12.0",
+    nullable = "enable",
+    target_frameworks = [
+        "net462",
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+        nuget_package("System.Memory"),
+        nuget_package("System.Runtime.CompilerServices.Unsafe"),
+        nuget_package("System.Text.Encodings.Web"),
+        nuget_package("System.Text.Json"),
+        nuget_package("System.ValueTuple"),
+    ],
+)
+
+csharp_library(
     name = "webdriver-netstandard2.0",
     srcs = [
         ":assembly-info",
@@ -63,6 +95,7 @@ csharp_library(
     deps = [
         nuget_package("NETStandard.Library"),
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Buffers"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -100,6 +133,36 @@ csharp_library(
 )
 
 csharp_library(
+    name = "webdriver-net462-strongnamed",
+    srcs = [
+        ":assembly-info",
+        ":resource-utilities",
+    ] + glob([
+        "**/*.cs",
+    ]) + devtools_version_targets(),
+    out = "WebDriver.StrongNamed",
+    keyfile = "//dotnet:Selenium.snk",
+    langversion = "12.0",
+    nullable = "enable",
+    target_frameworks = [
+        "net462",
+    ],
+    visibility = [
+        "//dotnet:__subpackages__",
+    ],
+    deps = [
+        nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Buffers"),
+        nuget_package("System.Threading.Tasks.Extensions"),
+        nuget_package("System.Memory"),
+        nuget_package("System.Runtime.CompilerServices.Unsafe"),
+        nuget_package("System.Text.Encodings.Web"),
+        nuget_package("System.Text.Json"),
+        nuget_package("System.ValueTuple"),
+    ],
+)
+
+csharp_library(
     name = "webdriver-netstandard2.0-strongnamed",
     srcs = [
         ":assembly-info",
@@ -121,6 +184,7 @@ csharp_library(
     deps = [
         nuget_package("NETStandard.Library"),
         nuget_package("Microsoft.Bcl.AsyncInterfaces"),
+        nuget_package("System.Buffers"),
         nuget_package("System.Threading.Tasks.Extensions"),
         nuget_package("System.Memory"),
         nuget_package("System.Runtime.CompilerServices.Unsafe"),
@@ -207,6 +271,7 @@ nuget_pack(
     },
     id = "Selenium.WebDriver",
     libs = {
+        ":webdriver-net462": "WebDriver",
         ":webdriver-net8.0": "WebDriver",
         ":webdriver-netstandard2.0": "WebDriver",
     },
@@ -233,6 +298,7 @@ nuget_pack(
     },
     id = "Selenium.WebDriver.StrongNamed",
     libs = {
+        ":webdriver-net462-strongnamed": "WebDriver.StrongNamed",
         ":webdriver-net8.0-strongnamed": "WebDriver.StrongNamed",
         ":webdriver-netstandard2.0-strongnamed": "WebDriver.StrongNamed",
     },

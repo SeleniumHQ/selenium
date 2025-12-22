@@ -311,13 +311,13 @@ bot.dom.isInputType = function (element, inputType) {
  */
 bot.dom.isContentEditable = function (element) {
   // Check if browser supports contentEditable.
-  if (!goog.isDef(element['contentEditable'])) {
+  if (element['contentEditable'] === undefined) {
     return false;
   }
 
   // Checking the element's isContentEditable property is preferred except for
   // IE where that property is not reliable on IE versions 7, 8, and 9.
-  if (!goog.userAgent.IE && goog.isDef(element['isContentEditable'])) {
+  if (!goog.userAgent.IE && element['isContentEditable'] !== undefined) {
     return element.isContentEditable;
   }
 
@@ -434,12 +434,12 @@ bot.dom.getEffectiveStyle = function (elem, propertyName) {
 bot.dom.getCascadedStyle_ = function (elem, styleName) {
   var style = elem.currentStyle || elem.style;
   var value = style[styleName];
-  if (!goog.isDef(value) && goog.isFunction(style.getPropertyValue)) {
+  if (value === undefined && typeof style.getPropertyValue === 'function') {
     value = style.getPropertyValue(styleName);
   }
 
   if (value != 'inherit') {
-    return goog.isDef(value) ? value : null;
+    return value !== undefined ? value : null;
   }
   var parent = bot.dom.getParentElement(elem);
   return parent ? bot.dom.getCascadedStyle_(parent, styleName) : null;
@@ -540,10 +540,21 @@ bot.dom.isShown_ = function (elem, ignoreOpacity, displayedFn) {
     // Zero-sized elements should still be considered to have positive size
     // if they have a child element or text node with positive size, unless
     // the element has an 'overflow' style of 'hidden'.
+    // Note: Text nodes containing only structural whitespace (with newlines
+    // or tabs) are ignored as they are likely just HTML formatting, not
+    // visible content.
     return bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden' &&
       goog.array.some(e.childNodes, function (n) {
-        return n.nodeType == goog.dom.NodeType.TEXT ||
-          (bot.dom.isElement(n) && positiveSize(n));
+        if (n.nodeType == goog.dom.NodeType.TEXT) {
+          var text = n.nodeValue;
+          // Ignore text nodes that are purely structural whitespace
+          // (contain newlines or tabs and nothing else besides spaces)
+          if (/^[\s]*$/.test(text) && /[\n\r\t]/.test(text)) {
+            return false;
+          }
+          return true;
+        }
+        return bot.dom.isElement(n) && positiveSize(n);
       });
   }
   if (!positiveSize(elem)) {
@@ -1412,9 +1423,13 @@ bot.dom.isNodeDistributedIntoShadowDom = function (node) {
 bot.dom.appendVisibleTextLinesFromElementInComposedDom_ = function (
   elem, lines) {
   if (elem.shadowRoot) {
+    // Get the effective styles from the shadow host element for text nodes in shadow DOM
+    var whitespace = bot.dom.getEffectiveStyle(elem, 'white-space');
+    var textTransform = bot.dom.getEffectiveStyle(elem, 'text-transform');
+
     goog.array.forEach(elem.shadowRoot.childNodes, function (node) {
       bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-        node, lines, true, null, null);
+        node, lines, true, whitespace, textTransform);
     });
   }
 

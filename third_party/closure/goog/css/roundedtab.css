@@ -5,8 +5,7 @@
  * See the COPYING file for details.
  */
 
-/* Author: attila@google.com (Attila Bodis) */
-
+@provide 'goog.css.roundedtab';
 
 /*
  * Styles used by goog.ui.RoundedTabRenderer.

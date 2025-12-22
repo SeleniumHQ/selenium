@@ -21,7 +21,6 @@ using OpenQA.Selenium.Internal.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading;
@@ -50,7 +49,7 @@ public sealed class Broker : IAsyncDisposable
     private Task? _eventEmitterTask;
     private CancellationTokenSource? _receiveMessagesCancellationTokenSource;
 
-    internal Broker(BiDi bidi, Uri url, JsonSerializerOptions jsonOptions)
+    internal Broker(BiDi bidi, Uri url)
     {
         _bidi = bidi;
         _transport = new WebSocketTransport(url);
@@ -61,7 +60,7 @@ public sealed class Broker : IAsyncDisposable
         await _transport.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         _receiveMessagesCancellationTokenSource = new CancellationTokenSource();
-        _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token)).Unwrap();
+        _receivingMessageTask = _myTaskFactory.StartNew(async () => await ReceiveMessagesAsync(_receiveMessagesCancellationTokenSource.Token), TaskCreationOptions.LongRunning).Unwrap();
         _eventEmitterTask = _myTaskFactory.StartNew(ProcessEventsAwaiterAsync).Unwrap();
     }
 
@@ -113,16 +112,7 @@ public sealed class Broker : IAsyncDisposable
 
                             args.BiDi = _bidi;
 
-                            // handle browsing context subscriber
-                            if (handler.Contexts is not null && args is BrowsingContextEventArgs browsingContextEventArgs && handler.Contexts.Contains(browsingContextEventArgs.Context))
-                            {
-                                await handler.InvokeAsync(args).ConfigureAwait(false);
-                            }
-                            // handle only session subscriber
-                            else if (handler.Contexts is null)
-                            {
-                                await handler.InvokeAsync(args).ConfigureAwait(false);
-                            }
+                            await handler.InvokeAsync(args).ConfigureAwait(false);
                         }
                     }
                 }
@@ -162,26 +152,13 @@ public sealed class Broker : IAsyncDisposable
 
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
-        if (options is BrowsingContextsSubscriptionOptions browsingContextsOptions)
-        {
-            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = browsingContextsOptions.Contexts }).ConfigureAwait(false);
+        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
 
-            var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action, browsingContextsOptions?.Contexts);
+        var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
 
-            handlers.Add(eventHandler);
+        handlers.Add(eventHandler);
 
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
-        else
-        {
-            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName]).ConfigureAwait(false);
-
-            var eventHandler = new SyncEventHandler<TEventArgs>(eventName, action);
-
-            handlers.Add(eventHandler);
-
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
+        return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
     public async Task<Subscription> SubscribeAsync<TEventArgs>(string eventName, Func<TEventArgs, Task> func, SubscriptionOptions? options, JsonTypeInfo<TEventArgs> jsonTypeInfo)
@@ -191,26 +168,13 @@ public sealed class Broker : IAsyncDisposable
 
         var handlers = _eventHandlers.GetOrAdd(eventName, (a) => []);
 
-        if (options is BrowsingContextsSubscriptionOptions browsingContextsOptions)
-        {
-            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = browsingContextsOptions.Contexts }).ConfigureAwait(false);
+        var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName], new() { Contexts = options?.Contexts, UserContexts = options?.UserContexts }).ConfigureAwait(false);
 
-            var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func, browsingContextsOptions.Contexts);
+        var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
 
-            handlers.Add(eventHandler);
+        handlers.Add(eventHandler);
 
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
-        else
-        {
-            var subscribeResult = await _bidi.SessionModule.SubscribeAsync([eventName]).ConfigureAwait(false);
-
-            var eventHandler = new AsyncEventHandler<TEventArgs>(eventName, func);
-
-            handlers.Add(eventHandler);
-
-            return new Subscription(subscribeResult.Subscription, this, eventHandler);
-        }
+        return new Subscription(subscribeResult.Subscription, this, eventHandler);
     }
 
     public async Task UnsubscribeAsync(Subscription subscription)
@@ -298,10 +262,23 @@ public sealed class Broker : IAsyncDisposable
             case "success":
                 if (id is null) throw new JsonException("The remote end responded with 'success' message type, but missed required 'id' property.");
 
-                if (_pendingCommands.TryGetValue(id.Value, out var successCommand))
+                if (_pendingCommands.TryGetValue(id.Value, out var command))
                 {
-                    successCommand.TaskCompletionSource.SetResult((EmptyResult)JsonSerializer.Deserialize(ref resultReader, successCommand.JsonResultTypeInfo)!);
-                    _pendingCommands.TryRemove(id.Value, out _);
+                    try
+                    {
+                        var commandResult = JsonSerializer.Deserialize(ref resultReader, command.JsonResultTypeInfo)
+                            ?? throw new JsonException("Remote end returned null command result in the 'result' property.");
+
+                        command.TaskCompletionSource.SetResult((EmptyResult)commandResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        command.TaskCompletionSource.SetException(ex);
+                    }
+                    finally
+                    {
+                        _pendingCommands.TryRemove(id.Value, out _);
+                    }
                 }
                 else
                 {
@@ -316,6 +293,8 @@ public sealed class Broker : IAsyncDisposable
                 if (_eventTypesMap.TryGetValue(method, out var eventInfo))
                 {
                     var eventArgs = (EventArgs)JsonSerializer.Deserialize(ref paramsReader, eventInfo)!;
+
+                    eventArgs.BiDi = _bidi;
 
                     var messageEvent = (method, eventArgs);
                     _pendingEvents.Add(messageEvent);

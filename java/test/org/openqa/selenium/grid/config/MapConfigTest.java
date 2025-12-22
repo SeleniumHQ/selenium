@@ -36,7 +36,7 @@ class MapConfigTest {
     Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
     Config config = new MapConfig(raw);
 
-    assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
+    assertThat(config.get("cheeses", "selected")).contains("brie");
   }
 
   @Test
@@ -64,7 +64,7 @@ class MapConfigTest {
     Map<String, Object> raw = new Json().toType(json, MAP_TYPE);
     Config config = new MapConfig(raw);
 
-    assertThat(config.get("cheeses", "default")).isEqualTo(Optional.of("manchego"));
+    assertThat(config.get("cheeses", "default")).contains("manchego");
 
     List<String> expected =
         Arrays.asList(
@@ -97,7 +97,7 @@ class MapConfigTest {
 
     List<String> expected = Arrays.asList("2", "{\"browserName\": \"chrome\"}");
     Optional<List<String>> content = config.getAll("relay", "configs");
-    assertThat(content).isEqualTo(Optional.of(expected));
+    assertThat(content).contains(expected);
   }
 
   @Test
@@ -130,7 +130,7 @@ class MapConfigTest {
             "stereotype={\"browserName\": \"htmlunit\",\"browserVersion\": \"chrome\"}",
             Config.DELIMITER);
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
-    assertThat(content).isEqualTo(Optional.of(expected));
+    assertThat(content).contains(expected);
   }
 
   @Test

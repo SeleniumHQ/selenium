@@ -71,6 +71,8 @@ module Selenium
       def initialize(**opts)
         self.class.set_capabilities
 
+        opts[:web_socket_url] = opts.delete(:bidi) if opts.key?(:bidi)
+
         @options = opts
         @options[:browser_name] = self.class::BROWSER
       end
@@ -89,6 +91,14 @@ module Selenium
       def add_option(name, value = nil)
         name, value = name.first if value.nil? && name.is_a?(Hash)
         @options[name] = value
+      end
+
+      def enable_bidi!
+        @options[:web_socket_url] = true
+      end
+
+      def bidi?
+        !!@options[:web_socket_url]
       end
 
       def ==(other)

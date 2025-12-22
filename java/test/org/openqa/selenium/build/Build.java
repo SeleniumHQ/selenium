@@ -16,7 +16,6 @@
 // under the License.
 package org.openqa.selenium.build;
 
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.build.DevMode.isInDevMode;
 
@@ -57,7 +56,7 @@ public class Build {
       executeBuild(builder);
     } catch (Exception e) {
       e.printStackTrace(System.err);
-      fail("Cannot build");
+      throw new AssertionError("Cannot build", e);
     }
   }
 
@@ -83,7 +82,7 @@ public class Build {
     buildWatcher.start();
     int exitValue = process.waitFor();
     if (exitValue != 0) {
-      fail("Unable to build artifacts");
+      throw new AssertionError("Unable to build artifacts");
     }
   }
 

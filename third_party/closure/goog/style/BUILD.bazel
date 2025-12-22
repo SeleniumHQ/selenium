@@ -1,0 +1,43 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "bidi",
+    srcs = ["bidi.js"],
+    lenient = True,
+    deps = [
+        ":style",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:platform",
+        "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/useragent:product_isversion",
+    ],
+)
+
+closure_js_library(
+    name = "style",
+    srcs = ["style.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/dom:vendor",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/html:safestylesheet",
+        "//third_party/closure/goog/math:box",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/math:size",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/reflect",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/useragent",
+    ],
+)

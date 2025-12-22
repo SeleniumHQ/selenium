@@ -26,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.By.cssSelector;
 import static org.openqa.selenium.support.ui.ExpectedConditions.and;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContains;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
@@ -767,8 +768,7 @@ class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
         .thenReturn(Arrays.asList(mockElement, mockElement));
-    assertThat(wait.until(numberOfElementsToBeMoreThan(By.cssSelector(testSelector), 1)).size())
-        .isEqualTo(2);
+    assertThat(wait.until(numberOfElementsToBeMoreThan(cssSelector(testSelector), 1))).hasSize(2);
   }
 
   @Test
@@ -786,8 +786,7 @@ class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
         .thenReturn(singletonList(mockElement));
-    assertThat(wait.until(numberOfElementsToBeLessThan(By.cssSelector(testSelector), 2)).size())
-        .isEqualTo(1);
+    assertThat(wait.until(numberOfElementsToBeLessThan(cssSelector(testSelector), 2))).hasSize(1);
   }
 
   @Test
@@ -795,8 +794,7 @@ class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
         .thenReturn(Arrays.asList(mockElement, mockElement));
-    assertThat(wait.until(numberOfElementsToBe(By.cssSelector(testSelector), 2)).size())
-        .isEqualTo(2);
+    assertThat(wait.until(numberOfElementsToBe(cssSelector(testSelector), 2))).hasSize(2);
   }
 
   @Test

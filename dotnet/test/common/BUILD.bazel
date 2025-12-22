@@ -52,7 +52,6 @@ csharp_library(
     ],
     deps = [
         "//dotnet/src/webdriver:webdriver-net8.0",
-        nuget_package("Newtonsoft.Json"),
         nuget_package("NUnit"),
         nuget_package("Runfiles"),
     ],
@@ -91,7 +90,6 @@ dotnet_nunit_test_suite(
         ":fixtures",
         "//dotnet/src/webdriver:webdriver-net8.0",
         nuget_package("BenderProxy"),
-        nuget_package("Newtonsoft.Json"),
         nuget_package("NUnit"),
         nuget_package("Runfiles"),
     ],

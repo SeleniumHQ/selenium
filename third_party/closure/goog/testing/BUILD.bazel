@@ -1,0 +1,287 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "asserts",
+    testonly = True,
+    srcs = ["asserts.js"],
+    lenient = True,
+    deps = [
+        ":jsunitexception",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/html:uncheckedconversions",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:const",
+    ],
+)
+
+closure_js_library(
+    name = "expectedfailures",
+    testonly = True,
+    srcs = ["expectedfailures.js"],
+    lenient = True,
+    deps = [
+        ":asserts",
+        ":jsunitexception",
+        ":testcase",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:divconsole",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:eventtype",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/style",
+    ],
+)
+
+closure_js_library(
+    name = "functionmock",
+    testonly = True,
+    srcs = ["functionmock.js"],
+    lenient = True,
+    deps = [
+        ":loosemock",
+        ":mock",
+        ":mockinterface",
+        ":propertyreplacer",
+        ":strictmock",
+        "//third_party/closure/goog/object",
+    ],
+)
+
+closure_js_library(
+    name = "jsunit",
+    testonly = True,
+    srcs = ["jsunit.js"],
+    lenient = True,
+    deps = [
+        ":asserts",
+        ":testcase",
+        ":testrunner",
+        "//third_party/closure/goog/dom:tagname",
+    ],
+)
+
+closure_js_library(
+    name = "jsunitexception",
+    testonly = True,
+    srcs = ["jsunitexception.js"],
+    lenient = True,
+    deps = [":stacktrace"],
+)
+
+closure_js_library(
+    name = "loosemock",
+    testonly = True,
+    srcs = ["loosemock.js"],
+    lenient = True,
+    deps = [
+        ":mock",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+    ],
+)
+
+closure_js_library(
+    name = "mock",
+    testonly = True,
+    srcs = [
+        "mock.js",
+        "mockmatchers.js",
+    ],
+    lenient = True,
+    deps = [
+        ":asserts",
+        ":jsunitexception",
+        ":mockinterface",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/promise",
+        "//third_party/closure/goog/promise:resolver",
+    ],
+)
+
+closure_js_library(
+    name = "mockclock",
+    testonly = True,
+    srcs = ["mockclock.js"],
+    lenient = True,
+    deps = [
+        ":propertyreplacer",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/async:nexttick",
+        "//third_party/closure/goog/async:run",
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/promise",
+        "//third_party/closure/goog/promise:thenable",
+        "//third_party/closure/goog/testing/events",
+    ],
+)
+
+closure_js_library(
+    name = "mockcontrol",
+    testonly = True,
+    srcs = ["mockcontrol.js"],
+    lenient = True,
+    deps = [
+        ":functionmock",
+        ":loosemock",
+        ":mockinterface",
+        ":strictmock",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/promise",
+    ],
+)
+
+closure_js_library(
+    name = "mockinterface",
+    testonly = True,
+    srcs = ["mockinterface.js"],
+    lenient = True,
+    deps = ["//third_party/closure/goog/promise"],
+)
+
+closure_js_library(
+    name = "performancetable",
+    testonly = True,
+    srcs = ["performancetable.js"],
+    lenient = True,
+    deps = [
+        ":performancetimer",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/string:const",
+    ],
+)
+
+closure_js_library(
+    name = "performancetimer",
+    testonly = True,
+    srcs = ["performancetimer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/mochikit/async:deferred",
+        "//third_party/closure/goog/promise",
+    ],
+)
+
+closure_js_library(
+    name = "propertyreplacer",
+    testonly = True,
+    srcs = ["propertyreplacer.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/useragent",
+    ],
+)
+
+closure_js_library(
+    name = "recordfunction",
+    testonly = True,
+    srcs = ["recordfunction.js"],
+    lenient = True,
+    deps = [
+        ":asserts",
+        "//third_party/closure/goog/functions",
+        "//third_party/closure/goog/promise",
+    ],
+)
+
+closure_js_library(
+    name = "stacktrace",
+    testonly = True,
+    srcs = ["stacktrace.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "strictmock",
+    testonly = True,
+    srcs = ["strictmock.js"],
+    lenient = True,
+    deps = [
+        ":mock",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+    ],
+)
+
+closure_js_library(
+    name = "testcase",
+    testonly = True,
+    srcs = ["testcase.js"],
+    lenient = True,
+    deps = [
+        ":cspviolationobserver",
+        ":jsunitexception",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/promise",
+        "//third_party/closure/goog/url",
+    ],
+)
+
+closure_js_library(
+    name = "cspviolationobserver",
+    testonly = True,
+    srcs = ["cspviolationobserver.js"],
+    lenient = True,
+    deps = [":cspviolationobserver_externs"],
+)
+
+closure_js_library(
+    name = "cspviolationobserver_externs",
+    testonly = True,
+    srcs = ["cspviolationobserver_externs.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "testrunner",
+    testonly = True,
+    srcs = ["testrunner.js"],
+    lenient = True,
+    deps = [
+        ":cspviolationobserver",
+        ":testcase",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:safe",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/json",
+    ],
+)
+
+closure_js_library(
+    name = "testing",
+    testonly = True,
+    exports = [
+        ":asserts",
+        ":expectedfailures",
+        ":jsunit",
+        ":jsunitexception",
+        ":mockclock",
+        ":mockcontrol",
+        ":performancetable",
+        ":performancetimer",
+        ":propertyreplacer",
+        ":recordfunction",
+        ":stacktrace",
+        ":strictmock",
+        ":testcase",
+    ],
+)

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -40,11 +40,11 @@ class TeeReaderTest {
     try (JsonInput reader = new Json().newInput(tee)) {
 
       reader.beginObject();
-      assertEquals("key", reader.nextName());
+      assertThat(reader.nextName()).isEqualTo("key");
       reader.skipValue();
       reader.endObject();
 
-      assertEquals(expected, writer.toString());
+      assertThat(writer.toString()).isEqualTo(expected);
     }
   }
 }
