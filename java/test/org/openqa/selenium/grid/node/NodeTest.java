@@ -18,19 +18,16 @@
 package org.openqa.selenium.grid.node;
 
 import static java.time.Duration.ofSeconds;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
+import static org.openqa.selenium.remote.http.HttpMethod.*;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -42,11 +39,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -57,21 +50,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.RetrySessionRequestException;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.NodeDrainComplete;
-import org.openqa.selenium.grid.data.NodeId;
-import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.*;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.LocalNode.Builder;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -86,11 +68,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.*;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -161,7 +139,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     node2 =
         new RemoteNode(
@@ -171,7 +149,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local2.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
   }
 
   @Test
@@ -186,7 +164,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of());
+            emptySet());
 
     Either<WebDriverException, CreateSessionResponse> response =
         node.newSession(createSessionRequest(caps));
@@ -238,7 +216,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     ImmutableCapabilities wrongCaps = new ImmutableCapabilities("browserName", "burger");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
@@ -362,7 +340,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     Either<WebDriverException, CreateSessionResponse> response =
         remote.newSession(createSessionRequest(caps));
@@ -942,10 +920,10 @@ class NodeTest {
   }
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
-    return new CreateSessionRequest(ImmutableSet.copyOf(Dialect.values()), caps, Map.of());
+    return new CreateSessionRequest(EnumSet.allOf(Dialect.class), caps, emptyMap());
   }
 
-  private String simulateFileDownload(SessionId id, String text) throws IOException {
+  private String simulateFileDownload(SessionId id, String text) {
     File zip = createTmpFile(text);
     TemporaryFilesystem downloadsTfs = local.getDownloadsFilesystem(id);
     File someDir = getTemporaryFilesystemBaseDir(downloadsTfs);

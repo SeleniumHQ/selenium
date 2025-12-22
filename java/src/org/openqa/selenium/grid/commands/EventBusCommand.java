@@ -24,7 +24,6 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +65,7 @@ public class EventBusCommand extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE);
+    return Set.of(EVENT_BUS_ROLE, HTTPD_ROLE);
   }
 
   @Override

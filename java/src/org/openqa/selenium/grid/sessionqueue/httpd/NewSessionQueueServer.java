@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -65,7 +64,7 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(HTTPD_ROLE, SESSION_QUEUE_ROLE);
+    return Set.of(HTTPD_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override

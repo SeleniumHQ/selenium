@@ -21,7 +21,6 @@ import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.*;
 import org.openqa.selenium.internal.Require;
@@ -95,7 +94,7 @@ public class MapConfig implements Config {
 
   @Override
   public Set<String> getSectionNames() {
-    return ImmutableSet.copyOf(raw.keySet());
+    return Set.copyOf(raw.keySet());
   }
 
   @Override

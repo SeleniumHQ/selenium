@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.docker.client;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -76,6 +76,6 @@ class ListImages {
     // Currently, ImageSummary handles both VirtualSize and Size fields gracefully
     Set<ImageSummary> images = JSON.toType(string(response), SET_OF_IMAGE_SUMMARIES);
 
-    return images.stream().map(org.openqa.selenium.docker.Image::new).collect(toImmutableSet());
+    return images.stream().map(org.openqa.selenium.docker.Image::new).collect(toUnmodifiableSet());
   }
 }

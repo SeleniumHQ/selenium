@@ -19,12 +19,12 @@ package org.openqa.selenium.grid.router;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -123,7 +123,7 @@ class NewSessionCreationTest {
 
     Routable router =
         new Router(tracer, clientFactory, sessions, queue, distributor)
-            .with(new EnsureSpecCompliantHeaders(emptyList(), ImmutableSet.of()));
+            .with(new EnsureSpecCompliantHeaders(emptyList(), emptySet()));
 
     server =
         new NettyServer(

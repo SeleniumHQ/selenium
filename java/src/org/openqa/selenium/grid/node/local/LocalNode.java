@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.nio.file.Files.readAttributes;
 import static java.time.ZoneOffset.UTC;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static java.util.Locale.US;
 import static java.util.Objects.requireNonNullElseGet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
@@ -702,7 +702,7 @@ public class LocalNode extends Node implements Closeable {
   }
 
   @Override
-  public TemporaryFilesystem getDownloadsFilesystem(SessionId sessionId) throws IOException {
+  public TemporaryFilesystem getDownloadsFilesystem(SessionId sessionId) {
     return downloadsTempFileSystem.getIfPresent(sessionId);
   }
 
@@ -1070,7 +1070,7 @@ public class LocalNode extends Node implements Closeable {
                       lastStarted,
                       session);
                 })
-            .collect(toImmutableSet());
+            .collect(toUnmodifiableSet());
 
     Availability availability = isDraining() ? DRAINING : UP;
 

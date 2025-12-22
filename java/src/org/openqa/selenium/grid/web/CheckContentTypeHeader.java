@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.web;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 import java.util.Map;
 import java.util.Set;
@@ -46,8 +45,7 @@ public class CheckContentTypeHeader implements Filter {
   private final Set<String> skipChecksOn;
 
   public CheckContentTypeHeader(Set<String> skipChecksOn) {
-    this.skipChecksOn =
-        ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
+    this.skipChecksOn = Set.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
   }
 
   @Override

@@ -24,13 +24,13 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
@@ -261,8 +261,8 @@ class RouterTest {
         new SessionRequest(
             new RequestId(UUID.randomUUID()),
             Instant.now(),
-            ImmutableSet.of(W3C),
-            ImmutableSet.of(chromeCapabilities),
+            Set.of(W3C),
+            Set.of(chromeCapabilities),
             Map.of(),
             Map.of());
 

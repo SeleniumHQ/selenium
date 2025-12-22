@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.web;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -37,9 +36,8 @@ public class CheckOriginHeader implements Filter {
 
   public CheckOriginHeader(Collection<String> allowedOriginHosts, Set<String> skipChecksOn) {
     Require.nonNull("Allowed origins list", allowedOriginHosts);
-    allowedHosts = ImmutableSet.copyOf(allowedOriginHosts);
-    this.skipChecksOn =
-        ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
+    allowedHosts = Set.copyOf(allowedOriginHosts);
+    this.skipChecksOn = Set.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
   }
 
   @Override

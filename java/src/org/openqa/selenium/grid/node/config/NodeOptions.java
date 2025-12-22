@@ -22,7 +22,6 @@ import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import java.io.File;
 import java.io.StringReader;
@@ -31,15 +30,7 @@ import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -93,8 +84,8 @@ public class NodeOptions {
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
   private static final Platform CURRENT_PLATFORM = Platform.getCurrent();
-  private static final ImmutableSet<String> SINGLE_SESSION_DRIVERS =
-      ImmutableSet.of("safari", "safari technology preview");
+  private static final Set<String> SINGLE_SESSION_DRIVERS =
+      Set.of("safari", "safari technology preview");
 
   private final Config config;
   private final AtomicBoolean vncEnabled = new AtomicBoolean();

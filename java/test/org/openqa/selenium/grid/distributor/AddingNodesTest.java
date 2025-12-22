@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -323,7 +322,7 @@ class AddingNodesTest {
               status.getNodeId(),
               status.getExternalUri(),
               status.getMaxSessionCount(),
-              ImmutableSet.of(
+              Set.of(
                   new Slot(
                       new SlotId(status.getNodeId(), UUID.randomUUID()),
                       CAPS,
@@ -468,8 +467,7 @@ class AddingNodesTest {
           getId(),
           getUri(),
           1,
-          ImmutableSet.of(
-              new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
+          Set.of(new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
           UP,
           Duration.ofSeconds(10),
           getSessionTimeout(),

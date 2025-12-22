@@ -20,12 +20,12 @@ package org.openqa.selenium.grid.data;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -43,7 +43,7 @@ class NodeStatusTest {
             nodeId,
             new URI("http://localhost:23456"),
             100,
-            ImmutableSet.of(
+            Set.of(
                 new Slot(
                     new SlotId(nodeId, UUID.randomUUID()),
                     stereotype,

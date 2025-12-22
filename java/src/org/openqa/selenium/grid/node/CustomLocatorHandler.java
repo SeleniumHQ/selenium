@@ -21,8 +21,6 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Set;
@@ -71,7 +69,7 @@ class CustomLocatorHandler implements Routable {
       new UrlTemplate("/session/{sessionId}/element/{elementId}/elements");
   // These are derived from the w3c webdriver spec
   private static final Set<String> W3C_STRATEGIES =
-      ImmutableSet.of("css selector", "link text", "partial link text", "tag name", "xpath");
+      Set.of("css selector", "link text", "partial link text", "tag name", "xpath");
   private final HttpHandler toNode;
   private final Map<String, Function<Object, By>> extraLocators;
 
@@ -238,7 +236,7 @@ class CustomLocatorHandler implements Routable {
     }
 
     @Override
-    public Response execute(Command command) throws IOException {
+    public Response execute(Command command) {
       if (DriverCommand.NEW_SESSION.equals(command.getName())) {
         Response response = new Response();
         response.setState("session not created");

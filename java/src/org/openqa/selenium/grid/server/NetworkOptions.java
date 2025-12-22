@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.server;
 
 import static java.util.Collections.emptyList;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,7 +38,7 @@ public class NetworkOptions {
 
   private final Config config;
   // These are commonly used by process which can't set various headers.
-  private final Set<String> SKIP_CHECKS_ON = ImmutableSet.of("/status", "/readyz");
+  private final Set<String> SKIP_CHECKS_ON = Set.of("/status", "/readyz");
 
   public NetworkOptions(Config config) {
     this.config = Require.nonNull("Config", config);

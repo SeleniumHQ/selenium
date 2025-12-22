@@ -25,11 +25,11 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -73,7 +73,7 @@ class CreateSessionTest {
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        node.newSession(new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, emptyMap()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();
@@ -128,7 +128,7 @@ class CreateSessionTest {
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        node.newSession(new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, emptyMap()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();

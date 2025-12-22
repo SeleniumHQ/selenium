@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -296,8 +295,8 @@ class SessionCleanUpTest {
               new SessionRequest(
                   new RequestId(UUID.randomUUID()),
                   Instant.now(),
-                  ImmutableSet.of(W3C),
-                  ImmutableSet.of(capabilities),
+                  Set.of(W3C),
+                  Set.of(capabilities),
                   Map.of(),
                   Map.of()));
       assertThat(result.isRight()).isTrue();
@@ -319,8 +318,8 @@ class SessionCleanUpTest {
               new SessionRequest(
                   new RequestId(UUID.randomUUID()),
                   Instant.now(),
-                  ImmutableSet.of(W3C),
-                  ImmutableSet.of(capabilities),
+                  Set.of(W3C),
+                  Set.of(capabilities),
                   Map.of(),
                   Map.of()));
       assertThat(sessionResponse.isLeft()).isTrue();

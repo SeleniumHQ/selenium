@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -91,7 +90,7 @@ class EndToEndTest {
     Supplier<Deployment> s2 = () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig);
     Supplier<Deployment> s3 = () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig);
 
-    return ImmutableSet.of(s1, s2, s3).stream().map(Arguments::of);
+    return Stream.of(Arguments.of(s1), Arguments.of(s2), Arguments.of(s3));
   }
 
   private Server<?> server;

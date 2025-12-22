@@ -21,12 +21,12 @@ import static java.util.Collections.emptyMap;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -175,7 +175,7 @@ public abstract class DistributorTestBase {
     for (int i = 0; i < currentLoad; i++) {
       // Ignore the session. We're just creating load.
       node.newSession(
-          new CreateSessionRequest(ImmutableSet.copyOf(Dialect.values()), stereotype, emptyMap()));
+          new CreateSessionRequest(EnumSet.allOf(Dialect.class), stereotype, emptyMap()));
     }
 
     return node;

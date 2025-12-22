@@ -23,17 +23,12 @@ import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
-import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
@@ -396,7 +391,7 @@ public class OneShotNode extends Node {
         getId(),
         getUri(),
         1,
-        ImmutableSet.of(
+        Set.of(
             new Slot(
                 new SlotId(getId(), slotId),
                 stereotype,

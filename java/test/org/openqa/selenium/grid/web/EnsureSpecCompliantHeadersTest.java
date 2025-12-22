@@ -20,12 +20,13 @@ package org.openqa.selenium.grid.web;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -40,7 +41,7 @@ class EnsureSpecCompliantHeadersTest {
   @Test
   void shouldBlockRequestsWithNoContentType() {
     HttpResponse res =
-        new EnsureSpecCompliantHeaders(emptyList(), ImmutableSet.of())
+        new EnsureSpecCompliantHeaders(emptyList(), emptySet())
             .apply(alwaysOk)
             .execute(new HttpRequest(POST, "/session"));
 
@@ -50,7 +51,7 @@ class EnsureSpecCompliantHeadersTest {
   @Test
   void shouldAllowRequestsWithNoContentTypeWhenSkipCheckOnMatches() {
     HttpResponse res =
-        new EnsureSpecCompliantHeaders(emptyList(), ImmutableSet.of("/gouda"))
+        new EnsureSpecCompliantHeaders(emptyList(), Set.of("/gouda"))
             .apply(alwaysOk)
             .execute(new HttpRequest(POST, "/gouda"));
 
@@ -60,7 +61,7 @@ class EnsureSpecCompliantHeadersTest {
   @Test
   void requestsWithAnOriginHeaderShouldBeBlocked() {
     HttpResponse res =
-        new EnsureSpecCompliantHeaders(emptyList(), ImmutableSet.of())
+        new EnsureSpecCompliantHeaders(emptyList(), emptySet())
             .apply(alwaysOk)
             .execute(
                 new HttpRequest(POST, "/session")
@@ -73,7 +74,7 @@ class EnsureSpecCompliantHeadersTest {
   @Test
   void requestsWithAnAllowedOriginHeaderShouldBeAllowed() {
     HttpResponse res =
-        new EnsureSpecCompliantHeaders(List.of("example.com"), ImmutableSet.of())
+        new EnsureSpecCompliantHeaders(List.of("example.com"), emptySet())
             .apply(alwaysOk)
             .execute(
                 new HttpRequest(POST, "/session")
@@ -87,7 +88,7 @@ class EnsureSpecCompliantHeadersTest {
   @Test
   void shouldAllowRequestsWithNoOriginHeader() {
     HttpResponse res =
-        new EnsureSpecCompliantHeaders(emptyList(), ImmutableSet.of())
+        new EnsureSpecCompliantHeaders(emptyList(), emptySet())
             .apply(alwaysOk)
             .execute(new HttpRequest(POST, "/session").addHeader("Content-Type", JSON_UTF_8));
 
