@@ -22,7 +22,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.time.Duration;
@@ -258,9 +257,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         res.setStatus(HTTP_INTERNAL_ERROR)
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "error", "session not created",
                             "message", result.left().getMessage(),
                             "stacktrace", result.left().getStackTrace()))));

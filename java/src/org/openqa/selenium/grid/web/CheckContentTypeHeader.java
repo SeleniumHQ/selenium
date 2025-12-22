@@ -19,9 +19,9 @@ package org.openqa.selenium.grid.web;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+import java.util.Map;
 import java.util.Set;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
@@ -36,9 +36,9 @@ public class CheckContentTypeHeader implements Filter {
           .setStatus(HTTP_INTERNAL_ERROR)
           .setContent(
               Contents.asJson(
-                  ImmutableMap.of(
+                  Map.of(
                       "value",
-                      ImmutableMap.of(
+                      Map.of(
                           "error", "unknown error",
                           "message", "Content-Type header is missing",
                           "stacktrace", ""))));
@@ -81,9 +81,9 @@ public class CheckContentTypeHeader implements Filter {
         .setStatus(HTTP_INTERNAL_ERROR)
         .setContent(
             Contents.asJson(
-                ImmutableMap.of(
+                Map.of(
                     "value",
-                    ImmutableMap.of(
+                    Map.of(
                         "error", "unknown error",
                         "message",
                             "Content-Type header does not indicate utf-8 encoded json: " + type,

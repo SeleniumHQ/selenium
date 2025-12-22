@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static java.util.Collections.emptyMap;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -175,8 +175,7 @@ public abstract class DistributorTestBase {
     for (int i = 0; i < currentLoad; i++) {
       // Ignore the session. We're just creating load.
       node.newSession(
-          new CreateSessionRequest(
-              ImmutableSet.copyOf(Dialect.values()), stereotype, ImmutableMap.of()));
+          new CreateSessionRequest(ImmutableSet.copyOf(Dialect.values()), stereotype, emptyMap()));
     }
 
     return node;

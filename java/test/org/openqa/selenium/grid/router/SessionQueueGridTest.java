@@ -25,13 +25,13 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,8 +78,7 @@ class SessionQueueGridTest {
   private static Server<?> createServer(HttpHandler handler) {
     return new NettyServer(
         new BaseServerOptions(
-            new MapConfig(
-                ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+            new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())))),
         handler);
   }
 
@@ -150,7 +149,7 @@ class SessionQueueGridTest {
 
   @Test
   void shouldBeAbleToCreateMultipleSessions() throws Exception {
-    ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
+    Map<String, String> caps = Map.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(2);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -172,13 +171,13 @@ class SessionQueueGridTest {
   @Test
   void shouldBeAbleToRejectRequest() {
     // Grid has no slots for the requested capabilities
-    HttpResponse httpResponse = createSession(ImmutableMap.of("browserName", "burger"));
+    HttpResponse httpResponse = createSession(Map.of("browserName", "burger"));
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @Test
   void shouldBeAbleToClearQueue() throws Exception {
-    ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
+    Map<String, String> caps = Map.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -224,10 +223,9 @@ class SessionQueueGridTest {
     server.stop();
   }
 
-  private HttpResponse createSession(ImmutableMap<String, String> caps) {
+  private HttpResponse createSession(Map<String, String> caps) {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(
-        asJson(ImmutableMap.of("capabilities", ImmutableMap.of("alwaysMatch", caps))));
+    request.setContent(asJson(Map.of("capabilities", Map.of("alwaysMatch", caps))));
 
     try (HttpClient client = clientFactory.createClient(server.getUrl())) {
       return client.execute(request);

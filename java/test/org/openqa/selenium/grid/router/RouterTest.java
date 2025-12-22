@@ -24,7 +24,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -264,8 +263,8 @@ class RouterTest {
             Instant.now(),
             ImmutableSet.of(W3C),
             ImmutableSet.of(chromeCapabilities),
-            ImmutableMap.of(),
-            ImmutableMap.of());
+            Map.of(),
+            Map.of());
 
     Either<SessionNotCreatedException, CreateSessionResponse> response =
         distributor.newSession(sessionRequest);

@@ -21,7 +21,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.net.Socket;
 import java.net.URISyntaxException;
@@ -196,8 +195,7 @@ class ProxyWebsocketTest {
           NoSuchAlgorithmException,
           KeyManagementException {
     setFields(values);
-    Config secureConfig =
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("https-self-signed", true)));
+    Config secureConfig = new MapConfig(Map.of("server", Map.of("https-self-signed", true)));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ProxyWebsocketsIntoGrid proxy = new ProxyWebsocketsIntoGrid(clientFactory, sessions);

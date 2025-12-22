@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +83,7 @@ class AnnotatedConfigTest {
               class WithBadAnnotation {
 
                 @ConfigValue(section = "bad", name = "map", example = "")
-                private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
+                private final Map<String, String> cheeses = Map.of("peas", "sausage");
               }
 
               new AnnotatedConfig(new WithBadAnnotation());

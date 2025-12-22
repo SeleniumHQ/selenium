@@ -22,20 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -94,20 +88,19 @@ class DefaultSlotSelectorTest {
     NodeStatus node1 =
         createNodeWithStereotypes(
             List.of(
-                ImmutableMap.of("browserName", "chrome", "browserVersion", "131.0"),
-                ImmutableMap.of("browserName", "chrome", "browserVersion", "132.0")));
+                Map.of("browserName", "chrome", "browserVersion", "131.0"),
+                Map.of("browserName", "chrome", "browserVersion", "132.0")));
     NodeStatus node2 =
         createNodeWithStereotypes(
-            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "131.0")));
+            List.of(Map.of("browserName", "chrome", "browserVersion", "131.0")));
     NodeStatus node3 =
-        createNodeWithStereotypes(
-            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "")));
+        createNodeWithStereotypes(List.of(Map.of("browserName", "chrome", "browserVersion", "")));
     NodeStatus node4 =
         createNodeWithStereotypes(
-            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "131.1")));
+            List.of(Map.of("browserName", "chrome", "browserVersion", "131.1")));
     NodeStatus node5 =
         createNodeWithStereotypes(
-            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "beta")));
+            List.of(Map.of("browserName", "chrome", "browserVersion", "beta")));
     Set<NodeStatus> nodes = ImmutableSet.of(node1, node2, node3, node4, node5);
 
     Set<SlotId> slots = selector.selectSlot(caps, nodes, new DefaultSlotMatcher());
@@ -268,7 +261,7 @@ class DefaultSlotSelectorTest {
         Duration.ofSeconds(10),
         Duration.ofSeconds(300),
         "4.0.0",
-        ImmutableMap.of(
+        Map.of(
             "name", "Max OS X",
             "arch", "x86_64",
             "version", "10.15.7"));
@@ -280,7 +273,7 @@ class DefaultSlotSelectorTest {
         LocalNode.builder(tracer, bus, uri, uri, new Secret("cornish yarg"));
     nodeBuilder.maximumConcurrentSessions(browsers.length);
 
-    Arrays.stream(browsers)
+    Stream.of(browsers)
         .forEach(
             browser -> {
               Capabilities caps = new ImmutableCapabilities("browserName", browser);
@@ -291,7 +284,7 @@ class DefaultSlotSelectorTest {
     return myNode.getStatus();
   }
 
-  private NodeStatus createNodeWithStereotypes(List<ImmutableMap> stereotypes) {
+  private NodeStatus createNodeWithStereotypes(List<Map<?, ?>> stereotypes) {
     URI uri = createUri();
     LocalNode.Builder nodeBuilder =
         LocalNode.builder(tracer, bus, uri, uri, new Secret("cornish yarg"));

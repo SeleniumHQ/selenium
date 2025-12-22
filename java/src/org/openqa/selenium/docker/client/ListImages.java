@@ -22,7 +22,6 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
@@ -60,7 +59,7 @@ class ListImages {
     Require.nonNull("Reference to search for", reference);
 
     String familiarName = reference.getFamiliarName();
-    Map<String, Object> filters = ImmutableMap.of("reference", ImmutableMap.of(familiarName, true));
+    Map<String, Object> filters = Map.of("reference", Map.of(familiarName, true));
 
     // https://docs.docker.com/engine/api/v1.40/#operation/ImageList
     HttpRequest req =

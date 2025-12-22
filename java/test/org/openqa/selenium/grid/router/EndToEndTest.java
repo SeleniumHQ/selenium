@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -224,10 +223,7 @@ class EndToEndTest {
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(
-        asJson(
-            ImmutableMap.of(
-                "capabilities",
-                ImmutableMap.of("alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
+        asJson(Map.of("capabilities", Map.of("alwaysMatch", Map.of("browserName", "cheese")))));
 
     HttpResponse response = client.execute(request);
 

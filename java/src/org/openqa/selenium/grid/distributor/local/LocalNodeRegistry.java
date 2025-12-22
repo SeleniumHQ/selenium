@@ -22,7 +22,6 @@ import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.time.Duration;
@@ -306,11 +305,11 @@ public class LocalNodeRegistry implements NodeRegistry {
 
   @Override
   public void runHealthChecks() {
-    ImmutableMap<NodeId, Runnable> nodeHealthChecks;
+    Map<NodeId, Runnable> nodeHealthChecks;
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      nodeHealthChecks = ImmutableMap.copyOf(allChecks);
+      nodeHealthChecks = Map.copyOf(allChecks);
     } finally {
       readLock.unlock();
     }

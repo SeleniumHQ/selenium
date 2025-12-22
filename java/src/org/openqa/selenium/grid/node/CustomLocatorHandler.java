@@ -21,7 +21,6 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -119,9 +118,9 @@ class CustomLocatorHandler implements Routable {
           .setStatus(HTTP_BAD_REQUEST)
           .setContent(
               Contents.asJson(
-                  ImmutableMap.of(
+                  Map.of(
                       "value",
-                      ImmutableMap.of(
+                      Map.of(
                           "error", "invalid argument",
                           "message", "Unable to determine element locating strategy",
                           "stacktrace", ""))));
@@ -138,9 +137,9 @@ class CustomLocatorHandler implements Routable {
           .setStatus(HTTP_BAD_REQUEST)
           .setContent(
               Contents.asJson(
-                  ImmutableMap.of(
+                  Map.of(
                       "value",
-                      ImmutableMap.of(
+                      Map.of(
                           "error", "invalid argument",
                           "message", "Unable to determine element locator arguments",
                           "stacktrace", ""))));
@@ -224,7 +223,7 @@ class CustomLocatorHandler implements Routable {
       toReturn = context.findElement(by);
     }
 
-    return new HttpResponse().setContent(Contents.asJson(ImmutableMap.of("value", toReturn)));
+    return new HttpResponse().setContent(Contents.asJson(Map.of("value", toReturn)));
   }
 
   private static class NodeWrappingExecutor implements CommandExecutor {

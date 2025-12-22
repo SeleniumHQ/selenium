@@ -31,7 +31,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -134,7 +133,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat(result).isInstanceOf(Map.class);
     Map<String, Object> map = (Map<String, Object>) result;
 
-    Map<String, Object> expected = ImmutableMap.of("abc", "123", "tired", false);
+    Map<String, Object> expected = Map.of("abc", "123", "tired", false);
 
     // Cannot do an exact match; Firefox 4 inserts a few extra keys in our object; this is OK, as
     // long as the expected keys are there.
@@ -152,13 +151,13 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.javascriptPage);
 
     Map<String, Object> expectedResult =
-        ImmutableMap.of(
+        Map.of(
             "foo",
             "bar",
             "baz",
             List.of("a", "b", "c"),
             "person",
-            ImmutableMap.of(
+            Map.of(
                 "first", "John",
                 "last", "Doe"));
 
@@ -445,7 +444,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
 
     List<Integer> nums = List.of(1, 2);
-    Map<String, Object> args = ImmutableMap.of("bar", "test", "foo", nums);
+    Map<String, Object> args = Map.of("bar", "test", "foo", nums);
 
     Object res = ((JavascriptExecutor) driver).executeScript("return arguments[0]['foo'][1]", args);
 
@@ -462,8 +461,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
 
     Map<String, Object> args =
-        ImmutableMap.of(
-            "key", List.of("a", new Object[] {"zero", 1, true, 42.4242, false, el}, "c"));
+        Map.of("key", List.of("a", new Object[] {"zero", 1, true, 42.4242, false, el}, "c"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
         .isThrownBy(() -> executeScript("return undefined;", args));
@@ -529,9 +527,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
     WebElement expected = driver.findElement(id("oneline"));
 
-    Object args =
-        ImmutableMap.of(
-            "top", ImmutableMap.of("key", singletonList(ImmutableMap.of("subkey", expected))));
+    Object args = Map.of("top", Map.of("key", singletonList(Map.of("subkey", expected))));
     WebElement seen = (WebElement) executeScript("return arguments[0].top.key[0].subkey", args);
 
     assertThat(seen).isEqualTo(expected);

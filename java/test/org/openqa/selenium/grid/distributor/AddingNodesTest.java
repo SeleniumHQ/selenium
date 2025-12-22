@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -357,7 +356,7 @@ class AddingNodesTest {
       stereotypes.put(slot.getStereotype(), count);
     }
 
-    return ImmutableMap.copyOf(stereotypes);
+    return Map.copyOf(stereotypes);
   }
 
   static class CustomNode extends Node {

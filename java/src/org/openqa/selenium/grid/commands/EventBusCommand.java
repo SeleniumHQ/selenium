@@ -24,12 +24,8 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -91,13 +87,13 @@ public class EventBusCommand extends TemplateGridCommand {
   @Override
   protected Config getDefaultConfig() {
     return new MapConfig(
-        ImmutableMap.of(
+        Map.of(
             "events",
-                ImmutableMap.of(
+                Map.of(
                     "bind", true,
                     "publish", "tcp://*:4442",
                     "subscribe", "tcp://*:4443"),
-            "server", ImmutableMap.of("port", 5557)));
+            "server", Map.of("port", 5557)));
   }
 
   public Server<?> asServer(Config initialConfig) {
@@ -198,9 +194,9 @@ public class EventBusCommand extends TemplateGridCommand {
         .addHeader("Content-Type", JSON_UTF_8)
         .setContent(
             asJson(
-                ImmutableMap.of(
+                Map.of(
                     "value",
-                    ImmutableMap.of(
+                    Map.of(
                         "ready", ready,
                         "message", message))));
   }

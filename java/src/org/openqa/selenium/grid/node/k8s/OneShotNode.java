@@ -23,7 +23,6 @@ import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.lang.reflect.Field;
 import java.net.URI;
@@ -213,9 +212,9 @@ public class OneShotNode extends Node {
     LOG.info(
         "Encoded response: "
             + JSON.toJson(
-                ImmutableMap.of(
+                Map.of(
                     "value",
-                    ImmutableMap.of(
+                    Map.of(
                         "sessionId", sessionId,
                         "capabilities", capabilities))));
 
@@ -225,9 +224,9 @@ public class OneShotNode extends Node {
         new CreateSessionResponse(
             getSession(sessionId),
             JSON.toJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "sessionId", sessionId,
                             "capabilities", capabilities)))
                 .getBytes(UTF_8)));

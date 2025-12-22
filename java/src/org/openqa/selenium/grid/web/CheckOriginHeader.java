@@ -20,9 +20,9 @@ package org.openqa.selenium.grid.web;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
@@ -58,9 +58,9 @@ public class CheckOriginHeader implements Filter {
             .addHeader("Content-Type", JSON_UTF_8)
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "error", "unknown error",
                             "message", "Origin not allowed: " + origin,
                             "stacktrace", ""))));

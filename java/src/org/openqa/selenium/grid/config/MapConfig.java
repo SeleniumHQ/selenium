@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.grid.config;
 
+import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.Collection;
@@ -32,27 +34,26 @@ public class MapConfig implements Config {
 
   private final Map<String, Map<String, Object>> raw;
 
+  public MapConfig() {
+    this(emptyMap());
+  }
+
   public MapConfig(Map<String, Object> raw) {
     Require.nonNull("Underlying map", raw);
 
-    ImmutableMap.Builder<String, Map<String, Object>> builder = ImmutableMap.builder();
-    for (Map.Entry<String, Object> entry : raw.entrySet()) {
-      if (!(entry.getValue() instanceof Map)) {
-        continue;
-      }
-
-      ImmutableMap<String, Object> values =
-          ((Map<?, ?>) entry.getValue())
-              .entrySet().stream()
-                  .filter(e -> e.getKey() instanceof String)
-                  .collect(
-                      ImmutableMap.toImmutableMap(
-                          e -> String.valueOf(e.getKey()), Map.Entry::getValue));
-
-      builder.put(entry.getKey(), values);
-    }
-
-    this.raw = builder.build();
+    this.raw =
+        raw.entrySet().stream()
+            .filter(entry -> entry.getValue() instanceof Map)
+            .collect(
+                toUnmodifiableMap(
+                    entry -> entry.getKey(),
+                    entry ->
+                        ((Map<?, ?>) entry.getValue())
+                            .entrySet().stream()
+                                .filter(e -> e.getKey() instanceof String)
+                                .collect(
+                                    toUnmodifiableMap(
+                                        e -> String.valueOf(e.getKey()), e -> e.getValue()))));
   }
 
   @Override
@@ -105,7 +106,7 @@ public class MapConfig implements Config {
   public Set<String> getOptions(String section) {
     Require.nonNull("Section name to get options for", section);
 
-    Map<String, Object> values = raw.getOrDefault(section, ImmutableMap.of());
+    Map<String, Object> values = raw.getOrDefault(section, emptyMap());
     return ImmutableSortedSet.copyOf(values.keySet());
   }
 }

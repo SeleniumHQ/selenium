@@ -29,7 +29,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.IOException;
@@ -301,7 +300,7 @@ public class RemoteNode extends Node implements Closeable {
 
   @SuppressWarnings("unused")
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
+    return Map.of(
         "id", getId(),
         "uri", externalUri,
         "capabilities", capabilities);

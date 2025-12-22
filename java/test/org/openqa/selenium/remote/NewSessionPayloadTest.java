@@ -29,7 +29,6 @@ import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -95,7 +94,7 @@ class NewSessionPayloadTest {
   void shouldOfferStreamOfW3cCapabilitiesIfPresent() {
     List<Capabilities> capabilities =
         create(
-            ImmutableMap.of(
+            Map.of(
                 "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "peas"))));
 
     // We expect a synthetic w3c capability for the mismatching OSS capabilities
@@ -109,7 +108,7 @@ class NewSessionPayloadTest {
         create(
             singletonMap(
                 "capabilities",
-                ImmutableMap.of(
+                Map.of(
                     "alwaysMatch",
                     singletonMap("se:cake", "also cheese"),
                     "firstMatch",
@@ -154,7 +153,7 @@ class NewSessionPayloadTest {
                 create(
                     singletonMap(
                         "capabilities",
-                        ImmutableMap.of(
+                        Map.of(
                             "alwaysMatch", singletonMap("se:cake", "cheese"),
                             "firstMatch", singletonList(singletonMap("se:cake", "sausages"))))));
   }
@@ -163,9 +162,9 @@ class NewSessionPayloadTest {
   void convertEverythingToFirstMatchOnlyIfPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
     List<Capabilities> capabilities =
         create(
-            ImmutableMap.of(
+            Map.of(
                 "capabilities",
-                ImmutableMap.of(
+                Map.of(
                     "alwaysMatch",
                     singletonMap("platformName", "macos"),
                     "firstMatch",
@@ -184,8 +183,8 @@ class NewSessionPayloadTest {
   void forwardsMetaDataAssociatedWithARequest() throws IOException {
     try (NewSessionPayload payload =
         NewSessionPayload.create(
-            ImmutableMap.of(
-                "capabilities", ImmutableMap.of("alwaysMatch", EMPTY_MAP),
+            Map.of(
+                "capabilities", Map.of("alwaysMatch", EMPTY_MAP),
                 "cloud:user", "bob",
                 "cloud:key", "there is no cake"))) {
       StringBuilder toParse = new StringBuilder();
@@ -200,7 +199,7 @@ class NewSessionPayloadTest {
   @Test
   void shouldPreserveMetadata() throws IOException {
     Map<String, Object> raw =
-        ImmutableMap.of(
+        Map.of(
             "capabilities",
             singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
             "se:meta",
@@ -218,7 +217,7 @@ class NewSessionPayloadTest {
   @Test
   void shouldExposeMetaData() {
     Map<String, Object> raw =
-        ImmutableMap.of(
+        Map.of(
             "capabilities",
             singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
             "se:meta",
@@ -246,8 +245,7 @@ class NewSessionPayloadTest {
   @Test
   void keysUsedForStoringCapabilitiesAreIgnoredFromMetadata() {
     Map<String, Object> raw =
-        ImmutableMap.of(
-            "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")));
+        Map.of("capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")));
 
     try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
       Map<String, Object> seen = payload.getMetadata();

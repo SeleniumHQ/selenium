@@ -19,8 +19,8 @@ package org.openqa.selenium.grid.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class ConcatenatingConfigTest {
@@ -31,7 +31,7 @@ class ConcatenatingConfigTest {
         new ConcatenatingConfig(
             "FOO",
             '_',
-            ImmutableMap.of(
+            Map.of(
                 "FOO_CHEESE_SELECTED", "brie",
                 "FOO_CHEESE_CURRENT", "cheddar",
                 "FOO_VEGETABLES_GREEN", "peas",
@@ -47,7 +47,7 @@ class ConcatenatingConfigTest {
         new ConcatenatingConfig(
             "FOO",
             '_',
-            ImmutableMap.of(
+            Map.of(
                 "FOO_CHEESE_SELECTED", "brie",
                 "FOO_CHEESE_CURRENT", "cheddar",
                 "FOO_VEGETABLES_GREEN", "peas",

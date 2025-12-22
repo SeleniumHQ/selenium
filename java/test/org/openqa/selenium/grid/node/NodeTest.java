@@ -30,7 +30,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.IOException;
@@ -943,7 +942,7 @@ class NodeTest {
   }
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
-    return new CreateSessionRequest(ImmutableSet.copyOf(Dialect.values()), caps, ImmutableMap.of());
+    return new CreateSessionRequest(ImmutableSet.copyOf(Dialect.values()), caps, Map.of());
   }
 
   private String simulateFileDownload(SessionId id, String text) throws IOException {
