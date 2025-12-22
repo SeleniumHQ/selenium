@@ -70,7 +70,7 @@ public class SeleniumManagerTest
 
         Assert.That(File.Exists(driverPath), Is.True, $"Driver path should exist: {driverPath}");
         Assert.That(File.Exists(browserPath), Is.True, $"Browser path should exist: {browserPath}");
-        Assert.That(driverPath, Does.Contain(CacheDirectory), $"Driver path should contain cache directory: {driverPath}");
+        Assert.That(driverPath, Is.SubPathOf(CacheDirectory), $"Driver path should be nested under the cache directory: {driverPath}");
         Assert.That(browserPath, Does.Contain(CacheDirectory), $"Browser path should contain cache directory: {browserPath}");
     }
 
