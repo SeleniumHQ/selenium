@@ -62,7 +62,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.14']
-        os: [windows]
+        os: [ubuntu, macos, windows]
     with:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
@@ -71,14 +71,7 @@ jobs:
       run: >
         bazel test //py:unit
         --test_output=streamed
-        --test_summary=detailed
-        --test_verbose_timeout_warnings
-        --test_env=PYTHONUNBUFFERED=1
-        --test_env=PYTHONFAULTHANDLER=1
-        --test_arg=-vv
         --test_arg=-s
-        --test_arg=--capture=tee-sys
-        --test_arg=--durations=25
 
   remote-tests:
     name: Remote Tests
