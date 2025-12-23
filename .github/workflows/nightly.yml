@@ -44,7 +44,6 @@ jobs:
           - selenium-webdriver
     with:
       name: Nightly Ruby Release
-      cache-key: rb-nightly-${{ matrix.gem }}
       run: |
         export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
         ./go rb:release[nightly]
@@ -72,7 +71,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly Python Release
-      cache-key: python-nightly
       run: ./go py:release[nightly]
     secrets: inherit
   on-python-failure:
@@ -99,7 +97,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly Java Release
-      cache-key: java-nightly
       run: ./go java:release[nightly]
     secrets: inherit
   on-java-failure:
@@ -126,7 +123,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly DotNet Release
-      cache-key: dotnet-nightly
       dotnet-version: '6.x'
       run: ./go dotnet:release[--stamp,nightly]
     secrets: inherit
@@ -156,7 +152,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly Grid Release
-      cache-key: grid-nightly
       run: ./go java:package[--config=release]
       nightly-release-files: build/dist/*.*
   on-grid-failure:
@@ -183,7 +178,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly JavaScript Release
-      cache-key: javascript-nightly
       node-version: '22.x'
       run: |
         sed -i 's|https://registry.npmjs.org/|https://npm.pkg.github.com|g' javascript/selenium-webdriver/package.json

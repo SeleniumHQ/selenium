@@ -25,7 +25,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
-      cache-key: rust-build
       run: bazel build //rust:selenium-manager
 
   tests:
@@ -41,7 +40,6 @@ jobs:
           - os: windows
     with:
       name: Tests (${{ matrix.os }})
-      cache-key: rust-test
       os: ${{ matrix.os }}
       run: bazel test --test_env=RUST_BACKTRACE=full --test_env=RUST_TEST_NOCAPTURE=1 --flaky_test_attempts=3 //rust/...
 

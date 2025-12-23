@@ -13,7 +13,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
-      cache-key: false
       os: windows
       run: bazel build //dotnet:all
 
@@ -22,7 +21,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Browser Tests
-      cache-key: false
       java-version: 17
       os: windows
       run: |

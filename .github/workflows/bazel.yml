@@ -31,11 +31,6 @@ on:
         required: false
         type: boolean
         default: true
-      cache-key:
-        description: Bazel disk cache key
-        required: false
-        type: string
-        default: ''
       dotnet-version:
         description: Custom DotNet version to install
         required: false
@@ -139,10 +134,14 @@ jobs:
           cache-version: 2
           disk-cache: false
           external-cache: |
-            name: ${{ inputs.cache-key }}
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
+              rules_ruby++ruby+ruby: 'rb/.ruby-version'
+              "pin_browsers_extension+mac_edge": false
+              "pin_browsers_extension+mac_firefox": false
+              "pin_browsers_extension+linux_edge": false
+              "pin_browsers_extension+linux_chrome": false
+              "pin_browsers_extension+linux_firefox": false
           repository-cache: false
       - name: Setup Bazel without caching
         if: inputs.caching == false

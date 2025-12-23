@@ -13,7 +13,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
-      cache-key: py-build
       run: |
         bazel build //py:selenium-wheel //py:selenium-sdist
 
@@ -70,7 +69,6 @@ jobs:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
-      cache-key: python-unit-test-${{ matrix.python-version }}
       run: bazel test --local_test_jobs 1 //py:unit
 
   remote-tests:
@@ -80,7 +78,6 @@ jobs:
     with:
       name: Integration Tests Remote
       browser: yes
-      cache-key: py-remote
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
 
@@ -100,6 +97,5 @@ jobs:
       name: Integration Tests (${{ matrix.browser }})
       browser: ${{ matrix.browser }}
       os: ${{ matrix.os }}
-      cache-key: py-${{ matrix.browser }}
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}

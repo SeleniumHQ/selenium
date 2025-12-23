@@ -13,7 +13,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Pin Browsers
-      cache-key: pin-browsers
       run: bazel run //scripts:pinned_browsers
       artifact-name: pinned-browsers
 
