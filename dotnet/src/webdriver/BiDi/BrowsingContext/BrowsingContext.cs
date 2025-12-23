@@ -133,12 +133,24 @@ public sealed record BrowsingContext
 
     public Task<Subscription> OnNavigationStartedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationStartedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnNavigationStartedAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnNavigationStartedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationStartedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnNavigationStartedAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
