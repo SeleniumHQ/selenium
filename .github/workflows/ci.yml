@@ -41,7 +41,7 @@ jobs:
             manifest:
               crates: rust/Cargo.Bazel.lock
               rules_ruby~~ruby~ruby: rb/.ruby-version
-          repository-cache: true
+          repository-cache: false
       - name: Check Bazel targets
         id: check-targets
         run: ./scripts/github-actions/check-bazel-targets.sh
