@@ -775,7 +775,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())["value"]
 
-    def find_element(self, by=By.ID, value: str | None = None) -> WebElement:
+    def find_element(self, by: ByType | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element given a By strategy and locator.
 
         Args:
@@ -801,7 +801,7 @@ class WebDriver(BaseWebDriver):
 
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by=By.ID, value: str | None = None) -> list[WebElement]:
+    def find_elements(self, by: ByType | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements given a By strategy and locator.
 
         Args:

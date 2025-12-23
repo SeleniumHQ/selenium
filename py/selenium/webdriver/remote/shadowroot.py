@@ -44,7 +44,7 @@ class ShadowRoot:
     def id(self) -> str:
         return self._id
 
-    def find_element(self, by: str = By.ID, value: str = None):
+    def find_element(self, by: ByType | RelativeBy = By.ID, value: str | None = None) -> WebElement:
         """Find an element inside a shadow root given a By strategy and locator.
 
         Args:
@@ -80,7 +80,7 @@ class ShadowRoot:
 
         return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
 
-    def find_elements(self, by: str = By.ID, value: str = None) -> list:
+    def find_elements(self, by: ByType | RelativeBy = By.ID, value: str | None = None) -> list[WebElement]:
         """Find elements inside a shadow root given a By strategy and locator.
 
         Args:
