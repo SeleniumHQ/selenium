@@ -1,16 +1,8 @@
-// Copyright 2018 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Policy to convert strings to Trusted Types. See
@@ -19,8 +11,42 @@
 
 goog.provide('goog.html.trustedtypes');
 
-/** @package @const {?TrustedTypePolicy} */
-goog.html.trustedtypes.PRIVATE_DO_NOT_ACCESS_OR_ELSE_POLICY =
-    goog.TRUSTED_TYPES_POLICY_NAME ?
-    goog.createTrustedTypesPolicy(goog.TRUSTED_TYPES_POLICY_NAME + '#html') :
-    null;
+
+/**
+ * @define {string} Name for the Trusted Types policy used in Closure Safe
+ * Types. Differs from `goog.TRUSTED_TYPES_POLICY_NAME` in that the latter is
+ * also used for other purposes like the debug loader. If empty, Closure Safe
+ * Types will not use Trusted Types. Default is `goog.TRUSTED_TYPES_POLICY_NAME`
+ * plus the suffix `#html`, unless `goog.TRUSTED_TYPES_POLICY_NAME` is empty.
+ * @package
+ */
+goog.html.trustedtypes.POLICY_NAME = goog.define(
+    'goog.html.trustedtypes.POLICY_NAME', '');
+
+
+/**
+ * Cached result of goog.createTrustedTypesPolicy.
+ * @type {?TrustedTypePolicy|undefined}
+ * @private
+ */
+goog.html.trustedtypes.cachedPolicy_;
+
+
+/**
+ * Creates a (singleton) Trusted Type Policy for Safe HTML Types.
+ * @return {?TrustedTypePolicy}
+ * @package
+ */
+goog.html.trustedtypes.getPolicyPrivateDoNotAccessOrElse = function() {
+  'use strict';
+  if (!goog.html.trustedtypes.POLICY_NAME) {
+    // Binary not configured for Trusted Types.
+    return null;
+  }
+
+  if (goog.html.trustedtypes.cachedPolicy_ === undefined) {
+    goog.html.trustedtypes.cachedPolicy_ = null;
+  }
+
+  return goog.html.trustedtypes.cachedPolicy_;
+};

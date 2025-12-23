@@ -22,19 +22,19 @@
 
 goog.provide('bot.Mouse');
 goog.provide('bot.Mouse.Button');
-goog.provide('bot.Mouse.State');
 
 goog.require('bot');
 goog.require('bot.Device');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
-goog.require('bot.events.EventType');
+goog.require('bot.events');
 goog.require('bot.userAgent');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.userAgent');
+goog.require('goog.utils');
 
 
 
@@ -49,7 +49,7 @@ goog.require('goog.userAgent');
  * @extends {bot.Device}
  */
 bot.Mouse = function (opt_state, opt_modifiersState, opt_eventEmitter) {
-  goog.base(this, opt_modifiersState, opt_eventEmitter);
+  bot.Device.call(this, opt_modifiersState, opt_eventEmitter);
 
   /** @private {?bot.Mouse.Button} */
   this.buttonPressed_ = null;
@@ -70,7 +70,7 @@ bot.Mouse = function (opt_state, opt_modifiersState, opt_eventEmitter) {
   this.hasEverInteracted_ = false;
 
   if (opt_state) {
-    if (goog.isNumber(opt_state['buttonPressed'])) {
+    if (typeof opt_state['buttonPressed'] === 'number') {
       this.buttonPressed_ = opt_state['buttonPressed'];
     }
 
@@ -98,7 +98,7 @@ bot.Mouse = function (opt_state, opt_modifiersState, opt_eventEmitter) {
     }
   }
 };
-goog.inherits(bot.Mouse, bot.Device);
+goog.utils.inherits(bot.Mouse, bot.Device);
 
 
 /**
@@ -146,7 +146,7 @@ bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
  * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
  * GECKO         0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
  * </pre>
- * @private {!Object.<bot.events.EventType, !Array.<?number>>}
+ * @private {!Object<?, !Array.<?number>>}
  * @const
  */
 bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function () {
@@ -197,7 +197,7 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function () {
 
 /**
  * Maps mouse events to corresponding MSPointer event.
- * @private {!Object.<bot.events.EventType, bot.events.EventType>}
+ * @private {!Object<?, !bot.events.EventFactory_>}
  */
 bot.Mouse.MOUSE_EVENT_MAP_ = (function () {
   var map = {};
@@ -255,7 +255,7 @@ bot.Mouse.prototype.fireMousedown_ = function (opt_count) {
  * @param {?number=} opt_count Number of clicks that have been performed.
 */
 bot.Mouse.prototype.pressButton = function (button, opt_count) {
-  if (!goog.isNull(this.buttonPressed_)) {
+  if (this.buttonPressed_ !== null) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
       'Cannot press more than one button or an already pressed button.');
   }
@@ -284,7 +284,7 @@ bot.Mouse.prototype.pressButton = function (button, opt_count) {
  * @param {?number=} opt_count Number of clicks that have been performed.
  */
 bot.Mouse.prototype.releaseButton = function (opt_force, opt_count) {
-  if (goog.isNull(this.buttonPressed_)) {
+  if (this.buttonPressed_ === null) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
       'Cannot release a button when no button is pressed.');
   }
@@ -440,7 +440,7 @@ bot.Mouse.prototype.scroll = function (ticks) {
 /**
  * A helper function to fire mouse events.
  *
- * @param {bot.events.EventType} type Event type.
+ * @param {!bot.events.EventFactory_} type Event type.
  * @param {Element=} opt_related The related element of this event.
  * @param {?number=} opt_wheelDelta The wheel delta value for the event.
  * @param {boolean=} opt_force Whether the event should be fired even if the
@@ -475,7 +475,7 @@ bot.Mouse.prototype.fireMouseEvent_ = function (type, opt_related,
  * for that event on the current browser. The mouse button value is 0 for any
  * event not covered by bot.Mouse.MOUSE_BUTTON_VALUE_MAP_.
  *
- * @param {bot.events.EventType} eventType Type of mouse event.
+ * @param {!bot.events.EventFactory_} eventType Type of mouse event.
  * @return {number} The mouse button ID value to the current browser.
  * @private
 */
@@ -484,10 +484,10 @@ bot.Mouse.prototype.getButtonValue_ = function (eventType) {
     return 0;
   }
 
-  var buttonIndex = goog.isNull(this.buttonPressed_) ?
+  var buttonIndex = this.buttonPressed_ === null ?
     bot.Mouse.NO_BUTTON_VALUE_INDEX_ : this.buttonPressed_;
   var buttonValue = bot.Mouse.MOUSE_BUTTON_VALUE_MAP_[eventType][buttonIndex];
-  if (goog.isNull(buttonValue)) {
+  if (buttonValue === null) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
       'Event does not permit the specified mouse button.');
   }

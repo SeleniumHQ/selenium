@@ -96,8 +96,6 @@ class RemoteWebDriverBiDiTest {
   @Ignore(IE)
   @Ignore(SAFARI)
   void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
-    driver = new Augmenter().augment(driver);
-
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
       logInspector.onConsoleEntry(future::complete);
@@ -135,11 +133,14 @@ class RemoteWebDriverBiDiTest {
 
   @AfterEach
   void clean() {
-    driver.quit();
+    if (driver != null) {
+      driver.quit();
+    }
   }
 
   @AfterAll
   static void stopServer() {
     server.stop();
+    server = null;
   }
 }

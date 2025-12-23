@@ -1,4 +1,4 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
 
 EXPORT_FUNCTION_NAME = "se_exportedFunctionSymbol"
 

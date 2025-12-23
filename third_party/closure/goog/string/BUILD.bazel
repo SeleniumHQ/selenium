@@ -1,35 +1,16 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 closure_js_library(
-    name = "all_js",
-    exports = [
-        ":const",
-        ":internal",
-        ":linkify",
-        ":newlines",
-        ":parser",
-        ":path",
-        ":string",
-        ":stringbuffer",
-        ":stringformat",
-        ":stringifier",
-        ":typedstring",
-    ],
-)
-
-closure_js_library(
     name = "const",
     srcs = ["const.js"],
     lenient = True,
     deps = [
+        ":typedstring",
         "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/string:typedstring",
     ],
 )
 
@@ -40,67 +21,16 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "linkify",
-    srcs = ["linkify.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/string",
-    ],
-)
-
-closure_js_library(
-    name = "newlines",
-    srcs = ["newlines.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/array"],
-)
-
-closure_js_library(
-    name = "parser",
-    srcs = ["parser.js"],
-    lenient = True,
-)
-
-closure_js_library(
-    name = "path",
-    srcs = ["path.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/string",
-    ],
-)
-
-closure_js_library(
     name = "string",
     srcs = ["string.js"],
     lenient = True,
     deps = [
+        ":const",
+        ":internal",
         "//third_party/closure/goog/dom:safe",
         "//third_party/closure/goog/html:uncheckedconversions",
-        "//third_party/closure/goog/string:const",
-        "//third_party/closure/goog/string:internal",
+        "//third_party/closure/goog/utils",
     ],
-)
-
-closure_js_library(
-    name = "stringbuffer",
-    srcs = ["stringbuffer.js"],
-    lenient = True,
-)
-
-closure_js_library(
-    name = "stringformat",
-    srcs = ["stringformat.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/string"],
-)
-
-closure_js_library(
-    name = "stringifier",
-    srcs = ["stringifier.js"],
-    lenient = True,
 )
 
 closure_js_library(

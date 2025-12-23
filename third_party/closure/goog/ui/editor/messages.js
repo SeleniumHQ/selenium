@@ -1,16 +1,8 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Messages common to Editor UI components.
@@ -19,6 +11,7 @@
 goog.provide('goog.ui.editor.messages');
 
 goog.require('goog.html.SafeHtmlFormatter');
+goog.requireType('goog.html.SafeHtml');
 
 
 /** @desc Link button / bubble caption. */
@@ -57,12 +50,13 @@ goog.ui.editor.messages.MSG_TEST_THIS_LINK = goog.getMsg('Test this link');
  * @return {!goog.html.SafeHtml} SafeHtml version of MSG_TR_LINK_EXPLANATION.
  */
 goog.ui.editor.messages.getTrLinkExplanationSafeHtml = function() {
-  var formatter = new goog.html.SafeHtmlFormatter();
+  'use strict';
+  const formatter = new goog.html.SafeHtmlFormatter();
 
   /**
    * @desc Explanation for how to create a link with the link-editing dialog.
    */
-  var MSG_TR_LINK_EXPLANATION = goog.getMsg(
+  const MSG_TR_LINK_EXPLANATION = goog.getMsg(
       '{$startBold}Not sure what to put in the box?{$endBold} ' +
           'First, find the page on the web that you want to ' +
           'link to. (A {$searchEngineLink}search engine{$endLink} ' +
@@ -117,13 +111,14 @@ goog.ui.editor.messages.MSG_WHAT_EMAIL =
  * @return {!goog.html.SafeHtml} SafeHtml version of MSG_EMAIL_EXPLANATION.
  */
 goog.ui.editor.messages.getEmailExplanationSafeHtml = function() {
-  var formatter = new goog.html.SafeHtmlFormatter();
+  'use strict';
+  const formatter = new goog.html.SafeHtmlFormatter();
 
   /**
    * @desc Warning about the dangers of creating links with email
    *     addresses in them.
    */
-  var MSG_EMAIL_EXPLANATION = goog.getMsg(
+  const MSG_EMAIL_EXPLANATION = goog.getMsg(
       '{$preb}Be careful.{$postb} ' +
           'Remember that any time you include an email address on a web ' +
           'page, nasty spammers can find it too.',

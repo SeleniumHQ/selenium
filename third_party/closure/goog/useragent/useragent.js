@@ -1,16 +1,8 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Rendering engine detection.
@@ -27,7 +19,7 @@ goog.require('goog.labs.userAgent.engine');
 goog.require('goog.labs.userAgent.platform');
 goog.require('goog.labs.userAgent.util');
 goog.require('goog.reflect');
-goog.require('goog.string');
+goog.require('goog.string.internal');
 
 
 /**
@@ -97,6 +89,7 @@ goog.userAgent.BROWSER_KNOWN_ = goog.userAgent.ASSUME_IE ||
  * @return {string} The userAgent string.
  */
 goog.userAgent.getUserAgentString = function() {
+  'use strict';
   return goog.labs.userAgent.util.getUserAgent();
 };
 
@@ -105,6 +98,7 @@ goog.userAgent.getUserAgentString = function() {
  * @return {?Navigator} The native navigator object.
  */
 goog.userAgent.getNavigatorTyped = function() {
+  'use strict';
   // Need a local navigator reference instead of using the global one,
   // to avoid the rare case where they reference different objects.
   // (in a WorkerPool, for example).
@@ -117,6 +111,7 @@ goog.userAgent.getNavigatorTyped = function() {
  * @return {?Object} The native navigator object.
  */
 goog.userAgent.getNavigator = function() {
+  'use strict';
   return goog.userAgent.getNavigatorTyped();
 };
 
@@ -186,6 +181,7 @@ goog.userAgent.WEBKIT = goog.userAgent.BROWSER_KNOWN_ ?
  * @private
  */
 goog.userAgent.isMobile_ = function() {
+  'use strict';
   return goog.userAgent.WEBKIT &&
       goog.labs.userAgent.util.matchUserAgent('Mobile');
 };
@@ -219,6 +215,7 @@ goog.userAgent.SAFARI = goog.userAgent.WEBKIT;
  * @private
  */
 goog.userAgent.determinePlatform_ = function() {
+  'use strict';
   var navigator = goog.userAgent.getNavigatorTyped();
   return navigator && navigator.platform || '';
 };
@@ -293,12 +290,6 @@ goog.userAgent.ASSUME_IPOD = goog.define('goog.userAgent.ASSUME_IPOD', false);
  */
 goog.userAgent.ASSUME_KAIOS = goog.define('goog.userAgent.ASSUME_KAIOS', false);
 
-/**
- * @define {boolean} Whether the user agent is running on Go2Phone.
- */
-goog.userAgent.ASSUME_GO2PHONE =
-    goog.define('goog.userAgent.ASSUME_GO2PHONE', false);
-
 
 /**
  * @type {boolean}
@@ -337,6 +328,7 @@ goog.userAgent.WINDOWS = goog.userAgent.PLATFORM_KNOWN_ ?
  * @private
  */
 goog.userAgent.isLegacyLinux_ = function() {
+  'use strict';
   return goog.labs.userAgent.platform.isLinux() ||
       goog.labs.userAgent.platform.isChromeOS();
 };
@@ -361,9 +353,10 @@ goog.userAgent.LINUX = goog.userAgent.PLATFORM_KNOWN_ ?
  * @private
  */
 goog.userAgent.isX11_ = function() {
+  'use strict';
   var navigator = goog.userAgent.getNavigatorTyped();
   return !!navigator &&
-      goog.string.contains(navigator['appVersion'] || '', 'X11');
+      goog.string.internal.contains(navigator['appVersion'] || '', 'X11');
 };
 
 
@@ -429,14 +422,6 @@ goog.userAgent.KAIOS = goog.userAgent.PLATFORM_KNOWN_ ?
     goog.userAgent.ASSUME_KAIOS :
     goog.labs.userAgent.platform.isKaiOS();
 
-/**
- * Whether the user agent is running on Go2Phone.
- * @type {boolean}
- */
-goog.userAgent.GO2PHONE = goog.userAgent.PLATFORM_KNOWN_ ?
-    goog.userAgent.ASSUME_GO2PHONE :
-    goog.labs.userAgent.platform.isGo2Phone();
-
 
 /**
  * @return {string} The string that describes the version number of the user
@@ -444,6 +429,7 @@ goog.userAgent.GO2PHONE = goog.userAgent.PLATFORM_KNOWN_ ?
  * @private
  */
 goog.userAgent.determineVersion_ = function() {
+  'use strict';
   // All browsers have different ways to detect the version and they all have
   // different naming schemes.
   // version is a string rather than a number because it may contain 'b', 'a',
@@ -479,6 +465,7 @@ goog.userAgent.determineVersion_ = function() {
  * @private
  */
 goog.userAgent.getVersionRegexResult_ = function() {
+  'use strict';
   var userAgent = goog.userAgent.getUserAgentString();
   if (goog.userAgent.GECKO) {
     return /rv\:([^\);]+)(\)|;)/.exec(userAgent);
@@ -507,6 +494,7 @@ goog.userAgent.getVersionRegexResult_ = function() {
  * @private
  */
 goog.userAgent.getDocumentMode_ = function() {
+  'use strict';
   // NOTE(user): goog.userAgent may be used in context where there is no DOM.
   var doc = goog.global['document'];
   return doc ? doc['documentMode'] : undefined;
@@ -533,7 +521,8 @@ goog.userAgent.VERSION = goog.userAgent.determineVersion_();
  * @deprecated Use goog.string.compareVersions.
  */
 goog.userAgent.compare = function(v1, v2) {
-  return goog.string.compareVersions(v1, v2);
+  'use strict';
+  return goog.string.internal.compareVersions(v1, v2);
 };
 
 
@@ -562,23 +551,15 @@ goog.userAgent.isVersionOrHigherCache_ = {};
  *     the given version.
  */
 goog.userAgent.isVersionOrHigher = function(version) {
+  'use strict';
   return goog.userAgent.ASSUME_ANY_VERSION ||
       goog.reflect.cache(
           goog.userAgent.isVersionOrHigherCache_, version, function() {
-            return goog.string.compareVersions(
+            'use strict';
+            return goog.string.internal.compareVersions(
                        goog.userAgent.VERSION, version) >= 0;
           });
 };
-
-
-/**
- * Deprecated alias to `goog.userAgent.isVersionOrHigher`.
- * @param {string|number} version The version to check.
- * @return {boolean} Whether the user agent version is higher or the same as
- *     the given version.
- * @deprecated Use goog.userAgent.isVersionOrHigher().
- */
-goog.userAgent.isVersion = goog.userAgent.isVersionOrHigher;
 
 
 /**
@@ -591,6 +572,7 @@ goog.userAgent.isVersion = goog.userAgent.isVersionOrHigher;
  *     same as the given version.
  */
 goog.userAgent.isDocumentModeOrHigher = function(documentMode) {
+  'use strict';
   return Number(goog.userAgent.DOCUMENT_MODE) >= documentMode;
 };
 
@@ -611,16 +593,21 @@ goog.userAgent.isDocumentMode = goog.userAgent.isDocumentModeOrHigher;
  * standards mode, treat the browser version as the document mode. Otherwise,
  * IE is emulating version 5.
  *
- * NOTE(2019/05/31): Support for IE < 7 is long gone, so this is now simplified.
+ * NOTE(user): Support for IE < 7 is long gone, so this is now simplified.
  * It returns document.documentMode for IE and undefined for everything else.
  *
  * @type {number|undefined}
  * @const
  */
 goog.userAgent.DOCUMENT_MODE = (function() {
+  'use strict';
   var doc = goog.global['document'];
-  if (!doc || !goog.userAgent.IE) {
-    return undefined;
-  }
-  return goog.userAgent.getDocumentMode_();
+  if (!doc || !goog.userAgent.IE) return undefined;
+  // This must be an IE user agent.
+  var documentMode = goog.userAgent.getDocumentMode_();
+  if (documentMode) return documentMode;
+  // The user agent version string begins with the major version.
+  // Parse the major version and truncate anything following.
+  var ieVersion = parseInt(goog.userAgent.VERSION, 10);
+  return ieVersion || undefined;
 })();

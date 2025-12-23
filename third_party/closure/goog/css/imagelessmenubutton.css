@@ -1,0 +1,22 @@
+/*
+ * Copyright 2010 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/*
+ * Standard styling for buttons created by goog.ui.ImagelessMenuButtonRenderer.
+ */
+
+@provide 'goog.css.imagelessmenubutton';
+
+/* Dropdown arrow style. */
+.goog-imageless-button-dropdown {
+  height: 16px;
+  width: 7px;
+  /* Client apps may override the URL at which they serve the sprite. */
+  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;
+  vertical-align: top;
+  margin-right: 2px;
+}

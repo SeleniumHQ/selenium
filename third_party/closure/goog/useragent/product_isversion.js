@@ -1,16 +1,8 @@
-// Copyright 2009 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Functions for understanding the version of the browser.
@@ -38,6 +30,7 @@ goog.require('goog.userAgent.product');
  * @private
  */
 goog.userAgent.product.determineVersion_ = function() {
+  'use strict';
   // All browsers have different ways to detect the version and they all have
   // different naming schemes.
 
@@ -52,9 +45,16 @@ goog.userAgent.product.determineVersion_ = function() {
   }
 
   if (goog.userAgent.product.CHROME) {
-    if (goog.labs.userAgent.platform.isIos()) {
+    // CriOS is Chrome on iOS, but iPadOS 13+ spoofs macOS by default.
+    // So it's possible that CriOS appears to be running on macOS.
+    if (goog.labs.userAgent.platform.isIos() ||
+        goog.labs.userAgent.platform.isMacintosh()) {
       // CriOS/56.0.2924.79
-      return goog.userAgent.product.getFirstRegExpGroup_(/CriOS\/([0-9.]+)/);
+      const chromeIosVersion =
+          goog.userAgent.product.getFirstRegExpGroup_(/CriOS\/([0-9.]+)/);
+      if (chromeIosVersion) {
+        return chromeIosVersion;
+      }
     }
     // Chrome/4.0.223.1
     return goog.userAgent.product.getFirstRegExpGroup_(/Chrome\/([0-9.]+)/);
@@ -109,6 +109,7 @@ goog.userAgent.product.determineVersion_ = function() {
  * @private
  */
 goog.userAgent.product.getFirstRegExpGroup_ = function(re) {
+  'use strict';
   var arr = goog.userAgent.product.execRegExp_(re);
   return arr ? arr[1] : '';
 };
@@ -121,6 +122,7 @@ goog.userAgent.product.getFirstRegExpGroup_ = function(re) {
  * @private
  */
 goog.userAgent.product.execRegExp_ = function(re) {
+  'use strict';
   return re.exec(goog.userAgent.getUserAgentString());
 };
 
@@ -142,6 +144,7 @@ goog.userAgent.product.VERSION = goog.userAgent.product.determineVersion_();
  *     same as the given version.
  */
 goog.userAgent.product.isVersion = function(version) {
+  'use strict';
   return goog.string.compareVersions(goog.userAgent.product.VERSION, version) >=
       0;
 };

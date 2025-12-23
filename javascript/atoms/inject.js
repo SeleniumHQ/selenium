@@ -40,6 +40,7 @@ goog.require('goog.array');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('goog.userAgent');
+goog.require('goog.utils');
 
 
 /**
@@ -101,7 +102,7 @@ bot.inject.WINDOW_KEY = 'WINDOW';
  */
 bot.inject.wrapValue = function (value) {
   var _wrap = function (value, seen) {
-    switch (goog.typeOf(value)) {
+    switch (goog.utils.typeOf(value)) {
       case 'string':
       case 'number':
       case 'boolean':
@@ -146,13 +147,13 @@ bot.inject.wrapValue = function (value) {
         }
 
         seen.push(value);
-        if (goog.isArrayLike(value)) {
+        if (goog.utils.isArrayLike(value)) {
           return goog.array.map(/**@type {IArrayLike}*/(value),
             function (v) { return _wrap(v, seen); });
         }
 
         var filtered = goog.object.filter(value, function (val, key) {
-          return goog.isNumber(key) || goog.isString(key);
+          return typeof key === 'number' || typeof key === 'string';
         });
         return goog.object.map(filtered, function (v) { return _wrap(v, seen); });
 
@@ -172,25 +173,26 @@ bot.inject.wrapValue = function (value) {
  * @return {*} The unwrapped value.
  */
 bot.inject.unwrapValue = function (value, opt_doc) {
-  if (goog.isArray(value)) {
+  if (Array.isArray(value)) {
     return goog.array.map(/**@type {IArrayLike}*/(value),
       function (v) { return bot.inject.unwrapValue(v, opt_doc); });
-  } else if (goog.isObject(value)) {
+  } else if (goog.utils.isObject(value)) {
     if (typeof value == 'function') {
       return value;
     }
 
-    if (goog.object.containsKey(value, bot.inject.ELEMENT_KEY)) {
-      return bot.inject.cache.getElement(value[bot.inject.ELEMENT_KEY],
+    var obj = /** @type {!Object} */ (value);
+    if (goog.object.containsKey(obj, bot.inject.ELEMENT_KEY)) {
+      return bot.inject.cache.getElement(obj[bot.inject.ELEMENT_KEY],
         opt_doc);
     }
 
-    if (goog.object.containsKey(value, bot.inject.WINDOW_KEY)) {
-      return bot.inject.cache.getElement(value[bot.inject.WINDOW_KEY],
+    if (goog.object.containsKey(obj, bot.inject.WINDOW_KEY)) {
+      return bot.inject.cache.getElement(obj[bot.inject.WINDOW_KEY],
         opt_doc);
     }
 
-    return goog.object.map(value, function (val) {
+    return goog.object.map(obj, function (val) {
       return bot.inject.unwrapValue(val, opt_doc);
     });
   }
@@ -213,7 +215,7 @@ bot.inject.unwrapValue = function (value, opt_doc) {
  * @private
  */
 bot.inject.recompileFunction_ = function (fn, theWindow) {
-  if (goog.isString(fn)) {
+  if (typeof fn === 'string') {
     try {
       return new theWindow['Function'](fn);
     } catch (ex) {
@@ -345,7 +347,7 @@ bot.inject.executeAsyncScript = function (fn, args, timeout, onDone,
       responseSent = true;
     }
   }
-  var sendError = goog.partial(sendResponse, bot.ErrorCode.UNKNOWN_ERROR);
+  var sendError = goog.utils.partial(sendResponse, bot.ErrorCode.UNKNOWN_ERROR);
 
   if (win.closed) {
     sendError('Unable to execute script; the target window is closed.');
@@ -355,7 +357,7 @@ bot.inject.executeAsyncScript = function (fn, args, timeout, onDone,
   fn = bot.inject.recompileFunction_(fn, win);
 
   args = /** @type {Array.<*>} */ (bot.inject.unwrapValue(args, win.document));
-  args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
+  args.push(goog.utils.partial(sendResponse, bot.ErrorCode.SUCCESS));
 
   if (win.addEventListener) {
     win.addEventListener('unload', onunload, true);
@@ -363,7 +365,7 @@ bot.inject.executeAsyncScript = function (fn, args, timeout, onDone,
     win.attachEvent('onunload', onunload);
   }
 
-  var startTime = goog.now();
+  var startTime = goog.utils.now();
   try {
     fn.apply(win, args);
 
@@ -373,7 +375,7 @@ bot.inject.executeAsyncScript = function (fn, args, timeout, onDone,
     timeoutId = win.setTimeout(function () {
       sendResponse(bot.ErrorCode.SCRIPT_TIMEOUT,
         Error('Timed out waiting for asynchronous script result ' +
-          'after ' + (goog.now() - startTime) + ' ms'));
+          'after ' + (goog.utils.now() - startTime) + ' ms'));
     }, Math.max(0, timeout));
   } catch (ex) {
     sendResponse(ex.code || bot.ErrorCode.UNKNOWN_ERROR, ex);
@@ -457,12 +459,12 @@ bot.inject.cache.getCache_ = function (opt_doc) {
     cache = doc[bot.inject.cache.CACHE_KEY_] = {};
     // Store the counter used for generated IDs in the cache so that it gets
     // reset whenever the cache does.
-    cache.nextId = goog.now();
+    cache.nextId = goog.utils.now();
   }
   // Sometimes the nextId does not get initialized and returns NaN
   // TODO: Generate UID on the fly instead.
   if (!cache.nextId) {
-    cache.nextId = goog.now();
+    cache.nextId = goog.utils.now();
   }
   return cache;
 };

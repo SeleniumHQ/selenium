@@ -1,16 +1,8 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Helper class to allow for expected unit test failures.
@@ -61,6 +53,7 @@ goog.require('goog.testing.asserts');
  * @final
  */
 goog.testing.ExpectedFailures = function() {
+  'use strict';
   goog.testing.ExpectedFailures.setUpConsole_();
   this.reset_();
 };
@@ -112,6 +105,7 @@ goog.testing.ExpectedFailures.prototype.suppressedFailures_;
  * @private
  */
 goog.testing.ExpectedFailures.setUpConsole_ = function() {
+  'use strict';
   if (!goog.testing.ExpectedFailures.console_) {
     var xButton = goog.dom.createDom(
         goog.dom.TagName.DIV, {
@@ -129,6 +123,7 @@ goog.testing.ExpectedFailures.setUpConsole_ = function() {
         xButton);
     document.body.appendChild(div);
     goog.events.listen(xButton, goog.events.EventType.CLICK, function() {
+      'use strict';
       goog.style.setElementShown(div, false);
     });
 
@@ -153,6 +148,7 @@ goog.testing.ExpectedFailures.setUpConsole_ = function() {
  */
 goog.testing.ExpectedFailures.prototype.expectFailureFor = function(
     condition, opt_message) {
+  'use strict';
   this.expectingFailure_ = this.expectingFailure_ || condition;
   if (condition) {
     this.failureMessage_ = this.failureMessage_ || opt_message || '';
@@ -166,6 +162,7 @@ goog.testing.ExpectedFailures.prototype.expectFailureFor = function(
  * @return {boolean} Whether the exception was expected.
  */
 goog.testing.ExpectedFailures.prototype.isExceptionExpected = function(ex) {
+  'use strict';
   return this.expectingFailure_ && ex instanceof goog.testing.JsUnitException;
 };
 
@@ -176,6 +173,7 @@ goog.testing.ExpectedFailures.prototype.isExceptionExpected = function(ex) {
  * @param {Error} ex The exception to handle.
  */
 goog.testing.ExpectedFailures.prototype.handleException = function(ex) {
+  'use strict';
   if (this.isExceptionExpected(ex)) {
     goog.asserts.assertInstanceof(ex, goog.testing.JsUnitException);
     goog.log.info(
@@ -201,6 +199,7 @@ goog.testing.ExpectedFailures.prototype.handleException = function(ex) {
  *     didn't occur.  In this case a warning will be logged in handleTearDown.
  */
 goog.testing.ExpectedFailures.prototype.run = function(func, opt_lenient) {
+  'use strict';
   try {
     func();
   } catch (ex) {
@@ -219,6 +218,7 @@ goog.testing.ExpectedFailures.prototype.run = function(func, opt_lenient) {
  * @private
  */
 goog.testing.ExpectedFailures.prototype.getExpectationMessage_ = function() {
+  'use strict';
   return 'Expected a test failure in \'' +
       goog.testing.TestCase.currentTestName + '\' but the test passed.';
 };
@@ -229,6 +229,7 @@ goog.testing.ExpectedFailures.prototype.getExpectationMessage_ = function() {
  * was not suppressed.
  */
 goog.testing.ExpectedFailures.prototype.handleTearDown = function() {
+  'use strict';
   if (this.expectingFailure_ && !this.suppressedFailures_.length) {
     goog.log.warning(this.logger_, this.getExpectationMessage_());
   }
@@ -241,6 +242,7 @@ goog.testing.ExpectedFailures.prototype.handleTearDown = function() {
  * @private
  */
 goog.testing.ExpectedFailures.prototype.reset_ = function() {
+  'use strict';
   this.expectingFailure_ = false;
   this.failureMessage_ = '';
   this.suppressedFailures_ = [];

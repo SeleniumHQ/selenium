@@ -1,16 +1,8 @@
-// Copyright 2005 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview A base class for event objects.
@@ -18,7 +10,6 @@
 
 
 goog.provide('goog.events.Event');
-goog.provide('goog.events.EventLike');
 
 /**
  * goog.events.Event no longer depends on goog.Disposable. Keep requiring
@@ -30,24 +21,8 @@ goog.require('goog.events.EventId');
 
 
 /**
- * A typedef for event like objects that are dispatchable via the
- * goog.events.dispatchEvent function. strings are treated as the type for a
- * goog.events.Event. Objects are treated as an extension of a new
- * goog.events.Event with the type property of the object being used as the type
- * of the Event.
- * @typedef {string|Object|goog.events.Event|goog.events.EventId}
- */
-goog.events.EventLike;
-
-
-
-/**
  * A base class for event objects, so that they can support preventDefault and
  * stopPropagation.
- *
- * @suppress {underscore} Several properties on this class are technically
- *     public, but referencing these properties outside this package is strongly
- *     discouraged.
  *
  * @param {string|!goog.events.EventId} type Event Type.
  * @param {Object=} opt_target Reference to the object that is the target of
@@ -56,6 +31,7 @@ goog.events.EventLike;
  * @constructor
  */
 goog.events.Event = function(type, opt_target) {
+  'use strict';
   /**
    * Event type.
    * @type {string}
@@ -80,7 +56,7 @@ goog.events.Event = function(type, opt_target) {
   /**
    * Whether to cancel the event in internal capture/bubble processing for IE.
    * @type {boolean}
-   * @public
+   * @private
    */
   this.propagationStopped_ = false;
 
@@ -93,30 +69,33 @@ goog.events.Event = function(type, opt_target) {
    * @type {boolean}
    */
   this.defaultPrevented = false;
-
-  /**
-   * Return value for in internal capture/bubble processing for IE.
-   * @type {boolean}
-   * @public
-   */
-  this.returnValue_ = true;
 };
 
+/**
+ * @return {boolean} true iff internal propagation has been stopped.
+ */
+goog.events.Event.prototype.hasPropagationStopped = function() {
+  'use strict';
+  return this.propagationStopped_;
+};
 
 /**
  * Stops event propagation.
+ * @return {void}
  */
 goog.events.Event.prototype.stopPropagation = function() {
+  'use strict';
   this.propagationStopped_ = true;
 };
 
 
 /**
  * Prevents the default action, for example a link redirecting to a url.
+ * @return {void}
  */
 goog.events.Event.prototype.preventDefault = function() {
+  'use strict';
   this.defaultPrevented = true;
-  this.returnValue_ = false;
 };
 
 
@@ -125,8 +104,10 @@ goog.events.Event.prototype.preventDefault = function() {
  * `e.stopPropagation()`, but can be used as the callback argument of
  * {@link goog.events.listen} without declaring another function.
  * @param {!goog.events.Event} e An event.
+ * @return {void}
  */
 goog.events.Event.stopPropagation = function(e) {
+  'use strict';
   e.stopPropagation();
 };
 
@@ -136,7 +117,9 @@ goog.events.Event.stopPropagation = function(e) {
  * `e.preventDefault()`, but can be used as the callback argument of
  * {@link goog.events.listen} without declaring another function.
  * @param {!goog.events.Event} e An event.
+ * @return {void}
  */
 goog.events.Event.preventDefault = function(e) {
+  'use strict';
   e.preventDefault();
 };

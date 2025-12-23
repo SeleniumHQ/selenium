@@ -1,0 +1,10 @@
+load("@rules_closure//closure:defs.bzl", "closure_css_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_css_library(
+    name = "css",
+    srcs = glob(["*.css"]),
+)

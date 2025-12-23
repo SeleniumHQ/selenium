@@ -1,21 +1,8 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-closure_js_library(
-    name = "eventobserver",
-    testonly = True,
-    srcs = ["eventobserver.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/events:event",
-    ],
-)
 
 closure_js_library(
     name = "events",
@@ -32,30 +19,9 @@ closure_js_library(
         "//third_party/closure/goog/events:eventtarget",
         "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/events:keycodes",
+        "//third_party/closure/goog/math:coordinate",
         "//third_party/closure/goog/object",
         "//third_party/closure/goog/style",
         "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "matchers",
-    testonly = True,
-    srcs = ["matchers.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/testing:mockmatchers",
-    ],
-)
-
-closure_js_library(
-    name = "onlinehandler",
-    testonly = True,
-    srcs = ["onlinehandler.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/net:networkstatusmonitor",
     ],
 )

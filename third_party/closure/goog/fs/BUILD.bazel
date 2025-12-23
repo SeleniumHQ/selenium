@@ -1,130 +1,18 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 closure_js_library(
-    name = "all_js",
-    exports = [
-        ":entry",
-        ":entryimpl",
-        ":error",
-        ":filereader",
-        ":filesaver",
-        ":filesystem",
-        ":filesystemimpl",
-        ":filewriter",
-        ":fs",
-        ":progressevent",
-        ":url",
-    ],
+    name = "blob",
+    srcs = ["blob.js"],
+    lenient = True,
 )
 
-closure_js_library(
+alias(
     name = "entry",
-    srcs = ["entry.js"],
-    lenient = True,
-)
-
-closure_js_library(
-    name = "entryimpl",
-    srcs = ["entryimpl.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/fs:entry",
-        "//third_party/closure/goog/fs:error",
-        "//third_party/closure/goog/fs:filewriter",
-        "//third_party/closure/goog/functions",
-        "//third_party/closure/goog/mochikit/async:deferred",
-        "//third_party/closure/goog/string",
-    ],
-)
-
-closure_js_library(
-    name = "error",
-    srcs = ["error.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/debug:error",
-        "//third_party/closure/goog/object",
-        "//third_party/closure/goog/string",
-    ],
-)
-
-closure_js_library(
-    name = "filereader",
-    srcs = ["filereader.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/fs:error",
-        "//third_party/closure/goog/fs:progressevent",
-        "//third_party/closure/goog/mochikit/async:deferred",
-    ],
-)
-
-closure_js_library(
-    name = "filesaver",
-    srcs = ["filesaver.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/fs:error",
-        "//third_party/closure/goog/fs:progressevent",
-    ],
-)
-
-closure_js_library(
-    name = "filesystem",
-    srcs = ["filesystem.js"],
-    lenient = True,
-)
-
-closure_js_library(
-    name = "filesystemimpl",
-    srcs = ["filesystemimpl.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/fs:entryimpl",
-        "//third_party/closure/goog/fs:filesystem",
-    ],
-)
-
-closure_js_library(
-    name = "filewriter",
-    srcs = ["filewriter.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/fs:error",
-        "//third_party/closure/goog/fs:filesaver",
-    ],
-)
-
-closure_js_library(
-    name = "fs",
-    srcs = ["fs.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/fs:error",
-        "//third_party/closure/goog/fs:filereader",
-        "//third_party/closure/goog/fs:filesystemimpl",
-        "//third_party/closure/goog/fs:url",
-        "//third_party/closure/goog/mochikit/async:deferred",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "progressevent",
-    srcs = ["progressevent.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/events:event"],
+    actual = ":filesystem",
 )
 
 closure_js_library(

@@ -1,0 +1,14 @@
+/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Styles for goog.ui.TableSorter. */
+
+@provide 'goog.css.tablesorter';
+
+.goog-tablesorter-header {
+  cursor: pointer
+}
