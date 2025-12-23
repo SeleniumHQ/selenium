@@ -46,7 +46,7 @@ jobs:
       
       - name: Run Steep type check
         working-directory: rb
-        run: bundle exec rake steep
+        run: bundle exec rake steep 2>/dev/null || (bundle exec rake steep && exit 1)
 
   unit-tests:
     name: Unit Tests
