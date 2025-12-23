@@ -31,9 +31,10 @@ jobs:
       cache-key: rb-steep-check
       run: |
         bazel build @bundle//:bundle
+        BUNDLE_BIN="$(pwd)/bazel-bin/external/rules_ruby++ruby+bundle/bin/private"
         cd rb
-        ../bazel-bin/external/rules_ruby++ruby+bundle/bin/private/rbs collection install
-        ../bazel-bin/external/rules_ruby++ruby+bundle/bin/private/rake steep
+        "$BUNDLE_BIN/rbs" collection install
+        "$BUNDLE_BIN/rake" steep
 
   unit-tests:
     name: Unit Tests
