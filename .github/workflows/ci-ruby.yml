@@ -32,8 +32,8 @@ jobs:
       run: |
         bazel build @bundle//:bundle
         cd rb
-        ../bazel-bin/external/rules_ruby++ruby+bundle/bin/bundle exec rbs collection install
-        ../bazel-bin/external/rules_ruby++ruby+bundle/bin/bundle exec rake steep
+        ../bazel-bin/external/rules_ruby++ruby+bundle/bin/private/rbs collection install
+        ../bazel-bin/external/rules_ruby++ruby+bundle/bin/private/rake steep
 
   unit-tests:
     name: Unit Tests
