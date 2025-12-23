@@ -7,6 +7,9 @@ build:rbe --remote_cache=grpcs://gypsum.cluster.engflow.com
 # The number of cores available
 build:rbe -j 50
 
+# Always pin the browser when running remotely
+build:rbe --//common:pin_browsers
+
 build:rbe --define=EXECUTOR=remote
 build:rbe --experimental_inmemory_dotd_files
 build:rbe --experimental_inmemory_jdeps_files
@@ -20,7 +23,6 @@ build:rbe --extra_execution_platforms=//common/remote-build:platform
 build:rbe --extra_toolchains=//common/remote-build:cc-toolchain
 build:rbe --host_platform=//common/remote-build:platform
 build:rbe --platforms=//common/remote-build:platform
-build:rbe --cxxopt=-std=c++14
 
 # The Docker images are running Linux
 build:rbe --cpu=k8
