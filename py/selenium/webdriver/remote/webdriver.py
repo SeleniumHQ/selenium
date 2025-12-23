@@ -49,7 +49,7 @@ from selenium.webdriver.common.bidi.script import Script
 from selenium.webdriver.common.bidi.session import Session
 from selenium.webdriver.common.bidi.storage import Storage
 from selenium.webdriver.common.bidi.webextension import WebExtension
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.common.fedcm.dialog import Dialog
 from selenium.webdriver.common.options import ArgOptions, BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions

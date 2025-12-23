@@ -18,8 +18,10 @@
 from hashlib import md5 as md5_hash
 
 from selenium.common.exceptions import InvalidSelectorException
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.relative_locator import RelativeBy
 
 
 class ShadowRoot:

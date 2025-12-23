@@ -27,10 +27,11 @@ from hashlib import md5 as md5_hash
 from io import BytesIO
 
 from selenium.common.exceptions import JavascriptException, WebDriverException
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.support.relative_locator import RelativeBy
 
 # TODO: Use built in importlib_resources.files.
 getAttribute_js = None
