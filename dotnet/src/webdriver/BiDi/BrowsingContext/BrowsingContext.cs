@@ -155,92 +155,200 @@ public sealed record BrowsingContext
 
     public Task<Subscription> OnFragmentNavigatedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnFragmentNavigatedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnFragmentNavigatedAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnHistoryUpdatedAsync(Func<HistoryUpdatedEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnHistoryUpdatedAsync(Action<HistoryUpdatedEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnHistoryUpdatedAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnDomContentLoadedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDomContentLoadedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnDomContentLoadedAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnDomContentLoadedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDomContentLoadedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnDomContentLoadedAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnLoadAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnLoadAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnLoadAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnLoadAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnLoadAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnLoadAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnDownloadWillBeginAsync(Action<DownloadWillBeginEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnDownloadWillBeginAsync(Func<DownloadWillBeginEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnDownloadWillBeginAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnDownloadEndAsync(Action<DownloadEndEventArgs> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadEndAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnDownloadEndAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnDownloadEndAsync(Func<DownloadEndEventArgs, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnDownloadEndAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnDownloadEndAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnNavigationAbortedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationAbortedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnNavigationAbortedAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnNavigationAbortedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationAbortedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnNavigationAbortedAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnNavigationFailedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationFailedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnNavigationFailedAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnNavigationFailedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationFailedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnNavigationFailedAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnNavigationCommittedAsync(Action<NavigationInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnNavigationCommittedAsync(e =>
+        {
+            if (e.Context == this)
+            {
+                handler(e);
+            }
+        }, options.WithContext(this));
     }
 
     public Task<Subscription> OnNavigationCommittedAsync(Func<NavigationInfo, Task> handler, ContextSubscriptionOptions? options = null)
     {
-        return BiDi.BrowsingContext.OnNavigationCommittedAsync(handler, options.WithContext(this));
+        return BiDi.BrowsingContext.OnNavigationCommittedAsync(async e =>
+        {
+            if (e.Context == this)
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(this));
     }
 
     public bool Equals(BrowsingContext? other)
