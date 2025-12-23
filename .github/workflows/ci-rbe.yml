@@ -68,8 +68,8 @@ jobs:
           else
             echo "::error::Code needs formatting. Run ./scripts/format.sh locally."
             git diff
+            exit 1
           fi
-          exit 1
 
   test:
     name: Test
