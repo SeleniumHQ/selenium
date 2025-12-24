@@ -28,6 +28,10 @@ on:
         type: string
         default: "all"
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   ruby:
     if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'ruby' || inputs.language == 'all' || github.event_name == 'schedule')
@@ -147,6 +151,8 @@ jobs:
   grid:
     if: (github.repository_owner == 'seleniumhq') && (inputs.language == 'grid' || inputs.language == 'all' || github.event_name == 'schedule')
     name: Grid
+    permissions:
+      contents: write  # for creating nightly GitHub release
     uses: ./.github/workflows/bazel.yml
     with:
       name: Nightly Grid Release
