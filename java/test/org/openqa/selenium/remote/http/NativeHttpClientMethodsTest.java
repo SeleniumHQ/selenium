@@ -243,6 +243,8 @@ class NativeHttpClientMethodsTest {
       return CompletableFuture.completedFuture(mockResponse);
     }
 
+
+
     @Override
     public <T> java.net.http.HttpResponse<T> sendNative(
         java.net.http.HttpRequest request, java.net.http.HttpResponse.BodyHandler<T> handler)
