@@ -135,7 +135,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnNavigationStartedAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -146,7 +146,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnNavigationStartedAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -157,7 +157,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnFragmentNavigatedAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -168,7 +168,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnFragmentNavigatedAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -179,7 +179,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnHistoryUpdatedAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -190,7 +190,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnHistoryUpdatedAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -201,7 +201,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnDomContentLoadedAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -212,7 +212,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnDomContentLoadedAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -223,7 +223,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnLoadAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -234,7 +234,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnLoadAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -245,7 +245,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnDownloadWillBeginAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -256,7 +256,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnDownloadWillBeginAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -267,7 +267,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnDownloadEndAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -278,7 +278,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnDownloadEndAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -289,7 +289,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnNavigationAbortedAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -300,7 +300,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnNavigationAbortedAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -311,7 +311,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnNavigationFailedAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -322,7 +322,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnNavigationFailedAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -333,7 +333,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnNavigationCommittedAsync(e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 handler(e);
             }
@@ -344,7 +344,7 @@ public sealed record BrowsingContext
     {
         return BiDi.BrowsingContext.OnNavigationCommittedAsync(async e =>
         {
-            if (e.Context == this)
+            if (Equals(e.Context))
             {
                 await handler(e).ConfigureAwait(false);
             }
@@ -361,7 +361,6 @@ public sealed record BrowsingContext
         return Id is not null ? StringComparer.Ordinal.GetHashCode(Id) : 0;
     }
 
-    // Includes Id only for brevity
     private bool PrintMembers(StringBuilder builder)
     {
         builder.Append($"Id = {Id}");
