@@ -35,7 +35,25 @@ namespace OpenQA.Selenium;
 [IgnoreBrowser(Browser.Remote, "Remote does not use Selenium Manager directly")]
 public class SeleniumManagerTest
 {
-    private static readonly string CacheDirectory = System.Environment.GetEnvironmentVariable("SE_CACHE") ?? Path.Combine(".cache", "selenium");
+    private static readonly string CacheDirectory = ResolveCacheDirectory();
+
+    private static string ResolveCacheDirectory()
+    {
+        string? cacheDirectory = System.Environment.GetEnvironmentVariable("SE_CACHE_PATH");
+
+        if (!string.IsNullOrWhiteSpace(cacheDirectory))
+        {
+            return cacheDirectory;
+        }
+
+        string homeDirectory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile);
+        if (!string.IsNullOrWhiteSpace(homeDirectory))
+        {
+            return Path.Combine(homeDirectory, ".cache", "selenium");
+        }
+
+        return Path.Combine(".cache", "selenium");
+    }
 
     private DriverOptions CreateOptionsForCurrentBrowser()
     {
@@ -70,8 +88,12 @@ public class SeleniumManagerTest
 
         Assert.That(File.Exists(driverPath), Is.True, $"Driver path should exist: {driverPath}");
         Assert.That(File.Exists(browserPath), Is.True, $"Browser path should exist: {browserPath}");
-        Assert.That(driverPath, Is.SubPathOf(CacheDirectory), $"Driver path should be nested under the cache directory: {driverPath}");
-        Assert.That(browserPath, Does.Contain(CacheDirectory), $"Browser path should contain cache directory: {browserPath}");
+        string fullCacheDirectory = Path.GetFullPath(CacheDirectory);
+        string fullDriverPath = Path.GetFullPath(driverPath);
+        string fullBrowserPath = Path.GetFullPath(browserPath);
+
+        Assert.That(fullDriverPath, Is.SubPathOf(fullCacheDirectory), $"Driver path should be nested under the cache directory: {fullDriverPath}");
+        Assert.That(fullBrowserPath, Does.Contain(fullCacheDirectory), $"Browser path should contain cache directory: {fullBrowserPath}");
     }
 
     [Test]
