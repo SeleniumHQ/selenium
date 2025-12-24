@@ -387,22 +387,16 @@ Run unit tests with:
 bazel test //py:unit
 ```
 
-To run common tests with a specific browser:
+To run all tests with a specific browser:
 
 ```shell
-bazel test //py:common-<browsername>
+bazel test //py:test-<browsername>
 ```
 
 To run common tests with a specific browser (include BiDi tests):
 
 ```shell
-bazel test //py:common-<browsername>-bidi
-```
-
-To run tests with a specific browser:
-
-```shell
-bazel test //py:test-<browsername>
+bazel test //py:test-<browsername>-bidi
 ```
 
 To run all Python tests:
@@ -410,6 +404,12 @@ To run all Python tests:
 ```shell
 bazel test //py:all
 ```
+
+To run tests headless:
+```shell
+bazel test //py:test-<browsername> --//common:headless=true
+```
+
 
 </details>
 

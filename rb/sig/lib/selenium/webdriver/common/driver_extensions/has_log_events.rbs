@@ -5,6 +5,7 @@ module Selenium
         include _ExecuteScript
         include _FindElements
         include _DevTools
+        include _Driver
 
         @log_listeners: untyped
 

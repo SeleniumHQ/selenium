@@ -1,0 +1,16 @@
+# Type signatures for rubyzip gem
+
+module Zip
+  VERSION: String
+
+  class File
+    def self.open: (String path) { (File) -> void } -> void
+
+    def each: () { (Entry) -> void } -> void
+    def extract: (Entry entry, String dest, ?destination_directory: String?) -> void
+  end
+
+  class Entry
+    attr_reader name: String
+  end
+end

@@ -3,6 +3,8 @@ module Selenium
     module Zipper
       EXTENSIONS: Array[String]
 
+      RUBYZIP_V3: bool
+
       def self.unzip: (untyped path) -> untyped
 
       def self.zip: (untyped path) -> untyped
