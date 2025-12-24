@@ -22,7 +22,11 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.openqa.selenium.internal.Require;
 
 public class MapConfig implements Config {

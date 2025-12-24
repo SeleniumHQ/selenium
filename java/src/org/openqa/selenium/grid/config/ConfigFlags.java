@@ -23,7 +23,11 @@ import com.beust.jcommander.Parameter;
 import com.google.common.collect.ImmutableSortedSet;
 import java.io.PrintStream;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.openqa.selenium.json.Json;
 

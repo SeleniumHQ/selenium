@@ -21,7 +21,12 @@ import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.openqa.selenium.internal.Require;
 
 public class ConcatenatingConfig implements Config {

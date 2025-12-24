@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
-import java.util.*;
+import java.util.Set;
 
 public class StandardGridRoles {
   private StandardGridRoles() {
