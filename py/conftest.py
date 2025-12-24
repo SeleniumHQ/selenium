@@ -492,13 +492,13 @@ def clean_driver(request):
 def clean_service(request):
     driver_class = request.config.option.drivers[0].lower()
     selenium_driver = Driver(driver_class, request)
-    yield selenium_driver.service
+    return selenium_driver.service
 
 
 @pytest.fixture(scope="function")
 def clean_options(request):
     driver_class = request.config.option.drivers[0].lower()
-    yield Driver.clean_options(driver_class, request)
+    return Driver.clean_options(driver_class, request)
 
 
 @pytest.fixture

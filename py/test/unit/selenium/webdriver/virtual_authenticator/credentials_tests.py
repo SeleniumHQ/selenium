@@ -43,7 +43,7 @@ BYGpI8g==
 """
 
 
-@pytest.fixture()
+@pytest.fixture
 def data() -> tuple:
     _id = bytearray({1, 2, 3, 4})
     rp_id = "localhost"

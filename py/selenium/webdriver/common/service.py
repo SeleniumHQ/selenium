@@ -25,7 +25,7 @@ from collections.abc import Mapping
 from io import IOBase
 from subprocess import PIPE
 from time import sleep
-from typing import IO, Any, Optional, Union, cast
+from typing import IO, Any, cast
 from urllib import request
 from urllib.error import URLError
 
@@ -67,7 +67,7 @@ class Service(ABC):
         elif log_output is None or log_output == subprocess.DEVNULL:
             self.log_output = subprocess.DEVNULL
         else:
-            self.log_output = cast(Union[int, IOBase], log_output)
+            self.log_output = cast(int | IOBase, log_output)
 
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
@@ -221,8 +221,8 @@ class Service(ABC):
                 cmd,
                 env=self.env,
                 close_fds=close_file_descriptors,
-                stdout=cast(Optional[Union[int, IO[Any]]], self.log_output),
-                stderr=cast(Optional[Union[int, IO[Any]]], self.log_output),
+                stdout=cast(int | IO[Any] | None, self.log_output),
+                stderr=cast(int | IO[Any] | None, self.log_output),
                 stdin=PIPE,
                 creationflags=self.creation_flags,
                 startupinfo=start_info,

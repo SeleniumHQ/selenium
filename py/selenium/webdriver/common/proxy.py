@@ -118,25 +118,25 @@ class Proxy:
             raw: Raw proxy data. If None, default class values are used.
         """
         if raw:
-            if "proxyType" in raw and raw["proxyType"]:
+            if raw.get("proxyType"):
                 self.proxy_type = ProxyType.load(raw["proxyType"])
-            if "httpProxy" in raw and raw["httpProxy"]:
+            if raw.get("httpProxy"):
                 self.http_proxy = raw["httpProxy"]
-            if "noProxy" in raw and raw["noProxy"]:
+            if raw.get("noProxy"):
                 self.no_proxy = raw["noProxy"]
-            if "proxyAutoconfigUrl" in raw and raw["proxyAutoconfigUrl"]:
+            if raw.get("proxyAutoconfigUrl"):
                 self.proxy_autoconfig_url = raw["proxyAutoconfigUrl"]
-            if "sslProxy" in raw and raw["sslProxy"]:
+            if raw.get("sslProxy"):
                 self.sslProxy = raw["sslProxy"]
-            if "autodetect" in raw and raw["autodetect"]:
+            if raw.get("autodetect"):
                 self.auto_detect = raw["autodetect"]
-            if "socksProxy" in raw and raw["socksProxy"]:
+            if raw.get("socksProxy"):
                 self.socks_proxy = raw["socksProxy"]
-            if "socksUsername" in raw and raw["socksUsername"]:
+            if raw.get("socksUsername"):
                 self.socks_username = raw["socksUsername"]
-            if "socksPassword" in raw and raw["socksPassword"]:
+            if raw.get("socksPassword"):
                 self.socks_password = raw["socksPassword"]
-            if "socksVersion" in raw and raw["socksVersion"]:
+            if raw.get("socksVersion"):
                 self.socks_version = raw["socksVersion"]
 
     @property
