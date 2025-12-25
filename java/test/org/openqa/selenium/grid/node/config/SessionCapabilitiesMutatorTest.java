@@ -22,11 +22,10 @@ import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -48,7 +47,7 @@ public class SessionCapabilitiesMutatorTest {
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
     Map<String, Object> chromeOptions = new HashMap<>();
-    chromeOptions.put("args", Arrays.asList("incognito", "window-size=500,500"));
+    chromeOptions.put("args", List.of("incognito", "window-size=500,500"));
 
     capabilities =
         new ImmutableCapabilities(
@@ -73,7 +72,7 @@ public class SessionCapabilitiesMutatorTest {
   @Test
   void shouldMergeStereotypeWithOptionsWithCapsWithoutOptions() {
     Map<String, Object> chromeOptions = new HashMap<>();
-    chromeOptions.put("args", Arrays.asList("incognito", "window-size=500,500"));
+    chromeOptions.put("args", List.of("incognito", "window-size=500,500"));
 
     stereotype =
         new ImmutableCapabilities(
@@ -108,9 +107,8 @@ public class SessionCapabilitiesMutatorTest {
     String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
 
     Map<String, Object> stereotypeOptions = new HashMap<>();
-    stereotypeOptions.put(
-        "args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
-    stereotypeOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext1)));
+    stereotypeOptions.put("args", List.of("incognito", "window-size=500,500"));
+    stereotypeOptions.put("extensions", List.of(ext1));
     stereotypeOptions.put("binary", "/path/to/binary");
     stereotypeOptions.put("opt1", "val1");
     stereotypeOptions.put("opt2", "val4");
@@ -121,8 +119,8 @@ public class SessionCapabilitiesMutatorTest {
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
     Map<String, Object> capabilityOptions = new HashMap<>();
-    capabilityOptions.put("args", Arrays.asList("incognito", "--headless"));
-    capabilityOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext2)));
+    capabilityOptions.put("args", List.of("incognito", "--headless"));
+    capabilityOptions.put("extensions", List.of(ext2));
     capabilityOptions.put("binary", "/path/to/caps/binary");
     capabilityOptions.put("opt2", "val2");
     capabilityOptions.put("opt3", "val3");
@@ -168,9 +166,8 @@ public class SessionCapabilitiesMutatorTest {
     String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
 
     Map<String, Object> stereotypeOptions = new HashMap<>();
-    stereotypeOptions.put(
-        "args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
-    stereotypeOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext1)));
+    stereotypeOptions.put("args", List.of("incognito", "window-size=500,500"));
+    stereotypeOptions.put("extensions", List.of(ext1));
     stereotypeOptions.put("opt1", "val1");
     stereotypeOptions.put("opt2", "val4");
 
@@ -181,8 +178,8 @@ public class SessionCapabilitiesMutatorTest {
     sessionCapabilitiesMutator = new SessionCapabilitiesMutator(stereotype);
 
     Map<String, Object> capabilityOptions = new HashMap<>();
-    capabilityOptions.put("args", Arrays.asList("incognito", "--headless"));
-    capabilityOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext2)));
+    capabilityOptions.put("args", List.of("incognito", "--headless"));
+    capabilityOptions.put("extensions", List.of(ext2));
     capabilityOptions.put("binary", "/path/to/binary");
     capabilityOptions.put("opt2", "val2");
     capabilityOptions.put("opt3", "val3");
@@ -225,7 +222,7 @@ public class SessionCapabilitiesMutatorTest {
   @Test
   void shouldMergeFirefoxSpecificOptionsFromStereotypeAndCaps() {
     Map<String, Object> stereotypeOptions = new HashMap<>();
-    stereotypeOptions.put("args", new ArrayList<>(Arrays.asList("verbose", "silent")));
+    stereotypeOptions.put("args", List.of("verbose", "silent"));
 
     Map<String, String> prefs = new HashMap<>();
     prefs.put("opt1", "val1");

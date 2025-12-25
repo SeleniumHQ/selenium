@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.node;
 
 import static java.time.Duration.ofSeconds;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -30,8 +32,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -44,9 +44,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -162,7 +164,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     node2 =
         new RemoteNode(
@@ -172,7 +174,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local2.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
   }
 
   @Test
@@ -187,7 +189,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of());
+            emptySet());
 
     Either<WebDriverException, CreateSessionResponse> response =
         node.newSession(createSessionRequest(caps));
@@ -239,7 +241,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     ImmutableCapabilities wrongCaps = new ImmutableCapabilities("browserName", "burger");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
@@ -363,7 +365,7 @@ class NodeTest {
             uri,
             registrationSecret,
             local.getSessionTimeout(),
-            ImmutableSet.of(caps));
+            Set.of(caps));
 
     Either<WebDriverException, CreateSessionResponse> response =
         remote.newSession(createSessionRequest(caps));
@@ -943,10 +945,10 @@ class NodeTest {
   }
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
-    return new CreateSessionRequest(ImmutableSet.copyOf(Dialect.values()), caps, ImmutableMap.of());
+    return new CreateSessionRequest(EnumSet.allOf(Dialect.class), caps, emptyMap());
   }
 
-  private String simulateFileDownload(SessionId id, String text) throws IOException {
+  private String simulateFileDownload(SessionId id, String text) {
     File zip = createTmpFile(text);
     TemporaryFilesystem downloadsTfs = local.getDownloadsFilesystem(id);
     File someDir = getTemporaryFilesystemBaseDir(downloadsTfs);

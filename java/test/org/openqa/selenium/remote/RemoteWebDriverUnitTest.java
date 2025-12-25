@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -33,14 +34,13 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -77,7 +77,7 @@ class RemoteWebDriverUnitTest {
     fixture.driver.get("http://some.host.com");
 
     fixture.verifyCommands(
-        new CommandPayload(DriverCommand.GET, ImmutableMap.of("url", "http://some.host.com")));
+        new CommandPayload(DriverCommand.GET, Map.of("url", "http://some.host.com")));
   }
 
   @Test
@@ -122,8 +122,7 @@ class RemoteWebDriverUnitTest {
 
     fixture.verifyCommands(
         new CommandPayload(
-            DriverCommand.EXECUTE_SCRIPT,
-            ImmutableMap.of("script", "return 1", "args", Arrays.asList(1, "2"))));
+            DriverCommand.EXECUTE_SCRIPT, Map.of("script", "return 1", "args", List.of(1, "2"))));
   }
 
   @Test
@@ -136,21 +135,19 @@ class RemoteWebDriverUnitTest {
     fixture.verifyCommands(
         new CommandPayload(
             DriverCommand.EXECUTE_ASYNC_SCRIPT,
-            ImmutableMap.of("script", "return 1", "args", Arrays.asList(1, "2"))));
+            Map.of("script", "return 1", "args", List.of(1, "2"))));
   }
 
   @Test
   void canHandleFindElementW3CCommand() {
     WebDriverFixture fixture =
         new WebDriverFixture(
-            echoCapabilities,
-            valueResponder(ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString())));
+            echoCapabilities, valueResponder(Map.of(ELEMENT_KEY, UUID.randomUUID().toString())));
 
     assertThat(fixture.driver.findElement(By.id("cheese"))).isNotNull();
 
     fixture.verifyCommands(
-        new CommandPayload(
-            DriverCommand.FIND_ELEMENT, ImmutableMap.of("using", "id", "value", "cheese")));
+        new CommandPayload(DriverCommand.FIND_ELEMENT, Map.of("using", "id", "value", "cheese")));
   }
 
   @Test
@@ -161,7 +158,7 @@ class RemoteWebDriverUnitTest {
         new By() {
           @Override
           public List<WebElement> findElements(SearchContext context) {
-            return Arrays.asList(element1, element2);
+            return List.of(element1, element2);
           }
         };
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities);
@@ -177,15 +174,14 @@ class RemoteWebDriverUnitTest {
         new WebDriverFixture(
             echoCapabilities,
             valueResponder(
-                Arrays.asList(
-                    ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()),
-                    ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()))));
+                List.of(
+                    Map.of(ELEMENT_KEY, randomUUID().toString()),
+                    Map.of(ELEMENT_KEY, randomUUID().toString()))));
 
     assertThat(fixture.driver.findElements(By.id("cheese"))).hasSize(2);
 
     fixture.verifyCommands(
-        new CommandPayload(
-            DriverCommand.FIND_ELEMENTS, ImmutableMap.of("using", "id", "value", "cheese")));
+        new CommandPayload(DriverCommand.FIND_ELEMENTS, Map.of("using", "id", "value", "cheese")));
   }
 
   @Test
@@ -196,7 +192,7 @@ class RemoteWebDriverUnitTest {
         new By() {
           @Override
           public List<WebElement> findElements(SearchContext context) {
-            return Arrays.asList(element1, element2);
+            return List.of(element1, element2);
           }
         };
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities);
@@ -236,8 +232,7 @@ class RemoteWebDriverUnitTest {
   @Test
   void canHandleGetWindowHandlesCommand() {
     WebDriverFixture fixture =
-        new WebDriverFixture(
-            echoCapabilities, valueResponder(Arrays.asList("window 1", "window 2")));
+        new WebDriverFixture(echoCapabilities, valueResponder(List.of("window 1", "window 2")));
 
     assertThat(fixture.driver.getWindowHandles()).hasSize(2).contains("window 1", "window 2");
 
@@ -285,23 +280,21 @@ class RemoteWebDriverUnitTest {
 
     assertThat(driver2).isSameAs(fixture.driver);
     fixture.verifyCommands(
-        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", "window1")));
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "window1")));
   }
 
   @Test
   void canHandleSwitchToNewWindowCommand() {
     WebDriverFixture fixture =
-        new WebDriverFixture(
-            echoCapabilities, valueResponder(ImmutableMap.of("handle", "new window")));
+        new WebDriverFixture(echoCapabilities, valueResponder(Map.of("handle", "new window")));
 
     WebDriver driver2 = fixture.driver.switchTo().newWindow(WindowType.TAB);
 
     assertThat(driver2).isSameAs(fixture.driver);
     fixture.verifyCommands(
         new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, emptyMap()),
-        new CommandPayload(DriverCommand.SWITCH_TO_NEW_WINDOW, ImmutableMap.of("type", "tab")),
-        new CommandPayload(
-            DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", "new window")));
+        new CommandPayload(DriverCommand.SWITCH_TO_NEW_WINDOW, Map.of("type", "tab")),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, Map.of("handle", "new window")));
   }
 
   @Test
@@ -311,8 +304,7 @@ class RemoteWebDriverUnitTest {
     WebDriver driver2 = fixture.driver.switchTo().frame(1);
 
     assertThat(driver2).isSameAs(fixture.driver);
-    fixture.verifyCommands(
-        new CommandPayload(DriverCommand.SWITCH_TO_FRAME, ImmutableMap.of("id", 1)));
+    fixture.verifyCommands(new CommandPayload(DriverCommand.SWITCH_TO_FRAME, Map.of("id", 1)));
   }
 
   @Test
@@ -322,9 +314,8 @@ class RemoteWebDriverUnitTest {
         new WebDriverFixture(
             echoCapabilities,
             valueResponder(
-                Arrays.asList(
-                    ImmutableMap.of(ELEMENT_KEY, elementId),
-                    ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()))));
+                List.of(
+                    Map.of(ELEMENT_KEY, elementId), Map.of(ELEMENT_KEY, randomUUID().toString()))));
 
     WebDriver driver2 = fixture.driver.switchTo().frame("frameName");
 
@@ -332,14 +323,13 @@ class RemoteWebDriverUnitTest {
     fixture.verifyCommands(
         new CommandPayload(
             DriverCommand.FIND_ELEMENTS,
-            ImmutableMap.of(
+            Map.of(
                 "using",
                 "css selector",
                 "value",
                 "frame[name='frameName'],iframe[name='frameName']")),
         new CommandPayload(
-            DriverCommand.SWITCH_TO_FRAME,
-            ImmutableMap.of("id", ImmutableMap.of(ELEMENT_KEY, elementId))));
+            DriverCommand.SWITCH_TO_FRAME, Map.of("id", Map.of(ELEMENT_KEY, elementId))));
   }
 
   @Test
@@ -352,14 +342,14 @@ class RemoteWebDriverUnitTest {
     fixture.verifyCommands(
         new CommandPayload(
             DriverCommand.FIND_ELEMENTS,
-            ImmutableMap.of(
+            Map.of(
                 "using",
                 "css selector",
                 "value",
                 "frame[name='frameName'],iframe[name='frameName']")),
         new CommandPayload(
             DriverCommand.FIND_ELEMENTS,
-            ImmutableMap.of("using", "css selector", "value", "frame#frameName,iframe#frameName")));
+            Map.of("using", "css selector", "value", "frame#frameName,iframe#frameName")));
   }
 
   @Test
@@ -426,7 +416,7 @@ class RemoteWebDriverUnitTest {
 
     fixture.verifyCommands(
         new CommandPayload(DriverCommand.GET_ALERT_TEXT, emptyMap()),
-        new CommandPayload(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", "no")));
+        new CommandPayload(DriverCommand.SET_ALERT_VALUE, Map.of("text", "no")));
   }
 
   @Test
@@ -463,7 +453,7 @@ class RemoteWebDriverUnitTest {
     fixture.driver.navigate().to(new URL("http://www.test.com/"));
 
     fixture.verifyCommands(
-        new CommandPayload(DriverCommand.GET, ImmutableMap.of("url", "http://www.test.com/")));
+        new CommandPayload(DriverCommand.GET, Map.of("url", "http://www.test.com/")));
   }
 
   @Test
@@ -472,9 +462,9 @@ class RemoteWebDriverUnitTest {
         new WebDriverFixture(
             echoCapabilities,
             valueResponder(
-                Arrays.asList(
-                    ImmutableMap.of("name", "cookie1", "value", "value1", "sameSite", "Lax"),
-                    ImmutableMap.of("name", "cookie2", "value", "value2"))));
+                List.of(
+                    Map.of("name", "cookie1", "value", "value1", "sameSite", "Lax"),
+                    Map.of("name", "cookie2", "value", "value2"))));
 
     Set<Cookie> cookies = fixture.driver.manage().getCookies();
 
@@ -483,7 +473,7 @@ class RemoteWebDriverUnitTest {
         .contains(
             new Cookie.Builder("cookie1", "value1").sameSite("Lax").build(),
             new Cookie("cookie2", "value2"));
-    fixture.verifyCommands(new CommandPayload(DriverCommand.GET_ALL_COOKIES, ImmutableMap.of()));
+    fixture.verifyCommands(new CommandPayload(DriverCommand.GET_ALL_COOKIES, Map.of()));
   }
 
   @Test
@@ -492,9 +482,9 @@ class RemoteWebDriverUnitTest {
         new WebDriverFixture(
             echoCapabilities,
             valueResponder(
-                Arrays.asList(
-                    ImmutableMap.of("name", "cookie1", "value", "value1"),
-                    ImmutableMap.of("name", "cookie2", "value", "value2"))));
+                List.of(
+                    Map.of("name", "cookie1", "value", "value1"),
+                    Map.of("name", "cookie2", "value", "value2"))));
 
     Cookie found = fixture.driver.manage().getCookieNamed("cookie2");
 
@@ -509,8 +499,7 @@ class RemoteWebDriverUnitTest {
     Cookie cookie = new Cookie("x", "y");
     fixture.driver.manage().addCookie(cookie);
 
-    fixture.verifyCommands(
-        new CommandPayload(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie)));
+    fixture.verifyCommands(new CommandPayload(DriverCommand.ADD_COOKIE, Map.of("cookie", cookie)));
   }
 
   @Test
@@ -520,8 +509,7 @@ class RemoteWebDriverUnitTest {
     Cookie cookie = new Cookie("x", "y");
     fixture.driver.manage().deleteCookie(cookie);
 
-    fixture.verifyCommands(
-        new CommandPayload(DriverCommand.DELETE_COOKIE, ImmutableMap.of("name", "x")));
+    fixture.verifyCommands(new CommandPayload(DriverCommand.DELETE_COOKIE, Map.of("name", "x")));
   }
 
   @Test
@@ -536,8 +524,7 @@ class RemoteWebDriverUnitTest {
   @Test
   void canHandleGetWindowSizeCommand() {
     WebDriverFixture fixture =
-        new WebDriverFixture(
-            echoCapabilities, valueResponder(ImmutableMap.of("width", 400, "height", 600)));
+        new WebDriverFixture(echoCapabilities, valueResponder(Map.of("width", 400, "height", 600)));
 
     Dimension size = fixture.driver.manage().window().getSize();
 
@@ -553,20 +540,20 @@ class RemoteWebDriverUnitTest {
 
     fixture.verifyCommands(
         new CommandPayload(
-            DriverCommand.SET_CURRENT_WINDOW_SIZE, ImmutableMap.of("width", 400, "height", 600)));
+            DriverCommand.SET_CURRENT_WINDOW_SIZE, Map.of("width", 400, "height", 600)));
   }
 
   @Test
   void canHandleGetWindowPositionCommand() {
     WebDriverFixture fixture =
-        new WebDriverFixture(echoCapabilities, valueResponder(ImmutableMap.of("x", 100, "y", 200)));
+        new WebDriverFixture(echoCapabilities, valueResponder(Map.of("x", 100, "y", 200)));
 
     Point position = fixture.driver.manage().window().getPosition();
 
     assertThat(position).isEqualTo(new Point(100, 200));
     fixture.verifyCommands(
         new CommandPayload(
-            DriverCommand.GET_CURRENT_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current")));
+            DriverCommand.GET_CURRENT_WINDOW_POSITION, Map.of("windowHandle", "current")));
   }
 
   @Test
@@ -576,8 +563,7 @@ class RemoteWebDriverUnitTest {
     fixture.driver.manage().window().setPosition(new Point(100, 200));
 
     fixture.verifyCommands(
-        new CommandPayload(
-            DriverCommand.SET_CURRENT_WINDOW_POSITION, ImmutableMap.of("x", 100, "y", 200)));
+        new CommandPayload(DriverCommand.SET_CURRENT_WINDOW_POSITION, Map.of("x", 100, "y", 200)));
   }
 
   @Test
@@ -605,7 +591,7 @@ class RemoteWebDriverUnitTest {
     fixture.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
     fixture.verifyCommands(
-        new CommandPayload(DriverCommand.SET_TIMEOUT, ImmutableMap.of("implicit", 10000L)));
+        new CommandPayload(DriverCommand.SET_TIMEOUT, Map.of("implicit", 10000L)));
   }
 
   @Test
@@ -613,7 +599,7 @@ class RemoteWebDriverUnitTest {
     WebDriverFixture fixture =
         new WebDriverFixture(
             echoCapabilities,
-            valueResponder(ImmutableMap.of("implicit", 100, "script", 200, "pageLoad", 300)));
+            valueResponder(Map.of("implicit", 100, "script", 200, "pageLoad", 300)));
 
     fixture.driver.manage().timeouts().getImplicitWaitTimeout();
 
@@ -626,8 +612,7 @@ class RemoteWebDriverUnitTest {
 
     fixture.driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(10));
 
-    fixture.verifyCommands(
-        new CommandPayload(DriverCommand.SET_TIMEOUT, ImmutableMap.of("script", 10000L)));
+    fixture.verifyCommands(new CommandPayload(DriverCommand.SET_TIMEOUT, Map.of("script", 10000L)));
   }
 
   @Test
@@ -637,7 +622,7 @@ class RemoteWebDriverUnitTest {
     fixture.driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
     fixture.verifyCommands(
-        new CommandPayload(DriverCommand.SET_TIMEOUT, ImmutableMap.of("pageLoad", 10000L)));
+        new CommandPayload(DriverCommand.SET_TIMEOUT, Map.of("pageLoad", 10000L)));
   }
 
   @Test
@@ -712,8 +697,8 @@ class RemoteWebDriverUnitTest {
   @Test
   void canHandleGeneralExceptionInNonDebugModeThrownByCommandExecutor() {
     try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
-      final ImmutableMap<String, String> parameters =
-          ImmutableMap.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
+      final Map<String, String> parameters =
+          Map.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
       final CommandPayload commandPayload = new CommandPayload(DriverCommand.GET, parameters);
       debugMock.when(Debug::isDebugging).thenReturn(false);
       WebDriverFixture fixture =
@@ -738,8 +723,8 @@ class RemoteWebDriverUnitTest {
   @Test
   void canHandleGeneralExceptionInDebugModeThrownByCommandExecutor() {
     try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
-      final ImmutableMap<String, String> parameters =
-          ImmutableMap.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
+      final Map<String, String> parameters =
+          Map.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
       final CommandPayload commandPayload = new CommandPayload(DriverCommand.GET, parameters);
       debugMock.when(Debug::isDebugging).thenReturn(true);
       WebDriverFixture fixture =
@@ -811,13 +796,13 @@ class RemoteWebDriverUnitTest {
 
   @Test
   void getDownloadableFilesReturnsType() {
-    List<String> expectedFiles = Arrays.asList("file1.txt", "file2.pdf");
+    List<String> expectedFiles = List.of("file1.txt", "file2.pdf");
 
     WebDriverFixture fixture =
         new WebDriverFixture(
             new ImmutableCapabilities(ENABLE_DOWNLOADS, true),
             echoCapabilities,
-            valueResponder(ImmutableMap.of("names", expectedFiles)));
+            valueResponder(Map.of("names", expectedFiles)));
 
     List<String> result = fixture.driver.getDownloadableFiles();
 

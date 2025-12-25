@@ -18,18 +18,18 @@
 package org.openqa.selenium.grid.router;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -123,11 +123,11 @@ class NewSessionCreationTest {
 
     Routable router =
         new Router(tracer, clientFactory, sessions, queue, distributor)
-            .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
+            .with(new EnsureSpecCompliantHeaders(emptyList(), emptySet()));
 
     server =
         new NettyServer(
-                new BaseServerOptions(new MapConfig(ImmutableMap.of())),
+                new BaseServerOptions(new MapConfig()),
                 router,
                 new ProxyWebsocketsIntoGrid(clientFactory, sessions))
             .start();
@@ -153,10 +153,9 @@ class NewSessionCreationTest {
                   .addHeader("Origin", "localhost")
                   .setContent(
                       Contents.asJson(
-                          ImmutableMap.of(
+                          Map.of(
                               "capabilities",
-                              ImmutableMap.of(
-                                  "alwaysMatch", Browser.detect().getCapabilities())))));
+                              Map.of("alwaysMatch", Browser.detect().getCapabilities())))));
 
       assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
 
@@ -167,10 +166,9 @@ class NewSessionCreationTest {
                   .addHeader("Content-Type", JSON_UTF_8)
                   .setContent(
                       Contents.asJson(
-                          ImmutableMap.of(
+                          Map.of(
                               "capabilities",
-                              ImmutableMap.of(
-                                  "alwaysMatch", Browser.detect().getCapabilities())))));
+                              Map.of("alwaysMatch", Browser.detect().getCapabilities())))));
 
       assertThat(res.isSuccessful()).isTrue();
     }
@@ -239,13 +237,12 @@ class NewSessionCreationTest {
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     handler.addHandler(router);
 
-    server = new NettyServer(new BaseServerOptions(new MapConfig(ImmutableMap.of())), handler);
+    server = new NettyServer(new BaseServerOptions(new MapConfig()), handler);
 
     server.start();
 
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(
-        asJson(ImmutableMap.of("capabilities", ImmutableMap.of("alwaysMatch", capabilities))));
+    request.setContent(asJson(Map.of("capabilities", Map.of("alwaysMatch", capabilities))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse httpResponse = client.execute(request);
@@ -306,17 +303,16 @@ class NewSessionCreationTest {
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     handler.addHandler(router);
 
-    server = new NettyServer(new BaseServerOptions(new MapConfig(ImmutableMap.of())), handler);
+    server = new NettyServer(new BaseServerOptions(new MapConfig()), handler);
 
     server.start();
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(
         asJson(
-            ImmutableMap.of(
+            Map.of(
                 "capabilities",
-                ImmutableMap.of(
-                    "alwaysMatch", new ImmutableCapabilities("browserName", "burger")))));
+                Map.of("alwaysMatch", new ImmutableCapabilities("browserName", "burger")))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse httpResponse = client.execute(request);

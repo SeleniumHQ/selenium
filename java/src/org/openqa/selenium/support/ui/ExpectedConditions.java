@@ -18,7 +18,6 @@
 package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Joiner;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -247,7 +246,7 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfAllElements(
       final WebElement... elements) {
-    return visibilityOfAllElements(Arrays.asList(elements));
+    return visibilityOfAllElements(List.of(elements));
   }
 
   /**
@@ -1327,7 +1326,7 @@ public class ExpectedConditions {
    * @return Boolean true when all elements are not visible anymore
    */
   public static ExpectedCondition<Boolean> invisibilityOfAllElements(final WebElement... elements) {
-    return invisibilityOfAllElements(Arrays.asList(elements));
+    return invisibilityOfAllElements(List.of(elements));
   }
 
   /**

@@ -20,11 +20,11 @@ package org.openqa.selenium.grid.node;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -53,8 +53,8 @@ public class ProxyNodeWebsockets
   private static final UrlTemplate FWD_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/fwd");
   private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
   private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
-  private static final ImmutableSet<String> CDP_ENDPOINT_CAPS =
-      ImmutableSet.of("goog:chromeOptions", "ms:edgeOptions");
+  private static final Set<String> CDP_ENDPOINT_CAPS =
+      Set.of("goog:chromeOptions", "ms:edgeOptions");
   private final HttpClient.Factory clientFactory;
   private final Node node;
   private final String gridSubPath;

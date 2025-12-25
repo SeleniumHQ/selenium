@@ -28,7 +28,6 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -89,9 +89,9 @@ class GridStatusHandler implements HttpHandler {
             new HttpResponse()
                 .setContent(
                     asJson(
-                        ImmutableMap.of(
+                        Map.of(
                             "value",
-                            ImmutableMap.of(
+                            Map.of(
                                 "ready", false, "message", "Unable to read distributor status."))));
 
         HTTP_RESPONSE.accept(span, response);
@@ -111,9 +111,9 @@ class GridStatusHandler implements HttpHandler {
             new HttpResponse()
                 .setContent(
                     asJson(
-                        ImmutableMap.of(
+                        Map.of(
                             "value",
-                            ImmutableMap.of(
+                            Map.of(
                                 "ready",
                                 false,
                                 "message",
@@ -134,29 +134,15 @@ class GridStatusHandler implements HttpHandler {
                       UP.equals(nodeStatus.getAvailability()) && nodeStatus.hasCapacity());
 
       List<Map<String, Object>> nodeResults =
-          status.getNodes().stream()
-              .map(
-                  node ->
-                      new ImmutableMap.Builder<String, Object>()
-                          .put("id", node.getNodeId())
-                          .put("uri", node.getExternalUri())
-                          .put("maxSessions", node.getMaxSessionCount())
-                          .put("sessionTimeout", node.getSessionTimeout().toMillis())
-                          .put("osInfo", node.getOsInfo())
-                          .put("heartbeatPeriod", node.getHeartbeatPeriod().toMillis())
-                          .put("availability", node.getAvailability())
-                          .put("version", node.getVersion())
-                          .put("slots", node.getSlots())
-                          .build())
-              .collect(toList());
+          status.getNodes().stream().map(node -> nodeAsMap(node)).collect(toList());
 
-      ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
-      value.put("ready", ready);
-      value.put("message", ready ? "Selenium Grid ready." : "Selenium Grid not ready.");
-      value.put("nodes", nodeResults);
+      Map<String, Object> value =
+          Map.of(
+              "ready", ready,
+              "message", ready ? "Selenium Grid ready." : "Selenium Grid not ready.",
+              "nodes", nodeResults);
 
-      HttpResponse res =
-          new HttpResponse().setContent(asJson(ImmutableMap.of("value", value.build())));
+      HttpResponse res = new HttpResponse().setContent(asJson(Map.of("value", value)));
       HTTP_RESPONSE.accept(span, res);
       HTTP_RESPONSE_EVENT.accept(attributeMap, res);
       attributeMap.put("grid.status", ready);
@@ -164,5 +150,18 @@ class GridStatusHandler implements HttpHandler {
       span.addEvent("Computed grid status", attributeMap);
       return res;
     }
+  }
+
+  private static Map<String, Object> nodeAsMap(NodeStatus node) {
+    return Map.of(
+        "id", node.getNodeId(),
+        "uri", node.getExternalUri(),
+        "maxSessions", node.getMaxSessionCount(),
+        "sessionTimeout", node.getSessionTimeout().toMillis(),
+        "osInfo", node.getOsInfo(),
+        "heartbeatPeriod", node.getHeartbeatPeriod().toMillis(),
+        "availability", node.getAvailability(),
+        "version", node.getVersion(),
+        "slots", node.getSlots());
   }
 }

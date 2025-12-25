@@ -28,12 +28,12 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.Locale;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
@@ -152,7 +152,7 @@ class FirefoxDriverTest extends JupiterTestBase {
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     GeckoDriverService service =
         new GeckoDriverService.Builder()
-            .withEnvironment(ImmutableMap.of("NSPR_LOG_MODULES", "all:5"))
+            .withEnvironment(Map.of("NSPR_LOG_MODULES", "all:5"))
             .build();
 
     new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities()).quit();
@@ -251,10 +251,9 @@ class FirefoxDriverTest extends JupiterTestBase {
       int port = PortProber.findFreePort();
       GeckoDriverService.Builder builder = new GeckoDriverService.Builder();
       builder.usingPort(port);
-      builder.build();
-
-    } catch (Exception e) {
-      throw e;
+      try (GeckoDriverService driverService = builder.build()) {
+        assertThat(driverService.getDriverName()).isNotBlank();
+      }
     } finally {
       Locale.setDefault(Locale.US);
     }

@@ -31,6 +31,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
+import org.openqa.selenium.io.Read;
 
 /** Polls a URL until a HTTP 200 response is received. */
 public class UrlChecker {
@@ -164,16 +165,17 @@ public class UrlChecker {
    * @param connection the connection to consume the input
    */
   private static void consume(HttpURLConnection connection) {
-    try {
-      InputStream data = connection.getErrorStream();
-      if (data == null) {
-        data = connection.getInputStream();
+    try (InputStream errorStream = connection.getErrorStream()) {
+      if (errorStream != null) {
+        Read.toByteArray(errorStream);
+      } else {
+        try (InputStream inputStream = connection.getInputStream()) {
+          if (inputStream != null) {
+            Read.toByteArray(inputStream);
+          }
+        }
       }
-      if (data != null) {
-        data.readAllBytes();
-        data.close();
-      }
-    } catch (IOException e) {
+    } catch (IOException ignore) {
       // swallow
     }
   }

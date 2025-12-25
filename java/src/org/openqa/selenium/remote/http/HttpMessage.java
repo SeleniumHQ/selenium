@@ -37,6 +37,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Read;
 
 abstract class HttpMessage<M extends HttpMessage<M>> {
 
@@ -199,8 +200,8 @@ abstract class HttpMessage<M extends HttpMessage<M>> {
 
   @Deprecated
   public M setContent(Supplier<InputStream> supplier) {
-    try {
-      return setContent(Contents.bytes(supplier.get().readAllBytes()));
+    try (InputStream in = supplier.get()) {
+      return setContent(Contents.bytes(Read.toByteArray(in)));
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }

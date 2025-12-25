@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import org.openqa.selenium.internal.Require;
@@ -66,10 +66,9 @@ public class MergedResource implements Resource {
 
   @Override
   public Set<Resource> list() {
-    ImmutableSet.Builder<Resource> resources = ImmutableSet.builder();
-    resources.addAll(base.list());
+    Set<Resource> resources = new HashSet<>(base.list());
     next.ifPresent(res -> resources.addAll(res.list()));
-    return resources.build();
+    return Set.copyOf(resources);
   }
 
   @Override

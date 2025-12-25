@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +30,8 @@ import org.openqa.selenium.PersistentCapabilities;
 
 public class SessionCapabilitiesMutator implements Function<Capabilities, Capabilities> {
 
-  private static final ImmutableMap<String, String> BROWSER_OPTIONS =
-      ImmutableMap.of(
+  private static final Map<String, String> BROWSER_OPTIONS =
+      Map.of(
           "chrome", "goog:chromeOptions",
           "firefox", "moz:firefoxOptions",
           "microsoftedge", "ms:edgeOptions");

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -283,7 +282,7 @@ class ByChainedTest {
     By by2 = By.name("by2");
     By by3 = By.name("by3");
 
-    when(driver.findElements(by1)).thenReturn(asList(elem1, elem2));
+    when(driver.findElements(by1)).thenReturn(List.of(elem1, elem2));
     when(elem1.findElements(by2)).thenReturn(NO_ELEMENTS);
     when(elem2.findElements(by2)).thenReturn(NO_ELEMENTS);
 

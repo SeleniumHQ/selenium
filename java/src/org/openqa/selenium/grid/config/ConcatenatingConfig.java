@@ -18,9 +18,8 @@
 package org.openqa.selenium.grid.config;
 
 import static java.util.Comparator.naturalOrder;
+import static java.util.stream.Collectors.toUnmodifiableMap;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.AbstractMap;
 import java.util.List;
@@ -48,7 +47,7 @@ public class ConcatenatingConfig implements Config {
                 entry ->
                     new AbstractMap.SimpleImmutableEntry<>(
                         String.valueOf(entry.getKey()), String.valueOf(entry.getValue())))
-            .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Override
@@ -62,7 +61,7 @@ public class ConcatenatingConfig implements Config {
         .filter(entry -> key.equalsIgnoreCase(entry.getKey()))
         .map(Map.Entry::getValue)
         .findFirst()
-        .map(ImmutableList::of);
+        .map(List::of);
   }
 
   @Override
