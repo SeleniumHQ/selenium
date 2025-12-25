@@ -136,7 +136,7 @@ public class CallFunctionRemoteValueTest : BiDiTestFixture
 
         var actualNumberValue = ((NumberRemoteValue)response.AsSuccessResult()).Value;
         Assert.That(actualNumberValue, Is.Zero);
-        Assert.That(actualNumberValue.IsNegative(), Is.True);
+        Assert.That(DoubleUtility.IsNegative(actualNumberValue), Is.True);
     }
 
     [Test]

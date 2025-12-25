@@ -1,4 +1,4 @@
-// <copyright file="DoubleExtensions.cs" company="Selenium Committers">
+// <copyright file="DoubleUtility.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -21,9 +21,9 @@ using System;
 
 namespace OpenQA.Selenium.Extensions;
 
-internal static class DoubleExtensions
+internal static class DoubleUtility
 {
-    public static bool IsNegative(this double d)
+    public static bool IsNegative(double d)
     {
         var isNegative = BitConverter.DoubleToInt64Bits(d) < 0;
 #if NET8_0_OR_GREATER
