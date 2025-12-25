@@ -8,7 +8,7 @@ module Selenium
 
       @session_id: untyped
 
-      def initialize: (url: untyped) -> void
+      def initialize: (url: untyped, target_type: String) -> void
 
       def close: () -> nil
 
@@ -22,7 +22,7 @@ module Selenium
 
       private
 
-      def start_session: () -> untyped
+      def start_session: (target_type: String) -> untyped
 
       def error_message: (Hash[untyped, untyped] error) -> String
     end

@@ -14,3 +14,32 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+import pytest
+
+from selenium.webdriver import Firefox
+from selenium.webdriver.firefox.options import Options
+
+
+@pytest.fixture
+def driver():
+    options = Options()
+    options.add_argument("-remote-allow-system-access")
+    driver = Firefox(options=options)
+    yield driver
+    driver.quit()
+
+
+def test_sets_correct_context(driver):
+    def get_context():
+        return driver.execute("GET_CONTEXT").pop("value")
+
+    assert get_context() == driver.CONTEXT_CONTENT
+    with driver.context(driver.CONTEXT_CHROME):
+        assert get_context() == driver.CONTEXT_CHROME
+    assert get_context() == driver.CONTEXT_CONTENT
+
+
+def test_switch_context_to_chrome(driver):
+    driver.set_context("chrome")
+    assert 1 == driver.execute_script("var c = Components.classes; return 1;")
