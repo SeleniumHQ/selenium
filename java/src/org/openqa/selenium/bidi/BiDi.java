@@ -52,6 +52,12 @@ public class BiDi implements Closeable {
     return connection.sendAndWait(command, timeout);
   }
 
+  public <X> X send(Command<X> command, Duration timeout) {
+    Require.nonNull("Command to send", command);
+    Require.nonNull("Timeout", timeout);
+    return connection.sendAndWait(command, timeout);
+  }
+
   public <X> long addListener(Event<X> event, Consumer<X> handler) {
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
