@@ -34,11 +34,9 @@ import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +68,7 @@ class FirefoxOptionsTest {
   @Test
   void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptionsAsMap() {
     FirefoxProfile profile = new FirefoxProfile();
-    Capabilities caps =
-        new ImmutableCapabilities(FIREFOX_OPTIONS, ImmutableMap.of("profile", profile));
+    Capabilities caps = new ImmutableCapabilities(FIREFOX_OPTIONS, Map.of("profile", profile));
 
     FirefoxOptions options = new FirefoxOptions(caps);
 
@@ -212,7 +209,7 @@ class FirefoxOptionsTest {
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
         .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("args", Arrays.asList("-a", "-b"));
+        .containsEntry("args", List.of("-a", "-b"));
   }
 
   @Test
@@ -392,7 +389,7 @@ class FirefoxOptionsTest {
 
     MutableCapabilities browserCaps = new MutableCapabilities();
 
-    browserCaps.setCapability("args", Arrays.asList("verbose", "silent"));
+    browserCaps.setCapability("args", List.of("verbose", "silent"));
     browserCaps.setCapability("prefs", prefs);
     browserCaps.setCapability("profile", profile.toJson());
     browserCaps.setCapability("binary", binary.getPath());

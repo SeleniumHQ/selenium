@@ -15,22 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.httpd;
+package org.openqa.selenium.bidi.emulation;
 
 import java.util.Map;
-import org.openqa.selenium.grid.config.MapConfig;
 
-class DefaultDistributorConfig extends MapConfig {
+public class SetNetworkConditionsParameters extends AbstractOverrideParameters {
 
-  DefaultDistributorConfig() {
-    super(
-        Map.of(
-            "events",
-            Map.of(
-                "publish", "tcp://*:4442",
-                "subscribe", "tcp://*:4443",
-                "bind", true),
-            "server",
-            Map.of("port", 5553)));
+  public SetNetworkConditionsParameters(Boolean offline) {
+    if (Boolean.TRUE.equals(offline)) {
+      map.put("networkConditions", Map.of("type", "offline"));
+    } else {
+      map.put("networkConditions", null);
+    }
+  }
+
+  @Override
+  public SetNetworkConditionsParameters contexts(java.util.List<String> contexts) {
+    super.contexts(contexts);
+    return this;
+  }
+
+  @Override
+  public SetNetworkConditionsParameters userContexts(java.util.List<String> userContexts) {
+    super.userContexts(userContexts);
+    return this;
   }
 }

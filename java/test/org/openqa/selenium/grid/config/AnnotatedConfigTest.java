@@ -21,8 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +63,7 @@ class AnnotatedConfigTest {
     class WithBadAnnotation {
 
       @ConfigValue(section = "the", name = "collection", example = "[]")
-      private final Set<String> cheeses = ImmutableSet.of("cheddar", "gouda");
+      private final Set<String> cheeses = Set.of("cheddar", "gouda");
     }
 
     AnnotatedConfig config = new AnnotatedConfig(new WithBadAnnotation());
@@ -74,7 +72,7 @@ class AnnotatedConfigTest {
             .getAll("the", "collection")
             .orElseThrow(() -> new AssertionError("No value returned"));
 
-    assertThat(values).containsExactly("cheddar", "gouda");
+    assertThat(values).containsExactlyInAnyOrder("cheddar", "gouda");
   }
 
   @Test
@@ -84,7 +82,7 @@ class AnnotatedConfigTest {
               class WithBadAnnotation {
 
                 @ConfigValue(section = "bad", name = "map", example = "")
-                private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
+                private final Map<String, String> cheeses = Map.of("peas", "sausage");
               }
 
               new AnnotatedConfig(new WithBadAnnotation());
@@ -173,7 +171,7 @@ class AnnotatedConfigTest {
     }
 
     Config config =
-        new AnnotatedConfig(new TypesToBeFiltered(), ImmutableSet.of("--string", "--bool"), true);
+        new AnnotatedConfig(new TypesToBeFiltered(), Set.of("--string", "--bool"), true);
     assertThat(config.getBool("types", "boolean")).contains(true);
     assertThat(config.get("types", "string")).contains("A String");
     assertThat(config.getInt("types", "integer")).isEmpty();

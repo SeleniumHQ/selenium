@@ -18,14 +18,13 @@
 package org.openqa.selenium.grid.node.local;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -34,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -90,8 +90,7 @@ class LocalNodeTest {
             .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();
@@ -147,8 +146,7 @@ class LocalNodeTest {
 
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThatEither(sessionResponse).isLeft();
     assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
   }
@@ -157,8 +155,7 @@ class LocalNodeTest {
   void cannotCreateNewSessionsOnMaxSessionCount() {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     Either<WebDriverException, CreateSessionResponse> sessionResponse =
-        node.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        node.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
 
     assertThatEither(sessionResponse).isLeft();
     assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
@@ -220,8 +217,7 @@ class LocalNodeTest {
       callables.add(
           () -> {
             Either<WebDriverException, CreateSessionResponse> response =
-                node.newSession(
-                    new CreateSessionRequest(ImmutableSet.of(W3C), caps, ImmutableMap.of()));
+                node.newSession(new CreateSessionRequest(Set.of(W3C), caps, emptyMap()));
             if (response.isRight()) {
               CreateSessionResponse res = response.right();
               assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
@@ -266,8 +262,7 @@ class LocalNodeTest {
 
     for (int i = 0; i < 5; i++) {
       Either<WebDriverException, CreateSessionResponse> response =
-          localNode.newSession(
-              new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+          localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
       assertThat(response.isRight()).isTrue();
     }
 
@@ -295,8 +290,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -330,8 +324,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -363,8 +356,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -391,8 +383,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -419,8 +410,7 @@ class LocalNodeTest {
     LocalNode localNode = builder.build();
 
     Either<WebDriverException, CreateSessionResponse> response =
-        localNode.newSession(
-            new CreateSessionRequest(ImmutableSet.of(W3C), stereotype, ImmutableMap.of()));
+        localNode.newSession(new CreateSessionRequest(Set.of(W3C), stereotype, emptyMap()));
     assertThat(response.isRight()).isTrue();
 
     CreateSessionResponse sessionResponse = response.right();

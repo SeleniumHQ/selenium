@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.nio.file.Files.readAttributes;
 import static java.time.ZoneOffset.UTC;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
-import static java.util.Arrays.asList;
 import static java.util.Locale.US;
 import static java.util.Objects.requireNonNullElseGet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
@@ -44,7 +43,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.Ticker;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
 import com.google.common.net.MediaType;
 import java.io.Closeable;
 import java.io.File;
@@ -60,6 +58,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -190,7 +189,7 @@ public class LocalNode extends Node implements Closeable {
     this.maxSessionCount =
         Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.heartbeatPeriod = heartbeatPeriod;
-    this.factories = ImmutableList.copyOf(factories);
+    this.factories = List.copyOf(factories);
     Require.nonNull("Registration secret", registrationSecret);
     this.configuredSessionCount = drainAfterSessionCount;
     this.drainAfterSessions = this.configuredSessionCount > 0;
@@ -710,7 +709,7 @@ public class LocalNode extends Node implements Closeable {
   }
 
   @Override
-  public TemporaryFilesystem getDownloadsFilesystem(SessionId sessionId) throws IOException {
+  public TemporaryFilesystem getDownloadsFilesystem(SessionId sessionId) {
     return downloadsTempFileSystem.getIfPresent(sessionId);
   }
 
@@ -869,7 +868,7 @@ public class LocalNode extends Node implements Closeable {
   private File findDownloadedFile(File downloadsDirectory, String filename)
       throws WebDriverException {
     List<File> matchingFiles =
-        asList(
+        List.of(
             requireNonNullElseGet(
                 downloadsDirectory.listFiles((dir, name) -> name.equals(filename)),
                 () -> new File[0]));
@@ -891,7 +890,7 @@ public class LocalNode extends Node implements Closeable {
 
   private static List<File> downloadedFiles(File downloadsDirectory) {
     File[] files = requireNonNullElseGet(downloadsDirectory.listFiles(), () -> new File[0]);
-    return asList(files);
+    return List.of(files);
   }
 
   private HttpResponse deleteDownloadedFile(File downloadsDirectory) {
@@ -1078,7 +1077,7 @@ public class LocalNode extends Node implements Closeable {
                       lastStarted,
                       session);
                 })
-            .collect(toImmutableSet());
+            .collect(toUnmodifiableSet());
 
     Availability availability = isDraining() ? DRAINING : UP;
 
@@ -1190,7 +1189,7 @@ public class LocalNode extends Node implements Closeable {
     private final URI uri;
     private final URI gridUri;
     private final Secret registrationSecret;
-    private final ImmutableList.Builder<SessionSlot> factories;
+    private final List<SessionSlot> factories;
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
@@ -1208,7 +1207,7 @@ public class LocalNode extends Node implements Closeable {
       this.uri = Require.nonNull("Remote node URI", uri);
       this.gridUri = Require.nonNull("Grid URI", gridUri);
       this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
-      this.factories = ImmutableList.builder();
+      this.factories = new ArrayList<>();
     }
 
     public Builder add(Capabilities stereotype, SessionFactory factory) {
@@ -1274,7 +1273,7 @@ public class LocalNode extends Node implements Closeable {
           ticker,
           sessionTimeout,
           heartbeatPeriod,
-          factories.build(),
+          List.copyOf(factories),
           registrationSecret,
           managedDownloadsEnabled,
           connectionLimitPerSession);
@@ -1287,13 +1286,7 @@ public class LocalNode extends Node implements Closeable {
     public class Advanced {
 
       public Advanced clock(Clock clock) {
-        ticker =
-            new Ticker() {
-              @Override
-              public long read() {
-                return clock.instant().toEpochMilli() * Duration.ofMillis(1).toNanos();
-              }
-            };
+        ticker = () -> clock.instant().toEpochMilli() * Duration.ofMillis(1).toNanos();
         return this;
       }
 
