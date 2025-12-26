@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.codec.w3c;
 
+import static org.openqa.selenium.io.Read.resourceAsString;
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ACTIONS_STATE;
@@ -72,10 +73,7 @@ import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -364,13 +362,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           ATOM_SCRIPTS.computeIfAbsent(
               atomFileName,
               (fileName) -> {
-                String scriptName = "/org/openqa/selenium/remote/" + atomFileName;
-                String rawFunction;
-                try (InputStream stream = getClass().getResourceAsStream(scriptName)) {
-                  rawFunction = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-                } catch (IOException e) {
-                  throw new UncheckedIOException(e);
-                }
+                String rawFunction =
+                    resourceAsString("/org/openqa/selenium/remote/" + atomFileName);
                 String atomName = fileName.replace(".js", "");
                 return String.format(
                     "/* %s */return (%s).apply(null, arguments);", atomName, rawFunction);

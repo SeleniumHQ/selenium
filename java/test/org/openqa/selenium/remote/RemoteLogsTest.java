@@ -23,10 +23,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,11 +61,10 @@ class RemoteLogsTest {
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
 
     when(executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+            DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
         .thenReturn(
             singletonList(
-                ImmutableMap.of(
-                    "level", Level.INFO.getName(), "timestamp", 1L, "message", "world")));
+                Map.of("level", Level.INFO.getName(), "timestamp", 1L, "message", "world")));
 
     LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
     List<LogEntry> allLogEntries = logEntries.getAll();
@@ -81,7 +80,7 @@ class RemoteLogsTest {
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
 
     when(executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+            DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
         .thenThrow(
             new WebDriverException("IGNORE THIS LOG MESSAGE AND STACKTRACE; IT IS EXPECTED."));
 
@@ -107,12 +106,10 @@ class RemoteLogsTest {
 
   @Test
   void canGetServerLogs() {
-    when(executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.SERVER)))
+    when(executeMethod.execute(DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.SERVER)))
         .thenReturn(
             singletonList(
-                ImmutableMap.of(
-                    "level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
+                Map.of("level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
 
     LogEntries logEntries = remoteLogs.get(LogType.SERVER);
     assertThat(logEntries.getAll()).hasSize(1);
@@ -124,10 +121,9 @@ class RemoteLogsTest {
 
   @Test
   void throwsOnBogusRemoteLogsResponse() {
-    when(executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
+    when(executeMethod.execute(DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
         .thenReturn(
-            ImmutableMap.of(
+            Map.of(
                 "error", "unknown method",
                 "message", "Command not found: POST /session/11037/log",
                 "stacktrace", ""));

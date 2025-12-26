@@ -89,7 +89,7 @@ class StressTest {
 
     appServer =
         new NettyServer(
-            new BaseServerOptions(new MemoizedConfig(new MapConfig(Map.of()))),
+            new BaseServerOptions(new MemoizedConfig(new MapConfig())),
             req -> {
               try {
                 Thread.sleep(2000);

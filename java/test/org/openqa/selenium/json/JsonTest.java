@@ -24,11 +24,9 @@ import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.Proxy.ProxyType.PAC;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 import java.io.StringReader;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -69,8 +67,7 @@ class JsonTest {
 
   @Test
   void canRoundTripNumbers() {
-    Map<String, Object> original =
-        ImmutableMap.of("options", ImmutableMap.of("args", Arrays.asList(1L, "hello")));
+    Map<String, Object> original = Map.of("options", Map.of("args", List.of(1L, "hello")));
 
     Json json = new Json();
     String converted = json.toJson(original);
@@ -81,9 +78,7 @@ class JsonTest {
 
   @Test
   void roundTripAFirefoxOptions() {
-    Map<String, Object> caps =
-        ImmutableMap.of(
-            "moz:firefoxOptions", ImmutableMap.of("prefs", ImmutableMap.of("foo.bar", 1)));
+    Map<String, Object> caps = Map.of("moz:firefoxOptions", Map.of("prefs", Map.of("foo.bar", 1)));
     String json = new Json().toJson(caps);
     assertThat(json).doesNotContain("1.0");
 
@@ -97,7 +92,7 @@ class JsonTest {
   void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
     // This is needed since Grid expects each of the capabilities to be mutable
     List<Capabilities> expected =
-        Arrays.asList(
+        List.of(
             new ImmutableCapabilities("cheese", "brie"), new ImmutableCapabilities("peas", 42L));
 
     Json json = new Json();
@@ -110,7 +105,7 @@ class JsonTest {
 
   @Test
   void shouldUseBeanSettersToPopulateFields() {
-    Map<String, String> map = ImmutableMap.of("name", "fishy");
+    Map<String, String> map = Map.of("name", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
@@ -121,7 +116,7 @@ class JsonTest {
 
   @Test
   void shouldAllowUserToPopulateFieldsDirectly() {
-    Map<String, String> map = ImmutableMap.of("theName", "fishy");
+    Map<String, String> map = Map.of("theName", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
@@ -132,7 +127,7 @@ class JsonTest {
 
   @Test
   void settingFinalFieldsShouldWork() {
-    Map<String, String> map = ImmutableMap.of("theName", "fishy");
+    Map<String, String> map = Map.of("theName", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
@@ -330,8 +325,7 @@ class JsonTest {
   @Test
   void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("session id");
-    Command original =
-        new Command(sessionId, DriverCommand.NEW_SESSION, ImmutableMap.of("food", "cheese"));
+    Command original = new Command(sessionId, DriverCommand.NEW_SESSION, Map.of("food", "cheese"));
     String raw = new Json().toJson(original);
     Command converted = new Json().toType(raw, Command.class);
 
@@ -399,7 +393,7 @@ class JsonTest {
   @Test
   void fromJsonMethodNeedNotOnlyAcceptAString() {
     Json json = new Json();
-    String raw = json.toJson(ImmutableMap.of("cheese", "truffled brie"));
+    String raw = json.toJson(Map.of("cheese", "truffled brie"));
     MapTakingFromJsonMethod res = json.toType(raw, MapTakingFromJsonMethod.class);
 
     assertThat(res.cheese).isEqualTo("truffled brie");
@@ -476,7 +470,7 @@ class JsonTest {
 
   @Test
   void canCoerceSimpleValuesToStrings() {
-    Map<String, Object> value = ImmutableMap.of("boolean", true, "integer", 42, "float", 3.14);
+    Map<String, Object> value = Map.of("boolean", true, "integer", 42, "float", 3.14);
 
     Json json = new Json();
     String raw = json.toJson(value);

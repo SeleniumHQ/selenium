@@ -27,8 +27,8 @@ import static org.openqa.selenium.Proxy.ProxyType.SYSTEM;
 import static org.openqa.selenium.Proxy.ProxyType.UNSPECIFIED;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
@@ -235,7 +235,7 @@ class ProxyTest {
     assertThat(json.get("socksVersion")).isEqualTo(5);
     assertThat(json.get("socksUsername")).isEqualTo("test1");
     assertThat(json.get("socksPassword")).isEqualTo("test2");
-    assertThat(json.get("noProxy")).isEqualTo(Arrays.asList("localhost", "127.0.0.*"));
+    assertThat(json.get("noProxy")).isEqualTo(List.of("localhost", "127.0.0.*"));
     assertThat(json.entrySet()).hasSize(9);
   }
 

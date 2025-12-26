@@ -21,17 +21,16 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -75,6 +74,7 @@ class SelectTest {
     when(element.getTagName()).thenReturn("select");
     when(element.getDomAttribute("multiple")).thenReturn(multiple);
     when(element.isEnabled()).thenReturn(true);
+    when(element.getCssValue(any())).thenReturn("");
     return element;
   }
 
@@ -93,10 +93,11 @@ class SelectTest {
   }
 
   private WebElement mockOption(String name, boolean isSelected) {
-    final WebElement optionBad = mock(WebElement.class, name);
-    when(optionBad.isEnabled()).thenReturn(true);
-    when(optionBad.isSelected()).thenReturn(isSelected);
-    return optionBad;
+    final WebElement option = mock(WebElement.class, name);
+    when(option.isEnabled()).thenReturn(true);
+    when(option.isSelected()).thenReturn(isSelected);
+    when(option.getCssValue(any())).thenReturn("");
+    return option;
   }
 
   private WebElement mockOption(String name, boolean isSelected, int index) {
@@ -110,7 +111,7 @@ class SelectTest {
   void shouldReturnOptionsWhichAreSelected() {
     final WebElement optionGood = mockOption("good", true);
     final WebElement optionBad = mockOption("bad", false);
-    final List<WebElement> options = Arrays.asList(optionBad, optionGood);
+    final List<WebElement> options = List.of(optionBad, optionGood);
 
     Select select = selectWithOptions(options);
     List<WebElement> returnedOptions = select.getAllSelectedOptions();
@@ -123,7 +124,7 @@ class SelectTest {
   void shouldReturnFirstSelectedOptions() {
     final WebElement firstOption = mockOption("first", true);
     final WebElement secondOption = mockOption("second", true);
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final List<WebElement> options = List.of(firstOption, secondOption);
 
     Select select = selectWithOptions(options);
     WebElement firstSelected = select.getFirstSelectedOption();
@@ -195,7 +196,7 @@ class SelectTest {
     final WebElement firstOption = mockOption("first", true, 0);
     final WebElement secondOption = mockOption("second", false, 1);
 
-    Select select = selectWithOptions(Arrays.asList(firstOption, secondOption));
+    Select select = selectWithOptions(List.of(firstOption, secondOption));
     select.selectByIndex(1);
 
     verify(firstOption, never()).click();
@@ -221,7 +222,7 @@ class SelectTest {
     final WebElement firstOption = mockOption("first", true);
     final WebElement secondOption = mockOption("second", false);
 
-    Select select = selectWithOptions(Arrays.asList(firstOption, secondOption));
+    Select select = selectWithOptions(List.of(firstOption, secondOption));
     select.deselectAll();
 
     verify(firstOption).click();
@@ -241,7 +242,7 @@ class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[normalize-space(.) = \"b\"]")))
-        .thenReturn(Arrays.asList(firstOption, secondOption));
+        .thenReturn(List.of(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deselectByVisibleText("b");
@@ -259,7 +260,7 @@ class SelectTest {
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(
             By.xpath(".//option[contains(., " + Quotes.escape(parameterText) + ")]")))
-        .thenReturn(Arrays.asList(firstOption, secondOption));
+        .thenReturn(List.of(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deSelectByContainsVisibleText(parameterText);
@@ -273,7 +274,7 @@ class SelectTest {
     final WebElement firstOption = mockOption("first", true, 2);
     final WebElement secondOption = mockOption("second", false, 1);
 
-    Select select = selectWithOptions(Arrays.asList(firstOption, secondOption));
+    Select select = selectWithOptions(List.of(firstOption, secondOption));
     select.deselectByIndex(2);
 
     verify(firstOption).click();
@@ -287,7 +288,7 @@ class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[@value = \"b\"]")))
-        .thenReturn(Arrays.asList(firstOption, secondOption));
+        .thenReturn(List.of(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deselectByValue("b");
@@ -306,9 +307,10 @@ class SelectTest {
     when(element.getTagName()).thenReturn("select");
     when(element.getDomAttribute("multiple")).thenReturn("false");
     when(element.findElements(xpath1)).thenReturn(emptyList());
-    when(element.findElements(xpath2)).thenReturn(Collections.singletonList(firstOption));
+    when(element.findElements(xpath2)).thenReturn(List.of(firstOption));
     when(firstOption.getText()).thenReturn("foo bar");
     when(firstOption.isEnabled()).thenReturn(true);
+    when(firstOption.getCssValue(any())).thenReturn("");
 
     Select select = new Select(element);
     select.selectByVisibleText("foo bar");
@@ -327,7 +329,7 @@ class SelectTest {
   @Test
   void shouldThrowAnExceptionIfThereAreNoElementsToSelect() {
     final WebElement element = mockSelectWebElement("false");
-    when(element.findElements(ArgumentMatchers.any())).thenReturn(emptyList());
+    when(element.findElements(any())).thenReturn(emptyList());
 
     Select select = new Select(element);
 

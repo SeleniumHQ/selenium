@@ -64,36 +64,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - python-version: '3.10'
-            os: ubuntu
-          - python-version: '3.10'
-            os: macos
-          - python-version: '3.14'
-            os: ubuntu
-          - python-version: '3.14'
-            os: macos
+        python-version: ['3.10', '3.14']
+        os: [ubuntu, macos, windows]
     with:
       name: Unit Tests (${{ matrix.python-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}
       cache-key: python-unit-test-${{ matrix.python-version }}
-      run: |
-        bazel test //py:unit
+      run: bazel test --local_test_jobs 1 //py:unit
 
   remote-tests:
     name: Remote Tests
     needs: build
     uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - browser: chrome
     with:
-      name: Integration Tests (remote, ${{ matrix.browser }})
-      browser: ${{ matrix.browser }}
-      cache-key: py-remote-${{ matrix.browser }}
+      name: Integration Tests Remote
+      browser: yes
+      cache-key: py-remote
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
 
@@ -104,56 +91,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - browser: chrome
-            os: ubuntu
-          - browser: edge
-            os: ubuntu
-          - browser: firefox
-            os: ubuntu
-    with:
-      name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
-      os: ${{ matrix.os }}
-      cache-key: py-browser-${{ matrix.browser }}
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }}-bidi //py:test-${{ matrix.browser }}
-
-  browser-tests-windows:
-    name: Browser Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - browser: chrome
-            os: windows
-          - browser: edge
-            os: windows
-    with:
-      name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
-      os: ${{ matrix.os }}
-      cache-key: py-browser-${{ matrix.browser }}
-      run: |
-        fsutil 8dot3name set 0
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }}-bidi //py:test-${{ matrix.browser }}
-
-  browser-tests-macos:
-    name: Browser Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
+        browser: [chrome, firefox, chrome-bidi, edge]
+        os: [windows]
         include:
           - browser: safari
             os: macos
     with:
-      name: Integration Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      name: Integration Tests (${{ matrix.browser }})
       browser: ${{ matrix.browser }}
       os: ${{ matrix.os }}
-      cache-key: py-browser-${{ matrix.browser }}
+      cache-key: py-${{ matrix.browser }}
       run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:common-${{ matrix.browser }} //py:test-${{ matrix.browser }}
+        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}

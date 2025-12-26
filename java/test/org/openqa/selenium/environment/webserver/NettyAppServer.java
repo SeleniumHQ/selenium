@@ -22,7 +22,6 @@ import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.collect.ImmutableMap;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 import java.io.File;
@@ -31,6 +30,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -214,7 +214,7 @@ public class NettyAppServer implements AppServer {
         HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")))) {
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8);
-      request.setContent(Contents.asJson(ImmutableMap.of("content", page.toString())));
+      request.setContent(Contents.asJson(Map.of("content", page.toString())));
       HttpResponse response = client.execute(request);
       return string(response);
     } catch (IOException ex) {

@@ -24,7 +24,7 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import java.util.Objects;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
@@ -61,7 +61,7 @@ class AddToSessionMap implements HttpHandler {
 
       sessions.add(session);
 
-      return new HttpResponse().setContent(asJson(ImmutableMap.of("value", true)));
+      return new HttpResponse().setContent(asJson(Map.of("value", true)));
     }
   }
 }

@@ -25,6 +25,22 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: diff-lcs
+  version: '1.5'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: a5024cf78a908060c85ab750892d5545c409353b
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: digest
+  version: '0'
+  source:
+    type: stdlib
+- name: erb
+  version: '0'
+  source:
+    type: stdlib
 - name: fileutils
   version: '0'
   source:
@@ -49,6 +65,10 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: openssl
+  version: '0'
+  source:
+    type: stdlib
 - name: optparse
   version: '0'
   source:
@@ -69,6 +89,10 @@ gems:
     revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: prism
+  version: 1.6.0
+  source:
+    type: rubygems
 - name: rack
   version: '2.2'
   source:
@@ -121,6 +145,18 @@ gems:
     revision: 01361bb0fd6e2f3e2da2b11a733ffc938b9047c4
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: singleton
+  version: '0'
+  source:
+    type: stdlib
+- name: socket
+  version: '0'
+  source:
+    type: stdlib
+- name: stringio
+  version: '0'
+  source:
+    type: stdlib
 - name: tempfile
   version: '0'
   source:
@@ -129,6 +165,18 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: webmock
+  version: '3.19'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: a5024cf78a908060c85ab750892d5545c409353b
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: webrick
+  version: 1.9.2
+  source:
+    type: rubygems
 - name: yard
   version: '0.9'
   source:

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -86,7 +86,7 @@ public class PathResource implements Resource {
   @Override
   public Set<Resource> list() {
     try (Stream<Path> files = Files.list(base)) {
-      return files.filter(allowedSubpaths).map(PathResource::new).collect(toImmutableSet());
+      return files.filter(allowedSubpaths).map(PathResource::new).collect(toUnmodifiableSet());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.google.common.collect.ImmutableList;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
 import com.google.common.collect.ImmutableSortedSet;
 import java.io.IOException;
 import java.io.Reader;
@@ -108,14 +109,14 @@ public class TomlConfig implements Config {
                 .map(TomlTable::toMap)
                 .map(this::toEntryList)
                 .flatMap(Collection::stream)
-                .collect(ImmutableList.toImmutableList()));
+                .collect(toUnmodifiableList()));
       }
 
       return Optional.of(
           collection.stream()
               .filter(item -> (!(item instanceof Collection)))
               .map(String::valueOf)
-              .collect(ImmutableList.toImmutableList()));
+              .collect(toUnmodifiableList()));
     }
 
     if (value instanceof TomlTable) {

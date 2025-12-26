@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.ConnectException;
@@ -34,6 +33,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -233,7 +233,7 @@ class RetryRequestTest {
               count.incrementAndGet();
               return new HttpResponse()
                   .setStatus(500)
-                  .setContent(asJson(ImmutableMap.of("error", "non-transient")));
+                  .setContent(asJson(Map.of("error", "non-transient")));
             });
     server.start();
 
@@ -258,7 +258,7 @@ class RetryRequestTest {
               if (count.get() <= 2) {
                 return new HttpResponse()
                     .setStatus(503)
-                    .setContent(asJson(ImmutableMap.of("error", "server down")));
+                    .setContent(asJson(Map.of("error", "server down")));
               } else {
                 return new HttpResponse();
               }
@@ -284,7 +284,7 @@ class RetryRequestTest {
               count.incrementAndGet();
               return new HttpResponse()
                   .setStatus(503)
-                  .setContent(asJson(ImmutableMap.of("error", "server down")));
+                  .setContent(asJson(Map.of("error", "server down")));
             });
     server.start();
 

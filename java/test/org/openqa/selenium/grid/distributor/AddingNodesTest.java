@@ -23,22 +23,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.data.*;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
+import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
@@ -324,7 +339,7 @@ class AddingNodesTest {
               status.getNodeId(),
               status.getExternalUri(),
               status.getMaxSessionCount(),
-              ImmutableSet.of(
+              Set.of(
                   new Slot(
                       new SlotId(status.getNodeId(), UUID.randomUUID()),
                       CAPS,
@@ -357,7 +372,7 @@ class AddingNodesTest {
       stereotypes.put(slot.getStereotype(), count);
     }
 
-    return ImmutableMap.copyOf(stereotypes);
+    return Map.copyOf(stereotypes);
   }
 
   static class CustomNode extends Node {
@@ -469,8 +484,7 @@ class AddingNodesTest {
           getId(),
           getUri(),
           1,
-          ImmutableSet.of(
-              new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
+          Set.of(new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
           UP,
           Duration.ofSeconds(10),
           getSessionTimeout(),

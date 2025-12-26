@@ -30,15 +30,12 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -101,7 +98,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat(result).isInstanceOf(Boolean.class).isEqualTo(true);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
     driver.get(pages.javascriptPage);
@@ -109,7 +105,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     Object result = ((JavascriptExecutor) driver).executeScript("return ['zero', 'one', 'two'];");
 
     assertThat(result).isInstanceOf(List.class);
-    assertThat((List<?>) result).isEqualTo(ImmutableList.of("zero", "one", "two"));
+    assertThat((List<?>) result).isEqualTo(List.of("zero", "one", "two"));
   }
 
   @SuppressWarnings("unchecked")
@@ -136,7 +132,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat(result).isInstanceOf(Map.class);
     Map<String, Object> map = (Map<String, Object>) result;
 
-    Map<String, Object> expected = ImmutableMap.of("abc", "123", "tired", false);
+    Map<String, Object> expected = Map.of("abc", "123", "tired", false);
 
     // Cannot do an exact match; Firefox 4 inserts a few extra keys in our object; this is OK, as
     // long as the expected keys are there.
@@ -154,13 +150,15 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.javascriptPage);
 
     Map<String, Object> expectedResult =
-        ImmutableMap.of(
-            "foo", "bar",
-            "baz", Arrays.asList("a", "b", "c"),
+        Map.of(
+            "foo",
+            "bar",
+            "baz",
+            List.of("a", "b", "c"),
             "person",
-                ImmutableMap.of(
-                    "first", "John",
-                    "last", "Doe"));
+            Map.of(
+                "first", "John",
+                "last", "Doe"));
 
     Object result =
         executeScript(
@@ -170,7 +168,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     Map<String, Object> map = (Map<String, Object>) result;
     assertThat(map.size()).isGreaterThanOrEqualTo(3);
     assertThat(map.get("foo")).isEqualTo("bar");
-    assertThat((List<?>) map.get("baz")).isEqualTo((List<?>) expectedResult.get("baz"));
+    assertThat((List<?>) map.get("baz")).isEqualTo(expectedResult.get("baz"));
 
     Map<String, String> person = (Map<String, String>) map.get("person");
     assertThat(person.size()).isGreaterThanOrEqualTo(2);
@@ -190,24 +188,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     Map<String, Object> map = (Map<String, Object>) result;
     assertThat(map.get("protocol")).isEqualTo("http:");
     assertThat(map.get("href")).isEqualTo(pages.javascriptPage);
-  }
-
-  private static boolean compareLists(List<?> first, List<?> second) {
-    if (first.size() != second.size()) {
-      return false;
-    }
-    for (int i = 0; i < first.size(); ++i) {
-      if (first.get(i) instanceof List<?>) {
-        if (!compareLists((List<?>) first.get(i), (List<?>) second.get(i))) {
-          return false;
-        }
-      } else {
-        if (!first.get(i).equals(second.get(i))) {
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   @Test
@@ -462,8 +442,8 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
 
-    List<Integer> nums = Arrays.asList(1, 2);
-    Map<String, Object> args = ImmutableMap.of("bar", "test", "foo", nums);
+    List<Integer> nums = List.of(1, 2);
+    Map<String, Object> args = Map.of("bar", "test", "foo", nums);
 
     Object res = ((JavascriptExecutor) driver).executeScript("return arguments[0]['foo'][1]", args);
 
@@ -480,8 +460,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
 
     Map<String, Object> args =
-        ImmutableMap.of(
-            "key", Arrays.asList("a", new Object[] {"zero", 1, true, 42.4242, false, el}, "c"));
+        Map.of("key", List.of("a", new Object[] {"zero", 1, true, 42.4242, false, el}, "c"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
         .isThrownBy(() -> executeScript("return undefined;", args));
@@ -547,9 +526,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
     WebElement expected = driver.findElement(id("oneline"));
 
-    Object args =
-        ImmutableMap.of(
-            "top", ImmutableMap.of("key", singletonList(ImmutableMap.of("subkey", expected))));
+    Object args = Map.of("top", Map.of("key", singletonList(Map.of("subkey", expected))));
     WebElement seen = (WebElement) executeScript("return arguments[0].top.key[0].subkey", args);
 
     assertThat(seen).isEqualTo(expected);

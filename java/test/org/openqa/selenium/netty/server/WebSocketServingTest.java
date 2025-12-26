@@ -24,9 +24,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -234,7 +234,6 @@ class WebSocketServingTest {
 
   private BaseServerOptions defaultOptions() {
     return new BaseServerOptions(
-        new MapConfig(
-            ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+        new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort()))));
   }
 }
