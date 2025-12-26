@@ -16,11 +16,17 @@
 # under the License.
 
 from hashlib import md5 as md5_hash
+from typing import TYPE_CHECKING
 
 from selenium.common.exceptions import InvalidSelectorException
-from selenium.webdriver.common.by import By, ByType
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.command import Command
-from selenium.webdriver.remote.webelement import WebElement
+
+if TYPE_CHECKING:
+    # we only import these when the module is analyzed for type annotations
+    # to avoid a circular import when it is run normally
+    from selenium.webdriver.common.by import ByType
+    from selenium.webdriver.remote.webelement import WebElement
 
 
 class ShadowRoot:
