@@ -42,7 +42,6 @@ import org.openqa.selenium.internal.Require;
  * }
  * </code></pre>
  */
-@NullMarked
 public abstract class By {
   /**
    * @param id The value of the "id" attribute to search for.
