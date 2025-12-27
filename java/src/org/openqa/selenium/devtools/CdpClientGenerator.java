@@ -51,6 +51,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -1370,6 +1371,7 @@ public class CdpClientGenerator {
       return "null";
     }
 
+    @Nullable
     public TypeDeclaration<?> toTypeDeclaration() {
       return null;
     }
