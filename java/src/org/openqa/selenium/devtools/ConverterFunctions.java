@@ -32,7 +32,8 @@ public class ConverterFunctions {
     return map(keyName, input -> input.read(typeOfX));
   }
 
-  public static <X> Function<JsonInput, @Nullable X> map(final String keyName, Function<JsonInput, @Nullable X> read) {
+  public static <X> Function<JsonInput, @Nullable X> map(
+      final String keyName, Function<JsonInput, @Nullable X> read) {
     Require.nonNull("Key name", keyName);
     Require.nonNull("Read callback", read);
 
