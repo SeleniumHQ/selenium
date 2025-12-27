@@ -21,7 +21,7 @@ use exitcode::DATAERR;
 use exitcode::OK;
 use exitcode::UNAVAILABLE;
 use selenium_manager::TTL_SEC;
-use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey};
+use selenium_manager::config::{BooleanKey, CACHE_PATH_KEY, StringKey, get_config_path};
 use selenium_manager::grid::GridManager;
 use selenium_manager::lock::clear_lock_if_required;
 use selenium_manager::logger::{BROWSER_PATH, DRIVER_PATH, Logger};
@@ -167,6 +167,16 @@ fn main() {
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log_level = StringKey(vec!["log-level"], &cli.log_level.unwrap_or_default()).get_value();
     let log = Logger::create(&cli.output, debug, trace, &log_level);
+
+    // Log config file location if found
+    let config_path = get_config_path();
+    if config_path.exists() {
+        log.debug(format!(
+            "Using configuration file found at {}",
+            config_path.display()
+        ));
+    }
+
     let grid = cli.grid;
     let mut browser_name: String = cli.browser.unwrap_or_default();
     let mut driver_name: String = cli.driver.unwrap_or_default();

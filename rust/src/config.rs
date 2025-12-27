@@ -268,9 +268,13 @@ fn get_env_name(suffix: &str) -> String {
     concat(ENV_PREFIX, suffix_uppercase.as_str())
 }
 
-fn get_config() -> Result<Table, Error> {
+pub fn get_config_path() -> PathBuf {
     let cache_path = read_cache_path();
-    let config_path = Path::new(&cache_path).to_path_buf().join(CONFIG_FILE);
+    Path::new(&cache_path).to_path_buf().join(CONFIG_FILE)
+}
+
+fn get_config() -> Result<Table, Error> {
+    let config_path = get_config_path();
     Ok(read_to_string(config_path)?.parse()?)
 }
 
