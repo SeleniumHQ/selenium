@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.support.ui;
 
+import org.jspecify.annotations.NullMarked;
+
 /**
  * Represents any abstraction of something that can be loaded. This may be an entire web page, or
  * simply a component within that page (such as a login box or menu) or even a service. The expected
@@ -32,6 +34,7 @@ package org.openqa.selenium.support.ui;
  *
  * @param <T> The type to be returned (normally the subclass' type)
  */
+@NullMarked
 public abstract class LoadableComponent<T extends LoadableComponent<T>> {
   /**
    * Ensure that the component is currently loaded.

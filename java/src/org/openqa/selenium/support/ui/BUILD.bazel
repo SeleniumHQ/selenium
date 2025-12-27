@@ -22,6 +22,9 @@ java_library(
     visibility = [
         "//java/src/org/openqa/selenium/support:__subpackages__",
     ],
+    deps = [
+        artifact("org.jspecify:jspecify"),
+    ],
 )
 
 java_library(

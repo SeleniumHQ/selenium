@@ -20,6 +20,7 @@ package org.openqa.selenium.support.ui;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * A {@link LoadableComponent} which might not have finished loading when load() returns. After a
@@ -32,6 +33,7 @@ import java.time.Instant;
  *
  * @param <T> The type to be returned (normally the subclass' type)
  */
+@NullMarked
 public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     extends LoadableComponent<T> {
 
