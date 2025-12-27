@@ -313,15 +313,27 @@ pub trait SeleniumManager {
             browser_version
         ));
 
-        // Checking if browser version is in the cache
+        // Checking if browser version already exists
         let browser_binary_path = self.get_browser_binary_path(original_browser_version)?;
-        if browser_binary_path.exists() {
+        let browser_exists = browser_binary_path.exists();
+        let force_download = self.is_force_browser_download();
+
+        if browser_exists && !force_download {
             self.get_logger().debug(format!(
-                "{} {} already exists",
+                "{} {} already exists at {}",
                 self.get_browser_name(),
-                browser_version
+                browser_version,
+                browser_binary_path.display()
             ));
         } else {
+            if browser_exists && force_download {
+                self.get_logger().debug(format!(
+                    "{} {} exists at {}, but force browser download is enabled",
+                    self.get_browser_name(),
+                    browser_version,
+                    browser_binary_path.display()
+                ));
+            }
             // If browser is not available, download it
             if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
                 return Err(anyhow!(format_one_arg(
