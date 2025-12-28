@@ -308,7 +308,7 @@ class Driver:
             driver_to_stop.quit()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def driver(request):
     global selenium_driver
     driver_class = getattr(request, "param", "Chrome").lower()
@@ -456,12 +456,12 @@ def edge_service():
     return EdgeService
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def driver_executable(request):
     return request.config.option.executable
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def clean_driver(request):
     _supported_drivers = SupportedDrivers()
     try:
@@ -488,14 +488,14 @@ def clean_driver(request):
         driver_reference = None
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def clean_service(request):
     driver_class = request.config.option.drivers[0].lower()
     selenium_driver = Driver(driver_class, request)
     return selenium_driver.service
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def clean_options(request):
     driver_class = request.config.option.drivers[0].lower()
     return Driver.clean_options(driver_class, request)

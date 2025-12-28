@@ -237,7 +237,7 @@ def test_get_credentials(driver, pages):
         elif credential.id.startswith(extract_id(response2)):
             credential2: Credential = credential
         else:
-            assert False, "Unknown credential"
+            pytest.fail("Unknown credential")
 
     assert credential1.is_resident_credential, "Credential1 should be resident credential"
     assert credential1.private_key is not None, "Credential1 should have private key"

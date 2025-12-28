@@ -155,7 +155,8 @@ extend-ignore = [
     "D105", # Missing docstring in magic method
     "D107", # Missing docstring in `__init__`
     "D212", # Multi-line docstring summary should start at the first line
-    "PT011", # Use of pytest.raises({exception}) is too broad
+    "PT011", # Use of `pytest.raises({exception})` is too broad
+    "PT012", # `pytest.raises()` block should contain a single simple statement
     "RUF005", # Uses of the + operator to concatenate collections
     "RUF012", # Mutable default values in class attributes
     "RUF059", # Unpacked variable is never used

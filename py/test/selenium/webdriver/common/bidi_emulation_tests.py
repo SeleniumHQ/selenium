@@ -329,7 +329,7 @@ def test_set_timezone_override_using_offset(driver, pages):
 
 
 @pytest.mark.parametrize(
-    "locale,expected_locale",
+    ("locale", "expected_locale"),
     [
         # Locale with Unicode extension keyword for collation.
         ("de-DE-u-co-phonebk", "de-DE"),
@@ -495,7 +495,7 @@ def test_set_screen_orientation_override_with_contexts(driver, pages):
 
 
 @pytest.mark.parametrize(
-    "natural,orientation_type,expected_angle",
+    ("natural", "orientation_type", "expected_angle"),
     [
         # Portrait natural orientations
         ("Portrait", "portrait-primary", 0),
