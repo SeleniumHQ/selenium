@@ -47,7 +47,7 @@ HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
 if not os.path.isdir(HTML_ROOT):
     raise Exception(
         "Can't find 'common_web' directory, try setting WEBDRIVER environment variable.\n"
-        + f"WEBDRIVER: {WEBDRIVER}\nHTML_ROOT: {HTML_ROOT}"
+        f"WEBDRIVER: {WEBDRIVER}\nHTML_ROOT: {HTML_ROOT}"
     )
 
 
