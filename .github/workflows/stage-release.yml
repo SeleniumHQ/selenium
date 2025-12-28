@@ -19,11 +19,11 @@ jobs:
   github-release:
     if: >
       (github.event.pull_request.merged == true &&
-      github.repository_owner == 'seleniumhq' &&
+      github.event.repository.fork == false &&
       startsWith(github.event.pull_request.head.ref, 'release-preparation-')) ||
       (github.event_name == 'workflow_dispatch' &&
       github.event.inputs.version != '' &&
-      github.repository_owner == 'seleniumhq')
+      github.event.repository.fork == false)
     runs-on: ubuntu-latest
     permissions: write-all
     outputs:

@@ -21,7 +21,7 @@ jobs:
   check:
     name: Check
     if: >
-      github.repository_owner == 'seleniumhq' &&
+      github.event.repository.fork == false &&
         (startsWith(github.head_ref, 'renovate/') != true || github.event_name == 'workflow_call')
     runs-on: ubuntu-latest
     outputs:

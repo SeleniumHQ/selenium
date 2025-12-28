@@ -24,7 +24,7 @@ permissions:
 jobs:
   format:
     name: Format
-    if: github.repository_owner == 'seleniumhq' && startsWith(github.head_ref, 'renovate/') != true
+    if: github.event.repository.fork == false && startsWith(github.head_ref, 'renovate/') != true
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check format script run
@@ -34,7 +34,7 @@ jobs:
 
   test:
     name: Test
-    if: github.repository_owner == 'seleniumhq' && startsWith(github.head_ref, 'renovate/') != true
+    if: github.event.repository.fork == false && startsWith(github.head_ref, 'renovate/') != true
     uses: ./.github/workflows/bazel.yml
     with:
       name: All RBE tests
