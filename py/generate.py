@@ -36,7 +36,7 @@ from enum import Enum
 from pathlib import Path
 from textwrap import dedent
 from textwrap import indent as tw_indent
-from typing import Union, cast
+from typing import cast
 
 import inflection  # type: ignore
 
@@ -819,8 +819,7 @@ class CdpDomain:
             code += import_code
             code += "\n\n"
         code += "\n"
-        item_iter_t = Union[CdpEvent, CdpCommand, CdpType]
-        item_iter: Iterator[item_iter_t] = itertools.chain(
+        item_iter: Iterator[CdpEvent | CdpCommand | CdpType] = itertools.chain(
             iter(self.types),
             iter(self.commands),
             iter(self.events),

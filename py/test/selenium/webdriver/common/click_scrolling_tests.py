@@ -50,7 +50,7 @@ def test_should_scroll_to_click_on_an_element_hidden_by_overflow(driver, pages):
     try:
         link.click()
     except MoveTargetOutOfBoundsException as e:
-        AssertionError("Should not be out of bounds: %s" % e.msg)
+        AssertionError(f"Should not be out of bounds: {e.msg}")
 
 
 def test_should_be_able_to_click_on_an_element_hidden_by_overflow(driver, pages):

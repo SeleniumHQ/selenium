@@ -16,8 +16,8 @@
 # under the License.
 
 from collections.abc import Sequence
+from typing import IO, Any
 
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
 
@@ -31,7 +31,7 @@ class Service(service.Service):
         host: str | None = None,
         service_args: Sequence[str] | None = None,
         log_level: str | None = None,
-        log_output: SubprocessStdAlias | None = None,
+        log_output: int | str | IO[Any] | None = None,
         driver_path_env_key: str | None = None,
         **kwargs,
     ) -> None:

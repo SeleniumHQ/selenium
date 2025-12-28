@@ -17,8 +17,8 @@
 
 from collections.abc import Mapping, Sequence
 from io import IOBase
+from typing import IO, Any
 
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import service
 
 
@@ -44,7 +44,7 @@ class ChromiumService(service.Service):
         executable_path: str | None = None,
         port: int = 0,
         service_args: Sequence[str] | None = None,
-        log_output: SubprocessStdAlias | None = None,
+        log_output: int | str | IO[Any] | None = None,
         env: Mapping[str, str] | None = None,
         driver_path_env_key: str | None = None,
         **kwargs,

@@ -30,7 +30,6 @@ from urllib import request
 from urllib.error import URLError
 
 from selenium.common.exceptions import WebDriverException
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
 
 logger = logging.getLogger(__name__)
@@ -54,7 +53,7 @@ class Service(ABC):
         self,
         executable_path: str | None = None,
         port: int = 0,
-        log_output: SubprocessStdAlias | None = None,
+        log_output: int | str | IO[Any] | None = None,
         env: Mapping[Any, Any] | None = None,
         driver_path_env_key: str | None = None,
         **kwargs,

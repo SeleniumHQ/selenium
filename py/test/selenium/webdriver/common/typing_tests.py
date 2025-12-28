@@ -16,7 +16,6 @@
 # under the License.
 
 
-
 import pytest
 
 from selenium.webdriver.common.by import By
@@ -300,7 +299,7 @@ def test_numberpad_and_function_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys(
-        "abcd{}{}{}{}{}{}{}{}{}{}{}{}abcd".format( # noqa: UP032
+        "abcd{}{}{}{}{}{}{}{}{}{}{}{}abcd".format(  # noqa: UP032
             Keys.MULTIPLY,
             Keys.SUBTRACT,
             Keys.ADD,

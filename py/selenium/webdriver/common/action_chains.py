@@ -18,7 +18,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.key_input import KeyInput
@@ -29,8 +29,6 @@ from selenium.webdriver.remote.webelement import WebElement
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
-
-AnyDevice = Union[PointerInput, KeyInput, WheelInput]
 
 
 class ActionChains:
@@ -68,7 +66,12 @@ class ActionChains:
     another.
     """
 
-    def __init__(self, driver: WebDriver, duration: int = 250, devices: list[AnyDevice] | None = None) -> None:
+    def __init__(
+        self,
+        driver: WebDriver,
+        duration: int = 250,
+        devices: list[PointerInput | KeyInput | WheelInput] | None = None,
+    ) -> None:
         """Creates a new ActionChains.
 
         Args:

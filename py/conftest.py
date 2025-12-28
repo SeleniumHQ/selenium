@@ -364,7 +364,7 @@ def driver(request):
                 except Exception:
                     pass
 
-            request.addfinalizer(ensure_valid_window)
+            request.addfinalizer(ensure_valid_window)  # noqa: PT021
 
     yield selenium_driver.driver
 
@@ -387,7 +387,7 @@ def stop_driver(request):
             selenium_driver.stop_driver()
         selenium_driver = None
 
-    request.addfinalizer(fin)
+    request.addfinalizer(fin)  # noqa: PT021
 
 
 def pytest_exception_interact(node, call, report):
