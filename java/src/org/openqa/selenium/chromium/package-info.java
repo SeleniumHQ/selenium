@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import org.jspecify.annotations.NullMarked;
+
 @NullMarked
 package org.openqa.selenium.chromium;
-
-import org.jspecify.annotations.NullMarked;
