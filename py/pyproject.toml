@@ -158,6 +158,7 @@ extend-ignore = [
     "PT011", # Use of pytest.raises({exception}) is too broad
     "RUF005", # Uses of the + operator to concatenate collections
     "RUF012", # Mutable default values in class attributes
+    "RUF059", # Unpacked variable is never used
 ]
 
 [tool.ruff.format]
