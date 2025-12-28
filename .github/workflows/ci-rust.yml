@@ -166,7 +166,7 @@ jobs:
 
   macos-stable:
     name: "MacOS Stable"
-    runs-on: macos-13
+    runs-on: macos-latest
     needs: tests
     if: github.event_name != 'schedule'
     env:
@@ -179,6 +179,7 @@ jobs:
       - name: "Update Rust"
         run: |
           rustup update
+          rustup target add x86_64-apple-darwin
           rustup target add aarch64-apple-darwin
           rustc -vV
       - name: "Build release binary"
@@ -198,7 +199,7 @@ jobs:
 
   macos-debug:
     name: "MacOS Debug"
-    runs-on: macos-13
+    runs-on: macos-latest
     needs: tests
     if: github.event_name != 'schedule'
     env:
@@ -211,6 +212,7 @@ jobs:
       - name: "Update Rust"
         run: |
           rustup update
+          rustup target add x86_64-apple-darwin
           rustup target add aarch64-apple-darwin
           rustc -vV
       - name: "Build release binary"
