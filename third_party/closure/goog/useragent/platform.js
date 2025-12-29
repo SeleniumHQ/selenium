@@ -1,16 +1,8 @@
-// Copyright 2010 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Utilities for getting details about the user's platform.
@@ -30,6 +22,7 @@ goog.require('goog.userAgent');
  * @return {string} The platform version.
  */
 goog.userAgent.platform.determineVersion_ = function() {
+  'use strict';
   var re;
   if (goog.userAgent.WINDOWS) {
     re = /Windows NT ([0-9.]+)/;
@@ -40,7 +33,7 @@ goog.userAgent.platform.determineVersion_ = function() {
       return '0';
     }
   } else if (goog.userAgent.MAC) {
-    re = /10[_.][0-9_.]+/;
+    re = /1[0|1][_.][0-9_.]+/;
     var match = re.exec(goog.userAgent.getUserAgentString());
     // Note: some old versions of Camino do not report an OSX version.
     // Default to 10.
@@ -79,6 +72,7 @@ goog.userAgent.platform.VERSION = goog.userAgent.platform.determineVersion_();
  *     same as the given version.
  */
 goog.userAgent.platform.isVersion = function(version) {
+  'use strict';
   return goog.string.compareVersions(
              goog.userAgent.platform.VERSION, version) >= 0;
 };

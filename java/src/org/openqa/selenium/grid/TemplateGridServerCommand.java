@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid;
 
 import java.io.Closeable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +74,7 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
 
   private static Routable buildRoute(String url, String prefix, Function<String, Route> mapper) {
     List<String> subPaths =
-        prefix.isEmpty() ? Collections.singletonList(url) : Arrays.asList(prefix + url, url);
+        prefix.isEmpty() ? Collections.singletonList(url) : List.of(prefix + url, url);
     return subPaths.stream().map(mapper).reduce(Route::combine).get();
   }
 

@@ -58,7 +58,6 @@ import com.google.common.collect.Sets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -767,7 +766,7 @@ class ExpectedConditionsTest {
   void waitingForSpecificNumberOfElementsMoreThanSpecifiedPositive() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
-        .thenReturn(Arrays.asList(mockElement, mockElement));
+        .thenReturn(List.of(mockElement, mockElement));
     assertThat(wait.until(numberOfElementsToBeMoreThan(cssSelector(testSelector), 1))).hasSize(2);
   }
 
@@ -775,7 +774,7 @@ class ExpectedConditionsTest {
   void waitingForSpecificNumberOfElementsLessThanSpecifiedWhenNumberIsEqual() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
-        .thenReturn(Arrays.asList(mockElement, mockElement));
+        .thenReturn(List.of(mockElement, mockElement));
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(
             () -> wait.until(numberOfElementsToBeLessThan(By.cssSelector(testSelector), 2)));
@@ -793,7 +792,7 @@ class ExpectedConditionsTest {
   void waitingForSpecificNumberOfElementsPositive() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
-        .thenReturn(Arrays.asList(mockElement, mockElement));
+        .thenReturn(List.of(mockElement, mockElement));
     assertThat(wait.until(numberOfElementsToBe(cssSelector(testSelector), 2))).hasSize(2);
   }
 

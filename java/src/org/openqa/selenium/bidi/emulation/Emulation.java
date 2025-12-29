@@ -67,4 +67,10 @@ public class Emulation {
     bidi.send(
         new Command<>("emulation.setScreenOrientationOverride", parameters.toMap(), Map.class));
   }
+
+  public void setNetworkConditions(SetNetworkConditionsParameters parameters) {
+    Require.nonNull("SetNetworkConditions parameters", parameters);
+
+    bidi.send(new Command<>("emulation.setNetworkConditions", parameters.toMap(), Map.class));
+  }
 }

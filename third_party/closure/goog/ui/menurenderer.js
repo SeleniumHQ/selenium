@@ -1,16 +1,8 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Renderer for {@link goog.ui.Menu}s.
@@ -18,7 +10,6 @@
 
 goog.provide('goog.ui.MenuRenderer');
 
-goog.forwardDeclare('goog.ui.Menu');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
@@ -27,6 +18,8 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.ui.ContainerRenderer');
 goog.require('goog.ui.Separator');
+goog.requireType('goog.ui.Control');
+goog.requireType('goog.ui.Menu');
 
 
 
@@ -38,6 +31,7 @@ goog.require('goog.ui.Separator');
  * @extends {goog.ui.ContainerRenderer}
  */
 goog.ui.MenuRenderer = function(opt_ariaRole) {
+  'use strict';
   goog.ui.ContainerRenderer.call(
       this, opt_ariaRole || goog.a11y.aria.Role.MENU);
 };
@@ -60,6 +54,7 @@ goog.ui.MenuRenderer.CSS_CLASS = goog.getCssName('goog-menu');
  * @override
  */
 goog.ui.MenuRenderer.prototype.canDecorate = function(element) {
+  'use strict';
   return element.tagName == goog.dom.TagName.UL ||
       goog.ui.MenuRenderer.superClass_.canDecorate.call(this, element);
 };
@@ -75,6 +70,7 @@ goog.ui.MenuRenderer.prototype.canDecorate = function(element) {
  * @override
  */
 goog.ui.MenuRenderer.prototype.getDecoratorForChild = function(element) {
+  'use strict';
   return element.tagName == goog.dom.TagName.HR ?
       new goog.ui.Separator() :
       goog.ui.MenuRenderer.superClass_.getDecoratorForChild.call(this, element);
@@ -88,6 +84,7 @@ goog.ui.MenuRenderer.prototype.getDecoratorForChild = function(element) {
  * @return {boolean} Whether the given element is contained in the menu.
  */
 goog.ui.MenuRenderer.prototype.containsElement = function(menu, element) {
+  'use strict';
   return goog.dom.contains(menu.getElement(), element);
 };
 
@@ -99,12 +96,14 @@ goog.ui.MenuRenderer.prototype.containsElement = function(menu, element) {
  * @override
  */
 goog.ui.MenuRenderer.prototype.getCssClass = function() {
+  'use strict';
   return goog.ui.MenuRenderer.CSS_CLASS;
 };
 
 
 /** @override */
 goog.ui.MenuRenderer.prototype.initializeDom = function(container) {
+  'use strict';
   goog.ui.MenuRenderer.superClass_.initializeDom.call(this, container);
 
   var element = container.getElement();

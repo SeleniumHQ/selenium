@@ -25,7 +25,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -67,7 +66,7 @@ class DefaultElementLocatorTest {
     final By by = new ByIdOrName("list");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(element1, element2);
+    final List<WebElement> list = List.of(element1, element2);
 
     when(driver.findElements(by)).thenReturn(list);
 
@@ -100,7 +99,7 @@ class DefaultElementLocatorTest {
     final By by = new ByIdOrName("cachedList");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(element1, element2);
+    final List<WebElement> list = List.of(element1, element2);
 
     when(driver.findElements(by)).thenReturn(list);
 
@@ -134,7 +133,7 @@ class DefaultElementLocatorTest {
     final By by = new ByIdOrName("list");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(element1, element2);
+    final List<WebElement> list = List.of(element1, element2);
 
     when(driver.findElements(by)).thenReturn(list);
 
@@ -165,7 +164,7 @@ class DefaultElementLocatorTest {
     final By by = By.id("foo");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(element1, element2);
+    final List<WebElement> list = List.of(element1, element2);
 
     when(driver.findElements(by)).thenReturn(list);
 

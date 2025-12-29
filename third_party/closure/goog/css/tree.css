@@ -1,0 +1,144 @@
+/*
+ * Copyright 2007 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+@provide 'goog.css.tree';
+
+/*
+  TODO(arv): Currently the sprite image has the height 16px. We should make the
+  image taller which would allow better flexibility when it comes to the height
+  of a tree row.
+*/
+
+.goog-tree-root:focus {
+  outline: none;
+}
+
+.goog-tree-row {
+  white-space: nowrap;
+  font: icon;
+  line-height: 16px;
+  height: 16px;
+}
+
+.goog-tree-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.goog-tree-children {
+  background-repeat: repeat-y;
+  background-image: url(//ssl.gstatic.com/closure/tree/I.png) !important;
+  background-position-y: 1px !important;	/* IE only */
+  font: icon;
+}
+
+.goog-tree-children-nolines {
+  font: icon;
+}
+
+.goog-tree-icon {
+  background-image: url(//ssl.gstatic.com/closure/tree/tree.png);
+}
+
+.goog-tree-expand-icon {
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+  cursor: default;
+}
+
+.goog-tree-expand-icon-plus {
+  width: 19px;
+  background-position: 0 0;
+}
+
+.goog-tree-expand-icon-minus {
+  width: 19px;
+  background-position: -24px 0;
+}
+
+.goog-tree-expand-icon-tplus {
+  width: 19px;
+  background-position: -48px 0;
+}
+
+.goog-tree-expand-icon-tminus {
+  width: 19px;
+  background-position: -72px 0;
+}
+
+.goog-tree-expand-icon-lplus {
+  width: 19px;
+  background-position: -96px 0;
+}
+
+.goog-tree-expand-icon-lminus {
+  width: 19px;
+  background-position: -120px 0;
+}
+
+.goog-tree-expand-icon-t {
+  width: 19px;
+  background-position: -144px 0;
+}
+
+.goog-tree-expand-icon-l {
+  width: 19px;
+  background-position: -168px 0;
+}
+
+.goog-tree-expand-icon-blank {
+  width: 19px;
+  background-position: -168px -24px;
+}
+
+.goog-tree-collapsed-folder-icon {
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+  background-position: -0px -24px;
+}
+
+.goog-tree-expanded-folder-icon {
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+  background-position: -24px -24px;
+}
+
+.goog-tree-file-icon {
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+  background-position: -48px -24px;
+}
+
+.goog-tree-item-label {
+  margin-left: 3px;
+  padding: 1px 2px 1px 2px;
+  text-decoration: none;
+  color: WindowText;
+  cursor: default;
+}
+
+.goog-tree-item-label:hover {
+  text-decoration: underline;
+}
+
+.selected .goog-tree-item-label {
+  background-color: ButtonFace;
+  color: ButtonText;
+}
+
+.focused .selected .goog-tree-item-label {
+  background-color: Highlight;
+  color: HighlightText;
+}
+
+.goog-tree-hide-root {
+  display: none;
+}

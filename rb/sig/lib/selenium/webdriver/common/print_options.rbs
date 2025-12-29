@@ -1,0 +1,45 @@
+module Selenium
+  module WebDriver
+    class PrintOptions
+      DEFAULT_SCALE: Float
+
+      DEFAULT_ORIENTATION: String
+
+      DEFAULT_PAGE_SIZE: Hash[Symbol, Float]
+
+      DEFAULT_MARGINS: Hash[Symbol, Float]
+
+      @orientation: String
+
+      @scale: Float
+
+      @background: bool
+
+      @page_ranges: untyped
+
+      @page_size: Hash[Symbol, Float]
+
+      @margins: Hash[Symbol, Float]
+
+      attr_accessor orientation: String
+
+      attr_accessor scale: Float
+
+      attr_accessor background: bool
+
+      attr_accessor page_ranges: untyped
+
+      attr_accessor margins: Hash[Symbol, Float]
+
+      def initialize: () -> void
+
+      def to_h: () -> Hash[Symbol, untyped]
+
+      def page_width: (Numeric width) -> void
+
+      def page_height: (Numeric height) -> void
+
+      def page_size=: (Hash[Symbol, Float] size) -> void
+    end
+  end
+end

@@ -18,13 +18,13 @@
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.driver_finder import DriverFinder
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.safari.options import Options
 from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 from selenium.webdriver.safari.service import Service
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Controls the SafariDriver and allows you to drive the browser."""
 
     def __init__(
@@ -60,8 +60,6 @@ class WebDriver(RemoteWebDriver):
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
 
     def quit(self):
         """Closes the browser and shuts down the SafariDriver executable."""
@@ -105,12 +103,3 @@ class WebDriver(RemoteWebDriver):
     def debug(self):
         self.execute("ATTACH_DEBUGGER")
         self.execute_script("debugger;")
-
-    def download_file(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError

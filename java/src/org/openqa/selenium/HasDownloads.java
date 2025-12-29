@@ -95,6 +95,10 @@ public interface HasDownloads {
       return name;
     }
 
+    public boolean hasExtension(String extension) {
+      return extension.startsWith(".") ? name.endsWith(extension) : name.endsWith('.' + extension);
+    }
+
     public long getCreationTime() {
       return creationTime;
     }

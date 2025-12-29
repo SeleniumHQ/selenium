@@ -15,6 +15,9 @@ on:
           - stable
           - early-stable
 
+permissions:
+  contents: read
+
 jobs:
   update-rust:
     name: Update Rust Version

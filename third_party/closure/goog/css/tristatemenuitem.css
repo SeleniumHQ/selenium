@@ -1,0 +1,43 @@
+/*
+ * Copyright 2007 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* goog.ui.TriStateMenuItem */
+
+@provide 'goog.css.tristatemenuitem';
+
+.goog-tristatemenuitem {
+  padding: 2px 5px;
+  margin: 0;
+  list-style: none;
+}
+
+.goog-tristatemenuitem-highlight {
+  background-color: #4279A5;
+  color: #FFF;
+}
+
+.goog-tristatemenuitem-disabled {
+  color: #999;
+}
+
+.goog-tristatemenuitem-checkbox {
+  float: left;
+  width: 10px;
+  height: 1.1em;
+}
+
+.goog-tristatemenuitem-partially-checked {
+  background-image: url(//ssl.gstatic.com/closure/check-outline.gif);
+  background-position: 4px 50%;
+  background-repeat: no-repeat;
+}
+
+.goog-tristatemenuitem-fully-checked {
+  background-image: url(//ssl.gstatic.com/closure/check.gif);
+  background-position: 4px 50%;
+  background-repeat: no-repeat;
+}

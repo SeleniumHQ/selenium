@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.data;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import org.openqa.selenium.Capabilities;
@@ -51,11 +50,11 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
    matched in the Node or in the browser driver.
   */
   private static final List<String> EXTENSION_CAPABILITIES_PREFIXES =
-      Arrays.asList("goog:", "moz:", "ms:", "safari:", "se:");
+      List.of("goog:", "moz:", "ms:", "safari:", "se:");
   public static final List<String> SPECIFIC_RELAY_CAPABILITIES_APP =
-      Arrays.asList("appium:app", "appium:appPackage", "appium:bundleId");
+      List.of("appium:app", "appium:appPackage", "appium:bundleId");
   public static final List<String> MANDATORY_CAPABILITIES =
-      Arrays.asList("platformName", "browserName", "browserVersion");
+      List.of("platformName", "browserName", "browserVersion");
 
   @Override
   public boolean matches(Capabilities stereotype, Capabilities capabilities) {

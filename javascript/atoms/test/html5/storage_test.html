@@ -200,7 +200,7 @@
 
       var localStorage = bot.storage.getLocalStorage();
 
-      if (goog.isNull(localStorage.getItem('foosession'))) {
+      if (localStorage.getItem('foosession') === null) {
         localStorage.setItem('foosession', 'barsession');
       }
       assertEquals('barsession', localStorage.getItem('foosession'));

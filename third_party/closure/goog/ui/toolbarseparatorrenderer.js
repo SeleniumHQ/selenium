@@ -1,16 +1,8 @@
-// Copyright 2007 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Renderer for toolbar separators.
@@ -23,6 +15,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.MenuSeparatorRenderer');
+goog.requireType('goog.ui.Control');
 
 
 
@@ -32,6 +25,7 @@ goog.require('goog.ui.MenuSeparatorRenderer');
  * @extends {goog.ui.MenuSeparatorRenderer}
  */
 goog.ui.ToolbarSeparatorRenderer = function() {
+  'use strict';
   goog.ui.MenuSeparatorRenderer.call(this);
 };
 goog.inherits(goog.ui.ToolbarSeparatorRenderer, goog.ui.MenuSeparatorRenderer);
@@ -58,6 +52,7 @@ goog.ui.ToolbarSeparatorRenderer.CSS_CLASS =
  * @override
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.createDom = function(separator) {
+  'use strict';
   // 00A0 is &nbsp;
   return separator.getDomHelper().createDom(
       goog.dom.TagName.DIV, this.getClassNames(separator).join(' ') + ' ' +
@@ -76,6 +71,7 @@ goog.ui.ToolbarSeparatorRenderer.prototype.createDom = function(separator) {
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.decorate = function(
     separator, element) {
+  'use strict';
   element = goog.ui.ToolbarSeparatorRenderer.superClass_.decorate.call(
       this, separator, element);
   goog.asserts.assert(element);
@@ -91,5 +87,6 @@ goog.ui.ToolbarSeparatorRenderer.prototype.decorate = function(
  * @override
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.getCssClass = function() {
+  'use strict';
   return goog.ui.ToolbarSeparatorRenderer.CSS_CLASS;
 };

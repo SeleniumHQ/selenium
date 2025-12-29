@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.Platform;
@@ -33,7 +32,7 @@ import org.openqa.selenium.Platform;
 public class ExecutableFinder {
   private static final List<String> ENDINGS =
       Platform.getCurrent().is(WINDOWS)
-          ? Arrays.asList("", ".cmd", ".exe", ".com", ".bat")
+          ? List.of("", ".cmd", ".exe", ".com", ".bat")
           : singletonList("");
 
   /**
@@ -84,7 +83,7 @@ public class ExecutableFinder {
       }
     }
     String path = env.get(pathName);
-    return path != null ? Arrays.asList(path.split(File.pathSeparator)) : emptyList();
+    return path != null ? List.of(path.split(File.pathSeparator)) : emptyList();
   }
 
   private List<String> macSpecificPathSegments() {

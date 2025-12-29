@@ -14,12 +14,15 @@ def _closure_js_srcs_aspect_impl(target, ctx):
     for d in getattr(ctx.rule.attr, "deps", []):
         if ClosureJsSrcsInfo in d:
             trans.append(d[ClosureJsSrcsInfo].files)
+    for d in getattr(ctx.rule.attr, "exports", []):
+        if ClosureJsSrcsInfo in d:
+            trans.append(d[ClosureJsSrcsInfo].files)
 
     return [ClosureJsSrcsInfo(files = depset(direct = direct, transitive = trans))]
 
 closure_js_srcs_aspect = aspect(
     implementation = _closure_js_srcs_aspect_impl,
-    attr_aspects = ["deps"],
+    attr_aspects = ["deps", "exports"],
 )
 
 def _collect_srcs_impl(ctx):
@@ -42,27 +45,68 @@ collect_closure_js_srcs = rule(
     provides = [ClosureJsSrcsInfo],
 )
 
-def _closure_js_deps_wrapper_impl(ctx):
-    """Wrapper rule that adds runfiles to the generated deps.js file."""
-    deps_file = ctx.file.deps_file
+def _closure_js_deps_gen_impl(ctx):
+    """Rule that generates deps.js using closure-make-deps via a Node.js wrapper.
+
+    The wrapper reads file paths from a response file to avoid Windows command
+    line length limits. It imports google-closure-deps as a module and calls
+    it programmatically, so the file list never appears on any command line.
+    """
     srcs_depset = ctx.attr.srcs_collector[ClosureJsSrcsInfo].files
+    srcs_list = srcs_depset.to_list()
+    output = ctx.outputs.out
+
+    # Get the closure library path
+    closure_path = ctx.file._closure_library.dirname
+
+    # Write file list to a response file to avoid Windows command line length limits
+    files_list = ctx.actions.declare_file(ctx.label.name + "_files.txt")
+    ctx.actions.write(
+        output = files_list,
+        content = "\n".join([f.path for f in srcs_list]),
+    )
+
+    # Run via Node.js wrapper which reads the file list and calls closure-make-deps
+    # programmatically, avoiding any command line length limits
+    ctx.actions.run(
+        outputs = [output],
+        inputs = srcs_list + [ctx.file._closure_library, files_list],
+        executable = ctx.executable._wrapper,
+        arguments = [
+            files_list.path,
+            output.path,
+            closure_path,
+        ],
+        env = {"BAZEL_BINDIR": "."},
+        mnemonic = "ClosureJsDeps",
+        progress_message = "Generating deps.js for %s" % ctx.label,
+    )
 
     return [
         DefaultInfo(
-            files = depset([deps_file]),
+            files = depset([output]),
             runfiles = ctx.runfiles(
-                files = [deps_file],
+                files = [output],
                 transitive_files = srcs_depset,
             ),
         ),
     ]
 
-_closure_js_deps_wrapper = rule(
-    implementation = _closure_js_deps_wrapper_impl,
+_closure_js_deps_gen = rule(
+    implementation = _closure_js_deps_gen_impl,
     attrs = {
-        "deps_file": attr.label(allow_single_file = True, mandatory = True),
-        "srcs_collector": attr.label(mandatory = True),
+        "srcs_collector": attr.label(mandatory = True, providers = [ClosureJsSrcsInfo]),
+        "_wrapper": attr.label(
+            default = "//javascript/private:closure_make_deps_wrapper",
+            executable = True,
+            cfg = "exec",
+        ),
+        "_closure_library": attr.label(
+            default = "//third_party/closure/goog:base.js",
+            allow_single_file = True,
+        ),
     },
+    outputs = {"out": "deps.js"},
 )
 
 def closure_js_deps(name, deps = [], testonly = None, **kwargs):
@@ -71,9 +115,14 @@ def closure_js_deps(name, deps = [], testonly = None, **kwargs):
     This macro replaces the old closure_js_deps rule from rules_closure by using
     the closure-make-deps binary from the google-closure-deps npm package.
 
+    Uses a proper Starlark rule with param file support to avoid Windows
+    command line length limits.
+
     Args:
         name: Name of the target. The output will be 'deps.js'.
         deps: List of closure_js_library targets to analyze for dependencies.
+        testonly: If True, only testonly targets can depend on this target.
+        **kwargs: Additional arguments passed to the rule (e.g., visibility).
     """
 
     srcs_collector = name + "_closure_srcs"
@@ -84,32 +133,8 @@ def closure_js_deps(name, deps = [], testonly = None, **kwargs):
         visibility = ["//visibility:private"],
     )
 
-    deps_genrule = name + "_genrule"
-    native.genrule(
-        name = deps_genrule,
-        srcs = [":" + srcs_collector],
-        outs = ["deps.js"],
-        cmd = """
-            export BAZEL_BINDIR=$(BINDIR) && \\
-            FILES="" && \\
-            for f in $(SRCS); do \\
-                FILES="$$FILES --file $$(pwd)/$$f"; \\
-            done && \\
-            $(location //javascript/private:closure_make_deps) \\
-                --closure-path $$(pwd)/external/com_google_javascript_closure_library/closure \\
-                --no-validate \\
-                $$FILES \\
-                > $@
-        """,
-        tools = ["//javascript/private:closure_make_deps"],
-        testonly = testonly,
-        visibility = ["//visibility:private"],
-    )
-
-    # Use the wrapper rule to add runfiles to the generated deps.js
-    _closure_js_deps_wrapper(
+    _closure_js_deps_gen(
         name = name,
-        deps_file = deps_genrule,
         srcs_collector = ":" + srcs_collector,
         testonly = testonly,
         **kwargs
