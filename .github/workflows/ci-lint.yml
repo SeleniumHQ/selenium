@@ -42,6 +42,8 @@ jobs:
         run: |
           echo "::notice::PR from fork modifies format script"
           exit 1
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.15.0
         with:
