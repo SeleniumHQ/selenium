@@ -19,7 +19,6 @@
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote
--//javascript/chrome-driver/...
 -//rb/spec/integration/selenium/webdriver/chrome:service-chrome
 -//rb/spec/integration/selenium/webdriver/chrome:service-chrome-remote
 -//rb/spec/integration/selenium/webdriver/edge:service-edge
