@@ -119,3 +119,62 @@ Test files end in `_spec.rb` (e.g., `driver_spec.rb`).
 
 * Adding tests shouldn't require Bazel changes—`rb_integration_test` uses glob patterns.
 * Make sure `*_spec.rb` files are in a directory with a `BUILD.bazel` containing `rb_integration_test`.
+
+## Environment Variables
+
+Environment variables control test execution behavior and enable specific features.
+
+### BiDi Testing
+
+To run tests with BiDi (Bidirectional) protocol enabled:
+
+```shell
+# Enable BiDi for all tests
+WD_REMOTE_BROWSER=chrome BIDI=true bazel test //rb/spec/integration/...
+
+# Run BiDi-specific tests
+bazel test //rb/spec/integration/selenium/webdriver/bidi/...
+```
+
+### Available Variables
+
+| Variable | Purpose | Values | Example |
+|----------|---------|--------|---------|
+| `BIDI` | Enable BiDi protocol | `true`, `false` | `BIDI=true` |
+| `WD_REMOTE_BROWSER` | Specify browser for remote tests | `chrome`, `firefox`, `edge`, `safari` | `WD_REMOTE_BROWSER=firefox` |
+| `HEADLESS` | Run tests in headless mode | `true`, `false` | `HEADLESS=true` |
+| `DEBUG` | Enable debug logging | `true`, `false` | `DEBUG=true` |
+
+### Examples
+
+```shell
+# Run Chrome tests with BiDi enabled
+BIDI=true bazel test //rb/spec/integration/... --test_tag_filters=chrome
+
+# Run headless Firefox tests
+HEADLESS=true bazel test //rb/spec/integration/... --test_tag_filters=firefox
+
+# Run remote tests on Edge with BiDi
+WD_REMOTE_BROWSER=edge BIDI=true bazel test //rb/spec/integration/... --test_tag_filters=remote
+
+# Combine multiple variables
+BIDI=true HEADLESS=true DEBUG=true bazel test //rb/spec/integration/selenium/webdriver/bidi/...
+```
+
+### Testing Guard Behavior
+
+Environment variables interact with test guards. For example:
+
+```ruby
+# This test only runs when BiDi is enabled
+it 'uses BiDi feature', only: {bidi: true} do
+  # Test code
+end
+
+# This test is excluded when BiDi is enabled
+it 'classic WebDriver only', exclusive: {bidi: false} do
+  # Test code
+end
+```
+
+Run with `BIDI=true` to see these guards in action.
