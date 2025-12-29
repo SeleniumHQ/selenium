@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.docker;
 
+import static java.util.Collections.emptyList;
+
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import java.util.HashMap;
 import java.util.List;
@@ -63,8 +63,8 @@ public class ContainerConfig {
         devices,
         networkName,
         shmSize,
-        ImmutableMap.of(),
-        ImmutableMap.of());
+        Map.of(),
+        Map.of());
   }
 
   public ContainerConfig(
@@ -85,7 +85,7 @@ public class ContainerConfig {
         networkName,
         shmSize,
         hostConfig,
-        ImmutableMap.of());
+        Map.of());
   }
 
   public ContainerConfig(
@@ -147,9 +147,9 @@ public class ContainerConfig {
     return new ContainerConfig(
         image,
         HashMultimap.create(),
-        ImmutableMap.of(),
-        ImmutableMap.of(),
-        ImmutableList.of(),
+        Map.of(),
+        Map.of(),
+        emptyList(),
         DEFAULT_DOCKER_NETWORK,
         DEFAULT_SHM_SIZE);
   }
@@ -166,7 +166,7 @@ public class ContainerConfig {
     Multimap<String, Map<String, Object>> updatedBindings = HashMultimap.create(portBindings);
     updatedBindings.put(
         containerPort.getPort() + "/" + containerPort.getProtocol(),
-        ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
+        Map.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
     return new ContainerConfig(
         image,
@@ -348,14 +348,14 @@ public class ContainerConfig {
         this.devices.stream()
             .map(
                 device ->
-                    ImmutableMap.of(
+                    Map.of(
                         "PathOnHost", device.getPathOnHost(),
                         "PathInContainer", device.getPathInContainer(),
                         "CgroupPermissions", device.getCgroupPermissions()))
             .collect(Collectors.toList());
 
     Map<String, Object> hostConfig =
-        ImmutableMap.of(
+        Map.of(
             "PortBindings", portBindings.asMap(),
             "AutoRemove", autoRemove,
             "NetworkMode", networkName,
@@ -366,7 +366,7 @@ public class ContainerConfig {
     if (!this.hostConfig.isEmpty()) {
       Map<String, Object> copyMap = new HashMap<>(hostConfig);
       copyMap.putAll(this.hostConfig);
-      hostConfig = ImmutableMap.copyOf(copyMap);
+      hostConfig = Map.copyOf(copyMap);
     }
 
     Map<String, Object> config = new HashMap<>();
@@ -376,6 +376,6 @@ public class ContainerConfig {
     if (!labels.isEmpty()) {
       config.put("Labels", labels);
     }
-    return config;
+    return Map.copyOf(config);
   }
 }

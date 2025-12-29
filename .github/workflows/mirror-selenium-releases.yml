@@ -5,9 +5,12 @@ on:
     - cron:  '0 */12 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
-    if: github.repository_owner == 'seleniumhq'
+    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4

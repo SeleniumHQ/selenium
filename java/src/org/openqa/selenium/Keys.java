@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import java.util.Arrays;
+import java.util.List;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -176,7 +176,7 @@ public enum Keys implements CharSequence {
    * @return String representation of the char sequence
    */
   public static String chord(CharSequence... value) {
-    return chord(Arrays.asList(value));
+    return chord(List.of(value));
   }
 
   /**

@@ -3,6 +3,7 @@ module Selenium
     module DriverExtensions
       module HasNetworkInterception
         include _DevTools
+        include _Driver
 
         @interceptor: untyped
 

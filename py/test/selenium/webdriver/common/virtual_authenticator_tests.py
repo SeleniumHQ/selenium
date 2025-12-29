@@ -24,7 +24,7 @@ from selenium.webdriver.common.virtual_authenticator import Credential, VirtualA
 from selenium.webdriver.remote.webdriver import WebDriver
 
 # working Key
-BASE64__ENCODED_PK = """
+BASE64_ENCODED_PK = """
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr
 MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuBGV
 oPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi9AyQ
@@ -140,7 +140,7 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
     credential = Credential.create_non_resident_credential(
         bytearray({1, 2, 3, 4}),
         "localhost",
-        b64decode(BASE64__ENCODED_PK),
+        b64decode(BASE64_ENCODED_PK),
         0,
     )
 
@@ -237,7 +237,7 @@ def test_get_credentials(driver, pages):
         elif credential.id.startswith(extract_id(response2)):
             credential2: Credential = credential
         else:
-            assert False, "Unknown credential"
+            pytest.fail("Unknown credential")
 
     assert credential1.is_resident_credential, "Credential1 should be resident credential"
     assert credential1.private_key is not None, "Credential1 should have private key"

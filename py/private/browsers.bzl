@@ -9,7 +9,7 @@ load(
 
 headless_args = select({
     "@selenium//common:use_headless_browser": [
-        "--headless=true",
+        "--headless",
     ],
     "//conditions:default": [],
 })

@@ -25,7 +25,6 @@ import java.io.StringReader;
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,7 +83,7 @@ class DistributedTest {
 
     appServer =
         new NettyServer(
-            new BaseServerOptions(new MemoizedConfig(new MapConfig(Map.of()))),
+            new BaseServerOptions(new MemoizedConfig(new MapConfig())),
             req -> {
               try {
                 Thread.sleep(2000);
@@ -193,7 +192,7 @@ class DistributedTest {
   }
 
   @Test
-  void connectionLimitIsRespected() throws Exception {
+  void connectionLimitIsRespected() {
     assertThat(server.isStarted()).isTrue();
 
     // don't use the RemoteWebDriver.builder here, using it does create an unknown number of

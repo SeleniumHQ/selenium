@@ -31,7 +31,6 @@ import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -312,8 +311,8 @@ class ChromeOptionsTest {
     browserCaps.setCapability("binary", binary.getPath());
     browserCaps.setCapability("opt1", "val1");
     browserCaps.setCapability("opt2", "val4");
-    browserCaps.setCapability("args", Arrays.asList("silent", "verbose"));
-    browserCaps.setCapability("extensions", Arrays.asList(ext1, ext2));
+    browserCaps.setCapability("args", List.of("silent", "verbose"));
+    browserCaps.setCapability("extensions", List.of(ext1, ext2));
 
     MutableCapabilities one = new MutableCapabilities();
     one.setCapability(ChromeOptions.CAPABILITY, browserCaps);

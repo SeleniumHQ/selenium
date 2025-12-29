@@ -23,9 +23,9 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -60,9 +60,7 @@ class NettyServerTest {
     Server<?> server =
         new NettyServer(
                 new BaseServerOptions(
-                    new MapConfig(
-                        ImmutableMap.of(
-                            "server", ImmutableMap.of("port", PortProber.findFreePort())))),
+                    new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())))),
                 req -> {
                   count.incrementAndGet();
                   return new HttpResponse().setContent(utf8String("Count is " + count.get()));
@@ -86,9 +84,7 @@ class NettyServerTest {
     Server<?> server =
         new NettyServer(
                 new BaseServerOptions(
-                    new MapConfig(
-                        ImmutableMap.of(
-                            "server", ImmutableMap.of("port", PortProber.findFreePort())))),
+                    new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())))),
                 req -> new HttpResponse().setContent(utf8String("Count is ")))
             .start();
 
@@ -107,9 +103,7 @@ class NettyServerTest {
 
   @Test
   void shouldAllowCORS() {
-    Config cfg =
-        new CompoundConfig(
-            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("allow-cors", "true"))));
+    Config cfg = new CompoundConfig(new MapConfig(Map.of("server", Map.of("allow-cors", "true"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
     assertThat(options.getAllowCORS()).as("Allow CORS should be enabled").isTrue();
 
@@ -131,9 +125,7 @@ class NettyServerTest {
   void shouldNotBindToHost() {
     Config cfg =
         new CompoundConfig(
-            new MapConfig(
-                ImmutableMap.of(
-                    "server", ImmutableMap.of("bind-host", "false", "host", "anyRandomHost"))));
+            new MapConfig(Map.of("server", Map.of("bind-host", "false", "host", "anyRandomHost"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
     assertThat(options.getBindHost()).as("Bind to host should be disabled").isFalse();
 
@@ -145,7 +137,7 @@ class NettyServerTest {
   @Test
   void doesInterruptPending() throws Exception {
     CountDownLatch interrupted = new CountDownLatch(1);
-    Config cfg = new MapConfig(ImmutableMap.of());
+    Config cfg = new MapConfig();
     BaseServerOptions options = new BaseServerOptions(cfg);
 
     Server<?> server =

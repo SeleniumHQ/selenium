@@ -21,8 +21,8 @@ import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.matching;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
+import java.util.Set;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
@@ -71,7 +71,7 @@ public class Router implements HasReadyState, Routable, Closeable {
   @Override
   public boolean isReady() {
     try {
-      return ImmutableSet.of(distributor, sessions, queue).parallelStream()
+      return Set.of(distributor, sessions, queue).parallelStream()
           .map(HasReadyState::isReady)
           .reduce(true, Boolean::logicalAnd);
     } catch (RuntimeException e) {

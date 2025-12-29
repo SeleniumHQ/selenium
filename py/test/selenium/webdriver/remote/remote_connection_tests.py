@@ -35,7 +35,8 @@ def test_browser_specific_method(firefox_options, webserver):
         screenshot = driver.execute("FULL_PAGE_SCREENSHOT")["value"]
         result = base64.b64decode(screenshot)
         kind = filetype.guess(result)
-        assert kind is not None and kind.mime == "image/png"
+        assert kind is not None
+        assert kind.mime == "image/png"
 
 
 def test_remote_webdriver_with_http_timeout(chromium_options, webserver):

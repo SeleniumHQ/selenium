@@ -27,14 +27,16 @@ def test_get_screenshot_as_base64(driver, pages):
     pages.load("simpleTest.html")
     result = base64.b64decode(driver.get_screenshot_as_base64())
     kind = filetype.guess(result)
-    assert kind is not None and kind.mime == "image/png"
+    assert kind is not None
+    assert kind.mime == "image/png"
 
 
 def test_get_screenshot_as_png(driver, pages):
     pages.load("simpleTest.html")
     result = driver.get_screenshot_as_png()
     kind = filetype.guess(result)
-    assert kind is not None and kind.mime == "image/png"
+    assert kind is not None
+    assert kind.mime == "image/png"
 
 
 @pytest.mark.xfail_firefox
@@ -44,4 +46,5 @@ def test_get_element_screenshot(driver, pages):
     element = driver.find_element(By.ID, "multiline")
     result = base64.b64decode(element.screenshot_as_base64)
     kind = filetype.guess(result)
-    assert kind is not None and kind.mime == "image/png"
+    assert kind is not None
+    assert kind.mime == "image/png"

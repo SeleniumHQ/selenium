@@ -25,7 +25,6 @@ import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.ConnectException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.openqa.selenium.Capabilities;
@@ -187,12 +186,10 @@ public enum DeploymentTypes {
                               new StringReader(
                                   String.join(
                                       "\n",
-                                      new String[] {
-                                        "[events]",
-                                        "publish = \"tcp://localhost:" + publish + "\"",
-                                        "subscribe = \"tcp://localhost:" + subscribe + "\"",
-                                        "bind = true"
-                                      }))),
+                                      "[events]",
+                                      "publish = \"tcp://localhost:" + publish + "\"",
+                                      "subscribe = \"tcp://localhost:" + subscribe + "\"",
+                                      "bind = true"))),
                           setRandomPort(),
                           sharedConfig)))
               .start();
@@ -208,11 +205,9 @@ public enum DeploymentTypes {
               new StringReader(
                   String.join(
                       "\n",
-                      new String[] {
-                        "[sessionqueue]",
-                        "hostname = \"localhost\"",
-                        "port = " + newSessionQueueServer.getUrl().getPort()
-                      })));
+                      "[sessionqueue]",
+                      "hostname = \"localhost\"",
+                      "port = " + newSessionQueueServer.getUrl().getPort())));
 
       Server<?> sessionMapServer =
           new SessionMapServer()
@@ -223,11 +218,9 @@ public enum DeploymentTypes {
               new StringReader(
                   String.join(
                       "\n",
-                      new String[] {
-                        "[sessions]",
-                        "hostname = \"localhost\"",
-                        "port = " + sessionMapServer.getUrl().getPort()
-                      })));
+                      "[sessions]",
+                      "hostname = \"localhost\"",
+                      "port = " + sessionMapServer.getUrl().getPort())));
 
       Server<?> distributorServer =
           new DistributorServer()
@@ -244,11 +237,9 @@ public enum DeploymentTypes {
               new StringReader(
                   String.join(
                       "\n",
-                      new String[] {
-                        "[distributor]",
-                        "hostname = \"localhost\"",
-                        "port = " + distributorServer.getUrl().getPort()
-                      })));
+                      "[distributor]",
+                      "hostname = \"localhost\"",
+                      "port = " + distributorServer.getUrl().getPort())));
 
       Server<?> router =
           new RouterServer()
@@ -325,7 +316,7 @@ public enum DeploymentTypes {
 
     private Deployment(Server<?> server, TearDownFixture... tearDowns) {
       this.server = server;
-      this.tearDowns = Arrays.asList(tearDowns);
+      this.tearDowns = List.of(tearDowns);
     }
 
     public Server<?> getServer() {

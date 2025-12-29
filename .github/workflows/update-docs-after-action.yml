@@ -8,6 +8,9 @@ on:
     paths:
       - 'docs/api/**'
 
+permissions:
+  contents: read
+
 jobs:
   parse-pr-title:
     runs-on: ubuntu-latest

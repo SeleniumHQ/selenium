@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import java.util.function.Function;
@@ -75,7 +74,7 @@ public class JsonInput implements Closeable {
    * @throws JsonException if this {@code JsonInput} has already begun processing its input
    */
   public JsonInput addCoercers(TypeCoercer<?>... coercers) {
-    return addCoercers(Arrays.asList(coercers));
+    return addCoercers(List.of(coercers));
   }
 
   /**

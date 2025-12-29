@@ -219,7 +219,7 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
     authenticator.addCredential(credential);
 
     // Attempt to use the credential to generate an assertion.
-    Object response = getAssertionFor(Arrays.asList(1, 2, 3, 4));
+    Object response = getAssertionFor(List.of(1, 2, 3, 4));
     assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
   }
 

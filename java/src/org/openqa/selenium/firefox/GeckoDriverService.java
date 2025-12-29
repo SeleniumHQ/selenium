@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -292,7 +291,7 @@ public class GeckoDriverService extends FirefoxDriverService {
 
       if (allowHosts != null) {
         args.add("--allow-hosts");
-        args.addAll(Arrays.asList(allowHosts.split(" ")));
+        args.addAll(List.of(allowHosts.split(" ")));
       }
       return unmodifiableList(args);
     }

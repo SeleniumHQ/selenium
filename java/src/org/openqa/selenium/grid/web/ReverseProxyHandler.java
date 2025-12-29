@@ -21,10 +21,9 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.UncheckedIOException;
 import java.util.Locale;
-import java.util.logging.Logger;
+import java.util.Set;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -35,21 +34,18 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 public class ReverseProxyHandler implements HttpHandler, AutoCloseable {
 
-  private static final Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
-
-  private static final ImmutableSet<String> IGNORED_REQ_HEADERS =
-      ImmutableSet.<String>builder()
-          .add("connection")
-          .add("http2-settings")
-          .add("keep-alive")
-          .add("proxy-authorization")
-          .add("proxy-authenticate")
-          .add("proxy-connection")
-          .add("te")
-          .add("trailer")
-          .add("transfer-encoding")
-          .add("upgrade")
-          .build();
+  private static final Set<String> IGNORED_REQ_HEADERS =
+      Set.of(
+          "connection",
+          "http2-settings",
+          "keep-alive",
+          "proxy-authorization",
+          "proxy-authenticate",
+          "proxy-connection",
+          "te",
+          "trailer",
+          "transfer-encoding",
+          "upgrade");
 
   private final Tracer tracer;
   private final HttpClient upstream;

@@ -15,13 +15,31 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""Selenium type definitions."""
+import pytest
 
-from collections.abc import Iterable
-from typing import IO, Any, Union
+from selenium.webdriver import Firefox
+from selenium.webdriver.firefox.options import Options
 
-AnyKey = Union[str, int, float]
-WaitExcTypes = Iterable[type[Exception]]
 
-# Service Types
-SubprocessStdAlias = Union[int, str, IO[Any]]
+@pytest.fixture
+def driver():
+    options = Options()
+    options.add_argument("-remote-allow-system-access")
+    driver = Firefox(options=options)
+    yield driver
+    driver.quit()
+
+
+def test_sets_correct_context(driver):
+    def get_context():
+        return driver.execute("GET_CONTEXT").pop("value")
+
+    assert get_context() == driver.CONTEXT_CONTENT
+    with driver.context(driver.CONTEXT_CHROME):
+        assert get_context() == driver.CONTEXT_CHROME
+    assert get_context() == driver.CONTEXT_CONTENT
+
+
+def test_switch_context_to_chrome(driver):
+    driver.set_context("chrome")
+    assert 1 == driver.execute_script("var c = Components.classes; return 1;")

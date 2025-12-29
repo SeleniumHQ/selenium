@@ -36,8 +36,7 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.ReferenceCountUtil;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 import org.openqa.selenium.internal.Debug;
@@ -50,8 +49,8 @@ import org.openqa.selenium.remote.tracing.AttributeKey;
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
-  private static final List<io.netty.handler.codec.http.HttpMethod> SUPPORTED_METHODS =
-      Arrays.asList(DELETE, GET, POST, OPTIONS);
+  private static final Set<io.netty.handler.codec.http.HttpMethod> SUPPORTED_METHODS =
+      Set.of(DELETE, GET, POST, OPTIONS);
   private volatile FileBackedOutputStream buffer;
   private final AtomicLong length = new AtomicLong();
   private volatile HttpRequest request;

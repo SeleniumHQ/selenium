@@ -19,7 +19,7 @@ package org.openqa.selenium.remote.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +46,7 @@ class UrlTemplateTest {
     UrlTemplate.Match match = new UrlTemplate("/i/like/{veggie}").match("/i/like/cake");
 
     assertThat(match.getUrl()).isEqualTo("/i/like/cake");
-    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("veggie", "cake"));
+    assertThat(match.getParameters()).isEqualTo(Map.of("veggie", "cake"));
   }
 
   @Test
@@ -55,8 +55,7 @@ class UrlTemplateTest {
         new UrlTemplate("/i/like/{flavor}/{veggie}").match("/i/like/sweet/cake");
 
     assertThat(match.getUrl()).isEqualTo("/i/like/sweet/cake");
-    assertThat(match.getParameters())
-        .isEqualTo(ImmutableMap.of("flavor", "sweet", "veggie", "cake"));
+    assertThat(match.getParameters()).isEqualTo(Map.of("flavor", "sweet", "veggie", "cake"));
   }
 
   @Test
@@ -64,7 +63,7 @@ class UrlTemplateTest {
     UrlTemplate.Match match = new UrlTemplate("{cake}/type").match("cheese/type");
 
     assertThat(match.getUrl()).isEqualTo("cheese/type");
-    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("cake", "cheese"));
+    assertThat(match.getParameters()).isEqualTo(Map.of("cake", "cheese"));
   }
 
   @Test
@@ -73,7 +72,7 @@ class UrlTemplateTest {
         new UrlTemplate("/session/{id}/se/vnc").match("/prefix/session/1234/se/vnc", "/prefix");
 
     assertThat(match.getUrl()).isEqualTo("/session/1234/se/vnc");
-    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("id", "1234"));
+    assertThat(match.getParameters()).isEqualTo(Map.of("id", "1234"));
   }
 
   @Test
@@ -82,7 +81,7 @@ class UrlTemplateTest {
         new UrlTemplate("/session/{id}/se/vnc").match("/session/1234/se/vnc", "");
 
     assertThat(match.getUrl()).isEqualTo("/session/1234/se/vnc");
-    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("id", "1234"));
+    assertThat(match.getParameters()).isEqualTo(Map.of("id", "1234"));
   }
 
   @Test
