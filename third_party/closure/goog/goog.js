@@ -38,14 +38,10 @@
 
 export const global = goog.global;
 export const require = goog.require;
-export const isString = goog.isString;
-export const isBoolean = goog.isBoolean;
-export const isNumber = goog.isNumber;
 export const define = goog.define;
 export const DEBUG = goog.DEBUG;
 export const LOCALE = goog.LOCALE;
 export const TRUSTED_SITE = goog.TRUSTED_SITE;
-export const STRICT_MODE_COMPATIBLE = goog.STRICT_MODE_COMPATIBLE;
 export const DISALLOW_TEST_ONLY_CODE = goog.DISALLOW_TEST_ONLY_CODE;
 export const getGoogModule = goog.module.get;
 export const setTestOnly = goog.setTestOnly;
@@ -54,16 +50,13 @@ export const getObjectByName = goog.getObjectByName;
 export const basePath = goog.basePath;
 export const addSingletonGetter = goog.addSingletonGetter;
 export const typeOf = goog.typeOf;
-export const isArray = goog.isArray;
 export const isArrayLike = goog.isArrayLike;
 export const isDateLike = goog.isDateLike;
-export const isFunction = goog.isFunction;
 export const isObject = goog.isObject;
 export const getUid = goog.getUid;
 export const hasUid = goog.hasUid;
 export const removeUid = goog.removeUid;
-export const mixin = goog.mixin;
-export const now = goog.now;
+export const now = Date.now;
 export const globalEval = goog.globalEval;
 export const getCssName = goog.getCssName;
 export const setCssNameMapping = goog.setCssNameMapping;
@@ -71,19 +64,11 @@ export const getMsg = goog.getMsg;
 export const getMsgWithFallback = goog.getMsgWithFallback;
 export const exportSymbol = goog.exportSymbol;
 export const exportProperty = goog.exportProperty;
-export const isDef = goog.isDef;
-export const isNull = goog.isNull;
-export const isDefAndNotNull = goog.isDefAndNotNull;
-export const globalize = goog.globalize;
-export const nullFunction = goog.nullFunction;
 export const abstractMethod = goog.abstractMethod;
-export const removeHashCode = goog.removeHashCode;
-export const getHashCode = goog.getHashCode;
 export const cloneObject = goog.cloneObject;
 export const bind = goog.bind;
 export const partial = goog.partial;
 export const inherits = goog.inherits;
-export const base = goog.base;
 export const scope = goog.scope;
 export const defineClass = goog.defineClass;
 export const declareModuleId = goog.declareModuleId;
@@ -102,11 +87,8 @@ export const module = {
 // goog.module.declareLegacyNamespace - ES6 modules cannot declare namespaces.
 // goog.addDependency - meant to only be used by dependency files.
 // goog.DEPENDENCIES_ENABLED - constant only used in base.
-// goog.TRANSPILE - define only used in base.
-// goog.TRANSPILER - define only used in base.
 // goog.loadModule - should not be called by any ES6 module; exists for
 //   generated bundles.
 // goog.LOAD_MODULE_USING_EVAL - define only used in base.
 // goog.SEAL_MODULE_EXPORTS - define only used in base.
 // goog.DebugLoader - used rarely, only outside of compiled code.
-// goog.Transpiler - used rarely, only outside of compiled code.

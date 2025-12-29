@@ -25,12 +25,11 @@ from collections.abc import Mapping
 from io import IOBase
 from subprocess import PIPE
 from time import sleep
-from typing import IO, Any, Optional, Union, cast
+from typing import IO, Any, cast
 from urllib import request
 from urllib.error import URLError
 
 from selenium.common.exceptions import WebDriverException
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
 
 logger = logging.getLogger(__name__)
@@ -54,7 +53,7 @@ class Service(ABC):
         self,
         executable_path: str | None = None,
         port: int = 0,
-        log_output: SubprocessStdAlias | None = None,
+        log_output: int | str | IO[Any] | None = None,
         env: Mapping[Any, Any] | None = None,
         driver_path_env_key: str | None = None,
         **kwargs,
@@ -67,7 +66,7 @@ class Service(ABC):
         elif log_output is None or log_output == subprocess.DEVNULL:
             self.log_output = subprocess.DEVNULL
         else:
-            self.log_output = cast(Union[int, IOBase], log_output)
+            self.log_output = cast(int | IOBase, log_output)
 
         self.port = port or utils.free_port()
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
@@ -221,8 +220,8 @@ class Service(ABC):
                 cmd,
                 env=self.env,
                 close_fds=close_file_descriptors,
-                stdout=cast(Optional[Union[int, IO[Any]]], self.log_output),
-                stderr=cast(Optional[Union[int, IO[Any]]], self.log_output),
+                stdout=cast(int | IO[Any] | None, self.log_output),
+                stderr=cast(int | IO[Any] | None, self.log_output),
                 stdin=PIPE,
                 creationflags=self.creation_flags,
                 startupinfo=start_info,

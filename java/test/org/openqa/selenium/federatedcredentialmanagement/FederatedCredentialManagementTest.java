@@ -18,9 +18,8 @@
 package org.openqa.selenium.federatedcredentialmanagement;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import java.net.MalformedURLException;
@@ -42,15 +41,15 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 @Disabled("https://issues.chromium.org/u/0/issues/425801332")
-class FederatedCredentialManagementTest {
+final class FederatedCredentialManagementTest {
 
   private HasFederatedCredentialManagement fedcmDriver;
   private WebDriver localDriver;
-  InProcessTestEnvironment environment = new InProcessTestEnvironment(true);
-  AppServer appServer = environment.getAppServer();
+  private final InProcessTestEnvironment environment = new InProcessTestEnvironment(true);
+  private final AppServer appServer = environment.getAppServer();
 
   @BeforeEach
-  public void setup() {
+  public void setup() throws MalformedURLException {
     ChromeOptions options = (ChromeOptions) CHROME.getCapabilities();
     options.setAcceptInsecureCerts(true);
     options.addArguments(
@@ -64,14 +63,9 @@ class FederatedCredentialManagementTest {
     localDriver.get(appServer.whereIsSecure("/fedcm/fedcm_async.html"));
   }
 
-  private int getSecurePort() {
+  private int getSecurePort() throws MalformedURLException {
     String urlString = appServer.whereIsSecure("/");
-    try {
-      return new URL(urlString).getPort();
-    } catch (MalformedURLException ex) {
-      // This should not happen.
-      return 0;
-    }
+    return new URL(urlString).getPort();
   }
 
   @AfterEach
@@ -91,7 +85,7 @@ class FederatedCredentialManagementTest {
   @Test
   void testDismissDialog() {
     fedcmDriver.setDelayEnabled(false);
-    assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
+    assertThat(fedcmDriver.getFederatedCredentialManagementDialog()).isNull();
 
     WebElement triggerButton = localDriver.findElement(By.id("triggerButton"));
     triggerButton.click();
@@ -106,14 +100,16 @@ class FederatedCredentialManagementTest {
     assertThat(dialog.getDialogType()).isEqualTo("AccountChooser");
     dialog.cancelDialog();
 
-    // Check that the dialog was indeed closed. Unable to get the dialog type since the dialog was
-    // closed.
-    assertThrows(NoAlertPresentException.class, dialog::getDialogType);
+    // Check that the dialog was indeed closed
+    assertThatThrownBy(dialog::getDialogType)
+        .as("Unable to get the dialog type since the dialog was closed")
+        .isInstanceOf(NoAlertPresentException.class)
+        .hasMessageStartingWith("no such alert");
   }
 
   @Test
   void testSelectAccount() {
-    assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
+    assertThat(fedcmDriver.getFederatedCredentialManagementDialog()).isNull();
 
     WebElement triggerButton = localDriver.findElement(By.id("triggerButton"));
     triggerButton.click();
@@ -133,7 +129,7 @@ class FederatedCredentialManagementTest {
 
   @Test
   void testGetAccounts() {
-    assertNull(fedcmDriver.getFederatedCredentialManagementDialog());
+    assertThat(fedcmDriver.getFederatedCredentialManagementDialog()).isNull();
 
     WebElement triggerButton = localDriver.findElement(By.id("triggerButton"));
     triggerButton.click();

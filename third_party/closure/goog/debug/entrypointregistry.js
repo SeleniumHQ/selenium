@@ -1,16 +1,8 @@
-// Copyright 2010 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview A global registry for entry points into a program,
@@ -29,11 +21,10 @@ goog.provide('goog.debug.entryPointRegistry');
 goog.require('goog.asserts');
 
 
-
 /**
  * @interface
  */
-goog.debug.EntryPointMonitor = function() {};
+goog.debug.entryPointRegistry.EntryPointMonitor = function() {};
 
 
 /**
@@ -42,7 +33,7 @@ goog.debug.EntryPointMonitor = function() {};
  * @param {!Function} fn A function to instrument.
  * @return {!Function} The instrumented function.
  */
-goog.debug.EntryPointMonitor.prototype.wrap;
+goog.debug.entryPointRegistry.EntryPointMonitor.prototype.wrap;
 
 
 /**
@@ -61,7 +52,14 @@ goog.debug.EntryPointMonitor.prototype.wrap;
  * @return {!Function} The unwrapped function, or `fn` if it was not
  *     a wrapped function created by this monitor.
  */
-goog.debug.EntryPointMonitor.prototype.unwrap;
+goog.debug.entryPointRegistry.EntryPointMonitor.prototype.unwrap;
+
+/**
+ * Alias for goog.debug.entryPointRegistry.EntryPointMonitor, for compatibility
+ * purposes.
+ * @const
+ */
+goog.debug.EntryPointMonitor = goog.debug.entryPointRegistry.EntryPointMonitor;
 
 
 /**
@@ -102,6 +100,7 @@ goog.debug.entryPointRegistry.monitorsMayExist_ = false;
  *     transforming function.
  */
 goog.debug.entryPointRegistry.register = function(callback) {
+  'use strict';
   // Don't use push(), so that this can be compiled out.
   goog.debug.entryPointRegistry
       .refList_[goog.debug.entryPointRegistry.refList_.length] = callback;
@@ -125,6 +124,7 @@ goog.debug.entryPointRegistry.register = function(callback) {
  * @param {!goog.debug.EntryPointMonitor} monitor An entry point monitor.
  */
 goog.debug.entryPointRegistry.monitorAll = function(monitor) {
+  'use strict';
   goog.debug.entryPointRegistry.monitorsMayExist_ = true;
   var transformer = goog.bind(monitor.wrap, monitor);
   for (var i = 0; i < goog.debug.entryPointRegistry.refList_.length; i++) {
@@ -145,6 +145,7 @@ goog.debug.entryPointRegistry.monitorAll = function(monitor) {
  * @throws {Error} If the monitor is not the most recently configured monitor.
  */
 goog.debug.entryPointRegistry.unmonitorAllIfPossible = function(monitor) {
+  'use strict';
   var monitors = goog.debug.entryPointRegistry.monitors_;
   goog.asserts.assert(
       monitor == monitors[monitors.length - 1],

@@ -19,7 +19,6 @@ package org.openqa.selenium.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.Tag;
@@ -94,7 +93,7 @@ class DesiredCapabilitiesTest {
 
   @Test
   void shouldNotAutomaticallyConvertPlatformIfItNotConvertibleInConstructor() {
-    Map<String, Object> capabilitiesMap = ImmutableMap.of(CapabilityType.PLATFORM_NAME, "FreeBSD");
+    Map<String, Object> capabilitiesMap = Map.of(CapabilityType.PLATFORM_NAME, "FreeBSD");
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
     assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo("FreeBSD");
@@ -102,7 +101,7 @@ class DesiredCapabilitiesTest {
 
   @Test
   void shouldShortenLongValues() {
-    Map<String, Object> capabilitiesMap = ImmutableMap.of("key", createString(1025));
+    Map<String, Object> capabilitiesMap = Map.of("key", createString(1025));
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
     String expected = "key: " + createString(27) + "...";
@@ -111,8 +110,7 @@ class DesiredCapabilitiesTest {
 
   @Test
   void shouldShortenLongEnclosedValues() {
-    Map<String, Object> capabilitiesMap =
-        ImmutableMap.of("key", ImmutableMap.of("subkey", createString(1025)));
+    Map<String, Object> capabilitiesMap = Map.of("key", Map.of("subkey", createString(1025)));
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
     String expected = "{subkey: " + createString(27) + "..." + "}";

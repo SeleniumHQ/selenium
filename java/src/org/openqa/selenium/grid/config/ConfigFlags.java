@@ -20,8 +20,6 @@ package org.openqa.selenium.grid.config;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import java.io.PrintStream;
 import java.nio.file.Path;
@@ -35,8 +33,7 @@ import org.openqa.selenium.json.Json;
 
 public class ConfigFlags implements HasRoles {
 
-  private static final ImmutableSet<String> IGNORED_SECTIONS =
-      ImmutableSet.of("java", "lc", "term");
+  private static final Set<String> IGNORED_SECTIONS = Set.of("java", "lc", "term");
 
   @Parameter(
       names = "--config",
@@ -61,7 +58,7 @@ public class ConfigFlags implements HasRoles {
 
   public Config readConfigFiles() {
     if (configFiles == null || configFiles.isEmpty()) {
-      return new MapConfig(ImmutableMap.of());
+      return new MapConfig();
     }
 
     return new CompoundConfig(configFiles.stream().map(Configs::from).toArray(Config[]::new));

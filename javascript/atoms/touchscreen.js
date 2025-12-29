@@ -27,10 +27,12 @@ goog.require('bot.Device');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
-goog.require('bot.events.EventType');
+goog.require('bot.events');
+goog.require('bot.userAgent');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.userAgent.product');
+goog.require('goog.utils');
 
 
 
@@ -45,7 +47,7 @@ goog.require('goog.userAgent.product');
  * @extends {bot.Device}
  */
 bot.Touchscreen = function () {
-  goog.base(this);
+  bot.Device.call(this);
 
   /** @private {!goog.math.Coordinate} */
   this.clientXY_ = new goog.math.Coordinate(0, 0);
@@ -53,7 +55,7 @@ bot.Touchscreen = function () {
   /** @private {!goog.math.Coordinate} */
   this.clientXY2_ = new goog.math.Coordinate(0, 0);
 };
-goog.inherits(bot.Touchscreen, bot.Device);
+goog.utils.inherits(bot.Touchscreen, bot.Device);
 
 
 /** @private {boolean} */
@@ -149,7 +151,7 @@ bot.Touchscreen.prototype.move = function (element, coords, opt_coords2) {
   this.clientXY_.x = coords.x + rect.left;
   this.clientXY_.y = coords.y + rect.top;
 
-  if (goog.isDef(opt_coords2)) {
+  if (opt_coords2 !== undefined) {
     this.clientXY2_.x = opt_coords2.x + rect.left;
     this.clientXY2_.y = opt_coords2.y + rect.top;
   }
@@ -191,7 +193,7 @@ bot.Touchscreen.prototype.isPressed = function () {
 /**
  * A helper function to fire touch events.
  *
- * @param {bot.events.EventType} type Event type.
+ * @param {!bot.events.EventFactory_} type Event type.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  * @private
  */

@@ -23,6 +23,8 @@
 goog.provide('bot.locators');
 
 goog.require('bot');
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
 goog.require('bot.locators.className');
 goog.require('bot.locators.css');
 goog.require('bot.locators.id');
@@ -124,7 +126,7 @@ bot.locators.findElement = function (target, opt_root) {
 
   if (key) {
     var strategy = bot.locators.STRATEGIES_[key];
-    if (strategy && goog.isFunction(strategy.single)) {
+    if (strategy && typeof strategy.single === 'function') {
       var root = opt_root || bot.getDocument();
       return strategy.single(target[key], root);
     }
@@ -152,7 +154,7 @@ bot.locators.findElements = function (target, opt_root) {
 
   if (key) {
     var strategy = bot.locators.STRATEGIES_[key];
-    if (strategy && goog.isFunction(strategy.many)) {
+    if (strategy && typeof strategy.many === 'function') {
       var root = opt_root || bot.getDocument();
       return strategy.many(target[key], root);
     }

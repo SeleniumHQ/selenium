@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +101,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
     for (Class<?> current = constructor.getDeclaringClass();
         current != Object.class;
         current = current.getSuperclass()) {
-      fields.addAll(Arrays.asList(current.getDeclaredFields()));
+      fields.addAll(List.of(current.getDeclaredFields()));
     }
 
     return fields.stream()

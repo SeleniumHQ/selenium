@@ -31,11 +31,6 @@ on:
         required: false
         type: boolean
         default: true
-      cache-key:
-        description: Bazel disk cache key
-        required: false
-        type: string
-        default: ''
       dotnet-version:
         description: Custom DotNet version to install
         required: false
@@ -137,13 +132,17 @@ jobs:
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
           output-base: ${{ inputs.os == 'windows' && 'D://b' || '' }}
           cache-version: 2
-          disk-cache: ${{ inputs.cache-key }}
+          disk-cache: false
           external-cache: |
-            name: ${{ inputs.cache-key }}
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
-          repository-cache: true
+              rules_ruby++ruby+ruby: 'rb/.ruby-version'
+              "pin_browsers_extension+mac_edge": false
+              "pin_browsers_extension+mac_firefox": false
+              "pin_browsers_extension+linux_edge": false
+              "pin_browsers_extension+linux_chrome": false
+              "pin_browsers_extension+linux_firefox": false
+          repository-cache: false
       - name: Setup Bazel without caching
         if: inputs.caching == false
         uses: bazel-contrib/setup-bazel@0.15.0
@@ -162,6 +161,9 @@ jobs:
       - name: Set resolution
         if: inputs.os == 'windows' && inputs.browser != ''
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
+      - name: Disable 8dot3 short names
+        if: inputs.os == 'windows'
+        run: fsutil 8dot3name set 0
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable

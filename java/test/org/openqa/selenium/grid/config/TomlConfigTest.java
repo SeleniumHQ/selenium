@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.StringReader;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +32,7 @@ class TomlConfigTest {
   void shouldUseATableAsASection() {
     String raw = "[cheeses]\nselected=\"brie\"";
     Config config = new TomlConfig(new StringReader(raw));
-    assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
+    assertThat(config.get("cheeses", "selected")).contains("brie");
   }
 
   @Test
@@ -58,10 +57,10 @@ class TomlConfigTest {
         };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
-    assertThat(config.get("cheeses", "default")).isEqualTo(Optional.of("manchego"));
+    assertThat(config.get("cheeses", "default")).contains("manchego");
 
     List<String> expected =
-        Arrays.asList(
+        List.of(
             "default=\"brie\"",
             "name=\"soft cheese\"",
             Config.DELIMITER,
@@ -79,9 +78,9 @@ class TomlConfigTest {
     String[] rawConfig =
         new String[] {"[relay]", "configs = [\"2\", '{\"browserName\": \"chrome\"}']"};
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
-    List<String> expected = Arrays.asList("2", "{\"browserName\": \"chrome\"}");
+    List<String> expected = List.of("2", "{\"browserName\": \"chrome\"}");
     Optional<List<String>> content = config.getAll("relay", "configs");
-    assertThat(content).isEqualTo(Optional.of(expected));
+    assertThat(content).contains(expected);
   }
 
   @Test
@@ -98,12 +97,12 @@ class TomlConfigTest {
         };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
     List<String> expected =
-        Arrays.asList(
+        List.of(
             "display-name=\"htmlunit\"",
             "stereotype={\"browserVersion\": \"chrome\",\"browserName\": \"htmlunit\"}",
             Config.DELIMITER);
     Optional<List<String>> content = config.getAll("node", "driver-configuration");
-    assertThat(content).isEqualTo(Optional.of(expected));
+    assertThat(content).contains(expected);
   }
 
   @Test
@@ -122,9 +121,9 @@ class TomlConfigTest {
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<List<String>> expected =
-        Arrays.asList(
-            Arrays.asList("default=\"brie\"", "name=\"soft cheese\""),
-            Arrays.asList("default=\"Emmental\"", "name=\"Medium-hard cheese\""));
+        List.of(
+            List.of("default=\"brie\"", "name=\"soft cheese\""),
+            List.of("default=\"Emmental\"", "name=\"Medium-hard cheese\""));
     assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()))
         .isEqualTo(expected);
     assertThat(config.getArray("cheeses", "type").orElse(Collections.emptyList()).subList(0, 1))

@@ -1,16 +1,8 @@
-// Copyright 2013 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 
 /**
@@ -71,6 +63,11 @@ goog.a11y.aria.State = {
   // presence are controlled by this element.
   // Value: space-separated IDs of other elements.
   CONTROLS: 'controls',
+
+  // ARIA property that identifies the element that represents the current
+  // item within a container or set of related elements.
+  // Value: one of {'page', 'step', 'location', 'date', 'time', true, false}.
+  CURRENT: 'current',
 
   // ARIA property that identifies the element or elements that describe
   // this element. Value: space-separated IDs of other elements.

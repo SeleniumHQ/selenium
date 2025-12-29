@@ -1,6 +1,5 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_css_library", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//javascript:defs.bzl", "closure_js_deps")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -9,45 +8,63 @@ licenses(["notice"])
 closure_js_library(
     name = "library",
     exports = [
-        "//third_party/closure/goog/array:all_js",
-        "//third_party/closure/goog/asserts:all_js",
-        "//third_party/closure/goog/async:all_js",
-        "//third_party/closure/goog/color:all_js",
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/async:delay",
+        "//third_party/closure/goog/async:nexttick",
+        "//third_party/closure/goog/async:run",
+        "//third_party/closure/goog/color",
+        "//third_party/closure/goog/debug",
         "//third_party/closure/goog/debug:divconsole",
         "//third_party/closure/goog/debug:error",
-        "//third_party/closure/goog/debug:logger",
-        "//third_party/closure/goog/debug:logrecord",
-        "//third_party/closure/goog/disposable:all_js",
-        "//third_party/closure/goog/dom:all_js",
+        "//third_party/closure/goog/disposable",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:forms",
         "//third_party/closure/goog/events",
         "//third_party/closure/goog/events:browserevent",
         "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/fs:all_js",
-        "//third_party/closure/goog/functions:all_js",
-        "//third_party/closure/goog/fx:all_js",
-        "//third_party/closure/goog/html:all_js",
-        "//third_party/closure/goog/i18n:all_js",
-        "//third_party/closure/goog/iter:all_js",
-        "//third_party/closure/goog/json:all_js",
-        "//third_party/closure/goog/labs/useragent:all_js",
-        "//third_party/closure/goog/log:all_js",
-        "//third_party/closure/goog/math:all_js",
-        "//third_party/closure/goog/mochikit/async:all_js",
+        "//third_party/closure/goog/functions",
+        "//third_party/closure/goog/fx",
+        "//third_party/closure/goog/fx:dragdropgroup",
+        "//third_party/closure/goog/html:safehtml",
+        "//third_party/closure/goog/html:safescript",
+        "//third_party/closure/goog/html:safestyle",
+        "//third_party/closure/goog/html:safeurl",
+        "//third_party/closure/goog/html:trustedresourceurl",
+        "//third_party/closure/goog/html:uncheckedconversions",
+        "//third_party/closure/goog/i18n:bidi",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/json",
+        "//third_party/closure/goog/labs/useragent",
+        "//third_party/closure/goog/labs/useragent:browser",
+        "//third_party/closure/goog/labs/useragent:engine",
+        "//third_party/closure/goog/labs/useragent:platform",
+        "//third_party/closure/goog/log",
+        "//third_party/closure/goog/math",
+        "//third_party/closure/goog/math:coordinate",
+        "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/math:size",
         "//third_party/closure/goog/net:xmlhttp",
-        "//third_party/closure/goog/object:all_js",
-        "//third_party/closure/goog/positioning:all_js",
-        "//third_party/closure/goog/promise:all_js",
-        "//third_party/closure/goog/reflect:all_js",
-        "//third_party/closure/goog/string:all_js",
-        "//third_party/closure/goog/structs:all_js",
-        "//third_party/closure/goog/style:all_js",
-        "//third_party/closure/goog/timer:all_js",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/promise",
+        "//third_party/closure/goog/reflect",
+        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:const",
+        "//third_party/closure/goog/structs",
+        "//third_party/closure/goog/structs:map",
+        "//third_party/closure/goog/structs:set",
+        "//third_party/closure/goog/style",
+        "//third_party/closure/goog/timer",
         "//third_party/closure/goog/ui:component",
         "//third_party/closure/goog/ui/editor:defaulttoolbar",
-        "//third_party/closure/goog/uri:all_js",
-        "//third_party/closure/goog/useragent:all_js",
-        "//third_party/closure/goog/window:all_js",
+        "//third_party/closure/goog/uri",
+        "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/useragent:product",
+        "//third_party/closure/goog/useragent:product_isversion",
+        "//third_party/closure/goog/utils",
+        "//third_party/closure/goog/window",
     ],
 )
 
@@ -78,49 +95,22 @@ closure_js_library(
     no_closure_library = True,
 )
 
-closure_js_library(
-    name = "test_module",
-    testonly = True,
-    srcs = ["test_module.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog:test_module_dep"],
-)
-
-closure_js_library(
-    name = "test_module_dep",
-    testonly = True,
-    srcs = ["test_module_dep.js"],
-    lenient = True,
-)
-
 filegroup(
     name = "base",
     srcs = [
         "base.js",
-        "transitionalforwarddeclarations.js",
     ],
 )
 
-closure_js_library(
+closure_js_deps(
     name = "deps",
-    srcs = ["deps.js"],
-    lenient = True,
-)
-
-closure_js_library(
-    name = "transpile",
-    srcs = ["transpile.js"],
-    lenient = True,
-)
-
-closure_css_library(
-    name = "css",
-    srcs = [
-        "css/colormenubutton.css",
-        "css/colorpalette.css",
-        "css/editortoolbar.css",
-        "css/palette.css",
-        "css/toolbar.css",
-        "demos/css/demo.css",
+    testonly = True,
+    deps = [
+        ":library",
     ],
+)
+
+alias(
+    name = "css",
+    actual = "//third_party/closure/goog/css",
 )

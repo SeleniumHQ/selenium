@@ -1,30 +1,20 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 closure_js_library(
-    name = "all_js",
-    exports = [
-        ":uri",
-        ":utils",
-    ],
-)
-
-closure_js_library(
     name = "uri",
     srcs = ["uri.js"],
     lenient = True,
     deps = [
+        ":utils",
         "//third_party/closure/goog/array",
         "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/collections:maps",
         "//third_party/closure/goog/string",
         "//third_party/closure/goog/structs",
-        "//third_party/closure/goog/structs:map",
-        "//third_party/closure/goog/uri:utils",
     ],
 )
 

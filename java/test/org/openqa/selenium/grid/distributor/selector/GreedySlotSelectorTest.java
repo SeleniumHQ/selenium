@@ -21,8 +21,6 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -31,6 +29,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -46,10 +45,6 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
-import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -76,9 +71,9 @@ class GreedySlotSelectorTest {
   void nodesAreOrderedByUtilizationRatio() {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
 
-    NodeStatus highUtilization = createNode(ImmutableList.of(caps), 10, 8); // 80% utilized
-    NodeStatus mediumUtilization = createNode(ImmutableList.of(caps), 10, 5); // 50% utilized
-    NodeStatus lowUtilization = createNode(ImmutableList.of(caps), 10, 2); // 20% utilized
+    NodeStatus highUtilization = createNode(List.of(caps), 10, 8); // 80% utilized
+    NodeStatus mediumUtilization = createNode(List.of(caps), 10, 5); // 50% utilized
+    NodeStatus lowUtilization = createNode(List.of(caps), 10, 2); // 20% utilized
 
     Set<SlotId> slots =
         selector.selectSlot(
@@ -98,9 +93,9 @@ class GreedySlotSelectorTest {
   void nodesWithSameUtilizationAreOrderedByTotalSlots() {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
 
-    NodeStatus smallNode = createNode(ImmutableList.of(caps), 4, 2); // 50% utilized, 4 slots
-    NodeStatus mediumNode = createNode(ImmutableList.of(caps), 8, 4); // 50% utilized, 8 slots
-    NodeStatus largeNode = createNode(ImmutableList.of(caps), 12, 6); // 50% utilized, 12 slots
+    NodeStatus smallNode = createNode(List.of(caps), 4, 2); // 50% utilized, 4 slots
+    NodeStatus mediumNode = createNode(List.of(caps), 8, 4); // 50% utilized, 8 slots
+    NodeStatus largeNode = createNode(List.of(caps), 12, 6); // 50% utilized, 12 slots
 
     Set<SlotId> slots =
         selector.selectSlot(
@@ -117,9 +112,9 @@ class GreedySlotSelectorTest {
   void nodesWithSameUtilizationAndSlotsAreOrderedByLoad() {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
 
-    NodeStatus lowLoad = createNode(ImmutableList.of(caps), 10, 2); // 20% load
-    NodeStatus mediumLoad = createNode(ImmutableList.of(caps), 10, 5); // 50% load
-    NodeStatus highLoad = createNode(ImmutableList.of(caps), 10, 8); // 80% load
+    NodeStatus lowLoad = createNode(List.of(caps), 10, 2); // 20% load
+    NodeStatus mediumLoad = createNode(List.of(caps), 10, 5); // 50% load
+    NodeStatus highLoad = createNode(List.of(caps), 10, 8); // 80% load
 
     Set<SlotId> slots =
         selector.selectSlot(
@@ -136,8 +131,8 @@ class GreedySlotSelectorTest {
   void nodesThatHaveExceededMaxSessionsAreNotSelected() {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
 
-    NodeStatus availableNode = createNode(ImmutableList.of(caps), 10, 5); // 50% utilized
-    NodeStatus fullNode = createNode(ImmutableList.of(caps), 10, 10); // 100% utilized
+    NodeStatus availableNode = createNode(List.of(caps), 10, 5); // 50% utilized
+    NodeStatus fullNode = createNode(List.of(caps), 10, 10); // 100% utilized
 
     Set<SlotId> slots =
         selector.selectSlot(
@@ -156,12 +151,12 @@ class GreedySlotSelectorTest {
 
     NodeStatus oldVersionHighUtil =
         createNodeWithStereotypes(
-            ImmutableList.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "120.1")),
+            List.of(Map.of("browserName", "chrome", "browserVersion", "120.1")),
             10,
             8); // 80% utilized
     NodeStatus newVersionLowUtil =
         createNodeWithStereotypes(
-            ImmutableList.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "120.0")),
+            List.of(Map.of("browserName", "chrome", "browserVersion", "120.0")),
             10,
             2); // 20% utilized
 
@@ -182,14 +177,12 @@ class GreedySlotSelectorTest {
 
     NodeStatus windowsHighUtil =
         createNodeWithStereotypes(
-            ImmutableList.of(ImmutableMap.of("browserName", "chrome", "platformName", "WINDOWS")),
+            List.of(Map.of("browserName", "chrome", "platformName", "WINDOWS")),
             10,
             8); // 80% utilized
     NodeStatus macLowUtil =
         createNodeWithStereotypes(
-            ImmutableList.of(ImmutableMap.of("browserName", "chrome", "platformName", "MAC")),
-            10,
-            2); // 20% utilized
+            List.of(Map.of("browserName", "chrome", "platformName", "MAC")), 10, 2); // 20% utilized
 
     Set<SlotId> slots =
         selector.selectSlot(
@@ -206,12 +199,11 @@ class GreedySlotSelectorTest {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
 
     NodeStatus basicHighUtil =
-        createNodeWithStereotypes(
-            ImmutableList.of(ImmutableMap.of("browserName", "chrome")), 10, 8); // 80% utilized
+        createNodeWithStereotypes(List.of(Map.of("browserName", "chrome")), 10, 8); // 80% utilized
     NodeStatus advancedLowUtil =
         createNodeWithStereotypes(
-            ImmutableList.of(
-                ImmutableMap.of(
+            List.of(
+                Map.of(
                     "browserName", "chrome",
                     "platformName", "MAC",
                     "se:recordVideo", true)),
@@ -266,28 +258,14 @@ class GreedySlotSelectorTest {
         Duration.ofSeconds(10),
         Duration.ofSeconds(300),
         "4.0.0",
-        ImmutableMap.of(
+        Map.of(
             "name", "Max OS X",
             "arch", "x86_64",
             "version", "10.15.7"));
   }
 
-  private NodeStatus createNodeWithStereotypes(List<ImmutableMap> stereotypes) {
-    URI uri = createUri();
-    LocalNode.Builder nodeBuilder =
-        LocalNode.builder(tracer, bus, uri, uri, new Secret("cornish yarg"));
-    nodeBuilder.maximumConcurrentSessions(stereotypes.size());
-    stereotypes.forEach(
-        stereotype -> {
-          Capabilities caps = new ImmutableCapabilities(stereotype);
-          nodeBuilder.add(caps, new TestSessionFactory((id, c) -> new Handler(c)));
-        });
-    Node myNode = nodeBuilder.build();
-    return myNode.getStatus();
-  }
-
   private NodeStatus createNodeWithStereotypes(
-      List<ImmutableMap> stereotypes, int count, int currentLoad) {
+      List<Map<?, ?>> stereotypes, int count, int currentLoad) {
     NodeId nodeId = new NodeId(UUID.randomUUID());
     URI uri = createUri();
 
@@ -319,7 +297,7 @@ class GreedySlotSelectorTest {
         Duration.ofSeconds(10),
         Duration.ofSeconds(300),
         "4.0.0",
-        ImmutableMap.of(
+        Map.of(
             "name", "Max OS X",
             "arch", "x86_64",
             "version", "10.15.7"));

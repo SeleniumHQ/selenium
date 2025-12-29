@@ -14,7 +14,7 @@ the code in your IDE of choice, and then run the tests in a
 browser. You can do this by starting a debug server:
 
 ```shell
-bazel run javascript/atoms:test_debug_server
+bazel run javascript/atoms:closure-test_debug_server
 ```
 
 And then navigating to: <http://localhost:2310/filez/_main/javascript/atoms/>
@@ -32,12 +32,12 @@ the `bazel run` command.
 You can run all the tests for a browser using:
 
 ```shell
-bazel test //javascript/atoms:test{,-chrome,-edge,-safari}
+bazel test //javascript/atoms:closure-test{,-chrome,-edge,-safari}
 ```
 
 You can also filter to a specific test using the name of the file
 stripped of it's `.html` suffix. For example:
 
 ```shell
-bazel test --test_filter=shown_test --//common:headless=false javascript/atoms:test-chrome
+bazel test --test_filter=shown_test --//common:headless=false javascript/atoms:closure-test-chrome
 ```

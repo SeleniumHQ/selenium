@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.gridui;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.gridui.Urls.whereIs;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -26,7 +26,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-import com.google.common.collect.ImmutableMap;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +73,7 @@ class OverallGridTest extends JupiterTestBase {
         wait.until(
             visibilityOfElementLocated(By.cssSelector("div[data-testid='concurrency-usage']")));
 
-    assertEquals("0%", concurrency.getText());
+    assertThat(concurrency.getText()).isEqualTo("0%");
   }
 
   @Test
@@ -85,7 +84,7 @@ class OverallGridTest extends JupiterTestBase {
         wait.until(
             visibilityOfAllElementsLocatedBy(By.cssSelector("button[data-testid*='node-info-']")));
 
-    assertEquals(1, nodeInfoIcons.size());
+    assertThat(nodeInfoIcons).hasSize(1);
   }
 
   @Test
@@ -107,9 +106,9 @@ class OverallGridTest extends JupiterTestBase {
     Config config =
         new MemoizedConfig(
             new MapConfig(
-                ImmutableMap.of(
+                Map.of(
                     "server", Collections.singletonMap("port", port),
-                    "node", ImmutableMap.of("detect-drivers", true, "selenium-manager", true))));
+                    "node", Map.of("detect-drivers", true, "selenium-manager", true))));
 
     Server<?> server = new Standalone().asServer(config).start();
 

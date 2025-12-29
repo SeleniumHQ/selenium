@@ -1,0 +1,14 @@
+/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* goog.ui.InputDatePicker */
+
+@provide 'goog.css.inputdatepicker';
+
+@require './popupdatepicker';
+
+@import url(popupdatepicker.css);
