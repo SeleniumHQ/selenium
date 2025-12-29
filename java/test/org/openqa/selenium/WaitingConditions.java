@@ -77,8 +77,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> elementTextToEqual(final By locator, final String value) {
-    return new ExpectedCondition<String>() {
-
+    return new ExpectedCondition<>() {
       @Override
       public String apply(WebDriver driver) {
         String text = driver.findElement(locator).getText();
@@ -96,19 +95,46 @@ public class WaitingConditions {
     };
   }
 
+  public static ExpectedCondition<String> elementTextToContain(
+      final By locator, final String expected) {
+    return new ExpectedCondition<>() {
+      @Override
+      public String apply(WebDriver driver) {
+        String text = driver.findElement(locator).getText();
+        return text.contains(expected) ? text : null;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("element text did not contain \"%s\"", expected);
+      }
+    };
+  }
+
+  public static ExpectedCondition<String> elementTextToMatch(final By locator, final String regex) {
+    return new ExpectedCondition<>() {
+      @Override
+      public String apply(WebDriver driver) {
+        String text = driver.findElement(locator).getText();
+        return text.matches(regex) ? text : null;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("element text did not match \"%s\"", regex);
+      }
+    };
+  }
+
   public static ExpectedCondition<String> elementValueToEqual(
       final WebElement element, final String expectedValue) {
-    return new ExpectedCondition<String>() {
-
+    return new ExpectedCondition<>() {
       private String lastValue = "";
 
       @Override
       public String apply(WebDriver ignored) {
         lastValue = element.getAttribute("value");
-        if (expectedValue.equals(lastValue)) {
-          return lastValue;
-        }
-        return null;
+        return expectedValue.equals(lastValue) ? lastValue : null;
       }
 
       @Override
@@ -119,15 +145,11 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> pageSourceToContain(final String expectedText) {
-    return new ExpectedCondition<String>() {
+    return new ExpectedCondition<>() {
       @Override
       public String apply(WebDriver driver) {
         String source = driver.getPageSource();
-
-        if (source.contains(expectedText)) {
-          return source;
-        }
-        return null;
+        return source.contains(expectedText) ? source : null;
       }
 
       @Override
@@ -139,17 +161,13 @@ public class WaitingConditions {
 
   public static ExpectedCondition<Point> elementLocationToBe(
       final WebElement element, final Point expectedLocation) {
-    return new ExpectedCondition<Point>() {
+    return new ExpectedCondition<>() {
       private Point currentLocation = new Point(0, 0);
 
       @Override
       public Point apply(WebDriver ignored) {
         currentLocation = element.getLocation();
-        if (currentLocation.equals(expectedLocation)) {
-          return expectedLocation;
-        }
-
-        return null;
+        return currentLocation.equals(expectedLocation) ? expectedLocation : null;
       }
 
       @Override
@@ -182,7 +200,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {
-    return new ExpectedCondition<WebDriver>() {
+    return new ExpectedCondition<>() {
 
       @Override
       public WebDriver apply(WebDriver driver) {

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -142,7 +141,7 @@ public class Proxy {
       m.put(HTTP_PROXY, httpProxy);
     }
     if (noProxy != null) {
-      m.put(NO_PROXY, Arrays.asList(noProxy.split(",\\s*")));
+      m.put(NO_PROXY, List.of(noProxy.split(",\\s*")));
     }
     if (sslProxy != null) {
       m.put(SSL_PROXY, sslProxy);

@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.Collection;
 import java.util.List;
@@ -32,27 +33,26 @@ public class MapConfig implements Config {
 
   private final Map<String, Map<String, Object>> raw;
 
+  public MapConfig() {
+    this(emptyMap());
+  }
+
   public MapConfig(Map<String, Object> raw) {
     Require.nonNull("Underlying map", raw);
 
-    ImmutableMap.Builder<String, Map<String, Object>> builder = ImmutableMap.builder();
-    for (Map.Entry<String, Object> entry : raw.entrySet()) {
-      if (!(entry.getValue() instanceof Map)) {
-        continue;
-      }
-
-      ImmutableMap<String, Object> values =
-          ((Map<?, ?>) entry.getValue())
-              .entrySet().stream()
-                  .filter(e -> e.getKey() instanceof String)
-                  .collect(
-                      ImmutableMap.toImmutableMap(
-                          e -> String.valueOf(e.getKey()), Map.Entry::getValue));
-
-      builder.put(entry.getKey(), values);
-    }
-
-    this.raw = builder.build();
+    this.raw =
+        raw.entrySet().stream()
+            .filter(entry -> entry.getValue() instanceof Map)
+            .collect(
+                toUnmodifiableMap(
+                    entry -> entry.getKey(),
+                    entry ->
+                        ((Map<?, ?>) entry.getValue())
+                            .entrySet().stream()
+                                .filter(e -> e.getKey() instanceof String)
+                                .collect(
+                                    toUnmodifiableMap(
+                                        e -> String.valueOf(e.getKey()), e -> e.getValue()))));
   }
 
   @Override
@@ -79,33 +79,33 @@ public class MapConfig implements Config {
                 .map(item -> (Map<String, Object>) item)
                 .map(this::toEntryList)
                 .flatMap(Collection::stream)
-                .collect(ImmutableList.toImmutableList()));
+                .collect(toUnmodifiableList()));
       }
 
       return Optional.of(
           collection.stream()
               .filter(item -> (!(item instanceof Collection)))
               .map(String::valueOf)
-              .collect(ImmutableList.toImmutableList()));
+              .collect(toUnmodifiableList()));
     }
 
     if (value instanceof Map) {
       return Optional.of(toEntryList((Map<String, Object>) value));
     }
 
-    return Optional.of(ImmutableList.of(String.valueOf(value)));
+    return Optional.of(List.of(String.valueOf(value)));
   }
 
   @Override
   public Set<String> getSectionNames() {
-    return ImmutableSet.copyOf(raw.keySet());
+    return Set.copyOf(raw.keySet());
   }
 
   @Override
   public Set<String> getOptions(String section) {
     Require.nonNull("Section name to get options for", section);
 
-    Map<String, Object> values = raw.getOrDefault(section, ImmutableMap.of());
+    Map<String, Object> values = raw.getOrDefault(section, emptyMap());
     return ImmutableSortedSet.copyOf(values.keySet());
   }
 }

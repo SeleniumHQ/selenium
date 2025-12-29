@@ -105,17 +105,17 @@
       var inputIds = opt_inputIds ? opt_inputIds : INPUT_IDS;
       var inputCountBox = document.getElementById('inputCount');
       var textInputCountBox = document.getElementById('textInputCount');
-      var finalValue = goog.isDef(opt_finalValue) ? opt_finalValue : input;
+      var finalValue = opt_finalValue !== undefined ? opt_finalValue : input;
       var inputCount =
-        goog.isDef(opt_inputCount) ? opt_inputCount : finalValue.length;
+        opt_inputCount !== undefined ? opt_inputCount : finalValue.length;
       var textInputCount =
-        goog.isDef(opt_textInputCount) ? opt_textInputCount : inputCount;
+        opt_textInputCount !== undefined ? opt_textInputCount : inputCount;
       var initValue = opt_initValue || '';
 
       // Determine if our test requires updating the cursor position, which is
       // not supported in all scenarios.
       var needsSelection = function (input) {
-        if (goog.isArray(input)) {
+        if (Array.isArray(input)) {
           return goog.array.some(input, needsSelection);
         }
         return goog.array.contains(SELECTION_KEYS, input);

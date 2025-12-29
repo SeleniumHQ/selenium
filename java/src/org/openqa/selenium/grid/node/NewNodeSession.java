@@ -20,9 +20,9 @@ package org.openqa.selenium.grid.node;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.UncheckedIOException;
 import java.util.HashMap;
+import java.util.Map;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -58,7 +58,7 @@ class NewNodeSession implements HttpHandler {
       WebDriverException exception = result.left();
       response.put(
           "exception",
-          ImmutableMap.of(
+          Map.of(
               "error", exception.getClass(),
               "message", exception.getMessage()));
     }

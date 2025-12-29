@@ -183,7 +183,7 @@ limitations under the License.
       var wrapped = bot.inject.wrapValue(unwrapped);
 
       assertTrue('should return an array, but was ' + goog.typeOf(wrapped),
-          goog.isArray(wrapped));
+          Array.isArray(wrapped));
       assertEquals(unwrapped.length, wrapped.length);
       assertTrue(goog.object.containsKey(wrapped[0], bot.inject.ELEMENT_KEY));
       assertEquals(document.body, bot.inject.cache.getElement(
@@ -515,7 +515,7 @@ limitations under the License.
       assertEquals(bot.ErrorCode.SUCCESS, result['status']);
 
       var value = result['value'];
-      assertTrue(goog.isArray(value));
+      assertTrue(Array.isArray(value));
       assertEquals(2, value.length);
 
       assertTrue(goog.isObject(value[0]));
@@ -541,7 +541,7 @@ limitations under the License.
         assertEquals(bot.ErrorCode.SUCCESS, result['status']);
 
         var value = result['value'];
-        assertTrue(goog.isArray(value));
+        assertTrue(Array.isArray(value));
         assertEquals(2, value.length);
 
         assertTrue(goog.isObject(value[0]));

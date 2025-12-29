@@ -162,6 +162,9 @@ jobs:
       - name: Set resolution
         if: inputs.os == 'windows' && inputs.browser != ''
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
+      - name: Disable 8dot3 short names
+        if: inputs.os == 'windows'
+        run: fsutil 8dot3name set 0
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable

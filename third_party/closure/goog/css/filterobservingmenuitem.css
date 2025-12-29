@@ -5,9 +5,9 @@
  * See the COPYING file for details.
  */
 
-/* Author: pupius@google.com (Daniel Pupius) */
-
 /* goog.ui.FilterObservingMenuItem */
+
+@provide 'goog.css.filterobservingmenuitem';
 
 .goog-filterobsmenuitem {
   padding: 2px 5px;

@@ -1,16 +1,8 @@
-// Copyright 2013 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 
 /**
@@ -62,10 +54,20 @@ goog.a11y.aria.State = {
   // undefined}.
   CHECKED: 'checked',
 
+  // ARIA state that defines an element's column index or position with respect
+  // to the total number of columns within a table, grid, or treegrid.
+  // Value: number.
+  COLINDEX: 'colindex',
+
   // ARIA property that identifies the element or elements whose contents or
   // presence are controlled by this element.
   // Value: space-separated IDs of other elements.
   CONTROLS: 'controls',
+
+  // ARIA property that identifies the element that represents the current
+  // item within a container or set of related elements.
+  // Value: one of {'page', 'step', 'location', 'date', 'time', true, false}.
+  CURRENT: 'current',
 
   // ARIA property that identifies the element or elements that describe
   // this element. Value: space-separated IDs of other elements.
@@ -159,6 +161,11 @@ goog.a11y.aria.State = {
   // ARIA property indicating that user input is required on this element
   // before a form may be submitted. Value: one of {true, false}.
   REQUIRED: 'required',
+
+  // ARIA state that defines an element's row index or position with respect
+  // to the total number of rows within a table, grid, or treegrid.
+  // Value: number.
+  ROWINDEX: 'rowindex',
 
   // ARIA state for setting the currently selected item in the list.
   // Value: one of {true, false, undefined}.

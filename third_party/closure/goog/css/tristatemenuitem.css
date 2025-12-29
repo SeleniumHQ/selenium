@@ -5,9 +5,9 @@
  * See the COPYING file for details.
  */
 
-/* Author: pupius@google.com (Daniel Pupius) */
-
 /* goog.ui.TriStateMenuItem */
+
+@provide 'goog.css.tristatemenuitem';
 
 .goog-tristatemenuitem {
   padding: 2px 5px;

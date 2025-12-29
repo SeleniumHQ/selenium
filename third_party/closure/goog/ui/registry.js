@@ -1,57 +1,50 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Global renderer and decorator registry.
- * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.registry');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.classlist');
+goog.require('goog.object');
+goog.requireType('goog.ui.Component');
+goog.requireType('goog.ui.ControlRenderer');
 
 
 /**
  * Given a {@link goog.ui.Component} constructor, returns an instance of its
  * default renderer.  If the default renderer is a singleton, returns the
  * singleton instance; otherwise returns a new instance of the renderer class.
- * @param {Function} componentCtor Component constructor function (for example
- *     {@code goog.ui.Button}).
- * @return {goog.ui.ControlRenderer?} Renderer instance (for example the
- *     singleton instance of {@code goog.ui.ButtonRenderer}), or null if
+ * @param {!Function} componentCtor Component constructor function (for example
+ *     `goog.ui.Button`).
+ * @return {?goog.ui.ControlRenderer} Renderer instance (for example the
+ *     singleton instance of `goog.ui.ButtonRenderer`), or null if
  *     no default renderer was found.
  */
 goog.ui.registry.getDefaultRenderer = function(componentCtor) {
+  'use strict';
+  // TODO(user): This should probably be implemented with a `WeakMap`.
   // Locate the default renderer based on the constructor's unique ID.  If no
   // renderer is registered for this class, walk up the superClass_ chain.
   var key;
-  /** @type {Function|undefined} */ var rendererCtor;
-  while (componentCtor) {
-    key = goog.getUid(componentCtor);
-    if ((rendererCtor = goog.ui.registry.defaultRenderers_[key])) {
-      break;
-    }
-    componentCtor = componentCtor.superClass_ ?
-        componentCtor.superClass_.constructor :
-        null;
+  var /** ?Function|undefined */ ctor = componentCtor;
+  var /** ?Function|undefined */ rendererCtor;
+  while (ctor) {
+    key = goog.getUid(ctor);
+    if ((rendererCtor = goog.ui.registry.defaultRenderers_[key])) break;
+    ctor = /** @type {?Function|undefined} */ (goog.object.getSuperClass(ctor));
   }
 
   // If the renderer has a static getInstance method, return the singleton
   // instance; otherwise create and return a new instance.
   if (rendererCtor) {
-    return goog.isFunction(rendererCtor.getInstance) ?
+    return typeof rendererCtor.getInstance === 'function' ?
         rendererCtor.getInstance() :
         new rendererCtor();
   }
@@ -64,19 +57,20 @@ goog.ui.registry.getDefaultRenderer = function(componentCtor) {
  * Sets the default renderer for the given {@link goog.ui.Component}
  * constructor.
  * @param {Function} componentCtor Component constructor function (for example
- *     {@code goog.ui.Button}).
+ *     `goog.ui.Button`).
  * @param {Function} rendererCtor Renderer constructor function (for example
- *     {@code goog.ui.ButtonRenderer}).
+ *     `goog.ui.ButtonRenderer`).
  * @throws {Error} If the arguments aren't functions.
  */
 goog.ui.registry.setDefaultRenderer = function(componentCtor, rendererCtor) {
+  'use strict';
   // In this case, explicit validation has negligible overhead (since each
   // renderer is only registered once), and helps catch subtle bugs.
-  if (!goog.isFunction(componentCtor)) {
-    throw Error('Invalid component class ' + componentCtor);
+  if (typeof componentCtor !== 'function') {
+    throw new Error('Invalid component class ' + componentCtor);
   }
-  if (!goog.isFunction(rendererCtor)) {
-    throw Error('Invalid renderer class ' + rendererCtor);
+  if (typeof rendererCtor !== 'function') {
+    throw new Error('Invalid renderer class ' + rendererCtor);
   }
 
   // Map the component constructor's unique ID to the renderer constructor.
@@ -93,6 +87,7 @@ goog.ui.registry.setDefaultRenderer = function(componentCtor, rendererCtor) {
  * @return {goog.ui.Component?} Component instance.
  */
 goog.ui.registry.getDecoratorByClassName = function(className) {
+  'use strict';
   return className in goog.ui.registry.decoratorFunctions_ ?
       goog.ui.registry.decoratorFunctions_[className]() :
       null;
@@ -109,13 +104,14 @@ goog.ui.registry.getDecoratorByClassName = function(className) {
  * @throws {Error} If the class name or the decorator function is invalid.
  */
 goog.ui.registry.setDecoratorByClassName = function(className, decoratorFn) {
+  'use strict';
   // In this case, explicit validation has negligible overhead (since each
   // decorator  is only registered once), and helps catch subtle bugs.
   if (!className) {
-    throw Error('Invalid class name ' + className);
+    throw new Error('Invalid class name ' + className);
   }
-  if (!goog.isFunction(decoratorFn)) {
-    throw Error('Invalid decorator function ' + decoratorFn);
+  if (typeof decoratorFn !== 'function') {
+    throw new Error('Invalid decorator function ' + decoratorFn);
   }
 
   goog.ui.registry.decoratorFunctions_[className] = decoratorFn;
@@ -133,6 +129,7 @@ goog.ui.registry.setDecoratorByClassName = function(className, decoratorFn) {
  *     none).
  */
 goog.ui.registry.getDecorator = function(element) {
+  'use strict';
   var decorator;
   goog.asserts.assert(element);
   var classNames = goog.dom.classlist.get(element);
@@ -149,6 +146,7 @@ goog.ui.registry.getDecorator = function(element) {
  * Resets the global renderer and decorator registry.
  */
 goog.ui.registry.reset = function() {
+  'use strict';
   goog.ui.registry.defaultRenderers_ = {};
   goog.ui.registry.decoratorFunctions_ = {};
 };
