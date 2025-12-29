@@ -25,7 +25,6 @@ import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -190,7 +189,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
         caps = readPrefixedCaps(capabilities, caps);
 
         span.addEvent("Driver service created session", attributeMap);
-        final HttpClient fClient = client;
         return Either.right(
             new DefaultActiveSession(
                 tracer,
@@ -204,9 +202,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
                 Instant.now()) {
               @Override
               public void stop() {
-                try (fClient) {
-                  service.stop();
-                }
+                super.stop();
+                service.stop();
               }
             });
       } catch (Exception e) {
@@ -337,7 +334,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
   private Capabilities setBrowserBinary(Capabilities options, String browserPath) {
     List<String> vendorOptionsCapabilities =
-        Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
+        List.of("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
     for (String vendorOptionsCapability : vendorOptionsCapabilities) {
       if (options.asMap().containsKey(vendorOptionsCapability)) {
         try {

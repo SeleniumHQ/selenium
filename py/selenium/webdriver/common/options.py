@@ -18,7 +18,6 @@
 import warnings
 from abc import ABCMeta, abstractmethod
 from enum import Enum
-from typing import Optional
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy
@@ -65,10 +64,13 @@ class _BaseOptionsDescriptor:
 
 
 class _PageLoadStrategyDescriptor:
-    """Determines the point at which a navigation command is returned:
-    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
+    """Determines the point at which a navigation command is returned.
 
-    :param strategy: the strategy corresponding to a document readiness state
+    See:
+      - https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
+
+    Args:
+        strategy: the strategy corresponding to a document readiness state
     """
 
     def __init__(self, name):
@@ -85,13 +87,16 @@ class _PageLoadStrategyDescriptor:
 
 
 class _UnHandledPromptBehaviorDescriptor:
-    """How the driver should respond when an alert is present and the:
-    command sent is not handling the alert:
-    https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:
+    """How the driver should respond when an alert is present and the command sent is not handling the alert.
 
-    :param behavior: behavior to use when an alert is encountered
+    See:
+      - https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies:
 
-    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
+    Args:
+        behavior: behavior to use when an alert is encountered
+
+    Returns:
+        Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
     """
 
     def __init__(self, name):
@@ -111,12 +116,16 @@ class _UnHandledPromptBehaviorDescriptor:
 
 
 class _TimeoutsDescriptor:
-    """How long the driver should wait for actions to complete before:
-    returning an error https://w3c.github.io/webdriver/#timeouts:
+    """How long the driver should wait for actions to complete before returning an error.
 
-    :param timeouts: values in milliseconds for implicit wait, page load and script timeout
+    See:
+      - https://w3c.github.io/webdriver/#timeouts
 
-    :returns: Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
+    Args:
+        timeouts: values in milliseconds for implicit wait, page load and script timeout
+
+    Returns:
+        Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)
     """
 
     def __init__(self, name):
@@ -133,7 +142,11 @@ class _TimeoutsDescriptor:
 
 
 class _ProxyDescriptor:
-    """:Returns: Proxy if set, otherwise None."""
+    """Descriptor for proxy property access.
+
+    Returns:
+        Proxy if set, otherwise None.
+    """
 
     def __init__(self, name):
         self.name = name
@@ -155,266 +168,168 @@ class BaseOptions(metaclass=ABCMeta):
     """Gets and Sets the version of the browser.
 
     Usage:
-    ------
-    - Get
-        - `self.browser_version`
-    - Set
-        - `self.browser_version` = `value`
+        - Get: `self.browser_version`
+        - Set: `self.browser_version = value`
 
-    Parameters:
-    -----------
-    `value`: `str`
+    Args:
+        value: str
 
     Returns:
-    --------
-    - Get
-        - `str`
-    - Set
-        - `None`
+        str when getting, None when setting.
     """
 
     platform_name = _BaseOptionsDescriptor("platformName")
     """Gets and Sets name of the platform.
 
     Usage:
-    ------
-    - Get
-        - `self.platform_name`
-    - Set
-        - `self.platform_name` = `value`
+        - Get: `self.platform_name`
+        - Set: `self.platform_name = value`
 
-    Parameters:
-    -----------
-    `value`: `str`
+    Args:
+        value: str
 
     Returns:
-    --------
-    - Get
-        - `str`
-    - Set
-        - `None`
+        str when getting, None when setting.
     """
 
     accept_insecure_certs = _BaseOptionsDescriptor("acceptInsecureCerts")
     """Gets and Set whether the session accepts insecure certificates.
 
     Usage:
-    ------
-    - Get
-        - `self.accept_insecure_certs`
-    - Set
-        - `self.accept_insecure_certs` = `value`
+        - Get: `self.accept_insecure_certs`
+        - Set: `self.accept_insecure_certs = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
 
     Returns:
-    --------
-    - Get
-        - `bool`
-    - Set
-        - `None`
+        bool when getting, None when setting.
     """
 
     strict_file_interactability = _BaseOptionsDescriptor("strictFileInteractability")
     """Gets and Sets whether session is about file interactability.
 
     Usage:
-    ------
-    - Get
-        - `self.strict_file_interactability`
-    - Set
-        - `self.strict_file_interactability` = `value`
+        - Get: `self.strict_file_interactability`
+        - Set: `self.strict_file_interactability = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
 
     Returns:
-    --------
-    - Get
-        - `bool`
-    - Set
-        - `None`
+        bool when getting, None when setting.
     """
 
     set_window_rect = _BaseOptionsDescriptor("setWindowRect")
     """Gets and Sets window size and position.
 
     Usage:
-    ------
-    - Get
-        - `self.set_window_rect`
-    - Set
-        - `self.set_window_rect` = `value`
+        - Get: `self.set_window_rect`
+        - Set: `self.set_window_rect = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
 
     Returns:
-    --------
-    - Get
-        - `bool`
-    - Set
-        - `None`
+        bool when getting, None when setting.
     """
 
     enable_bidi = _BaseOptionsDescriptor("enableBidi")
     """Gets and Set whether the session has WebDriverBiDi enabled.
 
     Usage:
-    ------
-    - Get
-        - `self.enable_bidi`
-    - Set
-        - `self.enable_bidi` = `value`
+        - Get: `self.enable_bidi`
+        - Set: `self.enable_bidi = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
 
     Returns:
-    --------
-    - Get
-        - `bool`
-    - Set
-        - `None`
+        bool when getting, None when setting.
     """
 
     page_load_strategy = _PageLoadStrategyDescriptor("pageLoadStrategy")
-    """:Gets and Sets page load strategy, the default is "normal".
+    """Gets and Sets page load strategy, the default is "normal".
 
     Usage:
-    ------
-    - Get
-        - `self.page_load_strategy`
-    - Set
-        - `self.page_load_strategy` = `value`
+        - Get: `self.page_load_strategy`
+        - Set: `self.page_load_strategy = value`
 
-    Parameters:
-    -----------
-    `value`: `str`
+    Args:
+        value: str
 
     Returns:
-    --------
-    - Get
-        - `str`
-    - Set
-        - `None`
+        str when getting, None when setting.
     """
 
     unhandled_prompt_behavior = _UnHandledPromptBehaviorDescriptor("unhandledPromptBehavior")
-    """:Gets and Sets unhandled prompt behavior, the default is "dismiss and
-    notify".
+    """Gets and Sets unhandled prompt behavior, the default is "dismiss and notify".
 
     Usage:
-    ------
-    - Get
-        - `self.unhandled_prompt_behavior`
-    - Set
-        - `self.unhandled_prompt_behavior` = `value`
+        - Get: `self.unhandled_prompt_behavior`
+        - Set: `self.unhandled_prompt_behavior = value`
 
-    Parameters:
-    -----------
-    `value`: `str`
+    Args:
+        value: str
 
     Returns:
-    --------
-    - Get
-        - `str`
-    - Set
-        - `None`
+        str when getting, None when setting.
     """
 
     timeouts = _TimeoutsDescriptor("timeouts")
-    """:Gets and Sets implicit timeout, pageLoad timeout and script timeout if
-    set (in milliseconds)
+    """Gets and Sets implicit timeout, pageLoad timeout and script timeout if set (in milliseconds).
 
     Usage:
-    ------
-    - Get
-        - `self.timeouts`
-    - Set
-        - `self.timeouts` = `value`
+        - Get: `self.timeouts`
+        - Set: `self.timeouts = value`
 
-    Parameters:
-    -----------
-    `value`: `dict`
+    Args:
+        value: dict
 
     Returns:
-    --------
-    - Get
-        - `dict`
-    - Set
-        - `None`
+        dict when getting, None when setting.
     """
 
     proxy = _ProxyDescriptor("proxy")
     """Sets and Gets Proxy.
 
     Usage:
-    ------
-    - Get
-        - `self.proxy`
-    - Set
-        - `self.proxy` = `value`
+        - Get: `self.proxy`
+        - Set: `self.proxy = value`
 
-    Parameters:
-    -----------
-    `value`: `Proxy`
+    Args:
+        value: Proxy
 
     Returns:
-    --------
-    - Get
-        - `Proxy`
-    - Set
-        - `None`
+        Proxy when getting, None when setting.
     """
 
     enable_downloads = _BaseOptionsDescriptor("se:downloadsEnabled")
     """Gets and Sets whether session can download files.
 
     Usage:
-    ------
-    - Get
-        - `self.enable_downloads`
-    - Set
-        - `self.enable_downloads` = `value`
+        - Get: `self.enable_downloads`
+        - Set: `self.enable_downloads = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
 
     Returns:
-    --------
-    - Get
-        - `bool`
-    - Set
-        - `None`
+        bool when getting, None when setting.
     """
 
     web_socket_url = _BaseOptionsDescriptor("webSocketUrl")
     """Gets and Sets WebSocket URL.
 
     Usage:
-    ------
-    - Get
-        - `self.web_socket_url`
-    - Set
-        - `self.web_socket_url` = `value`
+        - Get: `self.web_socket_url`
+        - Set: `self.web_socket_url = value`
 
-    Parameters:
-    -----------
-    `value`: `str`
+    Args:
+        value: str
 
     Returns:
-    --------
-    - Get
-        - `bool`
-    - Set
-        - `None`
+        str when getting, None when setting.
     """
 
     def __init__(self) -> None:
@@ -422,7 +337,7 @@ class BaseOptions(metaclass=ABCMeta):
         self._caps = self.default_capabilities
         self._proxy = None
         self.set_capability("pageLoadStrategy", PageLoadStrategy.normal)
-        self.mobile_options: Optional[dict[str, str]] = None
+        self.mobile_options: dict[str, str] | None = None
         self._ignore_local_proxy = False
 
     @property
@@ -435,14 +350,16 @@ class BaseOptions(metaclass=ABCMeta):
 
     def enable_mobile(
         self,
-        android_package: Optional[str] = None,
-        android_activity: Optional[str] = None,
-        device_serial: Optional[str] = None,
+        android_package: str | None = None,
+        android_activity: str | None = None,
+        device_serial: str | None = None,
     ) -> None:
         """Enables mobile browser use for browsers that support it.
 
-        :Args:
-            android_activity: The name of the android package to start
+        Args:
+            android_package: The name of the android package to start
+            android_activity: The name of the android activity
+            device_serial: The device serial number
         """
         if not android_package:
             raise AttributeError("android_package must be passed in")
@@ -462,8 +379,7 @@ class BaseOptions(metaclass=ABCMeta):
         """Return minimal capabilities necessary as a dictionary."""
 
     def ignore_local_proxy_environment_variables(self) -> None:
-        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-        being picked up and used."""
+        """Ignore HTTP_PROXY and HTTPS_PROXY environment variables."""
         self._ignore_local_proxy = True
 
 
@@ -478,14 +394,14 @@ class ArgOptions(BaseOptions):
 
     @property
     def arguments(self):
-        """:Returns: A list of arguments needed for the browser."""
+        """Returns a list of arguments needed for the browser."""
         return self._arguments
 
     def add_argument(self, argument: str) -> None:
         """Adds an argument to the list.
 
-        :Args:
-         - Sets the arguments
+        Args:
+            argument: Sets the arguments
         """
         if argument:
             self._arguments.append(argument)
@@ -493,8 +409,10 @@ class ArgOptions(BaseOptions):
             raise ValueError("argument can not be null")
 
     def ignore_local_proxy_environment_variables(self) -> None:
-        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
-        being picked up and used."""
+        """Ignore HTTP_PROXY and HTTPS_PROXY environment variables.
+
+        This method is deprecated; use a Proxy instance with ProxyType.DIRECT instead.
+        """
         warnings.warn(
             "using ignore_local_proxy_environment_variables in Options has been deprecated, "
             "instead, create a Proxy instance with ProxyType.DIRECT to ignore proxy settings, "

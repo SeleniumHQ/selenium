@@ -21,7 +21,6 @@ import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
 import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -49,22 +48,22 @@ class TestIgnorance {
 
     String onlyRun = System.getProperty("only_run");
     if (onlyRun != null) {
-      only.addAll(Arrays.asList(onlyRun.split(",")));
+      only.addAll(List.of(onlyRun.split(",")));
     }
 
     String method = System.getProperty("method");
     if (method != null) {
-      methods.addAll(Arrays.asList(method.split(",")));
+      methods.addAll(List.of(method.split(",")));
     }
 
     String ignoreClass = System.getProperty("ignore_class");
     if (ignoreClass != null) {
-      ignoreClasses.addAll(Arrays.asList(ignoreClass.split(",")));
+      ignoreClasses.addAll(List.of(ignoreClass.split(",")));
     }
 
     String skip = System.getProperty("ignore_method");
     if (skip != null) {
-      ignoreMethods.addAll(Arrays.asList(skip.split(",")));
+      ignoreMethods.addAll(List.of(skip.split(",")));
     }
   }
 

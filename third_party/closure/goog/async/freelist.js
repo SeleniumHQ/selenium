@@ -1,16 +1,8 @@
-// Copyright 2015 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Simple freelist.
@@ -19,20 +11,17 @@
  * objects in the list contain a "next" property that can be used to maintain
  * the pool.
  */
+goog.module('goog.async.FreeList');
+goog.module.declareLegacyNamespace();
 
-goog.provide('goog.async.FreeList');
-
-
-/**
- * @template ITEM
- */
-goog.async.FreeList = goog.defineClass(null, {
+/** @template ITEM */
+class FreeList {
   /**
    * @param {function():ITEM} create
    * @param {function(ITEM):void} reset
    * @param {number} limit
    */
-  constructor: function(create, reset, limit) {
+  constructor(create, reset, limit) {
     /** @private @const {number} */
     this.limit_ = limit;
     /** @private @const {function()} */
@@ -44,13 +33,11 @@ goog.async.FreeList = goog.defineClass(null, {
     this.occupants_ = 0;
     /** @private {ITEM} */
     this.head_ = null;
-  },
+  }
 
-  /**
-   * @return {ITEM}
-   */
-  get: function() {
-    var item;
+  /** @return {ITEM} */
+  get() {
+    let item;
     if (this.occupants_ > 0) {
       this.occupants_--;
       item = this.head_;
@@ -60,24 +47,26 @@ goog.async.FreeList = goog.defineClass(null, {
       item = this.create_();
     }
     return item;
-  },
+  }
 
-  /**
-   * @param {ITEM} item An item available for possible future reuse.
-   */
-  put: function(item) {
+  /** @param {ITEM} item An item available for possible future reuse. */
+  put(item) {
     this.reset_(item);
     if (this.occupants_ < this.limit_) {
       this.occupants_++;
       item.next = this.head_;
       this.head_ = item;
     }
-  },
+  }
 
   /**
    * Visible for testing.
-   * @package
    * @return {number}
+   * @package
    */
-  occupants: function() { return this.occupants_; }
-});
+  occupants() {
+    return this.occupants_;
+  }
+}
+
+exports = FreeList;

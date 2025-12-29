@@ -8,6 +8,8 @@ module Selenium
         EXECUTABLE: "geckodriver"
 
         SHUTDOWN_SUPPORTED: false
+
+        def initialize: (?path: String?, ?port: Integer?, ?log: untyped?, ?args: Array[String]?) -> void
       end
     end
   end

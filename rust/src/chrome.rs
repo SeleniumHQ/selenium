@@ -15,22 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::config::ManagerConfig;
 use crate::config::ARCH::{ARM64, X32};
+use crate::config::ManagerConfig;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::{parse_json_from_url, read_version_from_link};
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{BrowserPath, compose_driver_path_in_cache};
 use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_three_args, SeleniumManager, BETA, DASH_DASH_VERSION, DEV, NIGHTLY,
-    OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
-    UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG,
+    BETA, DASH_DASH_VERSION, DEV, NIGHTLY, OFFLINE_REQUEST_ERR_MSG, REG_VERSION_ARG, STABLE,
+    SeleniumManager, UNAVAILABLE_DOWNLOAD_WITH_MIN_VERSION_ERR_MSG, create_http_client,
+    format_three_args,
 };
-use anyhow::anyhow;
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -437,11 +437,7 @@ impl SeleniumManager for ChromeManager {
         let os = self.get_os();
         let arch = self.get_arch();
         if WINDOWS.is(os) {
-            if X32.is(arch) {
-                "win32"
-            } else {
-                "win64"
-            }
+            if X32.is(arch) { "win32" } else { "win64" }
         } else if MACOS.is(os) {
             if ARM64.is(arch) {
                 "mac-arm64"

@@ -18,11 +18,14 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * An encapsulation of {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String,
  * Object...)}.
  */
+@NullMarked
 public interface ExecuteMethod {
   /**
    * Execute the given command on the remote webdriver server. Any exceptions will be thrown by the
@@ -32,5 +35,5 @@ public interface ExecuteMethod {
    * @param parameters The parameters to execute that command with
    * @return The result of {@link Response#getValue()}.
    */
-  Object execute(String commandName, Map<String, ?> parameters);
+  @Nullable Object execute(String commandName, @Nullable Map<String, ?> parameters);
 }

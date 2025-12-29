@@ -15,53 +15,32 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import http.client as http_client
-from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.common.webdriver import LocalWebDriver
+from selenium.webdriver.wpewebkit.options import Options
+from selenium.webdriver.wpewebkit.service import Service
 
-from .options import Options
-from .service import Service
 
-
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Controls the WPEWebKitDriver and allows you to drive the browser."""
 
     def __init__(
         self,
         options=None,
-        service: Optional[Service] = None,
+        service: Service | None = None,
     ):
         """Creates a new instance of the WPEWebKit driver.
 
         Starts the service and then creates new instance of WPEWebKit Driver.
 
-        :Args:
-         - options : an instance of ``WPEWebKitOptions``
-         - service : Service object for handling the browser driver if you need to pass extra details
+        Args:
+            options: an instance of ``WPEWebKitOptions``
+            service: Service object for handling the browser driver if you need to pass extra details
         """
-
         options = options if options else Options()
         self.service = service if service else Service()
         self.service.path = DriverFinder(self.service, options).get_driver_path()
         self.service.start()
 
         super().__init__(command_executor=self.service.service_url, options=options)
-        self._is_remote = False
-
-    def quit(self):
-        """Closes the browser and shuts down the WPEWebKitDriver executable
-        that is started when starting the WPEWebKitDriver."""
-        try:
-            super().quit()
-        except http_client.BadStatusLine:
-            pass
-        finally:
-            self.service.stop()
-
-    def download_file(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        raise NotImplementedError

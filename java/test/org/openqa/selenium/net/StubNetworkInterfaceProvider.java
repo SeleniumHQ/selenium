@@ -19,7 +19,7 @@ package org.openqa.selenium.net;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Contains stub data based on data from real systems.
@@ -66,7 +66,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             newInterface("wlan0", inetAddress("chunky.local", "169.254.8.180")),
             newInterface(
                 "eth0",
@@ -92,7 +92,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             newInterface("lo", inetAddress("localXhost", "127.0.0.4")),
             newInterface("eth0", inetAddress("myip4.mydomain.com", "169.254.8.182")));
       }
@@ -111,7 +111,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             newInterface("eth2", inetAddress("woz-woz23", "157.120.190.200")),
             newInterface("eth0", inetAddress("woz-woz23-eth0", "10.10.8.101")),
             newInterface("lo", inetAddress("localhost.localdomain", "127.0.0.2")));
@@ -131,7 +131,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             newInterface("bge1", inetAddress("woz-woz01-adm", "10.100.8.99")),
             newInterface("bge1", inetAddress("157.120.190.198")),
             newInterface("lo", inetAddress("localhost", "127.0.0.1")));
@@ -150,7 +150,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             newInterface(
                 "eth0",
                 inetAddress("fe80:0:0:1:215:41ff:fe3a:1882%2", "e80:0:0:1:215:41ff:fe3a:1882%2"),
@@ -175,7 +175,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             newInterface("vmnet8", inetAddress("192.168.4.1")),
             newInterface("vmnet1", inetAddress("192.168.166.1")),
             newInterface(
@@ -209,7 +209,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             newInterface("lo0", inetAddress("localhost.apache.org", "127.0.0.1")),
             newInterface("bge1", inetAddress("192.168.0.4", "192.168.0.4")),
             newInterface(
@@ -231,7 +231,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             getLoInterface(),
             newInterface("net0"),
             newInterface("net1"),
@@ -273,7 +273,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             getLoInterface(),
             newInterface("net0"),
             newInterface("net1"),
@@ -322,7 +322,7 @@ class StubNetworkInterfaceProvider {
     return new NetworkInterfaceProvider() {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
-        return Arrays.asList(
+        return List.of(
             newInterface("wlan0", inetAddress("192.168.37.21", "192.168.37.21")), getLoInterface());
       }
 

@@ -63,13 +63,6 @@ public class DevToolsSession : IDevToolsSession
     private readonly static ILogger logger = Internal.Logging.Log.GetLogger<DevToolsSession>();
 
     /// <summary>
-    /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
-    /// </summary>
-    /// <param name="endpointAddress"></param>
-    [Obsolete("Use DevToolsSession(string endpointAddress, DevToolsOptions options)")]
-    public DevToolsSession(string endpointAddress) : this(endpointAddress, new DevToolsOptions()) { }
-
-    /// <summary>
     /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint and specified DevTools options.
     /// </summary>
     /// <param name="endpointAddress"></param>

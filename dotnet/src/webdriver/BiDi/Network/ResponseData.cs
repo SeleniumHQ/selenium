@@ -18,7 +18,6 @@
 // </copyright>
 
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Network;
 
@@ -32,8 +31,5 @@ public record ResponseData(string Url,
     long BytesReceived,
     long? HeadersSize,
     long? BodySize,
-    ResponseContent Content)
-{
-    [JsonInclude]
-    public IReadOnlyList<AuthChallenge>? AuthChallenges { get; internal set; }
-}
+    ResponseContent Content,
+    IReadOnlyList<AuthChallenge>? AuthChallenges);

@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi.input;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -34,7 +35,6 @@ import org.openqa.selenium.bidi.module.Input;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -66,7 +66,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
     inputModule.perform(windowHandle, sendLowercase.getSequences());
 
-    shortWait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
+    shortWait.until(attributeToBe(input, "value", "abc def"));
   }
 
   @Test
@@ -163,7 +163,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
     inputModule.perform(windowHandle, getBuilder(driver).sendKeys("abc def").getSequences());
 
-    shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
+    shortWait.until(attributeToBe(keyReporter, "value", "abc def"));
   }
 
   @Test
@@ -196,20 +196,14 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSelectionSelectBySymbol() throws InterruptedException {
+  public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
     WebElement input = driver.findElement(By.id("textInput"));
 
-    inputModule.perform(
-        windowHandle, getBuilder(driver).click(input).sendKeys("abc def").getSequences());
+    inputModule.perform(windowHandle, getBuilder(driver).sendKeys("abc def").getSequences());
 
-    // TODO: The wait until condition does not wait for the attribute.
-    // Hence this is required.
-    // Not an ideal fix but it needs to be triaged further.
-    Thread.sleep(5000);
-
-    shortWait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
+    shortWait.until(attributeToBe(input, "value", "abc def"));
 
     inputModule.perform(
         windowHandle,
@@ -236,7 +230,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
     inputModule.perform(
         windowHandle, getBuilder(driver).click(input).sendKeys("abc def").getSequences());
-    wait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
+    wait.until(attributeToBe(input, "value", "abc def"));
 
     inputModule.perform(
         windowHandle,
@@ -250,7 +244,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
             .sendKeys(Keys.DELETE)
             .getSequences());
 
-    wait.until(ExpectedConditions.attributeToBe(input, "value", "abc "));
+    wait.until(attributeToBe(input, "value", "abc "));
   }
 
   @Test
@@ -264,7 +258,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
     inputModule.perform(
         windowHandle, getBuilder(driver).click(input).sendKeys("abc def").getSequences());
 
-    shortWait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
+    shortWait.until(attributeToBe(input, "value", "abc def"));
 
     inputModule.perform(
         windowHandle,
@@ -297,7 +291,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   private void assertThatBodyEventsFiredAreExactly(String expected) {
-    assertThat(driver.findElement(By.id("body_result")).getText().trim())
-        .isEqualTo(expected.trim());
+    assertThat(driver.findElement(By.id("body_result")).getText())
+        .isEqualToIgnoringWhitespace(expected);
   }
 }

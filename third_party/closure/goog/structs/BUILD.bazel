@@ -1,0 +1,46 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "collection",
+    srcs = ["collection.js"],
+    lenient = True,
+)
+
+closure_js_library(
+    name = "map",
+    srcs = ["map.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/collections:iters",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/iter:es6",
+    ],
+)
+
+closure_js_library(
+    name = "set",
+    srcs = ["set.js"],
+    lenient = True,
+    deps = [
+        ":collection",
+        ":map",
+        ":structs",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/utils",
+    ],
+)
+
+closure_js_library(
+    name = "structs",
+    srcs = ["structs.js"],
+    lenient = True,
+    deps = [
+        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/utils",
+    ],
+)

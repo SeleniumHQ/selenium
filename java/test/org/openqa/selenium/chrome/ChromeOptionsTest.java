@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.OFF;
 import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
@@ -32,7 +31,6 @@ import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -313,8 +311,8 @@ class ChromeOptionsTest {
     browserCaps.setCapability("binary", binary.getPath());
     browserCaps.setCapability("opt1", "val1");
     browserCaps.setCapability("opt2", "val4");
-    browserCaps.setCapability("args", Arrays.asList("silent", "verbose"));
-    browserCaps.setCapability("extensions", Arrays.asList(ext1, ext2));
+    browserCaps.setCapability("args", List.of("silent", "verbose"));
+    browserCaps.setCapability("extensions", List.of(ext1, ext2));
 
     MutableCapabilities one = new MutableCapabilities();
     one.setCapability(ChromeOptions.CAPABILITY, browserCaps);
@@ -397,6 +395,6 @@ class ChromeOptionsTest {
     var caps = new MutableCapabilities();
     var merged = original.merge(caps);
 
-    assertEquals(original.asMap(), merged.asMap());
+    assertThat(merged.asMap()).isEqualTo(original.asMap());
   }
 }

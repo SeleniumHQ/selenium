@@ -1,4 +1,4 @@
-load("//dotnet:defs.bzl", "csharp_binary", "framework")
+load("//dotnet:defs.bzl", "csharp_binary", "nuget_package")
 
 csharp_binary(
     name = "generator",
@@ -10,10 +10,10 @@ csharp_binary(
         "//dotnet:__subpackages__",
     ],
     deps = [
-        framework("nuget", "CommandLineParser"),
-        framework("nuget", "Handlebars.Net"),
-        framework("nuget", "Humanizer.Core"),
-        framework("nuget", "Microsoft.Extensions.DependencyInjection"),
-        framework("nuget", "Microsoft.Extensions.DependencyInjection.Abstractions"),
+        nuget_package("CommandLineParser"),
+        nuget_package("Handlebars.Net"),
+        nuget_package("Humanizer.Core"),
+        nuget_package("Microsoft.Extensions.DependencyInjection"),
+        nuget_package("Microsoft.Extensions.DependencyInjection.Abstractions"),
     ],
 )

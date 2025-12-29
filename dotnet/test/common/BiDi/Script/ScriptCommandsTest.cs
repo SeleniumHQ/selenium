@@ -23,23 +23,23 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class ScriptCommandsTest : BiDiTestFixture
+internal class ScriptCommandsTest : BiDiTestFixture
 {
     [Test]
     public async Task CanGetAllRealms()
     {
         _ = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
 
-        var realms = await bidi.Script.GetRealmsAsync();
+        var realmsResult = await bidi.Script.GetRealmsAsync();
 
-        Assert.That(realms, Is.Not.Null);
-        Assert.That(realms, Has.Count.EqualTo(2));
+        Assert.That(realmsResult, Is.Not.Null);
+        Assert.That(realmsResult.Realms, Has.Count.EqualTo(2));
 
-        Assert.That(realms[0], Is.AssignableFrom<WindowRealmInfo>());
-        Assert.That(realms[0].Realm, Is.Not.Null);
+        Assert.That(realmsResult.Realms[0], Is.AssignableFrom<WindowRealmInfo>());
+        Assert.That(realmsResult.Realms[0].Realm, Is.Not.Null);
 
-        Assert.That(realms[1], Is.AssignableFrom<WindowRealmInfo>());
-        Assert.That(realms[1].Realm, Is.Not.Null);
+        Assert.That(realmsResult.Realms[1], Is.AssignableFrom<WindowRealmInfo>());
+        Assert.That(realmsResult.Realms[1].Realm, Is.Not.Null);
     }
 
     [Test]
@@ -47,16 +47,16 @@ class ScriptCommandsTest : BiDiTestFixture
     {
         _ = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Window);
 
-        var realms = await bidi.Script.GetRealmsAsync(new() { Type = RealmType.Window });
+        var realmsResult = await bidi.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
-        Assert.That(realms, Is.Not.Null);
-        Assert.That(realms, Has.Count.EqualTo(2));
+        Assert.That(realmsResult, Is.Not.Null);
+        Assert.That(realmsResult.Realms, Has.Count.EqualTo(2));
 
-        Assert.That(realms[0], Is.AssignableFrom<WindowRealmInfo>());
-        Assert.That(realms[0].Realm, Is.Not.Null);
+        Assert.That(realmsResult.Realms[0], Is.AssignableFrom<WindowRealmInfo>());
+        Assert.That(realmsResult.Realms[0].Realm, Is.Not.Null);
 
-        Assert.That(realms[1], Is.AssignableFrom<WindowRealmInfo>());
-        Assert.That(realms[1].Realm, Is.Not.Null);
+        Assert.That(realmsResult.Realms[1], Is.AssignableFrom<WindowRealmInfo>());
+        Assert.That(realmsResult.Realms[1].Realm, Is.Not.Null);
     }
 
     [Test]
@@ -64,12 +64,12 @@ class ScriptCommandsTest : BiDiTestFixture
     {
         var tab = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
-        var realms = await tab.Script.GetRealmsAsync();
+        var realms = await tab.Context.Script.GetRealmsAsync();
 
-        var tabRealm = realms[0] as WindowRealmInfo;
+        var tabRealm = realms.Realms[0] as WindowRealmInfo;
 
         Assert.That(tabRealm, Is.Not.Null);
-        Assert.That(tabRealm.Context, Is.EqualTo(tab));
+        Assert.That(tabRealm.Context, Is.EqualTo(tab.Context));
     }
 
     [Test]
@@ -77,12 +77,12 @@ class ScriptCommandsTest : BiDiTestFixture
     {
         var tab = await bidi.BrowsingContext.CreateAsync(BrowsingContext.ContextType.Tab);
 
-        var realms = await tab.Script.GetRealmsAsync(new() { Type = RealmType.Window });
+        var realms = await tab.Context.Script.GetRealmsAsync(new() { Type = RealmType.Window });
 
-        var tabRealm = realms[0] as WindowRealmInfo;
+        var tabRealm = realms.Realms[0] as WindowRealmInfo;
 
         Assert.That(tabRealm, Is.Not.Null);
-        Assert.That(tabRealm.Context, Is.EqualTo(tab));
+        Assert.That(tabRealm.Context, Is.EqualTo(tab.Context));
     }
 
     [Test]
@@ -159,7 +159,7 @@ class ScriptCommandsTest : BiDiTestFixture
 
         Assert.That(bar, Is.EqualTo(2));
 
-        await preloadScript.RemoveAsync();
+        await bidi.Script.RemovePreloadScriptAsync(preloadScript.Script);
 
         var resultAfterRemoval = await context.Script.EvaluateAsync("window.bar", true, targetOptions: new() { Sandbox = "sandbox" });
 

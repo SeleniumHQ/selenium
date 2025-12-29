@@ -24,6 +24,8 @@ goog.provide('bot.Device');
 goog.provide('bot.Device.EventEmitter');
 
 goog.require('bot');
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.locators');
@@ -107,7 +109,7 @@ bot.Device.prototype.setElement = function (element) {
 /**
  * Fires an HTML event given the state of the device.
  *
- * @param {bot.events.EventType} type HTML Event type.
+ * @param {!bot.events.EventFactory_} type HTML Event type.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
@@ -120,7 +122,7 @@ bot.Device.prototype.fireHtmlEvent = function (type) {
  * Fires a keyboard event given the state of the device and the given arguments.
  * TODO: Populate the modifier keys in this method.
  *
- * @param {bot.events.EventType} type Keyboard event type.
+ * @param {!bot.events.EventFactory_} type Keyboard event type.
  * @param {bot.events.KeyboardArgs} args Keyboard event arguments.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
@@ -134,7 +136,7 @@ bot.Device.prototype.fireKeyboardEvent = function (type, args) {
  * Fires a mouse event given the state of the device and the given arguments.
  * TODO: Populate the modifier keys in this method.
  *
- * @param {bot.events.EventType} type Mouse event type.
+ * @param {!bot.events.EventFactory_} type Mouse event type.
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
  * @param {number} button The mouse button value for the event.
  * @param {Element=} opt_related The related element of this event.
@@ -192,7 +194,7 @@ bot.Device.prototype.fireMouseEvent = function (type, coord, button,
 /**
  * Fires a touch event given the state of the device and the given arguments.
  *
- * @param {bot.events.EventType} type Event type.
+ * @param {!bot.events.EventFactory_} type Event type.
  * @param {number} id The touch identifier.
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
  * @param {number=} opt_id2 The touch identifier of the second finger.
@@ -238,7 +240,7 @@ bot.Device.prototype.fireTouchEvent = function (type, id, coord, opt_id2,
   }
 
   addTouch(id, coord);
-  if (goog.isDef(opt_id2)) {
+  if (opt_id2 !== undefined) {
     addTouch(opt_id2, opt_coord2);
   }
 
@@ -250,7 +252,7 @@ bot.Device.prototype.fireTouchEvent = function (type, id, coord, opt_id2,
  * Fires a MSPointer event given the state of the device and the given
  * arguments.
  *
- * @param {bot.events.EventType} type MSPointer event type.
+ * @param {!bot.events.EventFactory_} type MSPointer event type.
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
  * @param {number} button The mouse button value for the event.
  * @param {number} pointerId The pointer id for this event.
@@ -331,7 +333,7 @@ bot.Device.prototype.fireMSPointerEvent = function (type, coord, button,
  * and sometimes not at all, depending on the browser and event type. This
  * returns the true target element of the event, or null if none is fired.
  *
- * @param {bot.events.EventType} type Type of event.
+ * @param {!bot.events.EventFactory_} type Type of event.
  * @return {Element} Element the event should be fired on, null if none.
  * @private
  */
@@ -467,9 +469,9 @@ bot.Device.prototype.focusOnElement = function () {
   }
 
   // If there is a currently active element, try to blur it.
-  if (activeElement && (goog.isFunction(activeElement.blur) ||
+  if (activeElement && (typeof activeElement.blur === 'function' ||
     // IE reports native functions as being objects.
-    goog.userAgent.IE && goog.isObject(activeElement.blur))) {
+    goog.userAgent.IE && (typeof activeElement.blur === 'object' && activeElement.blur !== null))) {
     // In IE, the focus() and blur() functions fire their respective events
     // asynchronously, and as the result, the focus/blur events fired by the
     // the atoms actions will often be in the wrong order on IE. Firing a blur
@@ -496,9 +498,9 @@ bot.Device.prototype.focusOnElement = function () {
   }
 
   // Try to focus on the element.
-  if (goog.isFunction(elementToFocus.focus) ||
-    goog.userAgent.IE && goog.isObject(elementToFocus.focus)) {
-    elementToFocus.focus();
+  if (typeof elementToFocus.focus === 'function' ||
+    goog.userAgent.IE && (typeof elementToFocus.focus === 'object' && elementToFocus.focus !== null)) {
+    /** @type {function()} */ (elementToFocus.focus).call(elementToFocus);
     return true;
   }
 
@@ -914,7 +916,7 @@ bot.Device.EventEmitter = function () {
  * Fires an HTML event given the state of the device.
  *
  * @param {!Element} target The element on which to fire the event.
- * @param {bot.events.EventType} type HTML Event type.
+ * @param {!bot.events.EventFactory_} type HTML Event type.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
@@ -927,7 +929,7 @@ bot.Device.EventEmitter.prototype.fireHtmlEvent = function (target, type) {
  * Fires a keyboard event given the state of the device and the given arguments.
  *
  * @param {!Element} target The element on which to fire the event.
- * @param {bot.events.EventType} type Keyboard event type.
+ * @param {!bot.events.EventFactory_} type Keyboard event type.
  * @param {bot.events.KeyboardArgs} args Keyboard event arguments.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
@@ -942,7 +944,7 @@ bot.Device.EventEmitter.prototype.fireKeyboardEvent = function (
  * Fires a mouse event given the state of the device and the given arguments.
  *
  * @param {!Element} target The element on which to fire the event.
- * @param {bot.events.EventType} type Mouse event type.
+ * @param {!bot.events.EventFactory_} type Mouse event type.
  * @param {bot.events.MouseArgs} args Mouse event arguments.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
@@ -957,7 +959,7 @@ bot.Device.EventEmitter.prototype.fireMouseEvent = function (
  * Fires a mouse event given the state of the device and the given arguments.
  *
  * @param {!Element} target The element on which to fire the event.
- * @param {bot.events.EventType} type Touch event type.
+ * @param {!bot.events.EventFactory_} type Touch event type.
  * @param {bot.events.TouchArgs} args Touch event arguments.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
@@ -973,7 +975,7 @@ bot.Device.EventEmitter.prototype.fireTouchEvent = function (
  * arguments.
  *
  * @param {!Element} target The element on which to fire the event.
- * @param {bot.events.EventType} type MSPointer event type.
+ * @param {!bot.events.EventFactory_} type MSPointer event type.
  * @param {bot.events.MSPointerArgs} args MSPointer event arguments.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected

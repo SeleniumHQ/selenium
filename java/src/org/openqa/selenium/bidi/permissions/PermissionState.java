@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.bidi.permissions;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+@NullMarked
 public enum PermissionState {
   GRANTED("granted"),
   DENIED("denied"),
@@ -33,7 +37,7 @@ public enum PermissionState {
     return state;
   }
 
-  public static PermissionState findByName(String name) {
+  public static @Nullable PermissionState findByName(String name) {
     PermissionState result = null;
     for (PermissionState state : values()) {
       if (state.toString().equalsIgnoreCase(name)) {

@@ -24,9 +24,9 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-class SetFilesTest : BiDiTestFixture
+internal class SetFilesTest : BiDiTestFixture
 {
-    string _tempFile;
+    private string _tempFile;
 
     [SetUp]
     public void SetUp()
@@ -45,9 +45,9 @@ class SetFilesTest : BiDiTestFixture
     {
         driver.Url = UrlBuilder.WhereIs("formPage.html");
 
-        var nodes = await context.LocateNodesAsync(new CssLocator("[id='upload']"));
+        var nodesResult = await context.LocateNodesAsync(new CssLocator("[id='upload']"));
 
-        await context.Input.SetFilesAsync(nodes[0], [_tempFile]);
+        await context.Input.SetFilesAsync(nodesResult.Nodes[0], [_tempFile]);
 
         Assert.That(driver.FindElement(By.Id("upload")).GetAttribute("value"), Does.EndWith(Path.GetFileName(_tempFile)));
     }

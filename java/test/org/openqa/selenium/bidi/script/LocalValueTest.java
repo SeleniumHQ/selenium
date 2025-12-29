@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.bidi.script;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,8 +121,7 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((String) successResult.getResult().getValue().get()).isEqualTo("-0");
+    assertThat(successResult.getResult().getValue()).hasValue("-0");
   }
 
   @Test
@@ -153,8 +152,7 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((String) successResult.getResult().getValue().get()).isEqualTo("Infinity");
+    assertThat(successResult.getResult().getValue()).hasValue("Infinity");
   }
 
   @Test
@@ -186,8 +184,7 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((String) successResult.getResult().getValue().get()).isEqualTo("-Infinity");
+    assertThat(successResult.getResult().getValue()).hasValue("-Infinity");
   }
 
   @Test
@@ -219,7 +216,7 @@ class LocalValueTest extends JupiterTestBase {
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("number");
     assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((double) successResult.getResult().getValue().get()).isEqualTo(1.4);
+    assertThat(successResult.getResult().getValue()).hasValue(1.4d);
   }
 
   @Test
@@ -250,8 +247,7 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("boolean");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((boolean) successResult.getResult().getValue().get()).isEqualTo(true);
+    assertThat(successResult.getResult().getValue()).hasValue(true);
   }
 
   @Test
@@ -282,11 +278,11 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("bigint");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat((String) successResult.getResult().getValue().get()).isEqualTo("42");
+    assertThat(successResult.getResult().getValue()).hasValue("42");
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void canCallFunctionWithArrayArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -317,14 +313,16 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("array");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successResult.getResult().getValue()).isPresent();
+
     List<RemoteValue> resultValue = (List<RemoteValue>) successResult.getResult().getValue().get();
-    assertThat(resultValue.size()).isEqualTo(1);
+    assertThat(resultValue).hasSize(1);
     assertThat(resultValue.get(0).getType()).isEqualTo("string");
-    assertThat((String) resultValue.get(0).getValue().get()).isEqualTo("foobar");
+    assertThat(resultValue.get(0).getValue()).hasValue("foobar");
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void canCallFunctionWithSetArgument() {
     String id = driver.getWindowHandle();
     Script script = new Script(id, driver);
@@ -355,11 +353,12 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("set");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successResult.getResult().getValue().isPresent());
+
     List<RemoteValue> resultValue = (List<RemoteValue>) successResult.getResult().getValue().get();
-    assertThat(resultValue.size()).isEqualTo(1);
+    assertThat(resultValue).hasSize(1);
     assertThat(resultValue.get(0).getType()).isEqualTo("string");
-    assertThat((String) resultValue.get(0).getValue().get()).isEqualTo("foobar");
+    assertThat(resultValue.get(0).getValue()).hasValue("foobar");
   }
 
   @Test
@@ -391,8 +390,7 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("date");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    assertThat(successResult.getResult().getValue().get()).isEqualTo("2022-05-31T13:47:29.000Z");
+    assertThat(successResult.getResult().getValue()).hasValue("2022-05-31T13:47:29.000Z");
   }
 
   @Test
@@ -427,11 +425,11 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("map");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successResult.getResult().getValue()).isPresent().containsInstanceOf(Map.class);
 
     Map<Object, RemoteValue> resultValue =
         (Map<Object, RemoteValue>) successResult.getResult().getValue().get();
-    assertThat(resultValue.size()).isEqualTo(1);
+    assertThat(resultValue).hasSize(1);
     assertThat(resultValue.get("foobar").getType()).isEqualTo("string");
   }
 
@@ -467,11 +465,11 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("object");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat(successResult.getResult().getValue()).isPresent().containsInstanceOf(Map.class);
 
     Map<Object, RemoteValue> resultValue =
         (Map<Object, RemoteValue>) successResult.getResult().getValue().get();
-    assertThat(resultValue.size()).isEqualTo(1);
+    assertThat(resultValue).hasSize(1);
     assertThat(resultValue.get("foobar").getType()).isEqualTo("string");
   }
 
@@ -504,10 +502,7 @@ class LocalValueTest extends JupiterTestBase {
 
     EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
     assertThat(successResult.getResult().getType()).isEqualTo("regexp");
-    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-    RegExpValue resultValue = (RegExpValue) successResult.getResult().getValue().get();
-    assertThat(resultValue.getPattern()).isEqualTo("foo");
-    assertThat(resultValue.getFlags()).isEqualTo("g");
+    assertThat(successResult.getResult().getValue()).hasValue(new RegExpValue("foo", "g"));
   }
 
   @AfterEach

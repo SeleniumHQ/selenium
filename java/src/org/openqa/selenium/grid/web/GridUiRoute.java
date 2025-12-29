@@ -21,7 +21,6 @@ import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -91,7 +90,7 @@ public class GridUiRoute implements Routable {
 
   private static Routable buildRoute(String url, String prefix, Function<String, Route> mapper) {
     List<String> subPaths =
-        prefix.isEmpty() ? Collections.singletonList(url) : Arrays.asList(prefix + url, url);
+        prefix.isEmpty() ? Collections.singletonList(url) : List.of(prefix + url, url);
     return subPaths.stream().map(mapper).reduce(Route::combine).get();
   }
 

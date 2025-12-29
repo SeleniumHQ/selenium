@@ -17,8 +17,11 @@
 // under the License.
 // </copyright>
 
+using OpenQA.Selenium.BiDi.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters.Polymorphic;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OpenQA.Selenium.BiDi.Log;
 
@@ -27,21 +30,23 @@ namespace OpenQA.Selenium.BiDi.Log;
 //[JsonDerivedType(typeof(GenericLogEntry))]
 //[JsonDerivedType(typeof(ConsoleLogEntry), "console")]
 //[JsonDerivedType(typeof(JavascriptLogEntry), "javascript")]
-public abstract record LogEntry(BiDi BiDi, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : EventArgs(BiDi)
+[JsonConverter(typeof(LogEntryConverter))]
+public abstract record LogEntry(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+    : EventArgs
 {
     public Script.StackTrace? StackTrace { get; set; }
 }
 
-public sealed record GenericLogEntry(BiDi BiDi, string Type, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : LogEntry(BiDi, Level, Source, Text, Timestamp);
+public sealed record GenericLogEntry(string Type, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+    : LogEntry(Level, Source, Text, Timestamp);
 
-public sealed record ConsoleLogEntry(BiDi BiDi, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp, string Method, IReadOnlyList<Script.RemoteValue> Args)
-    : LogEntry(BiDi, Level, Source, Text, Timestamp);
+public sealed record ConsoleLogEntry(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp, string Method, IReadOnlyList<Script.RemoteValue> Args)
+    : LogEntry(Level, Source, Text, Timestamp);
 
-public sealed record JavascriptLogEntry(BiDi BiDi, Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
-    : LogEntry(BiDi, Level, Source, Text, Timestamp);
+public sealed record JavascriptLogEntry(Level Level, Script.Source Source, string? Text, DateTimeOffset Timestamp)
+    : LogEntry(Level, Source, Text, Timestamp);
 
+[JsonConverter(typeof(CamelCaseEnumConverter<Level>))]
 public enum Level
 {
     Debug,

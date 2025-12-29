@@ -20,24 +20,21 @@ package org.openqa.selenium.grid.router;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,8 +81,7 @@ class SessionQueueGridWithTimeoutTest {
   private static Server<?> createServer(HttpHandler handler) {
     return new NettyServer(
         new BaseServerOptions(
-            new MapConfig(
-                ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+            new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())))),
         handler);
   }
 
@@ -156,8 +152,8 @@ class SessionQueueGridWithTimeoutTest {
   }
 
   @Test
-  void shouldBeAbleToDeleteTimedoutSessions() {
-    ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
+  void shouldBeAbleToDeleteTimedOutSessions() throws Exception {
+    Map<String, String> caps = Map.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -177,13 +173,6 @@ class SessionQueueGridWithTimeoutTest {
             .withTimeout(Duration.ofSeconds(7))
             .until(node -> node.getUsedSlots() == 0);
       }
-
-    } catch (InterruptedException e) {
-      fail("Unable to create session. Thread Interrupted");
-    } catch (ExecutionException e) {
-      fail("Unable to create session due to execution exception.");
-    } catch (TimeoutException e) {
-      fail("Unable to create session. Timeout occurred.");
     } finally {
       fixedThreadPoolService.shutdownNow();
       scheduler.shutdownNow();
@@ -196,10 +185,9 @@ class SessionQueueGridWithTimeoutTest {
     server.stop();
   }
 
-  private HttpResponse createSession(ImmutableMap<String, String> caps) {
+  private HttpResponse createSession(Map<String, String> caps) {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(
-        asJson(ImmutableMap.of("capabilities", ImmutableMap.of("alwaysMatch", caps))));
+    request.setContent(asJson(Map.of("capabilities", Map.of("alwaysMatch", caps))));
 
     try (HttpClient client = clientFactory.createClient(server.getUrl())) {
       return client.execute(request);

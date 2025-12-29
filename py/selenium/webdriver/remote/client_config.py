@@ -19,7 +19,6 @@ import base64
 import os
 import socket
 from enum import Enum
-from typing import Optional
 from urllib import parse
 
 import certifi
@@ -50,22 +49,19 @@ class ClientConfig:
     keep_alive = _ClientConfigDescriptor("_keep_alive")
     """Gets and Sets Keep Alive value."""
     proxy = _ClientConfigDescriptor("_proxy")
-    """Gets and Sets the proxy used for communicating to the driver/server."""
+    """Gets and Sets the proxy used for communicating with the driver/server."""
     ignore_certificates = _ClientConfigDescriptor("_ignore_certificates")
     """Gets and Sets the ignore certificate check value."""
     init_args_for_pool_manager = _ClientConfigDescriptor("_init_args_for_pool_manager")
     """Gets and Sets the ignore certificate check."""
     timeout = _ClientConfigDescriptor("_timeout")
-    """Gets and Sets the timeout (in seconds) used for communicating to the
-    driver/server."""
+    """Gets and Sets the timeout (in seconds) used for communicating with the driver/server."""
     ca_certs = _ClientConfigDescriptor("_ca_certs")
     """Gets and Sets the path to bundle of CA certificates."""
     username = _ClientConfigDescriptor("_username")
-    """Gets and Sets the username used for basic authentication to the
-    remote."""
+    """Gets and Sets the username used for basic authentication to the remote."""
     password = _ClientConfigDescriptor("_password")
-    """Gets and Sets the password used for basic authentication to the
-    remote."""
+    """Gets and Sets the password used for basic authentication to the remote."""
     auth_type = _ClientConfigDescriptor("_auth_type")
     """Gets and Sets the type of authentication to the remote server."""
     token = _ClientConfigDescriptor("_token")
@@ -74,22 +70,28 @@ class ClientConfig:
     """Gets and Sets user agent to be added to the request headers."""
     extra_headers = _ClientConfigDescriptor("_extra_headers")
     """Gets and Sets extra headers to be added to the request."""
+    websocket_timeout = _ClientConfigDescriptor("_websocket_timeout")
+    """Gets and Sets the WebSocket response wait timeout (in seconds) used for communicating with the browser."""
+    websocket_interval = _ClientConfigDescriptor("_websocket_interval")
+    """Gets and Sets the WebSocket response wait interval (in seconds) used for communicating with the browser."""
 
     def __init__(
         self,
         remote_server_addr: str,
-        keep_alive: Optional[bool] = True,
-        proxy: Optional[Proxy] = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
-        ignore_certificates: Optional[bool] = False,
-        init_args_for_pool_manager: Optional[dict] = None,
-        timeout: Optional[int] = None,
-        ca_certs: Optional[str] = None,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        auth_type: Optional[AuthType] = AuthType.BASIC,
-        token: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        extra_headers: Optional[dict] = None,
+        keep_alive: bool | None = True,
+        proxy: Proxy | None = Proxy(raw={"proxyType": ProxyType.SYSTEM}),
+        ignore_certificates: bool | None = False,
+        init_args_for_pool_manager: dict | None = None,
+        timeout: int | None = None,
+        ca_certs: str | None = None,
+        username: str | None = None,
+        password: str | None = None,
+        auth_type: AuthType | None = AuthType.BASIC,
+        token: str | None = None,
+        user_agent: str | None = None,
+        extra_headers: dict | None = None,
+        websocket_timeout: float | None = 30.0,
+        websocket_interval: float | None = 0.1,
     ) -> None:
         self.remote_server_addr = remote_server_addr
         self.keep_alive = keep_alive
@@ -103,6 +105,8 @@ class ClientConfig:
         self.token = token
         self.user_agent = user_agent
         self.extra_headers = extra_headers
+        self.websocket_timeout = websocket_timeout
+        self.websocket_interval = websocket_interval
 
         self.ca_certs = (
             (os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where())
@@ -114,7 +118,7 @@ class ClientConfig:
         """Resets the timeout to the default value of socket."""
         self._timeout = socket.getdefaulttimeout()
 
-    def get_proxy_url(self) -> Optional[str]:
+    def get_proxy_url(self) -> str | None:
         """Returns the proxy URL to use for the connection."""
         proxy_type = self.proxy.proxy_type
         remote_add = parse.urlparse(self.remote_server_addr)
@@ -139,7 +143,7 @@ class ClientConfig:
             return self.proxy.sslProxy if self.remote_server_addr.startswith("https://") else self.proxy.http_proxy
         return None
 
-    def get_auth_header(self) -> Optional[dict]:
+    def get_auth_header(self) -> dict | None:
         """Returns the authorization to add to the request headers."""
         if self.auth_type is AuthType.BASIC and self.username and self.password:
             credentials = f"{self.username}:{self.password}"

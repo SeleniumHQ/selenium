@@ -1,0 +1,19 @@
+module Selenium
+  module WebDriver
+    module DriverExtensions
+      module HasFedCmDialog
+        include _Bridge
+
+        @fedcm_dialog: FedCM::Dialog?
+
+        def enable_fedcm_delay=: (bool enable) -> void
+
+        def reset_fedcm_cooldown: () -> void
+
+        def fedcm_dialog: () -> FedCM::Dialog
+
+        def wait_for_fedcm_dialog: (?timeout: Numeric, ?interval: Numeric, ?message: String?, ?ignore: untyped) -> (FedCM::Dialog | nil)
+      end
+    end
+  end
+end

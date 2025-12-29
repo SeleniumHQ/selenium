@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::files::parse_version;
 use crate::Logger;
-use anyhow::anyhow;
+use crate::files::parse_version;
 use anyhow::Error;
+use anyhow::anyhow;
 use reqwest::{Client, StatusCode};
 use serde::{Deserialize, Serialize};
 use std::fs::File;
-use std::io::copy;
 use std::io::Cursor;
+use std::io::copy;
 use tempfile::{Builder, TempDir};
 
 #[tokio::main]
@@ -53,7 +53,7 @@ pub async fn download_to_tmp_folder(
         let target_name = response
             .url()
             .path_segments()
-            .and_then(|segments| segments.last())
+            .and_then(|mut segments| segments.next_back())
             .and_then(|name| if name.is_empty() { None } else { Some(name) })
             .unwrap_or("tmp.bin");
 

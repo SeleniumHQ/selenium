@@ -31,11 +31,6 @@ on:
         required: false
         type: boolean
         default: true
-      cache-key:
-        description: Bazel disk cache key
-        required: false
-        type: string
-        default: ''
       dotnet-version:
         description: Custom DotNet version to install
         required: false
@@ -48,6 +43,11 @@ on:
         default: ''
       node-version:
         description: Custom Node version to install
+        required: false
+        type: string
+        default: ''
+      python-version:
+        description: Custom Python version to use
         required: false
         type: string
         default: ''
@@ -101,6 +101,9 @@ jobs:
         if: "!contains(inputs.os, 'windows')"
         run: |
           sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
+      - name: Set Python version
+        if: inputs.python-version != ''
+        run: echo '${{ inputs.python-version }}' > py/.python-version
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo '${{ inputs.ruby-version }}' > rb/.ruby-version
@@ -126,14 +129,20 @@ jobs:
         with:
           bazelisk-cache: true
           bazelrc: common --color=yes
+          # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
+          output-base: ${{ contains(inputs.os, 'windows') && 'D://b' || '' }}
           cache-version: 2
-          disk-cache: ${{ inputs.cache-key }}
+          disk-cache: false
           external-cache: |
-            name: ${{ inputs.cache-key }}
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: ${{ contains(inputs.os, 'windows') && 'false' || 'rb/.ruby-version' }}
-          repository-cache: true
+              rules_ruby++ruby+ruby: 'rb/.ruby-version'
+              "pin_browsers_extension+mac_edge": false
+              "pin_browsers_extension+mac_firefox": false
+              "pin_browsers_extension+linux_edge": false
+              "pin_browsers_extension+linux_chrome": false
+              "pin_browsers_extension+linux_firefox": false
+          repository-cache: false
       - name: Setup Bazel without caching
         if: inputs.caching == false
         uses: bazel-contrib/setup-bazel@0.15.0
@@ -152,6 +161,9 @@ jobs:
       - name: Set resolution
         if: contains(inputs.os, 'windows') && inputs.browser != ''
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
+      - name: Disable 8dot3 short names
+        if: contains(inputs.os, 'windows')
+        run: fsutil 8dot3name set 0
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
@@ -175,6 +187,14 @@ jobs:
         if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         run: |
           git diff > changes.patch
+      - name: "Upload test logs"
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          retention-days: 7
+          path: |
+            **/*.log
       - name: "Upload changes"
         if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         uses: actions/upload-artifact@v4

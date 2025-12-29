@@ -23,8 +23,8 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.Colors.GREEN;
 import static org.openqa.selenium.support.Colors.RED;
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -68,11 +68,10 @@ class PenPointerTest extends JupiterTestBase {
   private void performDragAndDropWithPen() {
     driver.get(pages.draggableLists);
 
-    WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
-
-    WebElement toDrag = driver.findElement(By.id("rightitem-3"));
-    WebElement dragInto = driver.findElement(By.id("sortable1"));
-    WebElement leftItem = driver.findElement(By.id("leftitem-4"));
+    WebElement dragReporter = wait.until(visibilityOfElementLocated(By.id("dragging_reports")));
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("rightitem-3")));
+    WebElement dragInto = wait.until(visibilityOfElementLocated(By.id("sortable1")));
+    WebElement leftItem = wait.until(visibilityOfElementLocated(By.id("leftitem-4")));
 
     Action moveToSpecificItem = setDefaultPen(driver).moveToElement(leftItem).build();
 
@@ -127,19 +126,8 @@ class PenPointerTest extends JupiterTestBase {
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
-    long waitEndTime = System.currentTimeMillis() + 15000;
-
-    while (!isElementAvailable(driver, By.id("draggable"))
-        && (System.currentTimeMillis() < waitEndTime)) {
-      Thread.sleep(200);
-    }
-
-    if (!isElementAvailable(driver, By.id("draggable"))) {
-      throw new RuntimeException("Could not find draggable element after 15 seconds.");
-    }
-
-    WebElement toDrag = driver.findElement(By.id("draggable"));
-    WebElement dropInto = driver.findElement(By.id("droppable"));
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("draggable")));
+    WebElement dropInto = wait.until(visibilityOfElementLocated(By.id("droppable")));
 
     Action holdDrag = setDefaultPen(driver).clickAndHold(toDrag).build();
     Action move = setDefaultPen(driver).moveToElement(dropInto).build();
@@ -149,9 +137,7 @@ class PenPointerTest extends JupiterTestBase {
     move.perform();
     drop.perform();
 
-    String text = dropInto.findElement(By.tagName("p")).getText();
-
-    assertThat(text).isEqualTo("Dropped!");
+    wait.until(elementTextToEqual(By.cssSelector("#droppable p"), "Dropped!"));
   }
 
   @Test
@@ -215,28 +201,33 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  public void testHoverPersists() throws Exception {
+  public void testHoverPersists() {
     driver.get(pages.javascriptPage);
-    // Move to a different element to make sure the pen is not over the
-    // element with id 'item1' (from a previous test).
+    unfocusMenu();
 
+    WebElement menu = driver.findElement(By.id("menu1"));
+    WebElement menuItem = driver.findElement(By.id("item1"));
+    assertThat(menuItem.isDisplayed()).isFalse();
+    assertThat(driver.findElement(By.id("result")).getText()).isBlank();
+
+    // Hover the menu icon
+    setDefaultPen(driver).moveToElement(menu).build().perform();
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", menu);
+
+    // Wait until the menu items appear
+    wait.until(visibilityOf(menuItem));
+    assertThat(menuItem.getText()).isEqualTo("Item 1");
+
+    menuItem.click();
+    wait.until(elementTextToEqual(By.id("result"), "item 1"));
+  }
+
+  /**
+   * Move to a different element to make sure the mouse is not over the menu items (from a previous
+   * test).
+   */
+  private void unfocusMenu() {
     setDefaultPen(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
-
-    WebElement element = driver.findElement(By.id("menu1"));
-
-    final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEmpty();
-
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-
-    setDefaultPen(driver).moveToElement(element).build().perform();
-
-    // Intentionally wait to make sure hover persists.
-    Thread.sleep(2000);
-
-    wait.until(not(elementTextToEqual(item, "")));
-
-    assertThat(item.getText()).isEqualTo("Item 1");
   }
 
   @Test

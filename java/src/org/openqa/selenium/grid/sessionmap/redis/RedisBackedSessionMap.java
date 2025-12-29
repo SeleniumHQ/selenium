@@ -23,13 +23,12 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
-import com.google.common.collect.ImmutableMap;
 import io.lettuce.core.KeyValue;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -55,7 +54,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 public class RedisBackedSessionMap extends SessionMap {
 
-  private static final Logger LOG = Logger.getLogger(RedisBackedSessionMap.class.getName());
   private static final Json JSON = new Json();
   private static final String REDIS_URI_KEY = "session.uri_key";
   private static final String REDIS_URI_VALUE = "session.uri_value";
@@ -76,7 +74,7 @@ public class RedisBackedSessionMap extends SessionMap {
     this.bus = Require.nonNull("Event bus", bus);
     this.connection = new GridRedisClient(serverUri);
     this.serverUri = serverUri;
-    this.bus.addListener(SessionClosedEvent.listener(this::remove));
+    this.bus.addListener(SessionClosedEvent.sessionListener(this::remove));
 
     this.bus.addListener(
         NodeRemovedEvent.listener(
@@ -139,7 +137,7 @@ public class RedisBackedSessionMap extends SessionMap {
 
       span.addEvent("Inserted into the database", attributeMap);
       connection.mset(
-          ImmutableMap.of(
+          Map.of(
               uriKey, uriValue,
               stereotypeKey, stereotypeJson,
               capabilitiesKey, capabilitiesJson,
@@ -223,7 +221,8 @@ public class RedisBackedSessionMap extends SessionMap {
       attributeMap.put(REDIS_URI_KEY, uriKey);
 
       if (rawUri == null) {
-        NoSuchSessionException exception = new NoSuchSessionException("Unable to find session.");
+        NoSuchSessionException exception =
+            new NoSuchSessionException("Unable to find session with id: " + id);
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND);
         EXCEPTION.accept(attributeMap, exception);

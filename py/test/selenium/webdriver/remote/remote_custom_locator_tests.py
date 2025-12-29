@@ -29,9 +29,9 @@ class CustomLocatorConverter(LocatorConverter):
         return super().convert(by, value)
 
 
-@pytest.fixture()
-def custom_locator_driver(firefox_options):
-    driver = webdriver.Remote(options=firefox_options, locator_converter=CustomLocatorConverter())
+@pytest.fixture
+def custom_locator_driver(chromium_options):
+    driver = webdriver.Remote(options=chromium_options, locator_converter=CustomLocatorConverter())
     yield driver
     driver.quit()
 

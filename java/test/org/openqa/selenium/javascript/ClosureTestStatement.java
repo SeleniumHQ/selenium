@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.javascript;
 
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
-
 import com.google.common.base.Stopwatch;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +27,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 
 class ClosureTestStatement {
 
@@ -60,24 +56,18 @@ class ClosureTestStatement {
 
     WebDriver driver = driverSupplier.get();
 
-    if (!isOnTravis()) {
-      // Attempt to make the window as big as possible.
-      try {
-        driver.manage().window().maximize();
-      } catch (RuntimeException ignored) {
-        // We tried.
-      }
+    // Attempt to make the window as big as possible.
+    try {
+      driver.manage().window().maximize();
+    } catch (RuntimeException ignored) {
+      // We tried.
     }
 
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     // Avoid Safari JS leak between tests.
     executor.executeScript("if (window && window.top) window.top.G_testRunner = null");
 
-    try {
-      driver.get(testUrl.toString());
-    } catch (WebDriverException e) {
-      fail("Test failed to load: " + e.getMessage());
-    }
+    driver.get(testUrl.toString());
 
     while (!getBoolean(executor, Query.IS_FINISHED)) {
       long elapsedTime = stopwatch.elapsed(TimeUnit.SECONDS);

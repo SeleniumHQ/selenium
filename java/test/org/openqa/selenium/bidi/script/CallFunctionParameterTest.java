@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.bidi.script;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
@@ -48,8 +50,7 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("number");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) successResult.getResult().getValue().get()).isEqualTo(3L);
+      assertThat(successResult.getResult().getValue()).hasValue(3L);
     }
   }
 
@@ -76,8 +77,7 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("boolean");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Boolean) successResult.getResult().getValue().get()).isEqualTo(true);
+      assertThat(successResult.getResult().getValue()).hasValue(true);
     }
   }
 
@@ -105,13 +105,13 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("boolean");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Boolean) successResult.getResult().getValue().get()).isEqualTo(false);
+      assertThat(successResult.getResult().getValue()).hasValue(false);
     }
   }
 
   @Test
   @NeedsFreshDriver
+  @SuppressWarnings("unchecked")
   void canCallFunctionWithArguments() {
     String id = driver.getWindowHandle();
     try (Script script = new Script(id, driver)) {
@@ -132,8 +132,12 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("array");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat(((List<Object>) successResult.getResult().getValue().get()).size()).isEqualTo(2);
+      assertThat(successResult.getResult().getValue()).isPresent();
+
+      List<RemoteValue> values = (List<RemoteValue>) successResult.getResult().getValue().get();
+      assertThat(values).hasSize(2);
+      assertThat(values.get(0).getValue()).hasValue("ARGUMENT_STRING_VALUE");
+      assertThat(values.get(1).getValue()).hasValue(42L);
     }
   }
 
@@ -163,10 +167,10 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("window");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat(
-              ((WindowProxyProperties) successResult.getResult().getValue().get())
-                  .getBrowsingContext())
+      assertThat(successResult.getResult().getValue())
+          .containsInstanceOf(WindowProxyProperties.class)
+          .get()
+          .extracting("browsingContext")
           .isNotNull();
     }
   }
@@ -193,9 +197,12 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("node");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat(((NodeProperties) successResult.getResult().getValue().get()).getNodeType())
-          .isNotNull();
+      assertThat(successResult.getResult().getValue())
+          .containsInstanceOf(NodeProperties.class)
+          .get()
+          .extracting("nodeType")
+          .isNotNull()
+          .isInstanceOf(Long.class);
     }
   }
 
@@ -220,9 +227,7 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("string");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat(((String) successResult.getResult().getValue().get()))
-          .isEqualTo("SOME_DELAYED_RESULT");
+      assertThat(successResult.getResult().getValue()).hasValue("SOME_DELAYED_RESULT");
     }
   }
 
@@ -272,8 +277,7 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
       assertThat(successResult.getResult().getType()).isEqualTo("number");
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) successResult.getResult().getValue().get()).isEqualTo(42L);
+      assertThat(successResult.getResult().getValue()).hasValue(42L);
     }
   }
 
@@ -292,8 +296,15 @@ public class CallFunctionParameterTest extends JupiterTestBase {
       assertThat(result.getRealmId()).isNotNull();
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
-      assertThat(successResult.getResult().getHandle().isPresent()).isTrue();
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+      assertThat(successResult.getResult().getHandle()).isPresent();
+      AbstractObjectAssert<?, ?> a =
+          assertThat(successResult.getResult().getValue())
+              .isPresent()
+              .containsInstanceOf(Map.class)
+              .get()
+              .extracting("a");
+      a.extracting("type").hasToString("number");
+      a.extracting("value").isEqualTo(Optional.of(1L));
     }
   }
 
@@ -312,8 +323,8 @@ public class CallFunctionParameterTest extends JupiterTestBase {
       assertThat(result.getRealmId()).isNotNull();
 
       EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
-      assertThat(successResult.getResult().getHandle().isPresent()).isFalse();
-      assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+      assertThat(successResult.getResult().getHandle()).isEmpty();
+      assertThat(successResult.getResult().getValue()).isPresent();
     }
   }
 
@@ -339,8 +350,7 @@ public class CallFunctionParameterTest extends JupiterTestBase {
       assertThat(exception.getExceptionDetails().getText()).contains("SyntaxError:");
       assertThat(exception.getExceptionDetails().getLineNumber()).isPositive();
       assertThat(exception.getExceptionDetails().getColumnNumber()).isPositive();
-      assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames().size())
-          .isEqualTo(0);
+      assertThat(exception.getExceptionDetails().getStacktrace().getCallFrames()).hasSize(0);
     }
   }
 
@@ -380,8 +390,7 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       EvaluateResultSuccess resultInSandboxSuccess = (EvaluateResultSuccess) resultInSandbox;
       assertThat(resultInSandboxSuccess.getResult().getType()).isEqualTo("number");
-      assertThat(resultInSandboxSuccess.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) resultInSandboxSuccess.getResult().getValue().get()).isEqualTo(2L);
+      assertThat(resultInSandboxSuccess.getResult().getValue()).hasValue(2L);
     }
   }
 
@@ -412,10 +421,9 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       assertThat(firstContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
-      EvaluateResultSuccess successFirstContextresult = (EvaluateResultSuccess) firstContextResult;
-      assertThat(successFirstContextresult.getResult().getType()).isEqualTo("number");
-      assertThat(successFirstContextresult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) successFirstContextresult.getResult().getValue().get()).isEqualTo(3L);
+      EvaluateResultSuccess successFirstContextResult = (EvaluateResultSuccess) firstContextResult;
+      assertThat(successFirstContextResult.getResult().getType()).isEqualTo("number");
+      assertThat(successFirstContextResult.getResult().getValue()).hasValue(3L);
 
       EvaluateResult secondContextResult =
           script.callFunction(
@@ -424,11 +432,10 @@ public class CallFunctionParameterTest extends JupiterTestBase {
 
       assertThat(secondContextResult.getResultType()).isEqualTo(EvaluateResult.Type.SUCCESS);
 
-      EvaluateResultSuccess successSecondContextresult =
+      EvaluateResultSuccess successSecondContextResult =
           (EvaluateResultSuccess) secondContextResult;
-      assertThat(successSecondContextresult.getResult().getType()).isEqualTo("number");
-      assertThat(successSecondContextresult.getResult().getValue().isPresent()).isTrue();
-      assertThat((Long) successSecondContextresult.getResult().getValue().get()).isEqualTo(5L);
+      assertThat(successSecondContextResult.getResult().getType()).isEqualTo("number");
+      assertThat(successSecondContextResult.getResult().getValue()).hasValue(5L);
     }
   }
 }
