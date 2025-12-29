@@ -15,8 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import http.server
 import os
+import socketserver
 import sys
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -24,6 +27,7 @@ import pytest
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -544,3 +548,31 @@ def chromium_options(request):
         options = Driver.clean_options("edge", request)
 
     return options
+
+
+@pytest.fixture
+def proxy_server():
+    """Creates HTTP proxy servers with custom response content, cleans up after the test."""
+    servers = []
+
+    def create_server(response_content=b"test response"):
+        port = free_port()
+
+        class CustomHandler(http.server.SimpleHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(response_content)
+
+        server = socketserver.TCPServer(("localhost", port), CustomHandler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+
+        servers.append(server)
+        return {"port": port, "server": server}
+
+    yield create_server
+
+    for server in servers:
+        server.shutdown()
+        server.server_close()
