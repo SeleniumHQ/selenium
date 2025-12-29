@@ -1,20 +1,17 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 closure_js_library(
-    name = "all_js",
+    name = "useragent",
     exports = [
         ":browser",
         ":device",
         ":engine",
         ":extra",
         ":platform",
-        ":util",
         ":verifier",
     ],
 )
@@ -24,9 +21,10 @@ closure_js_library(
     srcs = ["browser.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/labs/useragent:util",
-        "//third_party/closure/goog/object",
+        ":util",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/labs/useragent/highentropy:highentropydata",
+        "//third_party/closure/goog/labs/useragent/highentropy:highentropyvalue",
         "//third_party/closure/goog/string:internal",
     ],
 )
@@ -35,7 +33,7 @@ closure_js_library(
     name = "device",
     srcs = ["device.js"],
     lenient = True,
-    deps = ["//third_party/closure/goog/labs/useragent:util"],
+    deps = [":util"],
 )
 
 closure_js_library(
@@ -43,9 +41,9 @@ closure_js_library(
     srcs = ["engine.js"],
     lenient = True,
     deps = [
+        ":util",
         "//third_party/closure/goog/array",
-        "//third_party/closure/goog/labs/useragent:util",
-        "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:internal",
     ],
 )
 
@@ -54,8 +52,8 @@ closure_js_library(
     srcs = ["extra.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/labs/useragent:browser",
-        "//third_party/closure/goog/labs/useragent:platform",
+        ":browser",
+        ":platform",
     ],
 )
 
@@ -64,23 +62,25 @@ closure_js_library(
     srcs = ["platform.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/labs/useragent:util",
-        "//third_party/closure/goog/string",
+        ":util",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/labs/useragent/highentropy:highentropydata",
+        "//third_party/closure/goog/labs/useragent/highentropy:highentropyvalue",
+        "//third_party/closure/goog/string:internal",
     ],
 )
 
 closure_js_library(
-    name = "test_agents",
-    testonly = True,
-    srcs = ["test_agents.js"],
-    lenient = True,
-)
-
-closure_js_library(
     name = "util",
-    srcs = ["util.js"],
+    srcs = [
+        "useragent.js",
+        "util.js",
+    ],
     lenient = True,
-    deps = ["//third_party/closure/goog/string:internal"],
+    deps = [
+        "//third_party/closure/goog/flags",
+        "//third_party/closure/goog/string:internal",
+    ],
 )
 
 closure_js_library(

@@ -34,12 +34,12 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -169,7 +169,7 @@ class RemoteWebDriverInitializationTest {
     Response resp = new Response();
     resp.setSessionId(UUID.randomUUID().toString());
     resp.setState("success");
-    resp.setValue(ImmutableMap.of("platformName", "xxx"));
+    resp.setValue(Map.of("platformName", "xxx"));
     CommandExecutor executor = mock(CommandExecutor.class);
     when(executor.execute(any())).thenReturn(resp);
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -187,7 +187,7 @@ class RemoteWebDriverInitializationTest {
                     Contents.asJson(
                         singletonMap(
                             "value",
-                            ImmutableMap.of(
+                            Map.of(
                                 "sessionId", UUID.randomUUID().toString(),
                                 "capabilities", new ImmutableCapabilities().asMap())))));
 

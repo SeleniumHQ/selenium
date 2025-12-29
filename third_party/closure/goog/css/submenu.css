@@ -1,0 +1,41 @@
+/*
+ * Copyright 2009 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/*
+ * Standard styling for menus created by goog.ui.SubMenuRenderer.
+ */
+
+@provide 'goog.css.submenu';
+
+/* State: resting. */
+/* @noflip */
+/* rtl:begin:ignore */
+.goog-submenu-arrow {
+  color: #000;
+  left: auto;
+  padding-right: 6px;
+  position: absolute;
+  right: 0;
+  text-align: right;
+}
+/* rtl:end:ignore */
+
+/* BiDi override. */
+/* @noflip */
+/* rtl:begin:ignore */
+.goog-menuitem-rtl .goog-submenu-arrow {
+  text-align: left;
+  left: 0;
+  right: auto;
+  padding-left: 6px;
+}
+/* rtl:end:ignore */
+
+/* State: disabled. */
+.goog-menuitem-disabled .goog-submenu-arrow {
+  color: #ccc;
+}

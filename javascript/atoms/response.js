@@ -25,6 +25,7 @@ goog.provide('bot.response.ResponseObject');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('goog.utils');
 
 
 /**
@@ -40,7 +41,7 @@ bot.response.ResponseObject;
  * @return {boolean} Whether the given value is a response object.
  */
 bot.response.isResponseObject = function (value) {
-  return goog.isObject(value) && goog.isNumber(value['status']);
+  return goog.utils.isObject(value) && goog.utils.isNumber(value['status']);
 };
 
 
@@ -71,7 +72,7 @@ bot.response.createErrorResponse = function (error) {
     return /** @type {!bot.response.ResponseObject} */ (error);
   }
 
-  var statusCode = error && goog.isNumber(error.code) ? error.code :
+  var statusCode = error && goog.utils.isNumber(error.code) ? error.code :
     bot.ErrorCode.UNKNOWN_ERROR;
   return {
     'status': /** @type {bot.ErrorCode} */ (statusCode),
@@ -102,7 +103,7 @@ bot.response.checkResponse = function (responseObj) {
   status = status || bot.ErrorCode.UNKNOWN_ERROR;
 
   var value = responseObj['value'];
-  if (!value || !goog.isObject(value)) {
+  if (!value || !goog.utils.isObject(value)) {
     throw new bot.Error(status, value + '');
   }
 

@@ -1,111 +1,22 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
-closure_js_library(
-    name = "all_js",
-    exports = [
-        ":abstractmultirange",
-        ":abstractrange",
-        ":annotate",
-        ":asserts",
-        ":attr",
-        ":browserfeature",
-        ":bufferedviewportsizemonitor",
-        ":classes",
-        ":classlist",
-        ":controlrange",
-        ":dataset",
-        ":dom",
-        ":fontsizemonitor",
-        ":forms",
-        ":fullscreen",
-        ":htmlelement",
-        ":iframe",
-        ":inputtype",
-        ":iter",
-        ":multirange",
-        ":nodeiterator",
-        ":nodeoffset",
-        ":nodetype",
-        ":range",
-        ":rangeendpoint",
-        ":safe",
-        ":savedcaretrange",
-        ":savedrange",
-        ":selection",
-        ":tagiterator",
-        ":tagname",
-        ":tags",
-        ":textassert",
-        ":textrange",
-        ":textrangeiterator",
-        ":uri",
-        ":vendor",
-        ":viewportsizemonitor",
-        ":xml",
-        "//third_party/closure/goog/dom/animationframe:all_js",
-        "//third_party/closure/goog/dom/browserrange:all_js",
-        "//third_party/closure/goog/dom/pattern:all_js",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "abstractmultirange",
-    srcs = ["abstractmultirange.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:abstractrange",
-        "//third_party/closure/goog/dom:textrange",
-    ],
-)
-
-closure_js_library(
-    name = "abstractrange",
-    srcs = ["abstractrange.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:savedcaretrange",
-        "//third_party/closure/goog/dom:tagiterator",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "annotate",
-    srcs = ["annotate.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/object",
-    ],
+    actual = ":range",
 )
 
 closure_js_library(
     name = "asserts",
     srcs = ["asserts.js"],
     lenient = True,
-    deps = ["//third_party/closure/goog/asserts"],
-)
-
-closure_js_library(
-    name = "attr",
-    srcs = ["attr.js"],
-    lenient = True,
+    deps = [
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/utils",
+    ],
 )
 
 closure_js_library(
@@ -116,47 +27,15 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "bufferedviewportsizemonitor",
-    srcs = ["bufferedviewportsizemonitor.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/async:delay",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
-    ],
-)
-
-closure_js_library(
-    name = "classes",
-    srcs = ["classes.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/array"],
-)
-
-closure_js_library(
     name = "classlist",
     srcs = ["classlist.js"],
     lenient = True,
     deps = ["//third_party/closure/goog/array"],
 )
 
-closure_js_library(
+alias(
     name = "controlrange",
-    srcs = ["controlrange.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:abstractmultirange",
-        "//third_party/closure/goog/dom:abstractrange",
-        "//third_party/closure/goog/dom:savedrange",
-        "//third_party/closure/goog/dom:tagiterator",
-        "//third_party/closure/goog/dom:textrange",
-        "//third_party/closure/goog/iter",
-        "//third_party/closure/goog/useragent",
-    ],
+    actual = ":range",
 )
 
 closure_js_library(
@@ -175,33 +54,33 @@ closure_js_library(
     srcs = ["dom.js"],
     lenient = True,
     deps = [
+        ":browserfeature",
+        ":nodetype",
+        ":safe",
+        ":tagname",
         "//third_party/closure/goog/array",
         "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:browserfeature",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/asserts:dom",
         "//third_party/closure/goog/html:safehtml",
         "//third_party/closure/goog/html:uncheckedconversions",
         "//third_party/closure/goog/math:coordinate",
         "//third_party/closure/goog/math:size",
         "//third_party/closure/goog/object",
         "//third_party/closure/goog/string",
+        "//third_party/closure/goog/string:const",
         "//third_party/closure/goog/useragent",
+        "//third_party/closure/goog/utils",
     ],
 )
 
 closure_js_library(
-    name = "fontsizemonitor",
-    srcs = ["fontsizemonitor.js"],
+    name = "element",
+    srcs = ["element.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/useragent",
+        ":nodetype",
+        ":tagname",
+        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -210,19 +89,12 @@ closure_js_library(
     srcs = ["forms.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
+        ":inputtype",
+        ":safe",
+        ":tagname",
         "//third_party/closure/goog/structs:map",
         "//third_party/closure/goog/window",
     ],
-)
-
-closure_js_library(
-    name = "fullscreen",
-    srcs = ["fullscreen.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/dom"],
 )
 
 closure_js_library(
@@ -232,64 +104,23 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "iframe",
-    srcs = ["iframe.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/html:safestyle",
-        "//third_party/closure/goog/html:trustedresourceurl",
-        "//third_party/closure/goog/string:const",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
     name = "inputtype",
     srcs = ["inputtype.js"],
     lenient = True,
 )
 
-closure_js_library(
-    name = "iter",
-    srcs = ["iter.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/iter"],
-)
-
-closure_js_library(
+alias(
     name = "multirange",
-    srcs = ["multirange.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:abstractmultirange",
-        "//third_party/closure/goog/dom:abstractrange",
-        "//third_party/closure/goog/dom:savedrange",
-        "//third_party/closure/goog/dom:textrange",
-        "//third_party/closure/goog/iter",
-        "//third_party/closure/goog/log",
-    ],
+    actual = ":range",
 )
 
 closure_js_library(
     name = "nodeiterator",
     srcs = ["nodeiterator.js"],
     lenient = True,
-    deps = ["//third_party/closure/goog/dom:tagiterator"],
-)
-
-closure_js_library(
-    name = "nodeoffset",
-    srcs = ["nodeoffset.js"],
-    lenient = True,
     deps = [
-        "//third_party/closure/goog/disposable",
-        "//third_party/closure/goog/dom:tagname",
+        ":tagiterator",
+        "//third_party/closure/goog/iter",
     ],
 )
 
@@ -300,33 +131,13 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "range",
-    srcs = ["range.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:abstractrange",
-        "//third_party/closure/goog/dom:browserfeature",
-        "//third_party/closure/goog/dom:controlrange",
-        "//third_party/closure/goog/dom:multirange",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:textrange",
-    ],
-)
-
-closure_js_library(
-    name = "rangeendpoint",
-    srcs = ["rangeendpoint.js"],
-    lenient = True,
-)
-
-closure_js_library(
     name = "safe",
     srcs = ["safe.js"],
     lenient = True,
     deps = [
+        ":asserts",
         "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:asserts",
+        "//third_party/closure/goog/asserts:dom",
         "//third_party/closure/goog/functions",
         "//third_party/closure/goog/html:safehtml",
         "//third_party/closure/goog/html:safescript",
@@ -339,27 +150,14 @@ closure_js_library(
     ],
 )
 
-closure_js_library(
+alias(
     name = "savedcaretrange",
-    srcs = ["savedcaretrange.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:savedrange",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/string",
-    ],
+    actual = ":range",
 )
 
-closure_js_library(
+alias(
     name = "savedrange",
-    srcs = ["savedrange.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/disposable",
-        "//third_party/closure/goog/log",
-    ],
+    actual = ":abstractrange",
 )
 
 closure_js_library(
@@ -367,7 +165,7 @@ closure_js_library(
     srcs = ["selection.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/dom:inputtype",
+        ":inputtype",
         "//third_party/closure/goog/string",
         "//third_party/closure/goog/useragent",
     ],
@@ -378,8 +176,8 @@ closure_js_library(
     srcs = ["tagiterator.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:nodetype",
+        ":dom",
+        ":nodetype",
         "//third_party/closure/goog/iter",
     ],
 )
@@ -388,7 +186,7 @@ closure_js_library(
     name = "tagname",
     srcs = ["tagname.js"],
     lenient = True,
-    deps = ["//third_party/closure/goog/dom:htmlelement"],
+    deps = [":htmlelement"],
 )
 
 closure_js_library(
@@ -398,59 +196,9 @@ closure_js_library(
     deps = ["//third_party/closure/goog/object"],
 )
 
-closure_js_library(
-    name = "textassert",
-    srcs = ["textassert.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "textrange",
-    srcs = ["textrange.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:abstractrange",
-        "//third_party/closure/goog/dom:savedrange",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/dom:textrangeiterator",
-        "//third_party/closure/goog/dom/browserrange",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "textrangeiterator",
-    srcs = ["textrangeiterator.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:abstractrange",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/iter",
-    ],
-)
-
-closure_js_library(
-    name = "uri",
-    srcs = ["uri.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/html:uncheckedconversions",
-        "//third_party/closure/goog/string:const",
-    ],
+    actual = ":range",
 )
 
 closure_js_library(
@@ -459,32 +207,6 @@ closure_js_library(
     lenient = True,
     deps = [
         "//third_party/closure/goog/string",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "viewportsizemonitor",
-    srcs = ["viewportsizemonitor.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/math:size",
-    ],
-)
-
-closure_js_library(
-    name = "xml",
-    srcs = ["xml.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/html:legacyconversions",
         "//third_party/closure/goog/useragent",
     ],
 )

@@ -431,3 +431,41 @@ class Emulation:
             params["userContexts"] = user_contexts
 
         self.conn.execute(command_builder("emulation.setUserAgentOverride", params))
+
+    def set_network_conditions(
+        self,
+        offline: bool = False,
+        contexts: list[str] | None = None,
+        user_contexts: list[str] | None = None,
+    ) -> None:
+        """Set network conditions for the given contexts or user contexts.
+
+        Args:
+            offline: True to emulate offline network conditions, False to clear the override.
+            contexts: List of browsing context IDs to apply the conditions to.
+            user_contexts: List of user context IDs to apply the conditions to.
+
+        Raises:
+            ValueError: If both contexts and user_contexts are provided, or if neither
+                contexts nor user_contexts are provided.
+        """
+        if contexts is not None and user_contexts is not None:
+            raise ValueError("Cannot specify both contexts and user_contexts")
+
+        if contexts is None and user_contexts is None:
+            raise ValueError("Must specify either contexts or user_contexts")
+
+        params: dict[str, Any] = {}
+
+        if offline:
+            params["networkConditions"] = {"type": "offline"}
+        else:
+            # if offline is False or None, then clear the override
+            params["networkConditions"] = None
+
+        if contexts is not None:
+            params["contexts"] = contexts
+        elif user_contexts is not None:
+            params["userContexts"] = user_contexts
+
+        self.conn.execute(command_builder("emulation.setNetworkConditions", params))

@@ -1,16 +1,8 @@
-// Copyright 2007 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview A class for representing menu headers.
@@ -23,6 +15,8 @@ goog.require('goog.ui.Component');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.MenuHeaderRenderer');
 goog.require('goog.ui.registry');
+goog.requireType('goog.dom.DomHelper');
+goog.requireType('goog.ui.ControlContent');
 
 
 
@@ -38,6 +32,7 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Control}
  */
 goog.ui.MenuHeader = function(content, opt_domHelper, opt_renderer) {
+  'use strict';
   goog.ui.Control.call(
       this, content, opt_renderer || goog.ui.MenuHeaderRenderer.getInstance(),
       opt_domHelper);
@@ -56,6 +51,7 @@ goog.inherits(goog.ui.MenuHeader, goog.ui.Control);
 // Register a decorator factory function for goog.ui.MenuHeaders.
 goog.ui.registry.setDecoratorByClassName(
     goog.ui.MenuHeaderRenderer.CSS_CLASS, function() {
+      'use strict';
       // MenuHeader defaults to using MenuHeaderRenderer.
       return new goog.ui.MenuHeader(null);
     });

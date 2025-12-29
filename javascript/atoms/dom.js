@@ -311,13 +311,13 @@ bot.dom.isInputType = function (element, inputType) {
  */
 bot.dom.isContentEditable = function (element) {
   // Check if browser supports contentEditable.
-  if (!goog.isDef(element['contentEditable'])) {
+  if (element['contentEditable'] === undefined) {
     return false;
   }
 
   // Checking the element's isContentEditable property is preferred except for
   // IE where that property is not reliable on IE versions 7, 8, and 9.
-  if (!goog.userAgent.IE && goog.isDef(element['isContentEditable'])) {
+  if (!goog.userAgent.IE && element['isContentEditable'] !== undefined) {
     return element.isContentEditable;
   }
 
@@ -434,12 +434,12 @@ bot.dom.getEffectiveStyle = function (elem, propertyName) {
 bot.dom.getCascadedStyle_ = function (elem, styleName) {
   var style = elem.currentStyle || elem.style;
   var value = style[styleName];
-  if (!goog.isDef(value) && goog.isFunction(style.getPropertyValue)) {
+  if (value === undefined && typeof style.getPropertyValue === 'function') {
     value = style.getPropertyValue(styleName);
   }
 
   if (value != 'inherit') {
-    return goog.isDef(value) ? value : null;
+    return value !== undefined ? value : null;
   }
   var parent = bot.dom.getParentElement(elem);
   return parent ? bot.dom.getCascadedStyle_(parent, styleName) : null;

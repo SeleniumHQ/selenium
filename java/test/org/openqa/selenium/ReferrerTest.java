@@ -114,9 +114,15 @@ class ReferrerTest {
 
   @AfterEach
   public void stopServers() {
-    safelyCall(() -> proxyServer.stop());
-    safelyCall(() -> server1.stop());
-    safelyCall(() -> server2.stop());
+    if (proxyServer != null) {
+      safelyCall(() -> proxyServer.stop());
+    }
+    if (server1 != null) {
+      safelyCall(() -> server1.stop());
+    }
+    if (server2 != null) {
+      safelyCall(() -> server2.stop());
+    }
   }
 
   private WebDriver createDriver(String pacUrl) {

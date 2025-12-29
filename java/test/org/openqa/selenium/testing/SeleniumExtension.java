@@ -307,8 +307,8 @@ public class SeleniumExtension
 
     public Instances(WebDriver driver, Duration regularWait, Duration shortWait) {
       this.driver = driver;
-      this.regularWait = new WebDriverWait(driver, regularWait);
-      this.shortWait = new WebDriverWait(driver, shortWait);
+      this.regularWait = new WebDriverWait(driver, regularWait, Duration.ofMillis(20));
+      this.shortWait = new WebDriverWait(driver, shortWait, Duration.ofMillis(20));
     }
   }
 

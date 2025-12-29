@@ -1,34 +1,23 @@
-// Copyright 2013 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+goog.module('goog.Thenable');
+goog.module.declareLegacyNamespace();
 
-goog.provide('goog.Thenable');
-
-/** @suppress {extraRequire} */
-goog.forwardDeclare('goog.Promise'); // for the type reference.
-
-
+/** @suppress {extraRequire} used in complex type */
+const GoogPromise = goog.requireType('goog.Promise');  // for the type reference.
 
 /**
  * Provides a more strict interface for Thenables in terms of
- * http://promisesaplus.com for interop with {@see goog.Promise}.
+ * http://promisesaplus.com for interop with {@see GoogPromise}.
  *
  * @interface
  * @extends {IThenable<TYPE>}
  * @template TYPE
  */
-goog.Thenable = function() {};
-
+function Thenable() {}
 
 /**
  * Adds callbacks that will operate on the result of the Thenable, returning a
@@ -40,9 +29,10 @@ goog.Thenable = function() {};
  * an exception, the child Promise will be rejected with the thrown value
  * instead.
  *
- * If the Thenable is rejected, the `onRejected` callback will be invoked
- * with the rejection reason as argument, and the child Promise will be rejected
- * with the return value of the callback or thrown value.
+ * If the Thenable is rejected, the `onRejected` callback will be invoked with
+ * the rejection reason as argument. Similar to the fulfilled case, the child
+ * Promise will then be resolved with the return value of the callback, or
+ * rejected with the thrown value if the callback throws an exception.
  *
  * @param {?(function(this:THIS, TYPE): VALUE)=} opt_onFulfilled A
  *     function that will be invoked with the fulfillment value if the Promise
@@ -72,53 +62,50 @@ goog.Thenable = function() {};
  *  =:
  *
  */
-goog.Thenable.prototype.then = function(
+Thenable.prototype.then = function(
     opt_onFulfilled, opt_onRejected, opt_context) {};
-
 
 /**
  * An expando property to indicate that an object implements
- * `goog.Thenable`.
+ * `Thenable`.
  *
  * {@see addImplementation}.
  *
  * @const
  */
-goog.Thenable.IMPLEMENTED_BY_PROP = '$goog_Thenable';
-
+Thenable.IMPLEMENTED_BY_PROP = '$goog_Thenable';
 
 /**
  * Marks a given class (constructor) as an implementation of Thenable, so
  * that we can query that fact at runtime. The class must have already
  * implemented the interface.
  * Exports a 'then' method on the constructor prototype, so that the objects
- * also implement the extern {@see goog.Thenable} interface for interop with
+ * also implement the extern {@see Thenable} interface for interop with
  * other Promise implementations.
- * @param {function(new:goog.Thenable,...?)} ctor The class constructor. The
+ * @param {function(new:Thenable,...?)} ctor The class constructor. The
  *     corresponding class must have already implemented the interface.
  */
-goog.Thenable.addImplementation = function(ctor) {
+Thenable.addImplementation = function(ctor) {
   if (COMPILED) {
-    ctor.prototype[goog.Thenable.IMPLEMENTED_BY_PROP] = true;
+    ctor.prototype[Thenable.IMPLEMENTED_BY_PROP] = true;
   } else {
     // Avoids dictionary access in uncompiled mode.
     ctor.prototype.$goog_Thenable = true;
   }
 };
 
-
 /**
  * @param {?} object
- * @return {boolean} Whether a given instance implements `goog.Thenable`.
+ * @return {boolean} Whether a given instance implements `Thenable`.
  *     The class/superclass of the instance must call `addImplementation`.
  */
-goog.Thenable.isImplementedBy = function(object) {
+Thenable.isImplementedBy = function(object) {
   if (!object) {
     return false;
   }
   try {
     if (COMPILED) {
-      return !!object[goog.Thenable.IMPLEMENTED_BY_PROP];
+      return !!object[Thenable.IMPLEMENTED_BY_PROP];
     }
     return !!object.$goog_Thenable;
   } catch (e) {
@@ -126,3 +113,5 @@ goog.Thenable.isImplementedBy = function(object) {
     return false;
   }
 };
+
+exports = Thenable;

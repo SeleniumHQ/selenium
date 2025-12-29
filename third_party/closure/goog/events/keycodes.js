@@ -1,16 +1,8 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Constant declarations for common key codes.
@@ -20,8 +12,8 @@
 
 goog.provide('goog.events.KeyCodes');
 
-goog.forwardDeclare('goog.events.BrowserEvent');
 goog.require('goog.userAgent');
+goog.requireType('goog.events.BrowserEvent');
 
 
 /**
@@ -189,6 +181,7 @@ goog.events.KeyCodes = {
  * @return {boolean} Whether it's a text modifying key.
  */
 goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
+  'use strict';
   if (e.altKey && !e.ctrlKey || e.metaKey ||
       // Function keys don't generate text
       e.keyCode >= goog.events.KeyCodes.F1 &&
@@ -270,10 +263,7 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
 goog.events.KeyCodes.firesKeyPressEvent = function(
     keyCode, opt_heldKeyCode, opt_shiftKey, opt_ctrlKey, opt_altKey,
     opt_metaKey) {
-  if (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('525')) {
-    return true;
-  }
-
+  'use strict';
   if (goog.userAgent.MAC && opt_altKey) {
     return goog.events.KeyCodes.isCharacterKey(keyCode);
   }
@@ -366,6 +356,7 @@ goog.events.KeyCodes.firesKeyPressEvent = function(
  * @return {boolean} Whether it's a character key.
  */
 goog.events.KeyCodes.isCharacterKey = function(keyCode) {
+  'use strict';
   if (keyCode >= goog.events.KeyCodes.ZERO &&
       keyCode <= goog.events.KeyCodes.NINE) {
     return true;
@@ -424,6 +415,7 @@ goog.events.KeyCodes.isCharacterKey = function(keyCode) {
  * @return {number} The normalized key code.
  */
 goog.events.KeyCodes.normalizeKeyCode = function(keyCode) {
+  'use strict';
   if (goog.userAgent.GECKO) {
     return goog.events.KeyCodes.normalizeGeckoKeyCode(keyCode);
   } else if (goog.userAgent.MAC && goog.userAgent.WEBKIT) {
@@ -440,6 +432,7 @@ goog.events.KeyCodes.normalizeKeyCode = function(keyCode) {
  * @return {number} The normalized key code.
  */
 goog.events.KeyCodes.normalizeGeckoKeyCode = function(keyCode) {
+  'use strict';
   switch (keyCode) {
     case goog.events.KeyCodes.FF_EQUALS:
       return goog.events.KeyCodes.EQUALS;
@@ -463,6 +456,7 @@ goog.events.KeyCodes.normalizeGeckoKeyCode = function(keyCode) {
  * @return {number} The normalized key code.
  */
 goog.events.KeyCodes.normalizeMacWebKitKeyCode = function(keyCode) {
+  'use strict';
   switch (keyCode) {
     case goog.events.KeyCodes.MAC_WK_CMD_RIGHT:  // 93
       return goog.events.KeyCodes.META;          // 91

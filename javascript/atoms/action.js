@@ -33,12 +33,14 @@ goog.require('bot.Mouse');
 goog.require('bot.Touchscreen');
 goog.require('bot.dom');
 goog.require('bot.events');
-goog.require('bot.events.EventType');
 goog.require('goog.array');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Vec2');
 goog.require('goog.style');
+goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
+goog.require('goog.utils');
 
 
 /**
@@ -183,7 +185,7 @@ bot.action.type = function (
   keyboard.moveCursor(element);
 
   function typeValue(value) {
-    if (goog.isString(value)) {
+    if (typeof value === 'string') {
       goog.array.forEach(value.split(''), function (ch) {
         var keyShiftPair = bot.Keyboard.Key.fromChar(ch);
         var shiftIsPressed = keyboard.isPressed(bot.Keyboard.Keys.SHIFT);
@@ -212,7 +214,7 @@ bot.action.type = function (
   // chrome implements this, but desktop Safari doesn't, what's webkit again?
   if ((!(goog.userAgent.product.SAFARI && !goog.userAgent.MOBILE)) &&
     goog.userAgent.WEBKIT && element.type == 'date') {
-    var val = goog.isArray(values) ? values = values.join("") : values;
+    var val = Array.isArray(values) ? values = values.join("") : values;
     var datePattern = /\d{4}-\d{2}-\d{2}/;
     if (val.match(datePattern)) {
       // The following events get fired on iOS first
@@ -228,7 +230,7 @@ bot.action.type = function (
     }
   }
 
-  if (goog.isArray(values)) {
+  if (Array.isArray(values)) {
     goog.array.forEach(values, typeValue);
   } else {
     typeValue(values);
@@ -394,7 +396,7 @@ bot.action.drag = function (element, dx, dy, opt_steps, opt_coords, opt_mouse) {
   var mouse = opt_mouse || new bot.Mouse();
   mouse.move(element, coords);
   mouse.pressButton(bot.Mouse.Button.LEFT);
-  var steps = goog.isDef(opt_steps) ? opt_steps : 2;
+  var steps = opt_steps !== undefined ? opt_steps : 2;
   if (steps < 1) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
       'There must be at least one step as part of a drag.');
@@ -454,7 +456,7 @@ bot.action.swipe = function (element, dx, dy, opt_steps, opt_coords,
   var initRect = bot.dom.getClientRect(element);
   touchscreen.move(element, coords);
   touchscreen.press();
-  var steps = goog.isDef(opt_steps) ? opt_steps : 2;
+  var steps = opt_steps !== undefined ? opt_steps : 2;
   if (steps < 1) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
       'There must be at least one step as part of a swipe.');
@@ -654,10 +656,10 @@ bot.action.getInteractableSize = function (elem) {
  * @private
  */
 bot.action.LegacyDevice_ = function () {
-  goog.base(this);
+  bot.Device.call(this);
 };
-goog.inherits(bot.action.LegacyDevice_, bot.Device);
-goog.addSingletonGetter(bot.action.LegacyDevice_);
+goog.utils.inherits(bot.action.LegacyDevice_, bot.Device);
+goog.utils.addSingletonGetter(bot.action.LegacyDevice_);
 
 
 /**

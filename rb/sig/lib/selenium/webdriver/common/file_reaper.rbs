@@ -1,15 +1,15 @@
 module Selenium
   module WebDriver
     module FileReaper
-      self.@reap: untyped
+      self.@reap: (bool | nil)
 
-      self.@tmp_files: untyped
+      self.@tmp_files: (Hash[Integer, Array[String]] | nil)
 
-      attr_writer self.reap: untyped
+      attr_writer self.reap: (bool | nil)
 
-      def self.reap?: () -> untyped
+      def self.reap?: () -> (bool | nil)
 
-      def self.tmp_files: () -> untyped
+      def self.tmp_files: () -> Array[String]
 
       def self.<<: (untyped file) -> untyped
 

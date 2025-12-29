@@ -1,16 +1,8 @@
-// Copyright 2007 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Definition the goog.debug.RelativeTimeProvider class.
@@ -32,6 +24,7 @@ goog.provide('goog.debug.RelativeTimeProvider');
  * @final
  */
 goog.debug.RelativeTimeProvider = function() {
+  'use strict';
   /**
    * The start time.
    * @type {number}
@@ -54,6 +47,7 @@ goog.debug.RelativeTimeProvider.defaultInstance_ = null;
  * @param {number} timeStamp The start time.
  */
 goog.debug.RelativeTimeProvider.prototype.set = function(timeStamp) {
+  'use strict';
   this.relativeTimeStart_ = timeStamp;
 };
 
@@ -62,6 +56,7 @@ goog.debug.RelativeTimeProvider.prototype.set = function(timeStamp) {
  * Resets the start time to now.
  */
 goog.debug.RelativeTimeProvider.prototype.reset = function() {
+  'use strict';
   this.set(goog.now());
 };
 
@@ -70,14 +65,16 @@ goog.debug.RelativeTimeProvider.prototype.reset = function() {
  * @return {number} The start time.
  */
 goog.debug.RelativeTimeProvider.prototype.get = function() {
+  'use strict';
   return this.relativeTimeStart_;
 };
 
 
 /**
- * @return {goog.debug.RelativeTimeProvider} The default instance.
+ * @return {!goog.debug.RelativeTimeProvider} The default instance.
  */
 goog.debug.RelativeTimeProvider.getDefaultInstance = function() {
+  'use strict';
   if (!goog.debug.RelativeTimeProvider.defaultInstance_) {
     goog.debug.RelativeTimeProvider.defaultInstance_ =
         new goog.debug.RelativeTimeProvider();

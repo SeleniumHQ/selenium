@@ -1,323 +1,40 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
 
 closure_js_library(
-    name = "all_js",
-    exports = [
-        ":abstractspellchecker",
-        ":activitymonitor",
-        ":advancedtooltip",
-        ":animatedzippy",
-        ":attachablemenu",
-        ":bidiinput",
-        ":bubble",
-        ":button",
-        ":buttonrenderer",
+    name = "button",
+    srcs = [
+        "button.js",
+        "buttonrenderer.js",
+        "nativebuttonrenderer.js",
+    ],
+    lenient = True,
+    deps = [
         ":buttonside",
-        ":charcounter",
-        ":charpicker",
-        ":checkbox",
-        ":checkboxmenuitem",
-        ":checkboxrenderer",
-        ":colormenubutton",
-        ":colormenubuttonrenderer",
-        ":colorpalette",
-        ":colorpicker",
-        ":combobox",
         ":component",
-        ":componentutil",
-        ":container",
-        ":containerrenderer",
-        ":containerscroller",
         ":control",
         ":controlcontent",
-        ":controlrenderer",
-        ":cookieeditor",
-        ":css3buttonrenderer",
-        ":css3menubuttonrenderer",
-        ":cssnames",
-        ":custombutton",
-        ":custombuttonrenderer",
-        ":customcolorpalette",
-        ":datepicker",
-        ":datepickerrenderer",
-        ":decorate",
-        ":defaultdatepickerrenderer",
-        ":dialog",
-        ":dimensionpicker",
-        ":dimensionpickerrenderer",
-        ":dragdropdetector",
-        ":drilldownrow",
-        ":filteredmenu",
-        ":filterobservingmenuitem",
-        ":filterobservingmenuitemrenderer",
-        ":flatbuttonrenderer",
-        ":flatmenubuttonrenderer",
-        ":formpost",
-        ":gauge",
-        ":gaugetheme",
-        ":hovercard",
-        ":hsvapalette",
-        ":hsvpalette",
-        ":idgenerator",
-        ":idletimer",
-        ":iframemask",
-        ":imagelessbuttonrenderer",
-        ":imagelessmenubuttonrenderer",
-        ":inputdatepicker",
-        ":itemevent",
-        ":keyboardeventdata",
-        ":keyboardshortcuthandler",
-        ":labelinput",
-        ":linkbuttonrenderer",
-        ":menu",
-        ":menubar",
-        ":menubardecorator",
-        ":menubarrenderer",
-        ":menubase",
-        ":menubutton",
-        ":menubuttonrenderer",
-        ":menuheader",
-        ":menuheaderrenderer",
-        ":menuitem",
-        ":menuitemrenderer",
-        ":menurenderer",
-        ":menuseparator",
-        ":menuseparatorrenderer",
-        ":mockactivitymonitor",
-        ":modalariavisibilityhelper",
-        ":modalpopup",
-        ":nativebuttonrenderer",
-        ":option",
-        ":palette",
-        ":paletterenderer",
-        ":plaintextspellchecker",
-        ":popup",
-        ":popupbase",
-        ":popupcolorpicker",
-        ":popupdatepicker",
-        ":popupmenu",
-        ":progressbar",
-        ":prompt",
-        ":rangemodel",
-        ":ratings",
         ":registry",
-        ":richtextspellchecker",
-        ":roundedpanel",
-        ":roundedtabrenderer",
-        ":scrollfloater",
-        ":select",
-        ":selectionmenubutton",
-        ":selectionmodel",
-        ":separator",
-        ":serverchart",
-        ":slider",
-        ":sliderbase",
-        ":splitpane",
-        ":submenu",
-        ":submenurenderer",
-        ":synthetickeyboardevent",
-        ":tab",
-        ":tabbar",
-        ":tabbarrenderer",
-        ":tablesorter",
-        ":tabpane",
-        ":tabrenderer",
-        ":textarea",
-        ":textarearenderer",
-        ":togglebutton",
-        ":toolbar",
-        ":toolbarbutton",
-        ":toolbarbuttonrenderer",
-        ":toolbarcolormenubutton",
-        ":toolbarcolormenubuttonrenderer",
-        ":toolbarmenubutton",
-        ":toolbarmenubuttonrenderer",
-        ":toolbarrenderer",
-        ":toolbarselect",
-        ":toolbarseparator",
-        ":toolbarseparatorrenderer",
-        ":toolbartogglebutton",
-        ":tooltip",
-        ":tristatemenuitem",
-        ":tristatemenuitemrenderer",
-        ":twothumbslider",
-        ":zippy",
-        "//third_party/closure/goog/ui/ac:all_js",
-        "//third_party/closure/goog/ui/editor:all_js",
-        "//third_party/closure/goog/ui/emoji:all_js",
-        "//third_party/closure/goog/ui/media:all_js",
-        "//third_party/closure/goog/ui/style/app:all_js",
-        "//third_party/closure/goog/ui/tree:all_js",
-    ],
-)
-
-closure_js_library(
-    name = "abstractspellchecker",
-    srcs = ["abstractspellchecker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:selection",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/spell:spellcheck",
-        "//third_party/closure/goog/structs:set",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:menuseparator",
-        "//third_party/closure/goog/ui:popupmenu",
-    ],
-)
-
-closure_js_library(
-    name = "activitymonitor",
-    srcs = ["activitymonitor.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
-    ],
-)
-
-closure_js_library(
-    name = "advancedtooltip",
-    srcs = ["advancedtooltip.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/math:box",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:tooltip",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "animatedzippy",
-    srcs = ["animatedzippy.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/fx:animation",
-        "//third_party/closure/goog/fx:easing",
-        "//third_party/closure/goog/fx:transition",
-        "//third_party/closure/goog/ui:zippy",
-    ],
-)
-
-closure_js_library(
-    name = "attachablemenu",
-    srcs = ["attachablemenu.js"],
-    lenient = True,
-    deps = [
         "//third_party/closure/goog/a11y/aria",
         "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/array",
+        "//third_party/closure/goog/a11y/aria:roles",
         "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
         "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:itemevent",
-        "//third_party/closure/goog/ui:menubase",
-        "//third_party/closure/goog/ui:popupbase",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "bidiinput",
-    srcs = ["bidiinput.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
         "//third_party/closure/goog/dom:inputtype",
         "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:inputhandler",
-        "//third_party/closure/goog/i18n:bidi",
-        "//third_party/closure/goog/ui:component",
-    ],
-)
-
-closure_js_library(
-    name = "bubble",
-    srcs = ["bubble.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/math:box",
-        "//third_party/closure/goog/positioning",
-        "//third_party/closure/goog/positioning:absoluteposition",
-        "//third_party/closure/goog/positioning:anchoredposition",
-        "//third_party/closure/goog/string:const",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:popup",
-    ],
-)
-
-closure_js_library(
-    name = "button",
-    srcs = ["button.js"],
-    lenient = True,
-    deps = [
         "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/events:keycodes",
         "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/ui:buttonrenderer",
-        "//third_party/closure/goog/ui:buttonside",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:nativebuttonrenderer",
-        "//third_party/closure/goog/ui:registry",
     ],
 )
 
-closure_js_library(
+alias(
     name = "buttonrenderer",
-    srcs = ["buttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/ui:buttonside",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:controlrenderer",
-    ],
+    actual = ":button",
 )
 
 closure_js_library(
@@ -326,128 +43,40 @@ closure_js_library(
     lenient = True,
 )
 
-closure_js_library(
-    name = "charcounter",
-    srcs = ["charcounter.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:inputhandler",
-    ],
-)
-
-closure_js_library(
-    name = "charpicker",
-    srcs = ["charpicker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:inputhandler",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/i18n:charlistdecompressor",
-        "//third_party/closure/goog/i18n:charpickerdata",
-        "//third_party/closure/goog/i18n:uchar",
-        "//third_party/closure/goog/i18n/uchar:namefetcher",
-        "//third_party/closure/goog/structs:set",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:containerscroller",
-        "//third_party/closure/goog/ui:flatbuttonrenderer",
-        "//third_party/closure/goog/ui:hovercard",
-        "//third_party/closure/goog/ui:labelinput",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menubutton",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:tooltip",
-    ],
-)
-
-closure_js_library(
-    name = "checkbox",
-    srcs = ["checkbox.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/ui:checkboxrenderer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
-    name = "checkboxmenuitem",
-    srcs = ["checkboxmenuitem.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "checkboxrenderer",
-    srcs = ["checkboxrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/object",
-        "//third_party/closure/goog/ui:controlrenderer",
-    ],
+    actual = ":checkbox",
 )
 
 closure_js_library(
     name = "colormenubutton",
-    srcs = ["colormenubutton.js"],
+    srcs = [
+        "colormenubutton.js",
+        "colormenubuttonrenderer.js",
+    ],
     lenient = True,
     deps = [
+        ":colorpalette",
+        ":component",
+        ":control",
+        ":controlcontent",
+        ":menu",
+        ":menubutton",
+        ":registry",
         "//third_party/closure/goog/array",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/color",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events:event",
         "//third_party/closure/goog/object",
-        "//third_party/closure/goog/ui:colormenubuttonrenderer",
-        "//third_party/closure/goog/ui:colorpalette",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menubutton",
-        "//third_party/closure/goog/ui:registry",
     ],
 )
 
-closure_js_library(
+alias(
     name = "colormenubuttonrenderer",
-    srcs = ["colormenubuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/color",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:menubuttonrenderer",
-        "//third_party/closure/goog/useragent",
-    ],
+    actual = ":colormenubutton",
 )
 
 closure_js_library(
@@ -455,61 +84,24 @@ closure_js_library(
     srcs = ["colorpalette.js"],
     lenient = True,
     deps = [
+        ":palette",
         "//third_party/closure/goog/array",
         "//third_party/closure/goog/color",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:palette",
-        "//third_party/closure/goog/ui:paletterenderer",
-    ],
-)
-
-closure_js_library(
-    name = "colorpicker",
-    srcs = ["colorpicker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:colorpalette",
-        "//third_party/closure/goog/ui:component",
-    ],
-)
-
-closure_js_library(
-    name = "combobox",
-    srcs = ["combobox.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:inputtype",
         "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:inputhandler",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/log",
-        "//third_party/closure/goog/positioning",
-        "//third_party/closure/goog/positioning:menuanchoredposition",
-        "//third_party/closure/goog/string",
         "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:itemevent",
-        "//third_party/closure/goog/ui:labelinput",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:menuseparator",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/useragent",
     ],
 )
 
 closure_js_library(
     name = "component",
-    srcs = ["component.js"],
+    srcs = [
+        "component.js",
+        "componentutil.js",
+    ],
     lenient = True,
     deps = [
+        ":idgenerator",
         "//third_party/closure/goog/array",
         "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
@@ -517,94 +109,57 @@ closure_js_library(
         "//third_party/closure/goog/dom:tagname",
         "//third_party/closure/goog/events:eventhandler",
         "//third_party/closure/goog/events:eventtarget",
+        "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/object",
         "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:idgenerator",
     ],
 )
 
-closure_js_library(
+alias(
     name = "componentutil",
-    srcs = ["componentutil.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/events:eventtype"],
+    actual = ":component",
 )
 
 closure_js_library(
     name = "container",
-    srcs = ["container.js"],
+    srcs = [
+        "container.js",
+        "containerrenderer.js",
+    ],
     lenient = True,
     deps = [
+        ":component",
+        ":componentutil",
+        ":control",
+        ":registry",
         "//third_party/closure/goog/a11y/aria",
         "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/array",
         "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:event",
         "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/events:keycodes",
         "//third_party/closure/goog/events:keyhandler",
         "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
         "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:componentutil",
-        "//third_party/closure/goog/ui:containerrenderer",
-        "//third_party/closure/goog/ui:control",
+        "//third_party/closure/goog/useragent",
     ],
 )
 
-closure_js_library(
+alias(
     name = "containerrenderer",
-    srcs = ["containerrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/useragent",
-    ],
+    actual = ":container",
 )
 
-closure_js_library(
-    name = "containerscroller",
-    srcs = ["containerscroller.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/disposable",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:container",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "control",
-    srcs = ["control.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/disposable",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/events:browserevent",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:componentutil",
-        "//third_party/closure/goog/ui:controlcontent",
-        "//third_party/closure/goog/ui:controlrenderer",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/useragent",
-    ],
+    actual = ":registry",
 )
 
 closure_js_library(
@@ -613,72 +168,9 @@ closure_js_library(
     lenient = True,
 )
 
-closure_js_library(
+alias(
     name = "controlrenderer",
-    srcs = ["controlrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/object",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:controlcontent",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "cookieeditor",
-    srcs = ["cookieeditor.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/net:cookies",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-    ],
-)
-
-closure_js_library(
-    name = "css3buttonrenderer",
-    srcs = ["css3buttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:buttonrenderer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:cssnames",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
-    name = "css3menubuttonrenderer",
-    srcs = ["css3menubuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:cssnames",
-        "//third_party/closure/goog/ui:menubutton",
-        "//third_party/closure/goog/ui:menubuttonrenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
+    actual = ":registry",
 )
 
 closure_js_library(
@@ -689,362 +181,50 @@ closure_js_library(
 
 closure_js_library(
     name = "custombutton",
-    srcs = ["custombutton.js"],
+    srcs = [
+        "custombutton.js",
+        "custombuttonrenderer.js",
+    ],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:custombuttonrenderer",
-        "//third_party/closure/goog/ui:registry",
+        ":button",
+        ":control",
+        ":controlcontent",
+        ":cssnames",
+        ":registry",
+        "//third_party/closure/goog/a11y/aria:roles",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:nodetype",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/string",
     ],
 )
 
-closure_js_library(
+alias(
     name = "custombuttonrenderer",
-    srcs = ["custombuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/ui:buttonrenderer",
-        "//third_party/closure/goog/ui:cssnames",
-    ],
+    actual = ":custombutton",
 )
 
-closure_js_library(
-    name = "customcolorpalette",
-    srcs = ["customcolorpalette.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/color",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:colorpalette",
-        "//third_party/closure/goog/ui:component",
-    ],
-)
-
-closure_js_library(
-    name = "datepicker",
-    srcs = ["datepicker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/date",
-        "//third_party/closure/goog/date:daterange",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/i18n:datetimeformat",
-        "//third_party/closure/goog/i18n:datetimepatterns",
-        "//third_party/closure/goog/i18n:datetimesymbols",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:defaultdatepickerrenderer",
-        "//third_party/closure/goog/ui:idgenerator",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "datepickerrenderer",
-    srcs = ["datepickerrenderer.js"],
-    lenient = True,
+    actual = ":datepicker",
 )
 
-closure_js_library(
-    name = "decorate",
-    srcs = ["decorate.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/ui:registry"],
-)
-
-closure_js_library(
+alias(
     name = "defaultdatepickerrenderer",
-    srcs = ["defaultdatepickerrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:datepickerrenderer",
-    ],
+    actual = ":datepicker",
 )
 
-closure_js_library(
-    name = "dialog",
-    srcs = ["dialog.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/events:keys",
-        "//third_party/closure/goog/fx:dragger",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/math:rect",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/structs:map",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:modalpopup",
-    ],
-)
-
-closure_js_library(
-    name = "dimensionpicker",
-    srcs = ["dimensionpicker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:browserevent",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/math:size",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:componentutil",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:dimensionpickerrenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "dimensionpickerrenderer",
-    srcs = ["dimensionpickerrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:announcer",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/i18n:bidi",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:controlrenderer",
-        "//third_party/closure/goog/useragent",
-    ],
+    actual = ":dimensionpicker",
 )
 
-closure_js_library(
-    name = "dragdropdetector",
-    srcs = ["dragdropdetector.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "drilldownrow",
-    srcs = ["drilldownrow.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/ui:component",
-    ],
-)
-
-closure_js_library(
-    name = "filteredmenu",
-    srcs = ["filteredmenu.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:inputhandler",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:filterobservingmenuitem",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "filterobservingmenuitem",
-    srcs = ["filterobservingmenuitem.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:filterobservingmenuitemrenderer",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "filterobservingmenuitemrenderer",
-    srcs = ["filterobservingmenuitemrenderer.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/ui:menuitemrenderer"],
-)
-
-closure_js_library(
-    name = "flatbuttonrenderer",
-    srcs = ["flatbuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:buttonrenderer",
-        "//third_party/closure/goog/ui:cssnames",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
-    name = "flatmenubuttonrenderer",
-    srcs = ["flatmenubuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:cssnames",
-        "//third_party/closure/goog/ui:flatbuttonrenderer",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menubutton",
-        "//third_party/closure/goog/ui:menurenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
-    name = "formpost",
-    srcs = ["formpost.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/ui:component",
-    ],
-)
-
-closure_js_library(
-    name = "gauge",
-    srcs = ["gauge.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/fx:animation",
-        "//third_party/closure/goog/fx:easing",
-        "//third_party/closure/goog/fx:transition",
-        "//third_party/closure/goog/graphics",
-        "//third_party/closure/goog/graphics:font",
-        "//third_party/closure/goog/graphics:path",
-        "//third_party/closure/goog/graphics:solidfill",
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:gaugetheme",
-    ],
-)
-
-closure_js_library(
-    name = "gaugetheme",
-    srcs = ["gaugetheme.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/graphics:lineargradient",
-        "//third_party/closure/goog/graphics:solidfill",
-        "//third_party/closure/goog/graphics:stroke",
-    ],
-)
-
-closure_js_library(
-    name = "hovercard",
-    srcs = ["hovercard.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/ui:advancedtooltip",
-        "//third_party/closure/goog/ui:popupbase",
-        "//third_party/closure/goog/ui:tooltip",
-    ],
-)
-
-closure_js_library(
-    name = "hsvapalette",
-    srcs = ["hsvapalette.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/color:alpha",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:hsvpalette",
-    ],
-)
-
-closure_js_library(
-    name = "hsvpalette",
-    srcs = ["hsvpalette.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/color",
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:inputhandler",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/style:bidi",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/useragent",
-    ],
+    actual = ":filterobservingmenuitem",
 )
 
 closure_js_library(
@@ -1054,411 +234,143 @@ closure_js_library(
 )
 
 closure_js_library(
-    name = "idletimer",
-    srcs = ["idletimer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/structs:set",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:activitymonitor",
+    name = "menu",
+    srcs = [
+        "menu.js",
+        "menuitem.js",
+        "menuitemrenderer.js",
+        "menurenderer.js",
     ],
-)
-
-closure_js_library(
-    name = "iframemask",
-    srcs = ["iframemask.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/disposable",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:iframe",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/structs:pool",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-    ],
-)
-
-closure_js_library(
-    name = "imagelessbuttonrenderer",
-    srcs = ["imagelessbuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:cssnames",
-        "//third_party/closure/goog/ui:custombuttonrenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
-    name = "imagelessmenubuttonrenderer",
-    srcs = ["imagelessmenubuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:cssnames",
-        "//third_party/closure/goog/ui:menubutton",
-        "//third_party/closure/goog/ui:menubuttonrenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
-    name = "inputdatepicker",
-    srcs = ["inputdatepicker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/date",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/i18n:datetimeparse",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:datepicker",
-        "//third_party/closure/goog/ui:labelinput",
-        "//third_party/closure/goog/ui:popupbase",
-        "//third_party/closure/goog/ui:popupdatepicker",
-    ],
-)
-
-closure_js_library(
-    name = "itemevent",
-    srcs = ["itemevent.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/events:event"],
-)
-
-closure_js_library(
-    name = "keyboardeventdata",
-    srcs = ["keyboardeventdata.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/events:browserevent",
-    ],
-)
-
-closure_js_library(
-    name = "keyboardshortcuthandler",
-    srcs = ["keyboardshortcuthandler.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/events:keynames",
-        "//third_party/closure/goog/events:keys",
-        "//third_party/closure/goog/object",
-        "//third_party/closure/goog/ui:keyboardeventdata",
-        "//third_party/closure/goog/ui:synthetickeyboardevent",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "labelinput",
-    srcs = ["labelinput.js"],
-    lenient = True,
-    deps = [
+        ":component",
+        ":container",
+        ":control",
+        ":controlcontent",
+        ":menuheader",
+        ":menuseparator",
+        ":registry",
+        ":separator",
         "//third_party/closure/goog/a11y/aria",
         "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/a11y/aria:roles",
+        "//third_party/closure/goog/array",
         "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
         "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:inputtype",
         "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "linkbuttonrenderer",
-    srcs = ["linkbuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:flatbuttonrenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
-    name = "menu",
-    srcs = ["menu.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events:event",
+        "//third_party/closure/goog/events:keycodes",
         "//third_party/closure/goog/math:coordinate",
         "//third_party/closure/goog/string",
         "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:container",
-        "//third_party/closure/goog/ui:menuheader",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:menurenderer",
-        "//third_party/closure/goog/ui:menuseparator",
     ],
 )
 
-closure_js_library(
-    name = "menubar",
-    srcs = ["menubar.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:container",
-        "//third_party/closure/goog/ui:menubarrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "menubardecorator",
-    srcs = ["menubardecorator.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:menubar",
-        "//third_party/closure/goog/ui:menubarrenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "menubarrenderer",
-    srcs = ["menubarrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/ui:container",
-        "//third_party/closure/goog/ui:containerrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "menubase",
-    srcs = ["menubase.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/ui:popup",
-    ],
+    actual = ":menubar",
 )
 
 closure_js_library(
     name = "menubutton",
-    srcs = ["menubutton.js"],
+    srcs = [
+        "menubutton.js",
+        "menubuttonrenderer.js",
+    ],
     lenient = True,
     deps = [
+        ":button",
+        ":component",
+        ":control",
+        ":controlcontent",
+        ":cssnames",
+        ":custombutton",
+        ":idgenerator",
+        ":menu",
+        ":menuitem",
+        ":menuseparator",
+        ":registry",
+        ":submenu",
         "//third_party/closure/goog/a11y/aria",
         "//third_party/closure/goog/a11y/aria:attributes",
         "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:event",
         "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/events:keycodes",
         "//third_party/closure/goog/events:keyhandler",
         "//third_party/closure/goog/math:box",
         "//third_party/closure/goog/math:coordinate",
         "//third_party/closure/goog/math:rect",
+        "//third_party/closure/goog/math:size",
         "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:anchoredposition",
         "//third_party/closure/goog/positioning:menuanchoredposition",
         "//third_party/closure/goog/style",
         "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:idgenerator",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menubuttonrenderer",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:menurenderer",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:submenu",
         "//third_party/closure/goog/useragent",
         "//third_party/closure/goog/useragent:product",
     ],
 )
 
-closure_js_library(
+alias(
     name = "menubuttonrenderer",
-    srcs = ["menubuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:cssnames",
-        "//third_party/closure/goog/ui:custombuttonrenderer",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menurenderer",
-    ],
+    actual = ":menubutton",
 )
 
 closure_js_library(
     name = "menuheader",
-    srcs = ["menuheader.js"],
+    srcs = [
+        "menuheader.js",
+        "menuheaderrenderer.js",
+    ],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:menuheaderrenderer",
-        "//third_party/closure/goog/ui:registry",
+        ":component",
+        ":control",
+        ":controlcontent",
+        ":registry",
+        "//third_party/closure/goog/dom",
     ],
 )
 
-closure_js_library(
+alias(
     name = "menuheaderrenderer",
-    srcs = ["menuheaderrenderer.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/ui:controlrenderer"],
+    actual = ":menuheader",
 )
 
-closure_js_library(
+alias(
     name = "menuitem",
-    srcs = ["menuitem.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:menuitemrenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
+    actual = ":menu",
 )
 
-closure_js_library(
+alias(
     name = "menuitemrenderer",
-    srcs = ["menuitemrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:controlrenderer",
-    ],
+    actual = ":menu",
 )
 
-closure_js_library(
+alias(
     name = "menurenderer",
-    srcs = ["menurenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:containerrenderer",
-        "//third_party/closure/goog/ui:separator",
-    ],
+    actual = ":menu",
 )
 
-closure_js_library(
+alias(
     name = "menuseparator",
-    srcs = ["menuseparator.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:menuseparatorrenderer",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:separator",
-    ],
+    actual = ":separator",
 )
 
-closure_js_library(
+alias(
     name = "menuseparatorrenderer",
-    srcs = ["menuseparatorrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:controlrenderer",
-    ],
+    actual = ":separator",
 )
 
-closure_js_library(
-    name = "mockactivitymonitor",
-    srcs = ["mockactivitymonitor.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/ui:activitymonitor",
-    ],
-)
-
-closure_js_library(
-    name = "modalariavisibilityhelper",
-    srcs = ["modalariavisibilityhelper.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-    ],
-)
-
-closure_js_library(
-    name = "modalpopup",
-    srcs = ["modalpopup.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:iframe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/dom/animationframe",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:focushandler",
-        "//third_party/closure/goog/fx:transition",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:modalariavisibilityhelper",
-        "//third_party/closure/goog/ui:popupbase",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "nativebuttonrenderer",
-    srcs = ["nativebuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/ui:buttonrenderer",
-        "//third_party/closure/goog/ui:component",
-    ],
+    actual = ":button",
 )
 
 closure_js_library(
@@ -1466,35 +378,27 @@ closure_js_library(
     srcs = ["option.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:registry",
+        ":component",
+        ":controlcontent",
+        ":menuitem",
+        ":registry",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events:event",
     ],
 )
 
 closure_js_library(
     name = "palette",
-    srcs = ["palette.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/math:size",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:paletterenderer",
-        "//third_party/closure/goog/ui:selectionmodel",
+    srcs = [
+        "palette.js",
+        "paletterenderer.js",
     ],
-)
-
-closure_js_library(
-    name = "paletterenderer",
-    srcs = ["paletterenderer.js"],
     lenient = True,
     deps = [
+        ":component",
+        ":control",
+        ":controlcontent",
+        ":selectionmodel",
         "//third_party/closure/goog/a11y/aria",
         "//third_party/closure/goog/a11y/aria:attributes",
         "//third_party/closure/goog/a11y/aria:roles",
@@ -1506,267 +410,54 @@ closure_js_library(
         "//third_party/closure/goog/dom:nodeiterator",
         "//third_party/closure/goog/dom:nodetype",
         "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/iter",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:controlrenderer",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "plaintextspellchecker",
-    srcs = ["plaintextspellchecker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventhandler",
+        "//third_party/closure/goog/events",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:event",
         "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/events:keycodes",
         "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/spell:spellcheck",
+        "//third_party/closure/goog/iter",
+        "//third_party/closure/goog/math:size",
         "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:abstractspellchecker",
-        "//third_party/closure/goog/ui:component",
         "//third_party/closure/goog/useragent",
     ],
 )
 
-closure_js_library(
-    name = "popup",
-    srcs = ["popup.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/math:box",
-        "//third_party/closure/goog/positioning",
-        "//third_party/closure/goog/positioning:abstractposition",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:popupbase",
-    ],
-)
-
-closure_js_library(
-    name = "popupbase",
-    srcs = ["popupbase.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/fx:transition",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "popupcolorpicker",
-    srcs = ["popupcolorpicker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/positioning",
-        "//third_party/closure/goog/positioning:anchoredposition",
-        "//third_party/closure/goog/ui:colorpicker",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:popup",
-    ],
-)
-
-closure_js_library(
-    name = "popupdatepicker",
-    srcs = ["popupdatepicker.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/positioning",
-        "//third_party/closure/goog/positioning:anchoredviewportposition",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:datepicker",
-        "//third_party/closure/goog/ui:popup",
-        "//third_party/closure/goog/ui:popupbase",
-    ],
-)
-
-closure_js_library(
-    name = "popupmenu",
-    srcs = ["popupmenu.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:browserevent",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/positioning",
-        "//third_party/closure/goog/positioning:anchoredviewportposition",
-        "//third_party/closure/goog/positioning:menuanchoredposition",
-        "//third_party/closure/goog/positioning:viewportclientposition",
-        "//third_party/closure/goog/structs:map",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:popupbase",
-    ],
-)
-
-closure_js_library(
-    name = "progressbar",
-    srcs = ["progressbar.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:rangemodel",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "prompt",
-    srcs = ["prompt.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/functions",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:dialog",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "rangemodel",
-    srcs = ["rangemodel.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/ui:component",
-    ],
-)
-
-closure_js_library(
-    name = "ratings",
-    srcs = ["ratings.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/ui:component",
-    ],
+alias(
+    name = "paletterenderer",
+    actual = ":palette",
 )
 
 closure_js_library(
     name = "registry",
-    srcs = ["registry.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
+    srcs = [
+        "control.js",
+        "controlrenderer.js",
+        "registry.js",
     ],
-)
-
-closure_js_library(
-    name = "richtextspellchecker",
-    srcs = ["richtextspellchecker.js"],
     lenient = True,
     deps = [
+        ":component",
+        ":controlcontent",
+        "//third_party/closure/goog/a11y/aria",
+        "//third_party/closure/goog/a11y/aria:attributes",
+        "//third_party/closure/goog/a11y/aria:roles",
+        "//third_party/closure/goog/array",
         "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/disposable",
         "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:range",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:tagname",
+        "//third_party/closure/goog/events:browserevent",
+        "//third_party/closure/goog/events:event",
         "//third_party/closure/goog/events:eventhandler",
         "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/events:keycodes",
         "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/spell:spellcheck",
-        "//third_party/closure/goog/string:stringbuffer",
+        "//third_party/closure/goog/functions",
+        "//third_party/closure/goog/object",
+        "//third_party/closure/goog/string",
         "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:abstractspellchecker",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:popupmenu",
-    ],
-)
-
-closure_js_library(
-    name = "roundedpanel",
-    srcs = ["roundedpanel.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/graphics",
-        "//third_party/closure/goog/graphics:path",
-        "//third_party/closure/goog/graphics:solidfill",
-        "//third_party/closure/goog/graphics:stroke",
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
-    name = "roundedtabrenderer",
-    srcs = ["roundedtabrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:tab",
-        "//third_party/closure/goog/ui:tabbar",
-        "//third_party/closure/goog/ui:tabrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "scrollfloater",
-    srcs = ["scrollfloater.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
         "//third_party/closure/goog/useragent",
     ],
 )
@@ -1776,34 +467,24 @@ closure_js_library(
     srcs = ["select.js"],
     lenient = True,
     deps = [
+        ":button",
+        ":component",
+        ":control",
+        ":controlcontent",
+        ":idgenerator",
+        ":menu",
+        ":menubutton",
+        ":menuitem",
+        ":menuseparator",
+        ":registry",
+        ":selectionmodel",
         "//third_party/closure/goog/a11y/aria",
         "//third_party/closure/goog/a11y/aria:attributes",
         "//third_party/closure/goog/a11y/aria:roles",
         "//third_party/closure/goog/array",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/events:event",
         "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:idgenerator",
-        "//third_party/closure/goog/ui:menubutton",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:menurenderer",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:selectionmodel",
-    ],
-)
-
-closure_js_library(
-    name = "selectionmenubutton",
-    srcs = ["selectionmenubutton.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom:inputtype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:menubutton",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:registry",
     ],
 )
 
@@ -1820,349 +501,169 @@ closure_js_library(
 
 closure_js_library(
     name = "separator",
-    srcs = ["separator.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:menuseparatorrenderer",
-        "//third_party/closure/goog/ui:registry",
+    srcs = [
+        "menuseparator.js",
+        "menuseparatorrenderer.js",
+        "separator.js",
     ],
-)
-
-closure_js_library(
-    name = "serverchart",
-    srcs = ["serverchart.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/uri",
-    ],
-)
-
-closure_js_library(
-    name = "slider",
-    srcs = ["slider.js"],
-    lenient = True,
-    deps = [
+        ":component",
+        ":control",
+        ":controlcontent",
+        ":registry",
         "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:sliderbase",
-    ],
-)
-
-closure_js_library(
-    name = "sliderbase",
-    srcs = ["sliderbase.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/array",
         "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
         "//third_party/closure/goog/dom:classlist",
         "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/events:mousewheelhandler",
-        "//third_party/closure/goog/functions",
-        "//third_party/closure/goog/fx:animationqueue",
-        "//third_party/closure/goog/fx:dom",
-        "//third_party/closure/goog/fx:dragger",
-        "//third_party/closure/goog/fx:transition",
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/style:bidi",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:rangemodel",
-    ],
-)
-
-closure_js_library(
-    name = "splitpane",
-    srcs = ["splitpane.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/fx:dragger",
-        "//third_party/closure/goog/math:rect",
-        "//third_party/closure/goog/math:size",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/useragent",
     ],
 )
 
 closure_js_library(
     name = "submenu",
-    srcs = ["submenu.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/positioning",
-        "//third_party/closure/goog/positioning:anchoredviewportposition",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:submenurenderer",
+    srcs = [
+        "submenu.js",
+        "submenurenderer.js",
     ],
-)
-
-closure_js_library(
-    name = "submenurenderer",
-    srcs = ["submenurenderer.js"],
     lenient = True,
     deps = [
+        ":component",
+        ":control",
+        ":controlcontent",
+        ":menu",
+        ":menuheader",
+        ":menuitem",
+        ":menuseparator",
+        ":registry",
         "//third_party/closure/goog/a11y/aria",
         "//third_party/closure/goog/a11y/aria:attributes",
         "//third_party/closure/goog/asserts",
         "//third_party/closure/goog/dom",
         "//third_party/closure/goog/dom:classlist",
         "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:menu",
-        "//third_party/closure/goog/ui:menuitemrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "synthetickeyboardevent",
-    srcs = ["synthetickeyboardevent.js"],
-    lenient = True,
-    deps = [
+        "//third_party/closure/goog/events:browserevent",
         "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/ui:keyboardeventdata",
-    ],
-)
-
-closure_js_library(
-    name = "tab",
-    srcs = ["tab.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:tabrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "tabbar",
-    srcs = ["tabbar.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:container",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:tab",
-        "//third_party/closure/goog/ui:tabbarrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "tabbarrenderer",
-    srcs = ["tabbarrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/object",
-        "//third_party/closure/goog/ui:containerrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "tablesorter",
-    srcs = ["tablesorter.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/functions",
-        "//third_party/closure/goog/ui:component",
-    ],
-)
-
-closure_js_library(
-    name = "tabpane",
-    srcs = ["tabpane.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
         "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/html:safestylesheet",
+        "//third_party/closure/goog/events:keyhandler",
+        "//third_party/closure/goog/positioning",
+        "//third_party/closure/goog/positioning:anchoredviewportposition",
         "//third_party/closure/goog/style",
+        "//third_party/closure/goog/timer",
     ],
 )
 
-closure_js_library(
+alias(
+    name = "submenurenderer",
+    actual = ":submenu",
+)
+
+alias(
+    name = "tabbarrenderer",
+    actual = ":tabbar",
+)
+
+alias(
     name = "tabrenderer",
-    srcs = ["tabrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:controlrenderer",
-    ],
+    actual = ":tab",
 )
 
-closure_js_library(
-    name = "textarea",
-    srcs = ["textarea.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/ui:control",
-        "//third_party/closure/goog/ui:textarearenderer",
-        "//third_party/closure/goog/useragent",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "textarearenderer",
-    srcs = ["textarearenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:controlrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "togglebutton",
-    srcs = ["togglebutton.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:custombuttonrenderer",
-        "//third_party/closure/goog/ui:registry",
-    ],
+    actual = ":textarea",
 )
 
 closure_js_library(
     name = "toolbar",
-    srcs = ["toolbar.js"],
+    srcs = [
+        "toolbar.js",
+        "toolbarrenderer.js",
+    ],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:container",
-        "//third_party/closure/goog/ui:toolbarrenderer",
+        ":container",
+        ":control",
+        ":separator",
+        ":toolbarseparator",
+        "//third_party/closure/goog/a11y/aria:roles",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:tagname",
     ],
 )
 
 closure_js_library(
     name = "toolbarbutton",
-    srcs = ["toolbarbutton.js"],
+    srcs = [
+        "toolbarbutton.js",
+        "toolbarbuttonrenderer.js",
+    ],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:button",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:toolbarbuttonrenderer",
+        ":button",
+        ":controlcontent",
+        ":custombutton",
+        ":registry",
+        ":toolbarseparator",
+        "//third_party/closure/goog/dom",
     ],
 )
 
-closure_js_library(
+alias(
     name = "toolbarbuttonrenderer",
-    srcs = ["toolbarbuttonrenderer.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/ui:custombuttonrenderer"],
+    actual = ":toolbarbutton",
 )
 
 closure_js_library(
     name = "toolbarcolormenubutton",
-    srcs = ["toolbarcolormenubutton.js"],
+    srcs = [
+        "toolbarcolormenubutton.js",
+        "toolbarcolormenubuttonrenderer.js",
+    ],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:colormenubutton",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:toolbarcolormenubuttonrenderer",
+        ":colormenubutton",
+        ":control",
+        ":controlcontent",
+        ":menu",
+        ":menubutton",
+        ":registry",
+        ":toolbarmenubutton",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
     ],
 )
 
-closure_js_library(
+alias(
     name = "toolbarcolormenubuttonrenderer",
-    srcs = ["toolbarcolormenubuttonrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/ui:colormenubuttonrenderer",
-        "//third_party/closure/goog/ui:menubuttonrenderer",
-        "//third_party/closure/goog/ui:toolbarmenubuttonrenderer",
-    ],
+    actual = ":toolbarcolormenubutton",
 )
 
 closure_js_library(
     name = "toolbarmenubutton",
-    srcs = ["toolbarmenubutton.js"],
+    srcs = [
+        "toolbarmenubutton.js",
+        "toolbarmenubuttonrenderer.js",
+    ],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:menubutton",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:toolbarmenubuttonrenderer",
+        ":button",
+        ":controlcontent",
+        ":menu",
+        ":menubutton",
+        ":registry",
+        "//third_party/closure/goog/dom",
     ],
 )
 
-closure_js_library(
+alias(
     name = "toolbarmenubuttonrenderer",
-    srcs = ["toolbarmenubuttonrenderer.js"],
-    lenient = True,
-    deps = ["//third_party/closure/goog/ui:menubuttonrenderer"],
+    actual = ":toolbarmenubutton",
 )
 
-closure_js_library(
+alias(
     name = "toolbarrenderer",
-    srcs = ["toolbarrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:container",
-        "//third_party/closure/goog/ui:containerrenderer",
-        "//third_party/closure/goog/ui:separator",
-        "//third_party/closure/goog/ui:toolbarseparatorrenderer",
-    ],
+    actual = ":toolbar",
 )
 
 closure_js_library(
@@ -2170,126 +671,41 @@ closure_js_library(
     srcs = ["toolbarselect.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:select",
-        "//third_party/closure/goog/ui:toolbarmenubuttonrenderer",
+        ":controlcontent",
+        ":menu",
+        ":menubutton",
+        ":registry",
+        ":select",
+        ":toolbarmenubutton",
+        "//third_party/closure/goog/dom",
     ],
 )
 
 closure_js_library(
     name = "toolbarseparator",
-    srcs = ["toolbarseparator.js"],
+    srcs = [
+        "toolbarseparator.js",
+        "toolbarseparatorrenderer.js",
+    ],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:separator",
-        "//third_party/closure/goog/ui:toolbarseparatorrenderer",
+        ":control",
+        ":cssnames",
+        ":registry",
+        ":separator",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/dom",
+        "//third_party/closure/goog/dom:classlist",
+        "//third_party/closure/goog/dom:tagname",
     ],
 )
 
-closure_js_library(
+alias(
     name = "toolbarseparatorrenderer",
-    srcs = ["toolbarseparatorrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:cssnames",
-        "//third_party/closure/goog/ui:menuseparatorrenderer",
-    ],
+    actual = ":toolbarseparator",
 )
 
-closure_js_library(
-    name = "toolbartogglebutton",
-    srcs = ["toolbartogglebutton.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:togglebutton",
-        "//third_party/closure/goog/ui:toolbarbuttonrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "tooltip",
-    srcs = ["tooltip.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:safe",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/events",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:focushandler",
-        "//third_party/closure/goog/math:box",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/positioning",
-        "//third_party/closure/goog/positioning:anchoredposition",
-        "//third_party/closure/goog/positioning:viewportposition",
-        "//third_party/closure/goog/structs:set",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/timer",
-        "//third_party/closure/goog/ui:popup",
-        "//third_party/closure/goog/ui:popupbase",
-    ],
-)
-
-closure_js_library(
-    name = "tristatemenuitem",
-    srcs = ["tristatemenuitem.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/ui:component",
-        "//third_party/closure/goog/ui:menuitem",
-        "//third_party/closure/goog/ui:registry",
-        "//third_party/closure/goog/ui:tristatemenuitemrenderer",
-    ],
-)
-
-closure_js_library(
+alias(
     name = "tristatemenuitemrenderer",
-    srcs = ["tristatemenuitemrenderer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/ui:menuitemrenderer",
-    ],
-)
-
-closure_js_library(
-    name = "twothumbslider",
-    srcs = ["twothumbslider.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/ui:sliderbase",
-    ],
-)
-
-closure_js_library(
-    name = "zippy",
-    srcs = ["zippy.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/a11y/aria",
-        "//third_party/closure/goog/a11y/aria:attributes",
-        "//third_party/closure/goog/a11y/aria:roles",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:classlist",
-        "//third_party/closure/goog/events:event",
-        "//third_party/closure/goog/events:eventhandler",
-        "//third_party/closure/goog/events:eventtarget",
-        "//third_party/closure/goog/events:eventtype",
-        "//third_party/closure/goog/events:keycodes",
-        "//third_party/closure/goog/events:keyhandler",
-        "//third_party/closure/goog/style",
-    ],
+    actual = ":tristatemenuitem",
 )

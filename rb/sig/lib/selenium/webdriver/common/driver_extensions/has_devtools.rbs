@@ -4,9 +4,9 @@ module Selenium
       module HasDevTools
         include _Driver
 
-        @devtools: untyped
+        @devtools: Hash[String, DevTools]
 
-        def devtools: () -> untyped
+        def devtools: (?target_type: String) -> DevTools
       end
     end
   end

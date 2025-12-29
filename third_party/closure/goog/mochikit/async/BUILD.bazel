@@ -1,18 +1,8 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-closure_js_library(
-    name = "all_js",
-    exports = [
-        ":deferred",
-        ":deferredlist",
-    ],
-)
 
 closure_js_library(
     name = "deferred",
@@ -25,11 +15,4 @@ closure_js_library(
         "//third_party/closure/goog/promise",
         "//third_party/closure/goog/promise:thenable",
     ],
-)
-
-closure_js_library(
-    name = "deferredlist",
-    srcs = ["deferredlist.js"],
-    lenient = True,
-    deps = [":deferred"],
 )

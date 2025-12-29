@@ -16,13 +16,15 @@ on:
         required: true
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
-      cache-key: rust-build
       run: bazel build //rust:selenium-manager
 
   tests:
@@ -38,7 +40,6 @@ jobs:
           - os: windows
     with:
       name: Tests (${{ matrix.os }})
-      cache-key: rust-test
       os: ${{ matrix.os }}
       run: bazel test --test_env=RUST_BACKTRACE=full --test_env=RUST_TEST_NOCAPTURE=1 --flaky_test_attempts=3 //rust/...
 
@@ -163,7 +164,7 @@ jobs:
 
   macos-stable:
     name: "MacOS Stable"
-    runs-on: macos-13
+    runs-on: macos-latest
     needs: tests
     if: github.event_name != 'schedule'
     env:
@@ -176,6 +177,7 @@ jobs:
       - name: "Update Rust"
         run: |
           rustup update
+          rustup target add x86_64-apple-darwin
           rustup target add aarch64-apple-darwin
           rustc -vV
       - name: "Build release binary"
@@ -195,7 +197,7 @@ jobs:
 
   macos-debug:
     name: "MacOS Debug"
-    runs-on: macos-13
+    runs-on: macos-latest
     needs: tests
     if: github.event_name != 'schedule'
     env:
@@ -208,6 +210,7 @@ jobs:
       - name: "Update Rust"
         run: |
           rustup update
+          rustup target add x86_64-apple-darwin
           rustup target add aarch64-apple-darwin
           rustc -vV
       - name: "Build release binary"
@@ -231,7 +234,7 @@ jobs:
     name: "Release Binaries"
     runs-on: ubuntu-latest
     needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug ]
-    if: github.event_name != 'schedule' && github.repository_owner == 'seleniumhq' && (github.ref == 'refs/heads/trunk' || inputs.release == 'true')
+    if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release == 'true')
     steps:
       - name: "Checkout selenium_manager_artifacts"
         uses: actions/checkout@v4

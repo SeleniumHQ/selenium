@@ -18,21 +18,17 @@
 package org.openqa.selenium.netty.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -64,9 +60,7 @@ class NettyServerTest {
     Server<?> server =
         new NettyServer(
                 new BaseServerOptions(
-                    new MapConfig(
-                        ImmutableMap.of(
-                            "server", ImmutableMap.of("port", PortProber.findFreePort())))),
+                    new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())))),
                 req -> {
                   count.incrementAndGet();
                   return new HttpResponse().setContent(utf8String("Count is " + count.get()));
@@ -90,9 +84,7 @@ class NettyServerTest {
     Server<?> server =
         new NettyServer(
                 new BaseServerOptions(
-                    new MapConfig(
-                        ImmutableMap.of(
-                            "server", ImmutableMap.of("port", PortProber.findFreePort())))),
+                    new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())))),
                 req -> new HttpResponse().setContent(utf8String("Count is ")))
             .start();
 
@@ -104,18 +96,16 @@ class NettyServerTest {
     request.setHeader("Accept", "*/*");
     HttpResponse response = client.execute(request);
 
-    assertNull(
-        response.getHeader("Access-Control-Allow-Origin"),
-        "Access-Control-Allow-Origin should be null");
+    assertThat(response.getHeader("Access-Control-Allow-Origin"))
+        .as("Access-Control-Allow-Origin should be null")
+        .isNull();
   }
 
   @Test
   void shouldAllowCORS() {
-    Config cfg =
-        new CompoundConfig(
-            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("allow-cors", "true"))));
+    Config cfg = new CompoundConfig(new MapConfig(Map.of("server", Map.of("allow-cors", "true"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
-    assertTrue(options.getAllowCORS(), "Allow CORS should be enabled");
+    assertThat(options.getAllowCORS()).as("Allow CORS should be enabled").isTrue();
 
     Server<?> server = new NettyServer(options, req -> new HttpResponse()).start();
 
@@ -126,31 +116,28 @@ class NettyServerTest {
     request.setHeader("Accept", "*/*");
     HttpResponse response = client.execute(request);
 
-    assertEquals(
-        "*",
-        response.getHeader("Access-Control-Allow-Origin"),
-        "Access-Control-Allow-Origin should be equal to origin in request header");
+    assertThat(response.getHeader("Access-Control-Allow-Origin"))
+        .as("Access-Control-Allow-Origin should be equal to origin in request header")
+        .isEqualTo("*");
   }
 
   @Test
   void shouldNotBindToHost() {
     Config cfg =
         new CompoundConfig(
-            new MapConfig(
-                ImmutableMap.of(
-                    "server", ImmutableMap.of("bind-host", "false", "host", "anyRandomHost"))));
+            new MapConfig(Map.of("server", Map.of("bind-host", "false", "host", "anyRandomHost"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
-    assertFalse(options.getBindHost(), "Bind to host should be disabled");
+    assertThat(options.getBindHost()).as("Bind to host should be disabled").isFalse();
 
     Server<?> server = new NettyServer(options, req -> new HttpResponse()).start();
 
-    assertEquals("anyRandomHost", server.getUrl().getHost());
+    assertThat(server.getUrl().getHost()).isEqualTo("anyRandomHost");
   }
 
   @Test
   void doesInterruptPending() throws Exception {
     CountDownLatch interrupted = new CountDownLatch(1);
-    Config cfg = new MapConfig(ImmutableMap.of());
+    Config cfg = new MapConfig();
     BaseServerOptions options = new BaseServerOptions(cfg);
 
     Server<?> server =
@@ -171,17 +158,19 @@ class NettyServerTest {
             .baseUri(server.getUrl().toURI());
 
     // provoke a client timeout
-    Assertions.assertThrows(
-        TimeoutException.class,
-        () -> {
-          try (HttpClient client = HttpClient.Factory.createDefault().createClient(config)) {
-            HttpRequest request = new HttpRequest(DELETE, "/session");
-            request.setHeader("Accept", "*/*");
-            client.execute(request);
-          }
-        });
+    assertThatThrownBy(
+            () -> {
+              try (HttpClient client = HttpClient.Factory.createDefault().createClient(config)) {
+                HttpRequest request = new HttpRequest(DELETE, "/session");
+                request.setHeader("Accept", "*/*");
+                client.execute(request);
+              }
+            })
+        .isInstanceOf(TimeoutException.class);
 
-    assertTrue(interrupted.await(1000, TimeUnit.MILLISECONDS), "The handling was interrupted");
+    assertThat(interrupted.await(1000, TimeUnit.MILLISECONDS))
+        .as("The handling was interrupted")
+        .isTrue();
   }
 
   private void outputHeaders(HttpResponse res) {

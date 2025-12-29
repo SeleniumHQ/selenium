@@ -17,10 +17,8 @@
 
 package org.openqa.selenium.grid.node.docker;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -34,30 +32,22 @@ import org.openqa.selenium.grid.config.Config;
 class DockerOptionsTest {
 
   public static Stream<Arguments> data() {
-    return Arrays.stream(
-            new Object[][] {
-              {
-                configuredDeviceMapping(List.of("/dev/kvm:/dev/kvm")),
-                List.of(device("/dev/kvm", "/dev/kvm"))
-              },
-              {
-                configuredDeviceMapping(List.of("/dev/sda2:/dev/sda2")),
-                List.of(device("/dev/sda2", "/dev/sda2"))
-              },
-              {
-                configuredDeviceMapping(List.of("/dev/sda:/dev/xvdc:r")),
-                List.of(device("/dev/sda", "/dev/xvdc", "r"))
-              },
-              {
-                configuredDeviceMapping(asList("/dev/kvm:/dev/kvm", "/dev/bus/usb:/dev/bus/usb:r")),
-                asList(device("/dev/kvm", "/dev/kvm"), device("/dev/bus/usb", "/dev/bus/usb", "r"))
-              },
-              {
-                configuredDeviceMapping(List.of(" /dev/kvm:/dev/kvm ")),
-                List.of(device("/dev/kvm", "/dev/kvm"))
-              }
-            })
-        .map(Arguments::of);
+    return Stream.of(
+        Arguments.of(
+            configuredDeviceMapping(List.of("/dev/kvm:/dev/kvm")),
+            List.of(device("/dev/kvm", "/dev/kvm"))),
+        Arguments.of(
+            configuredDeviceMapping(List.of("/dev/sda2:/dev/sda2")),
+            List.of(device("/dev/sda2", "/dev/sda2"))),
+        Arguments.of(
+            configuredDeviceMapping(List.of("/dev/sda:/dev/xvdc:r")),
+            List.of(device("/dev/sda", "/dev/xvdc", "r"))),
+        Arguments.of(
+            configuredDeviceMapping(List.of("/dev/kvm:/dev/kvm", "/dev/bus/usb:/dev/bus/usb:r")),
+            List.of(device("/dev/kvm", "/dev/kvm"), device("/dev/bus/usb", "/dev/bus/usb", "r"))),
+        Arguments.of(
+            configuredDeviceMapping(List.of(" /dev/kvm:/dev/kvm ")),
+            List.of(device("/dev/kvm", "/dev/kvm"))));
   }
 
   @ParameterizedTest
