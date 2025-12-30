@@ -19,52 +19,44 @@
  * @fileoverview Overall configuration of the browser automation atoms.
  */
 
-
-goog.provide('bot');
-
-
 /**
  * Frameworks using the atoms keep track of which window or frame is currently
  * being used for command execution. Note that "window" may not always be
  * defined (for example in firefox extensions)
- * @private {!Window}
  */
-bot.window_;
+let currentWindow: Window;
 
 try {
-  bot.window_ = window;
+  currentWindow = window;
 } catch (ignored) {
   // We only reach this place in a firefox extension.
-  bot.window_ = goog.global;
+  currentWindow = globalThis as any as Window;
 }
-
 
 /**
  * Returns the window currently being used for command execution.
  *
- * @return {!Window} The window for command execution.
+ * @return The window for command execution.
  */
-bot.getWindow = function () {
-  return bot.window_;
-};
-
+export function getWindow(): Window {
+  return currentWindow;
+}
 
 /**
  * Sets the window to be used for command execution.
  *
- * @param {!Window} win The window for command execution.
+ * @param win The window for command execution.
  */
-bot.setWindow = function (win) {
-  bot.window_ = win;
-};
-
+export function setWindow(win: Window): void {
+  currentWindow = win;
+}
 
 /**
  * Returns the document of the window currently being used for
  * command execution.
  *
- * @return {!Document} The current window's document.
+ * @return The current window's document.
  */
-bot.getDocument = function () {
-  return bot.window_.document;
-};
+export function getDocument(): Document {
+  return currentWindow.document;
+}

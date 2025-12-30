@@ -56,7 +56,16 @@ async function main() {
     }
 
     if (result.text) {
-      fs.writeFileSync(outputPath, result.text);
+      // Post-process the deps.js to fix paths for generated files.
+      // Generated files in bazel-out/.../bin/path/to/file.js should be
+      // remapped to just path/to/file.js so that the debug server can find them.
+      // The debug server serves files under /filez/_main/path/to/file.js
+      // and can find both source files and generated files at that path.
+      const fixedText = result.text.replace(
+        /bazel-out\/[^/]+\/bin\//g,
+        ''
+      );
+      fs.writeFileSync(outputPath, fixedText);
     } else {
       process.exit(1);
     }

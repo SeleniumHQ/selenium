@@ -18,7 +18,6 @@ dotnet/.idea/
 dotnet/packages/
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
-javascript/deps.js
 javascript/selenium-webdriver/node_modules/
 javascript/selenium-webdriver/lib/atoms/find-elements.js
 javascript/selenium-webdriver/lib/atoms/get-attribute.js
@@ -67,6 +66,7 @@ __pycache__
 .tox
 *.pyc
 dist/
+*.shim.js
 py/selenium/webdriver/common/devtools/**/*
 !py/selenium/webdriver/common/devtools/util.py
 py/selenium/webdriver/common/linux/

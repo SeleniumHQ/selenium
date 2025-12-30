@@ -1,3 +1,6 @@
+load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//javascript:defs.bzl", "closure_js_deps", "closure_test_suite")
 
@@ -53,8 +56,9 @@ closure_js_library(
 
 closure_js_library(
     name = "bot",
-    srcs = ["bot.js"],
+    srcs = [":generate_bot_shim"],
     suppress = [
+        "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
 )
@@ -382,7 +386,7 @@ closure_js_deps(
     ],
     deps = [
         ":action",
-        ":bot",
+        ":bot",  # Generated from bot.ts via shim
         ":color",
         ":css",
         ":devices",
@@ -408,4 +412,52 @@ closure_test_suite(
         ":atoms",
         ":deps",
     ],
+)
+
+# ============================================================================
+# TypeScript Migration Infrastructure
+# ============================================================================
+# This section contains the rules for compiling TypeScript implementations
+# and generating Closure-compatible shims to maintain test compatibility
+# during the migration from Closure to TypeScript.
+
+# Compile TypeScript files to ES modules
+ts_project(
+    name = "atoms_ts",
+    srcs = [
+        "bot.ts",
+        # Add more .ts files here as you migrate them
+    ],
+    declaration = True,
+    declaration_map = True,
+    out_dir = "dist",
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+    deps = [
+        # External TypeScript dependencies (if any)
+    ],
+)
+
+# Shim generator tool
+js_binary(
+    name = "shim_generator",
+    entry_point = "scripts/generate-shim.js",
+)
+
+# Generate Closure-compatible bot.js shim from bot.ts
+# This generates the shim at build time from the TypeScript source
+js_run_binary(
+    name = "generate_bot_shim",
+    srcs = [
+        "bot.ts",
+        "dist/bot.js",
+    ],
+    args = [
+        "$(location bot.ts)",
+        "bot",
+        "$(location dist/bot.js)",
+    ],
+    stdout = "bot.js",
+    tool = ":shim_generator",
 )
