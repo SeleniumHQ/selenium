@@ -109,3 +109,16 @@ jobs:
       contains(needs.check.outputs.targets, '//rust') ||
       contains(join(github.event.commits.*.message), '[rust]') ||
       contains(github.event.pull_request.title, '[rust]')
+
+  javascript:
+    name: JavaScript
+    needs: check
+    uses: ./.github/workflows/ci-javascript.yml
+    with:
+      targets: ${{ needs.check.outputs.targets }}
+    if: >
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'workflow_call' ||
+      contains(needs.check.outputs.targets, '//javascript/selenium-webdriver/') ||
+      contains(github.event.pull_request.title, '[js]')
