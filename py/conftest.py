@@ -37,7 +37,6 @@ drivers = (
     "edge",
     "firefox",
     "ie",
-    "remote",
     "safari",
     "webkitgtk",
     "wpewebkit",
@@ -89,6 +88,12 @@ def pytest_addoption(parser):
         dest="bidi",
         help="Enable BiDi support",
     )
+    parser.addoption(
+        "--remote",
+        action="store_true",
+        dest="remote",
+        help="Run tests against a remote Grid server",
+    )
 
 
 def pytest_ignore_collect(collection_path, config):
@@ -125,7 +130,6 @@ class SupportedDrivers(ContainerProtocol):
     ie: str = "Ie"
     webkitgtk: str = "WebKitGTK"
     wpewebkit: str = "WPEWebKit"
-    remote: str = "Remote"
 
 
 @dataclass
@@ -135,7 +139,6 @@ class SupportedOptions(ContainerProtocol):
     edge: str = "EdgeOptions"
     safari: str = "SafariOptions"
     ie: str = "IeOptions"
-    remote: str = "ChromeOptions"
     webkitgtk: str = "WebKitGTKOptions"
     wpewebkit: str = "WPEWebKitOptions"
 
@@ -145,7 +148,6 @@ class SupportedBidiDrivers(ContainerProtocol):
     chrome: str = "Chrome"
     firefox: str = "Firefox"
     edge: str = "Edge"
-    remote: str = "Remote"
 
 
 class Driver:
@@ -252,10 +254,6 @@ class Driver:
                 # There are issues with window size/position when running Firefox
                 # under Wayland, so we use XWayland instead.
                 os.environ["MOZ_ENABLE_WAYLAND"] = "0"
-        elif self.driver_class == self.supported_drivers.remote:
-            self._options = getattr(webdriver, self.supported_options.chrome)()
-            self._options.set_capability("goog:chromeOptions", {})
-            self._options.enable_downloads = True
         else:
             opts_cls = getattr(self.supported_options, cls_name.lower())
             self._options = getattr(webdriver, opts_cls)()
@@ -297,10 +295,17 @@ class Driver:
             return False
         return True
 
+    @property
+    def is_remote(self):
+        return self._request.config.getoption("remote")
+
     def _initialize_driver(self):
         kwargs = {}
         if self.options is not None:
             kwargs["options"] = self.options
+        if self.is_remote:
+            # Use Remote driver with the specified browser's options
+            return webdriver.Remote(**kwargs)
         if self.driver_path is not None:
             kwargs["service"] = self.service
         return getattr(webdriver, self.driver_class)(**kwargs)
@@ -324,9 +329,9 @@ def driver(request):
     if not selenium_driver.is_platform_valid:
         pytest.skip(f"{driver_class} tests can only run on {selenium_driver.exe_platform}")
 
-    # skip tests in the 'remote' directory if run with a local driver
-    if request.node.path.parts[-2] == "remote" and selenium_driver.driver_class != "Remote":
-        pytest.skip(f"Remote tests can't be run with driver '{selenium_driver.driver_class}'")
+    # skip tests in the 'remote' directory if not running with --remote flag
+    if request.node.path.parts[-2] == "remote" and not selenium_driver.is_remote:
+        pytest.skip("Remote tests require the --remote flag")
 
     # skip tests for drivers that don't support BiDi when --bidi is enabled
     if selenium_driver.bidi:
@@ -416,8 +421,8 @@ def pages(driver, webserver):
 
 @pytest.fixture(autouse=True, scope="session")
 def server(request):
-    drivers = request.config.getoption("drivers")
-    if drivers is None or "remote" not in drivers:
+    is_remote = request.config.getoption("remote")
+    if not is_remote:
         yield None
         return
 
@@ -507,19 +512,19 @@ def clean_options(request):
 
 @pytest.fixture
 def firefox_options(request):
-    _supported_drivers = SupportedDrivers()
     try:
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
         raise Exception("This test requires a --driver to be specified")
 
-    # skip if not Firefox or Remote
-    if driver_class not in ("firefox", "remote"):
-        pytest.skip(f"This test requires Firefox or Remote. Got {driver_class}")
+    # skip if not Firefox
+    if driver_class != "firefox":
+        pytest.skip(f"This test requires Firefox. Got {driver_class}")
 
-    # skip tests in the 'remote' directory if run with a local driver
-    if request.node.path.parts[-2] == "remote" and getattr(_supported_drivers, driver_class) != "Remote":
-        pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
+    # skip tests in the 'remote' directory if not running with --remote flag
+    is_remote = request.config.getoption("remote")
+    if request.node.path.parts[-2] == "remote" and not is_remote:
+        pytest.skip("Remote tests require the --remote flag")
 
     options = Driver.clean_options("firefox", request)
 
@@ -528,24 +533,21 @@ def firefox_options(request):
 
 @pytest.fixture
 def chromium_options(request):
-    _supported_drivers = SupportedDrivers()
     try:
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
         raise Exception("This test requires a --driver to be specified")
 
-    # skip if not Chrome, Edge, or Remote
-    if driver_class not in ("chrome", "edge", "remote"):
-        pytest.skip(f"This test requires Chrome, Edge, or Remote. Got {driver_class}")
+    # skip if not Chrome or Edge
+    if driver_class not in ("chrome", "edge"):
+        pytest.skip(f"This test requires Chrome or Edge. Got {driver_class}")
 
-    # skip tests in the 'remote' directory if run with a local driver
-    if request.node.path.parts[-2] == "remote" and getattr(_supported_drivers, driver_class) != "Remote":
-        pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
+    # skip tests in the 'remote' directory if not running with --remote flag
+    is_remote = request.config.getoption("remote")
+    if request.node.path.parts[-2] == "remote" and not is_remote:
+        pytest.skip("Remote tests require the --remote flag")
 
-    if driver_class in ("chrome", "remote"):
-        options = Driver.clean_options("chrome", request)
-    else:
-        options = Driver.clean_options("edge", request)
+    options = Driver.clean_options(driver_class, request)
 
     return options
 

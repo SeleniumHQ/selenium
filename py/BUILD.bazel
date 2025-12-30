@@ -511,34 +511,44 @@ BROWSER_TESTS = {
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
-py_test_suite(
-    name = "test-remote",
-    size = "large",
-    srcs = glob(
-        [
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/remote/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
+# Generate test-<browser>-remote targets (chrome and firefox only)
+[
+    py_test_suite(
+        name = "test-%s-remote" % browser,
+        size = "large",
+        srcs = glob(
+            [
+                "test/selenium/webdriver/common/**/*.py",
+                "test/selenium/webdriver/remote/**/*.py",
+                "test/selenium/webdriver/support/**/*.py",
+            ] + BROWSER_TESTS[browser]["browser_srcs"],
+            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+                      BROWSER_TESTS[browser].get("extra_excludes", []),
+        ),
+        args = [
+            "--instafail",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
         ],
-        exclude = BIDI_TESTS,
-    ),
-    args = [
-        "--instafail",
-        "--driver=remote",
-    ],
-    data = [
-        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
-    ],
-    tags = [
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    deps = [
-        ":init-tree",
-        ":selenium",
-        ":webserver",
-    ] + TEST_DEPS,
-)
+        env_inherit = ["DISPLAY"],
+        tags = [
+            "no-sandbox",
+            "%s-remote" % browser,
+            "skip-rbe",
+        ],
+        deps = [
+            ":init-tree",
+            ":selenium",
+            ":webserver",
+        ] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
 
 py_test_suite(
     name = "test-webkitgtk",
