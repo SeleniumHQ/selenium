@@ -25,7 +25,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import java.io.File;
 import java.time.Duration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -34,18 +33,23 @@ import org.junit.jupiter.api.Test;
 class GeckoDriverServiceTest {
 
   @Test
-  void builderPassesTimeoutToDriverService() {
-    File exe = new File("someFile");
+  void builderUsesDefaultTimeoutForDriverService() {
     Duration defaultTimeout = Duration.ofSeconds(20);
-    Duration customTimeout = Duration.ofSeconds(60);
 
     GeckoDriverService.Builder builderMock = spy(GeckoDriverService.Builder.class);
     builderMock.build();
 
     verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any());
+  }
 
-    builderMock.withTimeout(customTimeout);
+  @Test
+  void builderPassesTimeoutToDriverService() {
+    Duration customTimeout = Duration.ofSeconds(60);
+    GeckoDriverService.Builder builderMock =
+        spy(GeckoDriverService.Builder.class).withTimeout(customTimeout);
+
     builderMock.build();
+
     verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
   }
 

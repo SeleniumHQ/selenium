@@ -37,9 +37,11 @@ class DesiredCapabilitiesTest {
         new ConcurrentHashMap<>();
 
     capabilitiesToDriver.put(new FirefoxOptions(), WebDriver.class);
-    capabilitiesToDriver.put(new FirefoxOptions(), WebDriver.class);
+    capabilitiesToDriver.put(new FirefoxOptions(), RemoteWebDriver.class);
 
-    assertThat(capabilitiesToDriver).hasSize(1);
+    assertThat(capabilitiesToDriver)
+        .hasSize(1)
+        .containsEntry(new FirefoxOptions(), RemoteWebDriver.class);
   }
 
   @Test

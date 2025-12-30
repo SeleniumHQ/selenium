@@ -80,6 +80,9 @@ jobs:
 
   update-documentation:
     needs: github-release
+    permissions:
+      contents: write
+      pull-requests: write
     uses: ./.github/workflows/update-documentation.yml
     with:
       version: ${{ needs.github-release.outputs.version }}

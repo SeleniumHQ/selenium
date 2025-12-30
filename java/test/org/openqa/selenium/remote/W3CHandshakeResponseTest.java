@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import java.util.Map;
 import org.junit.jupiter.api.Tag;
@@ -45,9 +46,10 @@ class W3CHandshakeResponseTest {
     Response response = result.createResponse();
 
     assertThat(response.getState()).isEqualTo("success");
-    assertThat((int) response.getStatus()).isZero();
-
-    assertThat(response.getValue()).isEqualTo(caps.asMap());
+    assertThat(response.getStatus()).isEqualTo(0);
+    assertThat(response.getValue())
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(caps.asMap());
   }
 
   @Test
