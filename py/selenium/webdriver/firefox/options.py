@@ -17,8 +17,6 @@
 
 from typing import Any
 
-from typing_extensions import deprecated
-
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
