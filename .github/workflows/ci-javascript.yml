@@ -51,4 +51,7 @@ jobs:
         --flaky_test_attempts 3
         --local_test_jobs 1
         --test_tag_filters=-lint
+        --pin_browsers=false
+        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+        --test_env=SE_SKIP_DRIVER_IN_PATH=true
         ${{ needs.filter-targets.outputs.targets }}
