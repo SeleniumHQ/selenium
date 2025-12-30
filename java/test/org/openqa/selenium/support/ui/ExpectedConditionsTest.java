@@ -248,15 +248,14 @@ class ExpectedConditionsTest {
 
   @Test
   void waitingForVisibilityOfAllElementsLocatedByReturnsListOfElements() {
-    List<WebElement> webElements = singletonList(mockElement);
     String testSelector = "testSelector";
 
-    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
+    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(List.of(mockElement));
     when(mockElement.isDisplayed()).thenReturn(true);
 
     List<WebElement> returnedElements =
         wait.until(visibilityOfAllElementsLocatedBy(By.cssSelector(testSelector)));
-    assertThat(returnedElements).isEqualTo(webElements);
+    assertThat(returnedElements).containsExactly(mockElement);
   }
 
   @Test
@@ -299,11 +298,10 @@ class ExpectedConditionsTest {
 
   @Test
   void waitingForVisibilityOfAllElementsReturnsListOfElements() {
-    List<WebElement> webElements = singletonList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(true);
 
-    List<WebElement> returnedElements = wait.until(visibilityOfAllElements(webElements));
-    assertThat(returnedElements).isEqualTo(webElements);
+    List<WebElement> returnedElements = wait.until(visibilityOfAllElements(List.of(mockElement)));
+    assertThat(returnedElements).containsExactly(mockElement);
   }
 
   @Test

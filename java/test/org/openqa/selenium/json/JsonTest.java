@@ -73,7 +73,7 @@ class JsonTest {
     String converted = json.toJson(original);
     Object remade = json.toType(converted, MAP_TYPE);
 
-    assertThat(remade).isEqualTo(original);
+    assertThat(remade).asInstanceOf(MAP).containsExactlyInAnyOrderEntriesOf(original);
   }
 
   @Test
@@ -91,16 +91,16 @@ class JsonTest {
   @Test
   void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
     // This is needed since Grid expects each of the capabilities to be mutable
-    List<Capabilities> expected =
-        List.of(
-            new ImmutableCapabilities("cheese", "brie"), new ImmutableCapabilities("peas", 42L));
+    ImmutableCapabilities capabilities1 = new ImmutableCapabilities("cheese", "brie");
+    ImmutableCapabilities capabilities2 = new ImmutableCapabilities("peas", 42L);
 
     Json json = new Json();
-    String raw = json.toJson(expected);
+    String raw = json.toJson(List.of(capabilities1, capabilities2));
     List<Capabilities> seen = json.toType(raw, new TypeToken<List<Capabilities>>() {}.getType());
 
-    assertThat(seen).isEqualTo(expected);
+    assertThat(seen).containsExactly(capabilities1, capabilities2);
     assertThat(seen.get(0)).isInstanceOf(MutableCapabilities.class);
+    assertThat(seen.get(1)).isInstanceOf(MutableCapabilities.class);
   }
 
   @Test
