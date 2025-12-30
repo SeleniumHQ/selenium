@@ -1,4 +1,3 @@
-load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
@@ -64,13 +63,10 @@ closure_js_library(
 
 closure_js_library(
     name = "color",
-    srcs = ["color.js"],
+    srcs = [":generate_color_shim"],
     suppress = [
+        "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
-    ],
-    deps = [
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/color:names",
     ],
 )
 
@@ -477,8 +473,8 @@ ts_project(
 js_run_binary(
     name = "generate_error_shim",
     srcs = [
-        "error.ts",
         "dist/error.js",
+        "error.ts",
     ],
     args = [
         "$(location error.ts)",
@@ -492,8 +488,8 @@ js_run_binary(
 js_run_binary(
     name = "generate_response_shim",
     srcs = [
-        "response.ts",
         "dist/response.js",
+        "response.ts",
     ],
     args = [
         "$(location response.ts)",
@@ -501,5 +497,34 @@ js_run_binary(
         "$(location dist/response.js)",
     ],
     stdout = "response.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# color.ts - Color utilities (no TS dependencies)
+# ----------------------------------------------------------------------------
+ts_project(
+    name = "color_ts",
+    srcs = ["color.ts"],
+    declaration = True,
+    declaration_map = True,
+    out_dir = "dist",
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+)
+
+js_run_binary(
+    name = "generate_color_shim",
+    srcs = [
+        "color.ts",
+        "dist/color.js",
+    ],
+    args = [
+        "$(location color.ts)",
+        "bot.color",
+        "$(location dist/color.js)",
+    ],
+    stdout = "color.js",
     tool = ":shim_generator",
 )

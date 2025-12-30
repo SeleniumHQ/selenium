@@ -1,3 +1,21 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+
 #!/usr/bin/env node
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -130,6 +148,10 @@ try {
 }
 `,
 };
+
+// Files that should use "bundle mode" - the entire compiled JS is included
+// as an IIFE, and exports are assigned to the namespace
+const BUNDLE_MODE_FILES = ['color'];
 
 /**
  * Parses TypeScript to extract detailed export information.
@@ -440,8 +462,44 @@ function applySymbolReplacements(code, replacements) {
 }
 
 /**
- * Generates the shim content.
+ * Generates a bundle-mode shim that includes the entire compiled JS
+ * wrapped in an IIFE, with exports assigned to the namespace.
  */
+function generateBundleModeShim(shimHeader, namespace, exports, compiledJs) {
+  let shim = shimHeader;
+
+  // Strip the ES module export and source map comment from compiled JS
+  let moduleCode = compiledJs
+    .replace(/^export\s+/gm, '')
+    .replace(/\/\/# sourceMappingURL=.*$/m, '')
+    .trim();
+
+  // Wrap in IIFE to create a scope for the private symbols
+  shim += `(function() {\n`;
+
+  // Include the module code (constants, helper functions, etc.)
+  const lines = moduleCode.split('\n');
+  lines.forEach((line) => {
+    shim += `  ${line}\n`;
+  });
+
+  shim += '\n';
+
+  // Assign exported functions to the namespace
+  exports.functions.forEach((fn) => {
+    shim += `  ${namespace}.${fn.name} = ${fn.name};\n`;
+  });
+
+  // Assign exported constants to the namespace
+  exports.constants.forEach((c) => {
+    shim += `  ${namespace}.${c.name} = ${c.name};\n`;
+  });
+
+  shim += `})();\n`;
+
+  return shim;
+}
+
 function generateShim(tsFile, namespace, compiledJsPath) {
   const tsContent = fs.readFileSync(tsFile, 'utf-8');
   const exports = parseExports(tsContent);
@@ -499,6 +557,11 @@ function generateShim(tsFile, namespace, compiledJsPath) {
   }
 
   const compiledJs = readCompiledJs(compiledJsPath);
+
+  // Bundle mode: include entire compiled JS and assign exports to namespace
+  if (BUNDLE_MODE_FILES.includes(basename)) {
+    return generateBundleModeShim(shim, namespace, exports, compiledJs);
+  }
 
   // 0. Include module-level initialization code if needed
   const moduleInit = MODULE_INIT_MAP[basename];
@@ -575,7 +638,7 @@ function generateShim(tsFile, namespace, compiledJsPath) {
   neededPrivateConstants.forEach((c) => {
     const closureName = symbolReplacements[c.name] || `${namespace}.${c.name}_`;
     shim += `/**\n * @private {!Object<number, bot.Error.State>}\n */\n`;
-    
+
     // Extract the constant value from compiled JS and apply replacements
     const value = extractConstant(c.name, compiledJs);
     const processedValue = applySymbolReplacements(value, symbolReplacements);
@@ -717,11 +780,11 @@ function extractFunctionBody(funcName, compiledJs, replacements) {
     const params = match[1];
     const startIndex = match.index + match[0].length - 1; // Position of the opening brace
     const block = extractBracedBlock(compiledJs, startIndex - 1);
-    
+
     // Get just the block part (the { ... })
     const braceStart = match[0].lastIndexOf('{');
     const fullBlock = extractBracedBlock(compiledJs, match.index + braceStart);
-    
+
     let processed = applySymbolReplacements(fullBlock, replacements);
     return params + ' ' + processed;
   }
