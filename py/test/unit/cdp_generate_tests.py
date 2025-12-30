@@ -760,8 +760,7 @@ def test_cdp_domain_imports():
 
 
 def test_domain_shadows_builtin():
-    """If a domain name shadows a Python builtin, it should have an underscore
-    appended to the module name."""
+    """If a domain name shadows a Python builtin, it should have an underscore appended to the module name."""
     input_domain = {
         "domain": "Input",
         "types": [],
