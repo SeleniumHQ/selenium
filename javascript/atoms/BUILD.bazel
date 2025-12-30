@@ -58,7 +58,6 @@ closure_js_library(
     name = "bot",
     srcs = [":generate_bot_shim"],
     suppress = [
-        "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
 )
@@ -165,16 +164,11 @@ closure_js_library(
         ":generate_response_shim",
     ],
     suppress = [
-        "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_STRICT_INEXISTENT_PROPERTY",
-        "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
-        "JSC_INEXISTENT_PROPERTY",
-        "lintChecks",
-        "missingProperties",
     ],
     deps = [
         ":bot",
+        "//third_party/closure/goog/utils",
     ],
 )
 
