@@ -420,24 +420,9 @@ closure_test_suite(
 # This section contains the rules for compiling TypeScript implementations
 # and generating Closure-compatible shims to maintain test compatibility
 # during the migration from Closure to TypeScript.
-
-# Compile TypeScript files to ES modules
-ts_project(
-    name = "atoms_ts",
-    srcs = [
-        "bot.ts",
-        # Add more .ts files here as you migrate them
-    ],
-    declaration = True,
-    declaration_map = True,
-    out_dir = "dist",
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-    deps = [
-        # External TypeScript dependencies (if any)
-    ],
-)
+#
+# Each TypeScript file gets its own ts_project target. TS targets can depend
+# on other TS targets via deps. Closure targets depend on the generated shims.
 
 # Shim generator tool
 js_binary(
@@ -445,8 +430,20 @@ js_binary(
     entry_point = "scripts/generate-shim.js",
 )
 
-# Generate Closure-compatible bot.js shim from bot.ts
-# This generates the shim at build time from the TypeScript source
+# ----------------------------------------------------------------------------
+# bot.ts - Core bot module (no TS dependencies)
+# ----------------------------------------------------------------------------
+ts_project(
+    name = "bot_ts",
+    srcs = ["bot.ts"],
+    declaration = True,
+    declaration_map = True,
+    out_dir = "dist",
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+)
+
 js_run_binary(
     name = "generate_bot_shim",
     srcs = [
