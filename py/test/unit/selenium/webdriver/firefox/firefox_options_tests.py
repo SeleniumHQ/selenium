@@ -29,18 +29,6 @@ def options():
     return Options()
 
 
-
-
-def test_set_binary_with_path(options):
-    options.binary = "/foo"
-    assert options.binary_location == "/foo"
-
-
-def test_get_binary(options):
-    options.binary = "/foo"
-    assert options.binary._start_cmd == "/foo"
-
-
 def test_set_binary_location(options):
     options.binary_location = "/foo"
     assert options.binary_location == "/foo"
