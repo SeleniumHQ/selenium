@@ -25,7 +25,7 @@ import sysconfig
 from pathlib import Path
 
 from selenium.common import WebDriverException
-from selenium.webdriver import __version__ as VERSION
+from selenium import __version__ as VERSION
 
 logger = logging.getLogger(__name__)
 
