@@ -71,7 +71,7 @@ test.suite(function (env) {
 
       it(env.browser.name, async function () {
         let timeouts = { implicit: 0, pageLoad: 1000, script: 1000 }
-        driver = new Builder().setCapability('timeouts', timeouts).forBrowser(env.browser.name).build()
+        driver = env.builder().setCapability('timeouts', timeouts).build()
 
         let caps = await getCaps(driver)
         assert.deepEqual(caps.get('timeouts'), timeouts)
