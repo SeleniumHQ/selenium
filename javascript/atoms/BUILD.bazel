@@ -161,17 +161,20 @@ closure_js_library(
 closure_js_library(
     name = "errors",
     srcs = [
-        "error.js",
-        "response.js",
+        ":generate_error_shim",
+        ":generate_response_shim",
     ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
+        "JSC_INEXISTENT_PROPERTY",
+        "lintChecks",
+        "missingProperties",
     ],
     deps = [
-        "//third_party/closure/goog/utils",
+        ":bot",
     ],
 )
 
@@ -456,5 +459,53 @@ js_run_binary(
         "$(location dist/bot.js)",
     ],
     stdout = "bot.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# error.ts + response.ts - Error handling (response depends on error)
+# These are compiled together since response.ts imports from error.ts
+# ----------------------------------------------------------------------------
+ts_project(
+    name = "errors_ts",
+    srcs = [
+        "error.ts",
+        "response.ts",
+    ],
+    declaration = True,
+    declaration_map = True,
+    out_dir = "dist",
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+)
+
+js_run_binary(
+    name = "generate_error_shim",
+    srcs = [
+        "error.ts",
+        "dist/error.js",
+    ],
+    args = [
+        "$(location error.ts)",
+        "bot",
+        "$(location dist/error.js)",
+    ],
+    stdout = "error.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_response_shim",
+    srcs = [
+        "response.ts",
+        "dist/response.js",
+    ],
+    args = [
+        "$(location response.ts)",
+        "bot.response",
+        "$(location dist/response.js)",
+    ],
+    stdout = "response.js",
     tool = ":shim_generator",
 )
