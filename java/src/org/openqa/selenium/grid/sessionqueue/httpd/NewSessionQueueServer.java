@@ -25,12 +25,11 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.get;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,7 +64,7 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(HTTPD_ROLE, SESSION_QUEUE_ROLE);
+    return Set.of(HTTPD_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -100,9 +99,9 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
                                 .addHeader("Content-Type", JSON_UTF_8)
                                 .setContent(
                                     asJson(
-                                        ImmutableMap.of(
+                                        Map.of(
                                             "value",
-                                            ImmutableMap.of(
+                                            Map.of(
                                                 "ready",
                                                 true,
                                                 "message",

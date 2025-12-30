@@ -1,16 +1,8 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Basic animation controls.
@@ -20,6 +12,7 @@ goog.provide('goog.fx.anim.Animated');
 
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.Delay');
+goog.require('goog.dispose');
 goog.require('goog.object');
 
 
@@ -81,6 +74,7 @@ goog.fx.anim.animationDelay_ = null;
  * @param {goog.fx.anim.Animated} animation The animation to register.
  */
 goog.fx.anim.registerAnimation = function(animation) {
+  'use strict';
   var uid = goog.getUid(animation);
   if (!(uid in goog.fx.anim.activeAnimations_)) {
     goog.fx.anim.activeAnimations_[uid] = animation;
@@ -97,6 +91,7 @@ goog.fx.anim.registerAnimation = function(animation) {
  * @param {goog.fx.anim.Animated} animation The animation to unregister.
  */
 goog.fx.anim.unregisterAnimation = function(animation) {
+  'use strict';
   var uid = goog.getUid(animation);
   delete goog.fx.anim.activeAnimations_[uid];
 
@@ -113,6 +108,7 @@ goog.fx.anim.unregisterAnimation = function(animation) {
  */
 // TODO(nicksantos): Wow, this api is pretty broken. This should be fixed.
 goog.fx.anim.tearDown = function() {
+  'use strict';
   goog.fx.anim.animationWindow_ = null;
   goog.dispose(goog.fx.anim.animationDelay_);
   goog.fx.anim.animationDelay_ = null;
@@ -130,6 +126,7 @@ goog.fx.anim.tearDown = function() {
  * @param {Window} animationWindow The window in which to animate elements.
  */
 goog.fx.anim.setAnimationWindow = function(animationWindow) {
+  'use strict';
   // If a timer is currently running, reset it and restart with new functions
   // after a timeout. This is to avoid mismatching timer UIDs if we change the
   // animation window during a running animation.
@@ -156,6 +153,7 @@ goog.fx.anim.setAnimationWindow = function(animationWindow) {
  * @private
  */
 goog.fx.anim.requestAnimationFrame_ = function() {
+  'use strict';
   if (!goog.fx.anim.animationDelay_) {
     // We cannot guarantee that the global window will be one that fires
     // requestAnimationFrame events (consider off-screen chrome extension
@@ -166,10 +164,12 @@ goog.fx.anim.requestAnimationFrame_ = function() {
       // time in ms, as returned from goog.now().
       goog.fx.anim.animationDelay_ =
           new goog.async.AnimationDelay(function(now) {
+            'use strict';
             goog.fx.anim.cycleAnimations_(now);
           }, goog.fx.anim.animationWindow_);
     } else {
       goog.fx.anim.animationDelay_ = new goog.async.Delay(function() {
+        'use strict';
         goog.fx.anim.cycleAnimations_(goog.now());
       }, goog.fx.anim.TIMEOUT);
     }
@@ -187,6 +187,7 @@ goog.fx.anim.requestAnimationFrame_ = function() {
  * @private
  */
 goog.fx.anim.cancelAnimationFrame_ = function() {
+  'use strict';
   if (goog.fx.anim.animationDelay_) {
     goog.fx.anim.animationDelay_.stop();
   }
@@ -199,7 +200,9 @@ goog.fx.anim.cancelAnimationFrame_ = function() {
  * @private
  */
 goog.fx.anim.cycleAnimations_ = function(now) {
+  'use strict';
   goog.object.forEach(goog.fx.anim.activeAnimations_, function(anim) {
+    'use strict';
     anim.onAnimationFrame(now);
   });
 

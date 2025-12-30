@@ -1,40 +1,36 @@
-// Copyright 2005 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 /**
- * @fileoverview Implements the disposable interface. The dispose method is used
- * to clean up references and resources.
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
+/**
+ * @fileoverview Implements the disposable interface.
+ */
 
 goog.provide('goog.Disposable');
-goog.provide('goog.dispose');
-goog.provide('goog.disposeAll');
 
 goog.require('goog.disposable.IDisposable');
+goog.require('goog.dispose');
+/**
+ * TODO(user): Remove this require.
+ * @suppress {extraRequire}
+ */
+goog.require('goog.disposeAll');
 
-
+goog.require('goog.utils');
 
 /**
  * Class that provides the basic implementation for disposable objects. If your
- * class holds one or more references to COM objects, DOM nodes, or other
- * disposable objects, it should extend this class or implement the disposable
- * interface (defined in goog.disposable.IDisposable).
+ * class holds references or resources that can't be collected by standard GC,
+ * it should extend this class or implement the disposable interface (defined
+ * in goog.disposable.IDisposable). See description of
+ * goog.disposable.IDisposable for examples of cleanup.
  * @constructor
  * @implements {goog.disposable.IDisposable}
  */
 goog.Disposable = function() {
+  'use strict';
   /**
    * If monitoring the goog.Disposable instances is enabled, stores the creation
    * stack trace of the Disposable instance.
@@ -46,7 +42,7 @@ goog.Disposable = function() {
     if (goog.Disposable.INCLUDE_STACK_ON_CREATION) {
       this.creationStack = new Error().stack;
     }
-    goog.Disposable.instances_[goog.getUid(this)] = this;
+    goog.Disposable.instances_[goog.utils.getUid(this)] = this;
   }
   // Support sealing
   this.disposed_ = this.disposed_;
@@ -111,6 +107,7 @@ goog.Disposable.instances_ = {};
  *     haven't been disposed of.
  */
 goog.Disposable.getUndisposedObjects = function() {
+  'use strict';
   var ret = [];
   for (var id in goog.Disposable.instances_) {
     if (goog.Disposable.instances_.hasOwnProperty(id)) {
@@ -125,6 +122,7 @@ goog.Disposable.getUndisposedObjects = function() {
  * Clears the registry of undisposed objects but doesn't dispose of them.
  */
 goog.Disposable.clearUndisposedObjects = function() {
+  'use strict';
   goog.Disposable.instances_ = {};
 };
 
@@ -150,6 +148,7 @@ goog.Disposable.prototype.onDisposeCallbacks_;
  * @override
  */
 goog.Disposable.prototype.isDisposed = function() {
+  'use strict';
   return this.disposed_;
 };
 
@@ -164,20 +163,21 @@ goog.Disposable.prototype.getDisposed = goog.Disposable.prototype.isDisposed;
 /**
  * Disposes of the object. If the object hasn't already been disposed of, calls
  * {@link #disposeInternal}. Classes that extend `goog.Disposable` should
- * override {@link #disposeInternal} in order to delete references to COM
- * objects, DOM nodes, and other disposable objects. Reentrant.
+ * override {@link #disposeInternal} in order to cleanup references, resources
+ * and other disposable objects. Reentrant.
  *
  * @return {void} Nothing.
  * @override
  */
 goog.Disposable.prototype.dispose = function() {
+  'use strict';
   if (!this.disposed_) {
     // Set disposed_ to true first, in case during the chain of disposal this
     // gets disposed recursively.
     this.disposed_ = true;
     this.disposeInternal();
     if (goog.Disposable.MONITORING_MODE != goog.Disposable.MonitoringMode.OFF) {
-      var uid = goog.getUid(this);
+      var uid = goog.utils.getUid(this);
       if (goog.Disposable.MONITORING_MODE ==
               goog.Disposable.MonitoringMode.PERMANENT &&
           !goog.Disposable.instances_.hasOwnProperty(uid)) {
@@ -207,7 +207,8 @@ goog.Disposable.prototype.dispose = function() {
  *     this object is disposed.
  */
 goog.Disposable.prototype.registerDisposable = function(disposable) {
-  this.addOnDisposeCallback(goog.partial(goog.dispose, disposable));
+  'use strict';
+  this.addOnDisposeCallback(goog.utils.partial(goog.dispose, disposable));
 };
 
 
@@ -220,6 +221,7 @@ goog.Disposable.prototype.registerDisposable = function(disposable) {
  * @template T
  */
 goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
+  'use strict';
   if (this.disposed_) {
     opt_scope !== undefined ? callback.call(opt_scope) : callback();
     return;
@@ -229,21 +231,20 @@ goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
   }
 
   this.onDisposeCallbacks_.push(
-      opt_scope !== undefined ? goog.bind(callback, opt_scope) : callback);
+      opt_scope !== undefined ? goog.utils.bind(callback, opt_scope) : callback);
 };
 
 
 /**
- * Deletes or nulls out any references to COM objects, DOM nodes, or other
- * disposable objects. Classes that extend `goog.Disposable` should
- * override this method.
- * Not reentrant. To avoid calling it twice, it must only be called from the
- * subclass' `disposeInternal` method. Everywhere else the public
- * `dispose` method must be used.
- * For example:
+ * Performs appropriate cleanup. See description of goog.disposable.IDisposable
+ * for examples. Classes that extend `goog.Disposable` should override this
+ * method. Not reentrant. To avoid calling it twice, it must only be called from
+ * the subclass' `disposeInternal` method. Everywhere else the public `dispose`
+ * method must be used. For example:
+ *
  * <pre>
- *   mypackage.MyClass = function() {
- *     mypackage.MyClass.base(this, 'constructor');
+ * mypackage.MyClass = function() {
+ * mypackage.MyClass.base(this, 'constructor');
  *     // Constructor logic specific to MyClass.
  *     ...
  *   };
@@ -257,9 +258,11 @@ goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
  *     mypackage.MyClass.base(this, 'disposeInternal');
  *   };
  * </pre>
+ *
  * @protected
  */
 goog.Disposable.prototype.disposeInternal = function() {
+  'use strict';
   if (this.onDisposeCallbacks_) {
     while (this.onDisposeCallbacks_.length) {
       this.onDisposeCallbacks_.shift()();
@@ -276,39 +279,9 @@ goog.Disposable.prototype.disposeInternal = function() {
  * @return {boolean} True if we can verify the object is disposed.
  */
 goog.Disposable.isDisposed = function(obj) {
+  'use strict';
   if (obj && typeof obj.isDisposed == 'function') {
     return obj.isDisposed();
   }
   return false;
-};
-
-
-/**
- * Calls `dispose` on the argument if it supports it. If obj is not an
- *     object with a dispose() method, this is a no-op.
- * @param {*} obj The object to dispose of.
- */
-goog.dispose = function(obj) {
-  if (obj && typeof obj.dispose == 'function') {
-    obj.dispose();
-  }
-};
-
-
-/**
- * Calls `dispose` on each member of the list that supports it. (If the
- * member is an ArrayLike, then `goog.disposeAll()` will be called
- * recursively on each of its members.) If the member is not an object with a
- * `dispose()` method, then it is ignored.
- * @param {...*} var_args The list.
- */
-goog.disposeAll = function(var_args) {
-  for (var i = 0, len = arguments.length; i < len; ++i) {
-    var disposable = arguments[i];
-    if (goog.isArrayLike(disposable)) {
-      goog.disposeAll.apply(null, disposable);
-    } else {
-      goog.dispose(disposable);
-    }
-  }
 };

@@ -1,0 +1,50 @@
+/*
+ * Copyright 2007 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/*
+ * Styling for the drag drop detector.
+ *
+ * Author: robbyw@google.com (Robby Walker)
+ * Author: wcrosby@google.com (Wayne Crosby)
+ */
+
+@provide 'goog.css.dragdropdetector';
+
+.goog-dragdrop-w3c-editable-iframe {
+  position: absolute;
+  width: 100%;
+  height: 10px;
+  top: -150px;
+  left: 0;
+  z-index: 10000;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  -moz-opacity: 0;
+}
+
+.goog-dragdrop-ie-editable-iframe {
+  width: 100%;
+  height: 5000px;
+}
+
+.goog-dragdrop-ie-input {
+  width: 100%;
+  height: 5000px;
+}
+
+.goog-dragdrop-ie-div {
+  position: absolute;
+  top: -5000px;
+  left: 0;
+  width: 100%;
+  height: 5000px;
+  z-index: 10000;
+  background-color: white;
+  filter: alpha(opacity=0);
+  overflow: hidden;
+}

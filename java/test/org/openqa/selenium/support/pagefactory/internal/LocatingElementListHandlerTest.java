@@ -26,7 +26,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -46,7 +45,7 @@ class LocatingElementListHandlerTest {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(element1, element2);
+    final List<WebElement> list = List.of(element1, element2);
 
     when(locator.findElements()).thenReturn(list);
 
@@ -69,7 +68,7 @@ class LocatingElementListHandlerTest {
     final WebDriver driver = mock(WebDriver.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(element1, element2);
+    final List<WebElement> list = List.of(element1, element2);
 
     when(driver.findElements(By.tagName("a"))).thenReturn(list);
 
@@ -86,7 +85,7 @@ class LocatingElementListHandlerTest {
     final WebDriver driver = mock(WebDriver.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(element1, element2);
+    final List<WebElement> list = List.of(element1, element2);
 
     when(driver.findElements(By.tagName("a"))).thenReturn(list);
 

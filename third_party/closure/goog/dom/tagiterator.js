@@ -1,16 +1,8 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Iterator subclass for DOM tree traversal.
@@ -21,8 +13,8 @@ goog.provide('goog.dom.TagWalkType');
 
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
+goog.require('goog.iter');
 goog.require('goog.iter.Iterator');
-goog.require('goog.iter.StopIteration');
 
 
 /**
@@ -97,6 +89,7 @@ goog.dom.TagWalkType = {
  */
 goog.dom.TagIterator = function(
     opt_node, opt_reversed, opt_unconstrained, opt_tagType, opt_depth) {
+  'use strict';
   /**
    * Whether the node iterator is moving in reverse.
    * @type {boolean}
@@ -161,6 +154,7 @@ goog.inherits(goog.dom.TagIterator, goog.iter.Iterator);
  */
 goog.dom.TagIterator.prototype.setPosition = function(
     node, opt_tagType, opt_depth) {
+  'use strict';
   this.node = node;
 
   if (node) {
@@ -188,6 +182,7 @@ goog.dom.TagIterator.prototype.setPosition = function(
  * @protected
  */
 goog.dom.TagIterator.prototype.copyFrom = function(other) {
+  'use strict';
   this.node = other.node;
   this.tagType = other.tagType;
   this.depth = other.depth;
@@ -200,6 +195,7 @@ goog.dom.TagIterator.prototype.copyFrom = function(other) {
  * @return {!goog.dom.TagIterator} A copy of this iterator.
  */
 goog.dom.TagIterator.prototype.clone = function() {
+  'use strict';
   return new goog.dom.TagIterator(
       this.node, this.reversed, !this.constrained, this.tagType, this.depth);
 };
@@ -209,6 +205,7 @@ goog.dom.TagIterator.prototype.clone = function() {
  * Skip the current tag.
  */
 goog.dom.TagIterator.prototype.skipTag = function() {
+  'use strict';
   var check = this.reversed ? goog.dom.TagWalkType.END_TAG :
                               goog.dom.TagWalkType.START_TAG;
   if (this.tagType == check) {
@@ -222,6 +219,7 @@ goog.dom.TagIterator.prototype.skipTag = function() {
  * Restart the current tag.
  */
 goog.dom.TagIterator.prototype.restartTag = function() {
+  'use strict';
   var check = this.reversed ? goog.dom.TagWalkType.START_TAG :
                               goog.dom.TagWalkType.END_TAG;
   if (this.tagType == check) {
@@ -233,16 +231,16 @@ goog.dom.TagIterator.prototype.restartTag = function() {
 
 /**
  * Move to the next position in the DOM tree.
- * @return {Node} Returns the next node, or throws a goog.iter.StopIteration
- *     exception if the end of the iterator's range has been reached.
+ * @return {!IIterableResult<!Node>}
  * @override
  */
 goog.dom.TagIterator.prototype.next = function() {
+  'use strict';
   var node;
 
   if (this.started_) {
     if (!this.node || this.constrained && this.depth == 0) {
-      throw goog.iter.StopIteration;
+      return goog.iter.ES6_ITERATOR_DONE;
     }
     node = this.node;
 
@@ -280,10 +278,10 @@ goog.dom.TagIterator.prototype.next = function() {
 
   // Check the new position for being last, and return it if it's not.
   node = this.node;
-  if (!this.node) {
-    throw goog.iter.StopIteration;
+  if (!node) {
+    return goog.iter.ES6_ITERATOR_DONE;
   }
-  return node;
+  return goog.iter.createEs6IteratorYield(node);
 };
 
 
@@ -292,6 +290,7 @@ goog.dom.TagIterator.prototype.next = function() {
  * @protected
  */
 goog.dom.TagIterator.prototype.isStarted = function() {
+  'use strict';
   return this.started_;
 };
 
@@ -300,6 +299,7 @@ goog.dom.TagIterator.prototype.isStarted = function() {
  * @return {boolean} Whether this iterator's position is a start tag position.
  */
 goog.dom.TagIterator.prototype.isStartTag = function() {
+  'use strict';
   return this.tagType == goog.dom.TagWalkType.START_TAG;
 };
 
@@ -308,6 +308,7 @@ goog.dom.TagIterator.prototype.isStartTag = function() {
  * @return {boolean} Whether this iterator's position is an end tag position.
  */
 goog.dom.TagIterator.prototype.isEndTag = function() {
+  'use strict';
   return this.tagType == goog.dom.TagWalkType.END_TAG;
 };
 
@@ -316,6 +317,7 @@ goog.dom.TagIterator.prototype.isEndTag = function() {
  * @return {boolean} Whether this iterator's position is not at an element node.
  */
 goog.dom.TagIterator.prototype.isNonElement = function() {
+  'use strict';
   return this.tagType == goog.dom.TagWalkType.OTHER;
 };
 
@@ -328,6 +330,7 @@ goog.dom.TagIterator.prototype.isNonElement = function() {
  * @return {boolean} Whether the two iterators are at the same position.
  */
 goog.dom.TagIterator.prototype.equals = function(other) {
+  'use strict';
   // Nodes must be equal, and we must either have reached the end of our tree
   // or be at the same position.
   return other.node == this.node &&
@@ -343,6 +346,7 @@ goog.dom.TagIterator.prototype.equals = function(other) {
  *     arguments are assumed to be nodes.
  */
 goog.dom.TagIterator.prototype.splice = function(var_args) {
+  'use strict';
   // Reset the iterator so that it iterates over the first replacement node in
   // the arguments on the next iteration.
   var node = this.node;

@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.config;
 import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
 import static java.util.Comparator.naturalOrder;
 
-import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -54,7 +53,7 @@ public class EnvConfig implements Config {
       value = System.getenv(value.substring(1));
     }
 
-    return Optional.ofNullable(value).map(ImmutableList::of);
+    return Optional.ofNullable(value).map(List::of);
   }
 
   @Override

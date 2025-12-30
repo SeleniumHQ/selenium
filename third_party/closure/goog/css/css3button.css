@@ -1,0 +1,78 @@
+/*
+ * Copyright 2010 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+@provide 'goog.css.css3button';
+
+@require './common';
+
+/* Imageless button styles. */
+.goog-css3-button {
+  margin: 0 2px;
+  padding: 3px 6px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: default;
+  outline: none;
+  font-family: Arial, sans-serif;
+  color: #000;
+  border: 1px solid #bbb;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  /* TODO(eae): Change this to -webkit-linear-gradient once
+                https://bugs.webkit.org/show_bug.cgi?id=28152 is resolved. */
+  background: -webkit-gradient(linear, 0% 40%, 0% 70%, from(#f9f9f9),
+      to(#e3e3e3));
+  /* @alternate */ background: -moz-linear-gradient(top, #f9f9f9, #e3e3e3);
+}
+
+
+/* Styles for different states (hover, active, focused, open, checked). */
+.goog-css3-button-hover {
+  border-color: #939393 !important;
+}
+
+.goog-css3-button-focused {
+  border-color: #444;
+}
+
+.goog-css3-button-active, .goog-css3-button-open, .goog-css3-button-checked {
+  border-color: #444 !important;
+  background: -webkit-gradient(linear, 0% 40%, 0% 70%, from(#e3e3e3),
+      to(#f9f9f9));
+  /* @alternate */ background: -moz-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+.goog-css3-button-disabled {
+  color: #888;
+}
+
+.goog-css3-button-primary {
+  font-weight: bold;
+}
+
+
+/*
+ * Pill (collapsed border) styles.
+ */
+.goog-css3-button-collapse-right {
+  margin-right: 0 !important;
+  border-right: 1px solid #bbb;
+  -webkit-border-top-right-radius: 0px;
+  -webkit-border-bottom-right-radius: 0px;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-bottomright: 0px;
+}
+
+.goog-css3-button-collapse-left {
+  border-left: 1px solid #f9f9f9;
+  margin-left: 0 !important;
+  -webkit-border-top-left-radius: 0px;
+  -webkit-border-bottom-left-radius: 0px;
+  -moz-border-radius-topleft: 0px;
+  -moz-border-radius-bottomleft: 0px;
+}

@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.openqa.selenium.io.Read;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
@@ -194,7 +195,7 @@ class JdkHttpMessages {
 
   private byte[] readResponseBody(java.net.http.HttpResponse<InputStream> response) {
     try (InputStream in = response.body()) {
-      return in.readAllBytes();
+      return Read.toByteArray(in);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

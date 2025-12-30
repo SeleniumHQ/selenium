@@ -17,7 +17,7 @@
 
 import re
 from collections.abc import Callable, Iterable
-from typing import Any, Literal, TypeVar, Union
+from typing import Any, Literal, TypeVar
 
 from selenium.common.exceptions import (
     NoAlertPresentException,
@@ -37,7 +37,7 @@ from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 D = TypeVar("D")
 T = TypeVar("T")
 
-WebDriverOrWebElement = Union[WebDriver, WebElement]
+WebDriverOrWebElement = WebDriver | WebElement
 
 
 def title_is(title: str) -> Callable[[WebDriver], bool]:

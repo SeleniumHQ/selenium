@@ -19,10 +19,8 @@ package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.WaitingConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
@@ -40,7 +38,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -385,26 +382,31 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
+    unfocusMenu();
 
-    // Move to a different element to make sure the mouse is not over the
-    // element with id 'item1' (from a previous test).
-    new Actions(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
+    WebElement menu = driver.findElement(By.id("menu1"));
+    WebElement menuItem = driver.findElement(By.id("item1"));
+    assertThat(menuItem.isDisplayed()).isFalse();
+    assertThat(driver.findElement(By.id("result")).getText()).isBlank();
 
-    WebElement element = driver.findElement(By.id("menu1"));
+    // Hover the menu icon
+    new Actions(driver).moveToElement(menu).build().perform();
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", menu);
 
-    final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEmpty();
+    // Wait until the menu items appear
+    shortWait.until(visibilityOf(menuItem));
+    assertThat(menuItem.getText()).isEqualTo("Item 1");
 
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-    new Actions(driver).moveToElement(element).build().perform();
+    menuItem.click();
+    wait.until(elementTextToEqual(By.id("result"), "item 1"));
+  }
 
-    // Intentionally wait to make sure hover persists.
-    Thread.sleep(2000);
-
-    item.click();
-
-    WebElement result = driver.findElement(By.id("result"));
-    wait.until(WaitingConditions.elementTextToContain(result, "item 1"));
+  /**
+   * Move to a different element to make sure the mouse is not over the menu items (from a previous
+   * test).
+   */
+  private void unfocusMenu() {
+    driver.findElement(By.id("dynamo")).click();
   }
 
   @Test

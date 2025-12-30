@@ -17,22 +17,29 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 class SessionHandlingTest extends JupiterTestBase {
+  @BeforeEach
+  void setUp() {
+    assertThat(getSessionId()).isNotNull();
+  }
 
   @NoDriverAfterTest
   @Test
   void callingQuitMoreThanOnceOnASessionIsANoOp() {
     driver.quit();
-    sleepTight(3000);
+    waitUntilBrowserFullyClosed();
     driver.quit();
   }
 
@@ -42,7 +49,6 @@ class SessionHandlingTest extends JupiterTestBase {
   @NotYetImplemented(SAFARI)
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     driver.close();
-    sleepTight(3000);
     driver.quit();
   }
 
@@ -50,7 +56,6 @@ class SessionHandlingTest extends JupiterTestBase {
   @Test
   void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();
-    sleepTight(3000);
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
@@ -58,21 +63,22 @@ class SessionHandlingTest extends JupiterTestBase {
   @Test
   void callingAnyOperationAfterQuitShouldThrowAnException() {
     driver.quit();
-    sleepTight(3000);
+    waitUntilBrowserFullyClosed();
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
   @Test
-  void shouldContinueAfterSleep() {
-    sleepTight(10000);
-    driver.getWindowHandle(); // should not throw
+  void shouldContinueAfterSleep() throws InterruptedException {
+    assertThatCode(() -> driver.getWindowHandle()).doesNotThrowAnyException();
+    Thread.sleep(50);
+    assertThatCode(() -> driver.getWindowHandle()).doesNotThrowAnyException();
   }
 
-  private void sleepTight(long duration) {
-    try {
-      Thread.sleep(duration);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
+  private void waitUntilBrowserFullyClosed() {
+    wait.until($ -> getSessionId() == null);
+  }
+
+  private SessionId getSessionId() {
+    return ((RemoteWebDriver) driver).getSessionId();
   }
 }

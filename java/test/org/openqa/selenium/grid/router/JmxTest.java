@@ -19,11 +19,11 @@ package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
 import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.management.*;
 import org.junit.jupiter.api.Test;
@@ -64,8 +64,7 @@ class JmxTest {
 
     BaseServerOptions baseServerOptions =
         new BaseServerOptions(
-            new MapConfig(
-                ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+            new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort()))));
 
     MBeanInfo info = beanServer.getMBeanInfo(name);
     assertThat(info).isNotNull();
@@ -142,8 +141,7 @@ class JmxTest {
 
     new JMXHelper().unregister(name);
 
-    NewSessionQueueOptions newSessionQueueOptions =
-        new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
+    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(new MapConfig());
     MBeanInfo info = beanServer.getMBeanInfo(name);
     assertThat(info).isNotNull();
 

@@ -17,11 +17,15 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Objects.requireNonNullElse;
+import static java.util.Objects.requireNonNullElseGet;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import org.openqa.selenium.DetachedShadowRootException;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
@@ -52,43 +56,43 @@ import org.openqa.selenium.internal.Require;
 // TODO(simon): Push back into the remote jar and centralise all error decoding and encoding.
 public class ErrorCodec {
 
-  private static final W3CError DEFAULT_ERROR =
-      new W3CError("unknown error", WebDriverException.class, 500);
+  private static final W3CError<WebDriverException> DEFAULT_ERROR =
+      new W3CError<>("unknown error", WebDriverException::new, 500);
 
   // note: this is a set from a logical point of view, but the implementation does rely on the order
   // of the elements.
   // there is no guarantee a Set will keep the order (and we have no .equals / .hashCode
   // implementation too).
-  private static final List<W3CError> ERRORS =
+  private static final List<W3CError<? extends WebDriverException>> ERRORS =
       List.of(
-          new W3CError("script timeout", ScriptTimeoutException.class, 500),
-          new W3CError("detached shadow root", DetachedShadowRootException.class, 404),
-          new W3CError("element click intercepted", ElementClickInterceptedException.class, 400),
-          new W3CError("element not interactable", ElementNotInteractableException.class, 400),
-          new W3CError("invalid argument", InvalidArgumentException.class, 400),
-          new W3CError("invalid cookie domain", InvalidCookieDomainException.class, 400),
-          new W3CError("invalid element state", InvalidElementStateException.class, 400),
-          new W3CError("invalid selector", InvalidSelectorException.class, 400),
-          new W3CError("invalid session id", NoSuchSessionException.class, 404),
-          new W3CError("insecure certificate", InsecureCertificateException.class, 400),
-          new W3CError("javascript error", JavascriptException.class, 500),
-          new W3CError("move target out of bounds", MoveTargetOutOfBoundsException.class, 500),
-          new W3CError("no such alert", NoAlertPresentException.class, 404),
-          new W3CError("no such cookie", NoSuchCookieException.class, 404),
-          new W3CError("no such element", NoSuchElementException.class, 404),
-          new W3CError("no such frame", NoSuchFrameException.class, 404),
-          new W3CError("no such shadow root", NoSuchShadowRootException.class, 404),
-          new W3CError("no such window", NoSuchWindowException.class, 404),
-          new W3CError("session not created", SessionNotCreatedException.class, 500),
-          new W3CError("stale element reference", StaleElementReferenceException.class, 404),
-          new W3CError("timeout", TimeoutException.class, 500),
-          new W3CError("unable to capture screen", ScreenshotException.class, 500),
-          new W3CError("unable to set cookie", UnableToSetCookieException.class, 500),
-          new W3CError("unexpected alert open", UnhandledAlertException.class, 500),
-          new W3CError("unsupported operation", UnsupportedCommandException.class, 500),
-          new W3CError("unknown command", UnsupportedCommandException.class, 404),
-          new W3CError("unknown method", UnsupportedCommandException.class, 405),
-          new W3CError("unknown error", WebDriverException.class, 500));
+          new W3CError<>("script timeout", ScriptTimeoutException::new, 500),
+          new W3CError<>("detached shadow root", DetachedShadowRootException::new, 404),
+          new W3CError<>("element click intercepted", ElementClickInterceptedException::new, 400),
+          new W3CError<>("element not interactable", ElementNotInteractableException::new, 400),
+          new W3CError<>("invalid argument", InvalidArgumentException::new, 400),
+          new W3CError<>("invalid cookie domain", InvalidCookieDomainException::new, 400),
+          new W3CError<>("invalid element state", InvalidElementStateException::new, 400),
+          new W3CError<>("invalid selector", InvalidSelectorException::new, 400),
+          new W3CError<>("invalid session id", NoSuchSessionException::new, 404),
+          new W3CError<>("insecure certificate", InsecureCertificateException::new, 400),
+          new W3CError<>("javascript error", JavascriptException::new, 500),
+          new W3CError<>("move target out of bounds", MoveTargetOutOfBoundsException::new, 500),
+          new W3CError<>("no such alert", NoAlertPresentException::new, 404),
+          new W3CError<>("no such cookie", NoSuchCookieException::new, 404),
+          new W3CError<>("no such element", NoSuchElementException::new, 404),
+          new W3CError<>("no such frame", NoSuchFrameException::new, 404),
+          new W3CError<>("no such shadow root", NoSuchShadowRootException::new, 404),
+          new W3CError<>("no such window", NoSuchWindowException::new, 404),
+          new W3CError<>("session not created", SessionNotCreatedException::new, 500),
+          new W3CError<>("stale element reference", StaleElementReferenceException::new, 404),
+          new W3CError<>("timeout", TimeoutException::new, 500),
+          new W3CError<>("unable to capture screen", ScreenshotException::new, 500),
+          new W3CError<>("unable to set cookie", UnableToSetCookieException::new, 500),
+          new W3CError<>("unexpected alert open", UnhandledAlertException::new, 500),
+          new W3CError<>("unsupported operation", UnsupportedCommandException::new, 500),
+          new W3CError<>("unknown command", UnsupportedCommandException::new, 404),
+          new W3CError<>("unknown method", UnsupportedCommandException::new, 405),
+          DEFAULT_ERROR);
 
   private ErrorCodec() {
     // This will switch to being an interface at some point. Use `createDefault`
@@ -101,7 +105,7 @@ public class ErrorCodec {
   public Map<String, Object> encode(Throwable throwable) {
     Require.nonNull("Throwable to encode", throwable);
 
-    W3CError err = fromThrowable(throwable);
+    W3CError<?> err = fromThrowable(throwable);
 
     String message =
         throwable.getMessage() == null
@@ -144,49 +148,54 @@ public class ErrorCodec {
 
   public WebDriverException decode(Map<String, Object> response) {
     if (!(response.get("value") instanceof Map)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response);
+      throw new InvalidResponseException("missing \"value\" field", response);
     }
 
     Map<?, ?> value = (Map<?, ?>) response.get("value");
-    if (!(value.get("error") instanceof String)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response);
+
+    Object error = requireNonNullElse(value.get("error"), "");
+    Object message = requireNonNullElseGet(value.get("message"), response::toString);
+
+    if (!(error instanceof String)) {
+      throw new InvalidResponseException("\"error\" field must be a string", response);
+    }
+    if (!(message instanceof String)) {
+      throw new InvalidResponseException("\"message\" field must be a string", response);
     }
 
-    String error = (String) value.get("error");
-    String message = value.get("message") instanceof String ? (String) value.get("message") : null;
-
-    W3CError w3CError =
-        ERRORS.stream()
-            .filter(err -> error.equals(err.w3cErrorString))
-            .findFirst()
-            .orElse(DEFAULT_ERROR);
-
-    try {
-      Constructor<? extends WebDriverException> constructor =
-          w3CError.exception.getConstructor(String.class);
-      return constructor.newInstance(message);
-    } catch (ReflectiveOperationException e) {
-      throw new WebDriverException(message, e);
+    Optional<W3CError<? extends WebDriverException>> w3CError =
+        ERRORS.stream().filter(err -> error.equals(err.w3cErrorString)).findFirst();
+    if (w3CError.isPresent()) {
+      return w3CError.get().exceptionConstructor.apply((String) message);
     }
+    String extendedMessage = String.format("%s (error code: \"%s\")", message, error);
+    return DEFAULT_ERROR.exceptionConstructor.apply(extendedMessage);
   }
 
-  private W3CError fromThrowable(Throwable throwable) {
+  private W3CError<? extends WebDriverException> fromThrowable(Throwable throwable) {
     return ERRORS.stream()
         .filter(err -> err.exception.isAssignableFrom(throwable.getClass()))
         .findFirst()
         .orElse(DEFAULT_ERROR);
   }
 
-  private static class W3CError {
+  private static class W3CError<T extends WebDriverException> {
 
-    public final String w3cErrorString;
-    public final Class<? extends WebDriverException> exception;
-    public final int httpErrorCode;
+    private final String w3cErrorString;
+    private final Function<String, T> exceptionConstructor;
+    private final Class<T> exception;
+    private final int httpErrorCode;
 
+    @SafeVarargs
+    @SuppressWarnings("unchecked")
     public W3CError(
-        String w3cErrorString, Class<? extends WebDriverException> exception, int httpErrorCode) {
+        String w3cErrorString,
+        Function<String, T> exceptionConstructor,
+        int httpErrorCode,
+        T... reified) {
       this.w3cErrorString = w3cErrorString;
-      this.exception = exception;
+      this.exceptionConstructor = exceptionConstructor;
+      this.exception = (Class<T>) reified.getClass().getComponentType();
       this.httpErrorCode = httpErrorCode;
     }
   }

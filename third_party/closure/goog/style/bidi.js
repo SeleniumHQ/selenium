@@ -1,16 +1,8 @@
-// Copyright 2012 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Bidi utility functions.
@@ -34,12 +26,11 @@ goog.require('goog.userAgent.product.isVersion');
  *     left-most position in ltr and the right-most position in rtl).
  */
 goog.style.bidi.getScrollLeft = function(element) {
+  'use strict';
   var isRtl = goog.style.isRightToLeft(element);
   if (isRtl && goog.style.bidi.usesNegativeScrollLeftInRtl_()) {
     return -element.scrollLeft;
-  } else if (
-      isRtl &&
-      !(goog.userAgent.EDGE_OR_IE && goog.userAgent.isVersionOrHigher('8'))) {
+  } else if (isRtl && !goog.userAgent.EDGE_OR_IE) {
     // ScrollLeft starts at the maximum positive value and decreases towards
     // 0 as the element is scrolled towards the left. However, for overflow
     // visible, there is no scrollLeft and the value always stays correctly at 0
@@ -87,6 +78,7 @@ goog.style.bidi.getScrollLeft = function(element) {
  * @return {number} The offsetStart for that element.
  */
 goog.style.bidi.getOffsetStart = function(element) {
+  'use strict';
   element = /** @type {!HTMLElement} */ (element);
   var offsetLeftForReal = element.offsetLeft;
 
@@ -145,6 +137,7 @@ goog.style.bidi.getOffsetStart = function(element) {
  *     If this value is < 0, 0 is used.
  */
 goog.style.bidi.setScrollOffset = function(element, offsetStart) {
+  'use strict';
   offsetStart = Math.max(offsetStart, 0);
   // In LTR and in "mirrored" browser RTL (such as IE), we set scrollLeft to
   // the number of pixels to scroll.
@@ -153,8 +146,7 @@ goog.style.bidi.setScrollOffset = function(element, offsetStart) {
     element.scrollLeft = offsetStart;
   } else if (goog.style.bidi.usesNegativeScrollLeftInRtl_()) {
     element.scrollLeft = -offsetStart;
-  } else if (
-      !(goog.userAgent.EDGE_OR_IE && goog.userAgent.isVersionOrHigher('8'))) {
+  } else if (!goog.userAgent.EDGE_OR_IE) {
     // Take the current scrollLeft value and move to the right by the
     // offsetStart to get to the left edge of the element, and then by
     // the clientWidth of the element to get to the right edge.
@@ -173,10 +165,14 @@ goog.style.bidi.setScrollOffset = function(element, offsetStart) {
  * @private
  */
 goog.style.bidi.usesNegativeScrollLeftInRtl_ = function() {
+  'use strict';
   var isSafari10Plus =
       goog.userAgent.product.SAFARI && goog.userAgent.product.isVersion(10);
   var isIOS10Plus = goog.userAgent.IOS && goog.userAgent.platform.isVersion(10);
-  return goog.userAgent.GECKO || isSafari10Plus || isIOS10Plus;
+  const isChrome85Plus =
+      goog.userAgent.product.CHROME && goog.userAgent.product.isVersion(85);
+  return goog.userAgent.GECKO || isSafari10Plus || isIOS10Plus ||
+      isChrome85Plus;
 };
 
 
@@ -189,6 +185,7 @@ goog.style.bidi.usesNegativeScrollLeftInRtl_ = function() {
  * @param {boolean} isRtl Whether we are in RTL mode.
  */
 goog.style.bidi.setPosition = function(elem, left, top, isRtl) {
+  'use strict';
   if (top !== null) {
     elem.style.top = top + 'px';
   }

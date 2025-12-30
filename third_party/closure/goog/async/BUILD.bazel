@@ -1,25 +1,8 @@
-# DO NOT EDIT -- bazel run //third_party/closure/goog:regenerate -- "$PWD"
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
 licenses(["notice"])
-
-closure_js_library(
-    name = "all_js",
-    exports = [
-        ":animationdelay",
-        ":conditionaldelay",
-        ":debouncer",
-        ":delay",
-        ":freelist",
-        ":nexttick",
-        ":run",
-        ":throttle",
-        ":workqueue",
-    ],
-)
 
 closure_js_library(
     name = "animationdelay",
@@ -29,26 +12,6 @@ closure_js_library(
         "//third_party/closure/goog/disposable",
         "//third_party/closure/goog/events",
         "//third_party/closure/goog/functions",
-    ],
-)
-
-closure_js_library(
-    name = "conditionaldelay",
-    srcs = ["conditionaldelay.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/async:delay",
-        "//third_party/closure/goog/disposable",
-    ],
-)
-
-closure_js_library(
-    name = "debouncer",
-    srcs = ["debouncer.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/disposable",
-        "//third_party/closure/goog/timer",
     ],
 )
 
@@ -70,20 +33,26 @@ closure_js_library(
 
 closure_js_library(
     name = "nexttick",
-    srcs = ["nexttick.js"],
+    srcs = [
+        "nexttick.js",
+    ],
     lenient = True,
     deps = [
         "//third_party/closure/goog/debug:entrypointregistry",
         "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:safe",
         "//third_party/closure/goog/dom:tagname",
         "//third_party/closure/goog/functions",
-        "//third_party/closure/goog/html:safehtml",
-        "//third_party/closure/goog/html:trustedresourceurl",
         "//third_party/closure/goog/labs/useragent:browser",
         "//third_party/closure/goog/labs/useragent:engine",
-        "//third_party/closure/goog/string:const",
     ],
+)
+
+closure_js_library(
+    name = "throwexception",
+    srcs = [
+        "throwexception.js",
+    ],
+    lenient = True,
 )
 
 closure_js_library(
@@ -91,18 +60,11 @@ closure_js_library(
     srcs = ["run.js"],
     lenient = True,
     deps = [
-        "//third_party/closure/goog/async:nexttick",
-        "//third_party/closure/goog/async:workqueue",
-    ],
-)
-
-closure_js_library(
-    name = "throttle",
-    srcs = ["throttle.js"],
-    lenient = True,
-    deps = [
-        "//third_party/closure/goog/disposable",
-        "//third_party/closure/goog/timer",
+        ":nexttick",
+        ":throwexception",
+        ":workqueue",
+        "//third_party/closure/goog/asserts",
+        "//third_party/closure/goog/debug:asyncstacktag",
     ],
 )
 
@@ -111,7 +73,7 @@ closure_js_library(
     srcs = ["workqueue.js"],
     lenient = True,
     deps = [
+        ":freelist",
         "//third_party/closure/goog/asserts",
-        "//third_party/closure/goog/async:freelist",
     ],
 )

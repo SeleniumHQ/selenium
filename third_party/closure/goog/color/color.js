@@ -1,16 +1,8 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Utilities related to color and color conversion.
@@ -62,22 +54,23 @@ goog.color.Hsl;
  *     of color format passed in ('hex', 'rgb', 'named').
  */
 goog.color.parse = function(str) {
-  var result = {};
+  'use strict';
+  const result = {};
   str = String(str);
 
-  var maybeHex = goog.color.prependHashIfNecessaryHelper(str);
+  const maybeHex = goog.color.prependHashIfNecessaryHelper(str);
   if (goog.color.isValidHexColor_(maybeHex)) {
     result.hex = goog.color.normalizeHex(maybeHex);
     result.type = 'hex';
     return result;
   } else {
-    var rgb = goog.color.isValidRgbColor_(str);
+    const rgb = goog.color.isValidRgbColor_(str);
     if (rgb.length) {
       result.hex = goog.color.rgbArrayToHex(rgb);
       result.type = 'rgb';
       return result;
     } else if (goog.color.names) {
-      var hex = goog.color.names[str.toLowerCase()];
+      const hex = goog.color.names[str.toLowerCase()];
       if (hex) {
         result.hex = hex;
         result.type = 'named';
@@ -96,7 +89,8 @@ goog.color.parse = function(str) {
  * @return {boolean} True if str is in a format that can be parsed to a color.
  */
 goog.color.isValidColor = function(str) {
-  var maybeHex = goog.color.prependHashIfNecessaryHelper(str);
+  'use strict';
+  const maybeHex = goog.color.prependHashIfNecessaryHelper(str);
   return !!(
       goog.color.isValidHexColor_(maybeHex) ||
       goog.color.isValidRgbColor_(str).length ||
@@ -112,7 +106,8 @@ goog.color.isValidColor = function(str) {
  * @return {!goog.color.Rgb} rgb representation of the color.
  */
 goog.color.parseRgb = function(str) {
-  var rgb = goog.color.isValidRgbColor_(str);
+  'use strict';
+  const rgb = goog.color.isValidRgbColor_(str);
   if (!rgb.length) {
     throw Error(str + ' is not a valid RGB color');
   }
@@ -127,6 +122,7 @@ goog.color.parseRgb = function(str) {
  *    styles.
  */
 goog.color.hexToRgbStyle = function(hexColor) {
+  'use strict';
   return goog.color.rgbStyle_(goog.color.hexToRgb(hexColor));
 };
 
@@ -146,6 +142,7 @@ goog.color.hexTripletRe_ = /#(.)(.)(.)/;
  *     literals.
  */
 goog.color.normalizeHex = function(hexColor) {
+  'use strict';
   if (!goog.color.isValidHexColor_(hexColor)) {
     throw Error("'" + hexColor + "' is not a valid hex color");
   }
@@ -162,11 +159,12 @@ goog.color.normalizeHex = function(hexColor) {
  * @return {!goog.color.Rgb} rgb representation of the color.
  */
 goog.color.hexToRgb = function(hexColor) {
+  'use strict';
   hexColor = goog.color.normalizeHex(hexColor);
-  var rgb = parseInt(hexColor.substr(1), 16);
-  var r = rgb >> 16;
-  var g = (rgb >> 8) & 255;
-  var b = rgb & 255;
+  const rgb = parseInt(hexColor.slice(1), 16);
+  const r = rgb >> 16;
+  const g = (rgb >> 8) & 255;
+  const b = rgb & 255;
 
   return [r, g, b];
 };
@@ -180,15 +178,16 @@ goog.color.hexToRgb = function(hexColor) {
  * @return {string} hex representation of the color.
  */
 goog.color.rgbToHex = function(r, g, b) {
+  'use strict';
   r = Number(r);
   g = Number(g);
   b = Number(b);
   if (r != (r & 255) || g != (g & 255) || b != (b & 255)) {
     throw Error('"(' + r + ',' + g + ',' + b + '") is not a valid RGB color');
   }
-  var rgb = (r << 16) | (g << 8) | b;
+  const rgb = (r << 16) | (g << 8) | b;
   if (r < 0x10) {
-    return '#' + (0x1000000 | rgb).toString(16).substr(1);
+    return '#' + (0x1000000 | rgb).toString(16).slice(1);
   }
   return '#' + rgb.toString(16);
 };
@@ -200,6 +199,7 @@ goog.color.rgbToHex = function(r, g, b) {
  * @return {string} hex representation of the color.
  */
 goog.color.rgbArrayToHex = function(rgb) {
+  'use strict';
   return goog.color.rgbToHex(rgb[0], rgb[1], rgb[2]);
 };
 
@@ -213,17 +213,18 @@ goog.color.rgbArrayToHex = function(rgb) {
  * @return {!goog.color.Hsl} hsl representation of the color.
  */
 goog.color.rgbToHsl = function(r, g, b) {
+  'use strict';
   // First must normalize r, g, b to be between 0 and 1.
-  var normR = r / 255;
-  var normG = g / 255;
-  var normB = b / 255;
-  var max = Math.max(normR, normG, normB);
-  var min = Math.min(normR, normG, normB);
-  var h = 0;
-  var s = 0;
+  const normR = r / 255;
+  const normG = g / 255;
+  const normB = b / 255;
+  const max = Math.max(normR, normG, normB);
+  const min = Math.min(normR, normG, normB);
+  let h = 0;
+  let s = 0;
 
   // Luminosity is the average of the max and min rgb color intensities.
-  var l = 0.5 * (max + min);
+  const l = 0.5 * (max + min);
 
   // The hue and saturation are dependent on which color intensity is the max.
   // If max and min are equal, the color is gray and h and s should be 0.
@@ -254,6 +255,7 @@ goog.color.rgbToHsl = function(r, g, b) {
  * @return {!goog.color.Hsl} hsl representation of the color.
  */
 goog.color.rgbArrayToHsl = function(rgb) {
+  'use strict';
   return goog.color.rgbToHsl(rgb[0], rgb[1], rgb[2]);
 };
 
@@ -267,6 +269,7 @@ goog.color.rgbArrayToHsl = function(rgb) {
  * @private
  */
 goog.color.hueToRgb_ = function(v1, v2, vH) {
+  'use strict';
   if (vH < 0) {
     vH += 1;
   } else if (vH > 1) {
@@ -292,16 +295,17 @@ goog.color.hueToRgb_ = function(v1, v2, vH) {
  * @return {!goog.color.Rgb} rgb representation of the color.
  */
 goog.color.hslToRgb = function(h, s, l) {
-  var r = 0;
-  var g = 0;
-  var b = 0;
-  var normH = h / 360;  // normalize h to fall in [0, 1]
+  'use strict';
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  const normH = h / 360;  // normalize h to fall in [0, 1]
 
   if (s == 0) {
     r = g = b = l * 255;
   } else {
-    var temp1 = 0;
-    var temp2 = 0;
+    let temp1 = 0;
+    let temp2 = 0;
     if (l < 0.5) {
       temp2 = l * (1 + s);
     } else {
@@ -323,6 +327,7 @@ goog.color.hslToRgb = function(h, s, l) {
  * @return {!goog.color.Rgb} rgb representation of the color.
  */
 goog.color.hslArrayToRgb = function(hsl) {
+  'use strict';
   return goog.color.hslToRgb(hsl[0], hsl[1], hsl[2]);
 };
 
@@ -343,6 +348,7 @@ goog.color.validHexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
  * @private
  */
 goog.color.isValidHexColor_ = function(str) {
+  'use strict';
   return goog.color.validHexColorRe_.test(str);
 };
 
@@ -367,14 +373,15 @@ goog.color.rgbColorRe_ =
  * @private
  */
 goog.color.isValidRgbColor_ = function(str) {
+  'use strict';
   // Each component is separate (rather than using a repeater) so we can
   // capture the match. Also, we explicitly set each component to be either 0,
   // or start with a non-zero, to prevent octal numbers from slipping through.
-  var regExpResultArray = str.match(goog.color.rgbColorRe_);
+  const regExpResultArray = str.match(goog.color.rgbColorRe_);
   if (regExpResultArray) {
-    var r = Number(regExpResultArray[1]);
-    var g = Number(regExpResultArray[2]);
-    var b = Number(regExpResultArray[3]);
+    const r = Number(regExpResultArray[1]);
+    const g = Number(regExpResultArray[2]);
+    const b = Number(regExpResultArray[3]);
     if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255) {
       return [r, g, b];
     }
@@ -391,6 +398,7 @@ goog.color.isValidRgbColor_ = function(str) {
  *     otherwise the same value that was passed in.
  */
 goog.color.prependZeroIfNecessaryHelper = function(hex) {
+  'use strict';
   return hex.length == 1 ? '0' + hex : hex;
 };
 
@@ -403,6 +411,7 @@ goog.color.prependZeroIfNecessaryHelper = function(hex) {
  *     already have one.
  */
 goog.color.prependHashIfNecessaryHelper = function(str) {
+  'use strict';
   return str.charAt(0) == '#' ? str : '#' + str;
 };
 
@@ -415,6 +424,7 @@ goog.color.prependHashIfNecessaryHelper = function(str) {
  * @private
  */
 goog.color.rgbStyle_ = function(rgb) {
+  'use strict';
   return 'rgb(' + rgb.join(',') + ')';
 };
 
@@ -428,19 +438,20 @@ goog.color.rgbStyle_ = function(rgb) {
  * @return {!goog.color.Rgb} rgb representation of the color.
  */
 goog.color.hsvToRgb = function(h, s, brightness) {
-  var red = 0;
-  var green = 0;
-  var blue = 0;
+  'use strict';
+  let red = 0;
+  let green = 0;
+  let blue = 0;
   if (s == 0) {
     red = brightness;
     green = brightness;
     blue = brightness;
   } else {
-    var sextant = Math.floor(h / 60);
-    var remainder = (h / 60) - sextant;
-    var val1 = brightness * (1 - s);
-    var val2 = brightness * (1 - (s * remainder));
-    var val3 = brightness * (1 - (s * (1 - remainder)));
+    const sextant = Math.floor(h / 60);
+    const remainder = (h / 60) - sextant;
+    const val1 = brightness * (1 - s);
+    const val2 = brightness * (1 - (s * remainder));
+    const val3 = brightness * (1 - (s * (1 - remainder)));
     switch (sextant) {
       case 1:
         red = val2;
@@ -488,17 +499,17 @@ goog.color.hsvToRgb = function(h, s, brightness) {
  * @return {!goog.color.Hsv} hsv representation of the color.
  */
 goog.color.rgbToHsv = function(red, green, blue) {
-
-  var max = Math.max(Math.max(red, green), blue);
-  var min = Math.min(Math.min(red, green), blue);
-  var hue;
-  var saturation;
-  var value = max;
+  'use strict';
+  const max = Math.max(Math.max(red, green), blue);
+  const min = Math.min(Math.min(red, green), blue);
+  let hue;
+  let saturation;
+  const value = max;
   if (min == max) {
     hue = 0;
     saturation = 0;
   } else {
-    var delta = (max - min);
+    const delta = (max - min);
     saturation = delta / max;
 
     if (red == max) {
@@ -527,6 +538,7 @@ goog.color.rgbToHsv = function(red, green, blue) {
  * @return {!goog.color.Hsv} hsv representation of the color.
  */
 goog.color.rgbArrayToHsv = function(rgb) {
+  'use strict';
   return goog.color.rgbToHsv(rgb[0], rgb[1], rgb[2]);
 };
 
@@ -537,6 +549,7 @@ goog.color.rgbArrayToHsv = function(rgb) {
  * @return {!goog.color.Rgb} rgb representation of the color.
  */
 goog.color.hsvArrayToRgb = function(hsv) {
+  'use strict';
   return goog.color.hsvToRgb(hsv[0], hsv[1], hsv[2]);
 };
 
@@ -547,7 +560,8 @@ goog.color.hsvArrayToRgb = function(hsv) {
  * @return {!goog.color.Hsl} hsl representation of the color.
  */
 goog.color.hexToHsl = function(hex) {
-  var rgb = goog.color.hexToRgb(hex);
+  'use strict';
+  const rgb = goog.color.hexToRgb(hex);
   return goog.color.rgbToHsl(rgb[0], rgb[1], rgb[2]);
 };
 
@@ -560,6 +574,7 @@ goog.color.hexToHsl = function(hex) {
  * @return {string} hex representation of the color.
  */
 goog.color.hslToHex = function(h, s, l) {
+  'use strict';
   return goog.color.rgbArrayToHex(goog.color.hslToRgb(h, s, l));
 };
 
@@ -570,6 +585,7 @@ goog.color.hslToHex = function(h, s, l) {
  * @return {string} hex representation of the color.
  */
 goog.color.hslArrayToHex = function(hsl) {
+  'use strict';
   return goog.color.rgbArrayToHex(goog.color.hslToRgb(hsl[0], hsl[1], hsl[2]));
 };
 
@@ -580,6 +596,7 @@ goog.color.hslArrayToHex = function(hsl) {
  * @return {!goog.color.Hsv} hsv representation of the color.
  */
 goog.color.hexToHsv = function(hex) {
+  'use strict';
   return goog.color.rgbArrayToHsv(goog.color.hexToRgb(hex));
 };
 
@@ -592,6 +609,7 @@ goog.color.hexToHsv = function(hex) {
  * @return {string} hex representation of the color.
  */
 goog.color.hsvToHex = function(h, s, v) {
+  'use strict';
   return goog.color.rgbArrayToHex(goog.color.hsvToRgb(h, s, v));
 };
 
@@ -602,6 +620,7 @@ goog.color.hsvToHex = function(h, s, v) {
  * @return {string} hex representation of the color.
  */
 goog.color.hsvArrayToHex = function(hsv) {
+  'use strict';
   return goog.color.hsvToHex(hsv[0], hsv[1], hsv[2]);
 };
 
@@ -618,7 +637,10 @@ goog.color.hsvArrayToHex = function(hsv) {
  * @return {number} Distance between the two colors, in the range [0, 1].
  */
 goog.color.hslDistance = function(hsl1, hsl2) {
-  var sl1, sl2;
+  'use strict';
+  let sl1;
+  let sl2;
+
   if (hsl1[2] <= 0.5) {
     sl1 = hsl1[1] * hsl1[2];
   } else {
@@ -631,9 +653,9 @@ goog.color.hslDistance = function(hsl1, hsl2) {
     sl2 = hsl2[1] * (1.0 - hsl2[2]);
   }
 
-  var h1 = hsl1[0] / 360.0;
-  var h2 = hsl2[0] / 360.0;
-  var dh = (h1 - h2) * 2.0 * Math.PI;
+  const h1 = hsl1[0] / 360.0;
+  const h2 = hsl2[0] / 360.0;
+  const dh = (h1 - h2) * 2.0 * Math.PI;
   return (hsl1[2] - hsl2[2]) * (hsl1[2] - hsl2[2]) + sl1 * sl1 + sl2 * sl2 -
       2 * sl1 * sl2 * Math.cos(dh);
 };
@@ -650,6 +672,7 @@ goog.color.hslDistance = function(hsl1, hsl2) {
  * @return {!goog.color.Rgb} Combined color represented in rgb.
  */
 goog.color.blend = function(rgb1, rgb2, factor) {
+  'use strict';
   factor = goog.math.clamp(factor, 0, 1);
 
   return [
@@ -669,7 +692,8 @@ goog.color.blend = function(rgb1, rgb2, factor) {
  * @return {!goog.color.Rgb} Combined rgb color.
  */
 goog.color.darken = function(rgb, factor) {
-  var black = [0, 0, 0];
+  'use strict';
+  const black = [0, 0, 0];
   return goog.color.blend(black, rgb, factor);
 };
 
@@ -683,7 +707,8 @@ goog.color.darken = function(rgb, factor) {
  * @return {!goog.color.Rgb} Combined rgb color.
  */
 goog.color.lighten = function(rgb, factor) {
-  var white = [255, 255, 255];
+  'use strict';
+  const white = [255, 255, 255];
   return goog.color.blend(white, rgb, factor);
 };
 
@@ -698,15 +723,19 @@ goog.color.lighten = function(rgb, factor) {
  * @return {!goog.color.Rgb} Highest-contrast color represented by an array..
  */
 goog.color.highContrast = function(prime, suggestions) {
-  var suggestionsWithDiff = [];
-  for (var i = 0; i < suggestions.length; i++) {
+  'use strict';
+  const suggestionsWithDiff = [];
+  for (let i = 0; i < suggestions.length; i++) {
     suggestionsWithDiff.push({
       color: suggestions[i],
       diff: goog.color.yiqBrightnessDiff_(suggestions[i], prime) +
           goog.color.colorDiff_(suggestions[i], prime)
     });
   }
-  suggestionsWithDiff.sort(function(a, b) { return b.diff - a.diff; });
+  suggestionsWithDiff.sort(function(a, b) {
+    'use strict';
+    return b.diff - a.diff;
+  });
   return suggestionsWithDiff[0].color;
 };
 
@@ -720,6 +749,7 @@ goog.color.highContrast = function(prime, suggestions) {
  * @private
  */
 goog.color.yiqBrightness_ = function(rgb) {
+  'use strict';
   return Math.round((rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000);
 };
 
@@ -733,6 +763,7 @@ goog.color.yiqBrightness_ = function(rgb) {
  * @private
  */
 goog.color.yiqBrightnessDiff_ = function(rgb1, rgb2) {
+  'use strict';
   return Math.abs(
       goog.color.yiqBrightness_(rgb1) - goog.color.yiqBrightness_(rgb2));
 };
@@ -747,6 +778,7 @@ goog.color.yiqBrightnessDiff_ = function(rgb1, rgb2) {
  * @private
  */
 goog.color.colorDiff_ = function(rgb1, rgb2) {
+  'use strict';
   return Math.abs(rgb1[0] - rgb2[0]) + Math.abs(rgb1[1] - rgb2[1]) +
       Math.abs(rgb1[2] - rgb2[2]);
 };

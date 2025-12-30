@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
 import static org.openqa.selenium.Proxy.ProxyType.DIRECT;
 import static org.openqa.selenium.Proxy.ProxyType.MANUAL;
@@ -27,7 +28,6 @@ import static org.openqa.selenium.Proxy.ProxyType.SYSTEM;
 import static org.openqa.selenium.Proxy.ProxyType.UNSPECIFIED;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Disabled;
@@ -235,7 +235,7 @@ class ProxyTest {
     assertThat(json.get("socksVersion")).isEqualTo(5);
     assertThat(json.get("socksUsername")).isEqualTo("test1");
     assertThat(json.get("socksPassword")).isEqualTo("test2");
-    assertThat(json.get("noProxy")).isEqualTo(Arrays.asList("localhost", "127.0.0.*"));
+    assertThat(json.get("noProxy")).asInstanceOf(LIST).containsExactly("localhost", "127.0.0.*");
     assertThat(json.entrySet()).hasSize(9);
   }
 

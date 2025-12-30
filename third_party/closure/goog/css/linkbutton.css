@@ -1,0 +1,28 @@
+/*
+ * Copyright 2010 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/*
+ * Styling for link buttons created by goog.ui.LinkButtonRenderer.
+ */
+
+@provide 'goog.css.linkbutton';
+
+@require './common';
+
+.goog-link-button {
+  position: relative;
+  color: #00f;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* State: disabled. */
+.goog-link-button-disabled {
+  color: #888;
+  text-decoration: none;
+  cursor: default;
+}

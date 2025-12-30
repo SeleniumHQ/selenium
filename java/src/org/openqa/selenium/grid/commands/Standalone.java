@@ -27,7 +27,6 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_RO
 import static org.openqa.selenium.remote.http.Route.combine;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -94,8 +93,7 @@ public class Standalone extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(
-        DISTRIBUTOR_ROLE, HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
+    return Set.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override

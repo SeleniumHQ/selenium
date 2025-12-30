@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +41,7 @@ import org.openqa.selenium.bidi.script.EvaluateResultExceptionValue;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
 import org.openqa.selenium.bidi.script.LocalValue;
 import org.openqa.selenium.bidi.script.RemoteValue;
+import org.openqa.selenium.io.Read;
 import org.openqa.selenium.json.Json;
 
 @Beta
@@ -85,17 +83,8 @@ class RemoteScript implements Script {
 
   @Override
   public long addDomMutationHandler(Consumer<DomMutation> consumer) {
-    String scriptValue;
-    try (InputStream stream =
-        RemoteScript.class.getResourceAsStream(
-            "/org/openqa/selenium/remote/bidi-mutation-listener.js")) {
-      if (stream == null) {
-        throw new IllegalStateException("Unable to find helper script");
-      }
-      scriptValue = new String(stream.readAllBytes(), UTF_8);
-    } catch (IOException e) {
-      throw new IllegalStateException("Unable to read helper script");
-    }
+    String scriptValue =
+        Read.resourceAsString("/org/openqa/selenium/remote/bidi-mutation-listener.js");
 
     this.script.addPreloadScript(scriptValue, List.of(new ChannelValue("channel_name")));
 

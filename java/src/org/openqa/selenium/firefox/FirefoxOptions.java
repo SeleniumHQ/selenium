@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -184,7 +183,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   public FirefoxOptions addArguments(String... arguments) {
-    addArguments(Arrays.asList(arguments));
+    addArguments(List.of(arguments));
     return this;
   }
 
@@ -238,7 +237,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   public FirefoxOptions setAndroidIntentArguments(String[] args) {
     Require.nonNull("Android intent arguments", args);
-    return setAndroidIntentArguments(Arrays.asList(args));
+    return setAndroidIntentArguments(List.of(args));
   }
 
   public FirefoxOptions setAndroidIntentArguments(List<String> args) {

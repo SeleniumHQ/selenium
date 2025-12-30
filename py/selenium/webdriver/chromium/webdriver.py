@@ -20,11 +20,11 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.chromium.service import ChromiumService
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.remote.command import Command
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
-class ChromiumDriver(RemoteWebDriver):
+class ChromiumDriver(LocalWebDriver):
     """Control the WebDriver instance of ChromiumDriver and drive the browser."""
 
     def __init__(
@@ -68,8 +68,6 @@ class ChromiumDriver(RemoteWebDriver):
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
 
     def launch_app(self, id):
         """Launches Chromium app specified by id.
@@ -206,25 +204,3 @@ class ChromiumDriver(RemoteWebDriver):
             sink_name: Name of the sink to stop the Cast session.
         """
         return self.execute("stopCasting", {"sinkName": sink_name})
-
-    def quit(self) -> None:
-        """Closes the browser and shuts down the ChromiumDriver executable."""
-        try:
-            super().quit()
-        except Exception:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
-
-    def download_file(self, *args, **kwargs):
-        """Download file functionality is not implemented for Chromium driver."""
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        """Get downloadable files functionality is not implemented for Chromium driver."""
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        """Delete downloadable files functionality is not implemented for Chromium driver."""
-        raise NotImplementedError

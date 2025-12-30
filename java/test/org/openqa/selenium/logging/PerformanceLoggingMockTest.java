@@ -22,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.DriverCommand;
@@ -37,11 +37,9 @@ class PerformanceLoggingMockTest {
     final ExecuteMethod executeMethod = mock(ExecuteMethod.class);
 
     when(executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+            DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
         .thenReturn(
-            List.of(
-                ImmutableMap.of(
-                    "level", Level.INFO.getName(), "timestamp", 1L, "message", "second")));
+            List.of(Map.of("level", Level.INFO.getName(), "timestamp", 1L, "message", "second")));
 
     LocalLogs localLogs = LocalLogs.getStoringLoggerInstance(singleton(LogType.PROFILER));
     RemoteLogs logs = new RemoteLogs(executeMethod, localLogs);

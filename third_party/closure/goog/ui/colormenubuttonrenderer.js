@@ -1,16 +1,8 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Renderer for {@link goog.ui.ColorMenuButton}s.
@@ -23,7 +15,9 @@ goog.require('goog.color');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.MenuButtonRenderer');
-goog.require('goog.userAgent');
+goog.requireType('goog.dom.DomHelper');
+goog.requireType('goog.ui.Control');
+goog.requireType('goog.ui.ControlContent');
 
 
 
@@ -33,6 +27,7 @@ goog.require('goog.userAgent');
  * @extends {goog.ui.MenuButtonRenderer}
  */
 goog.ui.ColorMenuButtonRenderer = function() {
+  'use strict';
   goog.ui.MenuButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.ColorMenuButtonRenderer, goog.ui.MenuButtonRenderer);
@@ -63,11 +58,12 @@ goog.ui.ColorMenuButtonRenderer.CSS_CLASS =
  * background.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Caption element.
+ * @return {!Element} Caption element.
  * @override
  */
 goog.ui.ColorMenuButtonRenderer.prototype.createCaption = function(
     content, dom) {
+  'use strict';
   return goog.ui.ColorMenuButtonRenderer.superClass_.createCaption.call(
       this, goog.ui.ColorMenuButtonRenderer.wrapCaption(content, dom), dom);
 };
@@ -80,6 +76,7 @@ goog.ui.ColorMenuButtonRenderer.prototype.createCaption = function(
  * @return {!Element} Caption element.
  */
 goog.ui.ColorMenuButtonRenderer.wrapCaption = function(content, dom) {
+  'use strict';
   return dom.createDom(
       goog.dom.TagName.DIV,
       goog.getCssName(goog.ui.ColorMenuButtonRenderer.CSS_CLASS, 'indicator'),
@@ -96,6 +93,7 @@ goog.ui.ColorMenuButtonRenderer.wrapCaption = function(content, dom) {
  * @override
  */
 goog.ui.ColorMenuButtonRenderer.prototype.setValue = function(element, value) {
+  'use strict';
   if (element) {
     goog.ui.ColorMenuButtonRenderer.setCaptionValue(
         this.getContentElement(element), value);
@@ -110,6 +108,7 @@ goog.ui.ColorMenuButtonRenderer.prototype.setValue = function(element, value) {
  * @param {*} value New value; assumed to be a color spec string.
  */
 goog.ui.ColorMenuButtonRenderer.setCaptionValue = function(caption, value) {
+  'use strict';
   // Assume that the caption's first child is the indicator.
   if (caption && caption.firstChild) {
     // Normalize the value to a hex color spec or null (otherwise setting
@@ -121,10 +120,8 @@ goog.ui.ColorMenuButtonRenderer.setCaptionValue = function(caption, value) {
         goog.color.parse(strValue).hex :
         null;
 
-    // Stupid IE6/7 doesn't do transparent borders.
-    // TODO(attila): Add user-agent version check when IE8 comes out...
-    caption.firstChild.style.borderBottomColor =
-        hexColor || (goog.userAgent.IE ? '' : 'transparent');
+    /** @suppress {strictMissingProperties} Added to tighten compiler checks */
+    caption.firstChild.style.borderBottomColor = hexColor || 'transparent';
   }
 };
 
@@ -136,8 +133,10 @@ goog.ui.ColorMenuButtonRenderer.setCaptionValue = function(caption, value) {
  * @param {goog.ui.Control} button goog.ui.ColorMenuButton whose DOM is to be
  *     initialized as it enters the document.
  * @override
+ * @suppress {strictMissingProperties} Added to tighten compiler checks
  */
 goog.ui.ColorMenuButtonRenderer.prototype.initializeDom = function(button) {
+  'use strict';
   var buttonElement = button.getElement();
   goog.asserts.assert(buttonElement);
   this.setValue(buttonElement, button.getValue());

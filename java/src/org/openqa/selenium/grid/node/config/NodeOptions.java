@@ -21,9 +21,7 @@ import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import java.io.File;
 import java.io.StringReader;
@@ -33,7 +31,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -42,6 +39,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -85,7 +83,7 @@ public class NodeOptions {
   static final boolean DEFAULT_USE_SELENIUM_MANAGER = false;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
   static final List<String> DEFAULT_VNC_ENV_VARS =
-      Arrays.asList("SE_START_XVFB", "SE_START_VNC", "SE_START_NO_VNC");
+      List.of("SE_START_XVFB", "SE_START_VNC", "SE_START_NO_VNC");
   static final int DEFAULT_NO_VNC_PORT = 7900;
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
@@ -95,8 +93,8 @@ public class NodeOptions {
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
   private static final Platform CURRENT_PLATFORM = Platform.getCurrent();
-  private static final ImmutableSet<String> SINGLE_SESSION_DRIVERS =
-      ImmutableSet.of("safari", "safari technology preview");
+  private static final Set<String> SINGLE_SESSION_DRIVERS =
+      Set.of("safari", "safari technology preview");
 
   private final Config config;
   private final AtomicBoolean vncEnabled = new AtomicBoolean();
@@ -625,7 +623,7 @@ public class NodeOptions {
       int maxSessions, Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
-      return ImmutableMap.of();
+      return Map.of();
     }
 
     // We don't expect duplicates, but they're fine

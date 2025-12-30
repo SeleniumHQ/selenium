@@ -1,16 +1,8 @@
-// Copyright 2008 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuButton}s and subclasses.
@@ -25,6 +17,9 @@ goog.require('goog.ui.CustomButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuRenderer');
+goog.requireType('goog.ui.Control');
+goog.requireType('goog.ui.ControlContent');
+goog.requireType('goog.ui.MenuButton');
 
 
 
@@ -36,6 +31,7 @@ goog.require('goog.ui.MenuRenderer');
  * @extends {goog.ui.CustomButtonRenderer}
  */
 goog.ui.MenuButtonRenderer = function() {
+  'use strict';
   goog.ui.CustomButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.MenuButtonRenderer, goog.ui.CustomButtonRenderer);
@@ -60,6 +56,7 @@ goog.ui.MenuButtonRenderer.CSS_CLASS = goog.getCssName('goog-menu-button');
  * @override
  */
 goog.ui.MenuButtonRenderer.prototype.getContentElement = function(element) {
+  'use strict';
   return goog.ui.MenuButtonRenderer.superClass_.getContentElement.call(
       this,
       /** @type {Element} */ (element && element.firstChild));
@@ -77,6 +74,7 @@ goog.ui.MenuButtonRenderer.prototype.getContentElement = function(element) {
  * @override
  */
 goog.ui.MenuButtonRenderer.prototype.decorate = function(control, element) {
+  'use strict';
   var button = /** @type {goog.ui.MenuButton} */ (control);
   // TODO(attila):  Add more robust support for subclasses of goog.ui.Menu.
   var menuElem = goog.dom.getElementsByTagNameAndClass(
@@ -118,10 +116,11 @@ goog.ui.MenuButtonRenderer.prototype.decorate = function(control, element) {
  * @param {goog.ui.ControlContent} content Text caption or DOM structure
  *     to wrap in a box.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Pseudo-rounded-corner box containing the content.
+ * @return {!Element} Pseudo-rounded-corner box containing the content.
  * @override
  */
 goog.ui.MenuButtonRenderer.prototype.createButton = function(content, dom) {
+  'use strict';
   return goog.ui.MenuButtonRenderer.superClass_.createButton.call(
       this, [this.createCaption(content, dom), this.createDropdown(dom)], dom);
 };
@@ -138,9 +137,10 @@ goog.ui.MenuButtonRenderer.prototype.createButton = function(content, dom) {
  * @param {goog.ui.ControlContent} content Text caption or DOM structure
  *     to wrap in a box.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Caption element.
+ * @return {!Element} Caption element.
  */
 goog.ui.MenuButtonRenderer.prototype.createCaption = function(content, dom) {
+  'use strict';
   return goog.ui.MenuButtonRenderer.wrapCaption(
       content, this.getCssClass(), dom);
 };
@@ -161,8 +161,10 @@ goog.ui.MenuButtonRenderer.prototype.createCaption = function(content, dom) {
  * @return {!Element} Caption element.
  */
 goog.ui.MenuButtonRenderer.wrapCaption = function(content, cssClass, dom) {
+  'use strict';
   return dom.createDom(
-      goog.dom.TagName.DIV, goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
+      goog.dom.TagName.DIV,
+      goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
           goog.getCssName(cssClass, 'caption'),
       content);
 };
@@ -177,9 +179,10 @@ goog.ui.MenuButtonRenderer.wrapCaption = function(content, cssClass, dom) {
  *    </div>
  *
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
- * @return {Element} Dropdown element.
+ * @return {!Element} Dropdown element.
  */
 goog.ui.MenuButtonRenderer.prototype.createDropdown = function(dom) {
+  'use strict';
   // 00A0 is &nbsp;
   return dom.createDom(
       goog.dom.TagName.DIV, goog.ui.INLINE_BLOCK_CLASSNAME + ' ' +
@@ -195,5 +198,6 @@ goog.ui.MenuButtonRenderer.prototype.createDropdown = function(dom) {
  * @override
  */
 goog.ui.MenuButtonRenderer.prototype.getCssClass = function() {
+  'use strict';
   return goog.ui.MenuButtonRenderer.CSS_CLASS;
 };
