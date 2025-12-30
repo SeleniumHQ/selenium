@@ -2,22 +2,24 @@ name: CI - Python
 
 on:
   workflow_call:
+    inputs:
+      targets:
+        required: false
+        type: string
+        default: ''
+      run-full-suite:
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: |
-        bazel build //py:selenium-wheel //py:selenium-sdist
-
   docs:
     name: Documentation
+    if: ${{ inputs.run-full-suite }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -38,6 +40,7 @@ jobs:
 
   typing:
     name: Type Checker
+    if: ${{ inputs.run-full-suite }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -58,7 +61,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    needs: build
+    if: ${{ inputs.run-full-suite }}
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -71,31 +74,50 @@ jobs:
       python-version: ${{ matrix.python-version }}
       run: bazel test --local_test_jobs 1 //py:unit
 
-  remote-tests:
-    name: Remote Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Integration Tests Remote
-      browser: yes
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
+  filter-targets:
+    name: Filter Targets
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.filter.outputs.targets }}
+    steps:
+      - name: Filter Python targets
+        id: filter
+        shell: bash
+        run: |
+          targets="${{ inputs.targets }}"
+          filtered=()
+
+          for t in $targets; do
+            [[ "$t" == //py* ]] && filtered+=("$t")
+          done
+
+          if [ ${#filtered[@]} -eq 0 ]; then
+            echo "targets=//py/..." >> "$GITHUB_OUTPUT"
+          else
+            echo "targets=${filtered[*]}" >> "$GITHUB_OUTPUT"
+          fi
 
   browser-tests:
     name: Browser Tests
-    needs: build
+    needs: filter-targets
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, chrome-bidi, edge]
+        browser: [chrome, firefox, chrome-bidi, chrome-remote]
         os: [windows]
         include:
           - browser: safari
             os: macos
     with:
-      name: Integration Tests (${{ matrix.browser }})
+      name: Browser Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
       os: ${{ matrix.os }}
-      run: |
-        bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
+      run: >
+        bazel test
+        --keep_going
+        --build_tests_only
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        --test_tag_filters=${{ matrix.browser }}
+        ${{ needs.filter-targets.outputs.targets }}

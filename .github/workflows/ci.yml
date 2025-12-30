@@ -76,12 +76,20 @@ jobs:
     name: Python
     needs: check
     uses: ./.github/workflows/ci-python.yml
+    with:
+      targets: ${{ needs.check.outputs.targets }}
+      run-full-suite: >-
+        ${{
+          github.event_name == 'schedule' ||
+          github.event_name == 'workflow_dispatch' ||
+          github.event_name == 'workflow_call' ||
+          contains(github.event.pull_request.title, '[py]')
+        }}
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
       contains(needs.check.outputs.targets, '//py') ||
-      contains(join(github.event.commits.*.message), '[py]') ||
       contains(github.event.pull_request.title, '[py]')
 
   ruby:
