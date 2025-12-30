@@ -134,7 +134,6 @@ webdriver.firefox
 .. autosummary::
    :toctree: selenium_webdriver_firefox
 
-   selenium.webdriver.firefox.firefox_binary
    selenium.webdriver.firefox.firefox_profile
    selenium.webdriver.firefox.options
    selenium.webdriver.firefox.remote_connection

@@ -131,10 +131,6 @@ warn_unreachable = false
 # suppress error messages about imports that cannot be resolved.
 ignore_missing_imports = true
 
-[[tool.mypy._winreg]]
-# suppress error messages about imports that cannot be resolved.
-ignore_missing_imports = true
-
 [tool.ruff]
 extend-exclude = [
     "selenium/webdriver/common/devtools/",
