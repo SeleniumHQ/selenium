@@ -88,12 +88,20 @@ jobs:
     name: Ruby
     needs: check
     uses: ./.github/workflows/ci-ruby.yml
+    with:
+      targets: ${{ needs.check.outputs.targets }}
+      run-full-suite: >-
+        ${{
+          github.event_name == 'schedule' ||
+          github.event_name == 'workflow_dispatch' ||
+          github.event_name == 'workflow_call' ||
+          contains(github.event.pull_request.title, '[rb]')
+        }}
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
       contains(needs.check.outputs.targets, '//rb') ||
-      contains(join(github.event.commits.*.message), '[rb]') ||
       contains(github.event.pull_request.title, '[rb]')
 
   rust:

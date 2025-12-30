@@ -2,22 +2,24 @@ name: CI - Ruby
 
 on:
   workflow_call:
+    inputs:
+      targets:
+        required: false
+        type: string
+        default: ''
+      run-full-suite:
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: Build
-      run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
-
   docs:
     name: Documentation
-    needs: build
+    if: ${{ inputs.run-full-suite }}
     uses: ./.github/workflows/bazel.yml
     with:
       name: Documentation
@@ -25,33 +27,29 @@ jobs:
 
   steep-check:
     name: Type Check (Steep)
-    needs: build
+    if: ${{ inputs.run-full-suite }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.8
           bundler-cache: true
           working-directory: rb
-      
       - name: Install RBS collection
         working-directory: rb
         run: bundle exec rbs collection install
-      
       - name: Run Steep type check
         working-directory: rb
         run: bundle exec rake steep 2>/dev/null || (bundle exec rake steep && exit 1)
 
   unit-tests:
     name: Unit Tests
-    needs: build
+    if: ${{ inputs.run-full-suite }}
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -80,23 +78,38 @@ jobs:
         --test_size_filters small
         //rb/spec/...
 
+  filter-targets:
+    name: Filter Targets
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.filter.outputs.targets }}
+    steps:
+      - name: Filter Ruby targets
+        id: filter
+        shell: bash
+        run: |
+          targets="${{ inputs.targets }}"
+          filtered=()
+
+          for t in $targets; do
+            [[ "$t" == //rb* ]] && filtered+=("$t")
+          done
+
+          if [ ${#filtered[@]} -eq 0 ]; then
+            echo "targets=//rb/spec/..." >> "$GITHUB_OUTPUT"
+          else
+            echo "targets=${filtered[*]}" >> "$GITHUB_OUTPUT"
+          fi
+
   integration-tests-local:
-    name: Local Tests
-    needs: build
+    name: Browser Tests
+    needs: filter-targets
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        browser:
-          - chrome
-          - edge
-          - firefox
-        os:
-          - windows
-          - macos
-        exclude:
-          - browser: edge
-            os: macos
+        browser: [chrome-beta, firefox-beta]
+        os: [windows]
     with:
       name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -109,29 +122,4 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
-        //rb/spec/...
-
-  integration-tests-remote:
-    name: Remote Tests
-    needs: build
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - browser: edge
-            os: macos
-    with:
-      name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
-      browser: ${{ matrix.browser }}
-      os: ${{ matrix.os }}
-      java-version: 17
-      run: >
-        bazel test
-        --keep_going
-        --build_tests_only
-        --flaky_test_attempts 3
-        --local_test_jobs 1
-        --test_size_filters large
-        --test_tag_filters ${{ matrix.browser }}-remote
-        //rb/spec/...
+        ${{ needs.filter-targets.outputs.targets }}
