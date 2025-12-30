@@ -108,10 +108,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome-beta, firefox-beta]
+        browser: [chrome-beta, firefox-beta, edge-remote]
         os: [windows]
     with:
-      name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      name: Browser Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
       os: ${{ matrix.os }}
       run: >
