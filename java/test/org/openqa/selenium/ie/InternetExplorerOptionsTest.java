@@ -102,15 +102,14 @@ class InternetExplorerOptionsTest {
 
   @Test
   void shouldSetIeOptionsCapabilityWhenConstructedFromExistingCapabilities() {
-    InternetExplorerOptions expected = new InternetExplorerOptions();
-    expected.setCapability("requireWindowFocus", true);
-
     DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
     desiredCapabilities.setPlatform(Platform.WINDOWS);
     InternetExplorerOptions seen = new InternetExplorerOptions(desiredCapabilities);
     seen.setCapability("requireWindowFocus", true);
 
-    assertThat(seen.getCapability(IE_OPTIONS)).isEqualTo(expected.getCapability(IE_OPTIONS));
+    assertThat(seen.getCapability(IE_OPTIONS))
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(Map.of("requireWindowFocus", true));
   }
 
   @Test

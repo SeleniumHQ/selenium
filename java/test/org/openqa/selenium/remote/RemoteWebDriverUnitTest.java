@@ -796,17 +796,15 @@ class RemoteWebDriverUnitTest {
 
   @Test
   void getDownloadableFilesReturnsType() {
-    List<String> expectedFiles = List.of("file1.txt", "file2.pdf");
-
     WebDriverFixture fixture =
         new WebDriverFixture(
             new ImmutableCapabilities(ENABLE_DOWNLOADS, true),
             echoCapabilities,
-            valueResponder(Map.of("names", expectedFiles)));
+            valueResponder(Map.of("names", List.of("file1.txt", "file2.pdf"))));
 
     List<String> result = fixture.driver.getDownloadableFiles();
 
-    assertThat(result).isInstanceOf(List.class).isEqualTo(expectedFiles);
+    assertThat(result).containsExactly("file1.txt", "file2.pdf");
 
     fixture.verifyCommands(new CommandPayload(DriverCommand.GET_DOWNLOADABLE_FILES, emptyMap()));
   }

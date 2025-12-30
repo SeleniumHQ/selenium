@@ -24,7 +24,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -136,26 +135,16 @@ class RemoteLogsTest {
 
   @Test
   void canGetAvailableLogTypes() {
-    List<String> remoteAvailableLogTypes = new ArrayList<>();
-    remoteAvailableLogTypes.add(LogType.PROFILER);
-    remoteAvailableLogTypes.add(LogType.SERVER);
-
+    List<String> remoteAvailableLogTypes = List.of(LogType.PROFILER, LogType.SERVER);
     when(executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null))
         .thenReturn(remoteAvailableLogTypes);
 
-    Set<String> localAvailableLogTypes = new HashSet<>();
-    localAvailableLogTypes.add(LogType.PROFILER);
-    localAvailableLogTypes.add(LogType.CLIENT);
-
+    Set<String> localAvailableLogTypes = Set.of(LogType.PROFILER, LogType.CLIENT);
     when(localLogs.getAvailableLogTypes()).thenReturn(localAvailableLogTypes);
-
-    Set<String> expected = new HashSet<>();
-    expected.add(LogType.CLIENT);
-    expected.add(LogType.PROFILER);
-    expected.add(LogType.SERVER);
 
     Set<String> availableLogTypes = remoteLogs.getAvailableLogTypes();
 
-    assertThat(availableLogTypes).isEqualTo(expected);
+    assertThat(availableLogTypes)
+        .containsExactlyInAnyOrder(LogType.CLIENT, LogType.PROFILER, LogType.SERVER);
   }
 }
