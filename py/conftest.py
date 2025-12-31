@@ -261,6 +261,9 @@ class Driver:
         if cls_name.lower() in ("chrome", "edge"):
             self._options.add_argument("--disable-dev-shm-usage")
 
+        if self.is_remote:
+            self._options.enable_downloads = True
+
         if self.browser_path or self.browser_args:
             if self.driver_class == self.supported_drivers.webkitgtk:
                 self._options.overlay_scrollbars_enabled = False
@@ -340,17 +343,18 @@ def driver(request):
 
     # conditionally mark tests as expected to fail based on driver
     marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
+    # Also check for xfail_remote when running with --remote
+    if marker is None and selenium_driver.is_remote:
+        marker = request.node.get_closest_marker("xfail_remote")
     if marker is not None:
-        if "run" in marker.kwargs:
-            if not marker.kwargs["run"]:
+        kwargs = dict(marker.kwargs)
+        if "run" in kwargs:
+            if not kwargs["run"]:
                 pytest.skip()
                 yield
                 return
-        if "raises" in marker.kwargs:
-            marker.kwargs.pop("raises")
-        pytest.xfail(**marker.kwargs)
-
-        request.addfinalizer(selenium_driver.stop_driver)
+        kwargs.pop("raises", None)
+        pytest.xfail(**kwargs)
 
     # For BiDi tests, only restart driver when explicitly marked as needing fresh driver.
     # Tests marked with @pytest.mark.needs_fresh_driver get full driver restart for test isolation.
@@ -481,15 +485,18 @@ def clean_driver(request):
 
     # conditionally mark tests as expected to fail based on driver
     marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
+    # Also check for xfail_remote when running with --remote
+    if marker is None and request.config.getoption("remote"):
+        marker = request.node.get_closest_marker("xfail_remote")
     if marker is not None:
-        if "run" in marker.kwargs:
-            if not marker.kwargs["run"]:
+        kwargs = dict(marker.kwargs)
+        if "run" in kwargs:
+            if not kwargs["run"]:
                 pytest.skip()
                 yield
                 return
-        if "raises" in marker.kwargs:
-            marker.kwargs.pop("raises")
-        pytest.xfail(**marker.kwargs)
+        kwargs.pop("raises", None)
+        pytest.xfail(**kwargs)
 
     yield driver_reference
 
