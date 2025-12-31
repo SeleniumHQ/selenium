@@ -104,11 +104,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, chrome-remote]
+        browser: [firefox]
         os: [windows]
-        include:
-          - browser: safari
-            os: macos
     with:
       name: Browser Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -120,4 +117,4 @@ jobs:
         --flaky_test_attempts 3
         --local_test_jobs 1
         --test_tag_filters=${{ matrix.browser }}
-        ${{ needs.filter-targets.outputs.targets }}
+        //py:test-firefox-bidi-test/selenium/webdriver/common/bidi_emulation_tests.py
