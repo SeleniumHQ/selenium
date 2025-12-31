@@ -25,7 +25,7 @@ from collections.abc import Mapping
 from io import IOBase
 from subprocess import PIPE
 from time import sleep
-from typing import IO, Any, cast
+from typing import IO, Any
 from urllib import request
 from urllib.error import URLError
 
