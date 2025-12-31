@@ -313,56 +313,77 @@ pub trait SeleniumManager {
             browser_version
         ));
 
-        // Checking if browser version is in the cache
+        // Checking if browser version already in expected location
         let browser_binary_path = self.get_browser_binary_path(original_browser_version)?;
         if browser_binary_path.exists() {
+            let location_note = if WINDOWS.is(self.get_os()) && self.is_edge() {
+                " (Edge uses system path, not cache)"
+            } else {
+                ""
+            };
             self.get_logger().debug(format!(
-                "{} {} already exists",
+                "{} {} already exists at {}{}",
                 self.get_browser_name(),
-                browser_version
+                browser_version,
+                browser_binary_path.display(),
+                location_note
             ));
-        } else {
-            // If browser is not available, download it
-            if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
-                return Err(anyhow!(format_one_arg(
-                    NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
-                    self.get_browser_name(),
-                )));
-            }
-
-            let browser_path_in_cache = self.get_browser_path_in_cache()?;
-            let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
-            if !lock.exists() && browser_binary_path.exists() {
-                self.get_logger().debug(format!(
-                    "Browser already in cache: {}",
-                    browser_binary_path.display()
-                ));
-                self.set_browser_path(path_to_string(&browser_binary_path));
-                return Ok(Some(browser_binary_path.clone()));
-            }
-
-            let browser_url = self.get_browser_url_for_download(original_browser_version)?;
-            self.get_logger().debug(format!(
-                "Downloading {} {} from {}",
-                self.get_browser_name(),
-                self.get_browser_version(),
-                browser_url
-            ));
-            let (_tmp_folder, driver_zip_file) =
-                download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
-
-            let browser_label_for_download =
-                self.get_browser_label_for_download(original_browser_version)?;
-            uncompress(
-                &driver_zip_file,
-                &browser_path_in_cache,
-                self.get_logger(),
-                self.get_os(),
-                None,
-                browser_label_for_download,
-            )?;
-            lock.release();
+            self.set_browser_path(path_to_string(&browser_binary_path));
+            return Ok(Some(browser_binary_path));
         }
+
+        // Browser not available, download it
+        if WINDOWS.is(self.get_os()) && self.is_edge() && !self.is_windows_admin() {
+            return Err(anyhow!(format_one_arg(
+                NOT_ADMIN_FOR_EDGE_INSTALLER_ERR_MSG,
+                self.get_browser_name(),
+            )));
+        }
+
+        let browser_path_in_cache = self.get_browser_path_in_cache()?;
+        let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
+        // If lock file was deleted, another process held it and released (deleting the file).
+        // Check if that process already downloaded the browser.
+        if !lock.exists() && browser_binary_path.exists() {
+            self.get_logger().debug(format!(
+                "{} {} now available at {}",
+                self.get_browser_name(),
+                browser_version,
+                browser_binary_path.display()
+            ));
+            self.set_browser_path(path_to_string(&browser_binary_path));
+            return Ok(Some(browser_binary_path.clone()));
+        }
+
+        let browser_url = self.get_browser_url_for_download(original_browser_version)?;
+        // Edge on Windows: MSI installs to system path, not cache
+        let install_note = if WINDOWS.is(self.get_os()) && self.is_edge() {
+            " (will install to system path via MSI)"
+        } else {
+            ""
+        };
+        self.get_logger().debug(format!(
+            "Downloading {} {} from {}{}",
+            self.get_browser_name(),
+            self.get_browser_version(),
+            browser_url,
+            install_note
+        ));
+        let (_tmp_folder, driver_zip_file) =
+            download_to_tmp_folder(self.get_http_client(), browser_url, self.get_logger())?;
+
+        let browser_label_for_download =
+            self.get_browser_label_for_download(original_browser_version)?;
+        uncompress(
+            &driver_zip_file,
+            &browser_path_in_cache,
+            self.get_logger(),
+            self.get_os(),
+            None,
+            browser_label_for_download,
+        )?;
+        lock.release();
+
         if browser_binary_path.exists() {
             self.set_browser_path(path_to_string(&browser_binary_path));
             Ok(Some(browser_binary_path))

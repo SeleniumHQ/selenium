@@ -22,11 +22,11 @@ from selenium.webdriver.common import service, utils
 
 
 class Service(service.Service):
-    """Service class responsible for starting and stopping geckodriver.
+    """Service class responsible for starting and stopping of `geckodriver`.
 
     Args:
-        executable_path: install path of the geckodriver executable, defaults to `geckodriver`.
-        port: Port for the service to run on, defaults to 0 where the operating system will decide.
+        executable_path: (Optional) Install path of the executable.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
         service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
         log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
         env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
