@@ -155,12 +155,12 @@ def test_set_geolocation_override_with_coordinates_in_user_context(driver, pages
 
     context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
 
-    driver.switch_to.window(context_id)
-    pages.load("blank.html")
-
     coords = GeolocationCoordinates(45.5, -122.4194, accuracy=10.0)
 
     driver.emulation.set_geolocation_override(coordinates=coords, user_contexts=[user_context])
+
+    driver.switch_to.window(context_id)
+    pages.load("blank.html")
 
     result = get_browser_geolocation(driver, user_context=user_context)
 
