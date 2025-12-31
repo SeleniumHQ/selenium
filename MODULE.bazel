@@ -21,7 +21,6 @@ bazel_dep(name = "rules_java", version = "8.7.1")
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 bazel_dep(name = "rules_multitool", version = "1.3.0")
 bazel_dep(name = "rules_nodejs", version = "6.3.2")
-bazel_dep(name = "rules_oci", version = "1.8.0")
 bazel_dep(name = "rules_pkg", version = "1.0.1")
 bazel_dep(name = "rules_python", version = "1.7.0")
 bazel_dep(name = "rules_proto", version = "7.0.2")
@@ -103,24 +102,6 @@ selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_exte
 use_repo(selenium_paket, "paket.nuget")
 
 register_toolchains("@dotnet_toolchains//:all")
-
-oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
-oci.pull(
-    name = "java_image_base",
-    digest = "sha256:1df9f3e6a2de0544dd04f1840aa811d334045c9126f9e93d8da45448061ad51e",
-    image = "gcr.io/distroless/java17",
-)
-oci.pull(
-    name = "firefox_standalone",
-    digest = "sha256:b6d8279268b3183d0d33e667e82fec1824298902f77718764076de763673124f",
-    image = "index.docker.io/selenium/standalone-firefox",
-)
-oci.pull(
-    name = "chrome_standalone",
-    digest = "sha256:1b809a961a0a77787a7cccac74ddc5570b7e89747f925b8469ddb9a6624d4ece",
-    image = "index.docker.io/selenium/standalone-chrome",
-)
-use_repo(oci, "chrome_standalone", "firefox_standalone", "java_image_base")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 python.toolchain(

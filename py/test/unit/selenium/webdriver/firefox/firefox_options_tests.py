@@ -20,7 +20,6 @@ import pytest
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.options import PageLoadStrategy
 from selenium.webdriver.common.proxy import Proxy, ProxyType
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Options
 
@@ -28,22 +27,6 @@ from selenium.webdriver.firefox.options import Options
 @pytest.fixture
 def options():
     return Options()
-
-
-def test_set_binary_with_firefox_binary(options):
-    binary = FirefoxBinary("foo")
-    options.binary = binary
-    assert options.binary_location == "foo"
-
-
-def test_set_binary_with_path(options):
-    options.binary = "/foo"
-    assert options.binary_location == "/foo"
-
-
-def test_get_binary(options):
-    options.binary = "/foo"
-    assert options.binary._start_cmd == "/foo"
 
 
 def test_set_binary_location(options):

@@ -72,24 +72,11 @@ BROWSER_VERSIONS = [
 ]
 
 TEST_DEPS = [
-    requirement("attrs"),
-    requirement("debugpy"),
     requirement("filetype"),
-    requirement("idna"),
-    requirement("iniconfig"),
-    requirement("importlib_metadata"),
-    requirement("h11"),
-    requirement("more-itertools"),
-    requirement("multidict"),
-    requirement("outcome"),
-    requirement("pluggy"),
-    requirement("py"),
     requirement("pytest"),
     requirement("pytest-instafail"),
     requirement("pytest-trio"),
     requirement("pytest-mock"),
-    requirement("sortedcontainers"),
-    requirement("sniffio"),
     requirement("zipp"),
     "@rules_python//python/runfiles",
 ]
