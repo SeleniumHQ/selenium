@@ -54,7 +54,7 @@ jobs:
         run: |
           tox -c py/tox.ini || true
         env:
-          TOXENV: mypy
+          TOXENV: typecheck
 
   unit-tests:
     name: Unit Tests
