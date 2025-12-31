@@ -19,7 +19,7 @@ permissions:
 jobs:
   docs:
     name: Documentation
-    if: false
+    if: ${{ inputs.run-full-suite }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -40,7 +40,7 @@ jobs:
 
   typing:
     name: Type Checker
-    if: false
+    if: ${{ inputs.run-full-suite }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -61,7 +61,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    if: false
+    if: ${{ inputs.run-full-suite }}
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -104,8 +104,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [firefox]
+        browser: [chrome, firefox, chrome-remote]
         os: [windows]
+        include:
+          - browser: safari
+            os: macos
     with:
       name: Browser Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -120,5 +123,4 @@ jobs:
         --pin_browsers=false
         --test_env=SE_SKIP_DRIVER_IN_PATH
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
-        --test_env=SE_DEBUG=true
-        //py:test-firefox-bidi-test/selenium/webdriver/common/bidi_emulation_tests.py
+        ${{ needs.filter-targets.outputs.targets }}

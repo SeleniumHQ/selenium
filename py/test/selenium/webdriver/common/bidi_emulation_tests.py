@@ -45,23 +45,10 @@ def get_browser_timezone_offset(driver):
 
 
 def get_browser_geolocation(driver, user_context=None):
-    info = driver.execute_script("""
-        return {
-            url: window.location.href,
-            origin: window.location.origin,
-            protocol: window.location.protocol,
-            secure: window.isSecureContext === true,
-            hasGeo: !!navigator.geolocation
-        };
-    """)
-    if not info.get("secure"):
-        pytest.fail(f"Geolocation requires a secure context. info={info}, user_context={user_context}")
-    if not info.get("hasGeo"):
-        pytest.fail(f"Geolocation is unavailable. info={info}, user_context={user_context}")
+    origin = driver.execute_script("return window.location.origin;")
+    driver.permissions.set_permission("geolocation", PermissionState.GRANTED, origin, user_context=user_context)
 
-    driver.permissions.set_permission("geolocation", PermissionState.GRANTED, info["origin"], user_context=user_context)
-
-    result = driver.execute_async_script("""
+    return driver.execute_async_script("""
         const callback = arguments[arguments.length - 1];
         navigator.geolocation.getCurrentPosition(
             position => {
@@ -79,13 +66,9 @@ def get_browser_geolocation(driver, user_context=None):
             },
             error => {
                 callback({ error: error.message });
-            },
-            { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }
+            }
         );
     """)
-    if result is None or not isinstance(result, dict):
-        pytest.fail(f"Geolocation callback returned {result!r}. info={info}, user_context={user_context}")
-    return result
 
 
 def get_browser_locale(driver):
@@ -141,8 +124,6 @@ def test_set_geolocation_override_with_coordinates_in_context(driver, pages):
 
     driver.emulation.set_geolocation_override(coordinates=coords, contexts=[context_id])
 
-    driver.refresh()
-
     result = get_browser_geolocation(driver)
 
     assert "error" not in result, f"Geolocation error: {result.get('error')}"
@@ -157,12 +138,12 @@ def test_set_geolocation_override_with_coordinates_in_user_context(driver, pages
 
     context_id = driver.browsing_context.create(type=WindowTypes.TAB, user_context=user_context)
 
+    driver.switch_to.window(context_id)
+    pages.load("blank.html")
+
     coords = GeolocationCoordinates(45.5, -122.4194, accuracy=10.0)
 
     driver.emulation.set_geolocation_override(coordinates=coords, user_contexts=[user_context])
-
-    driver.switch_to.window(context_id)
-    pages.load("blank.html")
 
     result = get_browser_geolocation(driver, user_context=user_context)
 
@@ -183,8 +164,6 @@ def test_set_geolocation_override_all_coords(driver, pages):
     )
 
     driver.emulation.set_geolocation_override(coordinates=coords, contexts=[context_id])
-
-    driver.refresh()
 
     result = get_browser_geolocation(driver)
 
