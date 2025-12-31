@@ -104,7 +104,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, chrome-bidi, chrome-remote]
+        browser: [chrome, firefox, chrome-remote]
         os: [windows]
         include:
           - browser: safari
