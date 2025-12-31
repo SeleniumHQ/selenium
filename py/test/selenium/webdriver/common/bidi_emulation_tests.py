@@ -141,6 +141,8 @@ def test_set_geolocation_override_with_coordinates_in_context(driver, pages):
 
     driver.emulation.set_geolocation_override(coordinates=coords, contexts=[context_id])
 
+    driver.refresh()
+
     result = get_browser_geolocation(driver)
 
     assert "error" not in result, f"Geolocation error: {result.get('error')}"
@@ -181,6 +183,8 @@ def test_set_geolocation_override_all_coords(driver, pages):
     )
 
     driver.emulation.set_geolocation_override(coordinates=coords, contexts=[context_id])
+
+    driver.refresh()
 
     result = get_browser_geolocation(driver)
 
