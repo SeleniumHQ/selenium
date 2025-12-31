@@ -3,6 +3,7 @@ backports.tarfile==1.2.0
 certifi==2025.11.12
 cffi==2.0.0
 charset-normalizer==3.4.4
+colorama==0.4.6
 cryptography==46.0.3
 docutils==0.21.2
 exceptiongroup==1.3.1
