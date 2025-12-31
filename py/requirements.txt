@@ -32,6 +32,7 @@ pytest==9.0.2
 pytest-instafail==0.5.0
 pytest-mock==3.15.1
 pytest-trio==0.8.0
+pywin32-ctypes==0.2.3
 readme_renderer==44.0
 requests==2.32.5
 requests-toolbelt==1.0.0
