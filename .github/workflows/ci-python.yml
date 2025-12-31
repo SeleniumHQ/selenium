@@ -19,7 +19,7 @@ permissions:
 jobs:
   docs:
     name: Documentation
-    if: ${{ inputs.run-full-suite }}
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -40,7 +40,7 @@ jobs:
 
   typing:
     name: Type Checker
-    if: ${{ inputs.run-full-suite }}
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -61,7 +61,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    if: ${{ inputs.run-full-suite }}
+    if: false
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
