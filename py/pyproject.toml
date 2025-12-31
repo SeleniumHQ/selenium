@@ -142,11 +142,6 @@ warn_return_any = false
 # Shows a warning when encountering any code inferred to be unreachable after performing type analysis.
 warn_unreachable = false
 
-# mypy module specific options
-[[tool.mypy.trio_websocket]]
-# suppress error messages about imports that cannot be resolved.
-ignore_missing_imports = true
-
 [tool.ruff]
 extend-exclude = [
     "selenium/webdriver/common/devtools/",

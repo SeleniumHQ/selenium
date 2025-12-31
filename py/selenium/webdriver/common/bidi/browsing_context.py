@@ -984,8 +984,8 @@ class BrowsingContext:
     def set_viewport(
         self,
         context: str | None = None,
-        viewport: dict | None | UNDEFINED = UNDEFINED,
-        device_pixel_ratio: float | None | UNDEFINED = UNDEFINED,
+        viewport: dict | None | Sentinel = UNDEFINED,
+        device_pixel_ratio: float | None | Sentinel = UNDEFINED,
         user_contexts: list[str] | None = None,
     ) -> None:
         """Modifies specific viewport characteristics on the given top-level traversable.
