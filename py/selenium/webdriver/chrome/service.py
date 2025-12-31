@@ -46,7 +46,7 @@ class Service(service.ChromiumService):
         env: Mapping[str, str] | None = None,
         **kwargs,
     ) -> None:
-        self._service_args = service_args or []
+        self._service_args = list(service_args or [])
 
         super().__init__(
             executable_path=executable_path,

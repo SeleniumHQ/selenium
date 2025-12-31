@@ -42,6 +42,22 @@ changelog = "https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES"
 documentation = "https://www.selenium.dev/documentation/webdriver"
 issues = "https://github.com/SeleniumHQ/selenium/issues"
 
+[dependency-groups]
+lint = [
+    "ruff==0.14.10",
+]
+typecheck = [
+    "mypy==1.19.1",
+    "types-urllib3==1.26.25.14",
+    "types-certifi==2021.10.8.3",
+    "trio-typing==0.10.0",
+    "trio-websocket>=0.12.2,<1.0",
+]
+validate = [
+    "validate-pyproject==0.24.1",
+    "packaging==25.0",
+]
+
 [tool.setuptools]
 zip-safe = false
 
@@ -125,15 +141,6 @@ warn_unused_ignores = true
 warn_return_any = false
 # Shows a warning when encountering any code inferred to be unreachable after performing type analysis.
 warn_unreachable = false
-
-# mypy module specific options
-[[tool.mypy.trio_websocket]]
-# suppress error messages about imports that cannot be resolved.
-ignore_missing_imports = true
-
-[[tool.mypy._winreg]]
-# suppress error messages about imports that cannot be resolved.
-ignore_missing_imports = true
 
 [tool.ruff]
 extend-exclude = [
