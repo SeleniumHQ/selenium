@@ -415,6 +415,8 @@ class RemoteConnection:
         Returns:
             A dictionary with the server's parsed JSON response.
         """
+        if self._client_config is None:
+            raise RuntimeError("ClientConfig not initialized")
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self._client_config.keep_alive)
         auth_header = self._client_config.get_auth_header()
