@@ -78,7 +78,6 @@ jobs:
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SE_AVOID_STATS: true
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
