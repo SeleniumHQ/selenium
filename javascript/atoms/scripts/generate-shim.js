@@ -1,21 +1,3 @@
-// Licensed to the Software Freedom Conservancy (SFC) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The SFC licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-
 #!/usr/bin/env node
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -78,7 +60,12 @@ const FILE_DEPS_MAP = {
   'error': ['goog.utils'],  // error.ts uses goog.utils.inherits
   'response': ['bot.Error', 'bot.ErrorCode'],
   'color': [],
-  'userAgent': [],
+  'userAgent': [
+    'goog.string',
+    'goog.userAgent',
+    'goog.userAgent.product',
+    'goog.userAgent.product.isVersion',
+  ],
   'json': ['bot.userAgent'],
   'domcore': ['bot.Error', 'bot.userAgent'],
   'dom': ['bot', 'bot.color', 'bot.dom.core', 'bot.userAgent'],
@@ -151,7 +138,7 @@ try {
 
 // Files that should use "bundle mode" - the entire compiled JS is included
 // as an IIFE, and exports are assigned to the namespace
-const BUNDLE_MODE_FILES = ['color'];
+const BUNDLE_MODE_FILES = ['color', 'userAgent'];
 
 /**
  * Parses TypeScript to extract detailed export information.
@@ -465,7 +452,7 @@ function applySymbolReplacements(code, replacements) {
  * Generates a bundle-mode shim that includes the entire compiled JS
  * wrapped in an IIFE, with exports assigned to the namespace.
  */
-function generateBundleModeShim(shimHeader, namespace, exports, compiledJs) {
+function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, basename) {
   let shim = shimHeader;
 
   // Strip the ES module export and source map comment from compiled JS
@@ -496,6 +483,38 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs) {
   });
 
   shim += `})();\n`;
+
+  // Special handling for userAgent: delegate version functions to Closure
+  // This ensures consistency with goog.userAgent.product.VERSION used by tests
+  if (basename === 'userAgent') {
+    shim += `
+// Override version functions to use Closure's implementation for consistency
+// with tests that compare against goog.userAgent.product.VERSION
+/**
+ * @param {string|number} version
+ * @return {boolean}
+ */
+bot.userAgent.isEngineVersion = function(version) {
+  if (goog.userAgent.IE) {
+    return goog.string.compareVersions(
+        /** @type {number} */ (goog.userAgent.DOCUMENT_MODE), version) >= 0;
+  }
+  return goog.userAgent.isVersionOrHigher(version);
+};
+
+/**
+ * @param {string|number} version
+ * @return {boolean}
+ */
+bot.userAgent.isProductVersion = function(version) {
+  if (goog.userAgent.product.ANDROID) {
+    return goog.string.compareVersions(
+        bot.userAgent.ANDROID_VERSION_, version) >= 0;
+  }
+  return goog.userAgent.product.isVersion(version);
+};
+`;
+  }
 
   return shim;
 }
@@ -560,7 +579,7 @@ function generateShim(tsFile, namespace, compiledJsPath) {
 
   // Bundle mode: include entire compiled JS and assign exports to namespace
   if (BUNDLE_MODE_FILES.includes(basename)) {
-    return generateBundleModeShim(shim, namespace, exports, compiledJs);
+    return generateBundleModeShim(shim, namespace, exports, compiledJs, basename);
   }
 
   // 0. Include module-level initialization code if needed

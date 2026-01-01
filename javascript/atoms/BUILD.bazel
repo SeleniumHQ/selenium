@@ -304,9 +304,9 @@ closure_js_library(
 
 closure_js_library(
     name = "useragent",
-    srcs = ["userAgent.js"],
+    srcs = [":generate_userAgent_shim"],
     suppress = [
-        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
@@ -526,5 +526,36 @@ js_run_binary(
         "$(location dist/color.js)",
     ],
     stdout = "color.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# userAgent.ts - User agent detection (uses inlined ua-parser-js patterns, MIT licensed)
+# Note: We inline the detection patterns rather than bundling the npm package
+# because Closure Compiler cannot process esbuild's bundle format.
+# ----------------------------------------------------------------------------
+ts_project(
+    name = "userAgent_ts",
+    srcs = ["userAgent.ts"],
+    declaration = True,
+    declaration_map = True,
+    out_dir = "dist",
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+)
+
+js_run_binary(
+    name = "generate_userAgent_shim",
+    srcs = [
+        "userAgent.ts",
+        "dist/userAgent.js",
+    ],
+    args = [
+        "$(location userAgent.ts)",
+        "bot.userAgent",
+        "$(location dist/userAgent.js)",
+    ],
+    stdout = "userAgent.js",
     tool = ":shim_generator",
 )
