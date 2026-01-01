@@ -217,7 +217,7 @@ closure_js_library(
 
 closure_js_library(
     name = "inject",
-    srcs = ["inject.js"],
+    srcs = [":generate_inject_shim"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
@@ -230,14 +230,8 @@ closure_js_library(
         "//javascript/webdriver/atoms/inject:__pkg__",
     ],
     deps = [
-        ":bot",
         ":errors",
         ":json",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/object",
-        "//third_party/closure/goog/useragent",
-        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -441,6 +435,7 @@ ts_project(
         "dom.ts",
         "domcore.ts",
         "error.ts",
+        "inject.ts",
         "json.ts",
         "locators/classname.ts",
         "locators/css.ts",
@@ -743,5 +738,24 @@ js_run_binary(
         "$(location dist/locators/locators.js)",
     ],
     stdout = "locators/locators.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# inject.ts - Script injection utilities shim generation
+# Note: inject.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_inject_shim",
+    srcs = [
+        "dist/inject.js",
+        "inject.ts",
+    ],
+    args = [
+        "$(location inject.ts)",
+        "bot.inject",
+        "$(location dist/inject.js)",
+    ],
+    stdout = "inject.js",
     tool = ":shim_generator",
 )

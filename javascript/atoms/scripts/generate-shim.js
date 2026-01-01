@@ -91,6 +91,7 @@ const FILE_DEPS_MAP = {
   'xpath': ['bot.Error', 'bot.ErrorCode'],
   'relative': ['bot.Error', 'bot.ErrorCode', 'bot.dom'],
   'locators': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.locators.className', 'bot.locators.css', 'bot.locators.id', 'bot.locators.linkText', 'bot.locators.name', 'bot.locators.partialLinkText', 'bot.locators.relative', 'bot.locators.tagName', 'bot.locators.xpath'],
+  'inject': ['bot.Error', 'bot.ErrorCode', 'bot.json'],
 };
 
 // Export rename mapping: TypeScript export name -> Closure export name
@@ -105,6 +106,7 @@ const EXPORT_RENAME_MAP = {
 const ADDITIONAL_PROVIDES_MAP = {
   'error': ['bot.Error', 'bot.ErrorCode'],
   'response': ['bot.response', 'bot.response.ResponseObject'],
+  'inject': ['bot.inject', 'bot.inject.cache'],
 };
 
 // Import alias mapping: maps TypeScript import names to their Closure equivalents
@@ -181,6 +183,11 @@ const SYMBOL_REPLACEMENTS = {
     'BotError': 'bot.Error',
     'ErrorCode': 'bot.ErrorCode',
   },
+  'inject': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'stringify': 'bot.json.stringify',
+  },
 };
 
 // Defines which exports are "nested" under another export
@@ -208,14 +215,6 @@ try {
 }
 `,
 };
-
-// Files that should use "bundle mode" - the entire compiled JS is included
-// as an IIFE, and exports are assigned to the namespace
-const BUNDLE_MODE_FILES = [
-  'color', 'userAgent', 'json', 'domcore', 'css', 'dom',
-  // Locator modules (except locators.ts which needs special handling)
-  'id', 'name', 'classname', 'tag_name', 'link_text', 'xpath', 'relative',
-];
 
 // Additional exports needed for specific files (exports not in the main exports list)
 const ADDITIONAL_EXPORTS_MAP = {
@@ -289,6 +288,13 @@ const SPECIAL_NAMESPACE_HANDLERS = {
     return shim;
   }
 };
+
+const BUNDLE_MODE_FILES = [
+  'color', 'userAgent', 'json', 'domcore', 'css', 'dom',
+  // Locator modules (except locators.ts which needs special handling)
+  'id', 'name', 'classname', 'tag_name', 'link_text', 'xpath', 'relative',
+  'inject',
+];
 
 /**
  * Parses TypeScript to extract detailed export information.
@@ -810,15 +816,36 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
 
   shim += '\n';
 
-  // Assign exported functions to the namespace
-  exports.functions.forEach((fn) => {
-    shim += `  ${namespace}.${fn.name} = ${fn.name};\n`;
-  });
+  // Special handling for inject: assign to both bot.inject and bot.inject.cache namespaces
+  if (basename === 'inject') {
+    shim += `
+  // Assign cache functions to bot.inject.cache namespace
+  bot.inject.cache.CACHE_KEY_ = CACHE_KEY;
+  bot.inject.cache.ELEMENT_KEY_PREFIX = ELEMENT_KEY_PREFIX;
+  bot.inject.cache.addElement = addElement;
+  bot.inject.cache.getElement = getElement;
 
-  // Assign exported constants to the namespace
-  exports.constants.forEach((c) => {
-    shim += `  ${namespace}.${c.name} = ${c.name};\n`;
-  });
+  // Assign main functions to bot.inject namespace
+  bot.inject.ELEMENT_KEY = ELEMENT_KEY;
+  bot.inject.WINDOW_KEY = WINDOW_KEY;
+  bot.inject.wrapValue = wrapValue;
+  bot.inject.unwrapValue = unwrapValue;
+  bot.inject.wrapResponse = wrapResponse;
+  bot.inject.wrapError = wrapError;
+  bot.inject.executeScript = executeScript;
+  bot.inject.executeAsyncScript = executeAsyncScript;
+`;
+  } else {
+    // Assign exported functions to the namespace
+    exports.functions.forEach((fn) => {
+      shim += `  ${namespace}.${fn.name} = ${fn.name};\n`;
+    });
+
+    // Assign exported constants to the namespace
+    exports.constants.forEach((c) => {
+      shim += `  ${namespace}.${c.name} = ${c.name};\n`;
+    });
+  }
 
   // Assign additional exports if defined for this file
   const additionalExports = ADDITIONAL_EXPORTS_MAP[basename] || [];
