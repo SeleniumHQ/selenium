@@ -106,20 +106,14 @@ closure_js_library(
 
 closure_js_library(
     name = "domcore",
-    srcs = ["domcore.js"],
+    srcs = [":generate_domcore_shim"],
     suppress = [
-        "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":errors",
         ":useragent",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:tagname",
     ],
 )
 
@@ -260,14 +254,9 @@ closure_js_library(
 
 closure_js_library(
     name = "json",
-    srcs = ["json.js"],
+    srcs = [":generate_json_shim"],
     suppress = [
         "JSC_USE_OF_GOOG_PROVIDE",
-    ],
-    deps = [
-        ":useragent",
-        "//third_party/closure/goog/json",
-        "//third_party/closure/goog/useragent",
     ],
 )
 
@@ -338,21 +327,13 @@ closure_js_library(
 
 closure_js_library(
     name = "css",
-    srcs = ["locators/css.js"],
+    srcs = [":generate_css_shim"],
     suppress = [
-        "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
-        ":bot",
         ":errors",
-        ":useragent",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/useragent",
-        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -453,14 +434,17 @@ js_run_binary(
 )
 
 # ----------------------------------------------------------------------------
-# error.ts + response.ts - Error handling (response depends on error)
-# These are compiled together since response.ts imports from error.ts
+# Core TypeScript modules that depend on each other
+# These are compiled together since they have cross-imports
 # ----------------------------------------------------------------------------
 ts_project(
     name = "errors_ts",
     srcs = [
+        "domcore.ts",
         "error.ts",
+        "locators/css.ts",
         "response.ts",
+        "userAgent.ts",
     ],
     declaration = True,
     declaration_map = True,
@@ -530,21 +514,9 @@ js_run_binary(
 )
 
 # ----------------------------------------------------------------------------
-# userAgent.ts - User agent detection (uses inlined ua-parser-js patterns, MIT licensed)
-# Note: We inline the detection patterns rather than bundling the npm package
-# because Closure Compiler cannot process esbuild's bundle format.
+# userAgent.ts - User agent detection shim generation
+# Note: userAgent.ts is compiled as part of errors_ts since domcore.ts imports it
 # ----------------------------------------------------------------------------
-ts_project(
-    name = "userAgent_ts",
-    srcs = ["userAgent.ts"],
-    declaration = True,
-    declaration_map = True,
-    out_dir = "dist",
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-)
-
 js_run_binary(
     name = "generate_userAgent_shim",
     srcs = [
@@ -557,5 +529,73 @@ js_run_binary(
         "$(location dist/userAgent.js)",
     ],
     stdout = "userAgent.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# json.ts - JSON utilities (no TS dependencies)
+# ----------------------------------------------------------------------------
+ts_project(
+    name = "json_ts",
+    srcs = ["json.ts"],
+    declaration = True,
+    declaration_map = True,
+    out_dir = "dist",
+    resolve_json_module = True,
+    source_map = True,
+    tsconfig = "tsconfig.json",
+)
+
+js_run_binary(
+    name = "generate_json_shim",
+    srcs = [
+        "dist/json.js",
+        "json.ts",
+    ],
+    args = [
+        "$(location json.ts)",
+        "bot.json",
+        "$(location dist/json.js)",
+    ],
+    stdout = "json.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# domcore.ts - Core DOM utilities shim generation
+# Note: domcore.ts is compiled as part of errors_ts since it imports error.ts and userAgent.ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_domcore_shim",
+    srcs = [
+        "dist/domcore.js",
+        "domcore.ts",
+    ],
+    args = [
+        "$(location domcore.ts)",
+        "bot.dom.core",
+        "$(location dist/domcore.js)",
+    ],
+    stdout = "domcore.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# locators/css.ts - CSS selector utilities shim generation
+# Note: css.ts is compiled as part of errors_ts since it imports error.ts
+# Output is at dist/locators/css.js
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_css_shim",
+    srcs = [
+        "dist/locators/css.js",
+        "locators/css.ts",
+    ],
+    args = [
+        "$(location locators/css.ts)",
+        "bot.locators.css",
+        "$(location dist/locators/css.js)",
+    ],
+    stdout = "locators/css.js",
     tool = ":shim_generator",
 )

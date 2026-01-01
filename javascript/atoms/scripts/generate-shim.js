@@ -38,6 +38,7 @@ const NAMESPACE_MAP = {
   'bot': 'bot',
   'dom': 'bot.dom',
   'domcore': 'bot.dom.core',
+  'css': 'bot.locators.css',
   'action': 'bot.action',
   'mouse': 'bot.mouse',
   'keyboard': 'bot.keyboard',
@@ -66,8 +67,9 @@ const FILE_DEPS_MAP = {
     'goog.userAgent.product',
     'goog.userAgent.product.isVersion',
   ],
-  'json': ['bot.userAgent'],
-  'domcore': ['bot.Error', 'bot.userAgent'],
+  'json': [],
+  'domcore': ['bot.Error', 'bot.ErrorCode', 'bot.userAgent'],
+  'css': ['bot.Error', 'bot.ErrorCode'],
   'dom': ['bot', 'bot.color', 'bot.dom.core', 'bot.userAgent'],
   'action': ['bot', 'bot.dom', 'bot.Error', 'bot.events'],
   'events': ['bot', 'bot.dom', 'bot.Error', 'bot.userAgent'],
@@ -108,6 +110,16 @@ const SYMBOL_REPLACEMENTS = {
     'ErrorCode': 'bot.ErrorCode',
     'isResponseObject': 'bot.response.isResponseObject',
   },
+  'domcore': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'IE_DOC_PRE8': 'bot.userAgent.IE_DOC_PRE8',
+    'IE_DOC_PRE9': 'bot.userAgent.IE_DOC_PRE9',
+  },
+  'css': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+  },
 };
 
 // Defines which exports are "nested" under another export
@@ -138,7 +150,7 @@ try {
 
 // Files that should use "bundle mode" - the entire compiled JS is included
 // as an IIFE, and exports are assigned to the namespace
-const BUNDLE_MODE_FILES = ['color', 'userAgent'];
+const BUNDLE_MODE_FILES = ['color', 'userAgent', 'json', 'domcore', 'css'];
 
 /**
  * Parses TypeScript to extract detailed export information.
@@ -455,11 +467,18 @@ function applySymbolReplacements(code, replacements) {
 function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, basename) {
   let shim = shimHeader;
 
-  // Strip the ES module export and source map comment from compiled JS
+  // Get symbol replacements for this file
+  const symbolReplacements = SYMBOL_REPLACEMENTS[basename] || {};
+
+  // Strip the ES module import/export and source map comment from compiled JS
   let moduleCode = compiledJs
+    .replace(/^import\s+\{[^}]+\}\s+from\s+['"][^'"]+['"];?\s*$/gm, '')  // Remove import statements
     .replace(/^export\s+/gm, '')
     .replace(/\/\/# sourceMappingURL=.*$/m, '')
     .trim();
+
+  // Apply symbol replacements for imported symbols
+  moduleCode = applySymbolReplacements(moduleCode, symbolReplacements);
 
   // Wrap in IIFE to create a scope for the private symbols
   shim += `(function() {\n`;
