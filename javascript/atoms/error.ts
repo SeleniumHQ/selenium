@@ -23,8 +23,10 @@
 /**
  * Error codes from the Selenium WebDriver protocol:
  * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#response-status-codes
+ *
+ * Using const enum for better tree-shaking once isolatedModules is disabled.
  */
-export enum ErrorCode {
+export const enum ErrorCode {
   SUCCESS = 0,
 
   NO_SUCH_ELEMENT = 7,
@@ -61,8 +63,10 @@ export enum ErrorCode {
 /**
  * Status strings enumerated in the W3C WebDriver protocol.
  * @see https://w3c.github.io/webdriver/webdriver-spec.html#handling-errors
+ *
+ * Using const enum for better tree-shaking once isolatedModules is disabled.
  */
-export enum State {
+export const enum State {
   ELEMENT_NOT_SELECTABLE = 'element not selectable',
   ELEMENT_NOT_VISIBLE = 'element not visible',
   INVALID_ARGUMENT = 'invalid argument',

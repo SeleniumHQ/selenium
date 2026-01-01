@@ -176,8 +176,8 @@ function parseExports(tsContent) {
     privateConstants: [],
   };
 
-  // Parse enums
-  const enumRegex = /export\s+enum\s+(\w+)\s*\{([^}]+)\}/g;
+  // Parse enums (including const enum)
+  const enumRegex = /export\s+(?:const\s+)?enum\s+(\w+)\s*\{([^}]+)\}/g;
   let match;
   while ((match = enumRegex.exec(tsContent)) !== null) {
     const enumName = match[1];

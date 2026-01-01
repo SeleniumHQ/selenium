@@ -28,6 +28,13 @@ The wrapper pattern ensures:
 - The fragment never pollutes the global scope
 - The inner function runs with `this === window` so navigator/document are accessible
 - The exported function is returned and can be called with arguments
+
+NOTE: esbuild fragments are currently ~50% larger than Closure Compiler fragments
+due to less aggressive minification (no property renaming) and module-level
+tree-shaking vs statement-level. This will be addressed when we:
+1. Complete the migration away from Closure Compiler
+2. Switch to const enums with isolatedModules: false
+3. Optionally add terser as a post-processing step
 """
 
 load("@aspect_rules_esbuild//esbuild:defs.bzl", "esbuild")
@@ -51,7 +58,6 @@ def ts_fragment(
     """
 
     # Step 1: Bundle with esbuild (tree-shaking + minification)
-    # We use IIFE format and the output will be wrapped further
     bundle_name = "_%s_bundle" % name
     esbuild(
         name = bundle_name,
@@ -62,13 +68,17 @@ def ts_fragment(
         format = "iife",
         platform = "browser",
         target = "es2015",
-        # Output a single file
         output = "%s_bundle.js" % name,
+        config = {
+            "treeShaking": True,
+            "ignoreAnnotations": False,
+        },
+        # Disable sandbox plugin to allow resolving sources from other packages
+        bazel_sandbox_plugin = False,
         **kwargs
     )
 
     # Step 2: Wrap the bundle in the Selenium fragment pattern
-    # We use $(rootpaths) since esbuild may output multiple files (js + map)
     js_run_binary(
         name = name,
         srcs = [":%s" % bundle_name],

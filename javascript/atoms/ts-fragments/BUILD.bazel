@@ -12,3 +12,11 @@ ts_fragment(
         "//javascript/atoms:color_ts",
     ],
 )
+
+ts_fragment(
+    name = "get-effective-style",
+    entry_point = "get-effective-style.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
