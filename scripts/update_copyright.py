@@ -32,6 +32,14 @@ under the License."""
             with open(file, "r", encoding="utf-8-sig") as f:
                 lines = f.readlines()
 
+            if not lines:
+                continue
+
+            shebang = None
+            if lines[0].startswith("#!"):
+                shebang = lines[0]
+                lines = lines[1:]
+
             index = -1
             for i, line in enumerate(lines):
                 if line.startswith(
@@ -42,11 +50,11 @@ under the License."""
                     break
 
             if index == -1:
-                self.write_update_notice(file, lines)
+                self.write_update_notice(file, lines, shebang)
             else:
                 current = "".join(lines[: index + 1])
                 if current != self.copyright_notice(file):
-                    self.write_update_notice(file, lines[index + 1 :])
+                    self.write_update_notice(file, lines[index + 1 :], shebang)
 
     def valid_copyright_notice_line(self, line, index, file):
         return index + 1 < len(self.copyright_notice_lines(file)) and line.startswith(
@@ -76,9 +84,11 @@ under the License."""
             for line in self.NOTICE.split("\n")
         ]
 
-    def write_update_notice(self, file, lines):
+    def write_update_notice(self, file, lines, shebang=None):
         print(f"Adding notice to {file}")
         with open(file, "w") as f:
+            if shebang:
+                f.write(shebang)
             f.write(self.copyright_notice(file) + "\n")
             if lines and lines[0] != "\n":
                 f.write("\n")
