@@ -20,3 +20,51 @@ ts_fragment(
         "//javascript/atoms:errors_ts",
     ],
 )
+
+ts_fragment(
+    name = "get-text",
+    entry_point = "get-text.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "is-displayed",
+    entry_point = "is-displayed.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "is-editable",
+    entry_point = "is-editable.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "is-enabled",
+    entry_point = "is-enabled.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "is-focusable",
+    entry_point = "is-focusable.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "is-interactable",
+    entry_point = "is-interactable.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
