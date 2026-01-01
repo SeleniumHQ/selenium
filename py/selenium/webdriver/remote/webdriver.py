@@ -1045,6 +1045,8 @@ class WebDriver(BaseWebDriver):
         if not ws_url:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
+        if cdp is None:
+            raise WebDriverException("CDP module not loaded")
         self._devtools = cdp.import_devtools(version)
         if self._websocket_connection:
             return self._devtools, self._websocket_connection
