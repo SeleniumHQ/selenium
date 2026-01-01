@@ -202,8 +202,11 @@ mocha_test(
             env = {
                 "SELENIUM_BROWSER": browser,
             } | BROWSERS[browser]["env"],
-            tags = [
-                browser,
+            tags = (
+                ["%s-bidi" % browser]
+                if test.startswith("test/bidi/")
+                else [browser]
+            ) + [
                 "browser-test",
                 "no-sandbox",
                 "requires-network",

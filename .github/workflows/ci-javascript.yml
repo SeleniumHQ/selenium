@@ -7,12 +7,30 @@ on:
         required: false
         type: string
         default: ''
+      run-full-suite:
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  unit-tests:
+    name: Unit Tests
+    if: ${{ inputs.run-full-suite }}
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Unit Tests
+      os: ubuntu
+      run: >
+        bazel test
+        --keep_going
+        --build_tests_only
+        --test_size_filters=small
+        ${{ needs.filter-targets.outputs.targets }}
+
   filter-targets:
     name: Filter Targets
     runs-on: ubuntu-latest
@@ -40,17 +58,23 @@ jobs:
     name: Browser Tests
     needs: filter-targets
     uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox, chrome-bidi, firefox-bidi]
+        os: [windows]
     with:
-      name: Browser Tests
-      os: windows
-      browser: true
+      name: Browser Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      os: ${{ matrix.os }}
+      browser: ${{ matrix.browser }}
       run: >
         bazel test
         --keep_going
         --build_tests_only
         --flaky_test_attempts 3
         --local_test_jobs 1
-        --test_tag_filters=-lint
+        --test_size_filters=large
+        --test_tag_filters=${{ matrix.browser }}
         --pin_browsers=false
         --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
         --test_env=SE_SKIP_DRIVER_IN_PATH=true

@@ -116,6 +116,13 @@ jobs:
     uses: ./.github/workflows/ci-javascript.yml
     with:
       targets: ${{ needs.check.outputs.targets }}
+      run-full-suite: >-
+        ${{
+          github.event_name == 'schedule' ||
+          github.event_name == 'workflow_dispatch' ||
+          github.event_name == 'workflow_call' ||
+          contains(github.event.pull_request.title, '[js]')
+        }}
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
