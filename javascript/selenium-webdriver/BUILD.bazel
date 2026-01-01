@@ -120,7 +120,7 @@ COMMON_TESTS = glob(
               EDGE_SPECIFIC +
               FIREFOX_SPECIFIC +
               IE_SPECIFIC +
-              SAFARI_SPECIFIC
+              SAFARI_SPECIFIC,
 )
 
 BROWSER_TESTS = {
@@ -203,9 +203,7 @@ mocha_test(
                 "SELENIUM_BROWSER": browser,
             } | BROWSERS[browser]["env"],
             tags = (
-                ["%s-bidi" % browser]
-                if test.startswith("test/bidi/")
-                else [browser]
+                ["%s-bidi" % browser] if test.startswith("test/bidi/") else [browser]
             ) + [
                 "browser-test",
                 "no-sandbox",
