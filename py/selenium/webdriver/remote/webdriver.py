@@ -1052,10 +1052,10 @@ class WebDriver(BaseWebDriver):
             return self._devtools, self._websocket_connection
         if self.caps["browserName"].lower() == "firefox":
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
-        
+
         if not isinstance(self.command_executor, RemoteConnection):
             raise WebDriverException("command_executor must be a RemoteConnection instance for CDP support")
-        
+
         self._websocket_connection = WebSocketConnection(
             ws_url,
             self.command_executor.client_config.websocket_timeout,
