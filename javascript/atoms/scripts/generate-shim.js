@@ -53,6 +53,15 @@ const NAMESPACE_MAP = {
   'inject': 'bot.inject',
   'frame': 'bot.frame',
   'window': 'bot.window',
+  // Locator modules
+  'id': 'bot.locators.id',
+  'name': 'bot.locators.name',
+  'classname': 'bot.locators.className',
+  'tag_name': 'bot.locators.tagName',
+  'link_text': 'bot.locators.linkText',
+  'xpath': 'bot.locators.xpath',
+  'relative': 'bot.locators.relative',
+  'locators': 'bot.locators',
 };
 
 // Dependencies mapping by file (not namespace) - which Closure modules each file requires
@@ -73,6 +82,15 @@ const FILE_DEPS_MAP = {
   'dom': ['bot.dom.core', 'bot.color', 'bot.userAgent', 'bot.locators.css'],
   'action': ['bot', 'bot.dom', 'bot.Error', 'bot.events'],
   'events': ['bot', 'bot.dom', 'bot.Error', 'bot.userAgent'],
+  // Locator modules
+  'id': ['bot.dom.core'],
+  'name': ['bot.dom.core'],
+  'classname': ['bot.Error', 'bot.ErrorCode'],
+  'tag_name': ['bot.Error', 'bot.ErrorCode'],
+  'link_text': ['bot.dom', 'bot.locators.css'],
+  'xpath': ['bot.Error', 'bot.ErrorCode'],
+  'relative': ['bot.Error', 'bot.ErrorCode', 'bot.dom'],
+  'locators': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.locators.className', 'bot.locators.css', 'bot.locators.id', 'bot.locators.linkText', 'bot.locators.name', 'bot.locators.partialLinkText', 'bot.locators.relative', 'bot.locators.tagName', 'bot.locators.xpath'],
 };
 
 // Export rename mapping: TypeScript export name -> Closure export name
@@ -131,6 +149,38 @@ const SYMBOL_REPLACEMENTS = {
     'isEngineVersion': 'bot.userAgent.isEngineVersion',
     'cssSingle': 'bot.locators.css.single',
   },
+  // Locator modules
+  'id': {
+    'getAttribute': 'bot.dom.core.getAttribute',
+  },
+  'name': {
+    'getAttribute': 'bot.dom.core.getAttribute',
+  },
+  'classname': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+  },
+  'tag_name': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+  },
+  'link_text': {
+    'getVisibleText': 'bot.dom.getVisibleText',
+    'cssMany': 'bot.locators.css.many',
+  },
+  'xpath': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+  },
+  'relative': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'getClientRect': 'bot.dom.getClientRect',
+  },
+  'locators': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+  },
 };
 
 // Defines which exports are "nested" under another export
@@ -161,7 +211,84 @@ try {
 
 // Files that should use "bundle mode" - the entire compiled JS is included
 // as an IIFE, and exports are assigned to the namespace
-const BUNDLE_MODE_FILES = ['color', 'userAgent', 'json', 'domcore', 'css', 'dom'];
+const BUNDLE_MODE_FILES = [
+  'color', 'userAgent', 'json', 'domcore', 'css', 'dom',
+  // Locator modules (except locators.ts which needs special handling)
+  'id', 'name', 'classname', 'tag_name', 'link_text', 'xpath', 'relative',
+];
+
+// Additional exports needed for specific files (exports not in the main exports list)
+const ADDITIONAL_EXPORTS_MAP = {
+  'relative': ['setFindElement', 'setFindElements'],
+};
+
+// Files that need completely custom shims because they orchestrate other modules
+const ORCHESTRATOR_FILES = ['locators'];
+
+// Namespaces that need special handling due to complex exports
+// Keyed by namespace, not basename
+const SPECIAL_NAMESPACE_HANDLERS = {
+  // The partialLinkText shim needs to export the partialLinkText object's methods
+  // instead of the regular single/many exports from link_text.ts
+  'bot.locators.partialLinkText': function(shimHeader, compiledJs) {
+    let shim = shimHeader;
+    shim += `(function() {
+  /**
+   * Find an element by using the text value of a link.
+   */
+  function singleImpl(target, root, isPartial) {
+      let elements;
+      try {
+          elements = bot.locators.css.many('a', root);
+      }
+      catch (e) {
+          elements = root.getElementsByTagName('a');
+      }
+      const found = Array.from(elements).find(function(element) {
+          var text = bot.dom.getVisibleText(element);
+          text = text.replace(/^[\\s]+|[\\s]+$/g, '');
+          return (isPartial && text.indexOf(target) !== -1) || text === target;
+      });
+      return found || null;
+  }
+  /**
+   * Find many elements by using the value of the link text.
+   */
+  function manyImpl(target, root, isPartial) {
+      let elements;
+      try {
+          elements = bot.locators.css.many('a', root);
+      }
+      catch (e) {
+          elements = root.getElementsByTagName('a');
+      }
+      return Array.from(elements).filter(function(element) {
+          var text = bot.dom.getVisibleText(element);
+          text = text.replace(/^[\\s]+|[\\s]+$/g, '');
+          return (isPartial && text.indexOf(target) !== -1) || text === target;
+      });
+  }
+  /**
+   * @param {string} target
+   * @param {!(Document|Element)} root
+   * @return {Element}
+   */
+  bot.locators.partialLinkText.single = function(target, root) {
+      return singleImpl(target, root, true);
+  };
+  /**
+   * @param {string} target
+   * @param {!(Document|Element)} root
+   * @return {!IArrayLike}
+   */
+  bot.locators.partialLinkText.many = function(target, root) {
+      return manyImpl(target, root, true);
+  };
+})();
+`;
+    return shim;
+  }
+};
 
 /**
  * Parses TypeScript to extract detailed export information.
@@ -693,6 +820,12 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
     shim += `  ${namespace}.${c.name} = ${c.name};\n`;
   });
 
+  // Assign additional exports if defined for this file
+  const additionalExports = ADDITIONAL_EXPORTS_MAP[basename] || [];
+  additionalExports.forEach((exportName) => {
+    shim += `  ${namespace}.${exportName} = ${exportName};\n`;
+  });
+
   shim += `})();\n`;
 
   // Special handling for userAgent: delegate version functions to Closure
@@ -724,6 +857,123 @@ bot.userAgent.isProductVersion = function(version) {
   }
   return goog.userAgent.product.isVersion(version);
 };
+`;
+  }
+
+  return shim;
+}
+
+/**
+ * Generates a shim for orchestrator modules (like locators.ts) that coordinate
+ * other modules. These don't include any implementation code, just wire up
+ * the strategies from the dependent modules.
+ */
+function generateOrchestratorShim(shimHeader, namespace, exports, basename) {
+  let shim = shimHeader;
+
+  if (basename === 'locators') {
+    // Generate the locators orchestrator shim
+    shim += `/**
+ * @typedef {{single:function((string|!Object),!(Document|Element)):Element,
+ *     many:function((string|!Object),!(Document|Element)):!IArrayLike}}
+ */
+bot.locators.strategy;
+
+/**
+ * Known element location strategies.
+ * @private {!Object<string, bot.locators.strategy>}
+ * @const
+ */
+bot.locators.STRATEGIES_ = {
+  'className': bot.locators.className,
+  'class name': bot.locators.className,
+  'css': bot.locators.css,
+  'css selector': bot.locators.css,
+  'relative': bot.locators.relative,
+  'id': bot.locators.id,
+  'linkText': bot.locators.linkText,
+  'link text': bot.locators.linkText,
+  'name': bot.locators.name,
+  'partialLinkText': bot.locators.partialLinkText,
+  'partial link text': bot.locators.partialLinkText,
+  'tagName': bot.locators.tagName,
+  'tag name': bot.locators.tagName,
+  'xpath': bot.locators.xpath
+};
+
+/**
+ * Add or override an existing strategy for locating elements.
+ * @param {string} name The name of the strategy.
+ * @param {!bot.locators.strategy} strategy The strategy to use.
+ */
+bot.locators.add = function(name, strategy) {
+  bot.locators.STRATEGIES_[name] = strategy;
+};
+
+/**
+ * Returns one key from the object map that is not present in the
+ * Object.prototype, if any exists.
+ * @param {!Object} target The object to pick a key from.
+ * @return {?string} The key or null if the object is empty.
+ */
+bot.locators.getOnlyKey = function(target) {
+  for (var k in target) {
+    if (target.hasOwnProperty(k)) {
+      return k;
+    }
+  }
+  return null;
+};
+
+/**
+ * Find the first element in the DOM matching the target.
+ * @param {!Object} target The selector to search for.
+ * @param {(Document|Element)=} opt_root The node from which to start the search.
+ * @return {Element} The first matching element found in the DOM, or null.
+ */
+bot.locators.findElement = function(target, opt_root) {
+  var key = bot.locators.getOnlyKey(target);
+  if (key) {
+    var strategy = bot.locators.STRATEGIES_[key];
+    if (strategy && typeof strategy.single === 'function') {
+      var root = opt_root || bot.getDocument();
+      return strategy.single(target[key], root);
+    }
+  }
+  throw new bot.Error(bot.ErrorCode.INVALID_ARGUMENT,
+    'Unsupported locator strategy: ' + key);
+};
+
+/**
+ * Find all elements in the DOM matching the target.
+ * @param {!Object} target The selector to search for.
+ * @param {(Document|Element)=} opt_root The node from which to start the search.
+ * @return {!IArrayLike<Element>} All matching elements found in the DOM.
+ */
+bot.locators.findElements = function(target, opt_root) {
+  var key = bot.locators.getOnlyKey(target);
+  if (key) {
+    var strategy = bot.locators.STRATEGIES_[key];
+    if (strategy && typeof strategy.many === 'function') {
+      var root = opt_root || bot.getDocument();
+      return strategy.many(target[key], root);
+    }
+  }
+  throw new bot.Error(bot.ErrorCode.INVALID_ARGUMENT,
+    'Unsupported locator strategy: ' + key);
+};
+
+// Wire up relative locator with findElement/findElements
+// These functions are exposed by the TypeScript implementation
+/** @suppress {missingProperties} */
+(function() {
+  if (bot.locators.relative.setFindElement) {
+    bot.locators.relative.setFindElement(bot.locators.findElement);
+  }
+  if (bot.locators.relative.setFindElements) {
+    bot.locators.relative.setFindElements(bot.locators.findElements);
+  }
+})();
 `;
   }
 
@@ -787,6 +1037,16 @@ function generateShim(tsFile, namespace, compiledJsPath) {
   }
 
   const compiledJs = readCompiledJs(compiledJsPath);
+
+  // Special namespace handling: namespaces that need custom shim generation
+  if (SPECIAL_NAMESPACE_HANDLERS[namespace]) {
+    return SPECIAL_NAMESPACE_HANDLERS[namespace](shim, compiledJs);
+  }
+
+  // Orchestrator mode: these files coordinate other modules and need custom shims
+  if (ORCHESTRATOR_FILES.includes(basename)) {
+    return generateOrchestratorShim(shim, namespace, exports, basename);
+  }
 
   // Bundle mode: include entire compiled JS and assign exports to namespace
   if (BUNDLE_MODE_FILES.includes(basename)) {

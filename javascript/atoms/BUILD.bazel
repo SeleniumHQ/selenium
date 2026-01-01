@@ -251,10 +251,17 @@ closure_js_library(
 
 closure_js_library(
     name = "locators",
-    srcs = glob(
-        ["locators/*.js"],
-        exclude = ["locators/css.js"],
-    ),
+    srcs = [
+        ":generate_classname_shim",
+        ":generate_id_shim",
+        ":generate_link_text_shim",
+        ":generate_locators_shim",
+        ":generate_name_shim",
+        ":generate_partial_link_text_shim",
+        ":generate_relative_shim",
+        ":generate_tag_name_shim",
+        ":generate_xpath_shim",
+    ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_LATE_PROVIDE_ERROR",
@@ -265,6 +272,7 @@ closure_js_library(
         ":bot",
         ":css",
         ":dom",
+        ":domcore",
         ":errors",
         ":json",
         ":useragent",
@@ -434,7 +442,15 @@ ts_project(
         "domcore.ts",
         "error.ts",
         "json.ts",
+        "locators/classname.ts",
         "locators/css.ts",
+        "locators/id.ts",
+        "locators/link_text.ts",
+        "locators/locators.ts",
+        "locators/name.ts",
+        "locators/relative.ts",
+        "locators/tag_name.ts",
+        "locators/xpath.ts",
         "response.ts",
         "userAgent.ts",
     ],
@@ -588,5 +604,144 @@ js_run_binary(
         "$(location dist/dom.js)",
     ],
     stdout = "dom.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# Locator modules - TypeScript to Closure shim generation
+# ----------------------------------------------------------------------------
+
+js_run_binary(
+    name = "generate_id_shim",
+    srcs = [
+        "dist/locators/id.js",
+        "locators/id.ts",
+    ],
+    args = [
+        "$(location locators/id.ts)",
+        "bot.locators.id",
+        "$(location dist/locators/id.js)",
+    ],
+    stdout = "locators/id.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_name_shim",
+    srcs = [
+        "dist/locators/name.js",
+        "locators/name.ts",
+    ],
+    args = [
+        "$(location locators/name.ts)",
+        "bot.locators.name",
+        "$(location dist/locators/name.js)",
+    ],
+    stdout = "locators/name.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_classname_shim",
+    srcs = [
+        "dist/locators/classname.js",
+        "locators/classname.ts",
+    ],
+    args = [
+        "$(location locators/classname.ts)",
+        "bot.locators.className",
+        "$(location dist/locators/classname.js)",
+    ],
+    stdout = "locators/classname.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_tag_name_shim",
+    srcs = [
+        "dist/locators/tag_name.js",
+        "locators/tag_name.ts",
+    ],
+    args = [
+        "$(location locators/tag_name.ts)",
+        "bot.locators.tagName",
+        "$(location dist/locators/tag_name.js)",
+    ],
+    stdout = "locators/tag_name.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_link_text_shim",
+    srcs = [
+        "dist/locators/link_text.js",
+        "locators/link_text.ts",
+    ],
+    args = [
+        "$(location locators/link_text.ts)",
+        "bot.locators.linkText",
+        "$(location dist/locators/link_text.js)",
+    ],
+    stdout = "locators/link_text.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_partial_link_text_shim",
+    srcs = [
+        "dist/locators/link_text.js",
+        "locators/link_text.ts",
+    ],
+    args = [
+        "$(location locators/link_text.ts)",
+        "bot.locators.partialLinkText",
+        "$(location dist/locators/link_text.js)",
+    ],
+    stdout = "locators/partial_link_text.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_xpath_shim",
+    srcs = [
+        "dist/locators/xpath.js",
+        "locators/xpath.ts",
+    ],
+    args = [
+        "$(location locators/xpath.ts)",
+        "bot.locators.xpath",
+        "$(location dist/locators/xpath.js)",
+    ],
+    stdout = "locators/xpath.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_relative_shim",
+    srcs = [
+        "dist/locators/relative.js",
+        "locators/relative.ts",
+    ],
+    args = [
+        "$(location locators/relative.ts)",
+        "bot.locators.relative",
+        "$(location dist/locators/relative.js)",
+    ],
+    stdout = "locators/relative.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_locators_shim",
+    srcs = [
+        "dist/locators/locators.js",
+        "locators/locators.ts",
+    ],
+    args = [
+        "$(location locators/locators.ts)",
+        "bot.locators",
+        "$(location dist/locators/locators.js)",
+    ],
+    stdout = "locators/locators.js",
     tool = ":shim_generator",
 )
