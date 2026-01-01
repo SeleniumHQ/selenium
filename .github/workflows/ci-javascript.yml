@@ -29,7 +29,8 @@ jobs:
         --keep_going
         --build_tests_only
         --test_size_filters=small
-        ${{ needs.filter-targets.outputs.targets }}
+        //javascript/selenium-webdriver/...
+
 
   filter-targets:
     name: Filter Targets
