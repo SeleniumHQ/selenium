@@ -35,3 +35,11 @@ closure_bin.closure_make_deps_binary(
         "//third_party/closure/goog:__pkg__",
     ],
 )
+
+js_binary(
+    name = "fragment_wrapper",
+    entry_point = ":fragment_wrapper.js",
+    visibility = [
+        "//javascript:__subpackages__",
+    ],
+)

@@ -1,5 +1,17 @@
 load("//javascript:defs.bzl", "closure_fragment")
 
+# Temporary fragment for comparing Closure vs esbuild output sizes
+closure_fragment(
+    name = "standardize-color-closure",
+    defs = ["--jscomp_off=reportUnknownTypes"],
+    function = "bot.color.standardizeColor",
+    module = "bot.color",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//javascript/atoms:color",
+    ],
+)
+
 closure_fragment(
     name = "clear",
     function = "bot.action.clear",

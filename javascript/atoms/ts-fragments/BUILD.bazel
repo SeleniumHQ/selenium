@@ -1,0 +1,14 @@
+load("//javascript/private:ts_fragment.bzl", "ts_fragment")
+
+package(default_visibility = ["//visibility:public"])
+
+# Example TypeScript-based fragment using the modern esbuild approach.
+# This demonstrates the migration path away from Closure Compiler.
+
+ts_fragment(
+    name = "standardize-color",
+    entry_point = "standardize-color.ts",
+    deps = [
+        "//javascript/atoms:color_ts",
+    ],
+)

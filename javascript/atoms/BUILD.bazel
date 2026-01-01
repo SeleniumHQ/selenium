@@ -548,8 +548,8 @@ ts_project(
 js_run_binary(
     name = "generate_userAgent_shim",
     srcs = [
-        "userAgent.ts",
         "dist/userAgent.js",
+        "userAgent.ts",
     ],
     args = [
         "$(location userAgent.ts)",
