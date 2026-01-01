@@ -104,6 +104,30 @@ LARGE_TESTS = glob(
     exclude = SMALL_TESTS,
 )
 
+CHROME_SPECIFIC = glob(["test/chrome/**/*_test.js"])
+
+EDGE_SPECIFIC = glob(["test/edge/**/*_test.js"])
+
+FIREFOX_SPECIFIC = glob(["test/firefox/**/*_test.js"])
+
+IE_SPECIFIC = glob(["test/ie/**/*_test.js"])
+
+SAFARI_SPECIFIC = glob(["test/safari_test.js"])
+
+COMMON_TESTS = glob(
+    LARGE_TESTS,
+    exclude = CHROME_SPECIFIC +
+              EDGE_SPECIFIC +
+              FIREFOX_SPECIFIC +
+              IE_SPECIFIC +
+              SAFARI_SPECIFIC
+)
+
+BROWSER_TESTS = {
+    "chrome": COMMON_TESTS + CHROME_SPECIFIC,
+    "firefox": COMMON_TESTS + FIREFOX_SPECIFIC,
+}
+
 js_library(
     name = "small-test-srcs",
     srcs = SMALL_TESTS,
@@ -186,8 +210,8 @@ mocha_test(
             ],
         ),
     ]
-    for test in LARGE_TESTS
     for browser in BROWSERS.keys()
+    for test in BROWSER_TESTS[browser]
 ]
 
 # npm_package does not pick up filegroup sources.
