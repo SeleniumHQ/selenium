@@ -16,11 +16,14 @@
 # under the License.
 
 
+from selenium.webdriver.common.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
 class LocalWebDriver(RemoteWebDriver):
     """Base class for local WebDrivers."""
+
+    service: Service  # Service instance, set by subclasses before super().__init__()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
