@@ -70,7 +70,7 @@ const FILE_DEPS_MAP = {
   'json': [],
   'domcore': ['bot.Error', 'bot.ErrorCode', 'bot.userAgent'],
   'css': ['bot.Error', 'bot.ErrorCode'],
-  'dom': ['bot', 'bot.color', 'bot.dom.core', 'bot.userAgent'],
+  'dom': ['bot.dom.core', 'bot.color', 'bot.userAgent', 'bot.locators.css'],
   'action': ['bot', 'bot.dom', 'bot.Error', 'bot.events'],
   'events': ['bot', 'bot.dom', 'bot.Error', 'bot.userAgent'],
 };
@@ -120,6 +120,17 @@ const SYMBOL_REPLACEMENTS = {
     'BotError': 'bot.Error',
     'ErrorCode': 'bot.ErrorCode',
   },
+  'dom': {
+    'isElement': 'bot.dom.core.isElement',
+    'isSelectable': 'bot.dom.core.isSelectable',
+    'isSelected': 'bot.dom.core.isSelected',
+    'getAttribute': 'bot.dom.core.getAttribute',
+    'getProperty': 'bot.dom.core.getProperty',
+    'standardizeColor': 'bot.color.standardizeColor',
+    'IE_DOC_PRE9': 'bot.userAgent.IE_DOC_PRE9',
+    'isEngineVersion': 'bot.userAgent.isEngineVersion',
+    'cssSingle': 'bot.locators.css.single',
+  },
 };
 
 // Defines which exports are "nested" under another export
@@ -150,7 +161,7 @@ try {
 
 // Files that should use "bundle mode" - the entire compiled JS is included
 // as an IIFE, and exports are assigned to the namespace
-const BUNDLE_MODE_FILES = ['color', 'userAgent', 'json', 'domcore', 'css'];
+const BUNDLE_MODE_FILES = ['color', 'userAgent', 'json', 'domcore', 'css', 'dom'];
 
 /**
  * Parses TypeScript to extract detailed export information.
@@ -461,6 +472,180 @@ function applySymbolReplacements(code, replacements) {
 }
 
 /**
+ * Generates the dom module shim with proper JSDoc annotations for Closure Compiler.
+ * This is special because the dom module has many functions that need type info.
+ */
+function generateDomModuleShim(shimHeader, namespace, exports, moduleCode) {
+  let shim = shimHeader;
+
+  // Define a private namespace for the implementation
+  const implNamespace = 'bot.dom.impl_';
+
+  // Wrap the implementation in an IIFE that attaches to a private namespace
+  shim += `/** @private */\n`;
+  shim += `${implNamespace} = {};\n\n`;
+  shim += `(function() {\n`;
+
+  const lines = moduleCode.split('\n');
+  lines.forEach((line) => {
+    shim += `  ${line}\n`;
+  });
+
+  shim += '\n';
+
+  // Assign functions to the private implementation namespace
+  exports.functions.forEach((fn) => {
+    shim += `  ${implNamespace}${fn.name} = ${fn.name};\n`;
+  });
+
+  // Assign constants to the private implementation namespace
+  exports.constants.forEach((c) => {
+    shim += `  ${implNamespace}${c.name} = ${c.name};\n`;
+  });
+
+  // Also export OverflowState enum
+  shim += `  ${implNamespace}OverflowState = OverflowState;\n`;
+
+  shim += `})();\n\n`;
+
+  // Now generate properly-typed wrapper functions
+  // Each function gets full JSDoc and delegates to the implementation
+
+  // Type mappings for dom functions
+  const domFunctionTypes = {
+    getActiveElement: {
+      params: [{ name: 'nodeOrWindow', type: '(!Node|!Window)' }],
+      returns: '?Element',
+    },
+    isInteractable: {
+      params: [{ name: 'element', type: '!Element' }],
+      returns: 'boolean',
+    },
+    isFocusable: {
+      params: [{ name: 'element', type: '!Element' }],
+      returns: 'boolean',
+    },
+    isEnabled: {
+      params: [{ name: 'el', type: '!Element' }],
+      returns: 'boolean',
+    },
+    isTextual: {
+      params: [{ name: 'element', type: '!Element' }],
+      returns: 'boolean',
+    },
+    isFileInput: {
+      params: [{ name: 'element', type: '!Element' }],
+      returns: 'boolean',
+    },
+    isInputType: {
+      params: [{ name: 'element', type: '!Element' }, { name: 'inputType', type: 'string' }],
+      returns: 'boolean',
+    },
+    isContentEditable: {
+      params: [{ name: 'element', type: '!Element' }],
+      returns: 'boolean',
+    },
+    isEditable: {
+      params: [{ name: 'element', type: '!Element' }],
+      returns: 'boolean',
+    },
+    getParentElement: {
+      params: [{ name: 'node', type: '!Node' }],
+      returns: '?Element',
+    },
+    getInlineStyle: {
+      params: [{ name: 'elem', type: '!Element' }, { name: 'styleName', type: 'string' }],
+      returns: 'string',
+    },
+    getEffectiveStyle: {
+      params: [{ name: 'elem', type: '!Element' }, { name: 'propertyName', type: 'string' }],
+      returns: '?string',
+    },
+    isShown: {
+      params: [{ name: 'elem', type: '!Element' }, { name: 'opt_ignoreOpacity', type: 'boolean=', optional: true }],
+      returns: 'boolean',
+    },
+    getOverflowState: {
+      params: [{ name: 'elem', type: '!Element' }, { name: 'opt_region', type: '(goog.math.Coordinate|goog.math.Rect)=', optional: true }],
+      returns: 'bot.dom.OverflowState',
+    },
+    getClientRect: {
+      params: [{ name: 'elem', type: '!Element' }],
+      returns: '!goog.math.Rect',
+    },
+    getClientRegion: {
+      params: [{ name: 'elem', type: '!Element' }, { name: 'opt_region', type: '(goog.math.Coordinate|goog.math.Rect)=', optional: true }],
+      returns: '!goog.math.Box',
+    },
+    getVisibleText: {
+      params: [{ name: 'elem', type: '!Element' }],
+      returns: 'string',
+    },
+    getOpacity: {
+      params: [{ name: 'elem', type: '!Element' }],
+      returns: 'number',
+    },
+    getParentNodeInComposedDom: {
+      params: [{ name: 'node', type: '!Node' }],
+      returns: '?Node',
+    },
+    isNodeDistributedIntoShadowDom: {
+      params: [{ name: 'node', type: '!Node' }],
+      returns: 'boolean',
+    },
+  };
+
+  // Generate wrapper functions with JSDoc
+  for (const fn of exports.functions) {
+    const typeInfo = domFunctionTypes[fn.name];
+    if (!typeInfo) {
+      // Unknown function, just assign directly
+      shim += `${namespace}.${fn.name} = ${implNamespace}${fn.name};\n`;
+      continue;
+    }
+
+    shim += `/**\n`;
+    for (const param of typeInfo.params) {
+      shim += ` * @param {${param.type}} ${param.name}\n`;
+    }
+    shim += ` * @return {${typeInfo.returns}}\n`;
+    shim += ` */\n`;
+
+    const paramNames = typeInfo.params.map((p) => p.name).join(', ');
+    shim += `${namespace}.${fn.name} = function(${paramNames}) {\n`;
+    shim += `  return ${implNamespace}${fn.name}(${paramNames});\n`;
+    shim += `};\n\n`;
+  }
+
+  // Generate constants
+  for (const c of exports.constants) {
+    shim += `/** @const */\n`;
+    shim += `${namespace}.${c.name} = ${implNamespace}${c.name};\n\n`;
+  }
+
+  // Generate OverflowState enum
+  shim += `/**\n`;
+  shim += ` * @enum {string}\n`;
+  shim += ` */\n`;
+  shim += `${namespace}.OverflowState = ${implNamespace}OverflowState;\n\n`;
+
+  // Re-export functions from bot.dom.core for backward compatibility
+  shim += `// Re-export functions from bot.dom.core for backward compatibility\n`;
+  shim += `/** @const */\n`;
+  shim += `bot.dom.isElement = bot.dom.core.isElement;\n\n`;
+  shim += `/** @const */\n`;
+  shim += `bot.dom.isSelectable = bot.dom.core.isSelectable;\n\n`;
+  shim += `/** @const */\n`;
+  shim += `bot.dom.isSelected = bot.dom.core.isSelected;\n\n`;
+  shim += `/** @const */\n`;
+  shim += `bot.dom.getAttribute = bot.dom.core.getAttribute;\n\n`;
+  shim += `/** @const */\n`;
+  shim += `bot.dom.getProperty = bot.dom.core.getProperty;\n`;
+
+  return shim;
+}
+
+/**
  * Generates a bundle-mode shim that includes the entire compiled JS
  * wrapped in an IIFE, with exports assigned to the namespace.
  */
@@ -473,12 +658,19 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
   // Strip the ES module import/export and source map comment from compiled JS
   let moduleCode = compiledJs
     .replace(/^import\s+\{[^}]+\}\s+from\s+['"][^'"]+['"];?\s*$/gm, '')  // Remove import statements
+    .replace(/^export\s+\{[^}]+\};?\s*$/gm, '')  // Remove re-export statements
     .replace(/^export\s+/gm, '')
     .replace(/\/\/# sourceMappingURL=.*$/m, '')
     .trim();
 
   // Apply symbol replacements for imported symbols
   moduleCode = applySymbolReplacements(moduleCode, symbolReplacements);
+
+  // For 'dom' module, use a different strategy: create namespace wrapper functions
+  // with JSDoc that delegate to the internal implementation
+  if (basename === 'dom') {
+    return generateDomModuleShim(shim, namespace, exports, moduleCode);
+  }
 
   // Wrap in IIFE to create a scope for the private symbols
   shim += `(function() {\n`;

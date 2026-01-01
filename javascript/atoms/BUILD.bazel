@@ -119,31 +119,20 @@ closure_js_library(
 
 closure_js_library(
     name = "dom",
-    srcs = ["dom.js"],
+    srcs = [":generate_dom_shim"],
     suppress = [
-        "JSC_DEPRECATED_PROP",
-        "JSC_IMPLICITLY_NULLABLE_JSDOC",
-        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
+        "JSC_WRONG_ARGUMENT_COUNT",
+        "checkTypes",
+        "missingProperties",
     ],
     deps = [
-        ":bot",
         ":color",
         ":css",
         ":domcore",
-        ":json",
         ":useragent",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/dom:nodetype",
-        "//third_party/closure/goog/dom:tagname",
-        "//third_party/closure/goog/math",
-        "//third_party/closure/goog/math:coordinate",
-        "//third_party/closure/goog/math:rect",
-        "//third_party/closure/goog/string",
-        "//third_party/closure/goog/style",
-        "//third_party/closure/goog/useragent",
     ],
 )
 
@@ -440,8 +429,11 @@ js_run_binary(
 ts_project(
     name = "errors_ts",
     srcs = [
+        "color.ts",
+        "dom.ts",
         "domcore.ts",
         "error.ts",
+        "json.ts",
         "locators/css.ts",
         "response.ts",
         "userAgent.ts",
@@ -485,19 +477,9 @@ js_run_binary(
 )
 
 # ----------------------------------------------------------------------------
-# color.ts - Color utilities (no TS dependencies)
+# color.ts - Color utilities shim generation
+# Note: color.ts is compiled as part of errors_ts
 # ----------------------------------------------------------------------------
-ts_project(
-    name = "color_ts",
-    srcs = ["color.ts"],
-    declaration = True,
-    declaration_map = True,
-    out_dir = "dist",
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-)
-
 js_run_binary(
     name = "generate_color_shim",
     srcs = [
@@ -533,19 +515,9 @@ js_run_binary(
 )
 
 # ----------------------------------------------------------------------------
-# json.ts - JSON utilities (no TS dependencies)
+# json.ts - JSON utilities shim generation
+# Note: json.ts is compiled as part of errors_ts
 # ----------------------------------------------------------------------------
-ts_project(
-    name = "json_ts",
-    srcs = ["json.ts"],
-    declaration = True,
-    declaration_map = True,
-    out_dir = "dist",
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-)
-
 js_run_binary(
     name = "generate_json_shim",
     srcs = [
@@ -597,5 +569,24 @@ js_run_binary(
         "$(location dist/locators/css.js)",
     ],
     stdout = "locators/css.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# dom.ts - DOM utilities shim generation
+# Note: dom.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_dom_shim",
+    srcs = [
+        "dist/dom.js",
+        "dom.ts",
+    ],
+    args = [
+        "$(location dom.ts)",
+        "bot.dom",
+        "$(location dist/dom.js)",
+    ],
+    stdout = "dom.js",
     tool = ":shim_generator",
 )

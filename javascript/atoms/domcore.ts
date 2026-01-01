@@ -34,8 +34,9 @@ const SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP =
 /**
  * Standardizes a style attribute value by lowercasing property names and
  * ensuring it ends with a trailing semicolon.
+ * Note: Exported with underscore suffix for backward compatibility with tests.
  */
-function standardizeStyleAttribute(value: string): string {
+export function standardizeStyleAttribute_(value: string): string {
   const styleArray = value.split(SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP);
   const css: string[] = [];
   styleArray.forEach((pair) => {
@@ -67,7 +68,7 @@ export function getAttribute(element: Element, attributeName: string): string | 
   attributeName = attributeName.toLowerCase();
 
   if (attributeName === 'style') {
-    return standardizeStyleAttribute((element as HTMLElement).style.cssText);
+    return standardizeStyleAttribute_((element as HTMLElement).style.cssText);
   }
 
   if (IE_DOC_PRE8 && attributeName === 'value' &&
