@@ -9,7 +9,7 @@ ts_fragment(
     name = "standardize-color",
     entry_point = "standardize-color.ts",
     deps = [
-        "//javascript/atoms:color_ts",
+        "//javascript/atoms:errors_ts",
     ],
 )
 
@@ -64,6 +64,133 @@ ts_fragment(
 ts_fragment(
     name = "is-interactable",
     entry_point = "is-interactable.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "clear",
+    entry_point = "clear.ts",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "click",
+    entry_point = "click.ts",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "submit",
+    entry_point = "submit.ts",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "execute-script",
+    entry_point = "execute-script.ts",
+    visibility = [
+        "//java/test/org/openqa/selenium/atoms:__pkg__",
+        "//javascript/android-atoms:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "execute-async-script",
+    entry_point = "execute-async-script.ts",
+    visibility = [
+        "//javascript/android-atoms:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "get-element-from-cache",
+    entry_point = "get-element-from-cache.ts",
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "execute-sql",
+    entry_point = "execute-sql.ts",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "get-location",
+    entry_point = "get-location.ts",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "get-size",
+    entry_point = "get-size.ts",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+)
+
+ts_fragment(
+    name = "find-element",
+    entry_point = "find-element.ts",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/atoms:errors_ts",
+    ],
+)
+
+ts_fragment(
+    name = "find-elements",
+    entry_point = "find-elements.ts",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/src/org/openqa/selenium/support/locators:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+        "//rb/lib/selenium/webdriver/atoms:__pkg__",
+    ],
     deps = [
         "//javascript/atoms:errors_ts",
     ],
