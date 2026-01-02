@@ -3,13 +3,13 @@
     "target": "ES2015",
     "module": "ES2015",
     "lib": ["ES2017", "DOM"],
-    
+
     "outDir": "./dist",
     "rootDir": ".",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    
+
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -18,12 +18,12 @@
     "strictPropertyInitialization": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    
+
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    
+    "resolveJsonModule": true
+
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true
