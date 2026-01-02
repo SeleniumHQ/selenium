@@ -38,7 +38,6 @@ class LocalWebDriver(RemoteWebDriver):
             # We don't care about the message because something probably has gone wrong
             pass
         finally:
-            # this is calling the subclass method at runtime.
             if hasattr(self, "service") and self.service is not None:
                 self.service.stop()
 
