@@ -39,7 +39,7 @@ class LocalWebDriver(RemoteWebDriver):
             pass
         finally:
             # this is calling the subclass method at runtime.
-            if hasattr(self, "service"):
+            if hasattr(self, "service") and self.service is not None:
                 self.service.stop()
 
     def download_file(self, *args, **kwargs):
