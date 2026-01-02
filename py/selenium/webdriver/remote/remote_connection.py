@@ -30,6 +30,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.remote import utils
 from selenium.webdriver.remote.client_config import ClientConfig
 from selenium.webdriver.remote.command import Command
+from selenium.webdriver.remote.errorhandler import ErrorCode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -450,9 +451,9 @@ class RemoteConnection:
                     data = utils.load_json(data.strip())
                 except ValueError:
                     if 199 < statuscode < 300:
-                        status = 0
+                        status = ErrorCode.SUCCESS
                     else:
-                        status = 13
+                        status = ErrorCode.UNKNOWN_ERROR  # type: ignore
                     return {"status": status, "value": data.strip()}
 
                 # Some drivers incorrectly return a response
