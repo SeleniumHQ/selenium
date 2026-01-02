@@ -361,11 +361,6 @@ class RemoteConnection:
             )
 
         if ignore_proxy:
-            warnings.warn(
-                "setting ignore_proxy in RemoteConnection() is deprecated, set in client_config instead",
-                DeprecationWarning,
-                stacklevel=2,
-            )
             self._proxy_url = None
         else:
             self._proxy_url = self._client_config.get_proxy_url()
