@@ -204,9 +204,9 @@ closure_js_library(
 closure_js_library(
     name = "html5",
     srcs = [
-        ":generate_html5_shim",
         ":generate_appcache_shim",
         ":generate_database_shim",
+        ":generate_html5_shim",
         ":generate_location_shim",
         ":generate_storage_shim",
     ],
