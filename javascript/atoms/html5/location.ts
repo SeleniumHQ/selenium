@@ -17,56 +17,42 @@
 
 /**
  * @fileoverview Atom to retrieve the physical location of the device.
- *
  */
 
-goog.provide('bot.geolocation');
-
-goog.require('bot');
-goog.require('bot.Error');
-goog.require('bot.ErrorCode');
-goog.require('bot.html5');
-
+import { getWindow } from '../bot';
+import { BotError, ErrorCode } from '../error';
+import { API, isSupported } from './html5';
 
 /**
  * Default parameters used to configure the geolocation.getCurrentPosition
  * method. These parameters mean retrieval of any cached position with high
  * accuracy within a timeout interval of 5s.
- * @const
- * @type {!GeolocationPositionOptions}
  * @see http://dev.w3.org/geo/api/spec-source.html#position-options
  */
-bot.geolocation.DEFAULT_OPTIONS = /** @type {!GeolocationPositionOptions} */ ({
+export const DEFAULT_OPTIONS: PositionOptions = {
   enableHighAccuracy: true,
   maximumAge: Infinity,
-  timeout: 5000
-});
-
+  timeout: 5000,
+};
 
 /**
- * Provides a mechanism to retrieve the geolocation of the device.  It invokes
+ * Provides a mechanism to retrieve the geolocation of the device. It invokes
  * the navigator.geolocation.getCurrentPosition method of the HTML5 API which
  * later callbacks with either position value or any error. The position/
  * error is updated with the callback functions.
- *
- * @param {function(?GeolocationPosition)} successCallback The callback method
- *     which is invoked on success.
- * @param {function(?GeolocationPositionError)=} opt_errorCallback The callback
- *     method which is invoked on error.
- * @param {?GeolocationPositionOptions=} opt_options The optional parameters to
- *     navigator.geolocation.getCurrentPosition; defaults to
- *     bot.geolocation.DEFAULT_OPTIONS.
  */
-bot.geolocation.getCurrentPosition = function(successCallback,
-    opt_errorCallback, opt_options) {
-  var win = bot.getWindow();
-  var posOptions = opt_options || bot.geolocation.DEFAULT_OPTIONS;
+export function getCurrentPosition(
+  successCallback: (position: GeolocationPosition) => void,
+  opt_errorCallback?: (error: GeolocationPositionError) => void,
+  opt_options?: PositionOptions | null
+): void {
+  const win = getWindow();
+  const posOptions = opt_options || DEFAULT_OPTIONS;
 
-  if (bot.html5.isSupported(bot.html5.API.GEOLOCATION, win)) {
-    var geolocation = win.navigator.geolocation;
-    geolocation.getCurrentPosition(successCallback,
-        opt_errorCallback, posOptions);
+  if (isSupported(API.GEOLOCATION, win)) {
+    const geolocation = win.navigator.geolocation;
+    geolocation.getCurrentPosition(successCallback, opt_errorCallback, posOptions);
   } else {
-    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR, 'Geolocation undefined');
+    throw new BotError(ErrorCode.UNKNOWN_ERROR, 'Geolocation undefined');
   }
-};
+}

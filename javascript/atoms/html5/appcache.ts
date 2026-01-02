@@ -17,31 +17,27 @@
 
 /**
  * @fileoverview Atom to access application cache status.
- *
  */
 
-goog.provide('bot.appcache');
+import { getWindow } from '../bot';
+import { BotError, ErrorCode } from '../error';
+import { API, isSupported } from './html5';
 
-goog.require('bot');
-goog.require('bot.Error');
-goog.require('bot.ErrorCode');
-goog.require('bot.html5');
-
+interface WindowWithAppCache extends Window {
+  applicationCache?: {
+    status: number;
+  };
+}
 
 /**
  * Returns the current state of the application cache.
- *
- * @param {Window=} opt_window The window object whose cache is checked;
- *     defaults to the main window.
- * @return {number} The state.
  */
-bot.appcache.getStatus = function(opt_window) {
-  var win = opt_window || bot.getWindow();
+export function getStatus(opt_window?: Window): number {
+  const win = (opt_window || getWindow()) as WindowWithAppCache;
 
-  if (bot.html5.isSupported(bot.html5.API.APPCACHE, win)) {
-    return win.applicationCache.status;
+  if (isSupported(API.APPCACHE, win)) {
+    return win.applicationCache!.status;
   } else {
-    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'Undefined application cache');
+    throw new BotError(ErrorCode.UNKNOWN_ERROR, 'Undefined application cache');
   }
-};
+}

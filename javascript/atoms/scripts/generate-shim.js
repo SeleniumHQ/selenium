@@ -53,6 +53,12 @@ const NAMESPACE_MAP = {
   inject: 'bot.inject',
   frame: 'bot.frame',
   window: 'bot.window',
+  // HTML5 modules
+  html5: 'bot.html5',
+  appcache: 'bot.appcache',
+  database: 'bot.storage.database',
+  location: 'bot.geolocation',
+  storage: 'bot.storage',
   // Locator modules
   id: 'bot.locators.id',
   name: 'bot.locators.name',
@@ -113,6 +119,12 @@ const FILE_DEPS_MAP = {
   'relative': ['bot.Error', 'bot.ErrorCode', 'bot.dom'],
   'locators': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.locators.className', 'bot.locators.css', 'bot.locators.id', 'bot.locators.linkText', 'bot.locators.name', 'bot.locators.partialLinkText', 'bot.locators.relative', 'bot.locators.tagName', 'bot.locators.xpath'],
   'inject': ['bot.Error', 'bot.ErrorCode', 'bot.json'],
+  // HTML5 modules
+  'html5': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.userAgent'],
+  'appcache': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5'],
+  'database': ['bot', 'bot.Error', 'bot.ErrorCode'],
+  'location': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5'],
+  'storage': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.html5'],
 };
 
 // Export rename mapping: TypeScript export name -> Closure export name
@@ -120,6 +132,9 @@ const EXPORT_RENAME_MAP = {
   'error': {
     'BotError': 'Error',
     'State': 'Error.State',
+  },
+  'storage': {
+    'StorageWrapper': 'Storage',
   },
 };
 
@@ -160,6 +175,12 @@ const ADDITIONAL_PROVIDES_MAP = {
   'action': ['bot.action'],
   'frame': ['bot.frame'],
   'window': ['bot.window', 'bot.window.Orientation'],
+  // HTML5 modules
+  'html5': ['bot.html5', 'bot.html5.API'],
+  'appcache': ['bot.appcache'],
+  'database': ['bot.storage.database', 'bot.storage.database.ResultSet'],
+  'location': ['bot.geolocation'],
+  'storage': ['bot.storage', 'bot.storage.Storage'],
 };
 
 // Import alias mapping: maps TypeScript import names to their Closure equivalents
@@ -382,6 +403,40 @@ const SYMBOL_REPLACEMENTS = {
     'isEngineVersion': 'bot.userAgent.isEngineVersion',
     'ANDROID_PRE_ICECREAMSANDWICH': 'bot.userAgent.ANDROID_PRE_ICECREAMSANDWICH',
   },
+  // HTML5 modules
+  'html5': {
+    'getWindow': 'bot.getWindow',
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'isEngineVersion': 'bot.userAgent.isEngineVersion',
+    'isProductVersion': 'bot.userAgent.isProductVersion',
+  },
+  'appcache': {
+    'getWindow': 'bot.getWindow',
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'API': 'bot.html5.API',
+    'isSupported': 'bot.html5.isSupported',
+  },
+  'database': {
+    'getWindow': 'bot.getWindow',
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+  },
+  'location': {
+    'getWindow': 'bot.getWindow',
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'API': 'bot.html5.API',
+    'isSupported': 'bot.html5.isSupported',
+  },
+  'storage': {
+    'getWindow': 'bot.getWindow',
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'API': 'bot.html5.API',
+    'isSupported': 'bot.html5.isSupported',
+  },
 };
 
 // Defines which exports are "nested" under another export
@@ -496,6 +551,12 @@ const BUNDLE_MODE_FILES = [
   'action',
   'frame',
   'window',
+  // HTML5 modules
+  'html5',
+  'appcache',
+  'database',
+  'location',
+  'storage',
 ];
 
 /**
@@ -1056,6 +1117,11 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
     // Assign exported constants to the namespace
     exports.constants.forEach((c) => {
       shim += `  ${namespace}.${c.name} = ${c.name};\n`;
+    });
+
+    // Assign exported enums to the namespace
+    exports.enums.forEach((e) => {
+      shim += `  ${namespace}.${e.name} = ${e.name};\n`;
     });
   }
 

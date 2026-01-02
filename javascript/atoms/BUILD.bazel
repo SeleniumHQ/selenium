@@ -203,7 +203,13 @@ closure_js_library(
 
 closure_js_library(
     name = "html5",
-    srcs = glob(["html5/*.js"]),
+    srcs = [
+        ":generate_html5_shim",
+        ":generate_appcache_shim",
+        ":generate_database_shim",
+        ":generate_location_shim",
+        ":generate_storage_shim",
+    ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_UNKNOWN_EXPR_TYPE",
@@ -214,8 +220,6 @@ closure_js_library(
         ":errors",
         ":json",
         ":useragent",
-        "//third_party/closure/goog/useragent",
-        "//third_party/closure/goog/useragent:product",
     ],
 )
 
@@ -421,6 +425,11 @@ ts_project(
         "error.ts",
         "events.ts",
         "frame.ts",
+        "html5/appcache.ts",
+        "html5/database.ts",
+        "html5/html5.ts",
+        "html5/location.ts",
+        "html5/storage.ts",
         "inject.ts",
         "json.ts",
         "keyboard.ts",
@@ -918,5 +927,84 @@ js_run_binary(
         "$(location dist/inject.js)",
     ],
     stdout = "inject.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# HTML5 modules - TypeScript to Closure shim generation
+# ----------------------------------------------------------------------------
+
+js_run_binary(
+    name = "generate_html5_shim",
+    srcs = [
+        "dist/html5/html5.js",
+        "html5/html5.ts",
+    ],
+    args = [
+        "$(location html5/html5.ts)",
+        "bot.html5",
+        "$(location dist/html5/html5.js)",
+    ],
+    stdout = "html5/html5_browser.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_appcache_shim",
+    srcs = [
+        "dist/html5/appcache.js",
+        "html5/appcache.ts",
+    ],
+    args = [
+        "$(location html5/appcache.ts)",
+        "bot.appcache",
+        "$(location dist/html5/appcache.js)",
+    ],
+    stdout = "html5/appcache.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_database_shim",
+    srcs = [
+        "dist/html5/database.js",
+        "html5/database.ts",
+    ],
+    args = [
+        "$(location html5/database.ts)",
+        "bot.storage.database",
+        "$(location dist/html5/database.js)",
+    ],
+    stdout = "html5/database.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_location_shim",
+    srcs = [
+        "dist/html5/location.js",
+        "html5/location.ts",
+    ],
+    args = [
+        "$(location html5/location.ts)",
+        "bot.geolocation",
+        "$(location dist/html5/location.js)",
+    ],
+    stdout = "html5/location.js",
+    tool = ":shim_generator",
+)
+
+js_run_binary(
+    name = "generate_storage_shim",
+    srcs = [
+        "dist/html5/storage.js",
+        "html5/storage.ts",
+    ],
+    args = [
+        "$(location html5/storage.ts)",
+        "bot.storage",
+        "$(location dist/html5/storage.js)",
+    ],
+    stdout = "html5/storage.js",
     tool = ":shim_generator",
 )
