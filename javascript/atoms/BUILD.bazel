@@ -23,7 +23,7 @@ filegroup(
 
 closure_js_library(
     name = "action",
-    srcs = ["action.js"],
+    srcs = [":generate_action_shim"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_INEXISTENT_PROPERTY",
@@ -182,7 +182,7 @@ closure_js_library(
 
 closure_js_library(
     name = "frame",
-    srcs = ["frame.js"],
+    srcs = [":generate_frame_shim"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_UNKNOWN_EXPR_TYPE",
@@ -307,18 +307,21 @@ closure_js_library(
 closure_js_library(
     name = "window",
     srcs = [
-        "frame.js",
-        "window.js",
+        ":generate_frame_shim",
+        ":generate_window_shim",
     ],
     suppress = [
+        "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":bot",
+        ":dom",
         ":errors",
         ":events",
         ":json",
         ":locators",
+        ":useragent",
     ],
 )
 
@@ -409,6 +412,7 @@ js_binary(
 ts_project(
     name = "errors_ts",
     srcs = [
+        "action.ts",
         "bot.ts",
         "color.ts",
         "device.ts",
@@ -416,6 +420,7 @@ ts_project(
         "domcore.ts",
         "error.ts",
         "events.ts",
+        "frame.ts",
         "inject.ts",
         "json.ts",
         "keyboard.ts",
@@ -432,6 +437,7 @@ ts_project(
         "response.ts",
         "touchscreen.ts",
         "userAgent.ts",
+        "window.ts",
     ],
     declaration = True,
     declaration_map = True,
@@ -697,6 +703,63 @@ js_run_binary(
         "$(location dist/mouse.js)",
     ],
     stdout = "mouse.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# frame.ts - Frame utilities shim generation
+# Note: frame.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_frame_shim",
+    srcs = [
+        "dist/frame.js",
+        "frame.ts",
+    ],
+    args = [
+        "$(location frame.ts)",
+        "bot.frame",
+        "$(location dist/frame.js)",
+    ],
+    stdout = "frame.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# window.ts - Window utilities shim generation
+# Note: window.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_window_shim",
+    srcs = [
+        "dist/window.js",
+        "window.ts",
+    ],
+    args = [
+        "$(location window.ts)",
+        "bot.window",
+        "$(location dist/window.js)",
+    ],
+    stdout = "window.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# action.ts - Action utilities shim generation
+# Note: action.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_action_shim",
+    srcs = [
+        "action.ts",
+        "dist/action.js",
+    ],
+    args = [
+        "$(location action.ts)",
+        "bot.action",
+        "$(location dist/action.js)",
+    ],
+    stdout = "action.js",
     tool = ":shim_generator",
 )
 

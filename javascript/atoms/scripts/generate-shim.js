@@ -86,6 +86,23 @@ const FILE_DEPS_MAP = {
   'keyboard': ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.userAgent', 'goog.userAgent'],
   'mouse': ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.userAgent', 'goog.userAgent'],
   'touchscreen': ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.userAgent'],
+  'action': [
+    'bot',
+    'bot.Device',
+    'bot.Error',
+    'bot.ErrorCode',
+    'bot.Keyboard',
+    'bot.Mouse',
+    'bot.Touchscreen',
+    'bot.dom',
+    'bot.events',
+    'bot.userAgent',
+    'goog.userAgent',
+    'goog.userAgent.product',
+    'goog.utils',
+  ],
+  'frame': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.locators'],
+  'window': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.events', 'bot.userAgent'],
   // Locator modules
   'id': ['bot.dom.core'],
   'name': ['bot.dom.core'],
@@ -140,6 +157,9 @@ const ADDITIONAL_PROVIDES_MAP = {
     'bot.Keyboard.State',
   ],
   'touchscreen': ['bot.Touchscreen'],
+  'action': ['bot.action'],
+  'frame': ['bot.frame'],
+  'window': ['bot.window', 'bot.window.Orientation'],
 };
 
 // Import alias mapping: maps TypeScript import names to their Closure equivalents
@@ -316,6 +336,52 @@ const SYMBOL_REPLACEMENTS = {
     'IE_DOC_PRE9': 'bot.userAgent.IE_DOC_PRE9',
     'isEngineVersion': 'bot.userAgent.isEngineVersion',
   },
+  'action': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'Device': 'bot.Device',
+    'findAncestorForm': 'bot.Device.findAncestorForm',
+    'Keyboard': 'bot.Keyboard',
+    'Key': 'bot.Keyboard.Key',
+    'Keys': 'bot.Keyboard.Keys',
+    'MODIFIERS': 'bot.Keyboard.MODIFIERS',
+    'Mouse': 'bot.Mouse',
+    'Button': 'bot.Mouse.Button',
+    'Touchscreen': 'bot.Touchscreen',
+    'isShown': 'bot.dom.isShown',
+    'isInteractable': 'bot.dom.isInteractable',
+    'isEditable': 'bot.dom.isEditable',
+    'isElement': 'bot.dom.isElement',
+    'isContentEditable': 'bot.dom.isContentEditable',
+    'isInputType': 'bot.dom.isInputType',
+    'getActiveElement': 'bot.dom.getActiveElement',
+    'getOverflowState': 'bot.dom.getOverflowState',
+    'getClientRect': 'bot.dom.getClientRect',
+    'getClientRegion': 'bot.dom.getClientRegion',
+    'getParentElement': 'bot.dom.getParentElement',
+    'OverflowState': 'bot.dom.OverflowState',
+    'fire': 'bot.events.fire',
+    'EventType': 'bot.events.EventType',
+    'GECKO': 'goog.userAgent.GECKO',
+    'IE': 'goog.userAgent.IE',
+    'getDocument': 'bot.getDocument',
+  },
+  'frame': {
+    'getWindow': 'bot.getWindow',
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'isElement': 'bot.dom.isElement',
+    'findElements': 'bot.locators.findElements',
+  },
+  'window': {
+    'getWindow': 'bot.getWindow',
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'fire': 'bot.events.fire',
+    'EventType': 'bot.events.EventType',
+    'isEngineVersion': 'bot.userAgent.isEngineVersion',
+    'ANDROID_PRE_ICECREAMSANDWICH': 'bot.userAgent.ANDROID_PRE_ICECREAMSANDWICH',
+  },
 };
 
 // Defines which exports are "nested" under another export
@@ -427,6 +493,9 @@ const BUNDLE_MODE_FILES = [
   'keyboard',
   'mouse',
   'touchscreen',
+  'action',
+  'frame',
+  'window',
 ];
 
 /**
@@ -1056,6 +1125,50 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
   goog.utils.inherits(bot.Mouse, bot.Device);
   // Export the Button enum as a nested property
   bot.Mouse.Button = Button;
+`;
+  }
+
+  // Special handling for action: Create the LegacyDevice_ singleton class for compatibility
+  // with existing Closure code that uses bot.action.LegacyDevice_.focusOnElement(elem)
+  if (basename === 'action') {
+    shim += `
+  // Create the LegacyDevice_ pseudo-class for backward compatibility
+  // Original code used bot.action.LegacyDevice_.focusOnElement(elem) etc.
+  bot.action.LegacyDevice_ = function() {
+    bot.Device.call(this);
+  };
+  goog.utils.inherits(bot.action.LegacyDevice_, bot.Device);
+  goog.utils.addSingletonGetter(bot.action.LegacyDevice_);
+  
+  // Static methods on LegacyDevice_ that delegate to the internal functions
+  bot.action.LegacyDevice_.focusOnElement = function(element) {
+    return legacyDeviceFocusOnElement(element);
+  };
+  bot.action.LegacyDevice_.submitForm = function(element, form) {
+    legacyDeviceSubmitForm(element, form);
+  };
+  bot.action.LegacyDevice_.findAncestorForm = function(element) {
+    return legacyDeviceFindAncestorForm(element);
+  };
+
+  // Export all action functions
+  bot.action.clear = clear;
+  bot.action.focusOnElement = focusOnElement;
+  bot.action.type = type;
+  bot.action.submit = submit;
+  bot.action.moveMouse = moveMouse;
+  bot.action.click = click;
+  bot.action.rightClick = rightClick;
+  bot.action.doubleClick = doubleClick;
+  bot.action.doubleClick2 = doubleClick2;
+  bot.action.scrollMouse = scrollMouse;
+  bot.action.drag = drag;
+  bot.action.tap = tap;
+  bot.action.swipe = swipe;
+  bot.action.pinch = pinch;
+  bot.action.rotate = rotate;
+  bot.action.getInteractableSize = getInteractableSize;
+  bot.action.scrollIntoView = scrollIntoView;
 `;
   }
 
