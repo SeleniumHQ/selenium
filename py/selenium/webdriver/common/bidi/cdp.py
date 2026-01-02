@@ -300,6 +300,8 @@ class CdpBase:
             data: event as a JSON dictionary
         """
         global devtools
+        if devtools is None:
+            raise RuntimeError("CDP devtools module not loaded. Call import_devtools() first.")
         event = devtools.util.parse_json_event(data)
         logger.debug("Received event: %s", event)
         to_remove = set()
@@ -424,6 +426,8 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
     async def connect_session(self, target_id) -> "CdpSession":
         """Returns a new :class:`CdpSession` connected to the specified target."""
         global devtools
+        if devtools is None:
+            raise RuntimeError("CDP devtools module not loaded. Call import_devtools() first.")
         session_id = await self.execute(devtools.target.attach_to_target(target_id, True))
         session = CdpSession(self.ws, session_id, target_id)
         self.sessions[session_id] = session
@@ -435,6 +439,8 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         Dispatches responses to commands and events to listeners.
         """
         global devtools
+        if devtools is None:
+            raise RuntimeError("CDP devtools module not loaded. Call import_devtools() first.")
         while True:
             try:
                 message = await self.ws.get_message()

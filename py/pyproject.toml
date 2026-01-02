@@ -111,14 +111,11 @@ testpaths = ["test"]
 # mypy global options
 [tool.mypy]
 exclude = "selenium/webdriver/common/devtools"
-# The aim in future here is we would be able to turn (most) of these flags on, however the typing technical
-# debt is quite colossal right now.  For now we should maybe get everything working with the config here
-# then look at going after partially or completely untyped defs as a phase-2.
-files = "selenium"
+# The aim in future is we would be able to turn (most) of these flags on
 # warn about per-module sections in the config file that do not match any files processed.
 warn_unused_configs = true
 # disallows subclassing of typing.Any.
-disallow_subclassing_any = false
+disallow_subclassing_any = true
 # disallow usage of generic types that do not specify explicit type parameters.
 disallow_any_generics = false
 # disallow calling functions without type annotations from functions that have type annotations.
@@ -132,7 +129,7 @@ check_untyped_defs = false
 # reports an error whenever a function with type annotations is decorated with a decorator without annotations.
 disallow_untyped_decorators = false
 # changes the treatment of arguments with a default value of None by not implicitly making their type `typing.Optional`.
-no_implicit_optional = false
+no_implicit_optional = true
 # warns about casting an expression to it's inferred type.
 warn_redundant_casts = true
 # warns about unneeded `# type: ignore` comments.

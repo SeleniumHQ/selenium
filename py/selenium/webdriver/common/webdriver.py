@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
+from selenium.webdriver.common.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
@@ -24,6 +24,10 @@ class LocalWebDriver(RemoteWebDriver):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.service = None
+        for arg in args:
+            if isinstance(arg, Service):
+                self.service = arg
         self._is_remote = False
 
     def __new__(cls, *args, **kwargs):
@@ -39,7 +43,8 @@ class LocalWebDriver(RemoteWebDriver):
             # We don't care about the message because something probably has gone wrong
             pass
         finally:
-            self.service.stop()
+            if self.service:
+                self.service.stop()
 
     def download_file(self, *args, **kwargs):
         """Only implemented in RemoteWebDriver."""
