@@ -81,7 +81,7 @@ const FILE_DEPS_MAP = {
   'css': ['bot.Error', 'bot.ErrorCode'],
   'dom': ['bot.dom.core', 'bot.color', 'bot.userAgent', 'bot.locators.css'],
   'action': ['bot', 'bot.dom', 'bot.Error', 'bot.events'],
-  'events': ['bot', 'bot.dom', 'bot.Error', 'bot.userAgent'],
+  'events': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.userAgent', 'goog.userAgent', 'goog.userAgent.product'],
   // Locator modules
   'id': ['bot.dom.core'],
   'name': ['bot.dom.core'],
@@ -107,6 +107,17 @@ const ADDITIONAL_PROVIDES_MAP = {
   'error': ['bot.Error', 'bot.ErrorCode'],
   'response': ['bot.response', 'bot.response.ResponseObject'],
   'inject': ['bot.inject', 'bot.inject.cache'],
+  'events': [
+    'bot.events',
+    'bot.events.EventType',
+    'bot.events.EventArgs',
+    'bot.events.MouseArgs',
+    'bot.events.KeyboardArgs',
+    'bot.events.TouchArgs',
+    'bot.events.Touch',
+    'bot.events.MSGestureArgs',
+    'bot.events.MSPointerArgs',
+  ],
 };
 
 // Import alias mapping: maps TypeScript import names to their Closure equivalents
@@ -187,6 +198,19 @@ const SYMBOL_REPLACEMENTS = {
     'BotError': 'bot.Error',
     'ErrorCode': 'bot.ErrorCode',
     'stringify': 'bot.json.stringify',
+  },
+  'events': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'IE': 'goog.userAgent.IE',
+    'GECKO': 'goog.userAgent.GECKO',
+    'WEBKIT': 'goog.userAgent.WEBKIT',
+    'EDGE': 'goog.userAgent.EDGE',
+    'ANDROID': 'goog.userAgent.product.ANDROID',
+    'IOS': 'bot.userAgent.IOS',
+    'isEngineVersion': 'bot.userAgent.isEngineVersion',
+    'isProductVersion': 'bot.userAgent.isProductVersion',
+    'getWindow': 'bot.getWindow',
   },
 };
 
@@ -294,6 +318,7 @@ const BUNDLE_MODE_FILES = [
   // Locator modules (except locators.ts which needs special handling)
   'id', 'name', 'classname', 'tag_name', 'link_text', 'xpath', 'relative',
   'inject',
+  'events',
 ];
 
 /**
@@ -852,6 +877,24 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
   additionalExports.forEach((exportName) => {
     shim += `  ${namespace}.${exportName} = ${exportName};\n`;
   });
+
+  // Assign exported classes to the namespace
+  exports.classes.forEach((cls) => {
+    shim += `  ${namespace}.${cls.name} = ${cls.name};\n`;
+  });
+
+  // Special handling for events: also need to export isSynthetic and factory classes
+  // with underscore suffix for backward compatibility with device.js
+  if (basename === 'events') {
+    shim += `  ${namespace}.isSynthetic = isSynthetic;\n`;
+    shim += `  ${namespace}.EventFactory_ = EventFactory;\n`;
+    shim += `  ${namespace}.MouseEventFactory_ = MouseEventFactory;\n`;
+    shim += `  ${namespace}.KeyboardEventFactory_ = KeyboardEventFactory;\n`;
+    shim += `  ${namespace}.TouchEventFactory_ = TouchEventFactory;\n`;
+    shim += `  ${namespace}.MSGestureEventFactory_ = MSGestureEventFactory;\n`;
+    shim += `  ${namespace}.MSPointerEventFactory_ = MSPointerEventFactory;\n`;
+    shim += `  ${namespace}.BROKEN_TOUCH_API_ = BROKEN_TOUCH_API;\n`;
+  }
 
   shim += `})();\n`;
 

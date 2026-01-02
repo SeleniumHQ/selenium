@@ -153,7 +153,7 @@ closure_js_library(
 
 closure_js_library(
     name = "events",
-    srcs = ["events.js"],
+    srcs = [":generate_events_shim"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
@@ -162,17 +162,10 @@ closure_js_library(
     ],
     deps = [
         ":bot",
-        ":dom",
         ":errors",
-        ":json",
         ":useragent",
-        "//third_party/closure/goog/array",
-        "//third_party/closure/goog/dom",
-        "//third_party/closure/goog/events:browserevent",
-        "//third_party/closure/goog/style",
         "//third_party/closure/goog/useragent",
         "//third_party/closure/goog/useragent:product",
-        "//third_party/closure/goog/utils",
     ],
 )
 
@@ -396,45 +389,19 @@ js_binary(
 )
 
 # ----------------------------------------------------------------------------
-# bot.ts - Core bot module (no TS dependencies)
-# ----------------------------------------------------------------------------
-ts_project(
-    name = "bot_ts",
-    srcs = ["bot.ts"],
-    declaration = True,
-    declaration_map = True,
-    out_dir = "dist",
-    resolve_json_module = True,
-    source_map = True,
-    tsconfig = "tsconfig.json",
-)
-
-js_run_binary(
-    name = "generate_bot_shim",
-    srcs = [
-        "bot.ts",
-        "dist/bot.js",
-    ],
-    args = [
-        "$(location bot.ts)",
-        "bot",
-        "$(location dist/bot.js)",
-    ],
-    stdout = "bot.js",
-    tool = ":shim_generator",
-)
-
-# ----------------------------------------------------------------------------
 # Core TypeScript modules that depend on each other
-# These are compiled together since they have cross-imports
+# These are compiled together since they have cross-imports.
+# bot.ts is included here as it is imported by other TS modules.
 # ----------------------------------------------------------------------------
 ts_project(
     name = "errors_ts",
     srcs = [
+        "bot.ts",
         "color.ts",
         "dom.ts",
         "domcore.ts",
         "error.ts",
+        "events.ts",
         "inject.ts",
         "json.ts",
         "locators/classname.ts",
@@ -455,6 +422,25 @@ ts_project(
     resolve_json_module = True,
     source_map = True,
     tsconfig = "tsconfig.json",
+)
+
+# ----------------------------------------------------------------------------
+# bot.ts - Core bot module shim generation
+# Note: bot.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_bot_shim",
+    srcs = [
+        "bot.ts",
+        "dist/bot.js",
+    ],
+    args = [
+        "$(location bot.ts)",
+        "bot",
+        "$(location dist/bot.js)",
+    ],
+    stdout = "bot.js",
+    tool = ":shim_generator",
 )
 
 js_run_binary(
@@ -599,6 +585,25 @@ js_run_binary(
         "$(location dist/dom.js)",
     ],
     stdout = "dom.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# events.ts - Event firing utilities shim generation
+# Note: events.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_events_shim",
+    srcs = [
+        "dist/events.js",
+        "events.ts",
+    ],
+    args = [
+        "$(location events.ts)",
+        "bot.events",
+        "$(location dist/events.js)",
+    ],
+    stdout = "events.js",
     tool = ":shim_generator",
 )
 

@@ -214,10 +214,12 @@ const browser = detectBrowser();
 const os = detectOS();
 const engine = detectEngine();
 
-// Browser/engine constants
-const IE: boolean = browser.name === 'IE';
-const GECKO: boolean = engine.name === 'Gecko';
-const WEBKIT: boolean = engine.name === 'WebKit';
+// Browser/engine constants - these are exported for use by events.ts and others
+export const IE: boolean = browser.name === 'IE';
+export const GECKO: boolean = engine.name === 'Gecko';
+export const WEBKIT: boolean = engine.name === 'WebKit';
+export const EDGE: boolean = browser.name === 'Edge';
+export const ANDROID: boolean = os.name === 'Android';
 
 const DOCUMENT_MODE: number | undefined = (function () {
   if (typeof document !== 'undefined' && IE) {
