@@ -54,7 +54,7 @@ class WebDriver(LocalWebDriver):
         )
 
         try:
-            super().__init__(command_executor=executor, options=self.options, service=self.service)
+            super().__init__(command_executor=executor, options=self.options)
         except Exception:
             self.quit()
             raise

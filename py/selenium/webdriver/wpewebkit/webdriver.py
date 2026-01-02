@@ -43,7 +43,7 @@ class WebDriver(LocalWebDriver):
         self.service.start()
 
         try:
-            super().__init__(command_executor=self.service.service_url, options=self.options, service=self.service)
+            super().__init__(command_executor=self.service.service_url, options=self.options)
         except Exception:
             self.quit()
             raise
