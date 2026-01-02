@@ -15,16 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+@NullMarked
+package org.openqa.selenium.chromium;
 
-/**
- * This interface indicates that the implementing class knows about the driver that contains it and
- * can export it.
- */
-@FunctionalInterface
-public interface WrapsDriver {
-  /**
-   * @return The driver that contains this element.
-   */
-  WebDriver getWrappedDriver();
-}
+import org.jspecify.annotations.NullMarked;
