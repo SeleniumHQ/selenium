@@ -26,9 +26,13 @@ closure_js_library(
     srcs = ["action.js"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_INEXISTENT_PROPERTY",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
+        "JSC_WRONG_ARGUMENT_COUNT",
+        "checkTypes",
+        "missingProperties",
     ],
     visibility = [
         "//javascript/atoms/fragments:__pkg__",
@@ -73,16 +77,20 @@ closure_js_library(
 closure_js_library(
     name = "devices",
     srcs = [
-        "device.js",
+        ":generate_device_shim",
         "keyboard.js",
         "mouse.js",
         "touchscreen.js",
     ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_INEXISTENT_PROPERTY",
         "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_TYPE_MISMATCH",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
+        "checkTypes",
+        "missingProperties",
     ],
     deps = [
         ":bot",
@@ -156,9 +164,12 @@ closure_js_library(
     srcs = [":generate_events_shim"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_INEXISTENT_PROPERTY",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
+        "checkTypes",
+        "missingProperties",
     ],
     deps = [
         ":bot",
@@ -213,9 +224,11 @@ closure_js_library(
     srcs = [":generate_inject_shim"],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_INVALID_PARAM",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
+        "nonStandardJsDocs",
     ],
     visibility = [
         "//javascript/atoms/fragments:__pkg__",
@@ -398,6 +411,7 @@ ts_project(
     srcs = [
         "bot.ts",
         "color.ts",
+        "device.ts",
         "dom.ts",
         "domcore.ts",
         "error.ts",
@@ -604,6 +618,25 @@ js_run_binary(
         "$(location dist/events.js)",
     ],
     stdout = "events.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# device.ts - Base input device class shim generation
+# Note: device.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_device_shim",
+    srcs = [
+        "device.ts",
+        "dist/device.js",
+    ],
+    args = [
+        "$(location device.ts)",
+        "bot.Device",
+        "$(location dist/device.js)",
+    ],
+    stdout = "device.js",
     tool = ":shim_generator",
 )
 

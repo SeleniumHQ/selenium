@@ -49,6 +49,10 @@ def closure_fragment(
         name = exports_lib_name,
         srcs = [exports_file_name],
         deps = kwargs.get("deps", []),
+        suppress = [
+            "JSC_UNKNOWN_EXPR_TYPE",
+            "reportUnknownTypes",
+        ],
     )
 
     # Wrap the output in two functions. The outer function ensures the

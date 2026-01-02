@@ -40,10 +40,10 @@ const NAMESPACE_MAP = {
   'domcore': 'bot.dom.core',
   'css': 'bot.locators.css',
   'action': 'bot.action',
-  'mouse': 'bot.mouse',
-  'keyboard': 'bot.keyboard',
-  'touchscreen': 'bot.touchscreen',
-  'device': 'bot.device',
+  'mouse': 'bot.Mouse',
+  'keyboard': 'bot.Keyboard',
+  'touchscreen': 'bot.Touchscreen',
+  'device': 'bot.Device',
   'color': 'bot.color',
   'error': 'bot',
   'response': 'bot.response',
@@ -82,6 +82,7 @@ const FILE_DEPS_MAP = {
   'dom': ['bot.dom.core', 'bot.color', 'bot.userAgent', 'bot.locators.css'],
   'action': ['bot', 'bot.dom', 'bot.Error', 'bot.events'],
   'events': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.userAgent', 'goog.userAgent', 'goog.userAgent.product'],
+  'device': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.locators', 'bot.userAgent', 'goog.userAgent', 'goog.userAgent.product'],
   // Locator modules
   'id': ['bot.dom.core'],
   'name': ['bot.dom.core'],
@@ -117,6 +118,12 @@ const ADDITIONAL_PROVIDES_MAP = {
     'bot.events.Touch',
     'bot.events.MSGestureArgs',
     'bot.events.MSPointerArgs',
+  ],
+  'device': [
+    'bot.Device',
+    'bot.Device.EventEmitter',
+    'bot.Device.ModifiersState',
+    'bot.Device.Modifier',
   ],
 };
 
@@ -211,6 +218,27 @@ const SYMBOL_REPLACEMENTS = {
     'isEngineVersion': 'bot.userAgent.isEngineVersion',
     'isProductVersion': 'bot.userAgent.isProductVersion',
     'getWindow': 'bot.getWindow',
+  },
+  'device': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'isElement': 'bot.dom.isElement',
+    'isSelectable': 'bot.dom.isSelectable',
+    'isSelected': 'bot.dom.isSelected',
+    'isInteractable': 'bot.dom.isInteractable',
+    'isFocusable': 'bot.dom.isFocusable',
+    'getActiveElement': 'bot.dom.getActiveElement',
+    'getClientRect': 'bot.dom.getClientRect',
+    'fire': 'bot.events.fire',
+    'EventType': 'bot.events.EventType',
+    'EventFactory': 'bot.events.EventFactory_',
+    'IE': 'goog.userAgent.IE',
+    'GECKO': 'goog.userAgent.GECKO',
+    'WEBKIT': 'goog.userAgent.WEBKIT',
+    'isEngineVersion': 'bot.userAgent.isEngineVersion',
+    'isProductVersion': 'bot.userAgent.isProductVersion',
+    'WEBEXTENSION': 'bot.userAgent.WEBEXTENSION',
+    'getDocument': 'bot.getDocument',
   },
 };
 
@@ -319,6 +347,7 @@ const BUNDLE_MODE_FILES = [
   'id', 'name', 'classname', 'tag_name', 'link_text', 'xpath', 'relative',
   'inject',
   'events',
+  'device',
 ];
 
 /**
@@ -830,6 +859,15 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
     return generateDomModuleShim(shim, namespace, exports, moduleCode);
   }
 
+  // Special handling for device: insert early assignment of Modifier enum
+  // after its definition so it can be used in ModifiersState class methods
+  if (basename === 'device') {
+    moduleCode = moduleCode.replace(
+      /\}\)\(Modifier \|\| \(Modifier = \{\}\)\);/,
+      '})(Modifier || (Modifier = {}));\n  // Early assignment for Closure Compiler\n  bot.Device.Modifier = Modifier;'
+    );
+  }
+
   // Wrap in IIFE to create a scope for the private symbols
   shim += `(function() {\n`;
 
@@ -860,7 +898,8 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
   bot.inject.executeScript = executeScript;
   bot.inject.executeAsyncScript = executeAsyncScript;
 `;
-  } else {
+  } else if (basename !== 'device') {
+    // Skip for device since it uses special handling where Device class IS the namespace
     // Assign exported functions to the namespace
     exports.functions.forEach((fn) => {
       shim += `  ${namespace}.${fn.name} = ${fn.name};\n`;
@@ -872,16 +911,21 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
     });
   }
 
-  // Assign additional exports if defined for this file
-  const additionalExports = ADDITIONAL_EXPORTS_MAP[basename] || [];
-  additionalExports.forEach((exportName) => {
-    shim += `  ${namespace}.${exportName} = ${exportName};\n`;
-  });
+  // Assign additional exports if defined for this file (skip for device)
+  if (basename !== 'device') {
+    const additionalExports = ADDITIONAL_EXPORTS_MAP[basename] || [];
+    additionalExports.forEach((exportName) => {
+      shim += `  ${namespace}.${exportName} = ${exportName};\n`;
+    });
+  }
 
   // Assign exported classes to the namespace
-  exports.classes.forEach((cls) => {
-    shim += `  ${namespace}.${cls.name} = ${cls.name};\n`;
-  });
+  // Skip for device since it uses special handling where Device class IS the namespace
+  if (basename !== 'device') {
+    exports.classes.forEach((cls) => {
+      shim += `  ${namespace}.${cls.name} = ${cls.name};\n`;
+    });
+  }
 
   // Special handling for events: also need to export isSynthetic and factory classes
   // with underscore suffix for backward compatibility with device.js
@@ -894,6 +938,51 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
     shim += `  ${namespace}.MSGestureEventFactory_ = MSGestureEventFactory;\n`;
     shim += `  ${namespace}.MSPointerEventFactory_ = MSPointerEventFactory;\n`;
     shim += `  ${namespace}.BROKEN_TOUCH_API_ = BROKEN_TOUCH_API;\n`;
+  }
+
+  // Special handling for device: The Device class IS the namespace (bot.Device)
+  // and inner classes are properties on it
+  if (basename === 'device') {
+    // Create a wrapper function that can be called with .call() for backward compatibility
+    // with Closure-style inheritance (e.g., bot.Device.call(this, ...))
+    // while also supporting 'new bot.Device()'
+    shim += `
+  // Compatibility wrapper: ES2015 classes can't be called with .call(),
+  // but Closure-style child classes do: bot.Device.call(this, ...)
+  // This wrapper function makes the class work both ways.
+  var DeviceWrapper = function(opt_modifiersState, opt_eventEmitter) {
+    // If called with 'new', this is a DeviceWrapper instance
+    // If called with .call(thisArg, ...), 'this' is the child class instance
+    if (this instanceof DeviceWrapper || this.constructor === DeviceWrapper) {
+      // Called with 'new DeviceWrapper()' - return Device instance
+      return Object.assign(this, new Device(opt_modifiersState, opt_eventEmitter));
+    }
+    // Called with DeviceWrapper.call(thisArg, ...) - initialize 'this'
+    // Copy Device constructor logic here for Closure-style inheritance
+    this.element_ = bot.getDocument().documentElement;
+    this.select_ = null;
+    this.modifiersState = opt_modifiersState || new ModifiersState();
+    this.eventEmitter = opt_eventEmitter || new EventEmitter();
+    var activeElement = bot.dom.getActiveElement(this.element_);
+    if (activeElement) {
+      // Need to call setElement from the prototype
+      Device.prototype.setElement.call(this, activeElement);
+    }
+  };
+  // Copy prototype methods from Device to DeviceWrapper
+  DeviceWrapper.prototype = Device.prototype;
+  DeviceWrapper.prototype.constructor = DeviceWrapper;
+  bot.Device = DeviceWrapper;
+`;
+    // Then assign inner classes and static functions to bot.Device
+    shim += `  bot.Device.ModifiersState = ModifiersState;\n`;
+    shim += `  bot.Device.EventEmitter = EventEmitter;\n`;
+    shim += `  bot.Device.Modifier = Modifier;\n`;
+    shim += `  bot.Device.MOUSE_MS_POINTER_ID = MOUSE_MS_POINTER_ID;\n`;
+    shim += `  bot.Device.getPointerElement = getPointerElement;\n`;
+    shim += `  bot.Device.clearPointerMap = clearPointerMap;\n`;
+    shim += `  bot.Device.isFormSubmitElement = isFormSubmitElement;\n`;
+    shim += `  bot.Device.findAncestorForm = findAncestorForm;\n`;
   }
 
   shim += `})();\n`;
