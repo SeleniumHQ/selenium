@@ -319,7 +319,6 @@ class RemoteConnection:
             self._client_config = ClientConfig(
                 remote_server_addr=remote_server_addr,
                 keep_alive=keep_alive,
-                ignore_proxy=ignore_proxy,
                 ignore_certificates=ignore_certificates,
                 init_args_for_pool_manager=init_args_for_pool_manager,
             )
