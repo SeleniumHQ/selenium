@@ -35,33 +35,33 @@ const path = require('path');
 
 // Namespace mapping: TypeScript file basename -> Closure namespace
 const NAMESPACE_MAP = {
-  'bot': 'bot',
-  'dom': 'bot.dom',
-  'domcore': 'bot.dom.core',
-  'css': 'bot.locators.css',
-  'action': 'bot.action',
-  'mouse': 'bot.Mouse',
-  'keyboard': 'bot.Keyboard',
-  'touchscreen': 'bot.Touchscreen',
-  'device': 'bot.Device',
-  'color': 'bot.color',
-  'error': 'bot',
-  'response': 'bot.response',
-  'events': 'bot.events',
-  'userAgent': 'bot.userAgent',
-  'json': 'bot.json',
-  'inject': 'bot.inject',
-  'frame': 'bot.frame',
-  'window': 'bot.window',
+  bot: 'bot',
+  dom: 'bot.dom',
+  domcore: 'bot.dom.core',
+  css: 'bot.locators.css',
+  action: 'bot.action',
+  mouse: 'bot.Mouse',
+  keyboard: 'bot.Keyboard',
+  touchscreen: 'bot.Touchscreen',
+  device: 'bot.Device',
+  color: 'bot.color',
+  error: 'bot',
+  response: 'bot.response',
+  events: 'bot.events',
+  userAgent: 'bot.userAgent',
+  json: 'bot.json',
+  inject: 'bot.inject',
+  frame: 'bot.frame',
+  window: 'bot.window',
   // Locator modules
-  'id': 'bot.locators.id',
-  'name': 'bot.locators.name',
-  'classname': 'bot.locators.className',
-  'tag_name': 'bot.locators.tagName',
-  'link_text': 'bot.locators.linkText',
-  'xpath': 'bot.locators.xpath',
-  'relative': 'bot.locators.relative',
-  'locators': 'bot.locators',
+  id: 'bot.locators.id',
+  name: 'bot.locators.name',
+  classname: 'bot.locators.className',
+  tag_name: 'bot.locators.tagName',
+  link_text: 'bot.locators.linkText',
+  xpath: 'bot.locators.xpath',
+  relative: 'bot.locators.relative',
+  locators: 'bot.locators',
 };
 
 // Dependencies mapping by file (not namespace) - which Closure modules each file requires
@@ -83,6 +83,9 @@ const FILE_DEPS_MAP = {
   'action': ['bot', 'bot.dom', 'bot.Error', 'bot.events'],
   'events': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.userAgent', 'goog.userAgent', 'goog.userAgent.product'],
   'device': ['bot', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.locators', 'bot.userAgent', 'goog.userAgent', 'goog.userAgent.product'],
+  'keyboard': ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.userAgent', 'goog.userAgent'],
+  'mouse': ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.userAgent', 'goog.userAgent'],
+  'touchscreen': ['bot', 'bot.Device', 'bot.Error', 'bot.ErrorCode', 'bot.dom', 'bot.events', 'bot.userAgent'],
   // Locator modules
   'id': ['bot.dom.core'],
   'name': ['bot.dom.core'],
@@ -125,6 +128,18 @@ const ADDITIONAL_PROVIDES_MAP = {
     'bot.Device.ModifiersState',
     'bot.Device.Modifier',
   ],
+  'mouse': [
+    'bot.Mouse',
+    'bot.Mouse.Button',
+    'bot.Mouse.State',
+  ],
+  'keyboard': [
+    'bot.Keyboard',
+    'bot.Keyboard.Key',
+    'bot.Keyboard.Keys',
+    'bot.Keyboard.State',
+  ],
+  'touchscreen': ['bot.Touchscreen'],
 };
 
 // Import alias mapping: maps TypeScript import names to their Closure equivalents
@@ -240,6 +255,67 @@ const SYMBOL_REPLACEMENTS = {
     'WEBEXTENSION': 'bot.userAgent.WEBEXTENSION',
     'getDocument': 'bot.getDocument',
   },
+  'touchscreen': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'Device': 'bot.Device',
+    'Coordinate': 'goog.math.Coordinate',
+    'clearPointerMap': 'bot.Device.clearPointerMap',
+    'isInteractable': 'bot.dom.isInteractable',
+    'isElement': 'bot.dom.isElement',
+    'isSelectable': 'bot.dom.isSelectable',
+    'getClientRect': 'bot.dom.getClientRect',
+    'getEffectiveStyle': 'bot.dom.getEffectiveStyle',
+    'getParentElement': 'bot.dom.getParentElement',
+    'EventType': 'bot.events.EventType',
+    'IE_DOC_10': 'bot.userAgent.IE_DOC_10',
+    'IOS': 'bot.userAgent.IOS',
+    'WINDOWS_PHONE': 'bot.userAgent.WINDOWS_PHONE',
+  },
+  'mouse': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'Device': 'bot.Device',
+    'ModifiersState': 'bot.Device.ModifiersState',
+    'EventEmitter': 'bot.Device.EventEmitter',
+    'Coordinate': 'goog.math.Coordinate',
+    'MOUSE_MS_POINTER_ID': 'bot.Device.MOUSE_MS_POINTER_ID',
+    'clearPointerMap': 'bot.Device.clearPointerMap',
+    'isElement': 'bot.dom.isElement',
+    'isInteractable': 'bot.dom.isInteractable',
+    'getActiveElement': 'bot.dom.getActiveElement',
+    'getClientRect': 'bot.dom.getClientRect',
+    'EventType': 'bot.events.EventType',
+    'EventFactory': 'bot.events.EventFactory_',
+    'IE': 'goog.userAgent.IE',
+    'GECKO': 'goog.userAgent.GECKO',
+    'WEBKIT': 'goog.userAgent.WEBKIT',
+    'isProductVersion': 'bot.userAgent.isProductVersion',
+    'IE_DOC_PRE9': 'bot.userAgent.IE_DOC_PRE9',
+    'IE_DOC_9': 'bot.userAgent.IE_DOC_9',
+    'IE_DOC_10': 'bot.userAgent.IE_DOC_10',
+    'WINDOWS_PHONE': 'bot.userAgent.WINDOWS_PHONE',
+    'getDocument': 'bot.getDocument',
+  },
+  'keyboard': {
+    'BotError': 'bot.Error',
+    'ErrorCode': 'bot.ErrorCode',
+    'Device': 'bot.Device',
+    'ModifiersState': 'bot.Device.ModifiersState',
+    'Modifier': 'bot.Device.Modifier',
+    'isFormSubmitElement': 'bot.Device.isFormSubmitElement',
+    'findAncestorForm': 'bot.Device.findAncestorForm',
+    'isEditable': 'bot.dom.isEditable',
+    'isElement': 'bot.dom.isElement',
+    'EventType': 'bot.events.EventType',
+    'EventFactory': 'bot.events.EventFactory_',
+    'IE': 'goog.userAgent.IE',
+    'GECKO': 'goog.userAgent.GECKO',
+    'WEBKIT': 'goog.userAgent.WEBKIT',
+    'EDGE': 'goog.userAgent.EDGE',
+    'IE_DOC_PRE9': 'bot.userAgent.IE_DOC_PRE9',
+    'isEngineVersion': 'bot.userAgent.isEngineVersion',
+  },
 };
 
 // Defines which exports are "nested" under another export
@@ -348,6 +424,9 @@ const BUNDLE_MODE_FILES = [
   'inject',
   'events',
   'device',
+  'keyboard',
+  'mouse',
+  'touchscreen',
 ];
 
 /**
@@ -920,8 +999,8 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
   }
 
   // Assign exported classes to the namespace
-  // Skip for device since it uses special handling where Device class IS the namespace
-  if (basename !== 'device') {
+  // Skip for device, touchscreen, mouse, keyboard since they use special handling where the class IS the namespace
+  if (basename !== 'device' && basename !== 'touchscreen' && basename !== 'mouse' && basename !== 'keyboard') {
     exports.classes.forEach((cls) => {
       shim += `  ${namespace}.${cls.name} = ${cls.name};\n`;
     });
@@ -938,6 +1017,46 @@ function generateBundleModeShim(shimHeader, namespace, exports, compiledJs, base
     shim += `  ${namespace}.MSGestureEventFactory_ = MSGestureEventFactory;\n`;
     shim += `  ${namespace}.MSPointerEventFactory_ = MSPointerEventFactory;\n`;
     shim += `  ${namespace}.BROKEN_TOUCH_API_ = BROKEN_TOUCH_API;\n`;
+  }
+
+  // Special handling for touchscreen: The Touchscreen class IS the namespace (bot.Touchscreen)
+  // and extends bot.Device
+  if (basename === 'touchscreen') {
+    shim += `
+  // ES2015 class can be used directly as a constructor with 'new'
+  bot.Touchscreen = Touchscreen;
+  // Set up Closure-style inheritance for type checking
+  goog.utils.inherits(bot.Touchscreen, bot.Device);
+`;
+  }
+
+  // Special handling for keyboard: The Keyboard class IS the namespace (bot.Keyboard)
+  // and extends bot.Device. Also need to expose Key, Keys, and State.
+  if (basename === 'keyboard') {
+    shim += `
+  // ES2015 class can be used directly as a constructor with 'new'
+  bot.Keyboard = Keyboard;
+  // Set up Closure-style inheritance for type checking
+  goog.utils.inherits(bot.Keyboard, bot.Device);
+  // Export the Key class, Keys object, and MODIFIERS as nested properties
+  bot.Keyboard.Key = Key;
+  bot.Keyboard.Keys = Keys;
+  bot.Keyboard.MODIFIERS = MODIFIERS;
+  bot.Keyboard.supportsSelection = supportsSelection;
+`;
+  }
+
+  // Special handling for mouse: The Mouse class IS the namespace (bot.Mouse)
+  // and extends bot.Device. Also need to expose Button enum and State typedef.
+  if (basename === 'mouse') {
+    shim += `
+  // ES2015 class can be used directly as a constructor with 'new'
+  bot.Mouse = Mouse;
+  // Set up Closure-style inheritance for type checking
+  goog.utils.inherits(bot.Mouse, bot.Device);
+  // Export the Button enum as a nested property
+  bot.Mouse.Button = Button;
+`;
   }
 
   // Special handling for device: The Device class IS the namespace (bot.Device)

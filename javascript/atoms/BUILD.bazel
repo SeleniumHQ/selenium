@@ -78,9 +78,9 @@ closure_js_library(
     name = "devices",
     srcs = [
         ":generate_device_shim",
-        "keyboard.js",
-        "mouse.js",
-        "touchscreen.js",
+        ":generate_keyboard_shim",
+        ":generate_mouse_shim",
+        ":generate_touchscreen_shim",
     ],
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
@@ -418,6 +418,7 @@ ts_project(
         "events.ts",
         "inject.ts",
         "json.ts",
+        "keyboard.ts",
         "locators/classname.ts",
         "locators/css.ts",
         "locators/id.ts",
@@ -427,7 +428,9 @@ ts_project(
         "locators/relative.ts",
         "locators/tag_name.ts",
         "locators/xpath.ts",
+        "mouse.ts",
         "response.ts",
+        "touchscreen.ts",
         "userAgent.ts",
     ],
     declaration = True,
@@ -637,6 +640,63 @@ js_run_binary(
         "$(location dist/device.js)",
     ],
     stdout = "device.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# keyboard.ts - Keyboard input device shim generation
+# Note: keyboard.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_keyboard_shim",
+    srcs = [
+        "dist/keyboard.js",
+        "keyboard.ts",
+    ],
+    args = [
+        "$(location keyboard.ts)",
+        "bot.Keyboard",
+        "$(location dist/keyboard.js)",
+    ],
+    stdout = "keyboard_shim.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# touchscreen.ts - Touchscreen input device shim generation
+# Note: touchscreen.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_touchscreen_shim",
+    srcs = [
+        "dist/touchscreen.js",
+        "touchscreen.ts",
+    ],
+    args = [
+        "$(location touchscreen.ts)",
+        "bot.Touchscreen",
+        "$(location dist/touchscreen.js)",
+    ],
+    stdout = "touchscreen.js",
+    tool = ":shim_generator",
+)
+
+# ----------------------------------------------------------------------------
+# mouse.ts - Mouse input device shim generation
+# Note: mouse.ts is compiled as part of errors_ts
+# ----------------------------------------------------------------------------
+js_run_binary(
+    name = "generate_mouse_shim",
+    srcs = [
+        "dist/mouse.js",
+        "mouse.ts",
+    ],
+    args = [
+        "$(location mouse.ts)",
+        "bot.Mouse",
+        "$(location dist/mouse.js)",
+    ],
+    stdout = "mouse.js",
     tool = ":shim_generator",
 )
 
