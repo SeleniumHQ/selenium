@@ -500,6 +500,12 @@ pub trait SeleniumManager {
 
     fn discover_local_browser(&mut self) -> Result<(), Error> {
         let mut download_browser = self.is_force_browser_download();
+        if download_browser && self.is_safari() {
+            self.get_logger().debug(
+                "Force browser download requested for Safari, but downloads are not supported; using local discovery",
+            );
+            download_browser = false;
+        }
         if !download_browser && !self.is_electron() {
             let major_browser_version = self.get_major_browser_version();
             match self.discover_browser_version()? {

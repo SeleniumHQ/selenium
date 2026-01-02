@@ -28,12 +28,12 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi;
 
-class WebSocketTransport(Uri _uri) : ITransport, IDisposable
+sealed class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 {
     private readonly static ILogger _logger = Internal.Logging.Log.GetLogger<WebSocketTransport>();
 
     private readonly ClientWebSocket _webSocket = new();
-    private readonly byte[] _receiveBuffer = ArrayPool<byte>.Shared.Rent(1024 * 8);
+    private byte[] _receiveBuffer = ArrayPool<byte>.Shared.Rent(1024 * 8);
 
     private readonly SemaphoreSlim _socketSendSemaphoreSlim = new(1, 1);
     private readonly MemoryStream _sharedMemoryStream = new();
@@ -92,28 +92,36 @@ class WebSocketTransport(Uri _uri) : ITransport, IDisposable
 
     public void Dispose()
     {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    ~WebSocketTransport()
+    {
+        Dispose(false);
+    }
+
+    private void Dispose(bool disposing)
+    {
         if (_disposed)
         {
             return;
         }
 
-        _webSocket.Dispose();
-        _sharedMemoryStream.Dispose();
-        _socketSendSemaphoreSlim.Dispose();
-        ReleaseBuffer();
-        _disposed = true;
-    }
+        if (disposing)
+        {
+            _webSocket.Dispose();
+            _sharedMemoryStream.Dispose();
+            _socketSendSemaphoreSlim.Dispose();
+        }
 
-    ~WebSocketTransport()
-    {
-        ReleaseBuffer();
-    }
-
-    private void ReleaseBuffer()
-    {
         if (_receiveBuffer is not null)
         {
             ArrayPool<byte>.Shared.Return(_receiveBuffer);
+
+            _receiveBuffer = null!;
         }
+
+        _disposed = true;
     }
 }
