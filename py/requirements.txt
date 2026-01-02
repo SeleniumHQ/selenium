@@ -51,8 +51,11 @@ sortedcontainers==2.4.0
 tomli==2.3.0
 tox==4.32.0
 trio==0.32.0
+trio-typing==0.10.0
 trio-websocket==0.12.2
 twine==6.2.0
+types-certifi==2021.10.8.3
+types-urllib3==1.26.25.14
 typing_extensions==4.15.0
 urllib3[socks]==2.6.2
 virtualenv==20.35.4

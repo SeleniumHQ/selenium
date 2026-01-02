@@ -314,11 +314,14 @@ py_wheel(
     python_requires = ">=3.10",
     python_tag = "py3",
     requires = [
-        "urllib3[socks]>=2.5.0,<3.0",
+        "certifi>=2025.10.5",
         "trio>=0.31.0,<1.0",
         "trio-websocket>=0.12.2,<1.0",
-        "certifi>=2025.10.5",
+        "trio-typing>=0.10.0",
+        "types-certifi>=2021.10.8.3",
+        "types-urllib3>=1.26.25.14",
         "typing_extensions>=4.15.0,<5.0",
+        "urllib3[socks]>=2.6.0,<3.0",
         "websocket-client>=1.8.0,<2.0",
     ],
     strip_path_prefixes = [
