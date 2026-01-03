@@ -19,7 +19,7 @@ permissions:
 jobs:
   docs:
     name: Documentation
-    if: false
+    if: ${{ inputs.run-full-suite }}
     uses: ./.github/workflows/bazel.yml
     with:
       name: Documentation
@@ -27,7 +27,7 @@ jobs:
 
   steep-check:
     name: Type Check (Steep)
-    if: false
+    if: ${{ inputs.run-full-suite }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -49,7 +49,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    if: false
+    if: ${{ inputs.run-full-suite }}
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
@@ -108,8 +108,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [edge-remote]
-        os: [windows]
+        browser: [chrome edge firefox]
+        os: [windows macos]
+        include:
+          - browser: edge-remote
+            os: macos
+        exclude:
+          - browser: edge
+            os: macos
     with:
       name: Browser Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
@@ -119,11 +125,10 @@ jobs:
         --keep_going
         --build_tests_only
         --flaky_test_attempts 3
-        --pin_browsers=false
-        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
-        --test_env=SE_SKIP_DRIVER_IN_PATH=true
-        --test_env=DEBUG=true
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
+        --pin_browsers=false
+        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+        --test_env=SE_SKIP_DRIVER_IN_PATH=true
         ${{ needs.filter-targets.outputs.targets }}
