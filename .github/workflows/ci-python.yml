@@ -52,7 +52,7 @@ jobs:
           pip install tox
       - name: Run type checking
         run: |
-          tox -c py/tox.ini || true
+          tox -c py/tox.ini
         env:
           TOXENV: typecheck
 

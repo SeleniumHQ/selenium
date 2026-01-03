@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
@@ -36,7 +35,7 @@ class WebDriver(ChromiumDriver):
         Starts the service and then creates new instance of chrome driver.
 
         Args:
-            options: This takes an instance of ChromeOptions.
+            options: Instance of Options.
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
