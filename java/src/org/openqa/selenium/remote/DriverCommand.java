@@ -109,87 +109,79 @@ public interface DriverCommand {
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
   String GET_LOCATION = "getLocation";
   String SET_LOCATION = "setLocation";
+
   /**
-   * @deprecated localStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("return window.localStorage.getItem('key')")
-   *     instead.
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return window.localStorage.getItem('key')") instead.
    */
-  @Deprecated
-  String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
+  @Deprecated String GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem";
+
   /**
-   * @deprecated localStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("return Object.keys(window.localStorage)")
-   *     instead.
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return Object.keys(window.localStorage)") instead.
    */
-  @Deprecated
-  String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
+  @Deprecated String GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys";
+
   /**
-   * @deprecated localStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("window.localStorage.setItem('key', 'value')")
-   *     instead.
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.localStorage.setItem('key', 'value')") instead.
    */
-  @Deprecated
-  String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
+  @Deprecated String SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem";
+
   /**
-   * @deprecated localStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("window.localStorage.removeItem('key')")
-   *     instead.
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.localStorage.removeItem('key')") instead.
    */
-  @Deprecated
-  String REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem";
+  @Deprecated String REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem";
+
   /**
-   * @deprecated localStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("window.localStorage.clear()") instead.
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.localStorage.clear()") instead.
    */
-  @Deprecated
-  String CLEAR_LOCAL_STORAGE = "clearLocalStorage";
+  @Deprecated String CLEAR_LOCAL_STORAGE = "clearLocalStorage";
+
   /**
-   * @deprecated localStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("return window.localStorage.length") instead.
+   * @deprecated localStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return window.localStorage.length") instead.
    */
-  @Deprecated
-  String GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize";
+  @Deprecated String GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize";
+
   /**
-   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("return window.sessionStorage.getItem('key')")
-   *     instead.
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return window.sessionStorage.getItem('key')") instead.
    */
-  @Deprecated
-  String GET_SESSION_STORAGE_ITEM = "getSessionStorageItem";
+  @Deprecated String GET_SESSION_STORAGE_ITEM = "getSessionStorageItem";
+
   /**
-   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("return Object.keys(window.sessionStorage)")
-   *     instead.
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return Object.keys(window.sessionStorage)") instead.
    */
-  @Deprecated
-  String GET_SESSION_STORAGE_KEYS = "getSessionStorageKey";
+  @Deprecated String GET_SESSION_STORAGE_KEYS = "getSessionStorageKey";
+
   /**
-   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("window.sessionStorage.setItem('key',
-   *     'value')") instead.
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.sessionStorage.setItem('key', 'value')") instead.
    */
-  @Deprecated
-  String SET_SESSION_STORAGE_ITEM = "setSessionStorageItem";
+  @Deprecated String SET_SESSION_STORAGE_ITEM = "setSessionStorageItem";
+
   /**
-   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("window.sessionStorage.removeItem('key')")
-   *     instead.
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.sessionStorage.removeItem('key')") instead.
    */
-  @Deprecated
-  String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
+  @Deprecated String REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem";
+
   /**
-   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("window.sessionStorage.clear()") instead.
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("window.sessionStorage.clear()") instead.
    */
-  @Deprecated
-  String CLEAR_SESSION_STORAGE = "clearSessionStorage";
+  @Deprecated String CLEAR_SESSION_STORAGE = "clearSessionStorage";
+
   /**
-   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use
-   *     ((JavascriptExecutor) driver).executeScript("return window.sessionStorage.length")
-   *     instead.
+   * @deprecated sessionStorage is not part of W3C WebDriver spec. Use ((JavascriptExecutor)
+   *     driver).executeScript("return window.sessionStorage.length") instead.
    */
-  @Deprecated
-  String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
+  @Deprecated String GET_SESSION_STORAGE_SIZE = "getSessionStorageSize";
+
   // W3C Actions APIs
   String ACTIONS = "actions";
   String CLEAR_ACTIONS_STATE = "clearActionState";
