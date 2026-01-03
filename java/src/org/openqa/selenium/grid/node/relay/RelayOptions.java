@@ -91,7 +91,7 @@ public class RelayOptions {
 
   public URI getServiceStatusUri() {
     try {
-      if (!config.get(RELAY_SECTION, "status-endpoint").isPresent()) {
+      if (config.get(RELAY_SECTION, "status-endpoint").isEmpty()) {
         return null;
       }
       String statusEndpoint = config.get(RELAY_SECTION, "status-endpoint").orElse("/status");

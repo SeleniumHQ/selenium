@@ -59,8 +59,7 @@ public class DefaultSlotSelector implements SlotSelector {
                 // Then sort by stereotype browserVersion (descending order). SemVer comparison with
                 // considering empty value at first.
                 .thenComparing(
-                    Comparator.comparing(
-                        NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed()))
+                    NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed())
                 // And use the node id as a tie-breaker.
                 .thenComparing(NodeStatus::getNodeId))
         .flatMap(

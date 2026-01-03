@@ -359,7 +359,7 @@ public class RemoteWebDriverBuilder {
                                                         "Unable to create session with " + caps))))
             .findFirst();
 
-    if (!first.isPresent()) {
+    if (first.isEmpty()) {
       throw new SessionNotCreatedException("Unable to find matching driver for capabilities");
     }
 

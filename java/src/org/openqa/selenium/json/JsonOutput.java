@@ -216,7 +216,7 @@ public class JsonOutput implements Closeable {
           ((Map<?, ?>) obj)
               .forEach(
                   (key, value) -> {
-                    if (value instanceof Optional && !((Optional) value).isPresent()) {
+                    if (value instanceof Optional && ((Optional) value).isEmpty()) {
                       return;
                     }
                     name(String.valueOf(key)).write0(value, maxDepth, depthRemaining - 1);
@@ -241,7 +241,7 @@ public class JsonOutput implements Closeable {
         Optional.class::isAssignableFrom,
         (obj, maxDepth, depthRemaining) -> {
           Optional<?> optional = (Optional<?>) obj;
-          if (!optional.isPresent()) {
+          if (optional.isEmpty()) {
             append("null");
             return;
           }

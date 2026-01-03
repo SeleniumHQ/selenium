@@ -61,8 +61,7 @@ public class GreedySlotSelector implements SlotSelector {
                 .thenComparingLong(NodeStatus::getLastSessionCreated)
                 // Then sort by stereotype browserVersion (descending order)
                 .thenComparing(
-                    Comparator.comparing(
-                        NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed())))
+                    NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed()))
         .flatMap(
             node ->
                 node.getSlots().stream()
