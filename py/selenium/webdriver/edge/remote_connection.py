@@ -28,7 +28,7 @@ class EdgeRemoteConnection(ChromiumRemoteConnection):
         self,
         remote_server_addr: str,
         keep_alive: bool = True,
-        ignore_proxy: bool | None = False,
+        ignore_proxy: bool = False,
         client_config: ClientConfig | None = None,
     ) -> None:
         super().__init__(

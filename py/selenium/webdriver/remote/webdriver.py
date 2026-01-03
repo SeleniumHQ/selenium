@@ -1035,18 +1035,26 @@ class WebDriver(BaseWebDriver):
         import_cdp()
         if self.caps.get("se:cdp"):
             ws_url = self.caps.get("se:cdp")
-            version = self.caps.get("se:cdpVersion").split(".")[0]
+            cdp_version = self.caps.get("se:cdpVersion")
+            if cdp_version is None:
+                raise WebDriverException("CDP version not found in capabilities")
+            version = cdp_version.split(".")[0]
         else:
             version, ws_url = self._get_cdp_details()
 
         if not ws_url:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
+        if cdp is None:
+            raise WebDriverException("CDP module not loaded")
+
         self._devtools = cdp.import_devtools(version)
         if self._websocket_connection:
             return self._devtools, self._websocket_connection
         if self.caps["browserName"].lower() == "firefox":
             raise RuntimeError("CDP support for Firefox has been removed. Please switch to WebDriver BiDi.")
+        if not isinstance(self.command_executor, RemoteConnection):
+            raise WebDriverException("command_executor must be a RemoteConnection instance for CDP support")
         self._websocket_connection = WebSocketConnection(
             ws_url,
             self.command_executor.client_config.websocket_timeout,
@@ -1099,6 +1107,9 @@ class WebDriver(BaseWebDriver):
             ws_url = self.caps.get("webSocketUrl")
         else:
             raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        if not isinstance(self.command_executor, RemoteConnection):
+            raise WebDriverException("command_executor must be a RemoteConnection instance for BiDi support")
 
         self._websocket_connection = WebSocketConnection(
             ws_url,

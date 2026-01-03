@@ -4,6 +4,10 @@
 #
 #    bazel run //py:requirements.update
 #
+async-generator==1.10 \
+    --hash=sha256:01c7bf666359b4967d2cda0000cc2e4af16a0ae098cbffcb8472fb9e8ad6585b \
+    --hash=sha256:6ebb3d106c12920aaae42ccb6f787ef5eefdcdd166ea3d628fa8476abe712144
+    # via trio-typing
 attrs==25.4.0 \
     --hash=sha256:16d5969b87f0859ef33a48b35d55ac1be6e42ae49d5e853b597db70c35c57e11 \
     --hash=sha256:adcf7e2a1fb3b36ac48d97835bb6d8ade15b8dcce26aba8bf1d14847b57a3373
@@ -360,6 +364,7 @@ importlib-metadata==8.7.1 \
     # via
     #   -r py/requirements.txt
     #   keyring
+    #   trio-typing
 inflection==0.5.1 \
     --hash=sha256:1a29730d366e996aaacffb2f1f1cb9593dc38e2ddd30c91250c6dde09ea9b417 \
     --hash=sha256:f38b2b640938a4f35ade69ac3d053042959b62a0f1076a5bbaa1b9526605a8a2
@@ -420,6 +425,10 @@ more-itertools==10.8.0 \
     #   -r py/requirements.txt
     #   jaraco-classes
     #   jaraco-functools
+mypy-extensions==1.1.0 \
+    --hash=sha256:1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505 \
+    --hash=sha256:52e68efc3284861e772bbcd66823fde5ae21fd2fdb51c62a211403730b916558
+    # via trio-typing
 nh3==0.3.2 \
     --hash=sha256:019ecbd007536b67fdf76fab411b648fb64e2257ca3262ec80c3425c24028c80 \
     --hash=sha256:03d617e5c8aa7331bd2659c654e021caf9bba704b109e7b2b28b039a00949fe5 \
@@ -466,6 +475,7 @@ packaging==25.0 \
     #   pyproject-api
     #   pytest
     #   tox
+    #   trio-typing
     #   twine
 platformdirs==4.5.1 \
     --hash=sha256:61d5cdcc6065745cdd94f0f878977f8de9437be93de97c1c12f853c9c0cdcbda \
@@ -640,7 +650,12 @@ trio==0.32.0 \
     # via
     #   -r py/requirements.txt
     #   pytest-trio
+    #   trio-typing
     #   trio-websocket
+trio-typing==0.10.0 \
+    --hash=sha256:065ee684296d52a8ab0e2374666301aec36ee5747ac0e7a61f230250f8907ac3 \
+    --hash=sha256:6d0e7ec9d837a2fe03591031a172533fbf4a1a95baf369edebfc51d5a49f0264
+    # via -r py/requirements.txt
 trio-websocket==0.12.2 \
     --hash=sha256:22c72c436f3d1e264d0910a3951934798dcc5b00ae56fc4ee079d46c7cf20fae \
     --hash=sha256:df605665f1db533f4a386c94525870851096a223adcb97f72a07e8b4beba45b6
@@ -648,6 +663,14 @@ trio-websocket==0.12.2 \
 twine==6.2.0 \
     --hash=sha256:418ebf08ccda9a8caaebe414433b0ba5e25eb5e4a927667122fbe8f829f985d8 \
     --hash=sha256:e5ed0d2fd70c9959770dce51c8f39c8945c574e18173a7b81802dab51b4b75cf
+    # via -r py/requirements.txt
+types-certifi==2021.10.8.3 \
+    --hash=sha256:72cf7798d165bc0b76e1c10dd1ea3097c7063c42c21d664523b928e88b554a4f \
+    --hash=sha256:b2d1e325e69f71f7c78e5943d410e650b4707bb0ef32e4ddf3da37f54176e88a
+    # via -r py/requirements.txt
+types-urllib3==1.26.25.14 \
+    --hash=sha256:229b7f577c951b8c1b92c1bc2b2fdb0b49847bd2af6d1cc2a2e3dd340f3bda8f \
+    --hash=sha256:9683bbb7fb72e32bfe9d2be6e04875fbe1b3eeec3cbb4ea231435aa7fd6b4f0e
     # via -r py/requirements.txt
 typing-extensions==4.15.0 \
     --hash=sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466 \
@@ -657,6 +680,7 @@ typing-extensions==4.15.0 \
     #   cryptography
     #   exceptiongroup
     #   tox
+    #   trio-typing
     #   virtualenv
 urllib3[socks]==2.6.2 \
     --hash=sha256:016f9c98bb7e98085cb2b4b17b87d2c702975664e4f060c6532e64d1c1a5e797 \
