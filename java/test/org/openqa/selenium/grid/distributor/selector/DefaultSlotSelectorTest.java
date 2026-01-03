@@ -17,11 +17,12 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.Collections.unmodifiableSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Sets.orderedSetOf;
+import static org.openqa.selenium.internal.Sets.toImmutableSet;
 
-import com.google.common.collect.ImmutableSet;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -106,11 +107,11 @@ class DefaultSlotSelectorTest {
     NodeStatus node5 =
         createNodeWithStereotypes(
             List.of(Map.of("browserName", "chrome", "browserVersion", "beta")));
-    Set<NodeStatus> nodes = ImmutableSet.of(node1, node2, node3, node4, node5);
+    Set<NodeStatus> nodes = orderedSetOf(node1, node2, node3, node4, node5);
 
     Set<SlotId> slots = selector.selectSlot(caps, nodes, new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds)
@@ -137,7 +138,7 @@ class DefaultSlotSelectorTest {
 
     Set<SlotId> slots = selector.selectSlot(caps, nodes, new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds)
@@ -161,7 +162,7 @@ class DefaultSlotSelectorTest {
 
     Set<SlotId> ids =
         selector.selectSlot(
-            caps, ImmutableSet.of(heavy, medium, lightest, massive), new DefaultSlotMatcher());
+            caps, orderedSetOf(heavy, medium, lightest, massive), new DefaultSlotMatcher());
     SlotId expected = ids.iterator().next();
 
     assertThat(lightest.getSlots().stream()).anyMatch(slot -> expected.equals(slot.getId()));
@@ -177,7 +178,7 @@ class DefaultSlotSelectorTest {
 
     Set<SlotId> ids =
         selector.selectSlot(
-            chrome, ImmutableSet.of(maximumLoad, mediumLoad, lightLoad), new DefaultSlotMatcher());
+            chrome, orderedSetOf(maximumLoad, mediumLoad, lightLoad), new DefaultSlotMatcher());
     SlotId expected = ids.iterator().next();
 
     // The slot should belong to the Node with light load
@@ -186,7 +187,7 @@ class DefaultSlotSelectorTest {
     // The node whose current number of sessions is greater than or equal to the max sessions is not
     // included
     // Hence, the node with the maximum load is skipped
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         ids.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
     assertThat(nodeIds).doesNotContain(maximumLoad.getNodeId());
     assertThat(nodeIds).containsSequence(lightLoad.getNodeId(), mediumLoad.getNodeId());
@@ -206,7 +207,7 @@ class DefaultSlotSelectorTest {
     Set<SlotId> ids =
         selector.selectSlot(
             chrome,
-            ImmutableSet.of(
+            orderedSetOf(
                 lightLoadAndThreeBrowsers,
                 mediumLoadAndTwoBrowsers,
                 mediumLoadAndOtherTwoBrowsers,
@@ -222,7 +223,7 @@ class DefaultSlotSelectorTest {
     // Nodes are ordered by the diversity of supported browsers, then by load
     // The node whose current number of sessions is greater than or equal to the max sessions is not
     // included
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         ids.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
     assertThat(nodeIds)
         .containsSequence(
@@ -260,7 +261,7 @@ class DefaultSlotSelectorTest {
         nodeId,
         uri,
         count,
-        ImmutableSet.copyOf(slots),
+        unmodifiableSet(slots),
         UP,
         Duration.ofSeconds(10),
         Duration.ofSeconds(300),

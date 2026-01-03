@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.Collections.unmodifiableSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Sets.orderedSetOf;
+import static org.openqa.selenium.internal.Sets.toImmutableSet;
 
-import com.google.common.collect.ImmutableSet;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -33,12 +33,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -46,26 +43,11 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DefaultTestTracer;
-import org.openqa.selenium.remote.tracing.Tracer;
 
 class GreedySlotSelectorTest {
 
   private final Random random = new Random();
   private final GreedySlotSelector selector = new GreedySlotSelector();
-  private Tracer tracer;
-  private EventBus bus;
-  private URI uri;
-
-  @BeforeEach
-  public void setUp() throws URISyntaxException {
-    tracer = DefaultTestTracer.createTracer();
-    bus = new GuavaEventBus();
-    uri = new URI("http://localhost:1234");
-  }
 
   @Test
   void nodesAreOrderedByUtilizationRatio() {
@@ -78,10 +60,10 @@ class GreedySlotSelectorTest {
     Set<SlotId> slots =
         selector.selectSlot(
             caps,
-            ImmutableSet.of(lowUtilization, mediumUtilization, highUtilization),
+            orderedSetOf(lowUtilization, mediumUtilization, highUtilization),
             new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds)
@@ -99,9 +81,9 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, ImmutableSet.of(largeNode, mediumNode, smallNode), new DefaultSlotMatcher());
+            caps, orderedSetOf(largeNode, mediumNode, smallNode), new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds)
@@ -118,9 +100,9 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, ImmutableSet.of(highLoad, mediumLoad, lowLoad), new DefaultSlotMatcher());
+            caps, orderedSetOf(highLoad, mediumLoad, lowLoad), new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds)
@@ -135,10 +117,9 @@ class GreedySlotSelectorTest {
     NodeStatus fullNode = createNode(List.of(caps), 10, 10); // 100% utilized
 
     Set<SlotId> slots =
-        selector.selectSlot(
-            caps, ImmutableSet.of(fullNode, availableNode), new DefaultSlotMatcher());
+        selector.selectSlot(caps, orderedSetOf(fullNode, availableNode), new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds).doesNotContain(fullNode.getNodeId());
@@ -162,9 +143,9 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, ImmutableSet.of(oldVersionHighUtil, newVersionLowUtil), new DefaultSlotMatcher());
+            caps, orderedSetOf(oldVersionHighUtil, newVersionLowUtil), new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds)
@@ -186,9 +167,9 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, ImmutableSet.of(windowsHighUtil, macLowUtil), new DefaultSlotMatcher());
+            caps, orderedSetOf(windowsHighUtil, macLowUtil), new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds).containsSequence(windowsHighUtil.getNodeId(), macLowUtil.getNodeId());
@@ -212,20 +193,15 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, ImmutableSet.of(basicHighUtil, advancedLowUtil), new DefaultSlotMatcher());
+            caps, orderedSetOf(basicHighUtil, advancedLowUtil), new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
+    Set<NodeId> nodeIds =
         slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
 
     assertThat(nodeIds).containsSequence(basicHighUtil.getNodeId(), advancedLowUtil.getNodeId());
   }
 
   private NodeStatus createNode(List<Capabilities> stereotypes, int count, int currentLoad) {
-    return createNode(stereotypes, count, currentLoad, 0.0);
-  }
-
-  private NodeStatus createNode(
-      List<Capabilities> stereotypes, int count, int currentLoad, double load) {
     NodeId nodeId = new NodeId(UUID.randomUUID());
     URI uri = createUri();
 
@@ -253,7 +229,7 @@ class GreedySlotSelectorTest {
         nodeId,
         uri,
         count,
-        ImmutableSet.copyOf(slots),
+        unmodifiableSet(slots),
         UP,
         Duration.ofSeconds(10),
         Duration.ofSeconds(300),
@@ -292,7 +268,7 @@ class GreedySlotSelectorTest {
         nodeId,
         uri,
         count,
-        ImmutableSet.copyOf(slots),
+        unmodifiableSet(slots),
         UP,
         Duration.ofSeconds(10),
         Duration.ofSeconds(300),
@@ -308,22 +284,6 @@ class GreedySlotSelectorTest {
       return new URI("http://localhost:" + random.nextInt());
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private class Handler extends Session implements HttpHandler {
-    private Handler(Capabilities capabilities) {
-      super(
-          new SessionId(UUID.randomUUID()),
-          uri,
-          new ImmutableCapabilities(),
-          capabilities,
-          Instant.now());
-    }
-
-    @Override
-    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-      return new HttpResponse();
     }
   }
 }

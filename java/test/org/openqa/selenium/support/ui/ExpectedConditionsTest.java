@@ -54,7 +54,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfNestedElementsLocatedBy;
 
-import com.google.common.collect.Sets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -954,7 +953,7 @@ class ExpectedConditionsTest {
 
   @Test
   void waitingNumberOfWindowsToBeTwoWhenThereAreTwoWindowsOpen() {
-    Set<String> twoWindowHandles = Sets.newHashSet("w1", "w2");
+    Set<String> twoWindowHandles = Set.of("w1", "w2");
     when(mockDriver.getWindowHandles()).thenReturn(twoWindowHandles);
 
     assertThat(wait.until(numberOfWindowsToBe(2))).isTrue();
@@ -962,7 +961,7 @@ class ExpectedConditionsTest {
 
   @Test
   void waitingNumberOfWindowsToBeTwoThrowsTimeoutExceptionWhenThereAreThreeWindowsOpen() {
-    Set<String> threeWindowHandles = Sets.newHashSet("w1", "w2", "w3");
+    Set<String> threeWindowHandles = Set.of("w1", "w2", "w3");
     when(mockDriver.getWindowHandles()).thenReturn(threeWindowHandles);
 
     assertThatExceptionOfType(TimeoutException.class)

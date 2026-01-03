@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Sets.toImmutableSet;
 
 import java.util.Comparator;
 import java.util.Set;
