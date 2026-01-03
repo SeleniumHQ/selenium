@@ -26,7 +26,6 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.*;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;

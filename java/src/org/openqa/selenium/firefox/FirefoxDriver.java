@@ -22,7 +22,6 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;

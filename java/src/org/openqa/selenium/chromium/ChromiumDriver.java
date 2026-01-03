@@ -23,7 +23,6 @@ import static org.openqa.selenium.remote.Browser.OPERA;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +110,10 @@ public class ChromiumDriver extends RemoteWebDriver
   }
 
   protected ChromiumDriver(
-      CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey, ClientConfig clientConfig) {
+      CommandExecutor commandExecutor,
+      Capabilities capabilities,
+      String capabilityKey,
+      ClientConfig clientConfig) {
     super(commandExecutor, capabilities);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     networkConditions =
