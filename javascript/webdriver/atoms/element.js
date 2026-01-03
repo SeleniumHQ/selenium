@@ -173,7 +173,7 @@ webdriver.atoms.element.type = function(
             current.persist = false;
             convertedSequences.push(current = createSequenceRecord());
           }
-        } else if (goog.isDef(webdriverKey)) {
+        } else if (webdriverKey !== undefined) {
           current.keys.push(webdriverKey);
         } else {
           throw Error('Unsupported WebDriver key: \\u' +

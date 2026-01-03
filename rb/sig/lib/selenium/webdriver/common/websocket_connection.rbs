@@ -5,6 +5,8 @@ module Selenium
 
       @callback_threads: untyped
 
+      @protocol: Symbol?
+
       @session_id: untyped
 
       @url: untyped
@@ -33,9 +35,9 @@ module Selenium
 
       MAX_LOG_MESSAGE_SIZE: Integer
 
-      def initialize: (url: untyped) -> void
+      def initialize: (url: String) -> void
 
-      def add_callback: (untyped event) { () -> void } -> untyped
+      def add_callback: (untyped event) { () -> void } -> Integer
 
       def close: () -> untyped
 
@@ -46,6 +48,10 @@ module Selenium
       def send_cmd: (**untyped payload) -> untyped
 
       private
+
+      def bidi?: -> bool
+
+      def devtools?: -> bool
 
       def messages: () -> untyped
 

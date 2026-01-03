@@ -21,7 +21,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-import com.google.common.collect.ImmutableSet;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,7 +70,7 @@ public class LocalGridModel extends GridModel {
     this.events = Require.nonNull("Event bus", events);
 
     this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
-    this.events.addListener(SessionClosedEvent.listener(this::release));
+    this.events.addListener(SessionClosedEvent.sessionListener(this::release));
   }
 
   public static LocalGridModel create(Config config) {
@@ -360,7 +359,7 @@ public class LocalGridModel extends GridModel {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      return ImmutableSet.copyOf(nodes);
+      return Set.copyOf(nodes);
     } finally {
       readLock.unlock();
     }

@@ -2,7 +2,7 @@ module Selenium
   module WebDriver
     module IE
       class Driver < WebDriver::Driver
-        EXTENSIONS: Array[untyped]
+        EXTENSIONS: Array[String]
 
         include LocalDriver
 

@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import json
 import logging
 import os
@@ -22,7 +23,6 @@ import subprocess
 import sys
 import sysconfig
 from pathlib import Path
-from typing import Optional
 
 from selenium.common import WebDriverException
 
@@ -38,11 +38,12 @@ class SeleniumManager:
     def binary_paths(self, args: list) -> dict:
         """Determines the locations of the requested assets.
 
-        :Args:
-         - args: the commands to send to the selenium manager binary.
-        :Returns: dictionary of assets and their path
-        """
+        Args:
+            args: the commands to send to the selenium manager binary.
 
+        Returns:
+            Dictionary of assets and their path.
+        """
         args = [str(self._get_binary())] + args
         if logger.getEffectiveLevel() == logging.DEBUG:
             args.append("--debug")
@@ -55,24 +56,35 @@ class SeleniumManager:
 
     @staticmethod
     def _get_binary() -> Path:
-        """Determines the path of the correct Selenium Manager binary.
+        """Determines the path of the Selenium Manager binary.
 
-        :Returns: The Selenium Manager executable location
+        Location of the binary is checked in this order:
 
-        :Raises: WebDriverException if the platform is unsupported
+        1. location set in an environment variable
+        2. location where setuptools-rust places the compiled binary (built from the sdist package)
+        3. location where we ship binaries in the wheel package for the platform this is running on
+        4. give up
+
+        Returns:
+            The Selenium Manager executable location.
+
+        Raises:
+            WebDriverException: If the platform is unsupported or Selenium Manager executable can't be found.
         """
-
         compiled_path = Path(__file__).parent.joinpath("selenium-manager")
         exe = sysconfig.get_config_var("EXE")
         if exe is not None:
             compiled_path = compiled_path.with_suffix(exe)
 
-        path: Optional[Path] = None
+        path: Path | None = None
 
         if (env_path := os.getenv("SE_MANAGER_PATH")) is not None:
-            logger.debug("Selenium Manager set by env SE_MANAGER_PATH to: %s", env_path)
-            path = Path(env_path)
-        elif compiled_path.exists():
+            logger.debug(f"Selenium Manager set by env SE_MANAGER_PATH to: {env_path}")
+            path_candidate = Path(env_path)
+            if not path_candidate.is_file():
+                raise WebDriverException(f"SE_MANAGER_PATH does not point to a file: {env_path}")
+            path = path_candidate
+        elif compiled_path.is_file():
             path = compiled_path
         else:
             allowed = {
@@ -86,7 +98,7 @@ class SeleniumManager:
 
             arch = platform.machine() if sys.platform in ("linux", "freebsd", "openbsd") else "any"
             if sys.platform in ["freebsd", "openbsd"]:
-                logger.warning("Selenium Manager binary may not be compatible with %s; verify settings", sys.platform)
+                logger.warning(f"Selenium Manager binary may not be compatible with {sys.platform}; verify settings")
 
             location = allowed.get((sys.platform, arch))
             if location is None:
@@ -97,7 +109,7 @@ class SeleniumManager:
         if path is None or not path.is_file():
             raise WebDriverException(f"Unable to obtain working Selenium Manager binary; {path}")
 
-        logger.debug("Selenium Manager binary found at: %s", path)
+        logger.debug(f"Selenium Manager binary found at: {path}")
 
         return path
 
@@ -105,9 +117,11 @@ class SeleniumManager:
     def _run(args: list[str]) -> dict:
         """Executes the Selenium Manager Binary.
 
-        :Args:
-         - args: the components of the command being executed.
-        :Returns: The log string containing the driver location.
+        Args:
+            args: the components of the command being executed.
+
+        Returns:
+            The log string containing the driver location.
         """
         command = " ".join(args)
         logger.debug("Executing process: %s", command)

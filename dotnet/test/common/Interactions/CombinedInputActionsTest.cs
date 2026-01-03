@@ -33,8 +33,7 @@ public class CombinedInputActionsTest : DriverTestFixture
     public void Setup()
     {
         // new Actions(driver).SendKeys(Keys.Null).Perform();
-        IActionExecutor actionExecutor = driver as IActionExecutor;
-        if (actionExecutor != null)
+        if (driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }
@@ -44,8 +43,7 @@ public class CombinedInputActionsTest : DriverTestFixture
     public void ReleaseModifierKeys()
     {
         // new Actions(driver).SendKeys(Keys.Null).Perform();
-        IActionExecutor actionExecutor = driver as IActionExecutor;
-        if (actionExecutor != null)
+        if (driver is IActionExecutor actionExecutor)
         {
             actionExecutor.ResetInputState();
         }

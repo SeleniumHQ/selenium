@@ -24,6 +24,10 @@ require_relative 'cookies'
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       class InterceptedResponse < InterceptedItem
         attr_accessor :reason, :status
         attr_reader :body
@@ -33,13 +37,17 @@ module Selenium
           @reason = nil
           @status = nil
           @body = nil
+          @headers = nil
+          @cookies = nil
         end
 
         def continue
+          cookies = @cookies&.as_json
+          headers = @headers&.as_json
           network.continue_response(
             id: id,
-            cookies: cookies.as_json,
-            headers: headers.as_json,
+            cookies: cookies,
+            headers: headers,
             credentials: credentials.as_json,
             reason: reason,
             status: status
@@ -47,10 +55,12 @@ module Selenium
         end
 
         def provide_response
+          cookies = @cookies&.as_json
+          headers = @headers&.as_json
           network.provide_response(
             id: id,
-            cookies: cookies.as_json,
-            headers: headers.as_json,
+            cookies: cookies,
+            headers: headers,
             body: body,
             reason: reason,
             status: status
@@ -61,11 +71,19 @@ module Selenium
           @credentials ||= Credentials.new(username: username, password: password)
         end
 
-        def headers
-          @headers ||= Headers.new
+        def headers(headers = {})
+          @headers ||= Headers.new(headers)
+        end
+
+        def headers=(*headers)
+          @headers = Headers.new(headers)
         end
 
         def cookies(cookies = {})
+          @cookies ||= Cookies.new(cookies)
+        end
+
+        def cookies=(cookies = {})
           @cookies ||= Cookies.new(cookies)
         end
 

@@ -9,9 +9,9 @@
  * Cross-browser implementation of the "display: inline-block" CSS property.
  * See http://www.w3.org/TR/CSS21/visuren.html#propdef-display for details.
  * Tested on IE 6 & 7, FF 1.5 & 2.0, Safari 2 & 3, Webkit, and Opera 9.
- *
- * @author attila@google.com (Attila Bodis)
  */
+
+@provide 'goog.css.common';
 
 /*
  * Default rule; only Safari, Webkit, and Opera handle it without hacks.

@@ -5,8 +5,7 @@
  * See the COPYING file for details.
  */
 
-/* Author: pupius@google.com (Daniel Pupius) */
-/* Author: cibu@google.com (Cibu Johny) */
+@provide 'goog.css.charpicker';
 
 .goog-char-picker {
   background-color: #ddd;

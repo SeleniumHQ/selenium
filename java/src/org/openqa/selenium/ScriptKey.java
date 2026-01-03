@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
 public class ScriptKey {
@@ -33,7 +34,7 @@ public class ScriptKey {
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (!(o instanceof ScriptKey)) {
       return false;
     }

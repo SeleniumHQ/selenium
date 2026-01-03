@@ -9,6 +9,8 @@ module Selenium
 
           DEFAULT_HEADERS: Hash[String, untyped]
 
+          BINARY_ENCODINGS: Array[Encoding]
+
           @common_headers: Hash[String, untyped]
 
           attr_accessor self.extra_headers: Hash[String, untyped]
@@ -34,6 +36,10 @@ module Selenium
           def request: (*untyped) -> untyped
 
           def create_response: (Integer code, Hash[String, untyped] body, String content_type) -> Remote::Response
+
+          def ensure_utf8_encoding: (untyped obj) -> untyped
+
+          def encode_string_to_utf8: (String str) -> String
         end
       end
     end

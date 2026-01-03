@@ -84,6 +84,12 @@ public abstract class JupiterTestBase {
     driver = seleniumExtension.getDriver();
     wait = seleniumExtension::waitUntil;
     shortWait = seleniumExtension::shortWaitUntil;
+
+    if (driver != null) {
+      driver.get("about:blank");
+      driver.get(pages.blankPage);
+      driver.manage().deleteAllCookies();
+    }
   }
 
   @AfterEach

@@ -17,33 +17,28 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HasDownloads;
-import org.openqa.selenium.PersistentCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.grid.config.TomlConfig;
@@ -64,9 +59,8 @@ class RemoteWebDriverDownloadTest {
   private Server<?> server;
   private NettyAppServer appServer;
   private Capabilities capabilities;
-  private final List<TearDownFixture> tearDowns = new LinkedList<>();
-  private final ExecutorService executor =
-      Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+  private WebDriver driver;
+  private final List<TearDownFixture> tearDowns = new ArrayList<>(2);
 
   @BeforeEach
   public void setupServers() {
@@ -98,108 +92,105 @@ class RemoteWebDriverDownloadTest {
 
   @AfterEach
   public void tearDown() {
+    if (driver != null) {
+      driver.quit();
+    }
     tearDowns.parallelStream().forEach(Safely::safelyCall);
-    executor.shutdownNow();
   }
 
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
   void canListDownloadedFiles() {
-    URL gridUrl = server.getUrl();
-    WebDriver driver = new RemoteWebDriver(gridUrl, capabilities);
-    driver = new Augmenter().augment(driver);
+    driver = createWebdriver(capabilities);
 
     driver.get(appServer.whereIs("downloads/download.html"));
     driver.findElement(By.id("file-1")).click();
     driver.findElement(By.id("file-2")).click();
+    waitForDownloadedFiles(driver, 2);
 
-    new WebDriverWait(driver, Duration.ofSeconds(5))
-        .until(
-            d ->
-                ((HasDownloads) d)
-                        .getDownloadableFiles().stream()
-                            // ensure we hit no temporary file created by the browser while
-                            // downloading
-                            .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith))
-                            .count()
-                    == 2);
-
+    @SuppressWarnings("deprecation")
     List<String> downloadableFiles = ((HasDownloads) driver).getDownloadableFiles();
     assertThat(downloadableFiles).contains("file_1.txt", "file_2.jpg");
 
-    driver.quit();
+    List<DownloadedFile> downloadedFiles = ((HasDownloads) driver).getDownloadedFiles();
+    assertThat(downloadedFiles.stream().map(f -> f.getName()).collect(Collectors.toList()))
+        .contains("file_1.txt", "file_2.jpg");
   }
 
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
   void canDownloadFiles() throws IOException {
-    URL gridUrl = server.getUrl();
-    WebDriver driver = new RemoteWebDriver(gridUrl, capabilities);
-    driver = new Augmenter().augment(driver);
+    driver = createWebdriver(capabilities);
 
     driver.get(appServer.whereIs("downloads/download.html"));
     driver.findElement(By.id("file-1")).click();
+    waitForDownloadedFiles(driver, 1);
 
-    new WebDriverWait(driver, Duration.ofSeconds(5))
-        .until(
-            d ->
-                ((HasDownloads) d)
-                    .getDownloadableFiles().stream()
-                        // ensure we hit no temporary file created by the browser while downloading
-                        .anyMatch((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith)));
-
-    String fileName = ((HasDownloads) driver).getDownloadableFiles().get(0);
+    DownloadedFile file = ((HasDownloads) driver).getDownloadedFiles().get(0);
 
     Path targetLocation = Files.createTempDirectory("download");
-    ((HasDownloads) driver).downloadFile(fileName, targetLocation);
+    ((HasDownloads) driver).downloadFile(file.getName(), targetLocation);
 
-    String fileContent = String.join("", Files.readAllLines(targetLocation.resolve(fileName)));
-    assertThat(fileContent).isEqualTo("Hello, World!");
-
-    driver.quit();
+    File localFile = targetLocation.resolve(file.getName()).toFile();
+    assertThat(localFile).hasName(file.getName());
+    assertThat(localFile).hasSize(file.getSize());
+    assertThat(localFile).content().isEqualToIgnoringNewLines("Hello, World!");
   }
 
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
   void testCanDeleteFiles() {
-    URL gridUrl = server.getUrl();
-    WebDriver driver = new RemoteWebDriver(gridUrl, capabilities);
+    driver = createWebdriver(capabilities);
     driver.get(appServer.whereIs("downloads/download.html"));
     driver.findElement(By.id("file-1")).click();
+    waitForDownloadedFiles(driver, 1);
 
-    new WebDriverWait(driver, Duration.ofSeconds(5))
-        .until(
-            d ->
-                ((HasDownloads) d)
-                    .getDownloadableFiles().stream()
-                        // ensure we hit no temporary file created by the browser while downloading
-                        .anyMatch((f) -> FILE_EXTENSIONS.stream().anyMatch(f::endsWith)));
-
-    driver = new Augmenter().augment(driver);
     ((HasDownloads) driver).deleteDownloadableFiles();
 
-    List<String> afterDeleteNames = ((HasDownloads) driver).getDownloadableFiles();
-    assertThat(afterDeleteNames.isEmpty()).isTrue();
-
-    driver.quit();
+    var afterDeleteNames = ((HasDownloads) driver).getDownloadedFiles();
+    assertThat(afterDeleteNames).isEmpty();
   }
 
   @Test
   void errorsWhenCapabilityMissing() {
-    URL gridUrl = server.getUrl();
     Browser browser = Browser.detect();
 
     Capabilities caps =
         new PersistentCapabilities(Objects.requireNonNull(browser).getCapabilities())
             .setCapability(ENABLE_DOWNLOADS, false);
 
-    WebDriver driver = new RemoteWebDriver(gridUrl, caps);
-    Assertions.assertThrows(
-        WebDriverException.class,
-        () -> ((HasDownloads) driver).getDownloadableFiles(),
-        "You must enable downloads in order to work with downloadable files");
+    driver = createWebdriver(caps);
+    assertThatThrownBy(() -> ((HasDownloads) driver).getDownloadedFiles())
+        .isInstanceOf(WebDriverException.class)
+        .hasMessageStartingWith(
+            "You must enable downloads in order to work with downloadable files");
+
+    //noinspection deprecation
+    assertThatThrownBy(() -> ((HasDownloads) driver).getDownloadableFiles())
+        .isInstanceOf(WebDriverException.class)
+        .hasMessageStartingWith(
+            "You must enable downloads in order to work with downloadable files");
+  }
+
+  private WebDriver createWebdriver(Capabilities capabilities) {
+    return new Augmenter().augment(new RemoteWebDriver(server.getUrl(), capabilities));
+  }
+
+  /** ensure we hit no temporary file created by the browser while downloading */
+  private void waitForDownloadedFiles(WebDriver driver, int expectedFilesCount) {
+    HasDownloads hasDownloads = (HasDownloads) driver;
+
+    new WebDriverWait(driver, ofSeconds(5))
+        .until(
+            __ -> {
+              long actualFilesCount =
+                  hasDownloads.getDownloadedFiles().stream()
+                      .filter((f) -> FILE_EXTENSIONS.stream().anyMatch(f::hasExtension))
+                      .count();
+              return actualFilesCount == expectedFilesCount;
+            });
   }
 }

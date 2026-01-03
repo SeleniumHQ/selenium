@@ -27,9 +27,9 @@ class ElementScrollBehavior(Enum):
 
 
 class _IeOptionsDescriptor:
-    """_IeOptionsDescriptor is an implementation of Descriptor Protocol:
+    """_IeOptionsDescriptor is an implementation of Descriptor Protocol.
 
-    : Any look-up or assignment to the below attributes in `Options` class will be intercepted
+    Any look-up or assignment to the below attributes in `Options` class will be intercepted
     by `__get__` and `__set__` method respectively.
 
     - `browser_attach_timeout`
@@ -50,13 +50,15 @@ class _IeOptionsDescriptor:
     - `attach_to_edge_chrome`
     - `edge_executable_path`
 
+    When an attribute lookup happens:
 
-    : When an attribute lookup happens,
     Example:
         `self. browser_attach_timeout`
         `__get__` method does a dictionary look up in the dictionary `_options` in `Options` class
         and returns the value of key `browserAttachTimeout`
-    : When an attribute assignment happens,
+
+    When an attribute assignment happens:
+
     Example:
         `self.browser_attach_timeout` = 30
         `__set__` method sets/updates the value of the key `browserAttachTimeout` in `_options`
@@ -107,258 +109,190 @@ class Options(ArgOptions):
 
     # Creating descriptor objects for each of the above IE options
     browser_attach_timeout = _IeOptionsDescriptor(BROWSER_ATTACH_TIMEOUT, int)
-    """Gets and Sets `browser_attach_timeout`
+    """Gets and Sets `browser_attach_timeout`.
 
     Usage:
-    ------
-    - Get
-        - `self.browser_attach_timeout`
-    - Set
-        - `self.browser_attach_timeout` = `value`
+        - Get: `self.browser_attach_timeout`
+        - Set: `self.browser_attach_timeout = value`
 
-    Parameters:
-    -----------
-    `value`: `int` (Timeout) in milliseconds
+    Args:
+        value: int - Timeout in milliseconds.
     """
 
     element_scroll_behavior = _IeOptionsDescriptor(ELEMENT_SCROLL_BEHAVIOR, Enum)
-    """Gets and Sets `element_scroll_behavior`
+    """Gets and Sets `element_scroll_behavior`.
 
     Usage:
-    ------
-    - Get
-        - `self.element_scroll_behavior`
-    - Set
-        - `self.element_scroll_behavior` = `value`
+        - Get: `self.element_scroll_behavior`
+        - Set: `self.element_scroll_behavior = value`
 
-    Parameters:
-    -----------
-    `value`: `int` either 0 - Top, 1 - Bottom
+    Args:
+        value: int - Either 0 (Top) or 1 (Bottom).
     """
 
     ensure_clean_session = _IeOptionsDescriptor(ENSURE_CLEAN_SESSION, bool)
-    """Gets and Sets `ensure_clean_session`
+    """Gets and Sets `ensure_clean_session`.
 
     Usage:
-    ------
-    - Get
-        - `self.ensure_clean_session`
-    - Set
-        - `self.ensure_clean_session` = `value`
+        - Get: `self.ensure_clean_session`
+        - Set: `self.ensure_clean_session = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     file_upload_dialog_timeout = _IeOptionsDescriptor(FILE_UPLOAD_DIALOG_TIMEOUT, int)
-    """Gets and Sets `file_upload_dialog_timeout`
+    """Gets and Sets `file_upload_dialog_timeout`.
 
     Usage:
-    ------
-    - Get
-        - `self.file_upload_dialog_timeout`
-    - Set
-        - `self.file_upload_dialog_timeout` = `value`
+        - Get: `self.file_upload_dialog_timeout`
+        - Set: `self.file_upload_dialog_timeout = value`
 
-    Parameters:
-    -----------
-    `value`: `int` (Timeout) in milliseconds
+    Args:
+        value: int - Timeout in milliseconds.
     """
 
     force_create_process_api = _IeOptionsDescriptor(FORCE_CREATE_PROCESS_API, bool)
-    """Gets and Sets `force_create_process_api`
+    """Gets and Sets `force_create_process_api`.
 
     Usage:
-    ------
-    - Get
-        - `self.force_create_process_api`
-    - Set
-        - `self.force_create_process_api` = `value`
+        - Get: `self.force_create_process_api`
+        - Set: `self.force_create_process_api = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     force_shell_windows_api = _IeOptionsDescriptor(FORCE_SHELL_WINDOWS_API, bool)
-    """Gets and Sets `force_shell_windows_api`
+    """Gets and Sets `force_shell_windows_api`.
 
     Usage:
-    ------
-    - Get
-        - `self.force_shell_windows_api`
-    - Set
-        - `self.force_shell_windows_api` = `value`
+        - Get: `self.force_shell_windows_api`
+        - Set: `self.force_shell_windows_api = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     full_page_screenshot = _IeOptionsDescriptor(FULL_PAGE_SCREENSHOT, bool)
-    """Gets and Sets `full_page_screenshot`
+    """Gets and Sets `full_page_screenshot`.
 
     Usage:
-    ------
-    - Get
-        - `self.full_page_screenshot`
-    - Set
-        - `self.full_page_screenshot` = `value`
+        - Get: `self.full_page_screenshot`
+        - Set: `self.full_page_screenshot = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     ignore_protected_mode_settings = _IeOptionsDescriptor(IGNORE_PROTECTED_MODE_SETTINGS, bool)
-    """Gets and Sets `ignore_protected_mode_settings`
+    """Gets and Sets `ignore_protected_mode_settings`.
 
     Usage:
-    ------
-    - Get
-        - `self.ignore_protected_mode_settings`
-    - Set
-        - `self.ignore_protected_mode_settings` = `value`
+        - Get: `self.ignore_protected_mode_settings`
+        - Set: `self.ignore_protected_mode_settings = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     ignore_zoom_level = _IeOptionsDescriptor(IGNORE_ZOOM_LEVEL, bool)
-    """Gets and Sets `ignore_zoom_level`
+    """Gets and Sets `ignore_zoom_level`.
 
     Usage:
-    ------
-    - Get
-        - `self.ignore_zoom_level`
-    - Set
-        - `self.ignore_zoom_level` = `value`
+        - Get: `self.ignore_zoom_level`
+        - Set: `self.ignore_zoom_level = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     initial_browser_url = _IeOptionsDescriptor(INITIAL_BROWSER_URL, str)
-    """Gets and Sets `initial_browser_url`
+    """Gets and Sets `initial_browser_url`.
 
     Usage:
-    ------
-    - Get
-        - `self.initial_browser_url`
-    - Set
-        - `self.initial_browser_url` = `value`
+        - Get: `self.initial_browser_url`
+        - Set: `self.initial_browser_url = value`
 
-    Parameters:
-    -----------
-    `value`: `str`
+    Args:
+        value: str
     """
 
     native_events = _IeOptionsDescriptor(NATIVE_EVENTS, bool)
-    """Gets and Sets `native_events`
+    """Gets and Sets `native_events`.
 
     Usage:
-    ------
-    - Get
-        - `self.native_events`
-    - Set
-        - `self.native_events` = `value`
+        - Get: `self.native_events`
+        - Set: `self.native_events = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     persistent_hover = _IeOptionsDescriptor(PERSISTENT_HOVER, bool)
-    """Gets and Sets `persistent_hover`
+    """Gets and Sets `persistent_hover`.
 
     Usage:
-    ------
-    - Get
-        - `self.persistent_hover`
-    - Set
-        - `self.persistent_hover` = `value`
+        - Get: `self.persistent_hover`
+        - Set: `self.persistent_hover = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     require_window_focus = _IeOptionsDescriptor(REQUIRE_WINDOW_FOCUS, bool)
-    """Gets and Sets `require_window_focus`
+    """Gets and Sets `require_window_focus`.
 
     Usage:
-    ------
-    - Get
-        - `self.require_window_focus`
-    - Set
-        - `self.require_window_focus` = `value`
+        - Get: `self.require_window_focus`
+        - Set: `self.require_window_focus = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     use_per_process_proxy = _IeOptionsDescriptor(USE_PER_PROCESS_PROXY, bool)
-    """Gets and Sets `use_per_process_proxy`
+    """Gets and Sets `use_per_process_proxy`.
 
     Usage:
-    ------
-    - Get
-        - `self.use_per_process_proxy`
-    - Set
-        - `self.use_per_process_proxy` = `value`
+        - Get: `self.use_per_process_proxy`
+        - Set: `self.use_per_process_proxy = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     use_legacy_file_upload_dialog_handling = _IeOptionsDescriptor(USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING, bool)
-    """Gets and Sets `use_legacy_file_upload_dialog_handling`
+    """Gets and Sets `use_legacy_file_upload_dialog_handling`.
 
     Usage:
-    ------
-    - Get
-        - `self.use_legacy_file_upload_dialog_handling`
-    - Set
-        - `self.use_legacy_file_upload_dialog_handling` = `value`
+        - Get: `self.use_legacy_file_upload_dialog_handling`
+        - Set: `self.use_legacy_file_upload_dialog_handling = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     attach_to_edge_chrome = _IeOptionsDescriptor(ATTACH_TO_EDGE_CHROME, bool)
-    """Gets and Sets `attach_to_edge_chrome`
+    """Gets and Sets `attach_to_edge_chrome`.
 
     Usage:
-    ------
-    - Get
-        - `self.attach_to_edge_chrome`
-    - Set
-        - `self.attach_to_edge_chrome` = `value`
+        - Get: `self.attach_to_edge_chrome`
+        - Set: `self.attach_to_edge_chrome = value`
 
-    Parameters:
-    -----------
-    `value`: `bool`
+    Args:
+        value: bool
     """
 
     edge_executable_path = _IeOptionsDescriptor(EDGE_EXECUTABLE_PATH, str)
-    """Gets and Sets `edge_executable_path`
+    """Gets and Sets `edge_executable_path`.
 
     Usage:
-    ------
-    - Get
-        - `self.edge_executable_path`
-    - Set
-        - `self.edge_executable_path` = `value`
+        - Get: `self.edge_executable_path`
+        - Set: `self.edge_executable_path = value`
 
-    Parameters:
-    -----------
-    `value`: `str`
+    Args:
+        value: str
     """
 
     def __init__(self) -> None:
@@ -368,20 +302,20 @@ class Options(ArgOptions):
 
     @property
     def options(self) -> dict:
-        """:Returns: A dictionary of browser options."""
+        """Returns a dictionary of browser options."""
         return self._options
 
     @property
     def additional_options(self) -> dict:
-        """:Returns: The additional options."""
+        """Returns the additional options."""
         return self._additional
 
     def add_additional_option(self, name: str, value) -> None:
         """Adds an additional option not yet added as a safe option for IE.
 
-        :Args:
-         - name: name of the option to add
-         - value: value of the option to add
+        Args:
+            name: name of the option to add
+            value: value of the option to add
         """
         self._additional[name] = value
 

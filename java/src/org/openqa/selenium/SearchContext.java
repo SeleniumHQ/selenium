@@ -18,9 +18,7 @@
 package org.openqa.selenium;
 
 import java.util.List;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public interface SearchContext {
   /**
    * Find all elements within the current context using the given mechanism.

@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +60,7 @@ class ScriptPinningTest extends JupiterTestBase {
   @Test
   void shouldBeAbleToListAllPinnedScripts() {
     Set<ScriptKey> expected =
-        ImmutableSet.of(
+        Set.of(
             executor.pin("return arguments[0];"),
             executor.pin("return 'cheese';"),
             executor.pin("return 42;"));

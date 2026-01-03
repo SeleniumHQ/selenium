@@ -22,6 +22,7 @@ import static java.util.Collections.unmodifiableMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.bidi.script.RemoteValue;
 import org.openqa.selenium.bidi.script.Source;
 import org.openqa.selenium.json.JsonInput;
@@ -42,7 +43,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
       String type,
       String method,
       List<RemoteValue> args,
-      StackTrace stackTrace) {
+      @Nullable StackTrace stackTrace) {
     super(level, source, text, timestamp, type, stackTrace);
     this.method = method;
     this.args = args;

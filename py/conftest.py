@@ -15,8 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import http.server
 import os
+import socketserver
 import sys
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -24,6 +27,7 @@ import pytest
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -131,7 +135,7 @@ class SupportedOptions(ContainerProtocol):
     edge: str = "EdgeOptions"
     safari: str = "SafariOptions"
     ie: str = "IeOptions"
-    remote: str = "FirefoxOptions"
+    remote: str = "ChromeOptions"
     webkitgtk: str = "WebKitGTKOptions"
     wpewebkit: str = "WPEWebKitOptions"
 
@@ -249,12 +253,15 @@ class Driver:
                 # under Wayland, so we use XWayland instead.
                 os.environ["MOZ_ENABLE_WAYLAND"] = "0"
         elif self.driver_class == self.supported_drivers.remote:
-            self._options = getattr(webdriver, self.supported_options.firefox)()
-            self._options.set_capability("moz:firefoxOptions", {})
+            self._options = getattr(webdriver, self.supported_options.chrome)()
+            self._options.set_capability("goog:chromeOptions", {})
             self._options.enable_downloads = True
         else:
             opts_cls = getattr(self.supported_options, cls_name.lower())
             self._options = getattr(webdriver, opts_cls)()
+
+        if cls_name.lower() in ("chrome", "edge"):
+            self._options.add_argument("--disable-dev-shm-usage")
 
         if self.browser_path or self.browser_args:
             if self.driver_class == self.supported_drivers.webkitgtk:
@@ -305,7 +312,7 @@ class Driver:
             driver_to_stop.quit()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def driver(request):
     global selenium_driver
     driver_class = getattr(request, "param", "Chrome").lower()
@@ -330,7 +337,7 @@ def driver(request):
     marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
     if marker is not None:
         if "run" in marker.kwargs:
-            if marker.kwargs["run"] is False:
+            if not marker.kwargs["run"]:
                 pytest.skip()
                 yield
                 return
@@ -340,12 +347,28 @@ def driver(request):
 
         request.addfinalizer(selenium_driver.stop_driver)
 
-    # Close the browser after BiDi tests. Those make event subscriptions
-    # and doesn't seems to be stable enough, causing the flakiness of the
-    # subsequent tests.
-    # Remove this when BiDi implementation and API is stable.
+    # For BiDi tests, only restart driver when explicitly marked as needing fresh driver.
+    # Tests marked with @pytest.mark.needs_fresh_driver get full driver restart for test isolation.
+    # Cleanup after every test is recommended.
     if selenium_driver is not None and selenium_driver.bidi:
-        request.addfinalizer(selenium_driver.stop_driver)
+        if request.node.get_closest_marker("needs_fresh_driver"):
+            request.addfinalizer(selenium_driver.stop_driver)
+        else:
+
+            def ensure_valid_window():
+                try:
+                    driver = selenium_driver._driver
+                    if driver:
+                        try:
+                            # Check if current window is still valid
+                            driver.current_window_handle
+                        except Exception:
+                            # restart driver
+                            selenium_driver.stop_driver()
+                except Exception:
+                    pass
+
+            request.addfinalizer(ensure_valid_window)  # noqa: PT021
 
     yield selenium_driver.driver
 
@@ -368,7 +391,7 @@ def stop_driver(request):
             selenium_driver.stop_driver()
         selenium_driver = None
 
-    request.addfinalizer(fin)
+    request.addfinalizer(fin)  # noqa: PT021
 
 
 def pytest_exception_interact(node, call, report):
@@ -437,12 +460,12 @@ def edge_service():
     return EdgeService
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def driver_executable(request):
     return request.config.option.executable
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def clean_driver(request):
     _supported_drivers = SupportedDrivers()
     try:
@@ -455,7 +478,7 @@ def clean_driver(request):
     marker = request.node.get_closest_marker(f"xfail_{driver_class.lower()}")
     if marker is not None:
         if "run" in marker.kwargs:
-            if marker.kwargs["run"] is False:
+            if not marker.kwargs["run"]:
                 pytest.skip()
                 yield
                 return
@@ -464,21 +487,22 @@ def clean_driver(request):
         pytest.xfail(**marker.kwargs)
 
     yield driver_reference
+
     if request.node.get_closest_marker("no_driver_after_test"):
         driver_reference = None
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def clean_service(request):
     driver_class = request.config.option.drivers[0].lower()
     selenium_driver = Driver(driver_class, request)
-    yield selenium_driver.service
+    return selenium_driver.service
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def clean_options(request):
     driver_class = request.config.option.drivers[0].lower()
-    yield Driver.clean_options(driver_class, request)
+    return Driver.clean_options(driver_class, request)
 
 
 @pytest.fixture
@@ -488,6 +512,10 @@ def firefox_options(request):
         driver_class = request.config.option.drivers[0].lower()
     except (AttributeError, TypeError):
         raise Exception("This test requires a --driver to be specified")
+
+    # skip if not Firefox or Remote
+    if driver_class not in ("firefox", "remote"):
+        pytest.skip(f"This test requires Firefox or Remote. Got {driver_class}")
 
     # skip tests in the 'remote' directory if run with a local driver
     if request.node.path.parts[-2] == "remote" and getattr(_supported_drivers, driver_class) != "Remote":
@@ -506,15 +534,45 @@ def chromium_options(request):
     except (AttributeError, TypeError):
         raise Exception("This test requires a --driver to be specified")
 
-    # Skip if not Chrome or Edge
-    if driver_class not in ("chrome", "edge"):
-        pytest.skip(f"This test requires Chrome or Edge, got {driver_class}")
+    # skip if not Chrome, Edge, or Remote
+    if driver_class not in ("chrome", "edge", "remote"):
+        pytest.skip(f"This test requires Chrome, Edge, or Remote. Got {driver_class}")
 
     # skip tests in the 'remote' directory if run with a local driver
     if request.node.path.parts[-2] == "remote" and getattr(_supported_drivers, driver_class) != "Remote":
         pytest.skip(f"Remote tests can't be run with driver '{driver_class}'")
 
-    if driver_class in ("chrome", "edge"):
-        options = Driver.clean_options(driver_class, request)
+    if driver_class in ("chrome", "remote"):
+        options = Driver.clean_options("chrome", request)
+    else:
+        options = Driver.clean_options("edge", request)
 
     return options
+
+
+@pytest.fixture
+def proxy_server():
+    """Creates HTTP proxy servers with custom response content, cleans up after the test."""
+    servers = []
+
+    def create_server(response_content=b"test response"):
+        port = free_port()
+
+        class CustomHandler(http.server.SimpleHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(response_content)
+
+        server = socketserver.TCPServer(("localhost", port), CustomHandler)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+
+        servers.append(server)
+        return {"port": port, "server": server}
+
+    yield create_server
+
+    for server in servers:
+        server.shutdown()
+        server.server_close()

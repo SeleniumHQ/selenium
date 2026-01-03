@@ -17,8 +17,7 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.BiDi.Communication;
-using OpenQA.Selenium.BiDi.Communication.Json.Converters;
+using OpenQA.Selenium.BiDi.Json.Converters;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -43,6 +42,7 @@ public sealed record AddDataCollectorResult(Collector Collector) : EmptyResult;
 [JsonConverter(typeof(CamelCaseEnumConverter<DataType>))]
 public enum DataType
 {
+    Request,
     Response
 }
 

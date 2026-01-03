@@ -21,7 +21,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.naturalOrder;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
@@ -78,7 +77,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
   public static Set<DescribedOption> findAllMatchingOptions(Collection<Role> roles) {
     Objects.requireNonNull(roles);
 
-    Set<Role> minimized = ImmutableSet.copyOf(roles);
+    Set<Role> minimized = Set.copyOf(roles);
 
     return StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), false)
         .filter(hasRoles -> !Sets.intersection(hasRoles.getRoles(), minimized).isEmpty())
