@@ -107,6 +107,11 @@ public class ChromiumDriver extends RemoteWebDriver
 
   protected ChromiumDriver(
       CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
+    this(commandExecutor, capabilities, capabilityKey, ClientConfig.defaultConfig());
+  }
+
+  protected ChromiumDriver(
+      CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey, ClientConfig clientConfig) {
     super(commandExecutor, capabilities);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     networkConditions =
@@ -130,21 +135,7 @@ public class ChromiumDriver extends RemoteWebDriver
               return null;
             });
 
-    // Extract WebSocket configuration from capabilities
-    Duration webSocketTimeout = Duration.ofSeconds(30); // Default value
-    Duration webSocketInterval = Duration.ofMillis(100); // Default value
-
-    Object timeoutCapability = originalCapabilities.getCapability("se:webSocketTimeout");
-    if (timeoutCapability instanceof Number) {
-      webSocketTimeout = Duration.ofMillis(((Number) timeoutCapability).longValue());
-    }
-
-    Object intervalCapability = originalCapabilities.getCapability("se:webSocketInterval");
-    if (intervalCapability instanceof Number) {
-      webSocketInterval = Duration.ofMillis(((Number) intervalCapability).longValue());
-    }
-
-    this.biDi = createBiDi(biDiUri, webSocketTimeout, webSocketInterval);
+    this.biDi = createBiDi(biDiUri, clientConfig);
 
     Optional<URI> reportedUri =
         CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities);
@@ -320,7 +311,7 @@ public class ChromiumDriver extends RemoteWebDriver
     return devTools;
   }
 
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, Duration webSocketTimeout, Duration webSocketInterval) {
+  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, ClientConfig clientConfig) {
     if (biDiUri.isEmpty()) {
       return Optional.empty();
     }
@@ -333,10 +324,7 @@ public class ChromiumDriver extends RemoteWebDriver
                         + " capability is set."));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig()
-        .baseUri(wsUri)
-        .webSocketTimeout(webSocketTimeout)
-        .webSocketInterval(webSocketInterval);
+    ClientConfig wsConfig = clientConfig.baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
     org.openqa.selenium.bidi.Connection biDiConnection =

@@ -71,8 +71,6 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
   private final List<String> extensions = new ArrayList<>();
   private final Map<String, Object> experimentalOptions = new HashMap<>();
   private Map<String, Object> androidOptions = new HashMap<>();
-  private Duration webSocketTimeout = Duration.ofSeconds(30);
-  private Duration webSocketInterval = Duration.ofMillis(100);
 
   private final String capabilityName;
 
@@ -231,67 +229,15 @@ public class ChromiumOptions<T extends ChromiumOptions<?>>
     return (T) this;
   }
 
-  /**
-   * Sets the WebSocket response wait timeout (in seconds) used for communicating with the browser.
-   *
-   * @param timeout WebSocket response wait timeout
-   * @return A self reference.
-   */
-  public T setWebSocketTimeout(Duration timeout) {
-    this.webSocketTimeout = Require.nonNull("WebSocket timeout", timeout);
-    return (T) this;
-  }
-
-  /**
-   * Gets the WebSocket response wait timeout (in seconds) used for communicating with the browser.
-   *
-   * @return WebSocket response wait timeout
-   */
-  public Duration getWebSocketTimeout() {
-    return webSocketTimeout;
-  }
-
-  /**
-   * Sets the WebSocket response wait interval (in seconds) used for communicating with the browser.
-   *
-   * @param interval WebSocket response wait interval
-   * @return A self reference.
-   */
-  public T setWebSocketInterval(Duration interval) {
-    this.webSocketInterval = Require.nonNull("WebSocket interval", interval);
-    return (T) this;
-  }
-
-  /**
-   * Gets the WebSocket response wait interval (in seconds) used for communicating with the browser.
-   *
-   * @return WebSocket response wait interval
-   */
-  public Duration getWebSocketInterval() {
-    return webSocketInterval;
-  }
-
   @Override
   protected Set<String> getExtraCapabilityNames() {
-    Set<String> names = new HashSet<>();
-    names.add(capabilityName);
-    names.add("se:webSocketTimeout");
-    names.add("se:webSocketInterval");
-    return names;
+    return Collections.singleton(capabilityName);
   }
 
   @Override
   @Nullable
   protected Object getExtraCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
-
-    // Handle WebSocket configuration capabilities
-    if ("se:webSocketTimeout".equals(capabilityName)) {
-      return webSocketTimeout.toMillis();
-    }
-    if ("se:webSocketInterval".equals(capabilityName)) {
-      return webSocketInterval.toMillis();
-    }
 
     if (!this.capabilityName.equals(capabilityName)) {
       return null;

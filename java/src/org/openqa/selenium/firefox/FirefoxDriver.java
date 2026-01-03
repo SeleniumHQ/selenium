@@ -112,7 +112,7 @@ public class FirefoxDriver extends RemoteWebDriver
 
   public FirefoxDriver(
       FirefoxDriverService service, FirefoxOptions options, ClientConfig clientConfig) {
-    this(generateExecutor(service, options, clientConfig), options);
+    this(generateExecutor(service, options, clientConfig), options, clientConfig);
   }
 
   private static FirefoxDriverCommandExecutor generateExecutor(
@@ -157,21 +157,7 @@ public class FirefoxDriver extends RemoteWebDriver
               return null;
             });
 
-    // Extract WebSocket configuration from capabilities
-    Duration webSocketTimeout = Duration.ofSeconds(30); // default
-    Duration webSocketInterval = Duration.ofMillis(100); // default
-
-    Object timeoutCapability = capabilities.getCapability("se:webSocketTimeout");
-    if (timeoutCapability instanceof Number) {
-      webSocketTimeout = Duration.ofMillis(((Number) timeoutCapability).longValue());
-    }
-
-    Object intervalCapability = capabilities.getCapability("se:webSocketInterval");
-    if (intervalCapability instanceof Number) {
-      webSocketInterval = Duration.ofMillis(((Number) intervalCapability).longValue());
-    }
-
-    this.biDi = createBiDi(biDiUri, webSocketTimeout, webSocketInterval);
+    this.biDi = createBiDi(biDiUri, clientConfig);
 
     this.capabilities = new ImmutableCapabilities(capabilities);
   }
@@ -255,7 +241,7 @@ public class FirefoxDriver extends RemoteWebDriver
     context.setContext(commandContext);
   }
 
-  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, Duration webSocketTimeout, Duration webSocketInterval) {
+  private Optional<BiDi> createBiDi(Optional<URI> biDiUri, ClientConfig clientConfig) {
     if (biDiUri.isEmpty()) {
       return Optional.empty();
     }
@@ -268,10 +254,7 @@ public class FirefoxDriver extends RemoteWebDriver
                         + " capability is set."));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig()
-        .baseUri(wsUri)
-        .webSocketTimeout(webSocketTimeout)
-        .webSocketInterval(webSocketInterval);
+    ClientConfig wsConfig = clientConfig.baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
     org.openqa.selenium.bidi.Connection biDiConnection =
