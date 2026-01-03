@@ -20,14 +20,10 @@ package org.openqa.selenium.grid.node.docker;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.docker.Device.device;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -53,6 +49,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
+import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.HostIdentifier;
@@ -151,7 +148,7 @@ public class DockerOptions {
     List<String> hostConfigKeys =
         config.getAll(DOCKER_SECTION, "host-config-keys").orElseGet(Collections::emptyList);
 
-    Multimap<String, Capabilities> kinds = HashMultimap.create();
+    Multimap<String, Capabilities> kinds = new Multimap<>();
     int configsCount = allConfigs.size();
     for (int i = 0; i < configsCount; i++) {
       String imageName = allConfigs.get(i);
@@ -178,10 +175,10 @@ public class DockerOptions {
     Map<String, Object> hostConfig = getDockerHostConfig(info);
     Map<String, String> groupingLabels = getGroupingLabels(info);
 
-    loadImages(docker, kinds.keySet().toArray(new String[0]));
+    loadImages(docker, kinds.keySet());
     Image videoImage = getVideoImage(docker);
     if (videoImage != null) {
-      loadImages(docker, videoImage.getName());
+      loadImages(docker, Set.of(videoImage.getName()));
     }
 
     // Hard coding the config section value "node" to avoid an extra dependency
@@ -189,7 +186,7 @@ public class DockerOptions {
         Math.min(
             config.getInt("node", "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
             DEFAULT_MAX_SESSIONS);
-    ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
+    Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
     kinds.forEach(
         (name, caps) -> {
           Image image = docker.getImage(name);
@@ -219,7 +216,7 @@ public class DockerOptions {
               String.format(
                   "Mapping %s to docker image %s %d times", caps, name, maxContainerCount));
         });
-    return factories.build().asMap();
+    return factories.asMap();
   }
 
   protected List<Device> getDevicesMapping() {
@@ -306,10 +303,10 @@ public class DockerOptions {
     return assetsPath.map(path -> new DockerAssetsPath(path, path)).orElse(null);
   }
 
-  private void loadImages(Docker docker, String... imageNames) {
+  private void loadImages(Docker docker, Set<String> imageNames) {
     CompletableFuture<Void> cd =
         CompletableFuture.allOf(
-            Arrays.stream(imageNames)
+            imageNames.stream()
                 .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name)))
                 .toArray(CompletableFuture[]::new));
 

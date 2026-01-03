@@ -20,9 +20,6 @@ package org.openqa.selenium.grid.node.relay;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient.Version;
@@ -38,6 +35,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -152,7 +150,7 @@ public class RelayOptions {
             .orElseThrow(
                 () -> new ConfigException("Unable to find configs for " + getServiceUri()));
 
-    Multimap<Integer, Capabilities> parsedConfigs = HashMultimap.create();
+    Multimap<Integer, Capabilities> parsedConfigs = new Multimap<>();
     int configsCount = allConfigs.size();
     for (int i = 0; i < configsCount; i++) {
       int maxSessions;
@@ -170,7 +168,7 @@ public class RelayOptions {
       parsedConfigs.put(maxSessions, stereotype);
     }
 
-    ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
+    Multimap<Capabilities, SessionFactory> factories = new Multimap<>();
     LOG.info(String.format("Adding relay configs for %s", getServiceUri()));
     parsedConfigs.forEach(
         (maxSessions, stereotype) -> {
@@ -189,7 +187,7 @@ public class RelayOptions {
           }
           LOG.info(String.format("Mapping %s, %d times", immutable, maxSessions));
         });
-    return factories.build().asMap();
+    return factories.asMap();
   }
 
   private String extractConfiguredValue(String keyValue) {
