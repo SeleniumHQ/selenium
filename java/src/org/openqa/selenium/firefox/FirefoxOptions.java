@@ -17,20 +17,17 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Objects.requireNonNullElse;
 import static java.util.stream.Collectors.toMap;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -53,7 +50,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   public static final String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
-  private Map<String, Object> firefoxOptions = Collections.unmodifiableMap(new TreeMap<>());
+  private Map<String, Object> firefoxOptions = emptyMap();
 
   public FirefoxOptions() {
     setCapability(CapabilityType.BROWSER_NAME, FIREFOX.browserName());
@@ -156,7 +153,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   public FirefoxProfile getProfile() {
-    Object rawProfile = firefoxOptions.get(Keys.PROFILE.key());
+    Object rawProfile = getOption(Keys.PROFILE);
     if (rawProfile == null) {
       return new FirefoxProfile();
     }
@@ -190,21 +187,24 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public FirefoxOptions addArguments(List<String> arguments) {
     Require.nonNull("Arguments", arguments);
 
-    Object rawList = firefoxOptions.getOrDefault(Keys.ARGS.key(), new ArrayList<>());
-    Require.stateCondition(rawList instanceof List, "Arg list of unexpected type: %s", rawList);
-
     List<String> newArgs = new ArrayList<>();
-    ((List<?>) rawList).stream().map(String::valueOf).forEach(newArgs::add);
+    getArgs(firefoxOptions).stream().map(String::valueOf).forEach(newArgs::add);
     newArgs.addAll(arguments);
 
     return setFirefoxOption(Keys.ARGS, Collections.unmodifiableList(newArgs));
+  }
+
+  private List<?> getArgs(Map<String, Object> options) {
+    Object rawList = options.getOrDefault(Keys.ARGS.key(), emptyList());
+    Require.stateCondition(rawList instanceof List, "Arg list of unexpected type: %s", rawList);
+    return (List<?>) rawList;
   }
 
   public FirefoxOptions addPreference(String key, Object value) {
     Require.nonNull("Key", key);
     Require.nonNull("Value", value);
 
-    Object rawPrefs = firefoxOptions.getOrDefault(Keys.PREFS.key(), new HashMap<>());
+    Object rawPrefs = firefoxOptions.getOrDefault(Keys.PREFS.key(), emptyMap());
     Require.stateCondition(rawPrefs instanceof Map, "Prefs are of unexpected type: %s", rawPrefs);
 
     @SuppressWarnings("unchecked")
@@ -300,32 +300,34 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         newInstance.setCapability(name, capabilities.getCapability(name));
       }
 
-      if (name.equals(Keys.ARGS.key) && capabilities.getCapability(name) != null) {
-        List<String> arguments = (List<String>) (capabilities.getCapability(("args")));
+      if (name.equals(Keys.ARGS.key)) {
+        List<String> arguments = get(capabilities, name, emptyList());
         arguments.forEach(
             arg -> {
-              if (!((List<String>) newInstance.firefoxOptions.get(Keys.ARGS.key())).contains(arg)) {
+              if (!containsArgument(newInstance, arg)) {
                 newInstance.addArguments(arg);
               }
             });
       }
 
-      if (name.equals(Keys.PREFS.key) && capabilities.getCapability(name) != null) {
-        Map<String, Object> prefs = (Map<String, Object>) (capabilities.getCapability(("prefs")));
+      if (name.equals(Keys.PREFS.key)) {
+        Map<String, Object> prefs = get(capabilities, name, emptyMap());
         prefs.forEach(newInstance::addPreference);
       }
 
-      if (name.equals(Keys.PROFILE.key) && capabilities.getCapability(name) != null) {
-        String rawProfile = (String) capabilities.getCapability("profile");
-        try {
-          newInstance.setProfile(FirefoxProfile.fromJson(rawProfile));
-        } catch (IOException e) {
-          throw new WebDriverException(e);
+      if (name.equals(Keys.PROFILE.key)) {
+        String rawProfile = (String) capabilities.getCapability(name);
+        if (rawProfile != null) {
+          try {
+            newInstance.setProfile(FirefoxProfile.fromJson(rawProfile));
+          } catch (IOException e) {
+            throw new WebDriverException(e);
+          }
         }
       }
 
-      if (name.equals(Keys.BINARY.key) && capabilities.getCapability(name) != null) {
-        Object binary = capabilities.getCapability("binary");
+      if (name.equals(Keys.BINARY.key)) {
+        Object binary = capabilities.getCapability(name);
         if (binary instanceof String) {
           newInstance.setBinary((String) binary);
         } else if (binary instanceof Path) {
@@ -333,8 +335,8 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         }
       }
 
-      if (name.equals(Keys.LOG.key) && capabilities.getCapability(name) != null) {
-        Map<String, Object> logLevelMap = (Map<String, Object>) capabilities.getCapability("log");
+      if (name.equals(Keys.LOG.key)) {
+        Map<String, Object> logLevelMap = get(capabilities, name, emptyMap());
         FirefoxDriverLogLevel logLevel =
             FirefoxDriverLogLevel.fromString((String) logLevelMap.get("level"));
         if (logLevel != null) {
@@ -366,7 +368,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
         arguments.forEach(
             arg -> {
-              if (!((List<String>) newInstance.firefoxOptions.get(Keys.ARGS.key())).contains(arg)) {
+              if (!containsArgument(newInstance, arg)) {
                 newInstance.addArguments(arg);
               }
             });
@@ -395,6 +397,22 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     }
 
     return newInstance;
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> T get(Capabilities capabilities, String name, T defaultValue) {
+    return requireNonNullElse((T) capabilities.getCapability(name), defaultValue);
+  }
+
+  @Nullable
+  @SuppressWarnings("unchecked")
+  private <T> T getOption(Keys name) {
+    return (T) firefoxOptions.get(name.key());
+  }
+
+  private static boolean containsArgument(FirefoxOptions options, String arg) {
+    List<String> args = options.getOption(Keys.ARGS);
+    return args != null && args.contains(arg);
   }
 
   private enum Keys {

@@ -49,6 +49,7 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.TestUtilities;
 
 @Tag("UnitTests")
@@ -457,6 +458,26 @@ class FirefoxOptionsTest {
 
     assertThat(caps).isEqualTo(options);
     assertThat(caps.getCapabilityNames()).contains(FIREFOX_OPTIONS);
+  }
+
+  @Test
+  void issue15991() {
+    DesiredCapabilities options =
+        new DesiredCapabilities(Map.of("moz:firefoxOptions", Map.of("args", List.of("1", "2"))));
+
+    FirefoxOptions result = new FirefoxOptions().merge(options);
+
+    assertThat(result.asMap())
+        .containsExactlyInAnyOrderEntriesOf(
+            Map.of(
+                "acceptInsecureCerts",
+                true,
+                "browserName",
+                "firefox",
+                "moz:firefoxOptions",
+                Map.of(
+                    "args", List.of("1", "2"),
+                    "prefs", Map.of("remote.active-protocols", 1))));
   }
 
   private static class JreSystemProperty {
