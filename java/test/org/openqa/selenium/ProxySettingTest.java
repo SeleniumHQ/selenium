@@ -26,7 +26,6 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.base.Joiner;
 import com.google.common.net.HostAndPort;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
@@ -90,11 +89,10 @@ class ProxySettingTest extends JupiterTestBase {
         SimpleHttpServer pacFileServer =
             createPacfileServer(
                 "/proxy.pac",
-                Joiner.on('\n')
-                    .join(
-                        "function FindProxyForURL(url, host) {",
-                        "  return 'PROXY " + getHostAndPort(helloServer) + "';",
-                        "}"))) {
+              String.join("\n",
+                "function FindProxyForURL(url, host) {",
+                "  return 'PROXY " + getHostAndPort(helloServer) + "';",
+                "}"))) {
 
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
@@ -125,8 +123,7 @@ class ProxySettingTest extends JupiterTestBase {
         SimpleHttpServer pacFileServer =
             createPacfileServer(
                 "/proxy.pac",
-                Joiner.on('\n')
-                    .join(
+                String.join("\n",
                         "function FindProxyForURL(url, host) {",
                         "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
                         "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
