@@ -31,8 +31,9 @@ class JavaScriptLoader {
   static String loadResource(String resourcePath) throws IOException {
     try (InputStream resource = JavaScriptLoader.class.getResourceAsStream(resourcePath)) {
       assumeThat(resource)
-        .withFailMessage("Resource %s not found; are you running with `bazel test`? ", resourcePath)
-        .isNotNull();
+          .withFailMessage(
+              "Resource %s not found; are you running with `bazel test`? ", resourcePath)
+          .isNotNull();
       return new String(requireNonNull(resource).readAllBytes(), UTF_8);
     }
   }

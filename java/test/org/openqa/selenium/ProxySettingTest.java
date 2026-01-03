@@ -26,7 +26,6 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.net.HostAndPort;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import java.net.URI;
@@ -89,10 +88,11 @@ class ProxySettingTest extends JupiterTestBase {
         SimpleHttpServer pacFileServer =
             createPacfileServer(
                 "/proxy.pac",
-              String.join("\n",
-                "function FindProxyForURL(url, host) {",
-                "  return 'PROXY " + getHostAndPort(helloServer) + "';",
-                "}"))) {
+                String.join(
+                    "\n",
+                    "function FindProxyForURL(url, host) {",
+                    "  return 'PROXY " + getHostAndPort(helloServer) + "';",
+                    "}"))) {
 
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
@@ -123,13 +123,14 @@ class ProxySettingTest extends JupiterTestBase {
         SimpleHttpServer pacFileServer =
             createPacfileServer(
                 "/proxy.pac",
-                String.join("\n",
-                        "function FindProxyForURL(url, host) {",
-                        "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
-                        "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
-                        "  }",
-                        "  return 'DIRECT';",
-                        "}"))) {
+                String.join(
+                    "\n",
+                    "function FindProxyForURL(url, host) {",
+                    "  if (url.indexOf('" + getHostAndPort(helloServer) + "') != -1) {",
+                    "    return 'PROXY " + getHostAndPort(goodbyeServer) + "';",
+                    "  }",
+                    "  return 'DIRECT';",
+                    "}"))) {
 
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl("http://" + getHostAndPort(pacFileServer) + "/proxy.pac");
@@ -165,9 +166,9 @@ class ProxySettingTest extends JupiterTestBase {
     return server;
   }
 
-  private static HostAndPort getHostAndPort(SimpleHttpServer server) {
+  private static String getHostAndPort(SimpleHttpServer server) {
     URI baseUri = server.baseUri();
-    return HostAndPort.fromParts(baseUri.getHost(), baseUri.getPort());
+    return String.format("%s:%s", baseUri.getHost(), baseUri.getPort());
   }
 
   public static class FakeProxyServer extends SimpleHttpServer {
