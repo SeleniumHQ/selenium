@@ -28,14 +28,17 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collector;
 
+/** All methods return immutable objects */
 public class Sets {
+  /** Create an immutable Set that keeps the order of elements */
   @SafeVarargs
-  public static <T> Set<T> orderedSetOf(T... values) {
+  public static <T> Set<T> sequencedSetOf(T... values) {
     Set<T> set = new LinkedHashSet<>();
     addAll(set, values);
     return unmodifiableSet(set);
   }
 
+  /** Create an immutable set that sorts its elements in natural order */
   @SafeVarargs
   public static <T extends Comparable<T>> Set<T> sortedSetOf(T... values) {
     Set<T> set = new TreeSet<>();
@@ -43,23 +46,24 @@ public class Sets {
     return unmodifiableSet(set);
   }
 
-  /** Collects stream to immutable set in which elements are sorted using natural order */
-  public static <T extends Comparable<? super T>> Collector<T, ?, Set<T>> toImmutableSortedSet() {
+  /** Collects a stream into an immutable set sorted in natural order */
+  public static <T extends Comparable<? super T>> Collector<T, ?, Set<T>> toSortedSet() {
     return collectingAndThen(toCollection(TreeSet::new), Collections::unmodifiableSet);
   }
 
   /**
    * Collects stream to immutable set that keeps elements in the same order as the original stream
    */
-  public static <T> Collector<T, ?, Set<T>> toImmutableSet() {
+  public static <T> Collector<T, ?, Set<T>> toSequencedSet() {
     return collectingAndThen(toCollection(LinkedHashSet::new), Collections::unmodifiableSet);
   }
 
-  /** Returns an immutable set whose elements are ordered by their natural ordering. */
+  /** Create an immutable set sorted in natural order */
   public static <T extends Comparable<? super T>> Set<T> sortedSet(Set<T> source) {
     return unmodifiableSet(new TreeSet<>(source));
   }
 
+  /** Check if two sets have at least one common element */
   public static <T> boolean haveCommonElements(Set<T> set1, Set<T> set2) {
     return set1.stream().anyMatch(set2::contains);
   }

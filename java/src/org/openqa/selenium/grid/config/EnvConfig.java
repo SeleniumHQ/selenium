@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
-import static org.openqa.selenium.internal.Sets.toImmutableSortedSet;
+import static org.openqa.selenium.internal.Sets.toSortedSet;
 
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +62,7 @@ public class EnvConfig implements Config {
         .filter(key -> key.split("_").length > 1)
         .map(key -> key.substring(0, key.indexOf('_')))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(toImmutableSortedSet());
+        .collect(toSortedSet());
   }
 
   @Override
@@ -74,6 +74,6 @@ public class EnvConfig implements Config {
         .filter(key -> key.startsWith(prefix))
         .map(key -> key.substring(prefix.length()))
         .map(key -> key.toLowerCase(Locale.ENGLISH))
-        .collect(toImmutableSortedSet());
+        .collect(toSortedSet());
   }
 }

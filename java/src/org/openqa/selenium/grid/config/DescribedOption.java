@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.config;
 
 import static java.util.Comparator.comparing;
 import static org.openqa.selenium.internal.Sets.haveCommonElements;
-import static org.openqa.selenium.internal.Sets.toImmutableSortedSet;
+import static org.openqa.selenium.internal.Sets.toSortedSet;
 
 import com.beust.jcommander.Parameter;
 import com.google.common.primitives.Primitives;
@@ -82,7 +82,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
     return StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), false)
         .filter(hasRoles -> haveCommonElements(hasRoles.getRoles(), minimized))
         .flatMap(DescribedOption::getAllFields)
-        .collect(toImmutableSortedSet());
+        .collect(toSortedSet());
   }
 
   private static Stream<DescribedOption> getAllFields(HasRoles hasRoles) {

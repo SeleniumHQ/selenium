@@ -20,8 +20,8 @@ package org.openqa.selenium.grid.distributor.selector;
 import static java.util.Collections.unmodifiableSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.internal.Sets.orderedSetOf;
-import static org.openqa.selenium.internal.Sets.toImmutableSet;
+import static org.openqa.selenium.internal.Sets.sequencedSetOf;
+import static org.openqa.selenium.internal.Sets.toSequencedSet;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,11 +60,11 @@ class GreedySlotSelectorTest {
     Set<SlotId> slots =
         selector.selectSlot(
             caps,
-            orderedSetOf(lowUtilization, mediumUtilization, highUtilization),
+            sequencedSetOf(lowUtilization, mediumUtilization, highUtilization),
             new DefaultSlotMatcher());
 
     Set<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds)
         .containsSequence(
@@ -81,10 +81,10 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, orderedSetOf(largeNode, mediumNode, smallNode), new DefaultSlotMatcher());
+            caps, sequencedSetOf(largeNode, mediumNode, smallNode), new DefaultSlotMatcher());
 
     Set<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds)
         .containsSequence(smallNode.getNodeId(), mediumNode.getNodeId(), largeNode.getNodeId());
@@ -100,10 +100,10 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, orderedSetOf(highLoad, mediumLoad, lowLoad), new DefaultSlotMatcher());
+            caps, sequencedSetOf(highLoad, mediumLoad, lowLoad), new DefaultSlotMatcher());
 
     Set<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds)
         .containsSequence(highLoad.getNodeId(), mediumLoad.getNodeId(), lowLoad.getNodeId());
@@ -117,10 +117,11 @@ class GreedySlotSelectorTest {
     NodeStatus fullNode = createNode(List.of(caps), 10, 10); // 100% utilized
 
     Set<SlotId> slots =
-        selector.selectSlot(caps, orderedSetOf(fullNode, availableNode), new DefaultSlotMatcher());
+        selector.selectSlot(
+            caps, sequencedSetOf(fullNode, availableNode), new DefaultSlotMatcher());
 
     Set<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds).doesNotContain(fullNode.getNodeId());
     assertThat(nodeIds).contains(availableNode.getNodeId());
@@ -143,10 +144,10 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, orderedSetOf(oldVersionHighUtil, newVersionLowUtil), new DefaultSlotMatcher());
+            caps, sequencedSetOf(oldVersionHighUtil, newVersionLowUtil), new DefaultSlotMatcher());
 
     Set<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds)
         .containsSequence(oldVersionHighUtil.getNodeId(), newVersionLowUtil.getNodeId());
@@ -167,10 +168,10 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, orderedSetOf(windowsHighUtil, macLowUtil), new DefaultSlotMatcher());
+            caps, sequencedSetOf(windowsHighUtil, macLowUtil), new DefaultSlotMatcher());
 
     Set<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds).containsSequence(windowsHighUtil.getNodeId(), macLowUtil.getNodeId());
   }
@@ -193,10 +194,10 @@ class GreedySlotSelectorTest {
 
     Set<SlotId> slots =
         selector.selectSlot(
-            caps, orderedSetOf(basicHighUtil, advancedLowUtil), new DefaultSlotMatcher());
+            caps, sequencedSetOf(basicHighUtil, advancedLowUtil), new DefaultSlotMatcher());
 
     Set<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds).containsSequence(basicHighUtil.getNodeId(), advancedLowUtil.getNodeId());
   }

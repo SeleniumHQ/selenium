@@ -15,29 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+@NullMarked
 package org.openqa.selenium.internal;
 
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-/** All methods return immutable objects */
-public class Maps {
-  /** Create an immutable Map that keeps the order of elements */
-  public static <K, V> Map<K, V> sequencedMapOf(K k1, V v1, K k2, V v2) {
-    Map<K, V> map = new LinkedHashMap<>();
-    map.put(k1, v1);
-    map.put(k2, v2);
-    return unmodifiableMap(map);
-  }
-
-  /** Create an immutable Map that keeps the order of elements */
-  public static <K, V> Map<K, V> sequencedMapOf(K k1, V v1, K k2, V v2, K k3, V v3) {
-    Map<K, V> map = new LinkedHashMap<>();
-    map.put(k1, v1);
-    map.put(k2, v2);
-    map.put(k3, v3);
-    return unmodifiableMap(map);
-  }
-}
+import org.jspecify.annotations.NullMarked;

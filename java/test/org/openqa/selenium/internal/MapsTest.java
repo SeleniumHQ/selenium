@@ -20,31 +20,23 @@ package org.openqa.selenium.internal;
 import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.openqa.selenium.internal.Maps.orderedMapOf;
+import static org.openqa.selenium.internal.Maps.sequencedMapOf;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class MapsTest {
   @Test
-  void orderedMapOf_keepsOrder_1() {
-    Map<Integer, String> map = orderedMapOf(1, "John");
-
-    assertThat(map).containsExactly(entry(1, "John"));
-    assertImmutable(map);
-  }
-
-  @Test
-  void orderedMapOf_keepsOrder_2() {
-    Map<Integer, String> map = orderedMapOf(111, "John", 22, "Bob");
+  void sequencedMapOf_keepsOrder_2() {
+    Map<Integer, String> map = sequencedMapOf(111, "John", 22, "Bob");
 
     assertThat(map).containsExactly(entry(111, "John"), entry(22, "Bob"));
     assertImmutable(map);
   }
 
   @Test
-  void orderedMapOf_keepsOrder_3() {
-    Map<Integer, String> map = orderedMapOf(111, "John", 22, "Bob", 3, "Vanessa");
+  void sequencedMapOf_keepsOrder_3() {
+    Map<Integer, String> map = Maps.sequencedMapOf(111, "John", 22, "Bob", 3, "Vanessa");
 
     assertThat(map).containsExactly(entry(111, "John"), entry(22, "Bob"), entry(3, "Vanessa"));
     assertImmutable(map);

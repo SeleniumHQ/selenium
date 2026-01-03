@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.docker;
 
-import static org.openqa.selenium.internal.Maps.orderedMapOf;
+import static org.openqa.selenium.internal.Maps.sequencedMapOf;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -29,7 +29,6 @@ import org.openqa.selenium.docker.client.DockerClient;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -44,7 +43,7 @@ class VersionCommand {
   // 1.40 is maintained for backward compatibility with legacy engines (Docker v19.03+)
   // All use the same generic implementation with version-specific adapters
   private static final Map<Version, Function<HttpHandler, DockerProtocol>> SUPPORTED_VERSIONS =
-      orderedMapOf(
+      sequencedMapOf(
           new Version("1.48"), client -> new DockerClient(client, "1.48"),
           new Version("1.44"), client -> new DockerClient(client, "1.44"),
           new Version("1.40"), client -> new DockerClient(client, "1.40"));
@@ -91,7 +90,7 @@ class VersionCommand {
         return Optional.empty();
       }
 
-      Map<String, Object> raw = JSON.toType(Contents.string(res), MAP_TYPE);
+      Map<String, Object> raw = JSON.toType(res.contentAsString(), MAP_TYPE);
 
       Version maxVersion = new Version((String) raw.get("ApiVersion"));
       Version minVersion = new Version((String) raw.get("MinAPIVersion"));

@@ -18,7 +18,7 @@
 package org.openqa.selenium.grid.distributor.selector;
 
 import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.internal.Sets.toImmutableSet;
+import static org.openqa.selenium.internal.Sets.toSequencedSet;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Comparator;
@@ -69,7 +69,7 @@ public class DefaultSlotSelector implements SlotSelector {
                     .filter(slot -> slot.getSession() == null)
                     .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
                     .map(Slot::getId))
-        .collect(toImmutableSet());
+        .collect(toSequencedSet());
   }
 
   @VisibleForTesting

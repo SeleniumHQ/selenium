@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
 
 class SetsTest {
   @Test
-  void toImmutableSet_keepsOriginalOrdering() {
-    Set<Integer> sorted = Stream.of(6, 2, 5, 1, 4, 3).collect(toImmutableSet());
+  void toSequencedSet_keepsOriginalOrdering() {
+    Set<Integer> sorted = Stream.of(6, 2, 5, 1, 4, 3).collect(toSequencedSet());
 
     assertThat(sorted).containsExactly(6, 2, 5, 1, 4, 3);
     assertImmutable(sorted);
@@ -36,7 +36,7 @@ class SetsTest {
 
   @Test
   void toSortedSet_sortsUsingNaturalOrder() {
-    Set<Integer> sorted = Stream.of(6, 2, 5, 1, 4, 3).collect(toImmutableSortedSet());
+    Set<Integer> sorted = Stream.of(6, 2, 5, 1, 4, 3).collect(toSortedSet());
 
     assertThat(sorted).containsExactly(1, 2, 3, 4, 5, 6);
     assertImmutable(sorted);
@@ -67,29 +67,29 @@ class SetsTest {
   }
 
   @Test
-  void orderedSetOf_2() {
-    Set<String> set = orderedSetOf("Vanessa", "Agnessa");
+  void sequencedSetOf_2() {
+    Set<String> set = sequencedSetOf("Vanessa", "Agnessa");
     assertThat(set).containsExactly("Vanessa", "Agnessa");
     assertImmutable(set, "John");
   }
 
   @Test
-  void orderedSetOf_3() {
-    Set<String> set = orderedSetOf("Leela", "Bender", "Fry");
+  void sequencedSetOf_3() {
+    Set<String> set = sequencedSetOf("Leela", "Bender", "Fry");
     assertThat(set).containsExactly("Leela", "Bender", "Fry");
     assertImmutable(set, "Bender");
   }
 
   @Test
-  void orderedSetOf_4() {
-    Set<String> set = orderedSetOf("Leela", "Bender", "Fry", "Zoidberg");
+  void sequencedSetOf_4() {
+    Set<String> set = sequencedSetOf("Leela", "Bender", "Fry", "Zoidberg");
     assertThat(set).containsExactly("Leela", "Bender", "Fry", "Zoidberg");
     assertImmutable(set, "Bender");
   }
 
   @Test
-  void orderedSetOf_5() {
-    Set<String> set = orderedSetOf("Leela", "Bender", "Fry", "Zoidberg", "Nibbler");
+  void sequencedSetOf_5() {
+    Set<String> set = sequencedSetOf("Leela", "Bender", "Fry", "Zoidberg", "Nibbler");
     assertThat(set).containsExactly("Leela", "Bender", "Fry", "Zoidberg", "Nibbler");
     assertImmutable(set, "Bender");
   }
