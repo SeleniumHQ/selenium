@@ -173,6 +173,102 @@ const Name = {
   REMOVE_ALL_CREDENTIALS: 'removeAllCredentials',
   SET_USER_VERIFIED: 'setUserVerified',
 
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('return window.localStorage.getItem("key")')
+   */
+  GET_LOCAL_STORAGE_ITEM: 'getLocalStorageItem',
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('return Object.keys(window.localStorage)')
+   */
+  GET_LOCAL_STORAGE_KEYS: 'getLocalStorageKeys',
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('window.localStorage.setItem("key", "value")')
+   */
+  SET_LOCAL_STORAGE_ITEM: 'setLocalStorageItem',
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('window.localStorage.removeItem("key")')
+   */
+  REMOVE_LOCAL_STORAGE_ITEM: 'removeLocalStorageItem',
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('window.localStorage.clear()')
+   */
+  CLEAR_LOCAL_STORAGE: 'clearLocalStorage',
+
+  /**
+   * @deprecated localStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('return window.localStorage.length')
+   */
+  GET_LOCAL_STORAGE_SIZE: 'getLocalStorageSize',
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('return window.sessionStorage.getItem("key")')
+   */
+  GET_SESSION_STORAGE_ITEM: 'getSessionStorageItem',
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('return Object.keys(window.sessionStorage)')
+   */
+  GET_SESSION_STORAGE_KEYS: 'getSessionStorageKey',
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('window.sessionStorage.setItem("key", "value")')
+   */
+  SET_SESSION_STORAGE_ITEM: 'setSessionStorageItem',
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('window.sessionStorage.removeItem("key")')
+   */
+  REMOVE_SESSION_STORAGE_ITEM: 'removeSessionStorageItem',
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('window.sessionStorage.clear()')
+   */
+  CLEAR_SESSION_STORAGE: 'clearSessionStorage',
+
+  /**
+   * @deprecated sessionStorage is not part of W3C WebDriver spec.
+   * Use executeScript instead:
+   * @example
+   * driver.executeScript('return window.sessionStorage.length')
+   */
+  GET_SESSION_STORAGE_SIZE: 'getSessionStorageSize',
+
   GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
   GET_LOG: 'getLog',
 
