@@ -176,6 +176,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
+          mkdir bazel-testlogs
           ${{ inputs.run }} 2>&1 | tee bazel-testlogs/bazel-console.log
       - name: Parse Bazel log for failures
         if: always()
