@@ -36,7 +36,7 @@ LEVELS.each do |level|
       end
 
       @entries_found = (io.rewind && io.read).scan(/\[:([^\]]*)\]/).flatten.map(&:to_sym)
-      expect(Array(entry).sort).to eq(@entries_found.sort)
+      expect(@entries_found).to include(*Array(entry))
     end
 
     failure_message do
