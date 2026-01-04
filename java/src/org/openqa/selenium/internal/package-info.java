@@ -15,24 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.json;
+@NullMarked
+package org.openqa.selenium.internal;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
-public abstract class TypeToken<T> {
-
-  private final Type type;
-
-  public TypeToken() {
-    Type superclass = getClass().getGenericSuperclass();
-    if (!(superclass instanceof ParameterizedType)) {
-      throw new IllegalStateException(String.format("%s isn't parameterized", superclass));
-    }
-    type = ((ParameterizedType) superclass).getActualTypeArguments()[0];
-  }
-
-  public Type getType() {
-    return type;
-  }
-}
+import org.jspecify.annotations.NullMarked;

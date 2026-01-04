@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
@@ -29,6 +28,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -373,6 +373,11 @@ class AddingNodesTest {
     }
 
     return Map.copyOf(stereotypes);
+  }
+
+  private static <T> T getOnlyElement(Collection<T> collection) {
+    assertThat(collection).hasSize(1);
+    return collection.iterator().next();
   }
 
   static class CustomNode extends Node {

@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.internal.Maps.sequencedMapOf;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
 import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
@@ -698,7 +699,7 @@ class RemoteWebDriverUnitTest {
   void canHandleGeneralExceptionInNonDebugModeThrownByCommandExecutor() {
     try (MockedStatic<Debug> debugMock = Mockito.mockStatic(Debug.class)) {
       final Map<String, String> parameters =
-          Map.of("url", "https://user:password@somedomain.com", "token", "12345Secret");
+          sequencedMapOf("url", "https://user:password@somedomain.com", "token", "12345Secret");
       final CommandPayload commandPayload = new CommandPayload(DriverCommand.GET, parameters);
       debugMock.when(Debug::isDebugging).thenReturn(false);
       WebDriverFixture fixture =

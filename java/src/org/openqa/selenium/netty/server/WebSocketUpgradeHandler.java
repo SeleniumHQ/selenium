@@ -136,7 +136,7 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     Optional<Consumer<Message>> maybeHandler =
         factory.apply(
             req.uri(), msg -> ctx.channel().writeAndFlush(Require.nonNull("Message to send", msg)));
-    if (!maybeHandler.isPresent()) {
+    if (maybeHandler.isEmpty()) {
       sendHttpResponse(
           ctx, req, new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, ctx.alloc().buffer(0)));
       return;

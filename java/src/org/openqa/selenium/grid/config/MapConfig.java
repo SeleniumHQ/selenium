@@ -20,8 +20,8 @@ package org.openqa.selenium.grid.config;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableMap;
+import static org.openqa.selenium.internal.Sets.sortedSet;
 
-import com.google.common.collect.ImmutableSortedSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +106,6 @@ public class MapConfig implements Config {
     Require.nonNull("Section name to get options for", section);
 
     Map<String, Object> values = raw.getOrDefault(section, emptyMap());
-    return ImmutableSortedSet.copyOf(values.keySet());
+    return sortedSet(values.keySet());
   }
 }

@@ -15,24 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.json;
+package org.openqa.selenium.internal;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import static java.util.Collections.unmodifiableMap;
 
-public abstract class TypeToken<T> {
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-  private final Type type;
-
-  public TypeToken() {
-    Type superclass = getClass().getGenericSuperclass();
-    if (!(superclass instanceof ParameterizedType)) {
-      throw new IllegalStateException(String.format("%s isn't parameterized", superclass));
-    }
-    type = ((ParameterizedType) superclass).getActualTypeArguments()[0];
+/** All methods return immutable objects */
+public class Maps {
+  /** Create an immutable Map that keeps the order of elements */
+  public static <K, V> Map<K, V> sequencedMapOf(K k1, V v1, K k2, V v2) {
+    Map<K, V> map = new LinkedHashMap<>();
+    map.put(k1, v1);
+    map.put(k2, v2);
+    return unmodifiableMap(map);
   }
 
-  public Type getType() {
-    return type;
+  /** Create an immutable Map that keeps the order of elements */
+  public static <K, V> Map<K, V> sequencedMapOf(K k1, V v1, K k2, V v2, K k3, V v3) {
+    Map<K, V> map = new LinkedHashMap<>();
+    map.put(k1, v1);
+    map.put(k2, v2);
+    map.put(k3, v3);
+    return unmodifiableMap(map);
   }
 }
