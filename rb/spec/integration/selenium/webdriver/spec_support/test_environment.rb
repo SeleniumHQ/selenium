@@ -125,13 +125,24 @@ module Selenium
         end
 
         def reset_remote_server
-          @remote_server&.stop
-          @remote_server = nil
+          begin
+            @remote_server&.stop
+          rescue StandardError => e
+            WebDriver.logger.warn("Remote server stop failed: #{e.class}: #{e.message}")
+          ensure
+            @remote_server = nil
+          end
           remote_server
         end
 
         def remote_server?
-          !@remote_server.nil?
+          @remote_server&.status_ok?
+        end
+
+        def ensure_grid
+          return if remote_server?
+
+          reset_remote_server.start
         end
 
         def remote_server_jar
@@ -230,6 +241,7 @@ module Selenium
         end
 
         def remote_driver(**)
+          ensure_grid
           url = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
 
           WebDriver::Driver.for(:remote, url: url, **)
