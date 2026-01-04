@@ -35,9 +35,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasDownloads;
@@ -112,36 +116,48 @@ class RemoteWebDriverDownloadTest {
     driver.get(appServer.whereIs("downloads/download.html"));
     driver.findElement(By.id("file-1")).click();
     driver.findElement(By.id("file-2")).click();
-    waitForDownloadedFiles(driver, 2);
+    driver.findElement(By.id("file-3")).click();
+    waitForDownloadedFiles(driver, 3);
 
     @SuppressWarnings("deprecation")
     List<String> downloadableFiles = ((HasDownloads) driver).getDownloadableFiles();
-    assertThat(downloadableFiles).contains("file_1.txt", "file_2.jpg");
+    assertThat(downloadableFiles)
+        .contains("file_1.txt", "file_2.jpg", "file-with-space 0 & _ ' ~.txt");
 
     List<DownloadedFile> downloadedFiles = ((HasDownloads) driver).getDownloadedFiles();
     assertThat(downloadedFiles.stream().map(f -> f.getName()).collect(Collectors.toList()))
-        .contains("file_1.txt", "file_2.jpg");
+        .contains("file_1.txt", "file_2.jpg", "file-with-space 0 & _ ' ~.txt");
   }
 
-  @Test
+  @ParameterizedTest
+  @MethodSource("downloadableFiles")
   @Ignore(IE)
   @Ignore(SAFARI)
-  void canDownloadFiles() throws IOException {
+  void canDownloadFiles(By selector, String expectedFileName, String expectedFileContent)
+      throws IOException {
     driver = createWebdriver(capabilities);
 
     driver.get(appServer.whereIs("downloads/download.html"));
-    driver.findElement(By.id("file-1")).click();
+    driver.findElement(selector).click();
     waitForDownloadedFiles(driver, 1);
 
     DownloadedFile file = ((HasDownloads) driver).getDownloadedFiles().get(0);
+    assertThat(file.getName()).isEqualTo(expectedFileName);
 
     Path targetLocation = Files.createTempDirectory("download");
     ((HasDownloads) driver).downloadFile(file.getName(), targetLocation);
 
-    File localFile = targetLocation.resolve(file.getName()).toFile();
-    assertThat(localFile).hasName(file.getName());
+    File localFile = targetLocation.resolve(expectedFileName).toFile();
+    assertThat(localFile).hasName(expectedFileName);
     assertThat(localFile).hasSize(file.getSize());
-    assertThat(localFile).content().isEqualToIgnoringNewLines("Hello, World!");
+    assertThat(localFile).content().isEqualToIgnoringNewLines(expectedFileContent);
+  }
+
+  static Stream<Arguments> downloadableFiles() {
+    return Stream.of(
+        Arguments.of(By.id("file-1"), "file_1.txt", "Hello, World!"),
+        Arguments.of(
+            By.id("file-3"), "file-with-space 0 & _ ' ~.txt", "Hello, filename with space!"));
   }
 
   @Test

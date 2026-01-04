@@ -218,7 +218,17 @@ public interface DriverCommand {
   String RESET_COOLDOWN = "resetCooldown";
   String GET_DOWNLOADABLE_FILES = "getDownloadableFiles";
   String DOWNLOAD_FILE = "downloadFile";
-  String GET_DOWNLOADED_FILE = "getDownloadedFile";
+
+  /**
+   * This endpoint was introduced in 4.39.0, but not used anymore since 4.40.0. Left here for
+   * backward compatibility (if someone uses Grid 4.40+, but Client 4.39.0).
+   *
+   * <p>Remove it in 4.41, 4.42 or 4.43.
+   *
+   * @deprecated use {@link #DOWNLOAD_FILE} instead
+   */
+  @Deprecated String GET_DOWNLOADED_FILE = "getDownloadedFile";
+
   String DELETE_DOWNLOADABLE_FILES = "deleteDownloadableFiles";
 
   static CommandPayload NEW_SESSION(Capabilities capabilities) {

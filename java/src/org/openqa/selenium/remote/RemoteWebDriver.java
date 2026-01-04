@@ -18,11 +18,11 @@
 package org.openqa.selenium.remote;
 
 import static java.util.Collections.singleton;
-import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
+import com.google.common.net.MediaType;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,7 +69,6 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -732,24 +731,23 @@ public class RemoteWebDriver
   public void downloadFile(String fileName, Path targetLocation) throws IOException {
     requireDownloadsEnabled(capabilities);
 
-    try {
-      Response response = execute(DriverCommand.GET_DOWNLOADED_FILE, Map.of("name", fileName));
-
+    Response response =
+        execute(
+            DriverCommand.DOWNLOAD_FILE,
+            Map.of("name", fileName, "format", MediaType.OCTET_STREAM.toString()));
+    if (response.getValue() instanceof Contents.Supplier) {
+      // Selenium Grid 4.40.0 or newer
       Contents.Supplier content = (Contents.Supplier) response.getValue();
       try (InputStream fileContent = content.get()) {
         Files.createDirectories(targetLocation);
         Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
       }
-    } catch (UnsupportedCommandException e) {
-      String error = requireNonNull(e.getMessage(), e.toString()).split("\n", 2)[0];
-      LOG.log(
-          Level.WARNING,
-          "You have too old Selenium Grid version, please upgrade it. Caused by: {0}",
-          error);
-
-      Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
+    } else if (response.getValue() instanceof Map) {
+      // Selenium Grid 4.39.0 or older
       String contents = ((Map<String, String>) response.getValue()).get("contents");
       Zip.unzip(contents, targetLocation.toFile());
+    } else {
+      throw new UnsupportedOperationException("Unexpected grid response: " + response);
     }
   }
 
