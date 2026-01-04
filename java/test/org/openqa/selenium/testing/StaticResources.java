@@ -63,6 +63,7 @@ class StaticResources {
         "org/openqa/selenium/support/locators/findElements.js");
 
     // Firefox XPI
+    bazel.build("third_party/js/selenium:webdriver_json");
     copy(
         "third_party/js/selenium/webdriver_prefs.json",
         "org/openqa/selenium/firefox/webdriver_prefs.json");
