@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -293,7 +294,8 @@ public class SeleniumExtension
 
     try {
       current.driver.quit();
-    } catch (RuntimeException ignored) {
+    } catch (RuntimeException e) {
+      LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
       // fall through
     }
 
