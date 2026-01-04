@@ -18,9 +18,9 @@
 package org.openqa.selenium.remote;
 
 import static java.util.Collections.singleton;
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
-import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import java.io.BufferedInputStream;
@@ -69,6 +69,7 @@ import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -83,6 +84,7 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
@@ -730,12 +732,24 @@ public class RemoteWebDriver
   public void downloadFile(String fileName, Path targetLocation) throws IOException {
     requireDownloadsEnabled(capabilities);
 
-    Response response = execute(DriverCommand.GET_DOWNLOADED_FILE, Map.of("name", fileName));
+    try {
+      Response response = execute(DriverCommand.GET_DOWNLOADED_FILE, Map.of("name", fileName));
 
-    Contents.Supplier content = (Contents.Supplier) response.getValue();
-    try (InputStream fileContent = content.get()) {
-      Files.createDirectories(targetLocation);
-      Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
+      Contents.Supplier content = (Contents.Supplier) response.getValue();
+      try (InputStream fileContent = content.get()) {
+        Files.createDirectories(targetLocation);
+        Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
+      }
+    } catch (UnsupportedCommandException e) {
+      String error = requireNonNull(e.getMessage(), e.toString()).split("\n", 2)[0];
+      LOG.log(
+          Level.WARNING,
+          "You have too old Selenium Grid version, please upgrade it. Caused by: {0}",
+          error);
+
+      Response response = execute(DriverCommand.DOWNLOAD_FILE, Map.of("name", fileName));
+      String contents = ((Map<String, String>) response.getValue()).get("contents");
+      Zip.unzip(contents, targetLocation.toFile());
     }
   }
 
