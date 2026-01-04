@@ -26,6 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.By.cssSelector;
 import static org.openqa.selenium.support.ui.ExpectedConditions.and;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContains;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
@@ -53,11 +54,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfNestedElementsLocatedBy;
 
-import com.google.common.collect.Sets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -248,15 +247,14 @@ class ExpectedConditionsTest {
 
   @Test
   void waitingForVisibilityOfAllElementsLocatedByReturnsListOfElements() {
-    List<WebElement> webElements = singletonList(mockElement);
     String testSelector = "testSelector";
 
-    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(webElements);
+    when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(List.of(mockElement));
     when(mockElement.isDisplayed()).thenReturn(true);
 
     List<WebElement> returnedElements =
         wait.until(visibilityOfAllElementsLocatedBy(By.cssSelector(testSelector)));
-    assertThat(returnedElements).isEqualTo(webElements);
+    assertThat(returnedElements).containsExactly(mockElement);
   }
 
   @Test
@@ -299,11 +297,10 @@ class ExpectedConditionsTest {
 
   @Test
   void waitingForVisibilityOfAllElementsReturnsListOfElements() {
-    List<WebElement> webElements = singletonList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(true);
 
-    List<WebElement> returnedElements = wait.until(visibilityOfAllElements(webElements));
-    assertThat(returnedElements).isEqualTo(webElements);
+    List<WebElement> returnedElements = wait.until(visibilityOfAllElements(List.of(mockElement)));
+    assertThat(returnedElements).containsExactly(mockElement);
   }
 
   @Test
@@ -766,16 +763,15 @@ class ExpectedConditionsTest {
   void waitingForSpecificNumberOfElementsMoreThanSpecifiedPositive() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
-        .thenReturn(Arrays.asList(mockElement, mockElement));
-    assertThat(wait.until(numberOfElementsToBeMoreThan(By.cssSelector(testSelector), 1)).size())
-        .isEqualTo(2);
+        .thenReturn(List.of(mockElement, mockElement));
+    assertThat(wait.until(numberOfElementsToBeMoreThan(cssSelector(testSelector), 1))).hasSize(2);
   }
 
   @Test
   void waitingForSpecificNumberOfElementsLessThanSpecifiedWhenNumberIsEqual() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
-        .thenReturn(Arrays.asList(mockElement, mockElement));
+        .thenReturn(List.of(mockElement, mockElement));
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(
             () -> wait.until(numberOfElementsToBeLessThan(By.cssSelector(testSelector), 2)));
@@ -786,17 +782,15 @@ class ExpectedConditionsTest {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
         .thenReturn(singletonList(mockElement));
-    assertThat(wait.until(numberOfElementsToBeLessThan(By.cssSelector(testSelector), 2)).size())
-        .isEqualTo(1);
+    assertThat(wait.until(numberOfElementsToBeLessThan(cssSelector(testSelector), 2))).hasSize(1);
   }
 
   @Test
   void waitingForSpecificNumberOfElementsPositive() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
-        .thenReturn(Arrays.asList(mockElement, mockElement));
-    assertThat(wait.until(numberOfElementsToBe(By.cssSelector(testSelector), 2)).size())
-        .isEqualTo(2);
+        .thenReturn(List.of(mockElement, mockElement));
+    assertThat(wait.until(numberOfElementsToBe(cssSelector(testSelector), 2))).hasSize(2);
   }
 
   @Test
@@ -959,7 +953,7 @@ class ExpectedConditionsTest {
 
   @Test
   void waitingNumberOfWindowsToBeTwoWhenThereAreTwoWindowsOpen() {
-    Set<String> twoWindowHandles = Sets.newHashSet("w1", "w2");
+    Set<String> twoWindowHandles = Set.of("w1", "w2");
     when(mockDriver.getWindowHandles()).thenReturn(twoWindowHandles);
 
     assertThat(wait.until(numberOfWindowsToBe(2))).isTrue();
@@ -967,7 +961,7 @@ class ExpectedConditionsTest {
 
   @Test
   void waitingNumberOfWindowsToBeTwoThrowsTimeoutExceptionWhenThereAreThreeWindowsOpen() {
-    Set<String> threeWindowHandles = Sets.newHashSet("w1", "w2", "w3");
+    Set<String> threeWindowHandles = Set.of("w1", "w2", "w3");
     when(mockDriver.getWindowHandles()).thenReturn(threeWindowHandles);
 
     assertThatExceptionOfType(TimeoutException.class)

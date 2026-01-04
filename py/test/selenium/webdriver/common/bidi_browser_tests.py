@@ -15,33 +15,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import http.server
-import socketserver
-import threading
+import os
 
 import pytest
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.bidi.browser import ClientWindowInfo, ClientWindowState
+from selenium.webdriver.common.bidi.browsing_context import ReadinessState
 from selenium.webdriver.common.bidi.session import UserPromptHandler, UserPromptHandlerType
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.proxy import Proxy, ProxyType
-from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.common.window import WindowTypes
-
-
-class FakeProxyHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        print(f"[Fake Proxy] Intercepted request to: {self.path}")
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"proxied response")
-
-
-def start_fake_proxy(port):
-    server = socketserver.TCPServer(("localhost", port), FakeProxyHandler)
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-    return server
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def test_browser_initialized(driver):
@@ -161,21 +146,21 @@ def test_create_user_context_with_direct_proxy(driver):
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
-@pytest.mark.xfail_firefox(reason="Firefox proxy settings are different")
-@pytest.mark.xfail_remote
-def test_create_user_context_with_manual_proxy_all_params(driver):
+def test_create_user_context_with_manual_proxy_all_params(driver, proxy_server):
     """Test creating a user context with manual proxy configuration."""
-    # Start a fake proxy server
-    port = free_port()
-    fake_proxy_server = start_fake_proxy(port=port)
+    create_proxy_server = proxy_server(response_content=b"proxied response")
+    no_proxy_server = proxy_server(response_content=b"direct connection - not proxied")
+
+    proxy_port = create_proxy_server["port"]
+    no_proxy_port = no_proxy_server["port"]
 
     proxy = Proxy()
     proxy.proxy_type = ProxyType.MANUAL
-    proxy.http_proxy = f"localhost:{port}"
-    proxy.ssl_proxy = f"localhost:{port}"
-    proxy.socks_proxy = f"localhost:{port}"
+    proxy.http_proxy = f"localhost:{proxy_port}"
+    proxy.ssl_proxy = f"localhost:{proxy_port}"
+    proxy.socks_proxy = f"localhost:{proxy_port}"
     proxy.socks_version = 5
-    proxy.no_proxy = ["the-internet.herokuapp.com"]
+    proxy.no_proxy = [f"localhost:{no_proxy_port}"]
 
     user_context = driver.browser.create_user_context(proxy=proxy)
 
@@ -185,9 +170,9 @@ def test_create_user_context_with_manual_proxy_all_params(driver):
 
     try:
         # Visit no proxy site, it should bypass proxy
-        driver.get("http://the-internet.herokuapp.com/")
+        driver.get(f"http://localhost:{no_proxy_port}/")
         body_text = driver.find_element(By.TAG_NAME, "body").text.lower()
-        assert "welcome to the-internet" in body_text
+        assert "direct connection - not proxied" in body_text
 
         # Visit a site that should be proxied
         driver.get("http://example.com/")
@@ -197,18 +182,13 @@ def test_create_user_context_with_manual_proxy_all_params(driver):
 
     finally:
         driver.browser.remove_user_context(user_context)
-        fake_proxy_server.shutdown()
-        fake_proxy_server.server_close()
 
 
 @pytest.mark.xfail_chrome(reason="Chrome auto upgrades HTTP to HTTPS in untrusted networks like CI environments")
-@pytest.mark.xfail_firefox(reason="Firefox proxy settings are different")
-@pytest.mark.xfail_remote
-def test_create_user_context_with_proxy_and_accept_insecure_certs(driver):
+def test_create_user_context_with_proxy_and_accept_insecure_certs(driver, proxy_server):
     """Test creating a user context with both acceptInsecureCerts and proxy parameters."""
-    # Start fake proxy server
-    port = free_port()
-    fake_proxy_server = start_fake_proxy(port=port)
+    create_proxy_server = proxy_server(response_content=b"proxied response")
+    port = create_proxy_server["port"]
 
     proxy = Proxy()
     proxy.proxy_type = ProxyType.MANUAL
@@ -234,8 +214,6 @@ def test_create_user_context_with_proxy_and_accept_insecure_certs(driver):
 
     finally:
         driver.browser.remove_user_context(user_context)
-        fake_proxy_server.shutdown()
-        fake_proxy_server.server_close()
 
 
 def test_create_user_context_with_unhandled_prompt_behavior(driver, pages):
@@ -262,3 +240,96 @@ def test_create_user_context_with_unhandled_prompt_behavior(driver, pages):
 
     # Clean up
     driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_firefox
+def test_set_download_behavior_allowed(driver, pages, tmp_path):
+    print(f"Driver info: {driver.capabilities}")
+    try:
+        driver.browser.set_download_behavior(allowed=True, destination_folder=tmp_path)
+
+        context_id = driver.current_window_handle
+        url = pages.url("downloads/download.html")
+        driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
+
+        driver.find_element(By.ID, "file-1").click()
+
+        WebDriverWait(driver, 5).until(lambda d: "file_1.txt" in os.listdir(tmp_path))
+
+        files = os.listdir(tmp_path)
+        assert "file_1.txt" in files, f"Expected file_1.txt in {tmp_path}, but found: {files}"
+    finally:
+        driver.browser.set_download_behavior(allowed=None)
+
+
+@pytest.mark.xfail_firefox
+def test_set_download_behavior_denied(driver, pages, tmp_path):
+    try:
+        driver.browser.set_download_behavior(allowed=False)
+
+        context_id = driver.current_window_handle
+        url = pages.url("downloads/download.html")
+        driver.browsing_context.navigate(context=context_id, url=url, wait=ReadinessState.COMPLETE)
+
+        driver.find_element(By.ID, "file-1").click()
+
+        try:
+            WebDriverWait(driver, 3, poll_frequency=0.2).until(lambda _: len(os.listdir(tmp_path)) > 0)
+            files = os.listdir(tmp_path)
+            pytest.fail(f"A file was downloaded unexpectedly: {files}")
+        except TimeoutException:
+            pass  # Expected, no file downloaded
+    finally:
+        driver.browser.set_download_behavior(allowed=None)
+
+
+@pytest.mark.xfail_firefox
+def test_set_download_behavior_user_context(driver, pages, tmp_path):
+    user_context = driver.browser.create_user_context()
+
+    try:
+        bc = driver.browsing_context.create(type=WindowTypes.WINDOW, user_context=user_context)
+        driver.switch_to.window(bc)
+
+        try:
+            driver.browser.set_download_behavior(
+                allowed=True, destination_folder=tmp_path, user_contexts=[user_context]
+            )
+
+            url = pages.url("downloads/download.html")
+            driver.browsing_context.navigate(context=bc, url=url, wait=ReadinessState.COMPLETE)
+
+            driver.find_element(By.ID, "file-1").click()
+
+            WebDriverWait(driver, 5).until(lambda d: "file_1.txt" in os.listdir(tmp_path))
+
+            files = os.listdir(tmp_path)
+            assert "file_1.txt" in files, f"Expected file_1.txt in {tmp_path}, but found: {files}"
+
+            initial_file_count = len(files)
+
+            driver.browser.set_download_behavior(allowed=False, user_contexts=[user_context])
+
+            driver.find_element(By.ID, "file-2").click()
+
+            try:
+                WebDriverWait(driver, 3, poll_frequency=0.2).until(
+                    lambda _: len(os.listdir(tmp_path)) > initial_file_count
+                )
+                files_after = os.listdir(tmp_path)
+                pytest.fail(f"A file was downloaded unexpectedly: {files_after}")
+            except TimeoutException:
+                pass  # Expected, no file downloaded
+        finally:
+            driver.browser.set_download_behavior(allowed=None, user_contexts=[user_context])
+    finally:
+        driver.browser.remove_user_context(user_context)
+
+
+@pytest.mark.xfail_firefox
+def test_set_download_behavior_validation(driver):
+    with pytest.raises(ValueError, match="destination_folder is required when allowed=True"):
+        driver.browser.set_download_behavior(allowed=True)
+
+    with pytest.raises(ValueError, match="destination_folder should not be provided when allowed=False"):
+        driver.browser.set_download_behavior(allowed=False, destination_folder="/tmp")

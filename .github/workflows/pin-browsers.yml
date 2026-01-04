@@ -4,18 +4,20 @@ on:
     - cron: 10 0 * * *
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   update:
     name: Update Pinned Browsers
     uses: ./.github/workflows/bazel.yml
     with:
       name: Pin Browsers
-      cache-key: pin-browsers
       run: bazel run //scripts:pinned_browsers
       artifact-name: pinned-browsers
 
   pull-request:
-    if: github.repository_owner == 'seleniumhq'
+    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
     needs: update
     steps:

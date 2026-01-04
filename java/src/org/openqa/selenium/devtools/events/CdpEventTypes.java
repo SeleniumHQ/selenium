@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.devtools.events;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -32,6 +29,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Read;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.EventType;
 
@@ -46,7 +44,7 @@ public class CdpEventTypes {
   public static EventType<ConsoleEvent> consoleEvent(Consumer<ConsoleEvent> handler) {
     Require.nonNull("Handler", handler);
 
-    return new EventType<ConsoleEvent>() {
+    return new EventType<>() {
       public void consume(ConsoleEvent event) {
         handler.accept(event);
       }
@@ -67,19 +65,9 @@ public class CdpEventTypes {
   public static EventType<Void> domMutation(Consumer<DomMutationEvent> handler) {
     Require.nonNull("Handler", handler);
 
-    String script;
-    try (InputStream stream =
-        CdpEventTypes.class.getResourceAsStream(
-            "/org/openqa/selenium/devtools/mutation-listener.js")) {
-      if (stream == null) {
-        throw new IllegalStateException("Unable to find helper script");
-      }
-      script = new String(stream.readAllBytes(), UTF_8);
-    } catch (IOException e) {
-      throw new IllegalStateException("Unable to read helper script");
-    }
+    String script = Read.resourceAsString("/org/openqa/selenium/devtools/mutation-listener.js");
 
-    return new EventType<Void>() {
+    return new EventType<>() {
       @Override
       public void consume(Void event) {
         handler.accept(null);

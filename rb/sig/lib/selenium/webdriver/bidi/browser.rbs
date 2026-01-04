@@ -2,7 +2,18 @@ module Selenium
   module WebDriver
     class BiDi
       class Browser
-        Window: Selenium::WebDriver::BiDi::Browser::Window
+        class Window
+          attr_accessor handle: String
+          attr_accessor active: bool
+          attr_accessor height: Integer
+          attr_accessor width: Integer
+          attr_accessor x: Integer
+          attr_accessor y: Integer
+          attr_accessor state: String
+
+          def initialize: (handle: String, active: bool, height: Integer, width: Integer, x: Integer, y: Integer, state: String) -> void
+          def active?: () -> bool
+        end
 
         @bidi: BiDi
 
@@ -13,6 +24,8 @@ module Selenium
         def user_contexts: () -> Array[Hash[String, String]]
 
         def remove_user_context: (String user_context) -> Hash[nil, nil]
+
+        def windows: () -> Array[Window]
       end
     end
   end

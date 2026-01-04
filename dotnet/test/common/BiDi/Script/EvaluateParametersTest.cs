@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class EvaluateParametersTest : BiDiTestFixture
+internal class EvaluateParametersTest : BiDiTestFixture
 {
     [Test]
     public async Task CanEvaluateScript()

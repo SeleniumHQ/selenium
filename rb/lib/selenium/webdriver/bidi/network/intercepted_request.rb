@@ -23,6 +23,10 @@ require_relative 'headers'
 module Selenium
   module WebDriver
     class BiDi
+      #
+      # @api private
+      #
+
       class InterceptedRequest < InterceptedItem
         attr_accessor :method, :url
         attr_reader :body

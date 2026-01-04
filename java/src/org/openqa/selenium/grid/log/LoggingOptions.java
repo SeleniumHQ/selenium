@@ -51,7 +51,7 @@ public class LoggingOptions {
   private Level level = Level.INFO;
   public static final String DEFAULT_LOG_TIMESTAMP_FORMAT = "HH:mm:ss.SSS";
   private static final List<Level> DEFAULT_LOG_LEVELS =
-      Arrays.asList(
+      List.of(
           Level.ALL,
           Level.INFO,
           Level.CONFIG,

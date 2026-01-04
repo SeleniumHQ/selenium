@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.router;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +71,7 @@ class DistributedCdpTest {
 
     Server<?> server =
         new NettyServer(
-                new BaseServerOptions(new MapConfig(ImmutableMap.of())),
+                new BaseServerOptions(new MapConfig()),
                 req ->
                     new HttpResponse()
                         .setContent(

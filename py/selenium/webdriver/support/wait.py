@@ -16,17 +16,17 @@
 # under the License.
 
 import time
-from typing import Callable, Generic, Literal, Optional, TypeVar, Union
+from collections.abc import Callable, Iterable
+from typing import Generic, Literal, TypeVar
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.types import WaitExcTypes
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 POLL_FREQUENCY: float = 0.5  # How long to sleep in between calls to the method
 IGNORED_EXCEPTIONS: tuple[type[Exception]] = (NoSuchElementException,)  # default to be ignored.
 
-D = TypeVar("D", bound=Union[WebDriver, WebElement])
+D = TypeVar("D", bound=WebDriver | WebElement)
 T = TypeVar("T")
 
 
@@ -36,7 +36,7 @@ class WebDriverWait(Generic[D]):
         driver: D,
         timeout: float,
         poll_frequency: float = POLL_FREQUENCY,
-        ignored_exceptions: Optional[WaitExcTypes] = None,
+        ignored_exceptions: Iterable[type[Exception]] | None = None,
     ):
         """Constructor, takes a WebDriver instance and timeout in seconds.
 
@@ -75,7 +75,7 @@ class WebDriverWait(Generic[D]):
     def __repr__(self) -> str:
         return f'<{type(self).__module__}.{type(self).__name__} (session="{self._driver.session_id}")>'
 
-    def until(self, method: Callable[[D], Union[Literal[False], T]], message: str = "") -> T:
+    def until(self, method: Callable[[D], Literal[False] | T], message: str = "") -> T:
         """Wait until the method returns a value that is not False.
 
         Calls the method provided with the driver as an argument until the
@@ -120,7 +120,7 @@ class WebDriverWait(Generic[D]):
             time.sleep(self._poll)
         raise TimeoutException(message, screen, stacktrace)
 
-    def until_not(self, method: Callable[[D], T], message: str = "") -> Union[T, Literal[True]]:
+    def until_not(self, method: Callable[[D], T], message: str = "") -> T | Literal[True]:
         """Wait until the method returns a value that is False.
 
         Calls the method provided with the driver as an argument until the

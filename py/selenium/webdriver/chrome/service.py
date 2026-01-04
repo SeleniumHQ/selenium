@@ -15,17 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from collections.abc import Mapping, Sequence
-from typing import Optional
+from typing import IO, Any
 
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
 
 class Service(service.ChromiumService):
-    """A Service class that is responsible for the starting and stopping of
-    `chromedriver`.
+    """Service class responsible for starting and stopping the chromedriver executable.
 
     Args:
         executable_path: Install path of the chromedriver executable, defaults
@@ -42,14 +39,14 @@ class Service(service.ChromiumService):
 
     def __init__(
         self,
-        executable_path: Optional[str] = None,
+        executable_path: str | None = None,
         port: int = 0,
-        service_args: Optional[Sequence[str]] = None,
-        log_output: Optional[SubprocessStdAlias] = None,
-        env: Optional[Mapping[str, str]] = None,
+        service_args: Sequence[str] | None = None,
+        log_output: int | str | IO[Any] | None = None,
+        env: Mapping[str, str] | None = None,
         **kwargs,
     ) -> None:
-        self._service_args = service_args or []
+        self._service_args = list(service_args or [])
 
         super().__init__(
             executable_path=executable_path,
@@ -65,6 +62,7 @@ class Service(service.ChromiumService):
 
     @property
     def service_args(self) -> Sequence[str]:
+        """Returns the sequence of service arguments."""
         return self._service_args
 
     @service_args.setter

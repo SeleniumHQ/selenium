@@ -1,45 +1,23 @@
-// Copyright 2013 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Provides a function to schedule running a function as soon
  * as possible after the current JS execution stops and yields to the event
  * loop.
- *
  */
 
 goog.provide('goog.async.nextTick');
-goog.provide('goog.async.throwException');
 
 goog.require('goog.debug.entryPointRegistry');
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('goog.labs.userAgent.browser');
 goog.require('goog.labs.userAgent.engine');
-
-
-/**
- * Throw an item without interrupting the current execution context.  For
- * example, if processing a group of items in a loop, sometimes it is useful
- * to report an error while still allowing the rest of the batch to be
- * processed.
- * @param {*} exception
- */
-goog.async.throwException = function(exception) {
-  // Each throw needs to be in its own context.
-  goog.global.setTimeout(function() { throw exception; }, 0);
-};
 
 
 /**
@@ -60,6 +38,7 @@ goog.async.throwException = function(exception) {
  * @template SCOPE
  */
 goog.async.nextTick = function(callback, opt_context, opt_useSetImmediate) {
+  'use strict';
   var cb = callback;
   if (opt_context) {
     cb = goog.bind(callback, opt_context);
@@ -69,18 +48,17 @@ goog.async.nextTick = function(callback, opt_context, opt_useSetImmediate) {
   // to accept the possible tradeoffs of incorrectness in exchange for speed.
   // The IE fallback of readystate change is much slower. See useSetImmediate_
   // for details.
-  if (goog.isFunction(goog.global.setImmediate) &&
+  if (typeof goog.global.setImmediate === 'function' &&
       (opt_useSetImmediate || goog.async.nextTick.useSetImmediate_())) {
     goog.global.setImmediate(cb);
     return;
   }
 
   // Look for and cache the custom fallback version of setImmediate.
-  if (!goog.async.nextTick.setImmediate_) {
-    goog.async.nextTick.setImmediate_ =
-        goog.async.nextTick.getSetImmediateEmulator_();
+  if (!goog.async.nextTick.nextTickImpl) {
+    goog.async.nextTick.nextTickImpl = goog.async.nextTick.getNextTickImpl_();
   }
-  goog.async.nextTick.setImmediate_(cb);
+  goog.async.nextTick.nextTickImpl(cb);
 };
 
 
@@ -100,8 +78,10 @@ goog.async.nextTick = function(callback, opt_context, opt_useSetImmediate) {
  * @return {boolean} Whether to use the implementation of setImmediate defined
  *     on Window.
  * @private
+ * @suppress {missingProperties} For "Window.prototype.setImmediate"
  */
 goog.async.nextTick.useSetImmediate_ = function() {
+  'use strict';
   // Not a browser environment.
   if (!goog.global.Window || !goog.global.Window.prototype) {
     return true;
@@ -127,11 +107,11 @@ goog.async.nextTick.useSetImmediate_ = function() {
 
 
 /**
- * Cache for the setImmediate implementation.
+ * Cache for the nextTick implementation. Exposed so tests can replace it,
+ * if needed.
  * @type {function(function())}
- * @private
  */
-goog.async.nextTick.setImmediate_;
+goog.async.nextTick.nextTickImpl;
 
 
 /**
@@ -140,7 +120,8 @@ goog.async.nextTick.setImmediate_;
  * @return {function(function())} The "setImmediate" implementation.
  * @private
  */
-goog.async.nextTick.getSetImmediateEmulator_ = function() {
+goog.async.nextTick.getNextTickImpl_ = function() {
+  'use strict';
   // Create a private message channel and use it to postMessage empty messages
   // to ourselves.
   /** @type {!Function|undefined} */
@@ -156,16 +137,14 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       !goog.labs.userAgent.engine.isPresto()) {
     /** @constructor */
     Channel = function() {
+      'use strict';
       // Make an empty, invisible iframe.
-      var iframe = /** @type {!HTMLIFrameElement} */ (
-          document.createElement(String(goog.dom.TagName.IFRAME)));
+      var iframe = goog.dom.createElement(goog.dom.TagName.IFRAME);
       iframe.style.display = 'none';
-      iframe.src = '';
       document.documentElement.appendChild(iframe);
       var win = iframe.contentWindow;
       var doc = win.document;
       doc.open();
-      doc.write('');
       doc.close();
       // Do not post anything sensitive over this channel, as the workaround for
       // pages with file: origin could allow that information to be modified or
@@ -173,11 +152,11 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       var message = 'callImmediate' + Math.random();
       // The same origin policy rejects attempts to postMessage from file: urls
       // unless the origin is '*'.
-      // TODO(b/16335441): Use '*' origin for data: and other similar protocols.
       var origin = win.location.protocol == 'file:' ?
           '*' :
           win.location.protocol + '//' + win.location.host;
       var onmessage = goog.bind(function(e) {
+        'use strict';
         // Validate origin and message to make sure that this message was
         // intended for us. If the origin is set to '*' (see above) only the
         // message needs to match since, for example, '*' != 'file://'. Allowing
@@ -190,7 +169,10 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       win.addEventListener('message', onmessage, false);
       this['port1'] = {};
       this['port2'] = {
-        postMessage: function() { win.postMessage(message, origin); }
+        postMessage: function() {
+          'use strict';
+          win.postMessage(message, origin);
+        }
       };
     };
   }
@@ -205,7 +187,8 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
     var head = {};
     var tail = head;
     channel['port1'].onmessage = function() {
-      if (goog.isDef(head.next)) {
+      'use strict';
+      if (head.next !== undefined) {
         head = head.next;
         var cb = head.cb;
         head.cb = null;
@@ -213,33 +196,17 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       }
     };
     return function(cb) {
+      'use strict';
       tail.next = {cb: cb};
       tail = tail.next;
       channel['port2'].postMessage(0);
     };
   }
-  // Implementation for IE6 to IE10: Script elements fire an asynchronous
-  // onreadystatechange event when inserted into the DOM.
-  if (typeof document !== 'undefined' &&
-      'onreadystatechange' in
-          document.createElement(String(goog.dom.TagName.SCRIPT))) {
-    return function(cb) {
-      var script = document.createElement(String(goog.dom.TagName.SCRIPT));
-      script.onreadystatechange = function() {
-        // Clean up and call the callback.
-        script.onreadystatechange = null;
-        script.parentNode.removeChild(script);
-        script = null;
-        cb();
-        cb = null;
-      };
-      document.documentElement.appendChild(script);
-    };
-  }
   // Fall back to setTimeout with 0. In browsers this creates a delay of 5ms
   // or more.
-  // NOTE(user): This fallback is used for IE11.
+  // NOTE(user): This fallback is used for IE.
   return function(cb) {
+    'use strict';
     goog.global.setTimeout(/** @type {function()} */ (cb), 0);
   };
 };
@@ -263,4 +230,7 @@ goog.debug.entryPointRegistry.register(
      * @param {function(!Function): !Function} transformer The transforming
      *     function.
      */
-    function(transformer) { goog.async.nextTick.wrapCallback_ = transformer; });
+    function(transformer) {
+      'use strict';
+      goog.async.nextTick.wrapCallback_ = transformer;
+    });

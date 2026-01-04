@@ -14,22 +14,22 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import base64
 import os
 import warnings
 import zipfile
 from contextlib import contextmanager
 from io import BytesIO
-from typing import Optional
 
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(LocalWebDriver):
     """Controls the GeckoDriver and allows you to drive the browser."""
 
     CONTEXT_CHROME = "chrome"
@@ -37,25 +37,24 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(
         self,
-        options: Optional[Options] = None,
-        service: Optional[Service] = None,
+        options: Options | None = None,
+        service: Service | None = None,
         keep_alive: bool = True,
     ) -> None:
-        """Creates a new instance of the Firefox driver. Starts the service and
-        then creates new instance of Firefox driver.
+        """Create a new instance of the Firefox driver, start the service, and create new instance.
 
         Args:
-            options: Instance of ``options.Options``.
-            service: (Optional) service instance for managing the starting and stopping of the driver.
-            keep_alive: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
+            options: Instance of Options.
+            service: Service object for handling the browser driver if you need to pass extra details.
+            keep_alive: Whether to configure FirefoxRemoteConnection to use HTTP keep-alive.
         """
         self.service = service if service else Service()
-        options = options if options else Options()
+        self.options = options if options else Options()
 
-        finder = DriverFinder(self.service, options)
+        finder = DriverFinder(self.service, self.options)
         if finder.get_browser_path():
-            options.binary_location = finder.get_browser_path()
-            options.browser_version = None
+            self.options.binary_location = finder.get_browser_path()
+            self.options.browser_version = None
 
         self.service.path = self.service.env_path() or finder.get_driver_path()
         self.service.start()
@@ -63,26 +62,14 @@ class WebDriver(RemoteWebDriver):
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
             keep_alive=keep_alive,
-            ignore_proxy=options._ignore_local_proxy,
+            ignore_proxy=self.options._ignore_local_proxy,
         )
 
         try:
-            super().__init__(command_executor=executor, options=options)
+            super().__init__(command_executor=executor, options=self.options)
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
-
-    def quit(self) -> None:
-        """Closes the browser and shuts down the GeckoDriver executable."""
-        try:
-            super().quit()
-        except Exception:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
 
     def set_context(self, context) -> None:
         """Sets the context that Selenium commands are running in.
@@ -94,9 +81,10 @@ class WebDriver(RemoteWebDriver):
 
     @contextmanager
     def context(self, context):
-        """Sets the context that Selenium commands are running in using a
-        `with` statement. The state of the context on the server is saved
-        before entering the block, and restored upon exiting it.
+        """Set the context that Selenium commands are running in using a `with` statement.
+
+        The state of the context on the server is saved before entering the block,
+        and restored upon exiting it.
 
         Args:
             context: Context, may be one of the class properties
@@ -161,13 +149,14 @@ class WebDriver(RemoteWebDriver):
         self.execute("UNINSTALL_ADDON", {"id": identifier})
 
     def get_full_page_screenshot_as_file(self, filename) -> bool:
-        """Saves a full document screenshot of the current window to a PNG
-        image file. Returns False if there is any IOError, else returns True.
-        Use full paths in your filename.
+        """Save a full document screenshot of the current window to a PNG image file.
 
         Args:
             filename: The full path you wish to save your screenshot to. This
                 should end with a `.png` extension.
+
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
 
         Example:
             driver.get_full_page_screenshot_as_file("/Screenshots/foo.png")
@@ -188,13 +177,14 @@ class WebDriver(RemoteWebDriver):
         return True
 
     def save_full_page_screenshot(self, filename) -> bool:
-        """Saves a full document screenshot of the current window to a PNG
-        image file. Returns False if there is any IOError, else returns True.
-        Use full paths in your filename.
+        """Save a full document screenshot of the current window to a PNG image file.
 
         Args:
             filename: The full path you wish to save your screenshot to. This
                 should end with a `.png` extension.
+
+        Returns:
+            False if there is any IOError, else returns True. Use full paths in your filename.
 
         Example:
             driver.save_full_page_screenshot("/Screenshots/foo.png")
@@ -202,8 +192,7 @@ class WebDriver(RemoteWebDriver):
         return self.get_full_page_screenshot_as_file(filename)
 
     def get_full_page_screenshot_as_png(self) -> bytes:
-        """Gets the full document screenshot of the current window as a binary
-        data.
+        """Get the full document screenshot of the current window as binary data.
 
         Returns:
             Binary data of the screenshot.
@@ -214,8 +203,7 @@ class WebDriver(RemoteWebDriver):
         return base64.b64decode(self.get_full_page_screenshot_as_base64().encode("ascii"))
 
     def get_full_page_screenshot_as_base64(self) -> str:
-        """Gets the full document screenshot of the current window as a base64
-        encoded string which is useful in embedded images in HTML.
+        """Get the full document screenshot of the current window as a base64-encoded string.
 
         Returns:
             Base64 encoded string of the screenshot.
@@ -224,15 +212,3 @@ class WebDriver(RemoteWebDriver):
             driver.get_full_page_screenshot_as_base64()
         """
         return self.execute("FULL_PAGE_SCREENSHOT")["value"]
-
-    def download_file(self, *args, **kwargs):
-        """Download file functionality is not implemented for Firefox driver."""
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        """Get downloadable files functionality is not implemented for Firefox driver."""
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        """Delete downloadable files functionality is not implemented for Firefox driver."""
-        raise NotImplementedError

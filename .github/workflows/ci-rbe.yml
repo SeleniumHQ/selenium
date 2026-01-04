@@ -13,10 +13,18 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   format:
     name: Format
-    if: github.repository_owner == 'seleniumhq' && startsWith(github.head_ref, 'renovate/') != true
+    if: github.event.repository.fork == false && startsWith(github.head_ref, 'renovate/') != true
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check format script run
@@ -26,7 +34,7 @@ jobs:
 
   test:
     name: Test
-    if: github.repository_owner == 'seleniumhq' && startsWith(github.head_ref, 'renovate/') != true
+    if: github.event.repository.fork == false && startsWith(github.head_ref, 'renovate/') != true
     uses: ./.github/workflows/bazel.yml
     with:
       name: All RBE tests

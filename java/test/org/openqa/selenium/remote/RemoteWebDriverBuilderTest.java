@@ -27,7 +27,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -66,9 +65,9 @@ class RemoteWebDriverBuilderTest {
       new HttpResponse()
           .setContent(
               Contents.asJson(
-                  ImmutableMap.of(
+                  Map.of(
                       "value",
-                      ImmutableMap.of(
+                      Map.of(
                           "sessionId",
                           SESSION_ID,
                           // Primula is a canned cheese. Boom boom!
@@ -119,7 +118,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(match.get()).isTrue();
+    assertThat(match).isTrue();
   }
 
   @Test
@@ -170,7 +169,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(seen.get()).isTrue();
+    assertThat(seen).isTrue();
   }
 
   @Test
@@ -213,7 +212,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(seen.get()).isTrue();
+    assertThat(seen).isTrue();
   }
 
   @Test
@@ -232,7 +231,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(seen.get()).isEqualTo(uri);
+    assertThat(seen).hasValue(uri);
   }
 
   @Test
@@ -259,7 +258,7 @@ class RemoteWebDriverBuilderTest {
             })
         .build();
 
-    assertThat(seen.get()).isEqualTo(uri);
+    assertThat(seen).hasValue(uri);
   }
 
   @Test
@@ -291,7 +290,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(allOk.get()).isTrue();
+    assertThat(allOk).isTrue();
   }
 
   @Test
@@ -310,7 +309,7 @@ class RemoteWebDriverBuilderTest {
             })
         .build();
 
-    assertThat(seen.get()).isEqualTo(uri);
+    assertThat(seen).hasValue(uri);
   }
 
   @Test
@@ -330,7 +329,7 @@ class RemoteWebDriverBuilderTest {
             })
         .build();
 
-    assertThat(seen.get()).isEqualTo(uri);
+    assertThat(seen).hasValue(uri);
   }
 
   @Test
@@ -378,7 +377,7 @@ class RemoteWebDriverBuilderTest {
                 })
         .build();
 
-    assertThat(allOk.get()).isTrue();
+    assertThat(allOk).isTrue();
   }
 
   @Test
@@ -399,9 +398,9 @@ class RemoteWebDriverBuilderTest {
         new HttpResponse()
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "sessionId",
                             SESSION_ID,
                             "capabilities",
@@ -441,9 +440,9 @@ class RemoteWebDriverBuilderTest {
         new HttpResponse()
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "sessionId",
                             SESSION_ID,
                             "capabilities",
@@ -483,9 +482,9 @@ class RemoteWebDriverBuilderTest {
         new HttpResponse()
             .setContent(
                 Contents.asJson(
-                    ImmutableMap.of(
+                    Map.of(
                         "value",
-                        ImmutableMap.of(
+                        Map.of(
                             "sessionId",
                             SESSION_ID,
                             "capabilities",

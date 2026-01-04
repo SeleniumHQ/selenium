@@ -18,11 +18,12 @@
 // </copyright>
 
 using NUnit.Framework;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Script;
 
-class CallFunctionParameterTest : BiDiTestFixture
+internal class CallFunctionParameterTest : BiDiTestFixture
 {
     [Test]
     public async Task CanCallFunctionWithDeclaration()
@@ -104,7 +105,10 @@ class CallFunctionParameterTest : BiDiTestFixture
 
         Assert.That(res, Is.Not.Null);
         Assert.That(res.AsSuccessResult(), Is.AssignableFrom<NodeRemoteValue>());
-        Assert.That((res.AsSuccessResult() as NodeRemoteValue).Value, Is.Not.Null);
+
+        var node = (NodeRemoteValue)res.AsSuccessResult();
+        Assert.That(node.Value, Is.Not.Null);
+        Assert.That(node.SharedId, Is.EqualTo(GetElementId(By.Id("consoleLog"))));
     }
 
     [Test]
@@ -218,5 +222,14 @@ class CallFunctionParameterTest : BiDiTestFixture
 
         Assert.That(res1, Is.EqualTo(3));
         Assert.That(res2, Is.EqualTo(5));
+    }
+
+    private string GetElementId(By selector)
+    {
+        var element = (WebElement)driver.FindElement(selector);
+        return ReflectElementId(element);
+
+        [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "get_Id")]
+        static extern string ReflectElementId(WebElement element);
     }
 }

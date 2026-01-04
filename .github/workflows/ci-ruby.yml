@@ -4,13 +4,15 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
-      cache-key: rb-build
       run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
 
   docs:
@@ -19,8 +21,33 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Documentation
-      cache-key: rb-docs
       run: bazel run //rb:docs
+
+  steep-check:
+    name: Type Check (Steep)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.8
+          bundler-cache: true
+          working-directory: rb
+      
+      - name: Install RBS collection
+        working-directory: rb
+        run: bundle exec rbs collection install
+      
+      - name: Run Steep type check
+        working-directory: rb
+        run: bundle exec rake steep 2>/dev/null || (bundle exec rake steep && exit 1)
 
   unit-tests:
     name: Unit Tests
@@ -44,7 +71,6 @@ jobs:
             os: ubuntu
     with:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
-      cache-key: rb-unit-test-${{ matrix.ruby-version }}-${{ matrix.os }}
       os: ${{ matrix.os }}
       ruby-version: ${{ matrix.ruby-version }}
       run: >
@@ -74,7 +100,6 @@ jobs:
     with:
       name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
-      cache-key: rb-${{ matrix.browser }}-${{ matrix.os }}-test
       os: ${{ matrix.os }}
       run: >
         bazel test
@@ -84,7 +109,6 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}
-        --pin_browsers
         //rb/spec/...
 
   integration-tests-remote:
@@ -100,7 +124,6 @@ jobs:
     with:
       name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
-      cache-key: rb-remote-${{ matrix.browser }}-${{ matrix.os }}-test
       os: ${{ matrix.os }}
       java-version: 17
       run: >
@@ -111,5 +134,4 @@ jobs:
         --local_test_jobs 1
         --test_size_filters large
         --test_tag_filters ${{ matrix.browser }}-remote
-        --pin_browsers
         //rb/spec/...

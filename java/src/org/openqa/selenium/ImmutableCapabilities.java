@@ -22,11 +22,9 @@ import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class ImmutableCapabilities implements Capabilities {
 
   private final Map<String, Object> delegate;

@@ -19,12 +19,10 @@ package org.openqa.selenium.chrome;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
-import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
@@ -134,12 +132,12 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  void canCast() {
+  void canCast() throws InterruptedException {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
+    Thread.sleep(1500);
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -153,12 +151,12 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  public void canCastOnDesktop() {
+  public void canCastOnDesktop() throws InterruptedException {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
+    Thread.sleep(1500);
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -182,14 +180,10 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
     conditions.deleteNetworkConditions();
 
-    try {
-      conditions.getNetworkConditions();
-      fail("If Network Conditions were deleted, should not be able to get Network Conditions");
-    } catch (WebDriverException e) {
-      if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
-        throw e;
-      }
-    }
+    assertThatThrownBy(() -> conditions.getNetworkConditions())
+        .as("Network Conditions were deleted")
+        .isInstanceOf(WebDriverException.class)
+        .hasMessageContaining("network conditions must be set before it can be retrieved");
   }
 
   @Test
@@ -210,12 +204,10 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
       Locale.setDefault(arabicLocale);
 
       int port = PortProber.findFreePort();
-      ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
-      builder.usingPort(port);
-      builder.build();
-
-    } catch (Exception e) {
-      throw e;
+      try (ChromeDriverService service =
+          new ChromeDriverService.Builder().usingPort(port).build()) {
+        assertThat(service.isRunning()).isFalse();
+      }
     } finally {
       Locale.setDefault(Locale.US);
     }

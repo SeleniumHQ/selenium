@@ -27,7 +27,7 @@ class MyCustomElement(WebElement):
         return "Custom element method"
 
 
-@pytest.fixture()
+@pytest.fixture
 def custom_element_driver(driver):
     try:
         driver._web_element_cls = MyCustomElement

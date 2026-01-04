@@ -52,4 +52,9 @@ public class PrimitiveProtocolValue extends LocalValue {
 
     return unmodifiableMap(toReturn);
   }
+
+  @Override
+  public String toString() {
+    return String.format("%s{type:%s, value:%s}", getClass().getSimpleName(), type, value);
+  }
 }

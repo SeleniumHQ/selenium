@@ -17,20 +17,20 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import org.openqa.selenium.grid.config.MapConfig;
 
 class DefaultNodeConfig extends MapConfig {
 
   DefaultNodeConfig() {
     super(
-        ImmutableMap.of(
+        Map.of(
             "node",
-                ImmutableMap.of(
+                Map.of(
                     // We use this instead of setting the default ports for
                     // the publish and subscribe ports of the event bus so
                     // that people can use the `--hub` flag safely.
                     "hub", "http://0.0.0.0:4444"),
-            "server", ImmutableMap.of("port", 5555)));
+            "server", Map.of("port", 5555)));
   }
 }

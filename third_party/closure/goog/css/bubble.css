@@ -5,6 +5,8 @@
  * See the COPYING file for details.
  */
 
+@provide 'goog.css.bubble';
+
 .goog-bubble-font {
   font-size: 80%;
   color: #888888;

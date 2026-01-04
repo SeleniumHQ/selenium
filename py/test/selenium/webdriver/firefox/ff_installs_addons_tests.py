@@ -19,17 +19,13 @@ import os
 import zipfile
 
 import pytest
+from python.runfiles import Runfiles
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
-for extensions_dir in (
-    os.path.abspath("../../../../../../test/extensions/"),
-    os.path.abspath("../common/extensions/"),
-):
-    extensions = extensions_dir
-    if os.path.exists(extensions_dir):
-        break
+r = Runfiles.Create()
+extensions = r.Rlocation("selenium/py/test/extensions")
 
 
 @pytest.mark.no_driver_after_test

@@ -161,7 +161,7 @@ public class SelectBrowserTests : DriverTestFixture
         Assert.That(firstSelected.Text, Is.EqualTo("Eggs"));
     }
 
-    // [Test]
+    //[Test]
     // [ExpectedException(typeof(NoSuchElementException))]
     // The .NET bindings do not have a "FirstSelectedOption" property,
     // and no one has asked for it to this point. Given that, this test

@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.javascript;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static java.lang.System.nanoTime;
+import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
-import com.google.common.base.Stopwatch;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -29,7 +30,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 
 class ClosureTestStatement {
 
@@ -55,7 +55,7 @@ class ClosureTestStatement {
     URL testUrl = filePathToUrlFn.apply(testPath);
     LOG.info("Running: " + testUrl);
 
-    Stopwatch stopwatch = Stopwatch.createStarted();
+    long start = nanoTime();
 
     WebDriver driver = driverSupplier.get();
 
@@ -70,14 +70,10 @@ class ClosureTestStatement {
     // Avoid Safari JS leak between tests.
     executor.executeScript("if (window && window.top) window.top.G_testRunner = null");
 
-    try {
-      driver.get(testUrl.toString());
-    } catch (WebDriverException e) {
-      fail("Test failed to load: " + e.getMessage());
-    }
+    driver.get(testUrl.toString());
 
     while (!getBoolean(executor, Query.IS_FINISHED)) {
-      long elapsedTime = stopwatch.elapsed(TimeUnit.SECONDS);
+      long elapsedTime = NANOSECONDS.toSeconds(nanoTime() - start);
       if (timeoutSeconds > 0 && elapsedTime > timeoutSeconds) {
         throw new JavaScriptAssertionError(
             "Tests timed out after "
@@ -99,7 +95,10 @@ class ClosureTestStatement {
   }
 
   private boolean getBoolean(JavascriptExecutor executor, Query query) {
-    return (Boolean) executor.executeScript(query.script);
+    return (Boolean)
+        requireNonNull(
+            executor.executeScript(query.script),
+            () -> "JS returned null instead of boolean: " + query.script);
   }
 
   private String getString(JavascriptExecutor executor, Query query) {

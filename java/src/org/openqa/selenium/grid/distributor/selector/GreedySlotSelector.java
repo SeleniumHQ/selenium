@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Sets.toSequencedSet;
 
 import java.util.Comparator;
 import java.util.Set;
@@ -61,14 +61,13 @@ public class GreedySlotSelector implements SlotSelector {
                 .thenComparingLong(NodeStatus::getLastSessionCreated)
                 // Then sort by stereotype browserVersion (descending order)
                 .thenComparing(
-                    Comparator.comparing(
-                        NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed())))
+                    NodeStatus::getBrowserVersion, new SemanticVersionComparator().reversed()))
         .flatMap(
             node ->
                 node.getSlots().stream()
                     .filter(slot -> slot.getSession() == null)
                     .filter(slot -> slot.isSupporting(capabilities, slotMatcher))
                     .map(Slot::getId))
-        .collect(toImmutableSet());
+        .collect(toSequencedSet());
   }
 }

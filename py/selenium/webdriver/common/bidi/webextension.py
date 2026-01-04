@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Union
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.common import command_builder
@@ -58,12 +57,12 @@ class WebExtension:
         except WebDriverException as e:
             if "Method not available" in str(e):
                 raise WebDriverException(
-                    f"{str(e)}. If you are using Chrome or Edge, add '--enable-unsafe-extension-debugging' "
+                    f"{e!s}. If you are using Chrome or Edge, add '--enable-unsafe-extension-debugging' "
                     "and '--remote-debugging-pipe' arguments or set options.enable_webextensions = True"
                 ) from e
             raise
 
-    def uninstall(self, extension_id_or_result: Union[str, dict]) -> None:
+    def uninstall(self, extension_id_or_result: str | dict) -> None:
         """Uninstalls a web extension from the remote end.
 
         Args:

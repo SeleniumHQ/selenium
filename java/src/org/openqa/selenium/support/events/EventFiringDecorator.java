@@ -19,7 +19,6 @@ package org.openqa.selenium.support.events;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -154,9 +153,10 @@ import org.openqa.selenium.support.decorators.WebDriverDecorator;
  *
  * <p>Just be careful to not block the current thread in a listener method!
  *
- * <p>Listeners can't affect driver behavior too much. They can't throw any exceptions (they can,
- * but the decorator suppresses these exceptions), can't prevent execution of the decorated methods,
- * can't modify parameters and results of the methods.
+ * <p>Listeners can't affect driver behavior too much. They can't prevent execution of the decorated
+ * methods, can't modify parameters and results of the methods. They can throw exceptions only if
+ * configured to do so by overriding {@link WebDriverListener#throwsExceptions}. By default,
+ * exceptions occurred in listeners execution are suppressed.
  *
  * <p>Decorators that modify the behaviour of the underlying drivers should be implemented by
  * extending {@link WebDriverDecorator}, not by creating sophisticated listeners.
@@ -172,7 +172,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
    * @param listeners the listeners to notify about events happening in the decorated WebDriver
    */
   public EventFiringDecorator(WebDriverListener... listeners) {
-    this.listeners = Arrays.asList(listeners);
+    this.listeners = List.of(listeners);
   }
 
   /**
@@ -181,7 +181,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
    */
   public EventFiringDecorator(Class<T> targetClass, WebDriverListener... listeners) {
     super(targetClass);
-    this.listeners = Arrays.asList(listeners);
+    this.listeners = List.of(listeners);
   }
 
   @Override
@@ -217,6 +217,10 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
       listener.beforeAnyCall(target.getOriginal(), method, args);
     } catch (Throwable t) {
       LOG.log(Level.WARNING, t.getMessage(), t);
+
+      if (listener.throwsExceptions()) {
+        throw new WebDriverListenerException("beforeAnyCall", t);
+      }
     }
 
     try {
@@ -240,6 +244,10 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
       }
     } catch (Throwable t) {
       LOG.log(Level.WARNING, t.getMessage(), t);
+
+      if (listener.throwsExceptions()) {
+        throw new WebDriverListenerException(method, t);
+      }
     }
 
     String methodName = createEventMethodName("before", method.getName());
@@ -291,12 +299,20 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
       }
     } catch (Throwable t) {
       LOG.log(Level.WARNING, t.getMessage(), t);
+
+      if (listener.throwsExceptions()) {
+        throw new WebDriverListenerException(method, t);
+      }
     }
 
     try {
       listener.afterAnyCall(target.getOriginal(), method, args, res);
     } catch (Throwable t) {
       LOG.log(Level.WARNING, t.getMessage(), t);
+
+      if (listener.throwsExceptions()) {
+        throw new WebDriverListenerException("afterAnyCall", t);
+      }
     }
   }
 
@@ -355,6 +371,10 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
       m.invoke(listener, args);
     } catch (Throwable t) {
       LOG.log(Level.WARNING, t.getMessage(), t);
+
+      if (listener.throwsExceptions()) {
+        throw new WebDriverListenerException(m, t);
+      }
     }
   }
 }

@@ -1,20 +1,11 @@
-// Copyright 2009 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Tools for parsing and pretty printing error stack traces.
- *
  */
 
 goog.setTestOnly('goog.testing.stacktrace');
@@ -25,62 +16,68 @@ goog.provide('goog.testing.stacktrace.Frame');
 
 /**
  * Class representing one stack frame.
- * @param {string} context Context object, empty in case of global functions or
- *     if the browser doesn't provide this information.
- * @param {string} name Function name, empty in case of anonymous functions.
- * @param {string} alias Alias of the function if available. For example the
- *     function name will be 'c' and the alias will be 'b' if the function is
- *     defined as <code>a.b = function c() {};</code>.
- * @param {string} path File path or URL including line number and optionally
- *     column number separated by colons.
- * @constructor
  * @final
+ * @unrestricted
  */
-goog.testing.stacktrace.Frame = function(context, name, alias, path) {
-  this.context_ = context;
-  this.name_ = name;
-  this.alias_ = alias;
-  this.path_ = path;
-};
-
-
-/**
- * @return {string} The function name or empty string if the function is
- *     anonymous and the object field which it's assigned to is unknown.
- */
-goog.testing.stacktrace.Frame.prototype.getName = function() {
-  return this.name_;
-};
-
-
-/**
- * @return {boolean} Whether the stack frame contains an anonymous function.
- */
-goog.testing.stacktrace.Frame.prototype.isAnonymous = function() {
-  return !this.name_ || this.context_ == '[object Object]';
-};
-
-
-/**
- * Brings one frame of the stack trace into a common format across browsers.
- * @return {string} Pretty printed stack frame.
- */
-goog.testing.stacktrace.Frame.prototype.toCanonicalString = function() {
-  var htmlEscape = goog.testing.stacktrace.htmlEscape_;
-  var deobfuscate = goog.testing.stacktrace.maybeDeobfuscateFunctionName_;
-
-  var canonical = [
-    this.context_ ? htmlEscape(this.context_) + '.' : '',
-    this.name_ ? htmlEscape(deobfuscate(this.name_)) : 'anonymous',
-    this.alias_ ? ' [as ' + htmlEscape(deobfuscate(this.alias_)) + ']' : ''
-  ];
-
-  if (this.path_) {
-    canonical.push(' at ');
-    canonical.push(htmlEscape(this.path_));
+goog.testing.stacktrace.Frame = class {
+  /**
+   * @param {string} context Context object, empty in case of global functions
+   *     or if the browser doesn't provide this information.
+   * @param {string} name Function name, empty in case of anonymous functions.
+   * @param {string} alias Alias of the function if available. For example the
+   *     function name will be 'c' and the alias will be 'b' if the function is
+   *     defined as <code>a.b = function c() {};</code>.
+   * @param {string} path File path or URL including line number and optionally
+   *     column number separated by colons.
+   */
+  constructor(context, name, alias, path) {
+    'use strict';
+    this.context_ = context;
+    this.name_ = name;
+    this.alias_ = alias;
+    this.path_ = path;
   }
-  return canonical.join('');
+
+  /**
+   * @return {string} The function name or empty string if the function is
+   *     anonymous and the object field which it's assigned to is unknown.
+   */
+  getName() {
+    'use strict';
+    return this.name_;
+  }
+
+  /**
+   * @return {boolean} Whether the stack frame contains an anonymous function.
+   */
+  isAnonymous() {
+    'use strict';
+    return !this.name_ || this.context_ == '[object Object]';
+  }
+
+  /**
+   * Brings one frame of the stack trace into a common format across browsers.
+   * @return {string} Pretty printed stack frame.
+   */
+  toCanonicalString() {
+    'use strict';
+    const htmlEscape = goog.testing.stacktrace.htmlEscape_;
+    const deobfuscate = goog.testing.stacktrace.maybeDeobfuscateFunctionName_;
+
+    const canonical = [
+      this.context_ ? htmlEscape(this.context_) + '.' : '',
+      this.name_ ? htmlEscape(deobfuscate(this.name_)) : 'anonymous',
+      this.alias_ ? ' [as ' + htmlEscape(deobfuscate(this.alias_)) + ']' : ''
+    ];
+
+    if (this.path_) {
+      canonical.push(' at ');
+      canonical.push(htmlEscape(this.path_));
+    }
+    return canonical.join('');
+  }
 };
+
 
 
 /**
@@ -140,8 +137,9 @@ goog.testing.stacktrace.V8_CONTEXT_PATTERN_ =
  * @private {string}
  * @const
  */
-goog.testing.stacktrace.V8_FUNCTION_NAME_PATTERN_ = '(?:new )?(?:' +
-    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '|<anonymous>)';
+goog.testing.stacktrace.V8_FUNCTION_NAME_PATTERN_ =
+    '(?:new )?(?:' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ +
+    '|<anonymous>)';
 
 
 /**
@@ -302,14 +300,16 @@ goog.testing.stacktrace.IE_STACK_FRAME_REGEXP_ = new RegExp(
  * @suppress {es5Strict}
  */
 goog.testing.stacktrace.followCallChain_ = function() {
-  var frames = [];
-  var fn = arguments.callee.caller;
-  var depth = 0;
+  'use strict';
+  const frames = [];
+  let fn = arguments.callee.caller;
+  let depth = 0;
 
   while (fn && depth < goog.testing.stacktrace.MAX_DEPTH_) {
-    var fnString = Function.prototype.toString.call(fn);
-    var match = fnString.match(goog.testing.stacktrace.FUNCTION_SOURCE_REGEXP_);
-    var functionName = match ? match[1] : '';
+    const fnString = Function.prototype.toString.call(fn);
+    const match =
+        fnString.match(goog.testing.stacktrace.FUNCTION_SOURCE_REGEXP_);
+    const functionName = match ? match[1] : '';
 
     frames.push(new goog.testing.stacktrace.Frame('', functionName, '', ''));
 
@@ -334,8 +334,9 @@ goog.testing.stacktrace.followCallChain_ = function() {
  * @private
  */
 goog.testing.stacktrace.parseStackFrame_ = function(frameStr) {
+  'use strict';
   // This match includes newer versions of Opera (15+).
-  var m = frameStr.match(goog.testing.stacktrace.V8_STACK_FRAME_REGEXP_);
+  let m = frameStr.match(goog.testing.stacktrace.V8_STACK_FRAME_REGEXP_);
   if (m) {
     return new goog.testing.stacktrace.Frame(
         m[1] || '', m[2] || '', m[3] || '', m[4] || m[5] || m[6] || '');
@@ -382,6 +383,7 @@ goog.testing.stacktrace.deobfuscateFunctionName_;
  * @param {function(string): string} fn function to deobfuscate function names.
  */
 goog.testing.stacktrace.setDeobfuscateFunctionName = function(fn) {
+  'use strict';
   goog.testing.stacktrace.deobfuscateFunctionName_ = fn;
 };
 
@@ -395,6 +397,7 @@ goog.testing.stacktrace.setDeobfuscateFunctionName = function(fn) {
  * @private
  */
 goog.testing.stacktrace.maybeDeobfuscateFunctionName_ = function(name) {
+  'use strict';
   return goog.testing.stacktrace.deobfuscateFunctionName_ ?
       goog.testing.stacktrace.deobfuscateFunctionName_(name) :
       name;
@@ -408,6 +411,7 @@ goog.testing.stacktrace.maybeDeobfuscateFunctionName_ = function(name) {
  * @private
  */
 goog.testing.stacktrace.htmlEscape_ = function(text) {
+  'use strict';
   return text.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -423,10 +427,11 @@ goog.testing.stacktrace.htmlEscape_ = function(text) {
  * @private
  */
 goog.testing.stacktrace.framesToString_ = function(frames) {
+  'use strict';
   // Removes the anonymous calls from the end of the stack trace (they come
   // from testrunner.js, testcase.js and asserts.js), so the stack trace will
   // end with the test... method.
-  var lastIndex = frames.length - 1;
+  let lastIndex = frames.length - 1;
   while (frames[lastIndex] && frames[lastIndex].isAnonymous()) {
     lastIndex--;
   }
@@ -434,16 +439,16 @@ goog.testing.stacktrace.framesToString_ = function(frames) {
   // Removes the beginning of the stack trace until the call of the private
   // _assert function (inclusive), so the stack trace will begin with a public
   // asserter. Does nothing if _assert is not present in the stack trace.
-  var privateAssertIndex = -1;
-  for (var i = 0; i < frames.length; i++) {
+  let privateAssertIndex = -1;
+  for (let i = 0; i < frames.length; i++) {
     if (frames[i] && frames[i].getName() == '_assert') {
       privateAssertIndex = i;
       break;
     }
   }
 
-  var canonical = [];
-  for (var i = privateAssertIndex + 1; i <= lastIndex; i++) {
+  const canonical = [];
+  for (let i = privateAssertIndex + 1; i <= lastIndex; i++) {
     canonical.push('> ');
     if (frames[i]) {
       canonical.push(frames[i].toCanonicalString());
@@ -464,9 +469,10 @@ goog.testing.stacktrace.framesToString_ = function(frames) {
  * @private
  */
 goog.testing.stacktrace.parse_ = function(stack) {
-  var lines = stack.replace(/\s*$/, '').split('\n');
-  var frames = [];
-  for (var i = 0; i < lines.length; i++) {
+  'use strict';
+  const lines = stack.replace(/\s*$/, '').split('\n');
+  const frames = [];
+  for (let i = 0; i < lines.length; i++) {
     frames.push(goog.testing.stacktrace.parseStackFrame_(lines[i]));
   }
   return frames;
@@ -479,7 +485,8 @@ goog.testing.stacktrace.parse_ = function(stack) {
  * @return {string} Same stack trace in common format.
  */
 goog.testing.stacktrace.canonicalize = function(stack) {
-  var frames = goog.testing.stacktrace.parse_(stack);
+  'use strict';
+  const frames = goog.testing.stacktrace.parse_(stack);
   return goog.testing.stacktrace.framesToString_(frames);
 };
 
@@ -490,7 +497,8 @@ goog.testing.stacktrace.canonicalize = function(stack) {
  * @private
  */
 goog.testing.stacktrace.getNativeStack_ = function() {
-  var tmpError = new Error();
+  'use strict';
+  const tmpError = new Error();
   if (tmpError.stack) {
     return tmpError.stack;
   }
@@ -513,11 +521,12 @@ goog.testing.stacktrace.getNativeStack_ = function() {
  * @return {string} The stack trace in canonical format.
  */
 goog.testing.stacktrace.get = function() {
-  var stack = goog.testing.stacktrace.getNativeStack_();
-  var frames;
+  'use strict';
+  const stack = goog.testing.stacktrace.getNativeStack_();
+  let frames;
   if (!stack) {
     frames = goog.testing.stacktrace.followCallChain_();
-  } else if (goog.isArray(stack)) {
+  } else if (Array.isArray(stack)) {
     frames = goog.testing.stacktrace.callSitesToFrames_(stack);
   } else {
     frames = goog.testing.stacktrace.parse_(stack);
@@ -535,15 +544,15 @@ goog.testing.stacktrace.get = function() {
  * @private
  */
 goog.testing.stacktrace.callSitesToFrames_ = function(stack) {
-  var frames = [];
-  for (var i = 0; i < stack.length; i++) {
-    var callSite = stack[i];
-    var functionName = callSite.getFunctionName() || 'unknown';
-    var fileName = callSite.getFileName();
-    var path = fileName ?
-        fileName + ':' + callSite.getLineNumber() + ':' +
+  'use strict';
+  const frames = [];
+  for (let i = 0; i < stack.length; i++) {
+    const callSite = stack[i];
+    const functionName = callSite.getFunctionName() || 'unknown';
+    const fileName = callSite.getFileName();
+    const path = fileName ? fileName + ':' + callSite.getLineNumber() + ':' +
             callSite.getColumnNumber() :
-        'unknown';
+                            'unknown';
     frames.push(new goog.testing.stacktrace.Frame('', functionName, '', path));
   }
   return frames;

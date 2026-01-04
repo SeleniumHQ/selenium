@@ -27,7 +27,6 @@ const { locate } = require('../../lib/test/resources')
 const { until, By } = require('selenium-webdriver/index')
 
 const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
-const WEBEXTENSION_EXTENSION_ID = 'webextensions-selenium-example@example.com.xpi'
 
 suite(
   function (env) {
@@ -43,15 +42,7 @@ suite(
       })
 
       describe('Options', function () {
-        let profileWithWebExtension
         let profileWithUserPrefs
-
-        before(async function createProfileWithWebExtension() {
-          profileWithWebExtension = await io.tmpDir()
-          let extensionsDir = path.join(profileWithWebExtension, 'extensions')
-          await io.mkdir(extensionsDir)
-          await io.write(path.join(extensionsDir, WEBEXTENSION_EXTENSION_ID), await io.read(EXT_XPI))
-        })
 
         before(async function createProfileWithUserPrefs() {
           profileWithUserPrefs = await io.tmpDir()
@@ -70,16 +61,6 @@ suite(
 
             await driver.get(Pages.echoPage)
             await verifyUserAgentWasChanged()
-          })
-
-          it('use profile with extension', async function () {
-            let options = env.builder().getFirefoxOptions() || new firefox.Options()
-            options.setProfile(profileWithWebExtension)
-
-            driver = env.builder().setFirefoxOptions(options).build()
-
-            await driver.get(Pages.echoPage)
-            await verifyWebExtensionWasInstalled()
           })
         })
 
@@ -127,14 +108,13 @@ suite(
 
           it('can add extra prefs on top of an existing profile', async function () {
             let options = env.builder().getFirefoxOptions() || new firefox.Options()
-            options.setPreference('general.useragent.override', 'foo;bar')
-            options.setProfile(profileWithWebExtension)
+            options.setPreference('general.useragent.override', 'baz;qux')
+            options.setProfile(profileWithUserPrefs)
 
             driver = env.builder().setFirefoxOptions(options).build()
 
             await driver.get(Pages.echoPage)
-            await verifyWebExtensionWasInstalled()
-            await verifyUserAgentWasChanged()
+            await verifyUserAgent('baz;qux')
           })
         })
 
@@ -185,8 +165,12 @@ suite(
       })
 
       async function verifyUserAgentWasChanged() {
+        await verifyUserAgent('foo;bar')
+      }
+
+      async function verifyUserAgent(expected) {
         let userAgent = await driver.executeScript('return window.navigator.userAgent')
-        assert.strictEqual(userAgent, 'foo;bar')
+        assert.strictEqual(userAgent, expected)
       }
 
       async function verifyWebExtensionWasInstalled() {
