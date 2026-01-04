@@ -20,9 +20,10 @@ import os
 
 # Enable debug logging if SE_DEBUG environment variable is set
 if os.environ.get("SE_DEBUG"):
-    logging.getLogger("selenium").setLevel(logging.DEBUG)
-    if not logging.getLogger("selenium").handlers:
-        logging.getLogger("selenium").addHandler(logging.StreamHandler())
+    logger = logging.getLogger("selenium")
+    logger.setLevel(logging.DEBUG)
+    if not logger.handlers:
+        logger.addHandler(logging.StreamHandler())
 
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
