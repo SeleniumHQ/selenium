@@ -134,7 +134,7 @@ class OutOfProcessSeleniumServer {
       new UrlChecker().waitUntilAvailable(10, SECONDS, url);
       LOG.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
-      LOG.severe("Server failed to start: " + e.getMessage());
+      LOG.log(Level.SEVERE, "Server failed to start: " + e.getMessage(), e);
       process.shutdown();
       LOG.severe(process.getOutput());
       process = null;
