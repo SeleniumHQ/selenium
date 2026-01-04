@@ -36,14 +36,14 @@ public class Urls {
   }
 
   /**
-   * Encodes the text as an URL using UTF-8.
+   * Encodes the text for a URL path segment.
    *
-   * @param value the text too encode
+   * @param value the text to encode
    * @return the encoded URI string
    * @see URLEncoder#encode(java.lang.String, java.lang.String)
    */
-  public static String urlEncode(String value) {
-    return URLEncoder.encode(value, UTF_8);
+  public static String urlPathSegmentEncode(String value) {
+    return URLEncoder.encode(value, UTF_8).replace("+", "%20");
   }
 
   public static String urlDecode(String encodedValue) {

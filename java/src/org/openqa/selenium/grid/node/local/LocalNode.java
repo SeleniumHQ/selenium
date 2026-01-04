@@ -29,7 +29,6 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
-import static org.openqa.selenium.net.Urls.urlDecode;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -77,6 +76,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -784,7 +784,7 @@ public class LocalNode extends Node implements Closeable {
     if (index < 0) {
       throw new IllegalArgumentException("Unexpected URL for downloading a file: " + uri);
     }
-    return urlDecode(uri.substring(index + prefix.length())).replace(' ', '+');
+    return uri.substring(index + prefix.length());
   }
 
   /** User wants to list files that can be downloaded */
@@ -873,7 +873,7 @@ public class LocalNode extends Node implements Closeable {
                 downloadsDirectory.listFiles((dir, name) -> name.equals(filename)),
                 () -> new File[0]));
     if (matchingFiles.isEmpty()) {
-      List<File> files = downloadedFiles(downloadsDirectory);
+      List<String> files = downloadedFiles(downloadsDirectory);
       throw new WebDriverException(
           String.format(
               "Cannot find file [%s] in directory %s. Found %s files: %s.",
@@ -888,9 +888,9 @@ public class LocalNode extends Node implements Closeable {
     return matchingFiles.get(0);
   }
 
-  private static List<File> downloadedFiles(File downloadsDirectory) {
+  private static List<String> downloadedFiles(File downloadsDirectory) {
     File[] files = requireNonNullElseGet(downloadsDirectory.listFiles(), () -> new File[0]);
-    return List.of(files);
+    return Stream.of(files).map(File::getName).collect(Collectors.toList());
   }
 
   private HttpResponse deleteDownloadedFile(File downloadsDirectory) {

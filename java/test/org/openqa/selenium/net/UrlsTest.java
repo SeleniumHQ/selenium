@@ -72,4 +72,18 @@ class UrlsTest {
 
     assertThat(uri).isEqualTo(URI.create("http://[::1]/wd/hub"));
   }
+
+  @Test
+  void urlPathSegmentEncode() {
+    assertThat(Urls.urlPathSegmentEncode("hello.txt")).isEqualTo("hello.txt");
+    assertThat(Urls.urlPathSegmentEncode("one/two/three.txt")).isEqualTo("one%2Ftwo%2Fthree.txt");
+    assertThat(Urls.urlPathSegmentEncode("file with space '.txt"))
+        .isEqualTo("file%20with%20space%20%27.txt");
+    assertThat(Urls.urlPathSegmentEncode("привет.png"))
+        .isEqualTo("%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82.png");
+    assertThat(Urls.urlPathSegmentEncode("øl og brød.pdf"))
+        .isEqualTo("%C3%B8l%20og%20br%C3%B8d.pdf");
+    assertThat(Urls.urlPathSegmentEncode("tõnu jäespöre.zip"))
+        .isEqualTo("t%C3%B5nu%20j%C3%A4esp%C3%B6re.zip");
+  }
 }

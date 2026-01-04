@@ -349,7 +349,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     Object value = parameters.get(parameterName);
     Require.argument("Parameter", value)
         .nonNull("Missing required parameter \"%s\" for command %s", parameterName, commandName);
-    return Urls.urlEncode(String.valueOf(value));
+    return Urls.urlPathSegmentEncode(String.valueOf(value));
   }
 
   protected static class CommandSpec {
