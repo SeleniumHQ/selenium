@@ -108,8 +108,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome edge firefox]
-        os: [windows macos]
+        browser: [chrome, edge, firefox]
+        os: [windows, macos]
         include:
           - browser: edge-remote
             os: macos
