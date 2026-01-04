@@ -76,6 +76,7 @@ jobs:
         --keep_going
         --build_tests_only
         --test_size_filters small
+        --test_env=DEBUG=true
         //rb/spec/...
 
   filter-targets:
