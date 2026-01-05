@@ -89,16 +89,16 @@ jobs:
         if: contains(github.ref, 'renovate/')
         run: git pull origin ${{ github.ref }}
       - name: Free space
-        if: inputs.os != 'windows'
+        if: !startsWith(inputs.os, 'windows')
         run: ./scripts/github-actions/free-disk-space.sh
       - name: Remove driver directories Windows
-        if: inputs.os == 'windows'
+        if: startsWith(inputs.os, 'windows')
         run: |
           rm "$env:ChromeWebDriver" -r -v
           rm "$env:EdgeWebDriver" -r -v
           rm "$env:GeckoWebDriver" -r -v
       - name: Remove driver directories Non-Windows
-        if: inputs.os != 'windows'
+        if: !startsWith(inputs.os, 'windows')
         run: |
           sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
       - name: Set Python version
@@ -172,10 +172,10 @@ jobs:
           fluxbox -display :99 &
           echo "DISPLAY=:99" >> "$GITHUB_ENV"
       - name: Set resolution
-        if: inputs.os == 'windows' && inputs.browser != ''
+        if: startsWith(inputs.os, 'windows') && inputs.browser != ''
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Disable 8dot3 short names
-        if: inputs.os == 'windows'
+        if: startsWith(inputs.os, 'windows')
         run: fsutil 8dot3name set 0
       - name: Setup Safari
         if: inputs.browser == 'safari'
