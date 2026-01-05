@@ -82,6 +82,14 @@ TEST_DEPS = [
     "@rules_python//python/runfiles",
 ]
 
+genrule(
+    name = "java-location",
+    srcs = [],
+    outs = ["java-location.txt"],
+    cmd = "echo $(JAVA) > $@",
+    toolchains = ["@bazel_tools//tools/jdk:current_java_runtime"],
+)
+
 copy_file(
     name = "manager-linux",
     src = "//common/manager:selenium-manager-linux",
@@ -502,34 +510,49 @@ BROWSER_TESTS = {
     if BROWSER_TESTS[browser].get("bidi", False)
 ]
 
-py_test_suite(
-    name = "test-remote",
-    size = "large",
-    srcs = glob(
-        [
-            "test/selenium/webdriver/common/**/*.py",
-            "test/selenium/webdriver/remote/**/*.py",
-            "test/selenium/webdriver/support/**/*.py",
+# Generate test-<browser>-remote targets (chrome and firefox only)
+[
+    py_test_suite(
+        name = "test-%s-remote" % browser,
+        size = "large",
+        srcs = glob(
+            [
+                "test/selenium/webdriver/common/**/*.py",
+                "test/selenium/webdriver/remote/**/*.py",
+                "test/selenium/webdriver/support/**/*.py",
+            ] + BROWSER_TESTS[browser]["browser_srcs"],
+            exclude = BIDI_TESTS + ["test/selenium/webdriver/common/print_pdf_tests.py"] +
+                      BROWSER_TESTS[browser].get("extra_excludes", []),
+        ),
+        args = [
+            "--instafail",
+            "--remote",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"] + [
+            ":java-location",
+            "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+            "@bazel_tools//tools/jdk:current_java_runtime",
         ],
-        exclude = BIDI_TESTS,
-    ),
-    args = [
-        "--instafail",
-        "--driver=remote",
-    ],
-    data = [
-        "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
-    ],
-    tags = [
-        "no-sandbox",
-        "skip-rbe",
-    ],
-    deps = [
-        ":init-tree",
-        ":selenium",
-        ":webserver",
-    ] + TEST_DEPS,
-)
+        env = {
+            "SE_BAZEL_JAVA_LOCATION": "$(rootpath :java-location)",
+        },
+        env_inherit = ["DISPLAY"],
+        tags = [
+            "no-sandbox",
+            "remote",
+            "%s-remote" % browser,
+        ],
+        deps = [
+            ":init-tree",
+            ":selenium",
+            ":webserver",
+        ] + TEST_DEPS,
+    )
+    for browser in [
+        "chrome",
+        "firefox",
+    ]
+]
 
 py_test_suite(
     name = "test-webkitgtk",
