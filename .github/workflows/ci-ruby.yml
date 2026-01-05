@@ -19,7 +19,7 @@ permissions:
 jobs:
   docs:
     name: Documentation
-    if: ${{ inputs.run-full-suite }}
+    if: ${{ github.event_name == 'workflow_dispatch' || inputs.run-full-suite }}
     uses: ./.github/workflows/bazel.yml
     with:
       name: Documentation
@@ -27,7 +27,7 @@ jobs:
 
   steep-check:
     name: Type Check (Steep)
-    if: ${{ inputs.run-full-suite }}
+    if: ${{ github.event_name == 'workflow_dispatch' || inputs.run-full-suite }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -49,7 +49,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    if: ${{ inputs.run-full-suite }}
+    if: ${{ github.event_name == 'workflow_dispatch' || inputs.run-full-suite }}
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
