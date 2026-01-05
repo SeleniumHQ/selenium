@@ -184,10 +184,12 @@ jobs:
       - name: Parse Bazel log for failures
         if: always()
         shell: bash
-        run: >
-          tac bazel-testlogs/bazel-console.log |
-          awk '/PASSED in/ {exit} /FAILED in/ {print $1}' |
-          tac > bazel-testlogs/bazel-failures.txt
+        run: |
+          awk '
+            /PASSED in/ {n=0; delete a; next}
+            /FAILED in/ {a[++n]=$1}
+            END {for (i=1; i<=n; i++) print a[i]}
+          ' bazel-testlogs/bazel-console.log > bazel-testlogs/bazel-failures.txt
       - name: Rerun failures with debug
         if: failure() && inputs.rerun-with-debug
         shell: bash
