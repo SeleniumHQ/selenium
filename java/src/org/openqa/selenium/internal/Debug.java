@@ -27,8 +27,9 @@ public class Debug {
   static {
     boolean simpleProperty = Boolean.getBoolean("selenium.debug");
     boolean longerProperty = Boolean.getBoolean("selenium.webdriver.verbose");
+    boolean envVar = Boolean.parseBoolean(System.getenv("SE_DEBUG"));
 
-    IS_DEBUG = simpleProperty || longerProperty;
+    IS_DEBUG = simpleProperty || longerProperty || envVar;
   }
 
   private Debug() {

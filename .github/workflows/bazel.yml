@@ -137,11 +137,24 @@ jobs:
             manifest:
               crates: rust/Cargo.Bazel.lock
               rules_ruby++ruby+ruby: 'rb/.ruby-version'
-              "pin_browsers_extension+mac_edge": false
-              "pin_browsers_extension+mac_firefox": false
-              "pin_browsers_extension+linux_edge": false
+              "pin_browsers_extension+linux_beta_chrome": false
+              "pin_browsers_extension+linux_beta_chromedriver": true
+              "pin_browsers_extension+linux_beta_firefox": false
               "pin_browsers_extension+linux_chrome": false
+              "pin_browsers_extension+linux_chromedriver": true
+              "pin_browsers_extension+linux_edge": false
+              "pin_browsers_extension+linux_edgedriver": true
               "pin_browsers_extension+linux_firefox": false
+              "pin_browsers_extension+linux_geckodriver": true
+              "pin_browsers_extension+mac_beta_chrome": false
+              "pin_browsers_extension+mac_beta_chromedriver": false
+              "pin_browsers_extension+mac_beta_firefox": false
+              "pin_browsers_extension+mac_chrome": false
+              "pin_browsers_extension+mac_chromedriver": false
+              "pin_browsers_extension+mac_edge": false
+              "pin_browsers_extension+mac_edgedriver": false
+              "pin_browsers_extension+mac_firefox": false
+              "pin_browsers_extension+mac_geckodriver": false
           repository-cache: false
       - name: Setup Bazel without caching
         if: inputs.caching == false

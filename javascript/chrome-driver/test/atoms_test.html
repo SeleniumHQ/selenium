@@ -93,7 +93,7 @@ limitations under the License.
       assertEquals(0, computeY('c5', 'e5'));
     }
 
-    function testGetLocationInViewNoSroll() {
+    function testGetLocationInViewNoScroll() {
       var elem = frames[0].document.getElementById('elem0');
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));

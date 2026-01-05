@@ -169,13 +169,13 @@ module Selenium
         Thread.new do
           Thread.current.abort_on_exception = false
           Thread.current.report_on_exception = false
-          return if @closing
+          next if @closing
 
           yield params
         rescue Error::WebDriverError, *CONNECTION_ERRORS => e
           WebDriver.logger.debug "Callback aborted: #{e.class}: #{e.message}", id: :ws
         rescue StandardError => e
-          return if @closing
+          next if @closing
 
           bt = Array(e.backtrace).first(5).join("\n")
           WebDriver.logger.error "Callback error: #{e.class}: #{e.message}\n#{bt}", id: :ws

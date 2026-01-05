@@ -18,7 +18,8 @@
 package org.openqa.selenium.bidi.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.*;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.time.Instant;
 import java.util.Random;

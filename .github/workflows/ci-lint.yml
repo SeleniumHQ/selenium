@@ -1,0 +1,107 @@
+name: CI - Lint
+
+on:
+  pull_request:
+  push:
+    branches:
+      - trunk
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  format:
+    name: Format
+    if: startsWith(github.head_ref, 'renovate/') != true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+      pull-requests: read
+    outputs:
+      format_exit_code: ${{ steps.check_format.outputs.exit_code }}
+      patch_uploaded: ${{ steps.patch_uploaded.outputs.outcome }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check for protected files
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            protected:
+              - 'scripts/format.sh'
+              - 'scripts/github-actions/check-format.sh'
+      - name: Fail if Protected
+        if: steps.filter.outputs.protected == 'true'
+        run: |
+          echo "::notice::PR from fork modifies format script"
+          exit 1
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.15.0
+        with:
+          bazelrc: common --color=yes
+      - name: Check code formatting
+        id: check_format
+        run: |
+          set +e
+          ./scripts/github-actions/check-format.sh
+          exit_code=$?
+          echo "exit_code=${exit_code}" >> "$GITHUB_OUTPUT"
+          exit "${exit_code}"
+      - name: Save changes
+        if: failure() && steps.check_format.outputs.exit_code == '1' && github.event_name == 'pull_request'
+        run: git diff > changes.patch
+      - name: "Upload changes"
+        id: upload_changes
+        if: failure() && steps.check_format.outputs.exit_code == '1' && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: format-changes
+          path: changes.patch
+      - name: Mark patch uploaded
+        id: patch_uploaded
+        if: always()
+        run: echo outcome=${{ steps.upload_changes.outcome }} >> "$GITHUB_OUTPUT"
+
+  commit-fixes:
+    name: Commit fixes
+    needs: format
+    if: ${{ always() && needs.format.outputs.patch_uploaded == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Check Permissions
+        if: ${{ github.event.pull_request.head.repo.fork == true }}
+        run: |
+          echo "::error::Code needs formatting. Run ./scripts/format.sh locally and push changes."
+          exit 1
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Download format changes
+        uses: actions/download-artifact@v4
+        with:
+          name: format-changes
+      - name: Apply and commit fixes
+        run: |
+          git apply changes.patch
+          rm changes.patch
+          git config --local user.name "Selenium CI Bot"
+          git config --local user.email "selenium-ci@users.noreply.github.com"
+          git add -A
+          git commit -m "Auto-format code"
+      - name: Push fixes
+        run: |
+          git push
+          echo "::notice::Auto-formatted and pushed. New CI run will start."
