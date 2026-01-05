@@ -31,7 +31,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.openqa.selenium.internal.Require;
-import org.tomlj.*;
+import org.tomlj.Toml;
+import org.tomlj.TomlArray;
+import org.tomlj.TomlParseError;
+import org.tomlj.TomlParseResult;
+import org.tomlj.TomlTable;
 
 public class TomlConfig implements Config {
 

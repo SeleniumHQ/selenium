@@ -17,7 +17,9 @@
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.WaitingConditions.*;
+import static org.openqa.selenium.WaitingConditions.elementTextToContain;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementTextToMatch;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 import java.time.Duration;

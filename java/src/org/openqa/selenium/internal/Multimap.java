@@ -19,7 +19,11 @@ package org.openqa.selenium.internal;
 
 import static java.util.Collections.unmodifiableMap;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 /**

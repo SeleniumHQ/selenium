@@ -8,6 +8,13 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    name: Lint
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint
+      run: bazel build --config=lint //java/... --keep_going
+
   browser-tests-windows:
     name: Browser Tests
     uses: ./.github/workflows/bazel.yml
