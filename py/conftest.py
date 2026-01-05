@@ -20,10 +20,13 @@ import os
 import socketserver
 import sys
 import threading
+import types
 from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+import rich.console
+import rich.traceback
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
@@ -42,6 +45,61 @@ drivers = (
     "webkitgtk",
     "wpewebkit",
 )
+
+
+console = rich.console.Console()
+
+
+def extract_traceback_frames(tb):
+    """Safely extract frames from a traceback object."""
+    frames = []
+    while tb:
+        if hasattr(tb, "tb_frame") and hasattr(tb, "tb_lineno"):
+            # Skip frames without source files
+            if Path(tb.tb_frame.f_code.co_filename).exists():
+                frames.append((tb.tb_frame, tb.tb_lineno, getattr(tb, "tb_lasti", 0)))
+        tb = getattr(tb, "tb_next", None)
+    return frames
+
+def filter_frames(frames):
+    """Filter out frames whose module name matches skip_modules."""
+    skip_modules = ["pytest", "_pytest", "pluggy"]
+    filtered = []
+    for frame, lineno, lasti in frames:
+        mod_name = frame.f_globals.get("__name__", "")
+        if not any(skip in mod_name for skip in skip_modules):
+            filtered.append((frame, lineno, lasti))
+    return filtered
+
+def rebuild_traceback(frames):
+    """Rebuild a traceback object from frames list."""
+    new_tb = None
+    for frame, lineno, lasti in frames:
+        new_tb = types.TracebackType(new_tb, frame, lasti, lineno)
+    return new_tb
+
+def pytest_runtest_makereport(item, call):
+    """Hook to print Rich traceback for test failures."""
+    if call.excinfo is None:
+        return
+
+    exc_type, exc_value, exc_tb = call.excinfo._excinfo
+
+    frames = extract_traceback_frames(exc_tb)
+    filtered_frames = filter_frames(frames)
+    new_tb = rebuild_traceback(filtered_frames)
+
+    tb = rich.traceback.Traceback.from_exception(
+        exc_type,
+        exc_value,
+        new_tb,
+        show_locals=False,
+        max_frames=5,
+    )
+    console.print("\n")
+    console.print(tb)
+
+
 
 
 def pytest_addoption(parser):
