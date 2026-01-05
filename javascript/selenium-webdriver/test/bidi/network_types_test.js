@@ -40,4 +40,12 @@ describe('ProvideResponseParameters with Headers', function () {
       new ProvideResponseParameters(1).statusCode(200).body(body).headers(headers).reasonPhrase('OK')
     })
   })
+
+  it('should return correct map structure from asMap', function () {
+    const header = new Header('content-type', new BytesValue(BytesValue.Type.STRING, 'application/json'))
+    const map = header.asMap()
+
+    assert.strictEqual(map.get('name'), 'content-type')
+    assert.deepStrictEqual(map.get('value'), { type: 'string', value: 'application/json' })
+  })
 })
