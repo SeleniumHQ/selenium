@@ -170,7 +170,7 @@ module Selenium
 
         def create_driver!(listener: nil, http_client: nil, **, &block)
           check_for_previous_error
-          http_client ||= Remote::Http::Default.new(read_timeout: 20)
+          http_client ||= Remote::Http::Default.new(read_timeout: 30)
 
           method = :"#{driver}_driver"
           opts = {options: build_options(**), listener: listener, http_client: http_client}
@@ -227,12 +227,10 @@ module Selenium
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
 
-        def remote_driver(http_client: nil, **)
+        def remote_driver(**)
           url = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
-          _ignore_default_client = http_client
-          remote_client = Remote::Http::Default.new(read_timeout: 30)
 
-          WebDriver::Driver.for(:remote, http_client: remote_client, url: url, **)
+          WebDriver::Driver.for(:remote, url: url, **)
         end
 
         def chrome_driver(service: nil, **)
