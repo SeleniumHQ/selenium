@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -232,18 +233,24 @@ public class ProxyNodeWebsockets
 
     LOG.info("Establishing connection to " + uri);
 
+    AtomicBoolean connectionReleased = new AtomicBoolean(false);
+
     HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri));
     try {
       WebSocket upstream =
           client.openSocket(
               new HttpRequest(GET, uri.toString()),
-              new ForwardingListener(node, downstream, sessionConsumer, sessionId));
+              new ForwardingListener(
+                  node, downstream, sessionConsumer, sessionId, connectionReleased));
 
       return (msg) -> {
         try {
           upstream.send(msg);
         } finally {
           if (msg instanceof CloseMessage) {
+            if (connectionReleased.compareAndSet(false, true)) {
+              node.releaseConnection(sessionId);
+            }
             try {
               client.close();
             } catch (Exception e) {
@@ -254,6 +261,7 @@ public class ProxyNodeWebsockets
       };
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Connecting to upstream websocket failed", e);
+      node.releaseConnection(sessionId);
       client.close();
       throw e;
     }
@@ -264,16 +272,19 @@ public class ProxyNodeWebsockets
     private final Consumer<Message> downstream;
     private final Consumer<SessionId> sessionConsumer;
     private final SessionId sessionId;
+    private final AtomicBoolean connectionReleased;
 
     public ForwardingListener(
         Node node,
         Consumer<Message> downstream,
         Consumer<SessionId> sessionConsumer,
-        SessionId sessionId) {
+        SessionId sessionId,
+        AtomicBoolean connectionReleased) {
       this.node = node;
       this.downstream = Objects.requireNonNull(downstream);
       this.sessionConsumer = Objects.requireNonNull(sessionConsumer);
       this.sessionId = Objects.requireNonNull(sessionId);
+      this.connectionReleased = Objects.requireNonNull(connectionReleased);
     }
 
     @Override
@@ -285,7 +296,9 @@ public class ProxyNodeWebsockets
     @Override
     public void onClose(int code, String reason) {
       downstream.accept(new CloseMessage(code, reason));
-      node.releaseConnection(sessionId);
+      if (connectionReleased.compareAndSet(false, true)) {
+        node.releaseConnection(sessionId);
+      }
     }
 
     @Override
