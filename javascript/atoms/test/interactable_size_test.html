@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>interactable_size_test</title>
-
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js" type="text/javascript"></script>
   <script type="text/javascript">
     goog.require('bot');
     goog.require('bot.locators');
     goog.require('bot.userAgent');
     goog.require('bot.window');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
   </script>
 
@@ -22,44 +24,41 @@
       return bot.window.getInteractableSize(win);
     }
 
-    function testShouldReturnViewportSizeIfThatIsLargest() {
+    QUnit.test('should return viewport size if that is largest', function(assert) {
       var size = getSizeOfFrameWithId('set_size');
 
-      assertEquals(110, size.width);
-      assertEquals(100, size.height);
-    }
+      assert.strictEqual(size.width, 110);
+      assert.strictEqual(size.height, 100);
+    });
 
-    function testShouldReturnDocumentSizeIfThatIsGreatestAndInStandardsMode() {
+    QUnit.test('should return document size if that is greatest and in standards mode', function(assert) {
       var size = getSizeOfFrameWithId('doc_size');
 
-      assertEquals(700, size.width);
-      assertEquals(500, size.height);
-    }
+      assert.strictEqual(size.width, 700);
+      assert.strictEqual(size.height, 500);
+    });
 
-    function testShouldReturnDocumentSizeIfThatIsGreatestAndInQuirksMode() {
+    QUnit.test('should return document size if that is greatest and in quirks mode', function(assert) {
       var size = getSizeOfFrameWithId('quirks_size');
 
-      // In quirks mode IE limits the size of the frame to the content
       var width = bot.userAgent.IE_DOC_PRE9 ? 110 : 700;
       var height = bot.userAgent.IE_DOC_PRE9 ? 100 : 500;
 
-      assertEquals(width, size.width);
-      assertEquals(height, size.height);
-    }
+      assert.strictEqual(size.width, width);
+      assert.strictEqual(size.height, height);
+    });
 
-    function testSizeShouldBeBasedOnLargestElementInThePage() {
+    QUnit.test('size should be based on largest element in the page', function(assert) {
       var size = getSizeOfFrameWithId('table_size');
 
-      // We can't be sure of the size of the window, but it's at least these
-      // values, which are based on the table size in the doc.
-      assertTrue('Width needs to be at least 349px. It is: ' + size.width,
-          size.width > 349);
-      assertTrue('Height needs to be at least 199px. It is: ' + size.height,
-          size.height > 199);
-    }
+      assert.ok(size.width > 349, 'Width needs to be at least 349px. It is: ' + size.width);
+      assert.ok(size.height > 199, 'Height needs to be at least 199px. It is: ' + size.height);
+    });
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
 
 <!-- IE will include the size of the border for this frame and test. To avoid
      this issue we remove the border -->

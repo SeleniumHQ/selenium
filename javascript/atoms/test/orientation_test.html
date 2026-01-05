@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 <title>orientation_test</title>
+<link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+<script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+<script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
 <script src="test_bootstrap.js"></script>
 <script type="text/javascript">
   goog.require('bot.dom');
   goog.require('bot.window');
   goog.require('goog.dom');
   goog.require('goog.events');
-  goog.require('goog.testing.jsunit');
 </script>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 <script type="text/javascript">
   var iframe;
-  function setUpPage() {
+
+  (function() {
     if (goog.userAgent.product.CHROME) {
-      // Verify that user agent spoofing scenarios work.
       goog.userAgent.MOBILE = true;
     }
-  }
+  })();
 
-  function setUp() {
+  QUnit.testStart(function() {
     if (orientationSupported()) {
       iframe = document.createElement('iframe');
       iframe.src = 'testdata/blank_page.html';
@@ -30,13 +35,14 @@
       document.body.appendChild(iframe);
       bot.setWindow(goog.dom.getFrameContentWindow(iframe));
     }
-  }
+  });
 
-  function tearDown() {
+  QUnit.testDone(function() {
     if (iframe) {
       document.body.removeChild(iframe);
+      iframe = null;
     }
-  }
+  });
 
   function orientationSupported() {
     return goog.userAgent.MOBILE || goog.userAgent.product.ANDROID;
@@ -48,52 +54,50 @@
     return height > width;
   }
 
-  function assertOrientationChange(shouldOrientationChangeFire, orientation) {
+  function assertOrientationChange(assert, shouldOrientationChangeFire, orientation) {
     var orientationChangeFired = false;
     goog.events.listenOnce(bot.getWindow(), 'orientationchange', function() {
       orientationChangeFired = true;
     });
     bot.window.changeOrientation(orientation);
-    assertEquals(shouldOrientationChangeFire, orientationChangeFired);
+    assert.strictEqual(orientationChangeFired, shouldOrientationChangeFire);
   }
 
-  function testChangingOrientation() {
+  QUnit.test('changingOrientation', function(assert) {
     if (!orientationSupported()) {
+      assert.ok(true, 'Skipping: orientation not supported');
       return;
     }
-    assertTrue(isPortrait());
-    assertOrientationChange(true, bot.window.Orientation.LANDSCAPE);
-    assertFalse(isPortrait());
+    assert.ok(isPortrait());
+    assertOrientationChange(assert, true, bot.window.Orientation.LANDSCAPE);
+    assert.notOk(isPortrait());
 
-    // Older versions of Android do not allow the window's orientation property
-    // to be changed which limits orientation support
-    // test after one orientation change.
     if (!bot.userAgent.ANDROID_PRE_GINGERBREAD) {
-      assertOrientationChange(true, bot.window.Orientation.PORTRAIT);
-      assertTrue(isPortrait());
-      assertOrientationChange(true, bot.window.Orientation.LANDSCAPE_SECONDARY);
-      assertFalse(isPortrait());
+      assertOrientationChange(assert, true, bot.window.Orientation.PORTRAIT);
+      assert.ok(isPortrait());
+      assertOrientationChange(assert, true, bot.window.Orientation.LANDSCAPE_SECONDARY);
+      assert.notOk(isPortrait());
     }
-  }
+  });
 
-  function testNoChangeWhenOrientationDoesNotChange() {
+  QUnit.test('noChangeWhenOrientationDoesNotChange', function(assert) {
     if (!orientationSupported()) {
+      assert.ok(true, 'Skipping: orientation not supported');
       return;
     }
-    assertTrue(isPortrait());
-    assertOrientationChange(false, bot.window.Orientation.PORTRAIT);
-  }
+    assert.ok(isPortrait());
+    assertOrientationChange(assert, false, bot.window.Orientation.PORTRAIT);
+  });
 
-  function testMaybeChangeForPortraitSecondary() {
+  QUnit.test('maybeChangeForPortraitSecondary', function(assert) {
     if (!orientationSupported()) {
+      assert.ok(true, 'Skipping: orientation not supported');
       return;
     }
-    // Android phones and the iPhone do not change orientation for
-    // PORTRAIT_SECONDARY.
-    assertTrue(isPortrait());
-    assertOrientationChange(goog.userAgent.MOBILE ? false : true,
+    assert.ok(isPortrait());
+    assertOrientationChange(assert, goog.userAgent.MOBILE ? false : true,
         bot.window.Orientation.PORTRAIT_SECONDARY);
-  }
+  });
 </script>
 </body>
 </html>

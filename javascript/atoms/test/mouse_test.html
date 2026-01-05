@@ -1,36 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>mouse_test</title>
-<script src="test_bootstrap.js"></script>
-<script type="text/javascript">
-  goog.require('bot.Mouse');
-  goog.require('bot.action');
-  goog.require('bot.userAgent');
-  goog.require('goog.Promise');
-  goog.require('goog.array');
-  goog.require('goog.dom');
-  goog.require('goog.events');
-  goog.require('goog.events.EventType');
-  goog.require('goog.math.Coordinate');
-  goog.require('goog.style');
-  goog.require('goog.testing.jsunit');
-  goog.require('goog.userAgent');
-</script>
+  <meta charset="utf-8">
+  <title>mouse_test</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.Mouse');
+    goog.require('bot.action');
+    goog.require('bot.userAgent');
+    goog.require('goog.Promise');
+    goog.require('goog.array');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.style');
+    goog.require('goog.userAgent');
+  </script>
+</head>
 <body>
-<div id="green" style="background-color:green; width:100px; height:50px">
-<div id="red" style="background-color:red; width:50px; height:25px;
-position: relative; top:25px;">Red</div>
-</div>
-<div id="capture" style="background-color:blue; width:100px; height:50px">
-  <div id="innerCapture" style="background-color:cyan;
-                                width:50px;
-                                height:25px;">
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <div id="green" style="background-color:green; width:100px; height:50px">
+  <div id="red" style="background-color:red; width:50px; height:25px;
+  position: relative; top:25px;">Red</div>
   </div>
-</div>
+  <div id="capture" style="background-color:blue; width:100px; height:50px">
+    <div id="innerCapture" style="background-color:cyan;
+                                  width:50px;
+                                  height:25px;">
+    </div>
+  </div>
 <script type="text/javascript">
-  // The goog.events.EventType enum is missing mouse scrolling event types.
-  // This a little hacky but gives us some stylistic consistency :).
   goog.events.EventType.MOUSEWHEEL =
     goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel';
   goog.events.EventType.MOUSEPIXELSCROLL = 'MozMousePixelScroll';
@@ -55,15 +59,12 @@ position: relative; top:25px;">Red</div>
     goog.events.EventType.MSPOINTERUP
   ];
 
-  function setUpPage() {
-    greenDiv = bot.locators.findElement({id: 'green'});
-    redDiv = bot.locators.findElement({id: 'red'});
-    captureDiv = bot.locators.findElement({id: 'capture'});
-    innerCaptureDiv = bot.locators.findElement({id: 'innerCapture'});
-    goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
-  }
+  greenDiv = bot.locators.findElement({id: 'green'});
+  redDiv = bot.locators.findElement({id: 'red'});
+  captureDiv = bot.locators.findElement({id: 'capture'});
+  innerCaptureDiv = bot.locators.findElement({id: 'innerCapture'});
 
-  function setUp() {
+  QUnit.testStart(function() {
     bot.getDocument().documentElement.focus();
     events = [];
     goog.events.removeAll(greenDiv);
@@ -85,68 +86,61 @@ position: relative; top:25px;">Red</div>
         captureDiv.msSetPointerCapture(e.getBrowserEvent().pointerId);
       }
     });
-  }
+  });
 
-  /**
-   * Returns the button value in the object depending on the current useragent.
-   * Returns the 'wk' property for WebKit and IE9 in standards mode, the 'ie'
-   * property for IE, and the 'ff' property for Firefox.
-   */
   function b(button) {
     return bot.userAgent.IE_DOC_9 || goog.userAgent.WEBKIT ? button['wk'] :
         (goog.userAgent.IE ? button['ie'] :
-            button['ff']);  // Firefox
+            button['ff']);
   }
 
-  function assertEvents(var_args) {
-    var expectedEvents = goog.array.concat.apply(null, arguments);
-    assertArrayEquals(expectedEvents, events);
+  function assertEvents(assert, var_args) {
+    var expectedEvents = goog.array.concat.apply(null, Array.prototype.slice.call(arguments, 1));
+    assert.deepEqual(events, expectedEvents);
     events = [];
   }
 
   function mousedownEvents(elem, button) {
-     var events = [goog.events.EventType.MOUSEDOWN, elem, button];
-     return !bot.userAgent.IE_DOC_10 ? events :
-         [goog.events.EventType.MSPOINTERDOWN, elem, button].concat(events);
+     var evts = [goog.events.EventType.MOUSEDOWN, elem, button];
+     return !bot.userAgent.IE_DOC_10 ? evts :
+         [goog.events.EventType.MSPOINTERDOWN, elem, button].concat(evts);
   }
 
   function mousemoveEvents(elem, button) {
-     var events = [goog.events.EventType.MOUSEMOVE, elem, button];
+     var evts = [goog.events.EventType.MOUSEMOVE, elem, button];
      return bot.userAgent.IE_DOC_10 ?
-         [goog.events.EventType.MSPOINTERMOVE, elem, -1].concat(events) :
-         events;
+         [goog.events.EventType.MSPOINTERMOVE, elem, -1].concat(evts) :
+         evts;
   }
 
   function mouseoutEvents(elem, button) {
-     var events = [goog.events.EventType.MOUSEOUT, elem, button];
+     var evts = [goog.events.EventType.MOUSEOUT, elem, button];
      return bot.userAgent.IE_DOC_10 ?
-         [goog.events.EventType.MSPOINTEROUT, elem, -1].concat(events) :
-         events;
+         [goog.events.EventType.MSPOINTEROUT, elem, -1].concat(evts) :
+         evts;
   }
 
   function mouseupEvents(elem, button) {
-     var events = [goog.events.EventType.MOUSEUP, elem, button];
+     var evts = [goog.events.EventType.MOUSEUP, elem, button];
      return bot.userAgent.IE_DOC_10 ?
-         [goog.events.EventType.MSPOINTERUP, elem, button].concat(events) :
-         events;
+         [goog.events.EventType.MSPOINTERUP, elem, button].concat(evts) :
+         evts;
   }
 
   function mouseoverAndMoveEvents(elem, button) {
     function mouseoverEvents(elem, button) {
-       var events = [goog.events.EventType.MOUSEOVER, elem, button];
+       var evts = [goog.events.EventType.MOUSEOVER, elem, button];
        return bot.userAgent.IE_DOC_10 ?
-           [goog.events.EventType.MSPOINTEROVER, elem, -1].concat(events) :
-           events;
+           [goog.events.EventType.MSPOINTEROVER, elem, -1].concat(evts) :
+           evts;
     }
-    // IE fires the movemove *before* the mouseover event, and
-    // IE < 9 always supplies a mouseover button value of 0.
     return goog.userAgent.IE ?
         mousemoveEvents(elem, button).concat(
              mouseoverEvents(elem, bot.userAgent.IE_DOC_9 ? button : 0)) :
         mouseoverEvents(elem, button).concat(mousemoveEvents(elem, button));
   }
 
-  function testNoClickWhenPressHiddenElement() {
+  QUnit.test('no click when press hidden element', function(assert) {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
@@ -154,26 +148,26 @@ position: relative; top:25px;">Red</div>
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
 
-    assertEvents(mouseoverAndMoveEvents(greenDiv, 0));
+    assertEvents(assert, mouseoverAndMoveEvents(greenDiv, 0));
     goog.style.showElement(greenDiv, true);
-  }
+  });
 
-  function testLeftClick() {
+  QUnit.test('left click', function(assert) {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(redDiv, coords);
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
 
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(redDiv, 0),
       mousedownEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       goog.events.EventType.CLICK, redDiv, 0
     );
-  }
+  });
 
-  function testNoLeftClickWhenReleasedOverOtherElement() {
+  QUnit.test('no left click when released over other element', function(assert) {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
@@ -181,17 +175,16 @@ position: relative; top:25px;">Red</div>
     mouse.move(redDiv, coords);
     mouse.releaseButton();
 
-    // No click if we released on another element.
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(greenDiv, 0),
       mousedownEvents(greenDiv, b({ie: 1, wk: 0, ff: 0})),
       mouseoutEvents(greenDiv, 0),
       mouseoverAndMoveEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0}))
     );
-  }
+  });
 
-  function testRightClick() {
+  QUnit.test('right click', function(assert) {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
@@ -199,8 +192,6 @@ position: relative; top:25px;">Red</div>
     mouse.move(redDiv, coords);
     mouse.releaseButton();
 
-    // In https://chromium.googlesource.com/chromium/src/+/bafc23e1920cc799c03159c39e29878e26071db0
-    // Chrome adopted the same values as IE and FF.
     var expectUninitializedButtons =
         goog.userAgent.product.CHROME && goog.userAgent.product.isVersion(60);
     var wkButtonData;
@@ -210,8 +201,7 @@ position: relative; top:25px;">Red</div>
       wkButtonData = 2;
     }
 
-    // Right click triggers contextmenu even when released over another element.
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(greenDiv, 0),
       mousedownEvents(greenDiv, 2),
       mouseoutEvents(greenDiv, b({ie: 2, wk: wkButtonData, ff: 0})),
@@ -219,9 +209,9 @@ position: relative; top:25px;">Red</div>
       mouseupEvents(redDiv, 2),
       goog.events.EventType.CONTEXTMENU, redDiv, b({ie: 0, wk: 2, ff: 2})
     );
-  }
+  });
 
-  function testDoubleClick() {
+  QUnit.test('double click', function(assert) {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(redDiv, coords);
@@ -230,7 +220,7 @@ position: relative; top:25px;">Red</div>
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
 
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(redDiv, 0),
       mousedownEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
@@ -240,9 +230,9 @@ position: relative; top:25px;">Red</div>
       goog.events.EventType.CLICK, redDiv, 0,
       goog.events.EventType.DBLCLICK, redDiv, 0
     );
-  }
+  });
 
-  function testNoDoubleClickWhenTheMouseMovesBetweenClicks() {
+  QUnit.test('no double click when the mouse moves between clicks', function(assert) {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
@@ -252,7 +242,7 @@ position: relative; top:25px;">Red</div>
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
 
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(greenDiv, 0),
       mousedownEvents(greenDiv, b({ie: 1, wk: 0, ff: 0})),
       mouseupEvents(greenDiv, b({ie: 1, wk: 0, ff: 0})),
@@ -263,35 +253,35 @@ position: relative; top:25px;">Red</div>
       mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       goog.events.EventType.CLICK, redDiv, 0
     );
-  }
+  });
 
-  function testMoveOnSameElement() {
+  QUnit.test('move on same element', function(assert) {
     var coords1 = new goog.math.Coordinate(5, 5);
     var coords2 = new goog.math.Coordinate(10, 5);
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords1);
     mouse.move(greenDiv, coords2);
 
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(greenDiv, 0),
       mousemoveEvents(greenDiv, 0)
     );
-  }
+  });
 
-  function testMoveToAnotherElement() {
+  QUnit.test('move to another element', function(assert) {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
     mouse.move(redDiv, coords);
 
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(greenDiv, 0),
       mouseoutEvents(greenDiv, 0),
       mouseoverAndMoveEvents(redDiv, 0)
     );
-  }
+  });
 
-  function testFirstMoveHasNullRelated() {
+  QUnit.test('first move has null related', function(assert) {
     var mouse = new bot.Mouse();
 
     var fired = 0;
@@ -299,17 +289,15 @@ position: relative; top:25px;">Red</div>
     goog.events.listenOnce(greenDiv, goog.events.EventType.MOUSEOVER,
         function(e) {
           fired++;
-          // Even though bot.events.fire explicitly sets relatedTarget to null,
-          // it sometimes becomes undefined in Firefox.
-          assertEvaluatesToFalse(e.relatedTarget);
+          assert.notOk(e.relatedTarget);
         });
 
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
 
-    assertEquals(1, fired);
-  }
+    assert.strictEqual(fired, 1);
+  });
 
-  function testSecondMoveHasRelatedSet() {
+  QUnit.test('second move has related set', function(assert) {
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
 
@@ -318,23 +306,22 @@ position: relative; top:25px;">Red</div>
     goog.events.listen(redDiv, goog.events.EventType.MOUSEOVER,
         function(e) {
           fired++;
-          // Catch the relatedTarget here, but check it below so any errors are
-          // handled correctly in IE.
           relatedTarget = e.relatedTarget;
         });
 
     mouse.move(redDiv, new goog.math.Coordinate(5, 5));
-    assertEquals('mouseover event not fired', 1, fired);
-    assertNotNull(relatedTarget);
-    assertNotEquals(redDiv, relatedTarget);
-  }
+    assert.strictEqual(fired, 1, 'mouseover event not fired');
+    assert.ok(relatedTarget !== null);
+    assert.notStrictEqual(relatedTarget, redDiv);
+  });
 
-  function testMoveMouseFromClosedWindowDoesNotError() {
+  QUnit.test('move mouse from closed window does not error', function(assert) {
+    var done = assert.async();
     var mouse = new bot.Mouse();
     var coord = new goog.math.Coordinate(0, 0);
     var iframe = document.createElement('iframe');
 
-    return new goog.Promise(function(loaded) {
+    new goog.Promise(function(loaded) {
       goog.events.listenOnce(iframe, 'load', loaded);
       iframe.src = 'testdata/blank_page.html';
       document.body.appendChild(iframe);
@@ -347,10 +334,12 @@ position: relative; top:25px;">Red</div>
     }).then(function() {
       mouse.move(iframe.contentWindow.document.body, coord);
       document.body.removeChild(iframe);
+      assert.ok(true);
+      done();
     });
-  }
+  });
 
-  function testMoveMouseFiresAllEventsOnElementHiddenMidSequence() {
+  QUnit.test('move mouse fires all events on element hidden mid sequence', function(assert) {
     var coords = new goog.math.Coordinate(5, 5);
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, coords);
@@ -360,47 +349,47 @@ position: relative; top:25px;">Red</div>
     mouse.move(redDiv, coords);
     goog.style.showElement(redDiv, true);
 
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(greenDiv, 0),
       mouseoutEvents(greenDiv, 0),
       mouseoverAndMoveEvents(redDiv, 0)
     );
-  }
+  });
 
-  function testScrollMouseZeroTicksThrowsError() {
+  QUnit.test('scroll mouse zero ticks throws error', function(assert) {
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
-    assertThrows(function() {
+    assert.throws(function() {
       mouse.scroll(0);
     });
-  }
+  });
 
-  function testScrollMouseDown() {
+  QUnit.test('scroll mouse down', function(assert) {
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
     mouse.scroll(1);
 
     if (goog.userAgent.GECKO) {
-      assertEvents(
+      assertEvents(assert,
         mouseoverAndMoveEvents(greenDiv, 0),
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
         goog.events.EventType.MOUSEPIXELSCROLL, greenDiv, 0
       );
     } else {
-      assertEvents(
+      assertEvents(assert,
         mouseoverAndMoveEvents(greenDiv, 0),
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0
       );
     }
-  }
+  });
 
-  function testScrollMouseUp() {
+  QUnit.test('scroll mouse up', function(assert) {
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
     mouse.scroll(-2);
 
     if (goog.userAgent.GECKO) {
-      assertEvents(
+      assertEvents(assert,
         mouseoverAndMoveEvents(greenDiv, 0),
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
         goog.events.EventType.MOUSEPIXELSCROLL, greenDiv, 0,
@@ -408,16 +397,17 @@ position: relative; top:25px;">Red</div>
         goog.events.EventType.MOUSEPIXELSCROLL, greenDiv, 0
       );
     } else {
-      assertEvents(
+      assertEvents(assert,
         mouseoverAndMoveEvents(greenDiv, 0),
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0
       );
     }
-  }
+  });
 
-  function testMsSetPointerCapture() {
+  QUnit.test('ms set pointer capture', function(assert) {
     if (!bot.userAgent.IE_DOC_10) {
+      assert.ok(true, 'Skipping: IE10 not detected');
       return;
     }
     var coords = new goog.math.Coordinate(75, 5);
@@ -427,20 +417,18 @@ position: relative; top:25px;">Red</div>
     mouse.move(greenDiv, coords);
     mouse.releaseButton();
 
-    // The captureDiv will call msSetPointerCapture on MSPointerDown and as a
-    // result, subsequent events should be fired on captureDiv instead of
-    // greenDiv.
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(captureDiv, 0),
       mousedownEvents(captureDiv, 0),
       mouseoutEvents(captureDiv, 0),
       mouseoverAndMoveEvents(captureDiv, 0),
       mouseupEvents(captureDiv, 0)
     );
-  }
+  });
 
-  function testClickDoesNotFireOnCapturedPointer() {
+  QUnit.test('click does not fire on captured pointer', function(assert) {
     if (!bot.userAgent.IE_DOC_10) {
+      assert.ok(true, 'Skipping: IE10 not detected');
       return;
     }
     var mouse = new bot.Mouse();
@@ -449,17 +437,14 @@ position: relative; top:25px;">Red</div>
     mouse.move(innerCaptureDiv, new goog.math.Coordinate(6, 6));
     mouse.releaseButton();
 
-    // The MSPointerDown event on innerCaptureDiv bubbles up to the
-    // captureDiv element which calls msSetPointerCapture, so subsequent
-    // events should fire on captureTarget except for the click event.
-    assertEvents(
+    assertEvents(assert,
       mouseoverAndMoveEvents(innerCaptureDiv, 0),
       mousedownEvents(innerCaptureDiv, 0),
       mousemoveEvents(captureDiv, 0),
       mouseupEvents(captureDiv, 0),
       goog.events.EventType.CLICK, innerCaptureDiv, 0
     );
-  }
+  });
 </script>
 </body>
 </html>
