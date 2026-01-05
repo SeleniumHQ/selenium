@@ -51,12 +51,10 @@ java_library(
         "How.java",
         "PageFactory.java",
         "PageFactoryFinder.java",
-    ] + glob([
-        "pagefactory/*.java",
-        "pagefactory/internal/*.java",
-    ]),
+    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/support/pagefactory",
         "//java/src/org/openqa/selenium/support/ui:components",
         artifact("org.jspecify:jspecify"),
     ],

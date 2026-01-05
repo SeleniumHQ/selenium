@@ -19,14 +19,8 @@ package org.openqa.selenium.support.pagefactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.AbstractFindByBuilder;
-import org.openqa.selenium.support.ByIdOrName;
-import org.openqa.selenium.support.CacheLookup;
-import org.openqa.selenium.support.FindAll;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.PageFactoryFinder;
 
 public class Annotations extends AbstractAnnotations {
   private final Field field;
@@ -45,7 +39,8 @@ public class Annotations extends AbstractAnnotations {
    */
   @Override
   public boolean isLookupCached() {
-    return (field.getAnnotation(CacheLookup.class) != null);
+    return (field.getAnnotation(CacheLookup.class) != null)
+        || isAnnotationPresent(field, "org.openqa.selenium.support.CacheLookup");
   }
 
   /**
@@ -58,6 +53,7 @@ public class Annotations extends AbstractAnnotations {
    * @throws IllegalArgumentException when more than one annotation on a field provided
    */
   @Override
+  @SuppressWarnings("unchecked")
   public By buildBy() {
     assertValidAnnotations();
 
@@ -77,7 +73,23 @@ public class Annotations extends AbstractAnnotations {
         } catch (ReflectiveOperationException e) {
           // Fall through.
         }
+      } else {
+        // Fallback for support package PageFactoryFinder
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        for (Annotation metaAnnotation : annotationType.getDeclaredAnnotations()) {
+          if ("org.openqa.selenium.support.PageFactoryFinder"
+              .equals(metaAnnotation.annotationType().getName())) {
+            try {
+              Method valueMethod = metaAnnotation.annotationType().getMethod("value");
+              Class<?> builderClass = (Class<?>) valueMethod.invoke(metaAnnotation);
+              builder = (AbstractFindByBuilder) builderClass.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+              // Ignore
+            }
+          }
+        }
       }
+
       if (builder != null) {
         ans = builder.buildIt(annotation, field);
         break;
@@ -103,17 +115,34 @@ public class Annotations extends AbstractAnnotations {
     FindBys findBys = field.getAnnotation(FindBys.class);
     FindAll findAll = field.getAnnotation(FindAll.class);
     FindBy findBy = field.getAnnotation(FindBy.class);
-    if (findBys != null && findBy != null) {
+
+    boolean findBysPresent =
+        findBys != null || isAnnotationPresent(field, "org.openqa.selenium.support.FindBys");
+    boolean findAllPresent =
+        findAll != null || isAnnotationPresent(field, "org.openqa.selenium.support.FindAll");
+    boolean findByPresent =
+        findBy != null || isAnnotationPresent(field, "org.openqa.selenium.support.FindBy");
+
+    if (findBysPresent && findByPresent) {
       throw new IllegalArgumentException(
           "If you use a '@FindBys' annotation, " + "you must not also use a '@FindBy' annotation");
     }
-    if (findAll != null && findBy != null) {
+    if (findAllPresent && findByPresent) {
       throw new IllegalArgumentException(
           "If you use a '@FindAll' annotation, " + "you must not also use a '@FindBy' annotation");
     }
-    if (findAll != null && findBys != null) {
+    if (findAllPresent && findBysPresent) {
       throw new IllegalArgumentException(
           "If you use a '@FindAll' annotation, " + "you must not also use a '@FindBys' annotation");
     }
+  }
+
+  private boolean isAnnotationPresent(Field field, String className) {
+    for (Annotation a : field.getDeclaredAnnotations()) {
+      if (a.annotationType().getName().equals(className)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -18,54 +18,19 @@
 package org.openqa.selenium.support;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import org.jspecify.annotations.NullMarked;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
 
+/**
+ * @deprecated Use {@link org.openqa.selenium.support.pagefactory.ByIdOrName} instead.
+ */
+@Deprecated(forRemoval = false)
 @NullMarked
-public class ByIdOrName extends By implements Serializable {
+public class ByIdOrName extends org.openqa.selenium.support.pagefactory.ByIdOrName
+    implements Serializable {
 
   private static final long serialVersionUID = 3986638402799576701L;
 
-  private final By idFinder;
-  private final By nameFinder;
-  private final String idOrName;
-
   public ByIdOrName(String idOrName) {
-    this.idOrName = idOrName;
-    idFinder = By.id(idOrName);
-    nameFinder = By.name(idOrName);
-  }
-
-  @Override
-  public WebElement findElement(SearchContext context) {
-    try {
-      // First, try to locate by id
-      return idFinder.findElement(context);
-    } catch (NoSuchElementException e) {
-      // Then by name
-      return nameFinder.findElement(context);
-    }
-  }
-
-  @Override
-  public List<WebElement> findElements(SearchContext context) {
-    List<WebElement> elements = new ArrayList<>();
-
-    // First: Find by id ...
-    elements.addAll(idFinder.findElements(context));
-    // Second: Find by name ...
-    elements.addAll(nameFinder.findElements(context));
-
-    return elements;
-  }
-
-  @Override
-  public String toString() {
-    return "by id or name \"" + idOrName + '"';
+    super(idOrName);
   }
 }

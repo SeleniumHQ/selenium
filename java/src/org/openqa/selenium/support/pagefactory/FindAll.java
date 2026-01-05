@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.support;
+package org.openqa.selenium.support.pagefactory;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,7 +23,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.pagefactory.ByAll;
 
 /**
  * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
@@ -38,13 +37,10 @@ import org.openqa.selenium.support.pagefactory.ByAll;
  * &#64;FindAll({&#64;FindBy(how = How.ID, using = "foo"),
  *           &#64;FindBy(className = "bar")})
  * </pre>
- *
- * @deprecated Use {@link org.openqa.selenium.support.pagefactory.FindAll} instead.
  */
-@Deprecated(forRemoval = false)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
-@org.openqa.selenium.support.pagefactory.PageFactoryFinder(FindAll.FindByBuilder.class)
+@PageFactoryFinder(FindAll.FindByBuilder.class)
 public @interface FindAll {
   FindBy[] value();
 

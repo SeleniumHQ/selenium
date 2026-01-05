@@ -15,20 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.support;
+package org.openqa.selenium.support.pagefactory;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-/**
- * Marker annotation to be applied to WebElements to indicate that it never changes (that is, that
- * the same instance in the DOM will always be used)
- *
- * @deprecated Use {@link org.openqa.selenium.support.pagefactory.CacheLookup} instead.
- */
-@Deprecated(forRemoval = false)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface CacheLookup {}
+public @interface PageFactoryFinder {
+  Class<? extends AbstractFindByBuilder> value();
+}

@@ -19,67 +19,34 @@ package org.openqa.selenium.support;
 
 import org.openqa.selenium.By;
 
+/**
+ * @deprecated Use {@link org.openqa.selenium.support.pagefactory.How} instead.
+ */
+@Deprecated(forRemoval = false)
 public enum How {
-  CLASS_NAME {
-    @Override
-    public By buildBy(String value) {
-      return By.className(value);
-    }
-  },
-  CSS {
-    @Override
-    public By buildBy(String value) {
-      return By.cssSelector(value);
-    }
-  },
-  ID {
-    @Override
-    public By buildBy(String value) {
-      return By.id(value);
-    }
-  },
-  ID_OR_NAME {
+  CLASS_NAME(org.openqa.selenium.support.pagefactory.How.CLASS_NAME),
+  CSS(org.openqa.selenium.support.pagefactory.How.CSS),
+  ID(org.openqa.selenium.support.pagefactory.How.ID),
+  ID_OR_NAME(org.openqa.selenium.support.pagefactory.How.ID_OR_NAME) {
     @Override
     public By buildBy(String value) {
       return new ByIdOrName(value);
     }
   },
-  LINK_TEXT {
-    @Override
-    public By buildBy(String value) {
-      return By.linkText(value);
-    }
-  },
-  NAME {
-    @Override
-    public By buildBy(String value) {
-      return By.name(value);
-    }
-  },
-  PARTIAL_LINK_TEXT {
-    @Override
-    public By buildBy(String value) {
-      return By.partialLinkText(value);
-    }
-  },
-  TAG_NAME {
-    @Override
-    public By buildBy(String value) {
-      return By.tagName(value);
-    }
-  },
-  XPATH {
-    @Override
-    public By buildBy(String value) {
-      return By.xpath(value);
-    }
-  },
-  UNSET {
-    @Override
-    public By buildBy(String value) {
-      return ID.buildBy(value);
-    }
-  };
+  LINK_TEXT(org.openqa.selenium.support.pagefactory.How.LINK_TEXT),
+  NAME(org.openqa.selenium.support.pagefactory.How.NAME),
+  PARTIAL_LINK_TEXT(org.openqa.selenium.support.pagefactory.How.PARTIAL_LINK_TEXT),
+  TAG_NAME(org.openqa.selenium.support.pagefactory.How.TAG_NAME),
+  XPATH(org.openqa.selenium.support.pagefactory.How.XPATH),
+  UNSET(org.openqa.selenium.support.pagefactory.How.UNSET);
 
-  public abstract By buildBy(String value);
+  private final org.openqa.selenium.support.pagefactory.How delegate;
+
+  How(org.openqa.selenium.support.pagefactory.How delegate) {
+    this.delegate = delegate;
+  }
+
+  public By buildBy(String value) {
+    return delegate.buildBy(value);
+  }
 }

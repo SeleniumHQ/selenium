@@ -15,19 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.support;
+package org.openqa.selenium.support.pagefactory;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
-import org.openqa.selenium.support.pagefactory.FieldDecorator;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Factory class to make using Page Objects simpler and easier.
  *
  * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/PageObjects">Page Objects Wiki</a>
- * @deprecated Use {@link org.openqa.selenium.support.pagefactory.PageFactory} instead.
  */
-@Deprecated(forRemoval = false)
 public class PageFactory {
   /**
    * Instantiate an instance of the given class, and set a lazy proxy for each of the WebElement and
@@ -56,8 +55,9 @@ public class PageFactory {
    * @see CacheLookup
    */
   public static <T> T initElements(SearchContext searchContext, Class<T> pageClassToProxy) {
-    return org.openqa.selenium.support.pagefactory.PageFactory.initElements(
-        searchContext, pageClassToProxy);
+    T page = instantiatePage(searchContext, pageClassToProxy);
+    initElements(searchContext, page);
+    return page;
   }
 
   /**
@@ -69,7 +69,7 @@ public class PageFactory {
    *     proxied.
    */
   public static void initElements(SearchContext searchContext, Object page) {
-    org.openqa.selenium.support.pagefactory.PageFactory.initElements(searchContext, page);
+    initElements(new DefaultElementLocatorFactory(searchContext), page);
   }
 
   /**
@@ -81,7 +81,7 @@ public class PageFactory {
    * @param page The object to decorate the fields of
    */
   public static void initElements(ElementLocatorFactory factory, Object page) {
-    org.openqa.selenium.support.pagefactory.PageFactory.initElements(factory, page);
+    initElements(new DefaultFieldDecorator(factory), page);
   }
 
   /**
@@ -92,6 +92,38 @@ public class PageFactory {
    * @param page The object to decorate the fields of
    */
   public static void initElements(FieldDecorator decorator, Object page) {
-    org.openqa.selenium.support.pagefactory.PageFactory.initElements(decorator, page);
+    Class<?> proxyIn = page.getClass();
+    while (proxyIn != Object.class) {
+      proxyFields(decorator, page, proxyIn);
+      proxyIn = proxyIn.getSuperclass();
+    }
+  }
+
+  private static void proxyFields(FieldDecorator decorator, Object page, Class<?> proxyIn) {
+    Field[] fields = proxyIn.getDeclaredFields();
+    for (Field field : fields) {
+      Object value = decorator.decorate(page.getClass().getClassLoader(), field);
+      if (value != null) {
+        try {
+          field.setAccessible(true);
+          field.set(page, value);
+        } catch (IllegalAccessException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+  }
+
+  private static <T> T instantiatePage(SearchContext searchContext, Class<T> pageClassToProxy) {
+    try {
+      try {
+        Constructor<T> constructor = pageClassToProxy.getConstructor(WebDriver.class);
+        return constructor.newInstance(searchContext);
+      } catch (NoSuchMethodException e) {
+        return pageClassToProxy.getDeclaredConstructor().newInstance();
+      }
+    } catch (ReflectiveOperationException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

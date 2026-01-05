@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.support;
+package org.openqa.selenium.support.pagefactory;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,35 +23,30 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.pagefactory.ByAll;
 
 /**
  * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
- * It will then search for all elements that match any of the FindBy criteria. Note that elements
- * are not guaranteed to be in document order.
+ * in a chain as described in {@link org.openqa.selenium.support.pagefactory.ByChained}
  *
  * <p>It can be used on a types as well, but will not be processed by default.
  *
  * <p>Eg:
  *
  * <pre class="code">
- * &#64;FindAll({&#64;FindBy(how = How.ID, using = "foo"),
+ * &#64;FindBys({&#64;FindBy(id = "foo"),
  *           &#64;FindBy(className = "bar")})
  * </pre>
- *
- * @deprecated Use {@link org.openqa.selenium.support.pagefactory.FindAll} instead.
  */
-@Deprecated(forRemoval = false)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
-@org.openqa.selenium.support.pagefactory.PageFactoryFinder(FindAll.FindByBuilder.class)
-public @interface FindAll {
+@PageFactoryFinder(FindBys.FindByBuilder.class)
+public @interface FindBys {
   FindBy[] value();
 
-  class FindByBuilder extends AbstractFindByBuilder<FindAll> {
+  class FindByBuilder extends AbstractFindByBuilder<FindBys> {
     @Override
-    public By buildIt(FindAll findBys, Field field) {
-      assertValidFindAll(findBys);
+    public By buildIt(FindBys findBys, Field field) {
+      assertValidFindBys(findBys);
 
       FindBy[] findByArray = findBys.value();
       By[] byArray = new By[findByArray.length];
@@ -59,7 +54,7 @@ public @interface FindAll {
         byArray[i] = buildByFromFindBy(findByArray[i]);
       }
 
-      return new ByAll(byArray);
+      return new ByChained(byArray);
     }
   }
 }

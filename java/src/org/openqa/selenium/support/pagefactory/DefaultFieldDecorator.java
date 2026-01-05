@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.pagefactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.ParameterizedType;
@@ -26,9 +27,6 @@ import java.util.List;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Locatable;
-import org.openqa.selenium.support.FindAll;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandler;
 
@@ -84,9 +82,22 @@ public class DefaultFieldDecorator implements FieldDecorator {
       return false;
     }
 
-    return field.getAnnotation(FindBy.class) != null
+    if (field.getAnnotation(FindBy.class) != null
         || field.getAnnotation(FindBys.class) != null
-        || field.getAnnotation(FindAll.class) != null;
+        || field.getAnnotation(FindAll.class) != null) {
+      return true;
+    }
+
+    for (Annotation a : field.getDeclaredAnnotations()) {
+      String name = a.annotationType().getName();
+      if ("org.openqa.selenium.support.FindBy".equals(name)
+          || "org.openqa.selenium.support.FindBys".equals(name)
+          || "org.openqa.selenium.support.FindAll".equals(name)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   protected WebElement proxyForLocator(ClassLoader loader, ElementLocator locator) {

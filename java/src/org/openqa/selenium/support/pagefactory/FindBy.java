@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.support;
+package org.openqa.selenium.support.pagefactory;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,8 +27,8 @@ import org.openqa.selenium.By;
 /**
  * Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
  * element or a list of elements. Used in conjunction with {@link
- * org.openqa.selenium.support.PageFactory} this allows users to quickly and easily create
- * PageObjects.
+ * org.openqa.selenium.support.pagefactory.PageFactory} this allows users to quickly and easily
+ * create PageObjects.
  *
  * <p>It can be used on a types as well, but will not be processed by default.
  *
@@ -49,13 +49,10 @@ import org.openqa.selenium.By;
  * &#64;FindBy(tagName = "a") List&lt;WebElement&gt; links;
  * &#64;FindBy(how = How.TAG_NAME, using = "a") List&lt;WebElement&gt; links;
  * </pre>
- *
- * @deprecated Use {@link org.openqa.selenium.support.pagefactory.FindBy} instead.
  */
-@Deprecated(forRemoval = false)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
-@org.openqa.selenium.support.pagefactory.PageFactoryFinder(FindBy.FindByBuilder.class)
+@PageFactoryFinder(FindBy.FindByBuilder.class)
 public @interface FindBy {
   How how() default How.UNSET;
 
@@ -81,7 +78,13 @@ public @interface FindBy {
     @Override
     public By buildIt(FindBy findBy, Field field) {
       assertValidFindBy(findBy);
-      return buildByFromFindBy(findBy);
+
+      By ans = buildByFromShortFindBy(findBy);
+      if (ans == null) {
+        ans = buildByFromLongFindBy(findBy);
+      }
+
+      return ans;
     }
   }
 }

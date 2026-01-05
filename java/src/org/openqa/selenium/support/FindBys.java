@@ -37,10 +37,13 @@ import org.openqa.selenium.support.pagefactory.ByChained;
  * &#64;FindBys({&#64;FindBy(id = "foo"),
  *           &#64;FindBy(className = "bar")})
  * </pre>
+ *
+ * @deprecated Use {@link org.openqa.selenium.support.pagefactory.FindBys} instead.
  */
+@Deprecated(forRemoval = false)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
-@PageFactoryFinder(FindBys.FindByBuilder.class)
+@org.openqa.selenium.support.pagefactory.PageFactoryFinder(FindBys.FindByBuilder.class)
 public @interface FindBys {
   FindBy[] value();
 

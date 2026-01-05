@@ -1,0 +1,17 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "pagefactory",
+    srcs = glob([
+        "*.java",
+        "internal/*.java",
+    ]),
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__pkg__",
+        "//java/test/org/openqa/selenium/support:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "@maven//:org_jspecify_jspecify",
+    ],
+)

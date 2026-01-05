@@ -20,6 +20,10 @@ package org.openqa.selenium.support;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * @deprecated Use {@link org.openqa.selenium.support.pagefactory.PageFactoryFinder} instead.
+ */
+@Deprecated(forRemoval = false)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PageFactoryFinder {
   Class<? extends AbstractFindByBuilder> value();
