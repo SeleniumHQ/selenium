@@ -554,6 +554,15 @@ BROWSER_TESTS = {
     ]
 ]
 
+test_suite(
+    name = "test-remote",
+    tags = ["remote"],
+    tests = [
+        ":test-chrome-remote",
+        ":test-firefox-remote",
+    ],
+)
+
 py_test_suite(
     name = "test-webkitgtk",
     size = "large",
