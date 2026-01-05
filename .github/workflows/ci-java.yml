@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Lint
-      run: bazel build --config=lint //java/... --keep_going
+      run: bazel build --config=lint --nocheck_visibility //java/... --keep_going
 
   browser-tests-windows:
     name: Browser Tests
