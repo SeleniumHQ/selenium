@@ -89,7 +89,7 @@ jobs:
         if: contains(github.ref, 'renovate/')
         run: git pull origin ${{ github.ref }}
       - name: Free space
-        if: !startsWith(inputs.os, 'windows')
+        if: ${{ !startsWith(inputs.os, 'windows') }}
         run: ./scripts/github-actions/free-disk-space.sh
       - name: Remove driver directories Windows
         if: startsWith(inputs.os, 'windows')
@@ -98,7 +98,7 @@ jobs:
           rm "$env:EdgeWebDriver" -r -v
           rm "$env:GeckoWebDriver" -r -v
       - name: Remove driver directories Non-Windows
-        if: !startsWith(inputs.os, 'windows')
+        if: ${{ !startsWith(inputs.os, 'windows') }}
         run: |
           sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
       - name: Set Python version
