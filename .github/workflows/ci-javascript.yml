@@ -63,7 +63,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chrome, firefox, chrome-bidi, firefox-bidi]
-        os: [windows]
+        os: [windows-2022]
     with:
       name: Browser Tests (${{ matrix.browser }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
