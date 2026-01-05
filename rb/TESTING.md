@@ -9,14 +9,22 @@ Before running tests, navigate to the `rb/` directory and install the required d
 ```shell
 cd rb
 bundle install
-
 ```
+
+### RubyMine IDE Setup
+
+If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development, you can configure it to use Bazel artifacts:
+
+1. Open `rb/` as a main project directory.
+2. Run `bundle exec rake update` as necessary to create up-to-date artifacts. If this does not work, run `./go rb:update` from the `selenium` (parent) directory.
+3. In <kbd>Settings / Languages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/rules_ruby_dist/dist/bin/ruby`.
+4. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables specified in the [Environment Variables](#environment-variables) section.
 
 ## Test Framework
 
-* **Runner:** Tests use RSpec.
-* **Test Pages:** HTML files live in `common/src/web/`.
-* **Helpers:** `driver`, `wait`, `short_wait`, `long_wait`, `url_for`.
+* Tests use RSpec.
+* Test HTML files live in `common/src/web/`.
+* **Helper methods:** `driver`, `wait`, `short_wait`, `long_wait`, `url_for`.
 
 ### Example Spec
 
@@ -35,16 +43,11 @@ module Selenium
     end
   end
 end
-
 ```
 
 ## Running Tests
 
-There are two ways to run tests: **Bazel** (used in CI) and **RSpec** (preferred for local development).
-
-### 1. Using Bazel (CI Workflow)
-
-Bazel creates isolated test targets for each browser and remote variants.
+Bazel creates test targets for each browser and remote variants.
 
 ```shell
 bazel test //rb/spec/...                              # All tests
@@ -59,23 +62,7 @@ bazel test //rb/... --test_output=streamed            # See output in real-time 
 
 ```
 
-### 2. Using RSpec (Local Workflow)
-
-For rapid "edit-run" cycles, use RSpec directly. This bypasses the Bazel sandbox and is faster for local debugging. **Selenium Manager** automatically handles driver setup (chromedriver, geckodriver), so no manual path configuration is required.
-
-```shell
-# Run a specific spec file
-bundle exec rspec spec/integration/selenium/webdriver/chrome/driver_spec.rb
-
-# Run all unit tests
-bundle exec rspec spec/unit
-
-# Run with specific environment variables
-driver=firefox bundle exec rspec spec/integration/selenium/webdriver/firefox/driver_spec.rb
-
-```
-
-### 3. Using Rake
+### 2. Using Rake
 
 The `Rakefile` provides shortcuts for common tasks:
 
@@ -95,7 +82,7 @@ Guards control when tests run. Add them as metadata on `describe`, `context`, or
 | --- | --- |
 | `except` | Test is pending if conditions ARE met. |
 | `only` | Test is pending if conditions are NOT met. |
-| `exclusive` | Test is skipped entirely if conditions not met (not pending). |
+| `exclusive` | Test is skipped entirely if conditions not met. |
 | `exclude` | Test is skipped (use for broken/unreliable tests). |
 
 ### Guard Conditions
@@ -146,6 +133,94 @@ bundle exec rubocop -A
 
 ```
 
+## Type Signatures with Steep
+
+Selenium Ruby uses **Steep** for gradual type checking with RBS (Ruby Signature) files. When you create a new class or modify existing classes, you should add or update the corresponding type signatures.
+
+### Adding Type Signatures for New Classes
+
+When creating a new class in `lib/selenium/webdriver/`:
+
+1. Create a corresponding `.rbs` file in `sig/` with the same directory structure.
+2. Define the class signature with method signatures, parameter types, and return types.
+
+**Example:** For `lib/selenium/webdriver/my_class.rb`:
+
+```ruby
+# lib/selenium/webdriver/my_class.rb
+module Selenium
+  module WebDriver
+    class MyClass
+      def initialize(value)
+        @value = value
+      end
+
+      def process
+        @value.to_s.upcase
+      end
+    end
+  end
+end
+```
+
+Create `sig/selenium/webdriver/my_class.rbs`:
+
+```rbs
+module Selenium
+  module WebDriver
+    class MyClass
+      @value: untyped
+
+      def initialize: (untyped value) -> void
+      def process: () -> String
+    end
+  end
+end
+```
+
+### Updating Type Signatures
+
+When modifying method signatures, parameters, or return types:
+
+1. Update the corresponding `.rbs` file to match the implementation.
+2. Run Steep to check for type errors.
+
+### Running Steep
+
+```shell
+# Type check all files
+bundle exec steep check
+
+# Type check specific files
+bundle exec steep check lib/selenium/webdriver/my_class.rb
+
+# Show Steep statistics
+bundle exec steep stats
+
+```
+
+### Type Signature Best Practices
+
+* **Start simple:** Use `untyped` for complex types initially, then refine.
+* **Be specific:** Prefer concrete types (`String`, `Integer`) over `untyped` when possible.
+* **Document generics:** Use generic types for collections (e.g., `Array[String]`, `Hash[Symbol, String]`).
+* **Match reality:** Ensure signatures accurately reflect the actual implementation.
+
+### Common RBS Types
+
+| Type | Description | Example |
+| --- | --- | --- |
+| `String` | String values | `def name: () -> String` |
+| `Integer` | Integer numbers | `def count: () -> Integer` |
+| `bool` | Boolean (true/false) | `def valid?: () -> bool` |
+| `void` | No return value | `def initialize: () -> void` |
+| `untyped` | Any type (use sparingly) | `def raw: () -> untyped` |
+| `Array[T]` | Array of type T | `def tags: () -> Array[String]` |
+| `Hash[K, V]` | Hash with key/value types | `def opts: () -> Hash[Symbol, String]` |
+| `T \| nil` | Nullable type | `def find: () -> (Element \| nil)` |
+
+**Note:** CI runs Steep checks. Ensure your type signatures are correct before submitting a PR.
+
 ## Documentation
 
 We use **YARD** for inline documentation. Ensure your changes are documented and generate valid HTML.
@@ -172,12 +247,13 @@ From `spec_support/helpers.rb`:
 | `wait_for_element(locator)` | Wait for element to appear. |
 | `wait_for_alert` | Wait for alert presence. |
 
-### Debugging
+### Interactive REPL
 
-To debug tests locally (outside of Bazel), insert a breakpoint:
+Instead of using `irb`, you can create an interactive REPL with all gems loaded using:
 
-1. Add `require 'pry'; binding.pry` in your code.
-2. Run the test using `bundle exec rspec`.
+```shell
+bazel run //rb:console
+```
 
 ## Environment Variables
 
@@ -216,7 +292,7 @@ rb/spec/
         ├── chrome/
         ├── firefox/
         ├── safari/
-        ├── bidi/
+        ├── bidi`
         └── spec_support/      # Test helpers
 
 ```
@@ -227,7 +303,3 @@ Test files must end in `_spec.rb` (e.g., `driver_spec.rb`).
 
 * Adding tests shouldn't require Bazel changes—`rb_integration_test` uses glob patterns.
 * Make sure `*_spec.rb` files are in a directory with a `BUILD.bazel` containing `rb_integration_test`.
-
-```
-
-```
