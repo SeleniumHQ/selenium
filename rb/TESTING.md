@@ -11,6 +11,18 @@ cd rb
 bundle install
 ```
 
+**Note:** Local development still requires running Bazel to generate the atoms and devtools code. You can generate these artifacts by running:
+
+```shell
+bundle exec rake update
+```
+
+Or from the parent `selenium` directory:
+
+```shell
+./go rb:update
+```
+
 ### RubyMine IDE Setup
 
 If you want to use [RubyMine](https://www.jetbrains.com/ruby/) for development, you can configure it to use Bazel artifacts:
@@ -64,13 +76,12 @@ bazel test //rb/... --test_output=streamed            # See output in real-time 
 
 ### 2. Using Rake
 
-The `Rakefile` provides shortcuts for common tasks:
+The `rb/Rakefile` provides shortcuts for common tasks:
 
 ```shell
-rake spec:unit          # Run unit tests
-rake spec:integration   # Run integration tests (Chrome default)
-rake docs               # Generate docs
-rake clean              # Clean generated artifacts
+rake update             # Setup everything to run tests in RubyMine
+rake unit               # Run unit tests
+rake spec               # Run all integration tests in Chrome
 
 ```
 
@@ -86,6 +97,8 @@ Guards control when tests run. Add them as metadata on `describe`, `context`, or
 | `exclude` | Test is skipped (use for broken/unreliable tests). |
 
 ### Guard Conditions
+
+Conditions are defined in [`spec/integration/selenium/webdriver/spec_helper.rb`](spec/integration/selenium/webdriver/spec_helper.rb).
 
 | Condition | Values |
 | --- | --- |
@@ -123,6 +136,8 @@ end
 ## Code Style & Linting
 
 Selenium enforces strict code style using **Rubocop**. CI will fail if linting errors are present.
+
+Configuration is defined in [`.rubocop.yml`](.rubocop.yml). **Prefer updating the configuration file over using in-file rubocop guards** (like `# rubocop:disable`) to maintain consistency across the codebase.
 
 ```shell
 # Check code style
