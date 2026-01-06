@@ -47,9 +47,10 @@ drivers = (
 )
 
 
+TRACEBACK_WIDTH = 130
 # don't force colors on RBE since errors get redirected to a log file
 force_terminal = "REMOTE_BUILD" not in os.environ
-console = rich.console.Console(force_terminal=force_terminal, width=130)
+console = rich.console.Console(force_terminal=force_terminal, width=TRACEBACK_WIDTH)
 
 
 def extract_traceback_frames(tb):
@@ -87,7 +88,9 @@ def pytest_runtest_makereport(item, call):
     """Hook to print Rich traceback for test failures."""
     if call.excinfo is None:
         return
-    exc_type, exc_value, exc_tb = call.excinfo._excinfo
+    exc_type = call.excinfo.type
+    exc_value = call.excinfo.value
+    exc_tb = call.excinfo.tb
     frames = extract_traceback_frames(exc_tb)
     filtered_frames = filter_frames(frames)
     new_tb = rebuild_traceback(filtered_frames)
@@ -97,7 +100,7 @@ def pytest_runtest_makereport(item, call):
         new_tb,
         show_locals=False,
         max_frames=5,
-        width=130,
+        width=TRACEBACK_WIDTH,
     )
     console.print("\n", tb)
 
