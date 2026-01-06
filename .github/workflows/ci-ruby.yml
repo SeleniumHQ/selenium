@@ -74,7 +74,6 @@ jobs:
       run: >
         bazel test
         --keep_going
-        --build_tests_only
         --test_size_filters small
         --test_env=DEBUG=true
         //rb/spec/...
@@ -109,12 +108,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, edge, firefox]
-        os: [windows, macos]
+        browser: [chrome-beta, firefox-beta]
+        os: [windows]
         include:
-          - browser: edge-remote
-            os: macos
-        exclude:
           - browser: edge
             os: macos
     with:
