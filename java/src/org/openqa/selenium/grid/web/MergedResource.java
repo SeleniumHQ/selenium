@@ -52,7 +52,7 @@ public class MergedResource implements Resource {
       return resource;
     }
 
-    if (!next.isPresent()) {
+    if (next.isEmpty()) {
       return Optional.empty();
     }
 
@@ -78,7 +78,7 @@ public class MergedResource implements Resource {
       return data;
     }
 
-    if (!next.isPresent()) {
+    if (next.isEmpty()) {
       return Optional.empty();
     }
 

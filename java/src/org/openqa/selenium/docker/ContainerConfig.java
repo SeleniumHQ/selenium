@@ -19,13 +19,12 @@ package org.openqa.selenium.docker;
 
 import static java.util.Collections.emptyList;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.internal.Require;
 
 @Beta
@@ -146,7 +145,7 @@ public class ContainerConfig {
   public static ContainerConfig image(Image image) {
     return new ContainerConfig(
         image,
-        HashMultimap.create(),
+        new Multimap<>(),
         Map.of(),
         Map.of(),
         emptyList(),
@@ -163,7 +162,7 @@ public class ContainerConfig {
           String.format("Port protocols must match: %s -> %s", hostPort, containerPort));
     }
 
-    Multimap<String, Map<String, Object>> updatedBindings = HashMultimap.create(portBindings);
+    Multimap<String, Map<String, Object>> updatedBindings = new Multimap<>(portBindings);
     updatedBindings.put(
         containerPort.getPort() + "/" + containerPort.getProtocol(),
         Map.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));

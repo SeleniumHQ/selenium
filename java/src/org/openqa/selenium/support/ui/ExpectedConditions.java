@@ -17,18 +17,25 @@
 
 package org.openqa.selenium.support.ui;
 
-import com.google.common.base.Joiner;
+import static java.lang.System.lineSeparator;
+import static java.util.Objects.requireNonNullElse;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -36,7 +43,9 @@ import org.openqa.selenium.WebElement;
 
 /** Canned {@link ExpectedCondition}s which are generally useful within webdriver tests. */
 @NullMarked
+@SuppressWarnings("MismatchedJavadocCode")
 public class ExpectedConditions {
+  private static final Logger LOG = Logger.getLogger(ExpectedConditions.class.getName());
 
   private ExpectedConditions() {
     // Utility class
@@ -60,7 +69,7 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("title to be \"%s\". Current title: \"%s\"", title, currentTitle);
+        return String.format("title to be \"%s\". Current title: \"%s\".", title, currentTitle);
       }
     };
   }
@@ -83,7 +92,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("title to contain \"%s\". Current title: \"%s\"", title, currentTitle);
+        return String.format(
+            "title to contain \"%s\". Current title: \"%s\".", title, currentTitle);
       }
     };
   }
@@ -141,8 +151,18 @@ public class ExpectedConditions {
    * @return <code>true</code> if the URL matches the specified regular expression
    */
   public static ExpectedCondition<Boolean> urlMatches(final String regex) {
+    return urlMatches(Pattern.compile(regex));
+  }
+
+  /**
+   * Expectation for the URL to match a specific regular expression
+   *
+   * @param regex the regular expression that the URL should match
+   * @return <code>true</code> if the URL matches the specified regular expression
+   */
+  public static ExpectedCondition<Boolean> urlMatches(final Pattern regex) {
     return new ExpectedCondition<>() {
-      private final Pattern pattern = Pattern.compile(regex);
+      private final Pattern pattern = regex;
       private @Nullable String currentUrl;
 
       @Override
@@ -166,16 +186,21 @@ public class ExpectedConditions {
    * @param locator used to find the element
    * @return the WebElement once it is located
    */
-  public static ExpectedCondition<WebElement> presenceOfElementLocated(final By locator) {
+  public static ExpectedCondition<@Nullable WebElement> presenceOfElementLocated(final By locator) {
     return new ExpectedCondition<>() {
       @Override
+      @Nullable
       public WebElement apply(WebDriver driver) {
-        return driver.findElement(locator);
+        try {
+          return driver.findElement(locator);
+        } catch (NoSuchElementException notFound) {
+          return null;
+        }
       }
 
       @Override
       public String toString() {
-        return "presence of element located by: " + locator;
+        return "presence of element found by " + locator;
       }
     };
   }
@@ -190,19 +215,26 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<WebElement> visibilityOfElementLocated(final By locator) {
     return new ExpectedCondition<>() {
+      private @Nullable WebDriverException error;
+
       @Override
       public @Nullable WebElement apply(WebDriver driver) {
+        error = null;
         try {
           return elementIfVisible(driver.findElement(locator));
-        } catch (StaleElementReferenceException | NoSuchElementException e) {
-          // Returns null because the element is no longer or not present in DOM.
+        } catch (StaleElementReferenceException | NoSuchElementException elementDisappeared) {
+          error = elementDisappeared;
           return null;
         }
       }
 
       @Override
       public String toString() {
-        return "visibility of element located by " + locator;
+        if (error != null) {
+          return String.format(
+              "visibility of element found by %s, but... %s.", locator, shortDescription(error));
+        }
+        return String.format("visibility of element found by %s", locator);
       }
     };
   }
@@ -218,11 +250,21 @@ public class ExpectedConditions {
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfAllElementsLocatedBy(
       final By locator) {
     return new ExpectedCondition<@Nullable List<WebElement>>() {
+      private int indexOfInvisibleElement;
+      private @Nullable WebElement invisibleElement;
+
       @Override
       public @Nullable List<WebElement> apply(WebDriver driver) {
+        indexOfInvisibleElement = -1;
+        invisibleElement = null;
+
         List<WebElement> elements = driver.findElements(locator);
-        for (WebElement element : elements) {
+
+        for (int i = 0; i < elements.size(); i++) {
+          WebElement element = elements.get(i);
           if (!element.isDisplayed()) {
+            indexOfInvisibleElement = i;
+            invisibleElement = element;
             return null;
           }
         }
@@ -231,7 +273,12 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return "visibility of all elements located by " + locator;
+        return indexOfInvisibleElement == -1
+            ? String.format(
+                "visibility of all elements located by %s, but no elements were found", locator)
+            : String.format(
+                "visibility of all elements located by %s, but element #%s was invisible: %s",
+                locator, indexOfInvisibleElement, invisibleElement);
       }
     };
   }
@@ -260,10 +307,19 @@ public class ExpectedConditions {
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfAllElements(
       final List<WebElement> elements) {
     return new ExpectedCondition<@Nullable List<WebElement>>() {
+      private int indexOfInvisibleElement;
+      private @Nullable WebElement invisibleElement;
+
       @Override
       public @Nullable List<WebElement> apply(WebDriver driver) {
-        for (WebElement element : elements) {
+        indexOfInvisibleElement = -1;
+        invisibleElement = null;
+
+        for (int i = 0; i < elements.size(); i++) {
+          WebElement element = elements.get(i);
           if (!element.isDisplayed()) {
+            indexOfInvisibleElement = i;
+            invisibleElement = element;
             return null;
           }
         }
@@ -272,7 +328,12 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return "visibility of all " + elements;
+        return indexOfInvisibleElement == -1
+            ? String.format(
+                "visibility of all %s elements, but no elements were found", elements.size())
+            : String.format(
+                "visibility of all %s elements, but element #%s was invisible: %s",
+                elements.size(), indexOfInvisibleElement, invisibleElement);
       }
     };
   }
@@ -339,19 +400,30 @@ public class ExpectedConditions {
       final WebElement element, final String text) {
 
     return new ExpectedCondition<>() {
+      private @Nullable String elementText;
+      private @Nullable StaleElementReferenceException error;
+
       @Override
       public Boolean apply(WebDriver driver) {
+        elementText = null;
+        error = null;
         try {
-          String elementText = element.getText();
+          elementText = element.getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
+          error = e;
           return false;
         }
       }
 
       @Override
       public String toString() {
-        return String.format("text ('%s') to be present in element %s", text, element);
+        if (error != null) {
+          return String.format(
+              "element to have text \"%s\", but... %s.", text, shortDescription(error));
+        }
+        return String.format(
+            "element to have text \"%s\". Current text: \"%s\".", text, elementText);
       }
     };
   }
@@ -362,25 +434,38 @@ public class ExpectedConditions {
    *
    * @param locator used to find the element
    * @param text to be present in the element found by the locator
-   * @return true once the first element located by locator contains the given text
+   * @return true once the first element found by locator contains the given text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElementLocated(
       final By locator, final String text) {
 
     return new ExpectedCondition<>() {
+      private @Nullable String elementText;
+      private @Nullable WebDriverException error;
+
       @Override
       public Boolean apply(WebDriver driver) {
+        elementText = null;
+        error = null;
         try {
-          String elementText = driver.findElement(locator).getText();
+          elementText = driver.findElement(locator).getText();
           return elementText.contains(text);
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
+          error = e;
           return false;
         }
       }
 
       @Override
       public String toString() {
-        return String.format("text ('%s') to be present in element found by %s", text, locator);
+        if (error != null) {
+          return String.format(
+              "element found by %s to contain text \"%s\", but... %s.",
+              locator, text, shortDescription(error));
+        }
+        return String.format(
+            "element found by %s to contain text \"%s\". Current text: \"%s\".",
+            locator, text, elementText);
       }
     };
   }
@@ -390,29 +475,39 @@ public class ExpectedConditions {
    * attribute.
    *
    * @param element the WebElement
-   * @param text to be present in the element's value attribute
+   * @param expectedValue to be present in the element's value attribute
    * @return true once the element's value attribute contains the given text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElementValue(
-      final WebElement element, final String text) {
+      final WebElement element, final String expectedValue) {
 
     return new ExpectedCondition<>() {
+      private @Nullable String actualValue;
+      private @Nullable StaleElementReferenceException error;
+
       @Override
       public Boolean apply(WebDriver driver) {
+        actualValue = null;
+        error = null;
         try {
-          String elementText = element.getAttribute("value");
-          if (elementText != null) {
-            return elementText.contains(text);
-          }
-          return false;
+          actualValue = element.getAttribute("value");
+          return actualValue != null && actualValue.contains(expectedValue);
         } catch (StaleElementReferenceException e) {
+          error = e;
           return false;
         }
       }
 
       @Override
       public String toString() {
-        return String.format("text ('%s') to be the value of element %s", text, element);
+        if (error != null) {
+          return String.format(
+              "element \"value\" attribute to contain \"%s\", but... %s.",
+              expectedValue, shortDescription(error));
+        }
+        return String.format(
+            "element \"value\" attribute to contain \"%s\". Current value: \"%s\".",
+            expectedValue, actualValue);
       }
     };
   }
@@ -422,30 +517,40 @@ public class ExpectedConditions {
    * attribute.
    *
    * @param locator used to find the element
-   * @param text to be present in the value attribute of the element found by the locator
-   * @return true once the value attribute of the first element located by locator contains the
-   *     given text
+   * @param expectedValue to be present in the value attribute of the element found by the locator
+   * @return true once the value attribute of the first element found by locator contains the given
+   *     text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElementValue(
-      final By locator, final String text) {
-
+      final By locator, final String expectedValue) {
     return new ExpectedCondition<>() {
+      private @Nullable String actualValue;
+      private @Nullable WebDriverException error;
+
       @Override
       public Boolean apply(WebDriver driver) {
+        actualValue = null;
+        error = null;
         try {
-          String elementText = driver.findElement(locator).getAttribute("value");
-          if (elementText != null) {
-            return elementText.contains(text);
-          }
-          return false;
-        } catch (StaleElementReferenceException e) {
+          actualValue = driver.findElement(locator).getAttribute("value");
+          return actualValue != null && actualValue.contains(expectedValue);
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
+          error = e;
           return false;
         }
       }
 
       @Override
       public String toString() {
-        return String.format("text ('%s') to be the value of element located by %s", text, locator);
+        if (error != null) {
+          return String.format(
+              "element found by %s to have \"value\" attribute containing \"%s\", but... %s.",
+              locator, expectedValue, shortDescription(error));
+        }
+        return String.format(
+            "element found by %s to have \"value\" attribute containing \"%s\". Current value:"
+                + " \"%s\".",
+            locator, expectedValue, actualValue);
       }
     };
   }
@@ -461,18 +566,24 @@ public class ExpectedConditions {
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
       final String frameLocator) {
     return new ExpectedCondition<>() {
+      private @Nullable NoSuchFrameException error;
+
       @Override
       public @Nullable WebDriver apply(WebDriver driver) {
+        error = null;
         try {
           return driver.switchTo().frame(frameLocator);
         } catch (NoSuchFrameException e) {
+          error = e;
           return null;
         }
       }
 
       @Override
       public String toString() {
-        return "frame to be available: " + frameLocator;
+        return String.format(
+            "frame with name or id \"%s\" to be available, but... %s.",
+            frameLocator, shortDescription(error));
       }
     };
   }
@@ -488,45 +599,55 @@ public class ExpectedConditions {
   public static ExpectedCondition<@Nullable WebDriver> frameToBeAvailableAndSwitchToIt(
       final By locator) {
     return new ExpectedCondition<@Nullable WebDriver>() {
+      private @Nullable NotFoundException error;
+
       @Override
       public @Nullable WebDriver apply(WebDriver driver) {
+        error = null;
         try {
-          return driver.switchTo().frame(driver.findElement(locator));
-        } catch (NoSuchFrameException e) {
+          WebElement frame = driver.findElement(locator);
+          return driver.switchTo().frame(frame);
+        } catch (NoSuchElementException | NoSuchFrameException e) {
+          error = e;
           return null;
         }
       }
 
       @Override
       public String toString() {
-        return "frame to be available: " + locator;
+        return String.format(
+            "frame to be available: %s, but... %s.", locator, shortDescription(error));
       }
     };
   }
 
   /**
-   * An expectation for checking whether the given frame is available to switch to.
+   * An expectation for checking whether a frame with given index is available to switch to.
    *
    * <p>If the frame is available it switches the given driver to the specified frameIndex.
    *
-   * @param frameLocator used to find the frame (index)
+   * @param frameIndex the number of the frame among all frames (index)
    * @return WebDriver instance after frame has been switched
    */
-  public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
-      final int frameLocator) {
+  public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(final int frameIndex) {
     return new ExpectedCondition<>() {
+      private @Nullable NoSuchFrameException error;
+
       @Override
       public @Nullable WebDriver apply(WebDriver driver) {
+        error = null;
         try {
-          return driver.switchTo().frame(frameLocator);
+          return driver.switchTo().frame(frameIndex);
         } catch (NoSuchFrameException e) {
+          error = e;
           return null;
         }
       }
 
       @Override
       public String toString() {
-        return "frame to be available: " + frameLocator;
+        return String.format(
+            "frame #%s to be available, but... %s.", frameIndex, shortDescription(error));
       }
     };
   }
@@ -536,24 +657,28 @@ public class ExpectedConditions {
    *
    * <p>If the frame is available it switches the given driver to the specified web element.
    *
-   * @param frameLocator used to find the frame (web element)
+   * @param frame used to find the frame (web element)
    * @return WebDriver instance after frame has been switched
    */
   public static ExpectedCondition<@Nullable WebDriver> frameToBeAvailableAndSwitchToIt(
-      final WebElement frameLocator) {
+      final WebElement frame) {
     return new ExpectedCondition<@Nullable WebDriver>() {
+      private @Nullable NoSuchFrameException error;
+
       @Override
       public @Nullable WebDriver apply(WebDriver driver) {
+        error = null;
         try {
-          return driver.switchTo().frame(frameLocator);
+          return driver.switchTo().frame(frame);
         } catch (NoSuchFrameException e) {
+          error = e;
           return null;
         }
       }
 
       @Override
       public String toString() {
-        return "frame to be available: " + frameLocator;
+        return String.format("frame to be available, but... %s.", shortDescription(error));
       }
     };
   }
@@ -569,17 +694,15 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          return !(driver.findElement(locator).isDisplayed());
-        } catch (NoSuchElementException | StaleElementReferenceException e) {
-          // Returns true because the element is not present in DOM. The
-          // try block checks if the element is present but is invisible.
+          return !driver.findElement(locator).isDisplayed();
+        } catch (NoSuchElementException | StaleElementReferenceException elementDisappeared) {
           return true;
         }
       }
 
       @Override
       public String toString() {
-        return "element to no longer be visible: " + locator;
+        return String.format("element found by %s to become invisible", locator);
       }
     };
   }
@@ -595,24 +718,25 @@ public class ExpectedConditions {
   public static ExpectedCondition<Boolean> invisibilityOfElementWithText(
       final By locator, final String text) {
     return new ExpectedCondition<>() {
+      private @Nullable WebElement visibleElement;
+
       @Override
       public Boolean apply(WebDriver driver) {
-        try {
-          return !driver.findElement(locator).getText().equals(text);
-        } catch (NoSuchElementException e) {
-          // Returns true because the element with text is not present in DOM. The
-          // try block checks if the element is present but is invisible.
-          return true;
-        } catch (StaleElementReferenceException e) {
-          // Returns true because stale element reference implies that element
-          // is no longer visible.
-          return true;
-        }
+        visibleElement = null;
+        visibleElement =
+            driver.findElements(locator).stream()
+                .filter(element -> element.getText().equals(text))
+                .filter(element -> !isInvisible(element))
+                .findAny()
+                .orElse(null);
+        return visibleElement == null;
       }
 
       @Override
       public String toString() {
-        return String.format("element containing '%s' to no longer be visible: %s", text, locator);
+        return String.format(
+            "element with text \"%s\" located by \"%s\" to become invisible: %s",
+            text, locator, visibleElement);
       }
     };
   }
@@ -625,22 +749,31 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<WebElement> elementToBeClickable(final By locator) {
     return new ExpectedCondition<>() {
+      private @Nullable String message;
+
       @Override
       public @Nullable WebElement apply(WebDriver driver) {
-        WebElement element = visibilityOfElementLocated(locator).apply(driver);
+        message = null;
         try {
-          if (element != null && element.isEnabled()) {
-            return element;
+          WebElement element = driver.findElement(locator);
+          if (!element.isDisplayed()) {
+            message = "was not visible";
+            return null;
+          } else if (!element.isEnabled()) {
+            message = "was not enabled";
+            return null;
           }
-          return null;
-        } catch (StaleElementReferenceException e) {
+          return element;
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
+          message = "was not found: " + shortDescription(e);
           return null;
         }
       }
 
       @Override
       public String toString() {
-        return "element to be clickable: " + locator;
+        return String.format(
+            "element found by %s to be clickable, but the element %s.", locator, message);
       }
     };
   }
@@ -653,23 +786,29 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<WebElement> elementToBeClickable(final WebElement element) {
     return new ExpectedCondition<>() {
+      private @Nullable String message;
 
       @Override
       public @Nullable WebElement apply(WebDriver driver) {
-        WebElement visibleElement = visibilityOf(element).apply(driver);
+        message = null;
         try {
-          if (visibleElement != null && visibleElement.isEnabled()) {
-            return visibleElement;
+          if (!element.isDisplayed()) {
+            message = "was not visible";
+            return null;
+          } else if (!element.isEnabled()) {
+            message = "was not enabled";
+            return null;
           }
-          return null;
-        } catch (StaleElementReferenceException e) {
+          return element;
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
+          message = "was not found: " + shortDescription(e);
           return null;
         }
       }
 
       @Override
       public String toString() {
-        return "element to be clickable: " + element;
+        return String.format("element to be clickable, but the element %s.", message);
       }
     };
   }
@@ -757,7 +896,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("element (%s) to %sbe selected", element, (selected ? "" : "not "));
+        return String.format(
+            "element (%s) %s selected", element, (selected ? "to be" : "not to be"));
       }
     };
   }
@@ -769,20 +909,28 @@ public class ExpectedConditions {
   public static ExpectedCondition<Boolean> elementSelectionStateToBe(
       final By locator, final boolean selected) {
     return new ExpectedCondition<>() {
+      private @Nullable WebDriverException error;
+
       @Override
       public Boolean apply(WebDriver driver) {
+        error = null;
         try {
           WebElement element = driver.findElement(locator);
           return element.isSelected() == selected;
-        } catch (StaleElementReferenceException e) {
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
+          error = e;
           return false;
         }
       }
 
       @Override
       public String toString() {
-        return String.format(
-            "element found by %s to %sbe selected", locator, (selected ? "" : "not "));
+        String message =
+            String.format(
+                "element found by %s %s selected", locator, (selected ? "to be" : "not to be"));
+        return error == null
+            ? message
+            : String.format("%s, but... %s.", message, shortDescription(error));
       }
     };
   }
@@ -807,18 +955,33 @@ public class ExpectedConditions {
 
   public static ExpectedCondition<Boolean> numberOfWindowsToBe(final int expectedNumberOfWindows) {
     return new ExpectedCondition<>() {
+      private int actualNumberOfWindows;
+      private @Nullable WebDriverException error;
+
       @Override
       public Boolean apply(WebDriver driver) {
+        error = null;
+        actualNumberOfWindows = -1;
         try {
-          return driver.getWindowHandles().size() == expectedNumberOfWindows;
+          actualNumberOfWindows = driver.getWindowHandles().size();
+          return actualNumberOfWindows == expectedNumberOfWindows;
         } catch (WebDriverException e) {
+          error = e;
+          LOG.log(Level.FINE, "Failed to check number of windows", e);
           return false;
         }
       }
 
       @Override
       public String toString() {
-        return "number of open windows to be " + expectedNumberOfWindows;
+        if (error != null) {
+          return String.format(
+              "number of open windows to be %s, but... %s.",
+              expectedNumberOfWindows, shortDescription(error));
+        }
+        return String.format(
+            "number of open windows to be %s, but was: %s",
+            expectedNumberOfWindows, actualNumberOfWindows);
       }
     };
   }
@@ -842,7 +1005,7 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return "condition to not be valid: " + condition;
+        return "condition not to be valid: " + condition;
       }
     };
   }
@@ -851,9 +1014,9 @@ public class ExpectedConditions {
    * An expectation for checking WebElement with given locator has attribute with a specific value
    *
    * @param locator used to find the element
-   * @param attribute used to define css or html attribute
+   * @param attribute used to define CSS value or HTML attribute
    * @param value used as expected attribute value
-   * @return Boolean true when element has css or html attribute with the value
+   * @return Boolean true when element has CSS value or HTML attribute with the value
    */
   public static ExpectedCondition<Boolean> attributeToBe(
       final By locator, final String attribute, final String value) {
@@ -863,18 +1026,16 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         WebElement element = driver.findElement(locator);
-        currentValue = element.getAttribute(attribute);
-        if (currentValue == null || currentValue.isEmpty()) {
-          currentValue = element.getCssValue(attribute);
-        }
+        currentValue = getAttributeOrCssValue(element, attribute).orElse(null);
         return value.equals(currentValue);
       }
 
       @Override
       public String toString() {
         return String.format(
-            "element found by %s to have value \"%s\". Current value: \"%s\"",
-            locator, value, currentValue);
+            "element found by %s to have attribute or CSS value \"%s\"=\"%s\". Current value:"
+                + " \"%s\".",
+            locator, attribute, value, currentValue);
       }
     };
   }
@@ -883,28 +1044,42 @@ public class ExpectedConditions {
    * An expectation for checking WebElement with given locator has specific text
    *
    * @param locator used to find the element
-   * @param value used as expected text
+   * @param expectedText used as expected text
    * @return Boolean true when element has text value equal to @value
    */
-  public static ExpectedCondition<Boolean> textToBe(final By locator, final String value) {
+  public static ExpectedCondition<Boolean> textToBe(final By locator, final String expectedText) {
     return new ExpectedCondition<>() {
-      private @Nullable String currentValue = null;
+      private @Nullable String actualText = null;
+      private @Nullable Exception error = null;
 
       @Override
       public Boolean apply(WebDriver driver) {
+        actualText = null;
+        error = null;
+
         try {
-          currentValue = driver.findElement(locator).getText();
-          return currentValue.equals(value);
-        } catch (Exception e) {
+          actualText = driver.findElement(locator).getText();
+          return actualText.equals(expectedText);
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
+          error = e;
+          return false;
+        } catch (Exception e) { // TODO Remove `catch (Exception e)`
+          LOG.log(Level.WARNING, "Failed to check element text", e);
+          error = e;
           return false;
         }
       }
 
       @Override
       public String toString() {
+        if (error != null) {
+          return String.format(
+              "element found by %s to have text \"%s\", but... %s.",
+              locator, expectedText, shortDescription(error));
+        }
         return String.format(
-            "element found by %s to have text \"%s\". Current text: \"%s\"",
-            locator, value, currentValue);
+            "element found by %s to have text \"%s\". Current text: \"%s\".",
+            locator, expectedText, actualText);
       }
     };
   }
@@ -918,23 +1093,37 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<Boolean> textMatches(final By locator, final Pattern pattern) {
     return new ExpectedCondition<>() {
-      private @Nullable String currentValue = null;
+      private @Nullable String actualText;
+      private @Nullable Exception error;
 
       @Override
       public Boolean apply(WebDriver driver) {
+        actualText = null;
+        error = null;
+
         try {
-          currentValue = driver.findElement(locator).getText();
-          return pattern.matcher(currentValue).find();
-        } catch (Exception e) {
+          actualText = driver.findElement(locator).getText();
+          return pattern.matcher(actualText).find();
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
+          error = e;
+          return false;
+        } catch (Exception e) { // TODO Remove `catch (Exception e)`
+          LOG.log(Level.WARNING, "Failed to check element text", e);
+          error = e;
           return false;
         }
       }
 
       @Override
       public String toString() {
+        if (error != null) {
+          return String.format(
+              "text of element found by %s to match pattern \"%s\", but... %s.",
+              locator, pattern.pattern(), shortDescription(error));
+        }
         return String.format(
-            "text found by %s to match pattern \"%s\". Current text: \"%s\"",
-            locator, pattern.pattern(), currentValue);
+            "text of element found by %s to match pattern \"%s\". Current text: \"%s\".",
+            locator, pattern.pattern(), actualText);
       }
     };
   }
@@ -944,26 +1133,26 @@ public class ExpectedConditions {
    * number
    *
    * @param locator used to find the element
-   * @param number used to define minimum number of elements
+   * @param expectedNumber used to define minimum number of elements
    * @return Boolean true when size of elements list is more than defined
    */
   public static ExpectedCondition<@Nullable List<WebElement>> numberOfElementsToBeMoreThan(
-      final By locator, final Integer number) {
+      final By locator, final Integer expectedNumber) {
     return new ExpectedCondition<@Nullable List<WebElement>>() {
-      private Integer currentNumber = 0;
+      private Integer actualNumber = 0;
 
       @Override
       public @Nullable List<WebElement> apply(WebDriver webDriver) {
         List<WebElement> elements = webDriver.findElements(locator);
-        currentNumber = elements.size();
-        return currentNumber > number ? elements : null;
+        actualNumber = elements.size();
+        return actualNumber > expectedNumber ? elements : null;
       }
 
       @Override
       public String toString() {
         return String.format(
-            "number of elements found by %s to be more than \"%s\". Current number: \"%s\"",
-            locator, number, currentNumber);
+            "number of elements found by %s to be more than %s. Found: %s element(s).",
+            locator, expectedNumber, actualNumber);
       }
     };
   }
@@ -991,7 +1180,7 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format(
-            "number of elements found by %s to be less than \"%s\". Current number: \"%s\"",
+            "number of elements found by %s to be less than %s. Found: %s element(s).",
             locator, number, currentNumber);
       }
     };
@@ -1001,26 +1190,28 @@ public class ExpectedConditions {
    * An expectation for checking number of WebElements with given locator
    *
    * @param locator used to find the element
-   * @param number used to define number of elements
+   * @param expectedNumberOfElements used to define number of elements
    * @return Boolean true when size of elements list is equal to defined
    */
   public static ExpectedCondition<@Nullable List<WebElement>> numberOfElementsToBe(
-      final By locator, final Integer number) {
+      final By locator, final Integer expectedNumberOfElements) {
     return new ExpectedCondition<@Nullable List<WebElement>>() {
-      private Integer currentNumber = 0;
+      private Integer actualNumberOfElements = -1;
 
       @Override
       public @Nullable List<WebElement> apply(WebDriver webDriver) {
+        actualNumberOfElements = -1;
+
         List<WebElement> elements = webDriver.findElements(locator);
-        currentNumber = elements.size();
-        return currentNumber.equals(number) ? elements : null;
+        actualNumberOfElements = elements.size();
+        return actualNumberOfElements.equals(expectedNumberOfElements) ? elements : null;
       }
 
       @Override
       public String toString() {
         return String.format(
-            "number of elements found by %s to be \"%s\". Current number: \"%s\"",
-            locator, number, currentNumber);
+            "number of elements found by %s to be %s. Found: %s element(s).",
+            locator, expectedNumberOfElements, actualNumberOfElements);
       }
     };
   }
@@ -1030,24 +1221,25 @@ public class ExpectedConditions {
    *
    * @param element used to check its parameters
    * @param property property name
-   * @param value used as expected property value
+   * @param expectedValue used as expected property value
    * @return Boolean true when element has DOM property with the value
    */
   public static ExpectedCondition<Boolean> domPropertyToBe(
-      final WebElement element, final String property, final String value) {
+      final WebElement element, final String property, final String expectedValue) {
     return new ExpectedCondition<>() {
-      private @Nullable String currentValue = null;
+      private @Nullable String actualValue = null;
 
       @Override
       public Boolean apply(WebDriver driver) {
-        currentValue = element.getDomProperty(property);
-        return value.equals(currentValue);
+        actualValue = element.getDomProperty(property);
+        return expectedValue.equals(actualValue);
       }
 
       @Override
       public String toString() {
         return String.format(
-            "DOM property '%s' to be '%s'. Current value: '%s'", property, value, currentValue);
+            "DOM property \"%s\" to be \"%s\". Current value: \"%s\".",
+            property, expectedValue, actualValue);
       }
     };
   }
@@ -1074,7 +1266,8 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format(
-            "DOM attribute '%s' to be '%s'. Current value: '%s'", attribute, value, currentValue);
+            "DOM attribute \"%s\" to be \"%s\". Current value: \"%s\".",
+            attribute, value, currentValue);
       }
     };
   }
@@ -1084,28 +1277,26 @@ public class ExpectedConditions {
    *
    * @param element used to check its parameters
    * @param attribute used to define css or html attribute
-   * @param value used as expected attribute value
-   * @return Boolean true when element has css or html attribute with the value
+   * @param expectedValue used as expected attribute value
+   * @return Boolean true when element has CSS property or HTML attribute with the value
    */
   public static ExpectedCondition<Boolean> attributeToBe(
-      final WebElement element, final String attribute, final String value) {
+      final WebElement element, final String attribute, final String expectedValue) {
     return new ExpectedCondition<>() {
-      private @Nullable String currentValue = null;
+      private @Nullable String actualValue;
 
       @Override
       public Boolean apply(WebDriver driver) {
-        currentValue = element.getAttribute(attribute);
-        if (currentValue == null || currentValue.isEmpty()) {
-          currentValue = element.getCssValue(attribute);
-        }
-        return value.equals(currentValue);
+        actualValue = null;
+        actualValue = getAttributeOrCssValue(element, attribute).orElse(null);
+        return expectedValue.equals(actualValue);
       }
 
       @Override
       public String toString() {
         return String.format(
-            "Attribute or property '%s' to be '%s'. Current value: '%s'",
-            attribute, value, currentValue);
+            "attribute or CSS value \"%s\"=\"%s\". Current value: \"%s\".",
+            attribute, expectedValue, actualValue);
       }
     };
   }
@@ -1116,22 +1307,26 @@ public class ExpectedConditions {
    *
    * @param element used to check its parameters
    * @param attribute used to define css or html attribute
-   * @param value used as expected attribute value
-   * @return Boolean true when element has css or html attribute which contains the value
+   * @param expectedValue used as expected attribute value
+   * @return Boolean true when element has CSS property or HTML attribute which contains the value
    */
   public static ExpectedCondition<Boolean> attributeContains(
-      final WebElement element, final String attribute, final String value) {
+      final WebElement element, final String attribute, final String expectedValue) {
     return new ExpectedCondition<>() {
+      private @Nullable String actualValue;
+
       @Override
       public Boolean apply(WebDriver driver) {
-        return getAttributeOrCssValue(element, attribute)
-            .map(seen -> seen.contains(value))
-            .orElse(false);
+        actualValue = null;
+        actualValue = getAttributeOrCssValue(element, attribute).orElse(null);
+        return actualValue != null && actualValue.contains(expectedValue);
       }
 
       @Override
       public String toString() {
-        return String.format("value to contain \"%s\".", value);
+        return String.format(
+            "attribute or CSS value \"%s\" to contain \"%s\". Current value: \"%s\".",
+            attribute, expectedValue, actualValue);
       }
     };
   }
@@ -1141,23 +1336,37 @@ public class ExpectedConditions {
    * value
    *
    * @param locator used to define WebElement to check its parameters
-   * @param attribute used to define css or html attribute
-   * @param value used as expected attribute value
+   * @param attributeName used to define css or html attribute
+   * @param expectedValue used as expected attribute value
    * @return Boolean true when element has css or html attribute which contains the value
    */
   public static ExpectedCondition<Boolean> attributeContains(
-      final By locator, final String attribute, final String value) {
+      final By locator, final String attributeName, final String expectedValue) {
     return new ExpectedCondition<>() {
+      private Optional<String> actualValue = Optional.empty();
+
       @Override
       public Boolean apply(WebDriver driver) {
-        return getAttributeOrCssValue(driver.findElement(locator), attribute)
-            .map(seen -> seen.contains(value))
-            .orElse(false);
+        actualValue = Optional.empty();
+        actualValue = getAttributeOrCssValue(driver.findElement(locator), attributeName);
+        return actualValue.map(seen -> seen.contains(expectedValue)).orElse(false);
       }
 
       @Override
       public String toString() {
-        return String.format("value found by %s to contain \"%s\".", locator, value);
+        return actualValue
+            .map(
+                value ->
+                    String.format(
+                        "element found by %s to have attribute or CSS value \"%s\" containing"
+                            + " \"%s\", but the attribute had value \"%s\".",
+                        locator, attributeName, expectedValue, value))
+            .orElseGet(
+                () ->
+                    String.format(
+                        "element found by %s to have attribute or CSS value \"%s\" containing"
+                            + " \"%s\", but such attribute was not found.",
+                        locator, attributeName, expectedValue));
       }
     };
   }
@@ -1167,11 +1376,21 @@ public class ExpectedConditions {
    *
    * @param element used to check its parameters
    * @param attribute used to define css or html attribute
-   * @return Boolean true when element has css or html attribute with non empty value
+   * @return Boolean true when element has CSS value or HTML attribute with non-empty value
    */
   public static ExpectedCondition<Boolean> attributeToBeNotEmpty(
       final WebElement element, final String attribute) {
-    return driver -> getAttributeOrCssValue(element, attribute).isPresent();
+    return new ExpectedCondition<>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        return getAttributeOrCssValue(element, attribute).isPresent();
+      }
+
+      @Override
+      public String toString() {
+        return String.format("attribute or CSS value \"%s\" not to be empty", attribute);
+      }
+    };
   }
 
   private static Optional<String> getAttributeOrCssValue(WebElement element, String name) {
@@ -1188,32 +1407,51 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking child WebElement as a part of parent element to be visible
+   * An expectation for checking all child elements inside the parent element to be visible
    *
-   * @param parent used to check parent element. For example table with locator By.id("fish")
-   * @param childLocator used to find the ultimate child element.
+   * @param parent used to check parent element. For example, table with locator {@code
+   *     By.id("fish")}.
+   * @param childLocator used to find the child elements.
    * @return visible nested element
    */
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfNestedElementsLocatedBy(
       final By parent, final By childLocator) {
     return new ExpectedCondition<@Nullable List<WebElement>>() {
+      private int indexOfInvisibleElement = -1;
+      private @Nullable WebElement invisibleChild;
 
       @Override
       public @Nullable List<WebElement> apply(WebDriver driver) {
+        invisibleChild = null;
+        indexOfInvisibleElement = -1;
+
         WebElement current = driver.findElement(parent);
 
         List<WebElement> allChildren = current.findElements(childLocator);
-        // The original code only checked the first element. Fair enough.
-        if (!allChildren.isEmpty() && allChildren.get(0).isDisplayed()) {
-          return allChildren;
+        if (allChildren.isEmpty()) {
+          return null;
         }
-
-        return null;
+        for (int i = 0; i < allChildren.size(); i++) {
+          if (!allChildren.get(i).isDisplayed()) {
+            indexOfInvisibleElement = i;
+            invisibleChild = allChildren.get(i);
+            return null;
+          }
+        }
+        return allChildren;
       }
 
       @Override
       public String toString() {
-        return String.format("visibility of elements located by %s -> %s", parent, childLocator);
+        if (indexOfInvisibleElement == -1) {
+          return String.format(
+              "visibility of all child elements located by %s -> %s, but no elements were found.",
+              parent, childLocator);
+        }
+        return String.format(
+            "visibility of all child elements located by %s -> %s, but child element #%s was"
+                + " invisible: %s",
+            parent, childLocator, indexOfInvisibleElement, invisibleChild);
       }
     };
   }
@@ -1221,84 +1459,120 @@ public class ExpectedConditions {
   /**
    * An expectation for checking child WebElement as a part of parent element to be visible
    *
-   * @param element used as parent element. For example table with locator By.xpath("//table")
-   * @param childLocator used to find child element. For example td By.xpath("./tr/td")
+   * @param element used as parent element. For example, table with locator {@code
+   *     By.xpath("//table")}.
+   * @param childLocator used to find child element. For example, td with locator {@code
+   *     By.xpath("./tr/td")}.
    * @return visible sub-element
    */
   public static ExpectedCondition<@Nullable List<WebElement>> visibilityOfNestedElementsLocatedBy(
       final WebElement element, final By childLocator) {
     return new ExpectedCondition<@Nullable List<WebElement>>() {
+      private int indexOfInvisibleElement = -1;
+      private @Nullable WebElement invisibleChild;
 
       @Override
       public @Nullable List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> allChildren = element.findElements(childLocator);
-        // The original code only checked the visibility of the first element.
-        if (!allChildren.isEmpty() && allChildren.get(0).isDisplayed()) {
-          return allChildren;
-        }
+        invisibleChild = null;
+        indexOfInvisibleElement = -1;
 
-        return null;
+        List<WebElement> allChildren = element.findElements(childLocator);
+
+        if (allChildren.isEmpty()) {
+          return null;
+        }
+        for (int i = 0; i < allChildren.size(); i++) {
+          if (!allChildren.get(i).isDisplayed()) {
+            indexOfInvisibleElement = i;
+            invisibleChild = allChildren.get(i);
+            return null;
+          }
+        }
+        return allChildren;
       }
 
       @Override
       public String toString() {
-        return String.format("visibility of element located by %s -> %s", element, childLocator);
+        if (indexOfInvisibleElement == -1) {
+          return String.format(
+              "visibility of all child elements located by %s -> %s, but no elements were found.",
+              element, childLocator);
+        }
+        return String.format(
+            "visibility of all child elements located by %s -> %s, but child element #%s was"
+                + " invisible: %s",
+            element, childLocator, indexOfInvisibleElement, invisibleChild);
       }
     };
   }
 
   /**
-   * An expectation for checking child WebElement as a part of parent element to present
+   * An expectation for parent element to have a child with given locator (either visible or hidden)
    *
-   * @param locator used to check parent element. For example table with locator By.xpath("//table")
-   * @param childLocator used to find child element. For example td By.xpath("./tr/td")
+   * @param locator used to check parent element. For example, table with locator {@code
+   *     By.xpath("//table")}.
+   * @param childLocator used to find child element. For example, td with locator {@code
+   *     By.xpath("./tr/td")}.
    * @return sub-element
    */
-  public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
+  public static ExpectedCondition<@Nullable WebElement> presenceOfNestedElementLocatedBy(
       final By locator, final By childLocator) {
     return new ExpectedCondition<>() {
 
       @Override
-      public WebElement apply(WebDriver webDriver) {
-        return webDriver.findElement(locator).findElement(childLocator);
+      public @Nullable WebElement apply(WebDriver webDriver) {
+        WebElement parent = webDriver.findElement(locator);
+        try {
+          return parent.findElement(childLocator);
+        } catch (StaleElementReferenceException | NoSuchElementException notFound) {
+          return null;
+        }
       }
 
       @Override
       public String toString() {
-        return String.format("visibility of element located by %s -> %s", locator, childLocator);
+        return String.format("presence of element found by %s -> %s", locator, childLocator);
       }
     };
   }
 
   /**
-   * An expectation for checking child WebElement as a part of parent element to be present
+   * An expectation for checking that given parent element contains a child element with given
+   * locator (either visible or hidden).
    *
    * @param element used as parent element
-   * @param childLocator used to find child element. For example td By.xpath("./tr/td")
+   * @param childLocator used to find child element. For example, td with locator {@code
+   *     By.xpath("./tr/td")}.
    * @return sub-element
    */
-  public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
+  public static ExpectedCondition<@Nullable WebElement> presenceOfNestedElementLocatedBy(
       final WebElement element, final By childLocator) {
 
     return new ExpectedCondition<>() {
-
       @Override
+      @Nullable
       public WebElement apply(WebDriver webDriver) {
-        return element.findElement(childLocator);
+        try {
+          return element.findElement(childLocator);
+        } catch (StaleElementReferenceException | NoSuchElementException notFound) {
+          return null;
+        }
       }
 
       @Override
       public String toString() {
-        return String.format("visibility of element located by %s", childLocator);
+        return String.format("presence of child element found by %s", childLocator);
       }
     };
   }
 
   /**
-   * An expectation for checking child WebElement as a part of parent element to present
+   * An expectation for parent element to have some children with locator (either visible or hidden)
    *
-   * @param parent used to check parent element. For example table with locator By.xpath("//table")
-   * @param childLocator used to find child element. For example td By.xpath("./tr/td")
+   * @param parent used to check parent element. For example, table with locator {@code
+   *     By.xpath("//table")}.
+   * @param childLocator used to find child element. For example, td with locator {@code
+   *     By.xpath("./tr/td")}.
    * @return sub-element
    */
   public static ExpectedCondition<@Nullable List<WebElement>> presenceOfNestedElementsLocatedBy(
@@ -1314,7 +1588,7 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("visibility of element located by %s -> %s", parent, childLocator);
+        return String.format("presence of element(s) located by %s -> %s", parent, childLocator);
       }
     };
   }
@@ -1338,15 +1612,29 @@ public class ExpectedConditions {
   public static ExpectedCondition<Boolean> invisibilityOfAllElements(
       final List<WebElement> elements) {
     return new ExpectedCondition<>() {
+      private int indexOfVisibleElement;
+      private @Nullable WebElement visibleElement;
 
       @Override
       public Boolean apply(WebDriver webDriver) {
-        return elements.stream().allMatch(ExpectedConditions::isInvisible);
+        visibleElement = null;
+        indexOfVisibleElement = -1;
+
+        for (int i = 0; i < elements.size(); i++) {
+          if (!isInvisible(elements.get(i))) {
+            indexOfVisibleElement = i;
+            visibleElement = elements.get(i);
+            return false;
+          }
+        }
+        return true;
       }
 
       @Override
       public String toString() {
-        return "invisibility of all elements " + elements;
+        return String.format(
+            "all elements to become invisible, but element #%s was visible: %s",
+            indexOfVisibleElement, visibleElement);
       }
     };
   }
@@ -1367,7 +1655,7 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return "invisibility of " + element;
+        return String.format("element %s to become invisible", element);
       }
     };
   }
@@ -1393,33 +1681,25 @@ public class ExpectedConditions {
     return new ExpectedCondition<>() {
       @Override
       public Boolean apply(WebDriver driver) {
-        RuntimeException lastException = null;
         for (ExpectedCondition<?> condition : conditions) {
           try {
             Object result = condition.apply(driver);
-            if (result != null) {
-              if (result instanceof Boolean) {
-                if (Boolean.TRUE.equals(result)) {
-                  return true;
-                }
-              } else {
-                return true;
-              }
+            if (Boolean.TRUE.equals(result) || result != null && !(result instanceof Boolean)) {
+              return true;
             }
-          } catch (RuntimeException e) {
-            lastException = e;
+          } catch (StaleElementReferenceException ignore) {
           }
-        }
-        if (lastException != null) {
-          throw lastException;
         }
         return false;
       }
 
       @Override
       public String toString() {
-        StringBuilder message = new StringBuilder("at least one condition to be valid: ");
-        Joiner.on(" || ").appendTo(message, conditions);
+        StringBuilder message =
+            new StringBuilder("at least one condition to be valid:").append(lineSeparator());
+        for (int i = 0; i < conditions.length; i++) {
+          message.append(i + 1).append(". ").append(conditions[i]).append(lineSeparator());
+        }
         return message.toString();
       }
     };
@@ -1435,18 +1715,21 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<Boolean> and(final ExpectedCondition<?>... conditions) {
     return new ExpectedCondition<>() {
+      private @Nullable ExpectedCondition<?> failedCondition;
+      private int failedConditionIndex = -1;
+
       @Override
       public Boolean apply(WebDriver driver) {
-        for (ExpectedCondition<?> condition : conditions) {
+        failedConditionIndex = -1;
+        failedCondition = null;
+
+        for (int i = 0; i < conditions.length; i++) {
+          ExpectedCondition<?> condition = conditions[i];
           Object result = condition.apply(driver);
 
-          if (result instanceof Boolean) {
-            if (Boolean.FALSE.equals(result)) {
-              return false;
-            }
-          }
-
-          if (result == null) {
+          if (result == null || Boolean.FALSE.equals(result)) {
+            failedConditionIndex = i;
+            failedCondition = condition;
             return false;
           }
         }
@@ -1455,9 +1738,9 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        StringBuilder message = new StringBuilder("all conditions to be valid: ");
-        Joiner.on(" && ").appendTo(message, conditions);
-        return message.toString();
+        return String.format(
+            "all conditions to be valid, but condition #%s failed:%nExpected %s",
+            failedConditionIndex, failedCondition);
       }
     };
   }
@@ -1472,19 +1755,31 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<Boolean> javaScriptThrowsNoExceptions(final String javaScript) {
     return new ExpectedCondition<>() {
+      private @Nullable WebDriverException error;
+
       @Override
       public Boolean apply(WebDriver driver) {
+        error = null;
         try {
           ((JavascriptExecutor) driver).executeScript(javaScript);
           return true;
-        } catch (WebDriverException e) {
+        } catch (JavascriptException jsError) {
+          error = jsError;
+          return false;
+        } catch (WebDriverException unexpectedException) {
+          error = unexpectedException;
+          LOG.log(
+              Level.WARNING,
+              String.format("Failed to execute JavaScript `%s`", javaScript),
+              unexpectedException);
           return false;
         }
       }
 
       @Override
       public String toString() {
-        return String.format("js %s to be executable", javaScript);
+        return String.format(
+            "JS code `%s` to be executable, but... %s", javaScript, shortDescription(error));
       }
     };
   }
@@ -1497,28 +1792,46 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<@Nullable Object> jsReturnsValue(final String javaScript) {
     return new ExpectedCondition<@Nullable Object>() {
+      private @Nullable WebDriverException error;
+
       @Override
       public @Nullable Object apply(WebDriver driver) {
+        error = null;
         try {
           Object value = ((JavascriptExecutor) driver).executeScript(javaScript);
 
-          if (value instanceof List) {
-            return ((List<?>) value).isEmpty() ? null : value;
+          if (value instanceof Collection<?>) {
+            return ((Collection<?>) value).isEmpty() ? null : value;
           }
           if (value instanceof String) {
             return ((String) value).isEmpty() ? null : value;
           }
 
           return value;
-        } catch (WebDriverException e) {
+        } catch (JavascriptException jsError) {
+          error = jsError;
+          return null;
+        } catch (WebDriverException unexpectedException) {
+          error = unexpectedException;
+          LOG.log(
+              Level.WARNING,
+              String.format("Failed to execute JavaScript `%s`", javaScript),
+              unexpectedException);
           return null;
         }
       }
 
       @Override
       public String toString() {
-        return String.format("js %s to be executable", javaScript);
+        return String.format(
+            "JS code `%s` to return a value, but... %s", javaScript, shortDescription(error));
       }
     };
+  }
+
+  private static String shortDescription(@Nullable Exception exception) {
+    if (exception == null) return "";
+    String message = requireNonNullElse(exception.getMessage(), "null");
+    return exception.getClass().getName() + ": " + message.split("\\n", 2)[0];
   }
 }

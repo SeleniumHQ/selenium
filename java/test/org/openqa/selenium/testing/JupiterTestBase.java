@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -73,7 +74,7 @@ public abstract class JupiterTestBase {
       } catch (IllegalStateException ex) {
         // this should not happen with bazel, a new JVM is used for each class
         // the annotation is on class level, so we should never see this
-        LOG.info("appServer is restarted with secureServer=true");
+        LOG.log(Level.WARNING, "appServer is restarted with secureServer=true", ex);
         environment.stop();
         environment = new InProcessTestEnvironment(true);
       }

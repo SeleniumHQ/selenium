@@ -763,6 +763,8 @@ public class LocalNode extends Node implements Closeable {
         return listDownloadedFiles(downloadsDirectory);
       }
       if (req.getMethod().equals(HttpMethod.GET)) {
+        // Left here for backward compatibility.
+        // Remove this IF in Selenium 4.41, 4.42 or 4.43
         return getDownloadedFile(downloadsDirectory, extractFileName(req));
       }
       if (req.getMethod().equals(HttpMethod.DELETE)) {
@@ -837,6 +839,14 @@ public class LocalNode extends Node implements Closeable {
                         "Please specify file to download in payload as {\"name\":"
                             + " \"fileToDownload\"}"));
     File file = findDownloadedFile(downloadsDirectory, filename);
+    String contentType =
+        requireNonNullElseGet(
+            (String) incoming.get("format"), () -> MediaType.JSON_UTF_8.toString());
+
+    if (MediaType.OCTET_STREAM.toString().equalsIgnoreCase(contentType)) {
+      return fileAsBinaryResponse(file);
+    }
+
     String content = Zip.zip(file);
     Map<String, Object> data =
         Map.of(
@@ -847,12 +857,18 @@ public class LocalNode extends Node implements Closeable {
     return new HttpResponse().setContent(asJson(result));
   }
 
+  /** Left here for backward compatibility. Remove this method in Selenium 4.41, 4.42 or 4.43 */
+  @Deprecated
   private HttpResponse getDownloadedFile(File downloadsDirectory, String fileName)
       throws IOException {
     if (fileName.isEmpty()) {
       throw new WebDriverException("Please specify file to download in URL");
     }
     File file = findDownloadedFile(downloadsDirectory, fileName);
+    return fileAsBinaryResponse(file);
+  }
+
+  private HttpResponse fileAsBinaryResponse(File file) throws IOException {
     BasicFileAttributes attributes = readAttributes(file.toPath(), BasicFileAttributes.class);
     return new HttpResponse()
         .setHeader("Content-Type", MediaType.OCTET_STREAM.toString())

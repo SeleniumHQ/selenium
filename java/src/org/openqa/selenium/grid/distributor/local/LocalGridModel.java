@@ -339,7 +339,7 @@ public class LocalGridModel extends GridModel {
       Optional<Slot> maybeSlot =
           node.getSlots().stream().filter(slot -> slotId.equals(slot.getId())).findFirst();
 
-      if (!maybeSlot.isPresent()) {
+      if (maybeSlot.isEmpty()) {
         LOG.warning(
             String.format(
                 "Asked to reserve slot on node %s, but no slot with id %s found",
@@ -437,7 +437,7 @@ public class LocalGridModel extends GridModel {
       Optional<Slot> maybeSlot =
           node.getSlots().stream().filter(slot -> slotId.equals(slot.getId())).findFirst();
 
-      if (!maybeSlot.isPresent()) {
+      if (maybeSlot.isEmpty()) {
         LOG.warning("Grid model and reality have diverged. Unable to find slot " + slotId);
         return;
       }

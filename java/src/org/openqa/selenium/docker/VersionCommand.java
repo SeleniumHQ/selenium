@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.docker;
 
+import static org.openqa.selenium.internal.Maps.sequencedMapOf;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
 import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +29,6 @@ import org.openqa.selenium.docker.client.DockerClient;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -37,14 +36,14 @@ import org.openqa.selenium.remote.http.HttpResponse;
 class VersionCommand {
 
   private static final Json JSON = new Json();
-  // Insertion order matters, and is preserved by ImmutableMap.
+  // Insertion order matters.
   // Map Docker API versions to their implementations
   // 1.48 is for Docker Engine v28+ with multi-platform and gateway priority support
   // 1.44 is for Docker Engine v25+ with multi-network and modern features
   // 1.40 is maintained for backward compatibility with legacy engines (Docker v19.03+)
   // All use the same generic implementation with version-specific adapters
   private static final Map<Version, Function<HttpHandler, DockerProtocol>> SUPPORTED_VERSIONS =
-      ImmutableMap.of(
+      sequencedMapOf(
           new Version("1.48"), client -> new DockerClient(client, "1.48"),
           new Version("1.44"), client -> new DockerClient(client, "1.44"),
           new Version("1.40"), client -> new DockerClient(client, "1.40"));
@@ -91,7 +90,7 @@ class VersionCommand {
         return Optional.empty();
       }
 
-      Map<String, Object> raw = JSON.toType(Contents.string(res), MAP_TYPE);
+      Map<String, Object> raw = JSON.toType(res.contentAsString(), MAP_TYPE);
 
       Version maxVersion = new Version((String) raw.get("ApiVersion"));
       Version minVersion = new Version((String) raw.get("MinAPIVersion"));

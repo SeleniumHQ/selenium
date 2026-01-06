@@ -22,10 +22,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 
 public class SimplePropertyDescriptor {
 
-  private static final Function<Object, Object> GET_CLASS_NAME =
+  private static final Function<Object, @Nullable Object> GET_CLASS_NAME =
       obj -> {
         if (obj == null) {
           return null;
@@ -39,10 +40,11 @@ public class SimplePropertyDescriptor {
       };
 
   private final String name;
-  private final Function<Object, Object> read;
-  private final Method write;
+  private final @Nullable Function<Object, @Nullable Object> read;
+  private final @Nullable Method write;
 
-  public SimplePropertyDescriptor(String name, Function<Object, Object> read, Method write) {
+  public SimplePropertyDescriptor(
+      String name, @Nullable Function<Object, @Nullable Object> read, @Nullable Method write) {
     this.name = name;
     this.read = read;
     this.write = write;
@@ -52,11 +54,11 @@ public class SimplePropertyDescriptor {
     return name;
   }
 
-  public Function<Object, Object> getReadMethod() {
+  public @Nullable Function<Object, @Nullable Object> getReadMethod() {
     return read;
   }
 
-  public Method getWriteMethod() {
+  public @Nullable Method getWriteMethod() {
     return write;
   }
 
@@ -93,7 +95,7 @@ public class SimplePropertyDescriptor {
         readMethod = null;
       }
 
-      Function<Object, Object> read = null;
+      Function<Object, @Nullable Object> read = null;
 
       if (readMethod != null) {
         final Method finalReadMethod = readMethod;
@@ -109,7 +111,7 @@ public class SimplePropertyDescriptor {
             };
       }
 
-      if (readMethod != null || writeMethod != null) {
+      if (propertyName != null && (readMethod != null || writeMethod != null)) {
         SimplePropertyDescriptor descriptor =
             properties.getOrDefault(
                 propertyName, new SimplePropertyDescriptor(propertyName, null, null));

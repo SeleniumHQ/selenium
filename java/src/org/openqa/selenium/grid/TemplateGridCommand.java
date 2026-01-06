@@ -17,11 +17,12 @@
 
 package org.openqa.selenium.grid;
 
+import static org.openqa.selenium.internal.Sets.haveCommonElements;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
-import com.google.common.collect.Sets;
 import java.io.PrintStream;
 import java.util.LinkedHashSet;
 import java.util.ServiceLoader;
@@ -53,7 +54,7 @@ public abstract class TemplateGridCommand implements CliCommand {
     allFlags.add(configFlags);
 
     StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), false)
-        .filter(flags -> !Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty())
+        .filter(flags -> haveCommonElements(getConfigurableRoles(), flags.getRoles()))
         .forEach(allFlags::add);
 
     JCommander.Builder builder = JCommander.newBuilder().programName(getName());

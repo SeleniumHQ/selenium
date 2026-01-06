@@ -27,13 +27,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.internal.Sets.sortedSetOf;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.logging.LogType.BROWSER;
 import static org.openqa.selenium.logging.LogType.CLIENT;
 import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.logging.LogType.SERVER;
 
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -289,7 +289,7 @@ class JsonOutputTest {
     class ToJsonReturnsCollection {
       @SuppressWarnings("unused")
       public Set<String> toJson() {
-        return ImmutableSortedSet.of("cheese", "peas");
+        return sortedSetOf("cheese", "peas");
       }
     }
 

@@ -194,7 +194,7 @@ public class OneShotNode extends Node {
     }
 
     Optional<WebDriver> driver = driverInfo.createDriver(sessionRequest.getDesiredCapabilities());
-    if (!driver.isPresent()) {
+    if (driver.isEmpty()) {
       return Either.left(new WebDriverException("Unable to create a driver instance"));
     }
 

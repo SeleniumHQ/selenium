@@ -63,6 +63,8 @@ module Selenium
 
     def webdriver_url: () -> String
 
+    def status_ok?: () -> bool
+
     def <<: (untyped arg) -> untyped
 
     private

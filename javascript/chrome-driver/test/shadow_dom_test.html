@@ -1,9 +1,11 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>shadow_dom_test.html</title>
   <script type="text/javascript" src="test_bootstrap.js">
   </script>
   <script type="text/javascript">
+    goog.require('goog.math.Coordinate');
     goog.require('goog.testing.jsunit');
     goog.require('webdriver.chrome');
     goog.require('bot.locators');
@@ -29,7 +31,7 @@ document.getElementById('padding').style.height = window.innerHeight;
     <div style="border-style:solid;border-color:green">
       <H3>Parent</H3>
       <H4>Contents</H4>
-      <content></content>
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -40,7 +42,7 @@ document.getElementById('padding').style.height = window.innerHeight;
       As the child of a nested shadow root, this is the most likely
       to go wrong bit of the page, so we'll concentrate our tests here.
       <H4>Contents</H4>
-      <content></content>
+      <slot></slot>
       <input id="textBox" type="text" value="foo"/>
       <input type="button" onClick="buttonWasClicked()" value="button"
           id="button"/>
@@ -48,15 +50,19 @@ document.getElementById('padding').style.height = window.innerHeight;
   </div>
 </template>
 <script type="text/javascript" >
-var parentShadowRoot = document.querySelector('#innerDiv').createShadowRoot();
+var parentShadowRoot = document.querySelector('#innerDiv').attachShadow({mode: 'open'});
 parentShadowRoot.appendChild(document.querySelector('#parentTemplate'
     ).content.cloneNode(true));
 var childShadowRoot = parentShadowRoot.querySelector("#parentDiv"
-    ).createShadowRoot();
+    ).attachShadow({mode: 'open'});
 childShadowRoot.appendChild(document.querySelector('#childTemplate'
     ).content.cloneNode(true));
+// Helper to query into nested shadow roots
+function deepQuery(selector) {
+  return childShadowRoot.querySelector(selector);
+}
 function buttonWasClicked() {
-  document.querySelector("* /deep/ #textBox").value="Button Was Clicked";
+  deepQuery("#textBox").value="Button Was Clicked";
 }
 </script>
 <script type="text/javascript">
@@ -71,8 +77,8 @@ function buttonWasClicked() {
   function testShadowRootIsElementClickable() {
     // check isElementClickable works as expected on elements within a shadow
     // DOM
-    var elemButton = document.querySelector("* /deep/ #button");
-    var elemText = document.querySelector("* /deep/ #textBox");
+    var elemButton = deepQuery("#button");
+    var elemText = deepQuery("#textBox");
 
     // scroll to the element
     webdriver.chrome.getLocationInView(elemButton, true);
@@ -89,7 +95,7 @@ function buttonWasClicked() {
   function testShadowRootIsDisplayed() {
     // check isDisplayed works as expected on elements within a shadow
     // DOM
-    var elem = document.querySelector("* /deep/ #textBox");
+    var elem = deepQuery("#textBox");
     assertTrue("Text box #textBox should be visible",
         webdriver.chrome.isElementDisplayed(elem));
     document.querySelector("#outerDiv").style.display="None";
@@ -105,8 +111,8 @@ function buttonWasClicked() {
   function testShadowRootFindElement() {
     // check FindElement works as expected on elements within a shadow
     // DOM
-    var elemDiv = document.querySelector("* /deep/ #childDiv");
-    var elemButton = document.querySelector("* /deep/ #button");
+    var elemDiv = deepQuery("#childDiv");
+    var elemButton = deepQuery("#button");
     assertEquals(
         "webdriver.chrome.findElement didn't find the element #button",
         elemButton,
@@ -117,8 +123,8 @@ function buttonWasClicked() {
     // webdriver.chrome.findElement depends on bot.locators.findElements.
     // So check that bot.locators.findElements keeps working as expected
     // with shadow roots
-    var elemDiv = document.querySelector("* /deep/ #childDiv");
-    var elemButton = document.querySelector("* /deep/ #button");
+    var elemDiv = deepQuery("#childDiv");
+    var elemButton = deepQuery("#button");
     var elems = bot.locators.findElements({"id" : "button"}, elemDiv);
     assertEquals("webdriver.chrome.findElements didn't find exactly 1 element for #button",
         1,

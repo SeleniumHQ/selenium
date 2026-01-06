@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 import base64
 import os
 import warnings
@@ -45,17 +44,17 @@ class WebDriver(LocalWebDriver):
         """Create a new instance of the Firefox driver, start the service, and create new instance.
 
         Args:
-            options: Instance of ``options.Options``.
-            service: (Optional) service instance for managing the starting and stopping of the driver.
-            keep_alive: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.
+            options: Instance of Options.
+            service: Service object for handling the browser driver if you need to pass extra details.
+            keep_alive: Whether to configure FirefoxRemoteConnection to use HTTP keep-alive.
         """
         self.service = service if service else Service()
-        options = options if options else Options()
+        self.options = options if options else Options()
 
-        finder = DriverFinder(self.service, options)
+        finder = DriverFinder(self.service, self.options)
         if finder.get_browser_path():
-            options.binary_location = finder.get_browser_path()
-            options.browser_version = None
+            self.options.binary_location = finder.get_browser_path()
+            self.options.browser_version = None
 
         self.service.path = self.service.env_path() or finder.get_driver_path()
         self.service.start()
@@ -63,11 +62,11 @@ class WebDriver(LocalWebDriver):
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
             keep_alive=keep_alive,
-            ignore_proxy=options._ignore_local_proxy,
+            ignore_proxy=self.options._ignore_local_proxy,
         )
 
         try:
-            super().__init__(command_executor=executor, options=options)
+            super().__init__(command_executor=executor, options=self.options)
         except Exception:
             self.quit()
             raise
