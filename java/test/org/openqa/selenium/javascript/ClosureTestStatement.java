@@ -18,7 +18,6 @@
 package org.openqa.selenium.javascript;
 
 import static java.lang.System.nanoTime;
-import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.net.URL;
@@ -69,7 +68,8 @@ class ClosureTestStatement {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     // Avoid Safari JS leak between tests - clear both Closure and QUnit runners
     executor.executeScript(
-        "if (window && window.top) { window.top.G_testRunner = null; window.top.QUnitTestRunner = null; }");
+        "if (window && window.top) { window.top.G_testRunner = null; window.top.QUnitTestRunner ="
+            + " null; }");
 
     driver.get(testUrl.toString());
 
@@ -109,8 +109,7 @@ class ClosureTestStatement {
         return TestRunner.QUNIT;
       }
 
-      boolean hasClosure =
-          (boolean) executor.executeScript("return !!window.top.G_testRunner;");
+      boolean hasClosure = (boolean) executor.executeScript("return !!window.top.G_testRunner;");
       if (Boolean.TRUE.equals(hasClosure)) {
         LOG.fine("Detected Closure test runner");
         return TestRunner.CLOSURE;
