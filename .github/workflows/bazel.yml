@@ -192,9 +192,7 @@ jobs:
           MSYS2_ARG_CONV_EXCL: "*"
         run: |
           mkdir -p build
-          set +e
           ${{ inputs.run }} 2>&1 | tee build/bazel-console.log
-          exit ${PIPESTATUS[0]}
       - name: Parse Bazel log for failures
         if: always()
         shell: bash
