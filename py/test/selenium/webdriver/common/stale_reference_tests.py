@@ -30,7 +30,6 @@ def test_bad_test(driver, pages):
 def test_old_page(driver, pages):
     pages.load("simpleTest.html")
     elem = driver.find_element(by=By.ID, value="links")
-    elem = driver.find_element(by=By.ID, value="links")
     pages.load("xhtmlTest.html")
     msg = r"\/errors#staleelementreferenceexception"
     with pytest.raises(StaleElementReferenceException, match=msg):
