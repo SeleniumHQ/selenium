@@ -17,6 +17,7 @@
 
 import http.server
 import os
+import shutil
 import socketserver
 import sys
 import threading
@@ -35,6 +36,9 @@ from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
 
+
+
+
 drivers = (
     "chrome",
     "edge",
@@ -47,11 +51,13 @@ drivers = (
 )
 
 
-console = rich.console.Console()
+# fallback if no real terminal (like Bazel)
+COLUMNS = shutil.get_terminal_size(fallback=(120, 24)).columns
+console = rich.console.Console(force_terminal=True, width=COLUMNS)
 
 
 def extract_traceback_frames(tb):
-    """Safely extract frames from a traceback object."""
+    """Extract frames from a traceback object."""
     frames = []
     while tb:
         if hasattr(tb, "tb_frame") and hasattr(tb, "tb_lineno"):
@@ -60,6 +66,7 @@ def extract_traceback_frames(tb):
                 frames.append((tb.tb_frame, tb.tb_lineno, getattr(tb, "tb_lasti", 0)))
         tb = getattr(tb, "tb_next", None)
     return frames
+
 
 def filter_frames(frames):
     """Filter out frames whose module name matches skip_modules."""
@@ -71,12 +78,14 @@ def filter_frames(frames):
             filtered.append((frame, lineno, lasti))
     return filtered
 
+
 def rebuild_traceback(frames):
     """Rebuild a traceback object from frames list."""
     new_tb = None
     for frame, lineno, lasti in frames:
         new_tb = types.TracebackType(new_tb, frame, lasti, lineno)
     return new_tb
+
 
 def pytest_runtest_makereport(item, call):
     """Hook to print Rich traceback for test failures."""
@@ -95,11 +104,9 @@ def pytest_runtest_makereport(item, call):
         new_tb,
         show_locals=False,
         max_frames=5,
+        width=COLUMNS,
     )
-    console.print("\n")
-    console.print(tb)
-
-
+    console.print("\n", tb)
 
 
 def pytest_addoption(parser):
