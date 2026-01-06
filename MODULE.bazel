@@ -20,7 +20,7 @@ bazel_dep(name = "rules_dotnet", version = "0.20.5")
 bazel_dep(name = "rules_java", version = "8.7.1")
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 bazel_dep(name = "rules_multitool", version = "1.3.0")
-bazel_dep(name = "rules_nodejs", version = "6.3.2")
+bazel_dep(name = "rules_nodejs", version = "6.6.2")
 bazel_dep(name = "rules_pkg", version = "1.0.1")
 bazel_dep(name = "rules_python", version = "1.7.0")
 bazel_dep(name = "rules_proto", version = "7.0.2")
@@ -50,7 +50,12 @@ linter.configure(
 linter.register(name = "rust-rustfmt")
 
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
-node.toolchain(node_version = "20.9.0")
+node.toolchain(
+    node_version_from_nvmrc = "//javascript/selenium-webdriver:.nvmrc",
+)
+use_repo(node, "nodejs_toolchains")
+
+register_toolchains("@nodejs_toolchains//:all")
 
 pnpm = use_extension(
     "@aspect_rules_js//npm:extensions.bzl",

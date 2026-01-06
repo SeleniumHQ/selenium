@@ -46,6 +46,11 @@ on:
         required: false
         type: string
         default: ''
+      nodejs-version:
+        description: Custom NodeJS version to use
+        required: false
+        type: string
+        default: ''
       python-version:
         description: Custom Python version to use
         required: false
@@ -101,6 +106,9 @@ jobs:
         if: ${{ !startsWith(inputs.os, 'windows') }}
         run: |
           sudo rm -rf "$CHROMEWEBDRIVER" "$EDGEWEBDRIVER" "$GECKOWEBDRIVER"
+      - name: Set NodeJS version
+        if: inputs.nodejs-version != ''
+        run: echo '${{ inputs.nodejs-version }}' > javascript/selenium-webdriver/.nvmrc
       - name: Set Python version
         if: inputs.python-version != ''
         run: echo '${{ inputs.python-version }}' > py/.python-version

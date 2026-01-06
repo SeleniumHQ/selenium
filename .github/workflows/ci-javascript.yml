@@ -24,10 +24,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        nodejs-version: ['20.19.5', '24.11.1']
         os: [macos, windows]
     with:
-      name: Unit Tests ${{ matrix.os }}
+      name: Unit Tests (node ${{ matrix.node-version }}, ${{ matrix.os }})
       os: ${{ matrix.os }}
+      node-version: ${{ matrix.node-version }}
       run: >
         bazel test
         --keep_going
