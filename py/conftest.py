@@ -17,7 +17,6 @@
 
 import http.server
 import os
-import shutil
 import socketserver
 import sys
 import threading
@@ -48,11 +47,9 @@ drivers = (
 )
 
 
-# get terminal with, but fallback if no real terminal exists (like Bazel)
-COLUMNS = shutil.get_terminal_size(fallback=(120, 24)).columns
 # don't force colors on RBE since errors get redirected to a log file
 force_terminal = "REMOTE_BUILD" not in os.environ
-console = rich.console.Console(force_terminal=force_terminal, width=COLUMNS)
+console = rich.console.Console(force_terminal=force_terminal, width=130)
 
 
 def extract_traceback_frames(tb):
@@ -100,7 +97,7 @@ def pytest_runtest_makereport(item, call):
         new_tb,
         show_locals=False,
         max_frames=5,
-        width=COLUMNS,
+        width=130,
     )
     console.print("\n", tb)
 
