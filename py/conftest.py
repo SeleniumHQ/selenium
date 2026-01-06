@@ -36,9 +36,6 @@ from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
 
-
-
-
 drivers = (
     "chrome",
     "edge",
@@ -51,9 +48,11 @@ drivers = (
 )
 
 
-# fallback if no real terminal (like Bazel)
+# get terminal with, but fallback if no real terminal exists (like Bazel)
 COLUMNS = shutil.get_terminal_size(fallback=(120, 24)).columns
-console = rich.console.Console(force_terminal=True, width=COLUMNS)
+# don't force colors on RBE since errors get redirected to a log file
+force_terminal = "REMOTE_BUILD" not in os.environ
+console = rich.console.Console(force_terminal=force_terminal, width=COLUMNS)
 
 
 def extract_traceback_frames(tb):
@@ -69,7 +68,7 @@ def extract_traceback_frames(tb):
 
 
 def filter_frames(frames):
-    """Filter out frames whose module name matches skip_modules."""
+    """Filter out frames from pytest internals."""
     skip_modules = ["pytest", "_pytest", "pluggy"]
     filtered = []
     for frame, lineno, lasti in frames:
@@ -91,13 +90,10 @@ def pytest_runtest_makereport(item, call):
     """Hook to print Rich traceback for test failures."""
     if call.excinfo is None:
         return
-
     exc_type, exc_value, exc_tb = call.excinfo._excinfo
-
     frames = extract_traceback_frames(exc_tb)
     filtered_frames = filter_frames(frames)
     new_tb = rebuild_traceback(filtered_frames)
-
     tb = rich.traceback.Traceback.from_exception(
         exc_type,
         exc_value,

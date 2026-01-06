@@ -92,7 +92,7 @@ console_output_style = "progress"
 faulthandler_timeout = "60"
 log_cli = true
 trio_mode = true
-addopts = ["-s", "--color=yes", "--tb=no"]
+addopts = ["-s", "--tb=no"]
 filterwarnings = [
     "ignore::DeprecationWarning",
 ]
