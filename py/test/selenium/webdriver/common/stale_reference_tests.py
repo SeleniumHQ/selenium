@@ -21,8 +21,15 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 
 
+# BAD TEST TO SHOW TRACEBACKS ON FAILURE
+def test_bad_test(driver, pages):
+    pages.load("BAD-PAGE.html")
+    driver.find_element(by=By.ID, value="BAD-ID")
+
+
 def test_old_page(driver, pages):
     pages.load("simpleTest.html")
+    elem = driver.find_element(by=By.ID, value="links")
     elem = driver.find_element(by=By.ID, value="links")
     pages.load("xhtmlTest.html")
     msg = r"\/errors#staleelementreferenceexception"

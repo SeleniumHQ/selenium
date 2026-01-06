@@ -48,6 +48,11 @@ def test_works_as_context_manager(mocker):
     assert quit_.call_count == 1
 
 
+# BAD TEST TO SHOW TRACEBACKS ON FAILURE
+def test_bad_unit_test():
+    raise Exception("I'm an error!")
+
+
 @pytest.mark.parametrize("browser_name", ["firefox", "chrome", "ie"])
 def test_acepts_options_to_remote_driver(mocker, browser_name):
     options = import_module(f"selenium.webdriver.{browser_name}.options")
