@@ -77,6 +77,7 @@ public abstract class JupiterTestBase {
         LOG.log(Level.WARNING, "appServer is restarted with secureServer=true", ex);
         environment.stop();
         environment = new InProcessTestEnvironment(true);
+        appServer = environment.getAppServer();
       }
     }
 
