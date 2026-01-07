@@ -195,7 +195,6 @@ maven.install(
         "javax.inject:javax.inject:1",
         "net.bytebuddy:byte-buddy:1.18.2",
         "org.htmlunit:htmlunit-core-js:4.19.0",
-        "org.apache.commons:commons-exec:1.6.0",
         "org.apache.logging.log4j:log4j-core:2.25.2",
         "org.assertj:assertj-core:3.27.6",
         "org.bouncycastle:bcpkix-jdk18on:1.83",
