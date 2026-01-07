@@ -18,46 +18,53 @@ limitations under the License.
 <html>
 
 <head>
+  <meta charset="UTF-8">
   <title>attribute_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.locators');
     goog.require('goog.events.EventType');
-    goog.require('goog.testing.jsunit');
   </script>
-  <meta charset="UTF-8">
   <script type="text/javascript">
-    function testCanFindNamedAttributes() {
-      var e = bot.locators.findElement({ id: 'cheddar' });
-      assertAttributeEquals('cheese', e, 'name');
+    function assertAttributeEquals(assert, expected, elem, attr) {
+      assert.strictEqual(bot.dom.getAttribute(elem, attr), expected,
+          'Expected attribute "' + attr + '" to equal "' + expected + '"');
     }
 
-    function testCanFindAttributesOnTheExpando() {
+    QUnit.test('can find named attributes', function(assert) {
       var e = bot.locators.findElement({ id: 'cheddar' });
-      assertAttributeEquals('lovely', e, 'unknown');
-    }
+      assertAttributeEquals(assert, 'cheese', e, 'name');
+    });
 
-    function testShouldReturnClassAttribute() {
+    QUnit.test('can find attributes on the expando', function(assert) {
       var e = bot.locators.findElement({ id: 'cheddar' });
-      assertAttributeEquals('tasty', e, 'class');
-    }
+      assertAttributeEquals(assert, 'lovely', e, 'unknown');
+    });
 
-    function testShouldReturnNullForMissingAttributes() {
+    QUnit.test('should return class attribute', function(assert) {
+      var e = bot.locators.findElement({ id: 'cheddar' });
+      assertAttributeEquals(assert, 'tasty', e, 'class');
+    });
+
+    QUnit.test('should return null for missing attributes', function(assert) {
       var e = bot.locators.findElement({ id: 'checky' });
-      assertAttributeEquals(null, e, 'never_there');
-      assertAttributeEquals(null, e, 'class');
-    }
+      assertAttributeEquals(assert, null, e, 'never_there');
+      assertAttributeEquals(assert, null, e, 'class');
+    });
 
-    function testShouldReturnAnEmptyStringWhenAttributesValueIsAnEmptyString() {
+    QUnit.test('should return an empty string when attributes value is an empty string', function(assert) {
       var e = bot.locators.findElement({ id: 'cheddar' });
-      assertAttributeEquals('', e, 'empty');
-    }
+      assertAttributeEquals(assert, '', e, 'empty');
+    });
 
-    function testReturnAttributeStringForPresentBooleanAttributes() {
+    QUnit.test('return attribute string for present boolean attributes', function(assert) {
       function assertPresentBooleanAttr(elem, attr) {
         var value = bot.dom.getAttribute(elem, attr);
-        assertEquals(String(elem.getAttribute(attr)), value);
+        assert.strictEqual(value, String(elem.getAttribute(attr)));
       }
 
       var e = bot.locators.findElement({ id: 'selecty' });
@@ -67,46 +74,43 @@ limitations under the License.
       assertPresentBooleanAttr(e, 'disabled');
       assertPresentBooleanAttr(e, 'readonly');
       assertPresentBooleanAttr(e, 'checked');
-    }
+    });
 
-    function testReturnNullForAbsentBooleanAttributes() {
+    QUnit.test('return null for absent boolean attributes', function(assert) {
       var e = bot.locators.findElement({ id: 'unselecty' });
-      assertAttributeEquals(null, e, 'selected');
+      assertAttributeEquals(assert, null, e, 'selected');
 
       var e = bot.locators.findElement({ id: 'unchecky' });
-      assertAttributeEquals(null, e, 'disabled');
-      assertAttributeEquals(null, e, 'readonly');
-      assertAttributeEquals(null, e, 'checked');
-    }
+      assertAttributeEquals(assert, null, e, 'disabled');
+      assertAttributeEquals(assert, null, e, 'readonly');
+      assertAttributeEquals(assert, null, e, 'checked');
+    });
 
-    function testCanGetValueAttributeFromInput() {
+    QUnit.test('can get value attribute from input', function(assert) {
       var input = bot.locators.findElement({ id: 'unchecky' });
       var option = bot.locators.findElement({ id: 'unselecty' });
 
-      assertAttributeEquals('unchecky', input, 'value');
-      assertAttributeEquals('unselecty', option, 'value');
-    }
+      assertAttributeEquals(assert, 'unchecky', input, 'value');
+      assertAttributeEquals(assert, 'unselecty', option, 'value');
+    });
 
-    function testAttributeMatchesAreCaseInsensitive() {
+    QUnit.test('attribute matches are case insensitive', function(assert) {
       var e = bot.locators.findElement({ id: 'checky' });
-      assertAttributeEquals(bot.dom.getAttribute(e, 'readonly'), e, 'readOnly');
-      assertAttributeEquals(bot.dom.getAttribute(e, 'name'), e, 'NaMe');
-    }
+      assertAttributeEquals(assert, bot.dom.getAttribute(e, 'readonly'), e, 'readOnly');
+      assertAttributeEquals(assert, bot.dom.getAttribute(e, 'name'), e, 'NaMe');
+    });
 
-    function testAttributeDoesNotChangeTheTypeOfTheAttribute() {
+    QUnit.test('attribute does not change the type of the attribute', function(assert) {
       var e = bot.locators.findElement({ id: 'aValue' });
-      assertAttributeEquals("4b273a33fbbd29013nN93dy4F1A~", e, "value");
-    }
-
-    function assertAttributeEquals(expected, elem, attr) {
-      assertEquals('Expected attribute "' + attr + '" to equal "' +
-        expected + '"', expected, bot.dom.getAttribute(elem, attr));
-    }
+      assertAttributeEquals(assert, "4b273a33fbbd29013nN93dy4F1A~", e, "value");
+    });
 
   </script>
 </head>
 
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <div id="cheddar" name="cheese" class="tasty" unknown="lovely" empty="">Cheddar</div>
 
   <form>

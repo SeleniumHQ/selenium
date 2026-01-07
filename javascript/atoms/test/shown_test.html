@@ -2,7 +2,11 @@
 <html>
 
 <head>
+  <meta charset="utf-8">
   <title>shown_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot');
@@ -11,8 +15,6 @@
     goog.require('bot.userAgent');
     goog.require('goog.dom');
     goog.require('goog.style');
-    goog.require('goog.testing.ExpectedFailures');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.platform');
   </script>
@@ -38,210 +40,193 @@
   <script type="text/javascript">
     var isShown = bot.dom.isShown;
     var findElement = bot.locators.findElement;
-    var expectedFailures;
 
-    function setUp() {
-      expectedFailures = new goog.testing.ExpectedFailures();
-    }
-
-    function tearDown() {
-      expectedFailures.handleTearDown();
+    QUnit.testDone(function() {
       goog.style.setStyle(document.body, 'display', 'block');
       goog.style.setStyle(document.body, 'overflow', 'auto');
-    }
+    });
 
-    function testMustBeGivenAnElement() {
-      assertThrows(function () {
+    QUnit.test('must be given an element', function(assert) {
+      assert.throws(function () {
         isShown(undefined);
       });
-    }
+    });
 
-    function testBodyShown() {
-      assertTrue(isShown(document.body));
-    }
+    QUnit.test('body shown', function(assert) {
+      assert.ok(isShown(document.body));
+    });
 
-    function testBodyAlwaysShown() {
+    QUnit.test('body always shown', function(assert) {
       goog.style.setStyle(document.body, 'display', 'none');
-      assertTrue("BODY element must *always* be shown", isShown(document.body));
-    }
+      assert.ok(isShown(document.body), 'BODY element must *always* be shown');
+    });
 
-    function testCanDetermineIfAnElementIsShownOrNot() {
-      assertTrue(isShown(findElement({ id: 'displayed' })));
-      assertFalse(isShown(findElement({ id: 'none' })));
-      assertFalse(isShown(findElement({ id: 'suppressedParagraph' })));
-      assertFalse(isShown(findElement({ id: 'hidden' })));
-    }
+    QUnit.test('can determine if an element is shown or not', function(assert) {
+      assert.ok(isShown(findElement({ id: 'displayed' })));
+      assert.notOk(isShown(findElement({ id: 'none' })));
+      assert.notOk(isShown(findElement({ id: 'suppressedParagraph' })));
+      assert.notOk(isShown(findElement({ id: 'hidden' })));
+    });
 
-    function testIsShownTakesIntoAccountParentDisplay() {
+    QUnit.test('is shown takes into account parent display', function(assert) {
       var parent = findElement({ id: 'hiddenparent' });
-      assertFalse('parent is explicitly set to display:none',
-        isShown(parent));
+      assert.notOk(isShown(parent), 'parent is explicitly set to display:none');
 
       var childDiv = findElement({ id: 'hiddenchild' });
       var hiddenLink = findElement({ id: 'hiddenlink' });
 
-      assertFalse(isShown(childDiv));
-      assertFalse(isShown(hiddenLink));
-    }
+      assert.notOk(isShown(childDiv));
+      assert.notOk(isShown(hiddenLink));
+    });
 
-
-    function testIsShownTakesIntoAccountParentVisibility() {
+    QUnit.test('is shown takes into account parent visibility', function(assert) {
+      if (goog.userAgent.IE && goog.userAgent.platform.isVersion(6) &&
+        !goog.userAgent.platform.isVersion(6.1)) {
+        assert.ok(true, 'Skipping: Vista fails this test');
+        return;
+      }
       var parent = findElement({ id: 'hiddenFormFields' });
       var child = findElement({ id: 'untogglable' });
 
-      expectedFailures.expectFailureFor(
-        goog.userAgent.IE && goog.userAgent.platform.isVersion(6) &&
-        !goog.userAgent.platform.isVersion(6.1),
-        'Vista fails this test, have not figured it out yet...');
-      // TODO: Figure it out
-      expectedFailures.run(function () {
-        assertFalse(isShown(parent));
-        assertFalse(isShown(child));
-      });
-    }
+      assert.notOk(isShown(parent));
+      assert.notOk(isShown(child));
+    });
 
-    function testCountElementsAsVisibleIfStylePropertyHasBeenSet() {
+    QUnit.test('count elements as visible if style property has been set', function(assert) {
       var shown = findElement({ id: 'visibleSubElement' });
-      assertTrue(isShown(shown));
-    }
+      assert.ok(isShown(shown));
+    });
 
-    function testHiddenInputElementsAreNeverVisible() {
+    QUnit.test('hidden input elements are never visible', function(assert) {
       var hidden = findElement({ name: 'hidden' });
-      assertFalse(isShown(hidden));
-    }
+      assert.notOk(isShown(hidden));
+    });
 
-
-    function testElementWithZeroHeightIsNotConsideredDisplayed() {
-      // IE6 doesn't render the element correctly for the test to work.
+    QUnit.test('element with zero height is not considered displayed', function(assert) {
       if (goog.userAgent.IE && bot.userAgent.isEngineVersion(6)) {
+        assert.ok(true, 'Skipping: IE6 doesn\'t render the element correctly');
         return;
       }
       var zeroHeight = findElement({ id: 'zeroheight' });
-      assertFalse(isShown(zeroHeight));
-    }
+      assert.notOk(isShown(zeroHeight));
+    });
 
-
-    function testElementWithZeroWidthIsNotConsideredDisplayed() {
-      // IE6 doesn't render the element correctly for the test to work.
+    QUnit.test('element with zero width is not considered displayed', function(assert) {
       if (goog.userAgent.IE && bot.userAgent.isEngineVersion(6)) {
+        assert.ok(true, 'Skipping: IE6 doesn\'t render the element correctly');
         return;
       }
 
       var zeroWidth = findElement({ id: 'zerowidth' });
-      assertFalse(isShown(zeroWidth));
-    }
+      assert.notOk(isShown(zeroWidth));
+    });
 
-    function testElementWithOnlyWhitespaceReturnsConsistentResults() {
+    QUnit.test('element with only whitespace returns consistent results', function(assert) {
       var span = findElement({ id: 'onlyWhitespace' });
-      // Make sure we report the same result every time. Both will be true in
-      // most browsers, except IE7 and earlier, where they will both be false.
-      assertEquals(isShown(span), isShown(span));
-    }
+      assert.strictEqual(isShown(span), isShown(span));
+    });
 
-    function testCorrectlyDeterminesVisibilityViaDisplayStyle() {
+    QUnit.test('correctly determines visibility via display style', function(assert) {
       var span = findElement({ id: 'visibleSpan' });
-      assertFalse(isShown(span));
-    }
+      assert.notOk(isShown(span));
+    });
 
-
-    function testThrowsErrorIfPassedATextNode() {
+    QUnit.test('throws error if passed a text node', function(assert) {
       var textNode = findElement({ id: 'displayed' }).firstChild;
-      var err = assertThrows('Argument to isShown must be of type Element',
-        function () {
-          isShown(textNode);
-        });
-      assertEquals('Argument to isShown must be of type Element', err.message);
-    }
+      var err = null;
+      try {
+        isShown(textNode);
+      } catch (e) {
+        err = e;
+      }
+      assert.ok(err !== null, 'Argument to isShown must be of type Element');
+      assert.strictEqual(err.message, 'Argument to isShown must be of type Element');
+    });
 
-
-    function testOptionShownWhenEnclosingSelectShown() {
+    QUnit.test('option shown when enclosing select shown', function(assert) {
       var option = findElement({ id: 'shownOption' });
-      assertTrue(isShown(option));
-    }
+      assert.ok(isShown(option));
+    });
 
-
-    function testOptionNotShownWhenEnclosingSelectNotShown() {
+    QUnit.test('option not shown when enclosing select not shown', function(assert) {
       var option = findElement({ id: 'hiddenOption' });
-      assertFalse(isShown(option));
-    }
+      assert.notOk(isShown(option));
+    });
 
-
-    function testOrphanOptionIsNotShown() {
+    QUnit.test('orphan option is not shown', function(assert) {
       var option = findElement({ id: 'orphanOption' });
-      // In some browsers, an orphan option is not rendered at all.
-      assertFalse(!!option && isShown(option));
-    }
+      assert.notOk(!!option && isShown(option));
+    });
 
-    function testMapShownWhenImageShown() {
+    QUnit.test('map shown when image shown', function(assert) {
       var map = findElement({ id: 'shownMap' });
-      assertTrue(isShown(map));
-    }
+      assert.ok(isShown(map));
+    });
 
-    function testMapNotShownWhenImageNotShown() {
+    QUnit.test('map not shown when image not shown', function(assert) {
       var map = findElement({ id: 'hiddenImageMap' });
-      assertFalse(isShown(map));
-    }
+      assert.notOk(isShown(map));
+    });
 
-    function testMapNotShownWhenNoImage() {
+    QUnit.test('map not shown when no image', function(assert) {
       var map = findElement({ id: 'noImageMap' });
-      assertFalse(isShown(map));
-    }
+      assert.notOk(isShown(map));
+    });
 
-    function testMapNotShownWhenNoName() {
+    QUnit.test('map not shown when no name', function(assert) {
       var map = findElement({ id: 'noNameMap' });
-      assertFalse(isShown(map));
-    }
+      assert.notOk(isShown(map));
+    });
 
-    function testAreaShownWhenEnclosingMapShown() {
+    QUnit.test('area shown when enclosing map shown', function(assert) {
       var area = findElement({ id: 'shownArea' });
-      assertTrue(isShown(area));
-    }
+      assert.ok(isShown(area));
+    });
 
-    function testAreaNotShownWhenEnclosingMapNotShown() {
+    QUnit.test('area not shown when enclosing map not shown', function(assert) {
       var area = findElement({ id: 'hiddenArea' });
-      assertFalse(isShown(area));
-    }
+      assert.notOk(isShown(area));
+    });
 
-    function testOrphanAreaIsNotShown() {
+    QUnit.test('orphan area is not shown', function(assert) {
       var area = findElement({ id: 'orphanArea' });
-      // In some browsers, an orphan area is not rendered at all.
-      assertFalse(!!area && isShown(area));
-    }
+      assert.notOk(!!area && isShown(area));
+    });
 
-    function testElementWithNestedBlockLevelElementShown() {
+    QUnit.test('element with nested block level element shown', function(assert) {
       var containsNestedBlock = findElement({ id: 'containsNestedBlock' });
-      assertTrue(isShown(containsNestedBlock));
-    }
+      assert.ok(isShown(containsNestedBlock));
+    });
 
-    function testZeroOpacityMakesElementNotShown() {
+    QUnit.test('zero opacity makes element not shown', function(assert) {
       var transparent = findElement({ id: 'transparent' });
-      assertFalse(isShown(transparent));
-    }
+      assert.notOk(isShown(transparent));
+    });
 
-    function testTitleIsNotShown() {
+    QUnit.test('title is not shown', function(assert) {
       var title = findElement({ tagName: 'title' });
-      assertFalse(isShown(title));
-    }
+      assert.notOk(isShown(title));
+    });
 
-    function testTitleOfFrameWindowNotShown() {
+    QUnit.test('title of frame window not shown', function(assert) {
       var iframe = findElement({ id: 'iframe' });
       var iframeDoc = goog.dom.getFrameContentDocument(iframe);
       var iframeTitle = findElement({ tagName: 'title' }, iframeDoc);
-      assertFalse(isShown(iframeTitle));
-    }
+      assert.notOk(isShown(iframeTitle));
+    });
 
-    function testTwoEmptyDivsAreZeroSizedAndNotShown() {
+    QUnit.test('two empty divs are zero sized and not shown', function(assert) {
       var element = goog.dom.createDom('div', null,
         goog.dom.createDom('div'));
       document.body.appendChild(element);
       var size = bot.dom.getClientRect(element);
-      // Width will be equivalent of width:100%
-      assertEquals('Should have 0 height', 0, size.height);
-      assertFalse(isShown(element));
-    }
+      assert.strictEqual(size.height, 0, 'Should have 0 height');
+      assert.notOk(isShown(element));
+    });
 
-    function testZeroSizedDivIsShownIfDescendantHasSize() {
+    QUnit.test('zero sized div is shown if descendant has size', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        assert.ok(true, 'Skipping: not supported in this browser');
         return;
       }
       var element = goog.dom.createDom('div',
@@ -254,12 +239,12 @@
           })));
       document.body.appendChild(element);
       var size = bot.dom.getClientRect(element);
-      assertEquals('Should have 0 width', 0, size.width);
-      assertEquals('Should have 0 height', 0, size.height);
-      assertTrue(isShown(element));
-    }
+      assert.strictEqual(size.width, 0, 'Should have 0 width');
+      assert.strictEqual(size.height, 0, 'Should have 0 height');
+      assert.ok(isShown(element));
+    });
 
-    function testZeroSizedAbsolutePositionedBlockElementsAreShownIfDescendantHasSize() {
+    QUnit.test('zero sized absolute positioned block elements are shown if descendant has size', function(assert) {
       var div = goog.partial(goog.dom.createDom, 'div');
 
       function position(element, left, top, opt_zIndex) {
@@ -287,138 +272,134 @@
       root.appendChild(child);
       document.body.appendChild(root);
 
-      var size = bot.dom.getClientRect(root);
-      assertEquals('Should have 0 width', 0, size.width);
-      assertEquals('Should have 0 height', 0, size.height);
-      assertTrue('Should still be considered shown', isShown(root));
-    }
+      var rectSize = bot.dom.getClientRect(root);
+      assert.strictEqual(rectSize.width, 0, 'Should have 0 width');
+      assert.strictEqual(rectSize.height, 0, 'Should have 0 height');
+      assert.ok(isShown(root), 'Should still be considered shown');
+    });
 
-    /** @see http://code.google.com/p/selenium/issues/detail?id=2922 */
-    function testOptionsInInvisibleSelectAreStillShown() {
+    QUnit.test('options in invisible select are still shown', function(assert) {
       var select = goog.dom.$('invisiSelect');
-      assertEquals(0, bot.dom.getOpacity(select));
-      assertFalse(bot.dom.isShown(select));
-      assertTrue('Select should be visible when ignoring opacity',
-        bot.dom.isShown(select, true));
-      assertTrue(bot.dom.isShown(select.firstElementChild));
-    }
+      assert.strictEqual(bot.dom.getOpacity(select), 0);
+      assert.notOk(bot.dom.isShown(select));
+      assert.ok(bot.dom.isShown(select, true), 'Select should be visible when ignoring opacity');
+      assert.ok(bot.dom.isShown(select.firstElementChild));
+    });
 
-    /** @see http://code.google.com/p/selenium/issues/detail?id=1941 */
-    function testMapsForInvisibleImagesAreShownWhenIgnoringOpacity() {
+    QUnit.test('maps for invisible images are shown when ignoring opacity', function(assert) {
       var img = goog.dom.$('invisiImg');
-      assertEquals(0, bot.dom.getOpacity(img));
-      assertFalse(bot.dom.isShown(img));
-      assertTrue(bot.dom.isShown(img, true));
+      assert.strictEqual(bot.dom.getOpacity(img), 0);
+      assert.notOk(bot.dom.isShown(img));
+      assert.ok(bot.dom.isShown(img, true));
 
       var map = goog.dom.$('invisiShownMap');
-      assertFalse(bot.dom.isShown(map));
-      assertTrue(bot.dom.isShown(map, true));
+      assert.notOk(bot.dom.isShown(map));
+      assert.ok(bot.dom.isShown(map, true));
 
       var area = goog.dom.$('invisiShownArea');
-      assertFalse(bot.dom.isShown(area));
-      assertTrue(bot.dom.isShown(area, true));
-    }
+      assert.notOk(bot.dom.isShown(area));
+      assert.ok(bot.dom.isShown(area, true));
+    });
 
-    function testNoscriptElementIsNotShown() {
+    QUnit.test('noscript element is not shown', function(assert) {
       var noscript = findElement({ id: 'noscript' });
-      assertFalse(isShown(noscript));
-    }
+      assert.notOk(isShown(noscript));
+    });
 
-    function testThatItemsHiddenWithOverflowHiddenAreFalse() {
+    QUnit.test('that items hidden with overflow hidden are false', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        assert.ok(true, 'Skipping: not supported in this browser');
         return;
       }
       var target = findElement({ id: 'target' });
-      assertFalse(isShown(target));
-    }
+      assert.notOk(isShown(target));
+    });
 
-    function testThatItemsAreConsideredInvisbleIfAbsolutePositionIsNotInCascade() {
+    QUnit.test('that items are considered invisible if absolute position is not in cascade', function(assert) {
       var target = findElement({ id: 'iHaveAbsolutePosition' });
-      assertFalse(isShown(target));
-    }
+      assert.notOk(isShown(target));
+    });
 
-    function testZeroSizeElemWithOverflowHiddenAndTextNotShown() {
+    QUnit.test('zero size elem with overflow hidden and text not shown', function(assert) {
       var target = findElement({ id: 'bug5022' });
-      assertFalse(isShown(target));
-    }
+      assert.notOk(isShown(target));
+    });
 
-    function testOverflowHiddenWithFixedPositionChild() {
+    QUnit.test('overflow hidden with fixed position child', function(assert) {
       var target = findElement({ id: 'overflowHiddenWithFixedPositionChild' });
       var child = findElement({ id: 'fixedPositionChild' });
       goog.dom.removeChildren(child);
-      assertFalse(isShown(target));
+      assert.notOk(isShown(target));
       goog.dom.setTextContent(child, 'some content');
-      assertTrue(isShown(target));
-    }
+      assert.ok(isShown(target));
+    });
 
-    function testThatElementIsShownWithZIndex() {
-      assertTrue(isShown(findElement({ id: 'bug5109' })));
-    }
+    QUnit.test('that element is shown with z index', function(assert) {
+      assert.ok(isShown(findElement({ id: 'bug5109' })));
+    });
 
-    function testNegativePositionedParentWithPositionPositionedChildIsShown() {
+    QUnit.test('negative positioned parent with position positioned child is shown', function(assert) {
       var target = findElement({ id: 'negativePositionWithPositivePositionChildren' });
-      assertTrue(isShown(target));
-    }
+      assert.ok(isShown(target));
+    });
 
-    function testCanNotSeeElementWithHiddenAttribute() {
-      expectedFailures.expectFailureFor(
-        (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11)) ||
-        bot.userAgent.ANDROID_PRE_GINGERBREAD,
-        'IE and Android Froyo do not understand hidden attribute');
+    QUnit.test('can not see element with hidden attribute', function(assert) {
+      if ((goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11)) ||
+        bot.userAgent.ANDROID_PRE_GINGERBREAD) {
+        assert.ok(true, 'Skipping: IE and Android Froyo do not understand hidden attribute');
+        return;
+      }
       var elem = findElement({ id: 'html5hidden' });
-      expectedFailures.run(function () {
-        assertFalse(isShown(elem));
-      });
-    }
+      assert.notOk(isShown(elem));
+    });
 
-    function testTableRowDefaultVisibility() {
+    QUnit.test('table row default visibility', function(assert) {
       var elem = findElement({ id: 'visible-row' });
-      assertTrue(isShown(elem));
-      assertTrue(isShown(elem.firstElementChild));
-    }
+      assert.ok(isShown(elem));
+      assert.ok(isShown(elem.firstElementChild));
+    });
 
-    function testTableRowCollapsedVisibility() {
-      expectedFailures.expectFailureFor(
-        (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(8)),
-        'IE does not support visibility:collapsed until IE8');
+    QUnit.test('table row collapsed visibility', function(assert) {
+      if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(8)) {
+        assert.ok(true, 'Skipping: IE does not support visibility:collapsed until IE8');
+        return;
+      }
       var elem = findElement({ id: 'collapsed-row' });
-      expectedFailures.run(function () {
-        assertFalse(isShown(elem));
-        assertFalse(isShown(elem.firstElementChild));
-      });
-    }
+      assert.notOk(isShown(elem));
+      assert.notOk(isShown(elem.firstElementChild));
+    });
 
-    function testVisibleTableRowAfterCollapsedRow() {
+    QUnit.test('visible table row after collapsed row', function(assert) {
       var elem = findElement({ id: 'post-collapsed-row' });
-      assertTrue(isShown(elem));
-      assertTrue(isShown(elem.firstElementChild));
-    }
+      assert.ok(isShown(elem));
+      assert.ok(isShown(elem.firstElementChild));
+    });
 
-    function testDisplayContentsOverflowIgnored() {
-      assertTrue(isShown(findElement({ id: 'displayContentsInput' })));
-    }
+    QUnit.test('display contents overflow ignored', function(assert) {
+      assert.ok(isShown(findElement({ id: 'displayContentsInput' })));
+    });
 
-    function testDetailsSummaryVisibility() {
+    QUnit.test('details summary visibility', function(assert) {
       var summary = findElement({ id: 'summary' });
-      assertTrue(isShown(summary));
-    }
+      assert.ok(isShown(summary));
+    });
 
-    function testDetailsNonSummaryDescendantsVisibility() {
+    QUnit.test('details non summary descendants visibility', function(assert) {
       var contents = findElement({ id: 'non-summary' });
-      assertFalse(isShown(contents));
-      assertFalse(isShown(contents.firstElementChild));
-    }
+      assert.notOk(isShown(contents));
+      assert.notOk(isShown(contents.firstElementChild));
+    });
 
-    function testContentVisibleHidden() {
+    QUnit.test('content visible hidden', function(assert) {
       var content = findElement({ id: 'contentVisibility' });
-      assertFalse(isShown(content));
-      assertFalse(isShown(findElement({ id: 'b' }, content)));
-    }
+      assert.notOk(isShown(content));
+      assert.notOk(isShown(findElement({ id: 'b' }, content)));
+    });
 
-    function testNestedTextNode() {
+    QUnit.test('nested text node', function(assert) {
       var content = findElement({ id: 'nestedTextNode' });
-      assertFalse(isShown(content));
-    }
+      assert.notOk(isShown(content));
+    });
   </script>
 
   <style type="text/css">
@@ -501,6 +482,8 @@
 </head>
 
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <div style="left: 30px; top: 10px; visibility: visible; position: absolute; overflow: visible;" class="box-popup"
     id="suggest">
     <p>Hello world. I like cheese.</p>

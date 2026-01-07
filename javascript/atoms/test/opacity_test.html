@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
+  <meta charset="utf-8">
   <title>opacity_test.html</title>
   <style type="text/css">
     div {
@@ -17,14 +18,15 @@
       height:20px;
     }
   </style>
-
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.locators');
     goog.require('bot.userAgent');
     goog.require('goog.testing.ExpectedFailures');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.iter');
   </script>
@@ -32,20 +34,6 @@
   <script type="text/javascript">
     var findElement = bot.locators.findElement;
     var helper = new goog.dom.DomHelper();
-
-    function testOpacity() {
-      var suite = buildTestSuites();
-
-      if(!bot.userAgent.IE_DOC_PRE9) {
-        runTestSuite(suite, 'others');
-      } else if(bot.userAgent.isEngineVersion(8)) {
-        runTestSuite(suite, 'ie8');
-      } else if(bot.userAgent.isEngineVersion(7)) {
-        runTestSuite(suite, 'ie7');
-      } else if(bot.userAgent.isEngineVersion(6)) {
-        runTestSuite(suite, 'ie6');
-      }
-    }
 
     function buildMap(headers, row) {
       var map = {};
@@ -74,22 +62,36 @@
       return suites;
     }
 
-    function runTestSuite(testSpecs, browser) {
+    function runTestSuite(assert, testSpecs, browser) {
       goog.iter.forEach(testSpecs, function(testSpec) {
         var node = testSpec['example'];
         var comment = "Test no."  + testSpec['id'] +  " for browser " + browser + ": " + testSpec['style'];
         try {
-          assertEquals(comment, Number(testSpec[browser]), bot.dom.getOpacity(node));
-          //alert(comment + " expected: " + Number(testSpec[browser]) + " value: " +  bot.dom.getOpacity(node));
+          assert.strictEqual(bot.dom.getOpacity(node), Number(testSpec[browser]), comment);
         } catch(e) {
-          fail("Test no."  + testSpec['id'] +  " failed with exception: " + e.message);
+          assert.ok(false, "Test no."  + testSpec['id'] +  " failed with exception: " + e.message);
         }
       });
-    //alert("run " + testSpecs.length);
     }
+
+    QUnit.test('opacity', function(assert) {
+      var suite = buildTestSuites();
+
+      if(!bot.userAgent.IE_DOC_PRE9) {
+        runTestSuite(assert, suite, 'others');
+      } else if(bot.userAgent.isEngineVersion(8)) {
+        runTestSuite(assert, suite, 'ie8');
+      } else if(bot.userAgent.isEngineVersion(7)) {
+        runTestSuite(assert, suite, 'ie7');
+      } else if(bot.userAgent.isEngineVersion(6)) {
+        runTestSuite(assert, suite, 'ie6');
+      }
+    });
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <!-- opacity test fixture -->
   <p>
   To determine opacity, it is not enough to simply read a property
