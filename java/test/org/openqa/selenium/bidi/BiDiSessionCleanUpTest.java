@@ -20,25 +20,30 @@ package org.openqa.selenium.bidi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.testing.drivers.Browser;
 
-class BiDiSessionCleanUpTest {
+final class BiDiSessionCleanUpTest {
 
-  private FirefoxDriver driver;
+  private final FirefoxDriver driver =
+      new FirefoxDriver(((FirefoxOptions) Browser.FIREFOX.getCapabilities()).enableBiDi());
+
+  @AfterEach
+  void closeBrowser() {
+    try {
+      driver.quit();
+    } catch (NoSuchSessionException ignore) { // browser already closed by test
+    }
+  }
 
   @Test
   void shouldNotCloseBiDiSessionIfOneWindowIsClosed() {
-    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
-    // Enable BiDi
-    options.enableBiDi();
-
-    driver = new FirefoxDriver(options);
-
     BiDi biDi = driver.getBiDi();
 
     BiDiSessionStatus status = biDi.getBidiSessionStatus();
@@ -54,17 +59,10 @@ class BiDiSessionCleanUpTest {
     BiDiSessionStatus statusAfterClosing = biDi.getBidiSessionStatus();
     assertThat(statusAfterClosing).isNotNull();
     assertThat(status.getMessage()).isEqualTo("Session already started");
-    driver.quit();
   }
 
   @Test
   void shouldCloseBiDiSessionIfLastWindowIsClosed() {
-    FirefoxOptions options = (FirefoxOptions) Browser.FIREFOX.getCapabilities();
-    // Enable BiDi
-    options.enableBiDi();
-
-    driver = new FirefoxDriver(options);
-
     BiDi biDi = driver.getBiDi();
 
     BiDiSessionStatus status = biDi.getBidiSessionStatus();
