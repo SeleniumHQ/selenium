@@ -69,7 +69,7 @@ def filter_frames(frames):
     """Filter out frames from pytest internals."""
     skip_modules = ["pytest", "_pytest", "pluggy"]
     filtered = []
-    for frame, lineno, lasti in frames:
+    for frame, lineno, lasti in reversed(frames):
         mod_name = frame.f_globals.get("__name__", "")
         if not any(skip in mod_name for skip in skip_modules):
             filtered.append((frame, lineno, lasti))
