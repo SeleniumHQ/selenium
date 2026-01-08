@@ -25,9 +25,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
-from python.runfiles import Runfiles
 import rich.console
 import rich.traceback
+from python.runfiles import Runfiles
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
@@ -370,7 +370,7 @@ class Driver:
         if self.options is not None:
             kwargs["options"] = self.options
         if self.is_remote:
-            kwargs["command_executor"] = self._server.status_url[: -len("/status")]
+            kwargs["command_executor"] = self._server.status_url.removesuffix("/status")
             return webdriver.Remote(**kwargs)
         if self.driver_path is not None:
             kwargs["service"] = self.service

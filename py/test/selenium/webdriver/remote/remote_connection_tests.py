@@ -48,7 +48,7 @@ def test_remote_webdriver_with_http_timeout(clean_options, webserver, server):
     """
     http_timeout = 4
     wait_timeout = 6
-    server_addr = server.status_url[: -len("/status")]
+    server_addr = server.status_url.removesuffix("/status")
     client_config = ClientConfig(remote_server_addr=server_addr, timeout=http_timeout)
     with webdriver.Remote(options=clean_options, client_config=client_config) as driver:
         driver.get(f"{webserver.where_is('simpleTest.html')}")
@@ -65,7 +65,7 @@ def test_remote_webdriver_with_websocket_timeout(clean_options, webserver, serve
     websocket_timeout = 2.0
     websocket_interval = 1.0
 
-    server_addr = server.status_url[: -len("/status")]
+    server_addr = server.status_url.removesuffix("/status")
     client_config = ClientConfig(
         remote_server_addr=server_addr, websocket_timeout=websocket_timeout, websocket_interval=websocket_interval
     )
