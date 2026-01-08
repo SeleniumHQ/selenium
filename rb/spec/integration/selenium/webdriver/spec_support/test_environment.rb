@@ -186,15 +186,13 @@ module Selenium
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
-        def create_driver!(listener: nil, **, &block)
+        def create_driver!(listener: nil, http_client: nil, **, &block)
           check_for_previous_error
+          http_client ||= Remote::Http::Default.new(read_timeout: 30)
 
           method = :"#{driver}_driver"
-          instance = if private_methods.include?(method)
-                       send(method, listener: listener, options: build_options(**))
-                     else
-                       WebDriver::Driver.for(driver, listener: listener, options: build_options(**))
-                     end
+          opts = {options: build_options(**), listener: listener, http_client: http_client}
+          instance = private_methods.include?(method) ? send(method, **opts) : WebDriver::Driver.for(driver, **opts)
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
             begin

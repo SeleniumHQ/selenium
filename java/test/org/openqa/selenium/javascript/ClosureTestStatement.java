@@ -18,7 +18,6 @@
 package org.openqa.selenium.javascript;
 
 import static java.lang.System.nanoTime;
-import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.net.URL;
@@ -67,12 +66,17 @@ class ClosureTestStatement {
     }
 
     JavascriptExecutor executor = (JavascriptExecutor) driver;
-    // Avoid Safari JS leak between tests.
-    executor.executeScript("if (window && window.top) window.top.G_testRunner = null");
+    // Avoid Safari JS leak between tests - clear both Closure and QUnit runners
+    executor.executeScript(
+        "if (window && window.top) { window.top.G_testRunner = null; window.top.QUnitTestRunner ="
+            + " null; }");
 
     driver.get(testUrl.toString());
 
-    while (!getBoolean(executor, Query.IS_FINISHED)) {
+    // Detect which test runner is being used and poll accordingly
+    TestRunner runner = detectTestRunner(executor);
+
+    while (!runner.isFinished(executor)) {
       long elapsedTime = NANOSECONDS.toSeconds(nanoTime() - start);
       if (timeoutSeconds > 0 && elapsedTime > timeoutSeconds) {
         throw new JavaScriptAssertionError(
@@ -88,32 +92,84 @@ class ClosureTestStatement {
       TimeUnit.MILLISECONDS.sleep(100);
     }
 
-    if (!getBoolean(executor, Query.IS_SUCCESS)) {
-      String report = getString(executor, Query.GET_REPORT);
+    if (!runner.isSuccess(executor)) {
+      String report = runner.getReport(executor);
       throw new JavaScriptAssertionError(report);
     }
   }
 
-  private boolean getBoolean(JavascriptExecutor executor, Query query) {
-    return (Boolean)
-        requireNonNull(
-            executor.executeScript(query.script),
-            () -> "JS returned null instead of boolean: " + query.script);
-  }
+  private TestRunner detectTestRunner(JavascriptExecutor executor) throws InterruptedException {
+    // It may take a while for the test runner to initialise
+    for (int i = 0; i < 50; i++) {
+      boolean hasQUnit =
+          (boolean)
+              executor.executeScript("return !!(window.top.QUnitTestRunner || window.QUnit);");
+      if (hasQUnit) {
+        LOG.fine("Detected QUnit test runner");
+        return TestRunner.QUNIT;
+      }
 
-  private String getString(JavascriptExecutor executor, Query query) {
-    return (String) executor.executeScript(query.script);
-  }
+      boolean hasClosure = (boolean) executor.executeScript("return !!window.top.G_testRunner;");
+      if (Boolean.TRUE.equals(hasClosure)) {
+        LOG.fine("Detected Closure test runner");
+        return TestRunner.CLOSURE;
+      }
 
-  private enum Query {
-    IS_FINISHED("return !!tr && tr.isFinished();"),
-    IS_SUCCESS("return !!tr && tr.isSuccess();"),
-    GET_REPORT("return tr.getReport(true);");
-
-    private final String script;
-
-    Query(String script) {
-      this.script = "var tr = window.top.G_testRunner;" + script;
+      TimeUnit.MILLISECONDS.sleep(100);
     }
+
+    // Default to Closure for backward compatibility
+    LOG.warning("Could not detect test runner, defaulting to Closure");
+    return TestRunner.CLOSURE;
+  }
+
+  private enum TestRunner {
+    CLOSURE {
+      private static final String PREFIX = "var tr = window.top.G_testRunner;";
+
+      @Override
+      boolean isFinished(JavascriptExecutor executor) {
+        return Boolean.TRUE.equals(
+            executor.executeScript(PREFIX + "return !!tr && tr.isFinished();"));
+      }
+
+      @Override
+      boolean isSuccess(JavascriptExecutor executor) {
+        return Boolean.TRUE.equals(
+            executor.executeScript(PREFIX + "return !!tr && tr.isSuccess();"));
+      }
+
+      @Override
+      String getReport(JavascriptExecutor executor) {
+        return (String) executor.executeScript(PREFIX + "return tr.getReport(true);");
+      }
+    },
+
+    QUNIT {
+      private static final String PREFIX = "var tr = window.top.QUnitTestRunner;";
+
+      @Override
+      boolean isFinished(JavascriptExecutor executor) {
+        return Boolean.TRUE.equals(
+            executor.executeScript(PREFIX + "return !!tr && tr.isFinished();"));
+      }
+
+      @Override
+      boolean isSuccess(JavascriptExecutor executor) {
+        return Boolean.TRUE.equals(
+            executor.executeScript(PREFIX + "return !!tr && tr.isSuccess();"));
+      }
+
+      @Override
+      String getReport(JavascriptExecutor executor) {
+        return (String) executor.executeScript(PREFIX + "return tr.getReport();");
+      }
+    };
+
+    abstract boolean isFinished(JavascriptExecutor executor);
+
+    abstract boolean isSuccess(JavascriptExecutor executor);
+
+    abstract String getReport(JavascriptExecutor executor);
   }
 }

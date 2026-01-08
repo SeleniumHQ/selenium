@@ -8,6 +8,7 @@ def closure_test_suite(name, data = [], browsers = None):
         "//third_party/closure/goog:deps",
         "//third_party/closure/goog:library",
         "//third_party/closure/goog/testing",
+        "//third_party/js/qunit",
     ]
 
     kwargs = {

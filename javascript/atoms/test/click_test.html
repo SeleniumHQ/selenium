@@ -3,7 +3,11 @@
 
 <head>
   <meta http-equiv="Expire" content="0" />
+  <meta charset="utf-8">
   <title>click_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
@@ -18,7 +22,6 @@
     goog.require('goog.events.EventType');
     goog.require('goog.math.Coordinate');
     goog.require('goog.style');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
   </script>
   <script type="text/javascript">
@@ -72,123 +75,127 @@
       });
     }
 
-    // We don't care about sub-pixel resolution, but Macs seem to report it
-    function assertCoordinatesEqual(expected, actual) {
-      assertEquals(Math.floor(expected), Math.floor(actual));
+    function assertCoordinatesEqual(assert, expected, actual) {
+      assert.strictEqual(Math.floor(actual), Math.floor(expected));
     }
 
-    function setUp() {
+    QUnit.testStart(function() {
       blurClicker();
-    }
+    });
 
-    function tearDown() {
+    QUnit.testDone(function() {
       resetClicker();
-    }
+    });
 
-    function shouldNotBeAbleToClickOnAnElementThatIsNotShown(action) {
+    // Helper: shouldNotBeAbleToClickOnAnElementThatIsNotShown
+    function shouldNotBeAbleToClickOnAnElementThatIsNotShown(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var noHeightElement = goog.dom.$('noHeight');
-      var threw = false;
-      try {
-        action(noHeightElement);
-      } catch (ex) {
-        assertEquals(bot.ErrorCode.ELEMENT_NOT_VISIBLE, ex.code);
-        threw = true;
-      }
-      assertTrue(threw);
+      assert.throws(
+        function() {
+          action(noHeightElement);
+        },
+        function(ex) {
+          return ex.code === bot.ErrorCode.ELEMENT_NOT_VISIBLE;
+        },
+        'Should throw ELEMENT_NOT_VISIBLE error'
+      );
     }
 
-    var testClickShouldNotBeAbleToClickOnAnElementThatIsNotShown = goog.partial(
-      shouldNotBeAbleToClickOnAnElementThatIsNotShown, bot.action.click);
+    QUnit.test('click should not be able to click on an element that is not shown', function(assert) {
+      shouldNotBeAbleToClickOnAnElementThatIsNotShown(assert, bot.action.click);
+    });
 
-    var testTapShouldNotBeAbleToClickOnAnElementThatIsNotShown = goog.partial(
-      shouldNotBeAbleToClickOnAnElementThatIsNotShown, bot.action.tap);
+    QUnit.test('tap should not be able to click on an element that is not shown', function(assert) {
+      shouldNotBeAbleToClickOnAnElementThatIsNotShown(assert, bot.action.tap);
+    });
 
-    function shouldClickInTheMiddleOfAnElement(action) {
+    // Helper: shouldClickInTheMiddleOfAnElement
+    function shouldClickInTheMiddleOfAnElement(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var clicker = findElement({ id: 'clicker' });
+      var clickerEl = findElement({ id: 'clicker' });
 
-      goog.events.removeAll(clicker);
+      goog.events.removeAll(clickerEl);
       var clickedXY = null;
-      goog.events.listen(clicker, goog.events.EventType.MOUSEUP, function (e) {
-        // We are looking for event.offsetX/Y here, but can't use them due to
-        // browser incompatibilities.
+      goog.events.listen(clickerEl, goog.events.EventType.MOUSEUP, function (e) {
         clickedXY = { x: e.clientX, y: e.clientY };
       });
 
-      action(clicker);
-      assertNotNull(clickedXY);
+      action(clickerEl);
+      assert.ok(clickedXY !== null, 'Click coordinates should be captured');
 
-      // Calculate the coordinates that should be clicked according to the
-      // top left corner of the browser's content area
-      var clickSize = goog.style.getSize(clicker);
-      var clickPos = goog.style.getClientPosition(clicker);
-      assertCoordinatesEqual(clickedXY.x, clickPos.x + (clickSize.width / 2));
-      assertCoordinatesEqual(clickedXY.y, clickPos.y + (clickSize.height / 2));
+      var clickSize = goog.style.getSize(clickerEl);
+      var clickPos = goog.style.getClientPosition(clickerEl);
+      assertCoordinatesEqual(assert, clickPos.x + (clickSize.width / 2), clickedXY.x);
+      assertCoordinatesEqual(assert, clickPos.y + (clickSize.height / 2), clickedXY.y);
     }
 
-    var testClickShouldClickInTheMiddleOfAnElement = goog.partial(
-      shouldClickInTheMiddleOfAnElement, bot.action.click);
+    QUnit.test('click should click in the middle of an element', function(assert) {
+      shouldClickInTheMiddleOfAnElement(assert, bot.action.click);
+    });
 
-    var testTapShouldClickInTheMiddleOfAnElement = goog.partial(
-      shouldClickInTheMiddleOfAnElement, bot.action.tap);
+    QUnit.test('tap should click in the middle of an element', function(assert) {
+      shouldClickInTheMiddleOfAnElement(assert, bot.action.tap);
+    });
 
-    function shouldClickTheCoordofAnElement(action) {
+    // Helper: shouldClickTheCoordofAnElement
+    function shouldClickTheCoordofAnElement(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var clicker = findElement({ id: 'clicker' });
+      var clickerEl = findElement({ id: 'clicker' });
 
-      goog.events.removeAll(clicker);
+      goog.events.removeAll(clickerEl);
       var clickedXY = null;
-      goog.events.listen(clicker, goog.events.EventType.CLICK, function (e) {
+      goog.events.listen(clickerEl, goog.events.EventType.CLICK, function (e) {
         clickedXY = { x: e.clientX, y: e.clientY };
       });
 
       var coord = new goog.math.Coordinate(3, 3);
-      action(clicker, coord);
-      assertNotNull(clickedXY);
+      action(clickerEl, coord);
+      assert.ok(clickedXY !== null, 'Click coordinates should be captured');
 
-      // Calculate the coordinates that should be clicked according to the
-      // top left corner of the browser's content area
-      var clickPos = goog.style.getClientPosition(clicker);
-      assertCoordinatesEqual(clickedXY.x, clickPos.x + coord.x);
-      assertCoordinatesEqual(clickedXY.y, clickPos.y + coord.y);
+      var clickPos = goog.style.getClientPosition(clickerEl);
+      assertCoordinatesEqual(assert, clickPos.x + coord.x, clickedXY.x);
+      assertCoordinatesEqual(assert, clickPos.y + coord.y, clickedXY.y);
     }
 
-    var testClickShouldClickTheCoordofAnElement = goog.partial(
-      shouldClickTheCoordofAnElement, bot.action.click);
+    QUnit.test('click should click the coord of an element', function(assert) {
+      shouldClickTheCoordofAnElement(assert, bot.action.click);
+    });
 
-    var testTapShouldClickTheCoordofAnElement = goog.partial(
-      shouldClickTheCoordofAnElement, bot.action.tap);
+    QUnit.test('tap should click the coord of an element', function(assert) {
+      shouldClickTheCoordofAnElement(assert, bot.action.tap);
+    });
 
-    function testShouldRightClickTheCoordOfAnElement() {
-      var clicker = findElement({ id: 'rightClickTarget' });
+    QUnit.test('should right click the coord of an element', function(assert) {
+      var clickerEl = findElement({ id: 'rightClickTarget' });
 
-      goog.events.removeAll(clicker);
+      goog.events.removeAll(clickerEl);
       var clickedXY = null;
-      goog.events.listen(clicker, goog.events.EventType.MOUSEDOWN,
+      goog.events.listen(clickerEl, goog.events.EventType.MOUSEDOWN,
         function (e) {
           clickedXY = { x: e.clientX, y: e.clientY };
         });
 
       var coord = new goog.math.Coordinate(3, 3);
-      bot.action.rightClick(clicker, coord);
-      assertNotNull(clickedXY);
-      assertEquals(clicker.value, 'Right Clicked!');
+      bot.action.rightClick(clickerEl, coord);
+      assert.ok(clickedXY !== null, 'Click coordinates should be captured');
+      assert.strictEqual(clickerEl.value, 'Right Clicked!');
 
-      // Calculate the coordinates that should be clicked according to the
-      // top left corner of the browser's content area
-      var clickPos = goog.style.getClientPosition(clicker);
-      assertCoordinatesEqual(clickedXY.x, clickPos.x + coord.x);
-      assertCoordinatesEqual(clickedXY.y, clickPos.y + coord.y);
-    }
+      var clickPos = goog.style.getClientPosition(clickerEl);
+      assertCoordinatesEqual(assert, clickPos.x + coord.x, clickedXY.x);
+      assertCoordinatesEqual(assert, clickPos.y + coord.y, clickedXY.y);
+    });
 
-    function testShouldGenerateTheCorrectClickSequence() {
+    QUnit.test('should generate the correct click sequence', function(assert) {
       var expectedEvents = [
         FIRST_EVENT_OF_CLICK,
         SECOND_EVENT_OF_CLICK,
@@ -200,10 +207,10 @@
         events.push(e.type);
       });
       bot.action.click(clicker);
-      assertArrayEquals(expectedEvents, events);
-    }
+      assert.deepEqual(events, expectedEvents);
+    });
 
-    function testShouldGenerateTheCorrectDoubleClickSequence() {
+    QUnit.test('should generate the correct double click sequence', function(assert) {
       var expectedEvents = [
         FIRST_EVENT_OF_CLICK,
         SECOND_EVENT_OF_CLICK,
@@ -215,22 +222,21 @@
         goog.events.EventType.CLICK,
         goog.events.EventType.DBLCLICK];
       var events = [];
-      // We use the global clicker element. It is reset in the
-      // teardown function.
       goog.events.listen(clicker, expectedEvents, function (e) {
         events.push(e.type);
       });
       bot.action.doubleClick(clicker);
-      assertArrayEquals(expectedEvents, events);
-    }
+      assert.deepEqual(events, expectedEvents);
+    });
 
-    // http://code.google.com/p/selenium/issues/detail?id=1207
-    function shouldRespondCorrectlyIfElementIsHiddenMidClickSequence(action) {
+    // Helper: shouldRespondCorrectlyIfElementIsHiddenMidClickSequence
+    function shouldRespondCorrectlyIfElementIsHiddenMidClickSequence(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       if (goog.userAgent.IE) {
-        // TODO: Test must be async to handle focus events properly.
+        assert.ok(true, 'Skipping on IE - test must be async to handle focus events properly');
         return;
       }
 
@@ -250,20 +256,14 @@
         });
         hideClickerOn(hideOn);
 
-        assertTrue('Should start shown', bot.dom.isShown(clicker));
+        assert.ok(bot.dom.isShown(clicker), 'Should start shown');
         action(clicker);
-        assertFalse('Should end not shown; hid on: ' + hideOn,
-          bot.dom.isShown(clicker));
-        assertArrayEquals(expectedEvents, events);
+        assert.notOk(bot.dom.isShown(clicker), 'Should end not shown; hid on: ' + hideOn);
+        assert.deepEqual(events, expectedEvents);
       }
 
-      // Test hiding on each of the expected events in the click sequence.
       for (var i = 0; i < clickEvents.length; i++) {
         var hideOn = clickEvents[i];
-
-        // When the element becomes hidden, no further elements should fire. The
-        // exception is that if mouseup is fired, then click must also be fired,
-        // as a click is defined as a mousedown and mouseup at the same location.
         var expectedEvents;
         if (hideOn == goog.events.EventType.MOUSEUP) {
           expectedEvents = clickEvents;
@@ -271,7 +271,6 @@
           expectedEvents = goog.array.slice(clickEvents, 0, i + 1);
         }
 
-        // If we expect a focus event, only test if the window is focused.
         if (!goog.array.contains(expectedEvents, goog.events.EventType.FOCUS) ||
           bot.test.isWindowFocused()) {
           runTest(hideOn, expectedEvents);
@@ -279,17 +278,18 @@
       }
     }
 
-    var testClickShouldRespondCorrectlyIfElementIsHiddenMidClickSequence =
-      goog.partial(shouldRespondCorrectlyIfElementIsHiddenMidClickSequence,
-        bot.action.click);
+    QUnit.test('click should respond correctly if element is hidden mid click sequence', function(assert) {
+      shouldRespondCorrectlyIfElementIsHiddenMidClickSequence(assert, bot.action.click);
+    });
 
-    var testTapShouldRespondCorrectlyIfElementIsHiddenMidClickSequence =
-      goog.partial(shouldRespondCorrectlyIfElementIsHiddenMidClickSequence,
-        bot.action.tap);
+    QUnit.test('tap should respond correctly if element is hidden mid click sequence', function(assert) {
+      shouldRespondCorrectlyIfElementIsHiddenMidClickSequence(assert, bot.action.tap);
+    });
 
-
-    function cancelledMousedownDoesNotFocus(expectedEvents, action) {
+    // Helper: cancelledMousedownDoesNotFocus
+    function cancelledMousedownDoesNotFocus(assert, expectedEvents, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var events = [];
@@ -308,7 +308,7 @@
         e.preventDefault();
       });
       action(clicker);
-      assertArrayEquals(expectedEvents, events);
+      assert.deepEqual(events, expectedEvents);
     }
 
     var expectedTapEvents = [
@@ -332,80 +332,92 @@
       goog.events.EventType.MOUSEUP,
       goog.events.EventType.CLICK];
 
-    var testClickCancelledMousedownDoesNotFocus = goog.partial(
-      cancelledMousedownDoesNotFocus,
-      expectedClickEvents,
-      bot.action.click);
+    QUnit.test('click cancelled mousedown does not focus', function(assert) {
+      cancelledMousedownDoesNotFocus(assert, expectedClickEvents, bot.action.click);
+    });
 
-    var testTapCancelledMousedownDoesNotFocus = goog.partial(
-      cancelledMousedownDoesNotFocus,
-      bot.userAgent.IE_DOC_10 ? expectedIETouchEvents : expectedTapEvents,
-      bot.action.tap);
+    QUnit.test('tap cancelled mousedown does not focus', function(assert) {
+      cancelledMousedownDoesNotFocus(assert,
+        bot.userAgent.IE_DOC_10 ? expectedIETouchEvents : expectedTapEvents,
+        bot.action.tap);
+    });
 
-    function shouldBeAbleToClickOnElementsWithOpacityZero(action) {
+    // Helper: shouldBeAbleToClickOnElementsWithOpacityZero
+    function shouldBeAbleToClickOnElementsWithOpacityZero(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var clickJacker = findElement({ id: 'clickJacker' });
       clickJacker.style.opacity = 0;
-      assertEquals('Precondition failed: clickJacker should be transparent',
-        0, bot.dom.getOpacity(clickJacker));
+      assert.strictEqual(bot.dom.getOpacity(clickJacker), 0,
+        'Precondition failed: clickJacker should be transparent');
       action(clickJacker);
-      assertEquals(1, bot.dom.getOpacity(clickJacker));
+      assert.strictEqual(bot.dom.getOpacity(clickJacker), 1);
     }
 
-    var testClickShouldBeAbleToClickOnElementsWithOpacityZero = goog.partial(
-      shouldBeAbleToClickOnElementsWithOpacityZero, bot.action.click);
+    QUnit.test('click should be able to click on elements with opacity zero', function(assert) {
+      shouldBeAbleToClickOnElementsWithOpacityZero(assert, bot.action.click);
+    });
 
-    var testTapShouldBeAbleToClickOnElementsWithOpacityZero = goog.partial(
-      shouldBeAbleToClickOnElementsWithOpacityZero, bot.action.tap);
+    QUnit.test('tap should be able to click on elements with opacity zero', function(assert) {
+      shouldBeAbleToClickOnElementsWithOpacityZero(assert, bot.action.tap);
+    });
 
-    function shouldNotBeAbleToClickOnElementWithPointerEventsNone(action) {
+    // Helper: shouldNotBeAbleToClickOnElementWithPointerEventsNone
+    function shouldNotBeAbleToClickOnElementWithPointerEventsNone(assert, action) {
       if (!checkActionCompatibility(action) || goog.userAgent.IE ||
         (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
+        assert.ok(true, 'Skipping on unsupported browser');
         return;
       }
       var el = findElement({ id: 'pointerEvents' });
       action(el);
-      assertEquals('Pass', bot.dom.getVisibleText(el));
+      assert.strictEqual(bot.dom.getVisibleText(el), 'Pass');
     }
 
-    var testClickShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
-      shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.click);
+    QUnit.test('click should not be able to click on element with pointer events none', function(assert) {
+      shouldNotBeAbleToClickOnElementWithPointerEventsNone(assert, bot.action.click);
+    });
 
-    var testTapShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
-      shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.tap);
+    QUnit.test('tap should not be able to click on element with pointer events none', function(assert) {
+      shouldNotBeAbleToClickOnElementWithPointerEventsNone(assert, bot.action.tap);
+    });
 
-    function testClickShouldNotScrollWhenElementInView() {
+    QUnit.test('click should not scroll when element in view', function(assert) {
       if (bot.userAgent.MOBILE) {
+        assert.ok(true, 'Skipping on mobile');
         return;
       }
       var target = findElement({ id: 'targetInView' });
       var oldPos = goog.style.getClientPosition(target);
       bot.action.click(target);
       var newPos = goog.style.getClientPosition(target);
-      assertObjectEquals(oldPos, newPos);
-    }
+      assert.deepEqual(newPos, oldPos);
+    });
 
-    function testClickShouldScrollWhenElementNotInView() {
+    QUnit.test('click should scroll when element not in view', function(assert) {
       if (bot.userAgent.MOBILE) {
+        assert.ok(true, 'Skipping on mobile');
         return;
       }
       var target = findElement({ id: 'targetNotInView' });
       var oldPos = goog.style.getClientPosition(target);
       bot.action.click(target);
-      // In Safari 6, the affects of window.scrollTo are applied
-      // applied asynchronously, so we cannot verify scrolling here.
       if (!bot.userAgent.SAFARI_6) {
         var newPos = goog.style.getClientPosition(target);
-        assertNotEquals(oldPos.y, newPos.y);
+        assert.notStrictEqual(newPos.y, oldPos.y);
+      } else {
+        assert.ok(true, 'Safari 6 scroll verification skipped');
       }
       window.scrollTo(0, 0);
-    }
+    });
   </script>
 </head>
 
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <form action="javascript:void(0)">
     <label for="focusSink">Focus sink:</label><input id="focusSink" type="text" /><br />
     <label for="clicker">Click me:</label><input id="clicker" type="checkbox" /><br />
