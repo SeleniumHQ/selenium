@@ -46,6 +46,27 @@ public class ClientConfig {
       URI baseUri,
       Duration connectionTimeout,
       Duration readTimeout,
+      Filter filters,
+      Proxy proxy,
+      Credentials credentials,
+      SSLContext sslContext,
+      String version) {
+    this(
+        baseUri,
+        connectionTimeout,
+        readTimeout,
+        defaultWsTimeout(),
+        filters,
+        proxy,
+        credentials,
+        sslContext,
+        version);
+  }
+
+  protected ClientConfig(
+      URI baseUri,
+      Duration connectionTimeout,
+      Duration readTimeout,
       Duration wsTimeout,
       Filter filters,
       Proxy proxy,
@@ -66,17 +87,29 @@ public class ClientConfig {
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
         null,
-        Duration.ofSeconds(
-            Long.parseLong(System.getProperty("webdriver.httpclient.connectionTimeout", "10"))),
-        Duration.ofSeconds(
-            Long.parseLong(System.getProperty("webdriver.httpclient.readTimeout", "180"))),
-        Duration.ofSeconds(
-            Long.parseLong(System.getProperty("webdriver.httpclient.wsTimeout", "30"))),
+        defaultConnectionTimeout(),
+        defaultReadTimeout(),
+        defaultWsTimeout(),
         DEFAULT_FILTER,
         null,
         null,
         null,
         System.getProperty("webdriver.httpclient.version", null));
+  }
+
+  private static Duration defaultWsTimeout() {
+    return Duration.ofSeconds(
+        Long.parseLong(System.getProperty("webdriver.httpclient.wsTimeout", "30")));
+  }
+
+  private static Duration defaultReadTimeout() {
+    return Duration.ofSeconds(
+        Long.parseLong(System.getProperty("webdriver.httpclient.readTimeout", "180")));
+  }
+
+  private static Duration defaultConnectionTimeout() {
+    return Duration.ofSeconds(
+        Long.parseLong(System.getProperty("webdriver.httpclient.connectionTimeout", "10")));
   }
 
   public ClientConfig baseUri(URI baseUri) {
