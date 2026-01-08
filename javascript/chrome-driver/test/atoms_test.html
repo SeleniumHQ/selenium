@@ -17,19 +17,43 @@ limitations under the License.
 -->
 <html>
 <head>
+  <meta charset="utf-8">
   <title>atoms_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script type="text/javascript" src="test_bootstrap.js">
   </script>
   <script type="text/javascript">
     goog.require('goog.math.Coordinate');
     goog.require('goog.math.Rect');
     goog.require('goog.math.Size');
-    goog.require('goog.testing.jsunit');
     goog.require('webdriver.chrome');
   </script>
 
   <script type="text/javascript">
-    function testComputeScrollOffsets() {
+    function assertRoughlyEquals(expected, actual, tolerance) {
+      QUnit.assert.ok(Math.abs(expected - actual) <= tolerance,
+          'Expected ' + expected + ' ± ' + tolerance + ', got ' + actual);
+    }
+
+    QUnit.testStart(function() {
+      // Reset iframe scroll position before each test to avoid order dependencies
+      if (frames[0] && frames[0].document && frames[0].document.documentElement) {
+        frames[0].document.documentElement.scrollLeft = 0;
+        frames[0].document.documentElement.scrollTop = 0;
+      }
+    });
+
+    QUnit.testDone(function() {
+      // Reset iframe scroll position after each test to avoid order dependencies
+      if (frames[0] && frames[0].document && frames[0].document.documentElement) {
+        frames[0].document.documentElement.scrollLeft = 0;
+        frames[0].document.documentElement.scrollTop = 0;
+      }
+    });
+
+    QUnit.test('computeScrollOffsets', function(assert) {
       function computeX(left, right, center) {
         var offsets = webdriver.chrome.computeScrollOffsets_(
             new goog.math.Size(10, 10),
@@ -38,22 +62,22 @@ limitations under the License.
         return offsets.x;
       }
       // In bounds
-      assertEquals(0, computeX(1, 5, false));
+      assert.strictEqual(computeX(1, 5, false), 0);
       // On left edge
-      assertEquals(0, computeX(0, 5, false));
+      assert.strictEqual(computeX(0, 5, false), 0);
       // Overlap left edge
-      assertEquals(-1, computeX(-1, 5, false));
+      assert.strictEqual(computeX(-1, 5, false), -1);
       // Past left edge
-      assertEquals(-5, computeX(-5, -1, false));
+      assert.strictEqual(computeX(-5, -1, false), -5);
       // On right edge
-      assertEquals(0, computeX(5, 10, false));
+      assert.strictEqual(computeX(5, 10, false), 0);
       // Overlap right edge
-      assertEquals(1, computeX(5, 11, false));
+      assert.strictEqual(computeX(5, 11, false), 1);
       // Past right edge
-      assertEquals(4, computeX(12, 14, false));
+      assert.strictEqual(computeX(12, 14, false), 4);
       // Too big
-      assertEquals(-1, computeX(-1, 11, false));
-      assertEquals(2, computeX(-1, 15, true));
+      assert.strictEqual(computeX(-1, 11, false), -1);
+      assert.strictEqual(computeX(-1, 15, true), 2);
 
       function computeY(top, bottom, center) {
         var offsets = webdriver.chrome.computeScrollOffsets_(
@@ -63,93 +87,93 @@ limitations under the License.
         return offsets.y;
       }
       // Above top edge
-      assertEquals(-3, computeY(-3, -1, false));
+      assert.strictEqual(computeY(-3, -1, false), -3);
       // Below bottom edge
-      assertEquals(5, computeY(13, 15, false));
+      assert.strictEqual(computeY(13, 15, false), 5);
       // Too big
-      assertEquals(-1, computeY(-1, 11, false));
-      assertEquals(2, computeY(-1, 15, true));
-    }
+      assert.strictEqual(computeY(-1, 11, false), -1);
+      assert.strictEqual(computeY(-1, 15, true), 2);
+    });
 
-    function testComputeOffsetInContainer() {
+    QUnit.test('computeOffsetInContainer', function(assert) {
       function computeY(container, elem) {
         return webdriver.chrome.computeOffsetInContainer_(
             document.getElementById(container),
             document.getElementById(elem)).y;
       }
       // Padding/margins/borders
-      assertEquals(17, computeY('c1', 'e1'));
+      assert.strictEqual(computeY('c1', 'e1'), 17);
 
       // Absolute positioning
-      assertEquals(50, computeY('c2', 'e2'));
+      assert.strictEqual(computeY('c2', 'e2'), 50);
 
       // Container hidden
-      assertEquals(0, computeY('c3', 'e3'));
+      assert.strictEqual(computeY('c3', 'e3'), 0);
 
       // Element hidden
-      assertEquals(0, computeY('c4', 'e4'));
+      assert.strictEqual(computeY('c4', 'e4'), 0);
 
       // Not displayed
-      assertEquals(0, computeY('c5', 'e5'));
-    }
+      assert.strictEqual(computeY('c5', 'e5'), 0);
+    });
 
-    function testGetLocationInViewNoScroll() {
+    QUnit.test('getLocationInViewNoScroll', function(assert) {
       var elem = frames[0].document.getElementById('elem0');
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));
       var tolerance = 1;
       assertRoughlyEquals(108, coord.x, tolerance);
       assertRoughlyEquals(108, coord.y, tolerance);
-      assertEquals(0, frames[0].document.documentElement.scrollLeft);
-      assertEquals(0, frames[0].document.documentElement.scrollTop);
-    }
+      assert.strictEqual(frames[0].document.documentElement.scrollLeft, 0);
+      assert.strictEqual(frames[0].document.documentElement.scrollTop, 0);
+    });
 
-    function testGetLocationInViewScrolling() {
+    QUnit.test('getLocationInViewScrolling', function(assert) {
       var elem = frames[0].document.getElementById('elem');
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));
       var tolerance = 1;
       assertRoughlyEquals(280, coord.x, tolerance);
       assertRoughlyEquals(280, coord.y, tolerance);
-      assertEquals(408, frames[0].document.documentElement.scrollLeft);
-      assertEquals(408, frames[0].document.documentElement.scrollTop);
-    }
+      assert.strictEqual(frames[0].document.documentElement.scrollLeft, 408);
+      assert.strictEqual(frames[0].document.documentElement.scrollTop, 408);
+    });
 
-    function testGetLocationInViewDocumentElement() {
+    QUnit.test('getLocationInViewDocumentElement', function(assert) {
       var elem = document.documentElement;
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));
-      assertEquals(0, coord.x);
-      assertEquals(0, coord.y);
-      assertEquals(0, document.documentElement.scrollLeft);
-      assertEquals(0, document.documentElement.scrollTop);
-    }
+      assert.strictEqual(coord.x, 0);
+      assert.strictEqual(coord.y, 0);
+      assert.strictEqual(document.documentElement.scrollLeft, 0);
+      assert.strictEqual(document.documentElement.scrollTop, 0);
+    });
 
-    function testGetLocationInViewFrameDocumentElement() {
+    QUnit.test('getLocationInViewFrameDocumentElement', function(assert) {
       var elem = frames[0].document.documentElement;
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));
-      assertEquals(0, coord.x);
-      assertEquals(0, coord.y);
-      assertEquals(0, frames[0].document.documentElement.scrollLeft);
-      assertEquals(0, frames[0].document.documentElement.scrollTop);
-    }
+      assert.strictEqual(coord.x, 0);
+      assert.strictEqual(coord.y, 0);
+      assert.strictEqual(frames[0].document.documentElement.scrollLeft, 0);
+      assert.strictEqual(frames[0].document.documentElement.scrollTop, 0);
+    });
 
-    function testGetFirstClientRect() {
+    QUnit.test('getFirstClientRect', function(assert) {
       var rect = webdriver.chrome.getFirstClientRect(
           document.getElementById('span'));
-      assertEquals(0, rect.left);
-      assertEquals(0, rect.top);
-      assertTrue(rect.width > 0);
-      assertTrue(rect.height > 0);
-    }
+      assert.strictEqual(rect.left, 0);
+      assert.strictEqual(rect.top, 0);
+      assert.ok(rect.width > 0);
+      assert.ok(rect.height > 0);
+    });
 
-    function testGetFirstClientRectThrows() {
-      assertThrows(function() {
+    QUnit.test('getFirstClientRectThrows', function(assert) {
+      assert.throws(function() {
             webdriver.chrome.getFirstClientRect(
               document.getElementById('e5'));
           });
-    }
+    });
   </script>
 </head>
 <style>
@@ -171,6 +195,8 @@ limitations under the License.
   }
 </style>
 <body id='body'>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <div id='c1'>
     <div id='e1'>1</div>
   </div>
