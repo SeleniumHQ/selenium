@@ -71,6 +71,7 @@ build:macos --host_cxxopt=-std=c++17
 build:windows --cxxopt=/std:c++17
 build:windows --host_cxxopt=/std:c++17
 build:windows --per_file_copt=external/protobuf\\+.*@/w
+build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 common --define=protobuf_allow_msvc=true
 
 # For build stamping
