@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>window_size_test</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js" type="text/javascript"></script>
   <script type="text/javascript">
     goog.require('bot');
@@ -11,7 +15,6 @@
     goog.require('goog.dom');
     goog.require('goog.labs.userAgent.device');
     goog.require('goog.math');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
@@ -19,22 +22,22 @@
   <script type="text/javascript">
     var popup;
 
-    function setUpPage() {
+    QUnit.begin(function() {
       popup = window.open('about:blank', '', 'width=300, height=400');
       if (popup.focus) {
         popup.focus();
       }
       bot.setWindow(popup);
-    }
+    });
 
-    function tearDownPage() {
+    QUnit.done(function() {
       if (popup) {
         popup.close();
         popup = null;
       }
-    }
+    });
 
-    function verifySize(expectedSize) {
+    function verifySize(assert, expectedSize) {
       // TODO: Re-enable when b/8869287 is fixed.
       if (bot.userAgent.IE_DOC_9) {
         return;
@@ -45,34 +48,40 @@
         // IE has inconsistent support for window.outerHeight or
         // window.outerWidth and the value returned by bot.window.getSize
         // is approximate.
-        assertTrue(size.width <= expectedSize.width);
-        assertTrue(size.height <= expectedSize.height);
+        assert.ok(size.width <= expectedSize.width);
+        assert.ok(size.height <= expectedSize.height);
         var PADDING = 80;
-        assertTrue(size.width + PADDING > expectedSize.width);
-        assertTrue(size.height + PADDING > expectedSize.height);
+        assert.ok(size.width + PADDING > expectedSize.width);
+        assert.ok(size.height + PADDING > expectedSize.height);
       } else {
-        assertEquals(expectedSize.width, size.width);
-        assertEquals(expectedSize.height, size.height);
+        assert.strictEqual(size.width, expectedSize.width);
+        assert.strictEqual(size.height, expectedSize.height);
       }
     }
 
-    function testSetSize() {
+    QUnit.test('setSize', function(assert) {
       if (!goog.labs.userAgent.device.isDesktop()) {
-         return;
+        assert.ok(true, 'Skipping: not a desktop device');
+        return;
       }
       if (goog.userAgent.GECKO) {
+        assert.ok(true, 'Skipping: GECKO browser');
         return;
       }
       var size = new goog.math.Size(350, 450);
       bot.window.setSize(size);
-      verifySize(size);
-    }
+      verifySize(assert, size);
+    });
 
-    function testSetSizeUsingGetSize() {
+    QUnit.test('setSizeUsingGetSize', function(assert) {
       var size = bot.window.getSize();
       bot.window.setSize(size);
-      verifySize(size);
-    }
+      verifySize(assert, size);
+    });
   </script>
 </head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+</body>
 </html>

@@ -167,11 +167,21 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
     if (frame instanceof CloseWebSocketFrame) {
       try {
         CloseWebSocketFrame close = (CloseWebSocketFrame) frame.retain();
+        // Invoke the consumer synchronously BEFORE sending the close response.
+        // This avoids race conditions when trying to reuse the connection slot.
+        Consumer<Message> consumer = ctx.channel().attr(key).getAndSet(null);
+        if (consumer != null) {
+          try {
+            consumer.accept(new CloseMessage(close.statusCode(), close.reasonText()));
+          } catch (Exception ex) {
+            LOG.log(Level.FINE, "failed to handle close message", ex);
+          }
+        }
         handshaker.close(ctx.channel(), close);
-        // Pass on to the rest of the channel
+        // Pass on to the rest of the channel for any other handlers
         ctx.fireChannelRead(close);
       } finally {
-        // set null to ensure we do not send another close
+        // ensure attribute is cleared even if consumer invocation failed
         ctx.channel().attr(key).set(null);
       }
     } else if (frame instanceof PingWebSocketFrame) {

@@ -219,6 +219,17 @@ module Selenium
       "http://#{@host}:#{@port}/wd/hub"
     end
 
+    def status_ok?
+      return false unless @process&.alive? && socket.connected?
+
+      Net::HTTP.start(@host, @port, open_timeout: 2, read_timeout: 2) do |http|
+        response = http.get('/wd/hub/status')
+        response.is_a?(Net::HTTPSuccess)
+      end
+    rescue StandardError
+      false
+    end
+
     def <<(arg)
       if arg.is_a?(Array)
         @additional_args += arg

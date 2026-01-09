@@ -161,11 +161,14 @@ closure_js_deps(
     deps = [
         ":lib",
         "//javascript/webdriver/atoms:all_js_for_testing",
+        "//third_party/closure/goog:library",
+        "//third_party/closure/goog:testing",
     ],
 )
 
 closure_test_suite(
     name = "closure-test",
+    browsers = ["chrome"],
     data = [
         ":all_files",
         ":deps",

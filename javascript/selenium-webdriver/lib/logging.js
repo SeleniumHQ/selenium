@@ -482,6 +482,12 @@ class LogManager {
 
 const logManager = new LogManager()
 
+// Enable debug logging if SE_DEBUG or SELENIUM_VERBOSE environment variable is set
+if (typeof process !== 'undefined' && process.env && (process.env.SE_DEBUG || process.env.SELENIUM_VERBOSE)) {
+  logManager.root_.setLevel(Level.ALL)
+  logManager.root_.addHandler(consoleHandler)
+}
+
 /**
  * Retrieves a named logger, creating it in the process. This function will
  * implicitly create the requested logger, and any of its parents, if they

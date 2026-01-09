@@ -27,11 +27,12 @@ import org.openqa.selenium.internal.Require;
 
 public class BiDi implements Closeable {
 
-  private final Duration timeout = Duration.ofSeconds(30);
+  private final Duration timeout;
   private final Connection connection;
 
-  public BiDi(Connection connection) {
+  public BiDi(Connection connection, Duration timeout) {
     this.connection = Require.nonNull("WebSocket connection", connection);
+    this.timeout = Require.nonNull("WebSocket timeout", timeout);
   }
 
   @Override
@@ -48,6 +49,12 @@ public class BiDi implements Closeable {
 
   public <X> X send(Command<X> command) {
     Require.nonNull("Command to send", command);
+    return connection.sendAndWait(command, timeout);
+  }
+
+  public <X> X send(Command<X> command, Duration timeout) {
+    Require.nonNull("Command to send", command);
+    Require.nonNull("Timeout", timeout);
     return connection.sendAndWait(command, timeout);
   }
 

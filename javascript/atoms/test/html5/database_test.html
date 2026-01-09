@@ -1,14 +1,17 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Web database storage</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src='../test_bootstrap.js'></script>
   <script type='text/javascript'>
     goog.require('bot');
     goog.require('bot.html5');
     goog.require('bot.storage.database');
     goog.require('goog.Promise');
-    goog.require('goog.testing.jsunit');
   </script>
   <script type='text/javascript'>
     var DATABASE_NOT_WORKING =
@@ -23,147 +26,189 @@
      * to create the database.
      * This function must not fail or throw error for of the test functions.
      */
-    function setUpPage() {
-      createdDatabase = new goog.Promise(function(success, failure) {
+    createdDatabase = new goog.Promise(function(success, failure) {
+      if (DATABASE_NOT_WORKING) {
+        success();
+        return;
+      }
+
+      try {
+        var win = bot.getWindow();
+        // Keep the DB size below 5 MB. Above that size, Safari will prompt
+        // for permission and cause this test to hang.
+        var db = win.openDatabase('testDB', '1.0', 'db name', 2 * 1024 * 1024);
+        db.transaction(function(tx) {
+          tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER ' +
+              'PRIMARY KEY, name TEXT, owner TEXT)');
+          tx.executeSql('INSERT OR REPLACE INTO docids VALUES (11, "aa", "Manager")');
+          tx.executeSql('INSERT OR REPLACE INTO docids VALUES (1, "aabb", "Eng-A")');
+          tx.executeSql('INSERT OR REPLACE INTO docids VALUES (31, "abc", "Eng-B")');
+          tx.executeSql('INSERT OR REPLACE INTO docids VALUES (0, "aabb", "Eng-A")');
+          tx.executeSql('INSERT OR REPLACE INTO docids VALUES (2, "yyy", "Eng-D")');
+          tx.executeSql('INSERT OR REPLACE INTO docids VALUES (3, "zzz", "Eng-A")');
+          tx.executeSql('INSERT OR REPLACE INTO docids VALUES (90, "aabb", "Eng-E")');
+        }, failure, success);
+      } catch (e) {
+        failure(e);
+      }
+    });
+
+    QUnit.test('openDatabaseWithSameVersion', function(assert) {
+      var done = assert.async();
+      createdDatabase.then(function() {
         if (DATABASE_NOT_WORKING) {
-          success();
+          assert.ok(true, 'Skipping: database not working');
+          done();
+          return;
+        }
+
+        var db;
+        try {
+          db = bot.storage.database.openOrCreate('testDB', '1.0');
+        } catch (e) {
+          assert.ok(false, e.message);
+          done();
+          return;
+        }
+
+        assert.ok(db !== null);
+        assert.strictEqual(db.version, '1.0');
+        done();
+      });
+    });
+
+
+    QUnit.test('openDatabaseWithAnyVersion', function(assert) {
+      var done = assert.async();
+      createdDatabase.then(function() {
+        if (DATABASE_NOT_WORKING) {
+          assert.ok(true, 'Skipping: database not working');
+          done();
+          return;
+        }
+
+        var db;
+        try {
+          db = bot.storage.database.openOrCreate('testDB');
+        } catch (e) {
+          assert.ok(false, e.message);
+          done();
+          return;
+        }
+
+        assert.ok(db !== null);
+        assert.strictEqual(db.version, '1.0');
+        done();
+      });
+    });
+
+
+    QUnit.test('openDatabaseWrongVersion', function(assert) {
+      var done = assert.async();
+      createdDatabase.then(function() {
+        if (DATABASE_NOT_WORKING) {
+          assert.ok(true, 'Skipping: database not working');
+          done();
           return;
         }
 
         try {
-          var win = bot.getWindow();
-          // Keep the DB size below 5 MB. Above that size, Safari will prompt
-          // for permission and cause this test to hang.
-          var db = win.openDatabase('testDB', '1.0', 'db name', 2 * 1024 * 1024);
-          db.transaction(function(tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS docids (id INTEGER ' +
-                'PRIMARY KEY, name TEXT, owner TEXT)');
-            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (11, "aa", "Manager")');
-            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (1, "aabb", "Eng-A")');
-            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (31, "abc", "Eng-B")');
-            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (0, "aabb", "Eng-A")');
-            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (2, "yyy", "Eng-D")');
-            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (3, "zzz", "Eng-A")');
-            tx.executeSql('INSERT OR REPLACE INTO docids VALUES (90, "aabb", "Eng-E")');
-          }, failure, success);
+          var db = bot.storage.database.openOrCreate('testDB', '2.0');
         } catch (e) {
-          failure(e);
+          // Exception should be thrown on opening a database with wrong
+          // version.
+          assert.ok(true, 'Expected exception thrown');
+          done();
+          return;
         }
+
+        assert.ok(false, 'Database should fail to open.');
+        done();
       });
-    }
+    });
 
 
-    function setUp() {
-      return createdDatabase;  // setUpPage does not wait on returned promises.
-    }
+    QUnit.test('executeSqlWithInvalidSqlStatement', function(assert) {
+      var done = assert.async();
+      createdDatabase.then(function() {
+        if (DATABASE_NOT_WORKING) {
+          assert.ok(true, 'Skipping: database not working');
+          done();
+          return;
+        }
 
+        return new goog.Promise(function(success, failure) {
+          var onQueryResult = function() {
+            failure('Transaction should not succeed with invalid SQL statement');
+          };
+          var onTxSuccess = onQueryResult;
+          var onTxFailure = success;
 
-    function testOpenDatabaseWithSameVersion() {
-      if (DATABASE_NOT_WORKING) {
-        return;
-      }
-
-      var db;
-      try {
-        db = bot.storage.database.openOrCreate('testDB', '1.0');
-      } catch (e) {
-        fail(e.message);
-      }
-
-      assertNotNull(db);
-      assertEquals(db.version, '1.0');
-    }
-
-
-    function testOpenDatabaseWithAnyVersion() {
-      if (DATABASE_NOT_WORKING) {
-        return;
-      }
-
-      var db;
-      try {
-        db = bot.storage.database.openOrCreate('testDB');
-      } catch (e) {
-        fail(e.message);
-      }
-
-      assertNotNull(db);
-      assertEquals(db.version, '1.0');
-    }
-
-
-    function testOpenDatabaseWrongVersion() {
-      if (DATABASE_NOT_WORKING) {
-        return;
-      }
-
-      try {
-        var db = bot.storage.database.openOrCreate('testDB', '2.0');
-      } catch (e) {
-        // Exception should be thrown on opening a database with wrong
-        // version.
-        return;
-      }
-
-      fail('Database should fail to open.');
-    }
-
-
-    function testExecuteSqlWithInvalidSqlStatement() {
-      if (DATABASE_NOT_WORKING) {
-        return;
-      }
-
-      return new goog.Promise(function(success, failure) {
-        var onQueryResult = function() {
-          failure('Transaction should not succeed with invalid SQL statement');
-        };
-        var onTxSuccess = onQueryResult;
-        var onTxFailure = success;
-
-        // WITH is erroneously used instead of WHERE
-        bot.storage.database.executeSql('testDB',
-            'SELECT * from docids WITH id = 1', [],
-            onQueryResult,
-            onTxFailure,
-            onTxSuccess);
+          // WITH is erroneously used instead of WHERE
+          bot.storage.database.executeSql('testDB',
+              'SELECT * from docids WITH id = 1', [],
+              onQueryResult,
+              onTxFailure,
+              onTxSuccess);
+        });
+      }).then(function() {
+        assert.ok(true, 'Transaction failed as expected');
+        done();
+      }, function(err) {
+        assert.ok(false, err);
+        done();
       });
-    }
+    });
 
 
-    function testExecuteSqlWithValidArgument() {
-      if (DATABASE_NOT_WORKING) {
-        return;
-      }
+    QUnit.test('executeSqlWithValidArgument', function(assert) {
+      var done = assert.async();
+      createdDatabase.then(function() {
+        if (DATABASE_NOT_WORKING) {
+          assert.ok(true, 'Skipping: database not working');
+          done();
+          return;
+        }
 
-      return new goog.Promise(function(success, failure) {
-        bot.storage.database.executeSql('testDB',
-            'SELECT id from docids WHERE owner = ? AND name = ?',
-            ['Eng-A', 'aabb'],
-            function(tx, result) {
-              success(result);
-            },
-            goog.partial(failure, 'Transaction should succeed, not fail'),
-            goog.nullFunction);
-      }).then(function(result) {
-        assertEquals(result.rows.length, 2);
-        assertEquals(result.rowsAffected, 0);
-        assertEquals(result.rows[0].id, 0);
-        assertEquals(result.rows[1].id, 1);
+        return new goog.Promise(function(success, failure) {
+          bot.storage.database.executeSql('testDB',
+              'SELECT id from docids WHERE owner = ? AND name = ?',
+              ['Eng-A', 'aabb'],
+              function(tx, result) {
+                success(result);
+              },
+              goog.partial(failure, 'Transaction should succeed, not fail'),
+              goog.nullFunction);
+        }).then(function(result) {
+          assert.strictEqual(result.rows.length, 2);
+          assert.strictEqual(result.rowsAffected, 0);
+          assert.strictEqual(result.rows[0].id, 0);
+          assert.strictEqual(result.rows[1].id, 1);
+          done();
+        });
       });
-    }
+    });
 
 
-    function testExecuteSqlInsertAndDelete() {
-      if (DATABASE_NOT_WORKING) {
-        return;
-      }
+    QUnit.test('executeSqlInsertAndDelete', function(assert) {
+      var done = assert.async();
+      createdDatabase.then(function() {
+        if (DATABASE_NOT_WORKING) {
+          assert.ok(true, 'Skipping: database not working');
+          done();
+          return;
+        }
 
-      //Grouping insert and delete together to keep no side-effect later.
-      return executeSqlInsert().then(executeSqlDelete);
-    }
+        //Grouping insert and delete together to keep no side-effect later.
+        return executeSqlInsert(assert).then(function() {
+          return executeSqlDelete(assert);
+        });
+      }).then(function() {
+        done();
+      });
+    });
 
-    function executeSqlInsert() {
+    function executeSqlInsert(assert) {
       return new goog.Promise(function(success, fail) {
         bot.storage.database.executeSql('testDB',
             'INSERT OR REPLACE INTO docids (id, name, owner) VALUES (?, ?, ?)',
@@ -174,12 +219,12 @@
             goog.partial(fail, 'Transaction should succeed, not fail'),
             goog.nullFunction);
       }).then(function(result) {
-        assertEquals(result.rowsAffected, 1);
-        assertEquals(result.rows.length, 0);
+        assert.strictEqual(result.rowsAffected, 1);
+        assert.strictEqual(result.rows.length, 0);
       });
     }
 
-    function executeSqlDelete() {
+    function executeSqlDelete(assert) {
       return new goog.Promise(function(success, fail) {
         bot.storage.database.executeSql('testDB',
             'DELETE FROM docids WHERE id=999',
@@ -190,11 +235,14 @@
             goog.partial(fail, 'Transaction should succeed, not fail'),
             goog.nullFunction);
       }).then(function(result) {
-        assertEquals(result.rowsAffected, 1);
-        assertEquals(result.rows.length, 0);
+        assert.strictEqual(result.rowsAffected, 1);
+        assert.strictEqual(result.rows.length, 0);
       });
     }
   </script>
 </head>
-<body></body>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+</body>
 </html>

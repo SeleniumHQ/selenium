@@ -17,7 +17,11 @@ limitations under the License.
 -->
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Unit Tests for bot.inject</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.Error');
@@ -29,12 +33,13 @@ limitations under the License.
     goog.require('goog.Promise');
     goog.require('goog.dom');
     goog.require('goog.events');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <div style="display:none">
     <iframe id="test-frame" src="testdata/blank_page.html"></iframe>
   </div>
@@ -43,415 +48,400 @@ limitations under the License.
 
     var frame, frameWin, frameDoc;
 
-    function setUpPage() {
-      goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
-    }
-
-    function setUp() {
+    QUnit.testStart(function() {
       frame = goog.dom.$('test-frame');
       frameWin = goog.dom.getFrameContentWindow(frame);
       frameDoc = goog.dom.getFrameContentDocument(frame);
 
-      // Force the cache to be recreated on the next access. We cannot "delete"
-      // it here because IE complains about it being an unsupported operation.
       document[bot.inject.cache.CACHE_KEY_] = null;
-
-      // Delete the cache in our test frame, if it was created.
       frameDoc[bot.inject.cache.CACHE_KEY_] = null;
-    }
+    });
 
-    function testAddWindowToCache() {
+    QUnit.test('AddWindowToCache', function(assert) {
       var id = bot.inject.cache.addElement(frameWin);
-      assertEquals(frameWin, bot.inject.cache.getElement(id));
-    }
+      assert.strictEqual(bot.inject.cache.getElement(id), frameWin);
+    });
 
 
-    function testAddWindowToCacheMultipleTimesReusesIds() {
+    QUnit.test('AddWindowToCacheMultipleTimesReusesIds', function(assert) {
       var id1 = bot.inject.cache.addElement(frameWin);
       var id2 = bot.inject.cache.addElement(frameWin);
-      assertEquals(id1, id2);
-    }
+      assert.strictEqual(id2, id1);
+    });
 
 
-    function testGetElementThrowsIfWindowIsClosed() {
+    QUnit.test('GetElementThrowsIfWindowIsClosed', function(assert) {
       var win = {document: 1, closed: 1};
       var id = bot.inject.cache.addElement(win);
-      assertThrows(goog.partial(bot.inject.cache.getElement, id));
-    }
+      assert.throws(function() { bot.inject.cache.getElement(id); });
+    });
 
 
-    function testShouldWrapAndUnwrapWindow() {
+    QUnit.test('ShouldWrapAndUnwrapWindow', function(assert) {
       var wrapped = bot.inject.wrapValue(frameWin);
-      assertNotNull(wrapped);
-      assertNotUndefined(wrapped);
-      assertTrue(goog.isObject(wrapped));
-      assertTrue(goog.object.containsKey(wrapped, bot.inject.WINDOW_KEY));
+      assert.ok(wrapped !== null);
+      assert.ok(wrapped !== undefined);
+      assert.ok(goog.isObject(wrapped));
+      assert.ok(goog.object.containsKey(wrapped, bot.inject.WINDOW_KEY));
 
       var id = wrapped[bot.inject.WINDOW_KEY];
       var res = bot.inject.cache.getElement(id);
-      assertEquals(frameWin, res);
-      assertEquals(frameWin, bot.inject.unwrapValue(wrapped));
-    }
+      assert.strictEqual(res, frameWin);
+      assert.strictEqual(bot.inject.unwrapValue(wrapped), frameWin);
+    });
 
 
-    function testShouldBeAbleToCacheElements() {
+    QUnit.test('ShouldBeAbleToCacheElements', function(assert) {
       var id = bot.inject.cache.addElement(document.body);
       var el = bot.inject.cache.getElement(id);
-      assertEquals(document.body, el);
-    }
+      assert.strictEqual(el, document.body);
+    });
 
 
-    function testShouldReuseExistingIdIfElementAlreadyExistsInTheCache() {
+    QUnit.test('ShouldReuseExistingIdIfElementAlreadyExistsInTheCache', function(assert) {
       var id1 = bot.inject.cache.addElement(document.body);
       var id2 = bot.inject.cache.addElement(document.body);
-      assertEquals(id1, id2);
-    }
+      assert.strictEqual(id2, id1);
+    });
 
 
-    function testShouldThrowIfElementDoesNotExistInTheCache() {
-      assertThrows(goog.partial(bot.inject.cache.getElement, 'not-there'));
-    }
+    QUnit.test('ShouldThrowIfElementDoesNotExistInTheCache', function(assert) {
+      assert.throws(function() { bot.inject.cache.getElement('not-there'); });
+    });
 
 
-    function testShouldDecodeIdsWhenRetrievingFromTheCache() {
+    QUnit.test('ShouldDecodeIdsWhenRetrievingFromTheCache', function(assert) {
       var id = bot.inject.cache.addElement(document.body);
       id = encodeURIComponent(id);
       var el = bot.inject.cache.getElement(id);
-      assertEquals(document.body, el);
-    }
+      assert.strictEqual(el, document.body);
+    });
 
 
-    function testShouldThrowIfCachedElementIsNoLongerAttachedToTheDom() {
+    QUnit.test('ShouldThrowIfCachedElementIsNoLongerAttachedToTheDom', function(assert) {
       if (goog.userAgent.IE) {
-        // TODO: Don't skip this.
+        assert.ok(true, 'Skipping: TODO fix for IE');
         return;
       }
       var div = document.createElement('DIV');
       document.body.appendChild(div);
 
       var id = bot.inject.cache.addElement(div);
-      assertEquals(div, bot.inject.cache.getElement(id));
+      assert.strictEqual(bot.inject.cache.getElement(id), div);
 
       document.body.removeChild(div);
-      assertThrows(goog.partial(bot.inject.cache.getElement, id));
-    }
+      assert.throws(function() { bot.inject.cache.getElement(id); });
+    });
 
 
-    function testDoesNotWrapStringBooleansNumbersOrNull() {
-      assertEquals('foo', bot.inject.wrapValue('foo'));
-      assertEquals(123, bot.inject.wrapValue(123));
-      assertTrue(bot.inject.wrapValue(true));
-      assertNull(bot.inject.wrapValue(null));
-    }
+    QUnit.test('DoesNotWrapStringBooleansNumbersOrNull', function(assert) {
+      assert.strictEqual(bot.inject.wrapValue('foo'), 'foo');
+      assert.strictEqual(bot.inject.wrapValue(123), 123);
+      assert.ok(bot.inject.wrapValue(true));
+      assert.strictEqual(bot.inject.wrapValue(null), null);
+    });
 
 
-    function testConvertsUndefinedValueToNullForWrapping() {
-      assertNull(bot.inject.wrapValue(undefined));
-    }
+    QUnit.test('ConvertsUndefinedValueToNullForWrapping', function(assert) {
+      assert.strictEqual(bot.inject.wrapValue(undefined), null);
+    });
 
 
-    function testShouldAddElementsToCacheWhenWrapping() {
+    QUnit.test('ShouldAddElementsToCacheWhenWrapping', function(assert) {
       var wrapped = bot.inject.wrapValue(document.body);
-      assertNotNull(wrapped);
-      assertNotUndefined(wrapped);
-      assertTrue(goog.isObject(wrapped));
-      assertTrue(goog.object.containsKey(wrapped, bot.inject.ELEMENT_KEY));
+      assert.ok(wrapped !== null);
+      assert.ok(wrapped !== undefined);
+      assert.ok(goog.isObject(wrapped));
+      assert.ok(goog.object.containsKey(wrapped, bot.inject.ELEMENT_KEY));
 
       var id = wrapped[bot.inject.ELEMENT_KEY];
       var el = bot.inject.cache.getElement(id);
-      assertEquals(document.body, el);
-    }
+      assert.strictEqual(el, document.body);
+    });
 
 
-    function testShouldRecursivelyWrapArrays() {
+    QUnit.test('ShouldRecursivelyWrapArrays', function(assert) {
       var unwrapped = [123, 'abc', null, document.body];
       var wrapped = bot.inject.wrapValue(unwrapped);
 
-      assertEquals(unwrapped.length, wrapped.length);
-      assertEquals(unwrapped[0], wrapped[0]);
-      assertEquals(unwrapped[1], wrapped[1]);
-      assertEquals(unwrapped[2], wrapped[2]);
+      assert.strictEqual(wrapped.length, unwrapped.length);
+      assert.strictEqual(wrapped[0], unwrapped[0]);
+      assert.strictEqual(wrapped[1], unwrapped[1]);
+      assert.strictEqual(wrapped[2], unwrapped[2]);
 
-      assertTrue(goog.object.containsKey(wrapped[3], bot.inject.ELEMENT_KEY));
-      assertEquals(unwrapped[3], bot.inject.cache.getElement(
-          wrapped[3][bot.inject.ELEMENT_KEY]));
-    }
+      assert.ok(goog.object.containsKey(wrapped[3], bot.inject.ELEMENT_KEY));
+      assert.strictEqual(bot.inject.cache.getElement(
+          wrapped[3][bot.inject.ELEMENT_KEY]), unwrapped[3]);
+    });
 
 
-    function testShouldBeAbleToWrapNodeListsAsArrays() {
+    QUnit.test('ShouldBeAbleToWrapNodeListsAsArrays', function(assert) {
       var unwrapped = document.getElementsByTagName('body');
       var wrapped = bot.inject.wrapValue(unwrapped);
 
-      assertTrue('should return an array, but was ' + goog.typeOf(wrapped),
-          Array.isArray(wrapped));
-      assertEquals(unwrapped.length, wrapped.length);
-      assertTrue(goog.object.containsKey(wrapped[0], bot.inject.ELEMENT_KEY));
-      assertEquals(document.body, bot.inject.cache.getElement(
-          wrapped[0][bot.inject.ELEMENT_KEY]));
-    }
+      assert.ok(Array.isArray(wrapped), 'should return an array, but was ' + goog.typeOf(wrapped));
+      assert.strictEqual(wrapped.length, unwrapped.length);
+      assert.ok(goog.object.containsKey(wrapped[0], bot.inject.ELEMENT_KEY));
+      assert.strictEqual(bot.inject.cache.getElement(
+          wrapped[0][bot.inject.ELEMENT_KEY]), document.body);
+    });
 
 
-    function testShouldThrowWhenWrappingRecursiveStructure() {
+    QUnit.test('ShouldThrowWhenWrappingRecursiveStructure', function(assert) {
       var obj1 = {};
       var obj2 = {};
       obj1['obj2'] = obj2;
       obj2['obj1'] = obj1;
-      assertThrows(goog.partial(bot.inject.wrapValue, obj1));
-    }
+      assert.throws(function() { bot.inject.wrapValue(obj1); });
+    });
 
 
-    function testShouldBeAbleToUnWrapWrappedValues() {
+    QUnit.test('ShouldBeAbleToUnWrapWrappedValues', function(assert) {
       var unwrapped = [123, 'abc', null, document.body];
       var wrapped = bot.inject.wrapValue(unwrapped);
       var roundTripped = bot.inject.unwrapValue(wrapped);
-      assertArrayEquals(unwrapped, roundTripped);
-    }
+      assert.deepEqual(roundTripped, unwrapped);
+    });
 
 
-    function testShouldBeAbleToUnWrapNestedArrays() {
+    QUnit.test('ShouldBeAbleToUnWrapNestedArrays', function(assert) {
       var unwrapped = [123, 'abc', null, [document.body, null,
           [document.body]]];
       var wrapped = bot.inject.wrapValue(unwrapped);
       var roundTripped = bot.inject.unwrapValue(wrapped);
-      assertArrayEquals(unwrapped, roundTripped);
-    }
+      assert.deepEqual(roundTripped, unwrapped);
+    });
 
 
-    function testShouldBeAbleToUnWrapNestedObjects() {
+    QUnit.test('ShouldBeAbleToUnWrapNestedObjects', function(assert) {
       var unwrapped = {'foo': {'bar': document.body}};
       var wrapped = bot.inject.wrapValue(unwrapped);
       var roundTripped = bot.inject.unwrapValue(wrapped);
 
-      assertTrue(goog.object.containsKey(roundTripped, 'foo'));
+      assert.ok(goog.object.containsKey(roundTripped, 'foo'));
       var foo = roundTripped['foo'];
 
-      assertTrue(goog.object.containsKey(foo, 'bar'));
-      assertEquals(document.body, foo['bar']);
-    }
+      assert.ok(goog.object.containsKey(foo, 'bar'));
+      assert.strictEqual(foo['bar'], document.body);
+    });
 
 
-    function testShouldUnWrapElementsUsingTheGivenDocumentsCache() {
+    QUnit.test('ShouldUnWrapElementsUsingTheGivenDocumentsCache', function(assert) {
       var wrapped = bot.inject.wrapValue(frameDoc.body);
-      assertNotNull(wrapped);
-      assertNotUndefined(wrapped);
-      assertTrue(goog.isObject(wrapped));
-      assertTrue(goog.object.containsKey(wrapped, bot.inject.ELEMENT_KEY));
+      assert.ok(wrapped !== null);
+      assert.ok(wrapped !== undefined);
+      assert.ok(goog.isObject(wrapped));
+      assert.ok(goog.object.containsKey(wrapped, bot.inject.ELEMENT_KEY));
 
-      // Should not be able to unwrap using our document since the element
-      // was cached on its ownerDocument.
-      assertThrows(goog.partial(bot.inject.unwrapValue, wrapped));
+      assert.throws(function() { bot.inject.unwrapValue(wrapped); });
 
       var unwrapped = bot.inject.unwrapValue(wrapped, frameDoc);
-      assertEquals(frameDoc.body, unwrapped);
-    }
+      assert.strictEqual(unwrapped, frameDoc.body);
+    });
 
 
-    function testShouldBeAbleToUnwrapArgumentsExecuteScriptAndWrapResult() {
+    QUnit.test('ShouldBeAbleToUnwrapArgumentsExecuteScriptAndWrapResult', function(assert) {
       var id = bot.inject.cache.addElement(document.body);
       var args = [{}];
       args[0][bot.inject.ELEMENT_KEY] = id;
       var result = bot.inject.executeScript(
           function() { return arguments[0]; }, args);
 
-      assertTrue(goog.object.containsKey(result, 'status'));
-      assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+      assert.ok(goog.object.containsKey(result, 'status'));
+      assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
 
-      assertTrue(goog.object.containsKey(result, 'value'));
-      assertTrue(goog.object.containsKey(result['value'],
+      assert.ok(goog.object.containsKey(result, 'value'));
+      assert.ok(goog.object.containsKey(result['value'],
           bot.inject.ELEMENT_KEY));
-      assertEquals(document.body, bot.inject.cache.getElement(
-          result['value'][bot.inject.ELEMENT_KEY]));
-    }
+      assert.strictEqual(bot.inject.cache.getElement(
+          result['value'][bot.inject.ELEMENT_KEY]), document.body);
+    });
 
 
-    function testShouldTrapAndReturnWrappedErrorsFromInjectedScripts() {
+    QUnit.test('ShouldTrapAndReturnWrappedErrorsFromInjectedScripts', function(assert) {
       var result = bot.inject.executeScript(
           function() { throw Error('ouch'); }, []);
-      assertTrue(goog.object.containsKey(result, 'status'));
-      assertTrue(goog.object.containsKey(result, 'value'));
+      assert.ok(goog.object.containsKey(result, 'status'));
+      assert.ok(goog.object.containsKey(result, 'value'));
 
-      assertEquals(bot.ErrorCode.UNKNOWN_ERROR, result['status']);
+      assert.strictEqual(result['status'], bot.ErrorCode.UNKNOWN_ERROR);
       result = result['value'];
-      assertTrue(goog.object.containsKey(result, 'message'));
-      assertEquals('ouch', result['message']);
-    }
+      assert.ok(goog.object.containsKey(result, 'message'));
+      assert.strictEqual(result['message'], 'ouch');
+    });
 
 
-    function testShouldResetCacheWhenPageIsRefreshed() {
+    QUnit.test('ShouldResetCacheWhenPageIsRefreshed', function(assert) {
+      var done = assert.async();
       var id = bot.inject.cache.addElement(frameDoc.body);
-      assertEquals(frameDoc.body, bot.inject.cache.getElement(id, frameDoc));
+      assert.strictEqual(bot.inject.cache.getElement(id, frameDoc), frameDoc.body);
 
-      return new goog.Promise(function(loaded) {
-        goog.events.listenOnce(frame, 'load', loaded);
-        frameWin.location.reload();
-      }).then(function() {
+      goog.events.listenOnce(frame, 'load', function() {
         frameDoc = goog.dom.getFrameContentDocument(frame);
-        assertThrows(goog.partial(bot.inject.cache.getElement, id, frameDoc));
+        assert.throws(function() { bot.inject.cache.getElement(id, frameDoc); });
+        done();
       });
-    }
+      frameWin.location.reload();
+    });
 
 
-    function testShouldStringifyResultsWhenAskedToDoSo() {
+    QUnit.test('ShouldStringifyResultsWhenAskedToDoSo', function(assert) {
       var result = bot.inject.executeScript(function() {
         return arguments[0] + arguments[1];
       }, ['abc', 123], true);
 
-      assertEquals('string', goog.typeOf(result));
+      assert.strictEqual(goog.typeOf(result), 'string');
       var json = bot.json.parse(result);
-      assertTrue('No status: ' + result, 'status' in json);
-      assertTrue('No value: ' + result, 'value' in json);
-      assertEquals(0, json['status']);
-      assertEquals('abc123', json['value']);
-    }
+      assert.ok('status' in json, 'No status: ' + result);
+      assert.ok('value' in json, 'No value: ' + result);
+      assert.strictEqual(json['status'], 0);
+      assert.strictEqual(json['value'], 'abc123');
+    });
 
 
-    function testShouldStringifyErrorsWhenAskedForStringResults() {
+    QUnit.test('ShouldStringifyErrorsWhenAskedForStringResults', function(assert) {
       var result = bot.inject.executeScript(function() {
         throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT, 'ouch');
       }, [], true);
 
-      assertEquals('string', goog.typeOf(result));
+      assert.strictEqual(goog.typeOf(result), 'string');
       var json = bot.json.parse(result);
-      assertTrue('No status: ' + result, 'status' in json);
-      assertTrue('No value: ' + result, 'value' in json);
-      assertEquals(bot.ErrorCode.NO_SUCH_ELEMENT, json['status']);
-      assertTrue('No message: ' + result, 'message' in json['value']);
-      assertEquals('ouch', json['value']['message']);
-    }
+      assert.ok('status' in json, 'No status: ' + result);
+      assert.ok('value' in json, 'No value: ' + result);
+      assert.strictEqual(json['status'], bot.ErrorCode.NO_SUCH_ELEMENT);
+      assert.ok('message' in json['value'], 'No message: ' + result);
+      assert.strictEqual(json['value']['message'], 'ouch');
+    });
 
 
-    function testShouldBeAbleToExecuteAsyncScript() {
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript(
-            'window.setTimeout(goog.partial(arguments[0], 1), 10)',
-            [], 250, done);
-      }).then(function(result) {
-        assertTrue(goog.object.containsKey(result, 'status'));
-        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
-        assertTrue(goog.object.containsKey(result, 'value'));
-        assertEquals(1, result['value']);
+    QUnit.test('ShouldBeAbleToExecuteAsyncScript', function(assert) {
+      var done = assert.async();
+      bot.inject.executeAsyncScript(
+          'window.setTimeout(goog.partial(arguments[0], 1), 10)',
+          [], 250, function(result) {
+        assert.ok(goog.object.containsKey(result, 'status'));
+        assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
+        assert.ok(goog.object.containsKey(result, 'value'));
+        assert.strictEqual(result['value'], 1);
+        done();
       });
-    }
+    });
 
 
-    function testShouldBeAbleToExecuteAsyncScriptThatCallsbackSynchronously() {
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript('arguments[0](1)', [], 0, done);
-      }).then(function(result) {
-        assertTrue(goog.object.containsKey(result, 'status'));
-        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
-        assertTrue(goog.object.containsKey(result, 'value'));
-        assertEquals(1, result['value']);
+    QUnit.test('ShouldBeAbleToExecuteAsyncScriptThatCallsbackSynchronously', function(assert) {
+      var done = assert.async();
+      bot.inject.executeAsyncScript('arguments[0](1)', [], 0, function(result) {
+        assert.ok(goog.object.containsKey(result, 'status'));
+        assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
+        assert.ok(goog.object.containsKey(result, 'value'));
+        assert.strictEqual(result['value'], 1);
+        done();
       });
-    }
+    });
 
 
-    function testShouldBeAbleToExecuteAsyncFunc() {
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript(
-            function(callback) { callback(1) }, [], 0, done);
-      }).then(function(result) {
-        assertTrue(goog.object.containsKey(result, 'status'));
-        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
-        assertTrue(goog.object.containsKey(result, 'value'));
-        assertEquals(1, result['value']);
+    QUnit.test('ShouldBeAbleToExecuteAsyncFunc', function(assert) {
+      var done = assert.async();
+      bot.inject.executeAsyncScript(
+          function(callback) { callback(1) }, [], 0, function(result) {
+        assert.ok(goog.object.containsKey(result, 'status'));
+        assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
+        assert.ok(goog.object.containsKey(result, 'value'));
+        assert.strictEqual(result['value'], 1);
+        done();
       });
-    }
+    });
 
 
-    function testShouldThrowOnExecuteAsyncException() {
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript('nosuchfunc()', [], 0, done);
-      }).then(function(result) {
-        assertTrue(goog.object.containsKey(result, 'status'));
-        assertEquals(bot.ErrorCode.UNKNOWN_ERROR, result['status']);
+    QUnit.test('ShouldThrowOnExecuteAsyncException', function(assert) {
+      var done = assert.async();
+      bot.inject.executeAsyncScript('nosuchfunc()', [], 0, function(result) {
+        assert.ok(goog.object.containsKey(result, 'status'));
+        assert.strictEqual(result['status'], bot.ErrorCode.UNKNOWN_ERROR);
+        done();
       });
-    }
+    });
 
 
-    function testShouldTimeoutInExecuteAsync() {
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript('', [], 0, done);
-      }).then(function(result) {
-        assertTrue(goog.object.containsKey(result, 'status'));
-        assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, result['status']);
+    QUnit.test('ShouldTimeoutInExecuteAsync', function(assert) {
+      var done = assert.async();
+      bot.inject.executeAsyncScript('', [], 0, function(result) {
+        assert.ok(goog.object.containsKey(result, 'status'));
+        assert.strictEqual(result['status'], bot.ErrorCode.SCRIPT_TIMEOUT);
+        done();
       });
-    }
+    });
 
 
-    function testShouldBeAbleToStringifyResult() {
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript('', [], 0, done, true);
-      }).then(function(jsonResult) {
+    QUnit.test('ShouldBeAbleToStringifyResult', function(assert) {
+      var done = assert.async();
+      bot.inject.executeAsyncScript('', [], 0, function(jsonResult) {
         var result = bot.json.parse(jsonResult);
-        assertTrue(goog.object.containsKey(result, 'status'));
-        assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, result['status']);
-      });
-    }
+        assert.ok(goog.object.containsKey(result, 'status'));
+        assert.strictEqual(result['status'], bot.ErrorCode.SCRIPT_TIMEOUT);
+        done();
+      }, true);
+    });
 
 
-    function testShouldBeAbleToWrapAndUnwrapInExecuteAsyncScript() {
-      return new goog.Promise(function(done) {
-        var id = bot.inject.cache.addElement(document.body);
-        var args = [{}];
-        args[0][bot.inject.ELEMENT_KEY] = id;
-        bot.inject.executeAsyncScript(
-            'arguments[1](arguments[0])', args, 0, done);
-      }).then(function(result) {
-        assertTrue(goog.object.containsKey(result, 'status'));
-        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+    QUnit.test('ShouldBeAbleToWrapAndUnwrapInExecuteAsyncScript', function(assert) {
+      var done = assert.async();
+      var id = bot.inject.cache.addElement(document.body);
+      var args = [{}];
+      args[0][bot.inject.ELEMENT_KEY] = id;
+      bot.inject.executeAsyncScript(
+          'arguments[1](arguments[0])', args, 0, function(result) {
+        assert.ok(goog.object.containsKey(result, 'status'));
+        assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
 
-        assertTrue(goog.object.containsKey(result, 'value'));
-        assertTrue(goog.object.containsKey(result['value'],
+        assert.ok(goog.object.containsKey(result, 'value'));
+        assert.ok(goog.object.containsKey(result['value'],
             bot.inject.ELEMENT_KEY));
-        assertEquals(document.body, bot.inject.cache.getElement(
-            result['value'][bot.inject.ELEMENT_KEY]));
+        assert.strictEqual(bot.inject.cache.getElement(
+            result['value'][bot.inject.ELEMENT_KEY]), document.body);
+        done();
       });
-    }
+    });
 
-    function testShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow() {
+    QUnit.test('ShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow', function(assert) {
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
            !bot.userAgent.isProductVersion(4))) {
-        // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
-        // TODO: Don't skip this.
+        assert.ok(true, 'Skipping: known issue on this browser');
         return;
       }
 
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript(function(callback) {
-          callback({
-            'this == window': (this == window),
-            'this == top': (this == window.top),
-            'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
-            'typeof window.top.MY_GLOBAL_CONSTANT':
-                (typeof window.top.MY_GLOBAL_CONSTANT)
-          });
-        }, [], 0, done, false, frameWin);
-      }).then(function(result) {
+      var done = assert.async();
+      bot.inject.executeAsyncScript(function(callback) {
+        callback({
+          'this == window': (this == window),
+          'this == top': (this == window.top),
+          'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
+          'typeof window.top.MY_GLOBAL_CONSTANT':
+              (typeof window.top.MY_GLOBAL_CONSTANT)
+        });
+      }, [], 0, function(result) {
         var jsonResult = bot.json.stringify(result);
 
-        assertTrue(jsonResult, goog.object.containsKey(result, 'status'));
-        assertEquals(jsonResult, bot.ErrorCode.SUCCESS, result['status']);
+        assert.ok(goog.object.containsKey(result, 'status'), jsonResult);
+        assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS, jsonResult);
 
-        assertTrue(jsonResult, goog.object.containsKey(result, 'value'));
+        assert.ok(goog.object.containsKey(result, 'value'), jsonResult);
         var value = result['value'];
 
-        assertEquals(jsonResult, true, value['this == window']);
-        assertEquals(jsonResult, false, value['this == top']);
-        assertEquals(jsonResult, 'undefined',
-                     value['typeof window.MY_GLOBAL_CONSTANT']);
-        assertEquals(jsonResult, 'number',
-                     value['typeof window.top.MY_GLOBAL_CONSTANT']);
-      });
-    }
+        assert.strictEqual(value['this == window'], true, jsonResult);
+        assert.strictEqual(value['this == top'], false, jsonResult);
+        assert.strictEqual(value['typeof window.MY_GLOBAL_CONSTANT'], 'undefined', jsonResult);
+        assert.strictEqual(value['typeof window.top.MY_GLOBAL_CONSTANT'], 'number', jsonResult);
+        done();
+      }, false, frameWin);
+    });
 
-    function testShouldExecuteScriptsInTheContextOfTheSpecifiedWindow() {
+    QUnit.test('ShouldExecuteScriptsInTheContextOfTheSpecifiedWindow', function(assert) {
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
            !bot.userAgent.isProductVersion(4))) {
-        // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
-        // TODO: Don't skip this.
+        assert.ok(true, 'Skipping: known issue on this browser');
         return;
       }
 
@@ -467,43 +457,41 @@ limitations under the License.
 
       var jsonResult = bot.json.stringify(result);
 
-      assertTrue(jsonResult, goog.object.containsKey(result, 'status'));
-      assertEquals(jsonResult, bot.ErrorCode.SUCCESS, result['status']);
+      assert.ok(goog.object.containsKey(result, 'status'), jsonResult);
+      assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS, jsonResult);
 
-      assertTrue(jsonResult, goog.object.containsKey(result, 'value'));
+      assert.ok(goog.object.containsKey(result, 'value'), jsonResult);
       var value = result['value'];
 
-      assertEquals(jsonResult, true, value['this == window']);
-      assertEquals(jsonResult, false, value['this == top']);
-      assertEquals(jsonResult, 'undefined',
-                   value['typeof window.MY_GLOBAL_CONSTANT']);
-      assertEquals(jsonResult, 'number',
-                   value['typeof window.top.MY_GLOBAL_CONSTANT']);
-    }
+      assert.strictEqual(value['this == window'], true, jsonResult);
+      assert.strictEqual(value['this == top'], false, jsonResult);
+      assert.strictEqual(value['typeof window.MY_GLOBAL_CONSTANT'], 'undefined', jsonResult);
+      assert.strictEqual(value['typeof window.top.MY_GLOBAL_CONSTANT'], 'number', jsonResult);
+    });
 
-    function testCorrectlyUnwrapsFunctionArgsForInjectedScripts() {
+    QUnit.test('CorrectlyUnwrapsFunctionArgsForInjectedScripts', function(assert) {
       var result = bot.inject.executeScript(function() {
         return arguments[0]();
       }, [function() {return 1;}]);
-      assertEquals(bot.ErrorCode.SUCCESS, result['status']);
-      assertEquals(1, result['value']);
-    }
+      assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
+      assert.strictEqual(result['value'], 1);
+    });
 
-    function testCorrectlyUnwrapsFunctionArgsForInjectedAsyncScripts() {
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript(function() {
-          var callback = arguments[arguments.length - 1];
-          callback(arguments[0]());
-        }, [function() {return 1;}], 0, done, false);
-      }).then(function(result) {
-        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
-        assertEquals(1, result['value']);
-      });
-    }
+    QUnit.test('CorrectlyUnwrapsFunctionArgsForInjectedAsyncScripts', function(assert) {
+      var done = assert.async();
+      bot.inject.executeAsyncScript(function() {
+        var callback = arguments[arguments.length - 1];
+        callback(arguments[0]());
+      }, [function() {return 1;}], 0, function(result) {
+        assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
+        assert.strictEqual(result['value'], 1);
+        done();
+      }, false);
+    });
 
-    function testCorrectlyUnwrapsArgsForInjectedScripts() {
+    QUnit.test('CorrectlyUnwrapsArgsForInjectedScripts', function(assert) {
       if (goog.userAgent.IE) {
-        // TODO: Don't skip this.
+        assert.ok(true, 'Skipping: TODO fix for IE');
         return;
       }
       var wrapped = bot.inject.wrapValue(frameDoc.body);
@@ -512,67 +500,67 @@ limitations under the License.
         return [arguments[0], arguments[0].tagName.toUpperCase()];
       }, [wrapped], false, frameWin);
 
-      assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+      assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
 
       var value = result['value'];
-      assertTrue(Array.isArray(value));
-      assertEquals(2, value.length);
+      assert.ok(Array.isArray(value));
+      assert.strictEqual(value.length, 2);
 
-      assertTrue(goog.isObject(value[0]));
-      assertTrue(goog.object.containsKey(value[0], bot.inject.ELEMENT_KEY));
-      assertEquals(wrapped[bot.inject.ELEMENT_KEY],
-                   value[0][bot.inject.ELEMENT_KEY]);
+      assert.ok(goog.isObject(value[0]));
+      assert.ok(goog.object.containsKey(value[0], bot.inject.ELEMENT_KEY));
+      assert.strictEqual(value[0][bot.inject.ELEMENT_KEY],
+                   wrapped[bot.inject.ELEMENT_KEY]);
 
-      assertEquals('BODY', value[1]);
-    }
+      assert.strictEqual(value[1], 'BODY');
+    });
 
-    function testCorrectlyUnwrapsArgsForInjectedAsyncScripts() {
+    QUnit.test('CorrectlyUnwrapsArgsForInjectedAsyncScripts', function(assert) {
       if (goog.userAgent.IE) {
-        // TODO: Don't skip this.
+        assert.ok(true, 'Skipping: TODO fix for IE');
         return;
       }
       var wrapped = bot.inject.wrapValue(frameDoc.body);
 
-      return new goog.Promise(function(done) {
-        bot.inject.executeAsyncScript(function(element, callback) {
-          callback([element, element.tagName.toUpperCase()]);
-        }, [wrapped], 0, done, false, frameWin);
-      }).then(function(result) {
-        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+      var done = assert.async();
+      bot.inject.executeAsyncScript(function(element, callback) {
+        callback([element, element.tagName.toUpperCase()]);
+      }, [wrapped], 0, function(result) {
+        assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS);
 
         var value = result['value'];
-        assertTrue(Array.isArray(value));
-        assertEquals(2, value.length);
+        assert.ok(Array.isArray(value));
+        assert.strictEqual(value.length, 2);
 
-        assertTrue(goog.isObject(value[0]));
-        assertTrue(goog.object.containsKey(value[0], bot.inject.ELEMENT_KEY));
-        assertEquals(wrapped[bot.inject.ELEMENT_KEY],
-                     value[0][bot.inject.ELEMENT_KEY]);
+        assert.ok(goog.isObject(value[0]));
+        assert.ok(goog.object.containsKey(value[0], bot.inject.ELEMENT_KEY));
+        assert.strictEqual(value[0][bot.inject.ELEMENT_KEY],
+                     wrapped[bot.inject.ELEMENT_KEY]);
 
-        assertEquals('BODY', value[1]);
-      });
-    }
+        assert.strictEqual(value[1], 'BODY');
+        done();
+      }, false, frameWin);
+    });
 
-    function testExecuteScriptShouldBeAbleToRecurseOnItself() {
+    QUnit.test('ExecuteScriptShouldBeAbleToRecurseOnItself', function(assert) {
       if (goog.userAgent.IE) {
-        // TODO: Don't skip this.
+        assert.ok(true, 'Skipping: TODO fix for IE');
         return;
       }
       var json = bot.inject.executeScript(bot.inject.executeScript,
           ['return 1 +2;'], true);
       var result = bot.json.parse(json);
 
-      assertTrue(json, goog.object.containsKey(result, 'status'));
-      assertEquals(json, bot.ErrorCode.SUCCESS, result['status']);
-      assertTrue(json, goog.object.containsKey(result, 'value'));
+      assert.ok(goog.object.containsKey(result, 'status'), json);
+      assert.strictEqual(result['status'], bot.ErrorCode.SUCCESS, json);
+      assert.ok(goog.object.containsKey(result, 'value'), json);
 
       var innerResult = result['value'];
-      assertTrue(json, goog.isObject(innerResult));
-      assertTrue(json, goog.object.containsKey(innerResult, 'status'));
-      assertEquals(json, bot.ErrorCode.SUCCESS, innerResult['status']);
-      assertTrue(json, goog.object.containsKey(innerResult, 'value'));
-      assertEquals(json, 3, innerResult['value']);
-    }
+      assert.ok(goog.isObject(innerResult), json);
+      assert.ok(goog.object.containsKey(innerResult, 'status'), json);
+      assert.strictEqual(innerResult['status'], bot.ErrorCode.SUCCESS, json);
+      assert.ok(goog.object.containsKey(innerResult, 'value'), json);
+      assert.strictEqual(innerResult['value'], 3, json);
+    });
 
   </script>
 </body>

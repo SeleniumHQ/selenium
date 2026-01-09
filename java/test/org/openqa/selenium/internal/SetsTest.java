@@ -19,7 +19,12 @@ package org.openqa.selenium.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.openqa.selenium.internal.Sets.*;
+import static org.openqa.selenium.internal.Sets.haveCommonElements;
+import static org.openqa.selenium.internal.Sets.sequencedSetOf;
+import static org.openqa.selenium.internal.Sets.sortedSet;
+import static org.openqa.selenium.internal.Sets.sortedSetOf;
+import static org.openqa.selenium.internal.Sets.toSequencedSet;
+import static org.openqa.selenium.internal.Sets.toSortedSet;
 
 import java.util.Set;
 import java.util.stream.Stream;

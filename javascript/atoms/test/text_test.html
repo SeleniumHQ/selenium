@@ -18,305 +18,307 @@ limitations under the License.
 <html>
 <head>
   <title>text_test.html</title>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.locators');
-    goog.require('goog.testing.jsunit');
-    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.userAgent');
   </script>
 
   <script type="text/javascript">
 
-    function testGetVisibleTextShouldReturnOneLineText() {
+    QUnit.test('getVisibleText should return one line text', function(assert) {
       var text = getVisibleTextByElementId('oneline');
 
-      assertEquals("A single line of text", text);
-    }
+      assert.strictEqual(text, "A single line of text");
+    });
 
-    function testGetVisibleTextShouldReturnMultilineText() {
+    QUnit.test('getVisibleText should return multiline text', function(assert) {
       var text = getVisibleTextByElementId('multiline');
 
-      assertContains("A div containing", text);
-      assertContains("More than one line of text", text);
-      assertContains("and block level elements", text);
-    }
+      assertContains(assert, "A div containing", text);
+      assertContains(assert, "More than one line of text", text);
+      assertContains(assert, "and block level elements", text);
+    });
 
-    function testGetVisibleTextShouldIgnoreScriptElements() {
+    QUnit.test('getVisibleText should ignore script elements', function(assert) {
       var text = getVisibleTextByElementId('script');
 
-      assertEquals("Some text that contains script tags", text)
-    }
+      assert.strictEqual(text, "Some text that contains script tags");
+    });
 
-    function testGetVisibleTextShouldIgnoreTitleElements() {
+    QUnit.test('getVisibleText should ignore title elements', function(assert) {
       var titleElement = bot.locators.findElement({tagName: 'title'});
       var text = bot.dom.getVisibleText(titleElement);
 
-      assertEquals('', text)
-    }
+      assert.strictEqual(text, '');
+    });
 
-    function testGetVisibleTextShouldRecursivelyIgnoreTitleElements() {
+    QUnit.test('getVisibleText should recursively ignore title elements', function(assert) {
       var headElement = bot.locators.findElement({tagName: 'head'});
       var text = bot.dom.getVisibleText(headElement);
 
-      assertEquals('', text)
-    }
+      assert.strictEqual(text, '');
+    });
 
-    function testGetVisibleTextShouldRepresentABlockLevelElementAsANewline() {
+    QUnit.test('getVisibleText should represent a block level element as a newline', function(assert) {
       var text = getVisibleTextByElementId('multiline');
 
-      assertStartsWith("A div containing\n", text);
-      assertContains("More than one line of text\n", text);
-      assertEndsWith("and block level elements", text);
-    }
+      assertStartsWith(assert, "A div containing\n", text);
+      assertContains(assert, "More than one line of text\n", text);
+      assertEndsWith(assert, "and block level elements", text);
+    });
 
-    function testGetVisibleShouldCollapseMultipleWhitespacesIntoASingleSpace() {
+    QUnit.test('getVisible should collapse multiple whitespaces into a single space', function(assert) {
       var text = getVisibleTextByElementId('lotsofspaces');
 
-      assertEquals("This line has lots of spaces.", text)
-    }
+      assert.strictEqual(text, "This line has lots of spaces.");
+    });
 
-    function testGetVisibleTextShouldConvertNonBreakingSpaceInASpaceChar() {
+    QUnit.test('getVisibleText should convert non-breaking space in a space char', function(assert) {
       var text = getVisibleTextByElementId('nbsp');
 
-      assertEquals("This line has a non-breaking space", text);
-    }
+      assert.strictEqual(text, "This line has a non-breaking space");
+    });
 
-    function testGetVisibleTextShouldNotCollapseNonBreakingSpaces() {
+    QUnit.test('getVisibleText should not collapse non-breaking spaces', function(assert) {
       var text = getVisibleTextByElementId("nbspandspaces");
-      assertEquals("This line has a   non-breaking space and spaces", text);
-    }
+      assert.strictEqual(text, "This line has a   non-breaking space and spaces");
+    });
 
-    function testGetVisibleTextShouldNotTrimTrailingNonBreakingSpaces() {
+    QUnit.test('getVisibleText should not trim trailing non-breaking spaces', function(assert) {
       var text = getVisibleTextByElementId("trailingnbsp");
-      assertEquals("This line has trailing non-breaking spaces   ", text);
-    }
+      assert.strictEqual(text, "This line has trailing non-breaking spaces   ");
+    });
 
-    function testGetVisibleTextShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText() {
+    QUnit.test('getVisibleText should not trim non-breaking spaces at the end of a line in the middle of text', function(assert) {
       var text = getVisibleTextByElementId("multilinetrailingnbsp");
-      assertStartsWith("These lines  \n", text);
-    }
+      assertStartsWith(assert, "These lines  \n", text);
+    });
 
-    function testGetVisibleTextShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText() {
+    QUnit.test('getVisibleText should not trim non-breaking spaces at the start of a line in the middle of text', function(assert) {
       var text = getVisibleTextByElementId("multilinetrailingnbsp");
-      assertContains("\n  have", text);
-    }
+      assertContains(assert, "\n  have", text);
+    });
 
-    function testGetVisibleTextShouldNotTrimTrailingNonBreakingSpacesInMultilineText() {
+    QUnit.test('getVisibleText should not trim trailing non-breaking spaces in multiline text', function(assert) {
       var text = getVisibleTextByElementId("multilinetrailingnbsp");
-      assertEndsWith("trailing NBSPs  ", text);
-    }
+      assertEndsWith(assert, "trailing NBSPs  ", text);
+    });
 
-    function testGetVisibleTextInlineElementsShouldNotAffectReturnedText() {
+    QUnit.test('getVisibleText inline elements should not affect returned text', function(assert) {
       var text = getVisibleTextByElementId("inline");
 
-      assertEquals("This line has text within elements that are meant" +
-          " to be displayed inline", text);
-    }
+      assert.strictEqual(text, "This line has text within elements that are meant" +
+          " to be displayed inline");
+    });
 
-    function testGetVisibleTextShouldReturnTheEntireTextOfInlineElements() {
+    QUnit.test('getVisibleText should return the entire text of inline elements', function(assert) {
       var text = getVisibleTextByElementId("span");
 
-      assertEquals("An inline element", text);
-    }
+      assert.strictEqual(text, "An inline element");
+    });
 
-    function testGetVisibleTextShouldReturnEmptyStringWhenTextIsOnlySpaces() {
+    QUnit.test('getVisibleText should return empty string when text is only spaces', function(assert) {
       var text = getVisibleTextByElementId("spaces");
 
-      assertEquals("", text);
-    }
+      assert.strictEqual(text, "");
+    });
 
-    function testGetVisibleTextShouldReturnEmptyStringWhenTextIsEmpty() {
+    QUnit.test('getVisibleText should return empty string when text is empty', function(assert) {
       var text = getVisibleTextByElementId("empty");
 
-      assertEquals("", text);
-    }
+      assert.strictEqual(text, "");
+    });
 
-    function testGetVisibleTextShouldReturnEmptyStringWhenTagIsSelfClosing() {
+    QUnit.test('getVisibleText should return empty string when tag is self closing', function(assert) {
       var text = getVisibleTextByElementId("self-closed");
 
-      assertEquals("", text);
-    }
+      assert.strictEqual(text, "");
+    });
 
-    function testGetVisibleTextShouldNotTrimSpacesWhenLineWraps() {
+    QUnit.test('getVisibleText should not trim spaces when line wraps', function(assert) {
       var text = getVisibleTextByElementId("wrappingtd");
 
-      assertEquals("beforeSpace afterSpace", text);
-    }
+      assert.strictEqual(text, "beforeSpace afterSpace");
+    });
 
-    function testGetVisibleTextCorrectlyHandlesAnEntireTable() {
+    QUnit.test('getVisibleText correctly handles an entire table', function(assert) {
       var text = getVisibleTextByElementId("wrappingtable");
 
-      assertEquals("beforeSpace afterSpace", text);
-    }
+      assert.strictEqual(text, "beforeSpace afterSpace");
+    });
 
-    function testGetVisibleTextShouldHandleSiblingBlockLevelElements() {
+    QUnit.test('getVisibleText should handle sibling block level elements', function(assert) {
       var text = getVisibleTextByElementId("twoblocks");
 
-      assertEquals("Some text\nSome more text", text);
-    }
+      assert.strictEqual(text, "Some text\nSome more text");
+    });
 
-    function testGetVisibleTextShouldHandleNestedBlockLevelElements() {
+    QUnit.test('getVisibleText should handle nested block level elements', function(assert) {
       var text = getVisibleTextByElementId("nestedblocks");
 
-      assertEquals("Cheese\nSome text\nSome more text\nand also\nBrie", text);
-    }
+      assert.strictEqual(text, "Cheese\nSome text\nSome more text\nand also\nBrie");
+    });
 
-    function testGetVisibleTextShouldHandleWhitespaceInInlineElements() {
+    QUnit.test('getVisibleText should handle whitespace in inline elements', function(assert) {
       var text = getVisibleTextByElementId("inlinespan");
 
-      assertEquals("line has text", text);
-    }
+      assert.strictEqual(text, "line has text");
+    });
 
-    function testGetVisibleTextShouldHandleLackOfSpacesBetweenInlineElements() {
+    QUnit.test('getVisibleText should handle lack of spaces between inline elements', function(assert) {
       var text = getVisibleTextByElementId("inlinenospaces");
-      assertEquals("oooOooo", text);
+      assert.strictEqual(text, "oooOooo");
       var text2 = getVisibleTextByElementId("inlinenospaces2");
-      assertEquals("A B", text2);
-    }
+      assert.strictEqual(text2, "A B");
+    });
 
-    function testGetVisibleTextShouldNotAddExtraSpaces() {
+    QUnit.test('getVisibleText should not add extra spaces', function(assert) {
       var text = getVisibleTextByElementId("descartes");
       var text2 = getVisibleTextByElementId("abc");
 
-      assertEquals("Dubito, ergo cogito, ergo sum.", text);
-      assertEquals("a bc", text2);
-    }
+      assert.strictEqual(text, "Dubito, ergo cogito, ergo sum.");
+      assert.strictEqual(text2, "a bc");
+    });
 
-    function testGetVisibleTestGetTextWithLineBreakForInlineElement() {
+    QUnit.test('getVisible test get text with line break for inline element', function(assert) {
       var text = getVisibleTextByElementId("label1");
-      assertContains("foo\nbar", text);
-    }
+      assertContains(assert, "foo\nbar", text);
+    });
 
-    function testGetVisibleTextShouldOnlyIncludeVisibleText() {
+    QUnit.test('getVisibleText should only include visible text', function(assert) {
       var empty = getVisibleTextByElementId("suppressedParagraph");
       var explicit = getVisibleTextByElementId("outer");
 
-      assertEquals("", empty);
-      assertEquals("sub-element that is explicitly visible", explicit);
-    }
+      assert.strictEqual(empty, "");
+      assert.strictEqual(explicit, "sub-element that is explicitly visible");
+    });
 
-    function testGetVisibleTextOnAnchorsWithWhitespaces() {
+    QUnit.test('getVisibleText on anchors with whitespaces', function(assert) {
       var text = getVisibleTextByElementId("links");
 
-      assertEquals("link with leading space " + "link with trailing space " +
-          "link with formatting tags", text);
-    }
+      assert.strictEqual(text, "link with leading space " + "link with trailing space " +
+          "link with formatting tags");
+    });
 
-    function testGetVisibleTextHandlesTrailingWhitespaces() {
+    QUnit.test('getVisibleText handles trailing whitespaces', function(assert) {
       var text = getVisibleTextByElementId("trailingSpaces");
-      assertEquals("1 2 3 4", text);
-    }
+      assert.strictEqual(text, "1 2 3 4");
+    });
 
-    function testGetVisibleTextHandlesTrailingBreaks() {
+    QUnit.test('getVisibleText handles trailing breaks', function(assert) {
       var text = getVisibleTextByElementId("trailingBreaks");
-      assertEquals("a\nb", text);
-    }
+      assert.strictEqual(text, "a\nb");
+    });
 
-    function testKeepsNonBreakingSpacesBeforeATag() {
+    QUnit.test('keeps non-breaking spaces before a tag', function(assert) {
       var text = getVisibleTextByElementId("id2");
 
-      assertEquals("this is the second element", text);
-    }
+      assert.strictEqual(text, "this is the second element");
+    });
 
-    function testRemovesZeroWidthCharacters() {
+    QUnit.test('removes zero width characters', function(assert) {
       var text = getVisibleTextByElementId("zerowidth");
 
-      assertEquals("This line has a bunch of zero-width characters in it.", text);
-    }
+      assert.strictEqual(text, "This line has a bunch of zero-width characters in it.");
+    });
 
-    function testTransparentTextIsIgnored() {
+    QUnit.test('transparent text is ignored', function(assert) {
       var text = getVisibleTextByElementId("opaque");
 
-      assertEquals("Some text", text);
-    }
+      assert.strictEqual(text, "Some text");
+    });
 
-    function testShouldRetainTheFormattingOfTextWithinAPreElement() {
+    QUnit.test('should retain the formatting of text within a pre element', function(assert) {
       var text = getVisibleTextByElementId("preformatted");
 
-      assertEquals("   This section has a preformatted\n    text block\n  split in four lines\n         ", text);
-    }
+      assert.strictEqual(text, "   This section has a preformatted\n    text block\n  split in four lines\n         ");
+    });
 
-    function testShouldRetainTheFormattingOfTextWithinAPreElementThatIsWithinARegularBlock() {
+    QUnit.test('should retain the formatting of text within a pre element that is within a regular block', function(assert) {
       var text = getVisibleTextByElementId("div-with-pre");
 
-      assertEquals("before pre\n   This section has a preformatted\n    text block\n  split in four lines\n         \nafter pre", text);
-    }
+      assert.strictEqual(text, "before pre\n   This section has a preformatted\n    text block\n  split in four lines\n         \nafter pre");
+    });
 
-    function testGetVisibleTextShouldHandleCssContentReplacement() {
-      var expect = new goog.testing.ExpectedFailures();
-      expect.expectFailureFor(goog.userAgent.GECKO || goog.userAgent.IE ||
-          goog.userAgent.SAFARI || goog.userAgent.WEBKIT || goog.userAgent.EDGE,
-          "Does not support CSS3 content: 'foo' replacement");
+    QUnit.test('getVisibleText should handle css content replacement', function(assert) {
+      var supportsContentReplacement = !(goog.userAgent.GECKO || goog.userAgent.IE ||
+          goog.userAgent.SAFARI || goog.userAgent.WEBKIT || goog.userAgent.EDGE);
 
-      expect.run(function() {
-          var text = getVisibleTextByElementId("css3-content");
-          assertEquals("PASS", text);
-      });
-    }
+      if (!supportsContentReplacement) {
+        assert.ok(true, "Skipping: Does not support CSS3 content: 'foo' replacement");
+        return;
+      }
 
-    function testGetVisibleTextShouldHandleTextTransformProperty() {
+      var text = getVisibleTextByElementId("css3-content");
+      assert.strictEqual(text, "PASS");
+    });
+
+    QUnit.test('getVisibleText should handle text transform property', function(assert) {
       var text = getVisibleTextByElementId("capitalized");
-      assertEquals("Hello, World! Bla-Bla-BLA", text);
+      assert.strictEqual(text, "Hello, World! Bla-Bla-BLA");
       text = getVisibleTextByElementId("lowercased");
-      assertEquals("hello, world! bla-bla-bla", text);
+      assert.strictEqual(text, "hello, world! bla-bla-bla");
       text = getVisibleTextByElementId("uppercased");
-      assertEquals("HELLO, WORLD! BLA-BLA-BLA", text);
+      assert.strictEqual(text, "HELLO, WORLD! BLA-BLA-BLA");
 
       text = getVisibleTextByElementId("capitalized_accented_character");
-      assertEquals("Fecha De Expiración", text);
+      assert.strictEqual(text, "Fecha De Expiración");
       text = getVisibleTextByElementId("capitalized_enye");
-      assertEquals("Mañana", text);
+      assert.strictEqual(text, "Mañana");
 
       text = getVisibleTextByElementId("capitalized-1");
-      assertEquals("Äåìî", text);
+      assert.strictEqual(text, "Äåìî");
       text = getVisibleTextByElementId("capitalized-2");
-      assertEquals("Manipulowanie Przepływem", text);
+      assert.strictEqual(text, "Manipulowanie Przepływem");
       text = getVisibleTextByElementId("capitalized-3");
-      assertEquals("Manipulowanie Przepływem", text);
+      assert.strictEqual(text, "Manipulowanie Przepływem");
       text = getVisibleTextByElementId("capitalized-4");
-      assertEquals("Manipulowanie Pr0123z4epływem", text);
+      assert.strictEqual(text, "Manipulowanie Pr0123z4epływem");
       text = getVisibleTextByElementId("capitalized-5");
-      assertEquals("Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit,", text);
+      assert.strictEqual(text, "Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit,");
       text = getVisibleTextByElementId("capitalized-6");
-      assertEquals("Ⓐⓑⓒ (Ⓓⓔⓕ) —Ⓖⓗⓘ— Ⓙkl", text);
+      assert.strictEqual(text, "Ⓐⓑⓒ (Ⓓⓔⓕ) —Ⓖⓗⓘ— Ⓙkl");
       text = getVisibleTextByElementId("capitalized-7");
-      assertEquals('(This) “Is” [A] –Short– -Test- «For» *The* _Css_ ¿Capitalize? ?¡Transfor', text);
+      assert.strictEqual(text, '(This) "Is" [A] –Short– -Test- «For» *The* _Css_ ¿Capitalize? ?¡Transfor');
       text = getVisibleTextByElementId("capitalized-8");
-      assertEquals('The Dutch Word: "Ijsland" Starts With A Digraph', text);
+      assert.strictEqual(text, 'The Dutch Word: "Ijsland" Starts With A Digraph');
       text = getVisibleTextByElementId("capitalized-9");
-      assertEquals('Test_text', text);
-    }
+      assert.strictEqual(text, 'Test_text');
+    });
 
     function getVisibleTextByElementId(id) {
       var e = bot.locators.findElement({id: id});
       return bot.dom.getVisibleText(e);
     }
 
-    function assertContains(expectedText, text) {
-      assertTrue("Text [" + text + "] does not contain [" + expectedText + "]",
-        text.indexOf(expectedText) >= 0);
+    function assertContains(assert, expectedText, text) {
+      assert.ok(text.indexOf(expectedText) >= 0,
+        "Text [" + text + "] does not contain [" + expectedText + "]");
     }
 
-    function assertStartsWith(expectedText, text) {
-      assertTrue("Text [" + text + "] does not start with [" + expectedText +
-          "]", text.indexOf(expectedText) == 0);
+    function assertStartsWith(assert, expectedText, text) {
+      assert.ok(text.indexOf(expectedText) == 0,
+        "Text [" + text + "] does not start with [" + expectedText + "]");
     }
 
-    function assertEndsWith(expectedText, text) {
-      assertTrue("Text [" + text + "] does not end with [" + expectedText + "]",
-        text.lastIndexOf(expectedText) == text.length - expectedText.length);
+    function assertEndsWith(assert, expectedText, text) {
+      assert.ok(text.lastIndexOf(expectedText) == text.length - expectedText.length,
+        "Text [" + text + "] does not end with [" + expectedText + "]");
     }
 
-    // http://code.google.com/p/selenium/issues/detail?id=1293
-    function testBugExposedByIssue1293() {
+    QUnit.test('bug exposed by issue 1293', function(assert) {
       var spaces = getVisibleTextByElementId('spaces');
-      assertEquals('', spaces);
+      assert.strictEqual(spaces, '');
 
       var table = getVisibleTextByElementId('wrappingtd');
-      assertEquals('beforeSpace afterSpace', table);
-    }
+      assert.strictEqual(table, 'beforeSpace afterSpace');
+    });
   </script>
 
   <style type="text/css">
@@ -328,6 +330,8 @@ limitations under the License.
 
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <p id="oneline">A single line of text</p>
 
   <div id="multiline">
@@ -440,7 +444,7 @@ limitations under the License.
     <a id="capitalized-4" style="text-transform: capitalize">Manipulowanie pr0123z4epływem</a><br/>
     <a id="capitalized-5" style="text-transform: capitalize">Lorem ipsum dolor sit amet, consectetur adipisicing elit,</a><br/>
     <a id="capitalized-6" style="text-transform: capitalize">ⓐⓑⓒ (ⓓⓔⓕ) —ⓖⓗⓘ— ⓙkl</a><br/>
-    <a id="capitalized-7" style="text-transform: capitalize">(this) “is” [a] –short– -test- «for» *the* _css_ ¿capitalize? ?¡transfor</a><br/>
+    <a id="capitalized-7" style="text-transform: capitalize">(this) "is" [a] –short– -test- «for» *the* _css_ ¿capitalize? ?¡transfor</a><br/>
     <a id="capitalized-8" style="text-transform: capitalize">The Dutch word: "ijsland" starts with a digraph</a><br/>
     <a id="capitalized-9" style="text-transform: capitalize">test_text</a><br/>
   </div>

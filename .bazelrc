@@ -39,6 +39,7 @@ build --explicit_java_test_deps
 
 # Avoid ErrorProne getting annoyed about "impossible null checks"
 build --javacopt="-Xep:ImpossibleNullComparison:OFF"
+build --javacopt="-Xep:WildcardImport:ERROR"
 
 # Allow spaces in runfile paths
 build --nobuild_runfile_links
