@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import sys
+
 import pytest
 
 from selenium.webdriver.common.bidi.emulation import (
@@ -117,6 +119,7 @@ def test_emulation_initialized(driver):
     assert isinstance(driver.emulation, Emulation)
 
 
+@pytest.mark.xfail_firefox(reason="Firefox BiDi geolocation override does not work with contexts parameter")
 def test_set_geolocation_override_with_coordinates_in_context(driver, pages):
     context_id = driver.current_window_handle
     pages.load("blank.html")
@@ -132,6 +135,10 @@ def test_set_geolocation_override_with_coordinates_in_context(driver, pages):
     assert abs(result["accuracy"] - coords.accuracy) < 1.0, f"Accuracy mismatch: {result['accuracy']}"
 
 
+@pytest.mark.xfail_firefox(
+    condition=sys.platform == "win32",
+    reason="Firefox + Windows: navigator.geolocation.getCurrentPosition returns None",
+)
 def test_set_geolocation_override_with_coordinates_in_user_context(driver, pages):
     # Create a user context
     user_context = driver.browser.create_user_context()
@@ -156,6 +163,10 @@ def test_set_geolocation_override_with_coordinates_in_user_context(driver, pages
     driver.browser.remove_user_context(user_context)
 
 
+@pytest.mark.xfail_firefox(
+    condition=sys.platform == "win32",
+    reason="Firefox + Windows: navigator.geolocation.getCurrentPosition returns None",
+)
 def test_set_geolocation_override_all_coords(driver, pages):
     context_id = driver.current_window_handle
     pages.load("blank.html")
@@ -181,6 +192,10 @@ def test_set_geolocation_override_all_coords(driver, pages):
     driver.browsing_context.close(context_id)
 
 
+@pytest.mark.xfail_firefox(
+    condition=sys.platform == "win32",
+    reason="Firefox + Windows: navigator.geolocation.getCurrentPosition returns None",
+)
 def test_set_geolocation_override_with_multiple_contexts(driver, pages):
     # Create two browsing contexts
     context1_id = driver.browsing_context.create(type=WindowTypes.TAB)
@@ -214,6 +229,10 @@ def test_set_geolocation_override_with_multiple_contexts(driver, pages):
     driver.browsing_context.close(context2_id)
 
 
+@pytest.mark.xfail_firefox(
+    condition=sys.platform == "win32",
+    reason="Firefox + Windows: navigator.geolocation.getCurrentPosition returns None",
+)
 def test_set_geolocation_override_with_multiple_user_contexts(driver, pages):
     # Create two user contexts
     user_context1 = driver.browser.create_user_context()
