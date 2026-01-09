@@ -30,7 +30,7 @@ class NetworkEvent:
         self.params = kwargs
 
     @classmethod
-    def from_json(cls, json: dict[str, Any]) -> "NetworkEvent":
+    def from_json(cls, json: dict[str, Any]) -> NetworkEvent:
         return cls(event_class=json.get("event_class", ""), **json)
 
 
@@ -114,7 +114,7 @@ class Network:
             except Exception as e:
                 raise Exception(f"Exception: {e}")
 
-    def _on_request(self, event_name: str, callback: Callable[["Request"], Any]) -> int:
+    def _on_request(self, event_name: str, callback: Callable[[Request], Any]) -> int:
         """Set a callback function to subscribe to a network event.
 
         Args:
@@ -153,7 +153,7 @@ class Network:
     def add_request_handler(
         self,
         event: str,
-        callback: Callable[["Request"], Any],
+        callback: Callable[[Request], Any],
         url_patterns: list[Any] | None = None,
         contexts: list[str] | None = None,
     ) -> int:
