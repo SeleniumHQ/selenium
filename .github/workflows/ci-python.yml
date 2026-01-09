@@ -74,6 +74,17 @@ jobs:
       python-version: ${{ matrix.python-version }}
       run: bazel test --local_test_jobs 1 //py:unit
 
+  requirements:
+    name: Requirements Lock
+    if: ${{ inputs.run-full-suite }}
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Requirements Lock
+      os: ubuntu
+      python-version: '3.10'
+      run: bazel test //py:requirements.test
+
+
   filter-targets:
     name: Filter Targets
     runs-on: ubuntu-latest
@@ -121,5 +132,6 @@ jobs:
         --build_tests_only
         --flaky_test_attempts 3
         --local_test_jobs 1
+        --test_size_filters large
         --test_tag_filters=${{ matrix.bidi && format('{0}-bidi', matrix.browser) || format('{0},-bidi,-remote', matrix.browser) }}
         ${{ needs.filter-targets.outputs.targets }}
