@@ -499,7 +499,11 @@ BROWSER_TESTS = {
         ] + BROWSERS[browser]["args"],
         data = BROWSERS[browser]["data"],
         env_inherit = ["DISPLAY"],
-        tags = ["no-sandbox"] + BROWSERS[browser]["tags"],
+        tags = [
+            "bidi",
+            "no-sandbox",
+            "%s-bidi" % browser,
+        ] + BROWSERS[browser]["tags"],
         deps = [
             ":init-tree",
             ":selenium",
@@ -541,7 +545,7 @@ BROWSER_TESTS = {
             "no-sandbox",
             "remote",
             "%s-remote" % browser,
-        ],
+        ] + BROWSERS[browser]["tags"],
         deps = [
             ":init-tree",
             ":selenium",

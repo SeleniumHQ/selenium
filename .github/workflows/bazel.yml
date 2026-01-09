@@ -84,6 +84,7 @@ jobs:
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SE_AVOID_STATS: true
+      SE_CACHE_PATH: $RUNNER_TEMP/selenium
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
