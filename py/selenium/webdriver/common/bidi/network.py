@@ -18,12 +18,10 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
+from typing import Any
 
 from selenium.webdriver.common.bidi.common import command_builder
+from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
 class NetworkEvent:
@@ -58,7 +56,7 @@ class Network:
     def __init__(self, conn: WebSocketConnection) -> None:
         self.conn = conn
         self.intercepts: list[str] = []
-        self.callbacks: dict[str | int, Any] = {}  # mixed keys: event_name->list[int], callback_id->intercept_str
+        self.callbacks: dict[str | int, Any] = {}
         self.subscriptions: dict[str, list[int]] = {}
 
     def _add_intercept(
@@ -90,7 +88,7 @@ class Network:
             params["phases"] = ["beforeRequestSent"]
         cmd = command_builder("network.addIntercept", params)
 
-        result = self.conn.execute(cmd)
+        result: dict[str, Any] = self.conn.execute(cmd)
         self.intercepts.append(result["intercept"])
         return result
 
@@ -118,7 +116,7 @@ class Network:
             except Exception as e:
                 raise Exception(f"Exception: {e}")
 
-    def _on_request(self, event_name: str, callback: Callable[[Request], None]) -> int:
+    def _on_request(self, event_name: str, callback: Callable[[Request], Any]) -> int:
         """Set a callback function to subscribe to a network event.
 
         Args:
@@ -145,7 +143,8 @@ class Network:
             )
             callback(request)
 
-        callback_id = self.conn.add_callback(event, _callback)
+        callback_id: int = self.conn.add_callback(event, _callback)
+
         if event_name in self.callbacks:
             self.callbacks[event_name].append(callback_id)
         else:
@@ -156,7 +155,7 @@ class Network:
     def add_request_handler(
         self,
         event: str,
-        callback: Callable[[Request], None],
+        callback: Callable[[Request], Any],
         url_patterns: list[Any] | None = None,
         contexts: list[str] | None = None,
     ) -> int:
@@ -184,7 +183,7 @@ class Network:
         if event_name in self.subscriptions:
             self.subscriptions[event_name].append(callback_id)
         else:
-            params = {}
+            params: dict[str, Any] = {}
             params["events"] = [event_name]
             self.conn.execute(command_builder("session.subscribe", params))
             self.subscriptions[event_name] = [callback_id]
@@ -211,7 +210,7 @@ class Network:
         del self.callbacks[callback_id]
         self.subscriptions[event_name].remove(callback_id)
         if len(self.subscriptions[event_name]) == 0:
-            params = {}
+            params: dict[str, Any] = {}
             params["events"] = [event_name]
             self.conn.execute(command_builder("session.unsubscribe", params))
             del self.subscriptions[event_name]
@@ -224,7 +223,7 @@ class Network:
                 self.conn.remove_callback(net_event, callback_id)
                 self._remove_intercept(self.callbacks[callback_id])
                 del self.callbacks[callback_id]
-            params = {}
+            params: dict[str, Any] = {}
             params["events"] = [event_name]
             self.conn.execute(command_builder("session.unsubscribe", params))
         self.subscriptions = {}
@@ -262,14 +261,14 @@ class Request:
     def __init__(
         self,
         network: Network,
-        request_id: str | None,
+        request_id: Any,
         body_size: int | None = None,
-        cookies: list[Any] | None = None,
+        cookies: Any = None,
         resource_type: str | None = None,
-        headers: list[Any] | None = None,
+        headers: Any = None,
         headers_size: int | None = None,
         method: str | None = None,
-        timings: dict[str, Any] | None = None,
+        timings: Any = None,
         url: str | None = None,
     ) -> None:
         self.network = network
@@ -288,15 +287,15 @@ class Request:
         if not self.request_id:
             raise ValueError("Request not found.")
 
-        params = {"request": self.request_id}
+        params: dict[str, Any] = {"request": self.request_id}
         self.network.conn.execute(command_builder("network.failRequest", params))
 
     def continue_request(
         self,
         body: Any = None,
         method: str | None = None,
-        headers: list[Any] | None = None,
-        cookies: list[Any] | None = None,
+        headers: Any = None,
+        cookies: Any = None,
         url: str | None = None,
     ) -> None:
         """Continue after intercepting this request."""
