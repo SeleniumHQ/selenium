@@ -1,24 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>shadow_dom_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script type="text/javascript" src="test_bootstrap.js">
   </script>
   <script type="text/javascript">
     goog.require('goog.math.Coordinate');
-    goog.require('goog.testing.jsunit');
     goog.require('webdriver.chrome');
     goog.require('bot.locators');
   </script>
 </head>
 <body>
+<style>
+  /* Ensure test content clears the QUnit UI */
+  #qunit {
+    position: relative;
+    z-index: 1;
+  }
+  #test-content {
+    position: relative;
+    z-index: 0;
+  }
+</style>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<div id="test-content">
 <H1>Page for Shadow DOM chromedriver tests</H1>
 The various sections are highlighted with colored borders to make it more obvious
 where each element comes from. Default to pushing the content off the first 
 screen, to test that scrolling to the elements works.
 <div id="padding"></div>
 <script>
-document.getElementById('padding').style.height = window.innerHeight;
+// Add enough padding to push content well past any QUnit UI
+document.getElementById('padding').style.height = window.innerHeight + 'px';
 </script>
 <div id="outerDiv">
   <div id="innerDiv" style="border-style:solid;border-color:yellow">
@@ -74,7 +92,7 @@ function buttonWasClicked() {
     return new goog.math.Coordinate(x, y);
   }
 
-  function testShadowRootIsElementClickable() {
+  QUnit.test('shadow root isElementClickable', function(assert) {
     // check isElementClickable works as expected on elements within a shadow
     // DOM
     var elemButton = deepQuery("#button");
@@ -82,62 +100,59 @@ function buttonWasClicked() {
 
     // scroll to the element
     webdriver.chrome.getLocationInView(elemButton, true);
-    assertTrue(
-        "Button #button should be clickable",
+    assert.ok(
         webdriver.chrome.isElementClickable(elemButton,
-            getCenterCoordinate(elemButton)).clickable);
-    assertFalse(
-        "Textbox #textBox should not be clickable from #button's location",
+            getCenterCoordinate(elemButton)).clickable,
+        "Button #button should be clickable");
+    assert.notOk(
         webdriver.chrome.isElementClickable(elemText,
-            getCenterCoordinate(elemButton)).clickable);
-  }
+            getCenterCoordinate(elemButton)).clickable,
+        "Textbox #textBox should not be clickable from #button's location");
+  });
 
-  function testShadowRootIsDisplayed() {
+  QUnit.test('shadow root isDisplayed', function(assert) {
     // check isDisplayed works as expected on elements within a shadow
     // DOM
     var elem = deepQuery("#textBox");
-    assertTrue("Text box #textBox should be visible",
-        webdriver.chrome.isElementDisplayed(elem));
+    assert.ok(webdriver.chrome.isElementDisplayed(elem),
+        "Text box #textBox should be visible");
     document.querySelector("#outerDiv").style.display="None";
     try {
-      assertFalse(
-        "Text box #textBox should not be visible",
-        webdriver.chrome.isElementDisplayed(elem));
+      assert.notOk(
+        webdriver.chrome.isElementDisplayed(elem),
+        "Text box #textBox should not be visible");
     } finally {
       document.querySelector("#outerDiv").style.display="";
     }
-  }
+  });
 
-  function testShadowRootFindElement() {
+  QUnit.test('shadow root findElement', function(assert) {
     // check FindElement works as expected on elements within a shadow
     // DOM
     var elemDiv = deepQuery("#childDiv");
     var elemButton = deepQuery("#button");
-    assertEquals(
-        "webdriver.chrome.findElement didn't find the element #button",
+    assert.strictEqual(
+        webdriver.chrome.findElement({"id" : "button"}, elemDiv),
         elemButton,
-        webdriver.chrome.findElement({"id" : "button"}, elemDiv));
-  }
+        "webdriver.chrome.findElement didn't find the element #button");
+  });
 
-  function testBotLocatorsFindElements() {
+  QUnit.test('bot locators findElements', function(assert) {
     // webdriver.chrome.findElement depends on bot.locators.findElements.
     // So check that bot.locators.findElements keeps working as expected
     // with shadow roots
     var elemDiv = deepQuery("#childDiv");
     var elemButton = deepQuery("#button");
     var elems = bot.locators.findElements({"id" : "button"}, elemDiv);
-    assertEquals("webdriver.chrome.findElements didn't find exactly 1 element for #button",
-        1,
-        elems.length);
-    assertEquals(
-        "webdriver.chrome.findElement didn't find the element button",
+    assert.strictEqual(elems.length, 1,
+        "webdriver.chrome.findElements didn't find exactly 1 element for #button");
+    assert.strictEqual(
+        elems[0],
         elemButton,
-        elems[0]);
-  }
+        "webdriver.chrome.findElement didn't find the element button");
+  });
 
 </script>
+</div><!-- end test-content -->
 </body>
 </html>
-
-
-

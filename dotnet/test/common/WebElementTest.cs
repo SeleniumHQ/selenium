@@ -142,7 +142,12 @@ public class WebElementTest : DriverTestFixture
         IWebElement submit = driver.FindElement(By.Id("submittingButton"));
         submit.Submit();
 
-        Assert.That(driver.Url, Does.StartWith(resultPage));
+        Assert.That(
+            () =>
+                WaitFor(
+                    () => driver.Url.StartsWith(resultPage),
+                    "We are not redirected to the resultPage after submitting web element"),
+            Throws.Nothing);
     }
 
     [Test]
