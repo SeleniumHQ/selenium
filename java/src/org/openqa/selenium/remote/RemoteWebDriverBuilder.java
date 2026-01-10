@@ -360,7 +360,11 @@ public class RemoteWebDriverBuilder {
             .findFirst();
 
     if (first.isEmpty()) {
-      throw new SessionNotCreatedException("Unable to find matching driver for capabilities");
+      throw new SessionNotCreatedException(
+          String.format(
+              "Unable to find matching driver for capabilities%n  requestedCapabilities: %s%n "
+                  + " infos: %s",
+              requestedCapabilities, infos));
     }
 
     WebDriver localDriver = first.get().get();

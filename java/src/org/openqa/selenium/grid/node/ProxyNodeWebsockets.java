@@ -141,7 +141,10 @@ public class ProxyNodeWebsockets
     for (String cdpEndpointCap : CDP_ENDPOINT_CAPS) {
       Optional<URI> reportedUri = CdpEndpointFinder.getReportedUri(cdpEndpointCap, caps);
       Optional<HttpClient> client =
-          reportedUri.map(uri -> CdpEndpointFinder.getHttpClient(clientFactory, uri));
+          reportedUri.map(
+              uri ->
+                  CdpEndpointFinder.getHttpClient(
+                      clientFactory, uri, ClientConfig.defaultConfig()));
       Optional<URI> cdpUri;
 
       try {

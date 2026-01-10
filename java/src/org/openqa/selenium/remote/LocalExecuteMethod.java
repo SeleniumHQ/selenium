@@ -18,34 +18,13 @@
 package org.openqa.selenium.remote;
 
 import java.util.Map;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import org.openqa.selenium.WrapsDriver;
-import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.WebDriverException;
 
-@NullMarked
-public class RemoteExecuteMethod implements ExecuteMethod, WrapsDriver {
-  private final RemoteWebDriver driver;
-
-  public RemoteExecuteMethod(RemoteWebDriver driver) {
-    this.driver = Require.nonNull("Remote WebDriver", driver);
-  }
-
+class LocalExecuteMethod implements ExecuteMethod {
+  @Nullable
   @Override
-  public @Nullable Object execute(String commandName, @Nullable Map<String, ?> parameters) {
-    Response response;
-
-    if (parameters == null || parameters.isEmpty()) {
-      response = driver.execute(commandName);
-    } else {
-      response = driver.execute(commandName, parameters);
-    }
-
-    return response.getValue();
-  }
-
-  @Override
-  public RemoteWebDriver getWrappedDriver() {
-    return this.driver;
+  public Object execute(String commandName, @Nullable Map<String, ?> parameters) {
+    throw new WebDriverException("Cannot execute remote command: " + commandName);
   }
 }
