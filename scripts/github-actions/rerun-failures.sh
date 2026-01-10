@@ -7,7 +7,7 @@ RUN_CMD="${1:-}"
 RERUN_WITH_DEBUG="${2:-false}"
 
 mkdir -p build/failures
-awk '$1 ~ /^\/\// && $2 ~ /FAILED/ && $3 == "in" { print $1 }' build/bazel-console.log > build/failures/_run1.txt
+awk '$1 ~ /^\/\// && $2 ~ /(FAILED|TIMEOUT|INCOMPLETE)/ && $3 == "in" { print $1 }' build/bazel-console.log > build/failures/_run1.txt
 
 if [ "$RERUN_WITH_DEBUG" != "true" ]; then
   exit 0
