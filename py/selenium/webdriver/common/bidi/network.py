@@ -15,19 +15,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
+
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
+
 from selenium.webdriver.common.bidi.common import command_builder
 
 
 class NetworkEvent:
     """Represents a network event."""
 
-    def __init__(self, event_class, **kwargs):
+    def __init__(self, event_class: str, **kwargs: Any) -> None:
         self.event_class = event_class
         self.params = kwargs
 
     @classmethod
-    def from_json(cls, json):
-        return cls(event_class=json.get("event_class"), **json)
+    def from_json(cls, json: dict[str, Any]) -> NetworkEvent:
+        return cls(event_class=json.get("event_class", ""), **json)
 
 
 class Network:
@@ -47,13 +55,18 @@ class Network:
         "auth_required": "authRequired",
     }
 
-    def __init__(self, conn):
+    def __init__(self, conn: WebSocketConnection) -> None:
         self.conn = conn
-        self.intercepts = []
-        self.callbacks = {}
-        self.subscriptions = {}
+        self.intercepts: list[str] = []
+        self.callbacks: dict[str | int, Any] = {}  # mixed keys: event_name->list[int], callback_id->intercept_str
+        self.subscriptions: dict[str, list[int]] = {}
 
-    def _add_intercept(self, phases=None, contexts=None, url_patterns=None):
+    def _add_intercept(
+        self,
+        phases: list[str] | None = None,
+        contexts: list[str] | None = None,
+        url_patterns: list[Any] | None = None,
+    ) -> dict[str, Any]:
         """Add an intercept to the network.
 
         Args:
@@ -81,7 +94,7 @@ class Network:
         self.intercepts.append(result["intercept"])
         return result
 
-    def _remove_intercept(self, intercept=None):
+    def _remove_intercept(self, intercept: str | None = None) -> None:
         """Remove a specific intercept, or all intercepts.
 
         Args:
@@ -105,7 +118,7 @@ class Network:
             except Exception as e:
                 raise Exception(f"Exception: {e}")
 
-    def _on_request(self, event_name, callback):
+    def _on_request(self, event_name: str, callback: Callable[[Request], None]) -> int:
         """Set a callback function to subscribe to a network event.
 
         Args:
@@ -118,7 +131,7 @@ class Network:
         """
         event = NetworkEvent(event_name)
 
-        def _callback(event_data):
+        def _callback(event_data: NetworkEvent) -> None:
             request = Request(
                 network=self,
                 request_id=event_data.params["request"].get("request", None),
@@ -133,7 +146,6 @@ class Network:
             callback(request)
 
         callback_id = self.conn.add_callback(event, _callback)
-
         if event_name in self.callbacks:
             self.callbacks[event_name].append(callback_id)
         else:
@@ -141,7 +153,13 @@ class Network:
 
         return callback_id
 
-    def add_request_handler(self, event, callback, url_patterns=None, contexts=None):
+    def add_request_handler(
+        self,
+        event: str,
+        callback: Callable[[Request], None],
+        url_patterns: list[Any] | None = None,
+        contexts: list[str] | None = None,
+    ) -> int:
         """Add a request handler to the network.
 
         Args:
@@ -174,7 +192,7 @@ class Network:
         self.callbacks[callback_id] = result["intercept"]
         return callback_id
 
-    def remove_request_handler(self, event, callback_id):
+    def remove_request_handler(self, event: str, callback_id: int) -> None:
         """Remove a request handler from the network.
 
         Args:
@@ -198,7 +216,7 @@ class Network:
             self.conn.execute(command_builder("session.unsubscribe", params))
             del self.subscriptions[event_name]
 
-    def clear_request_handlers(self):
+    def clear_request_handlers(self) -> None:
         """Clear all request handlers from the network."""
         for event_name in self.subscriptions:
             net_event = NetworkEvent(event_name)
@@ -211,7 +229,7 @@ class Network:
             self.conn.execute(command_builder("session.unsubscribe", params))
         self.subscriptions = {}
 
-    def add_auth_handler(self, username, password):
+    def add_auth_handler(self, username: str, password: str) -> int:
         """Add an authentication handler to the network.
 
         Args:
@@ -223,12 +241,12 @@ class Network:
         """
         event = "auth_required"
 
-        def _callback(request):
+        def _callback(request: Request) -> None:
             request._continue_with_auth(username, password)
 
         return self.add_request_handler(event, _callback)
 
-    def remove_auth_handler(self, callback_id):
+    def remove_auth_handler(self, callback_id: int) -> None:
         """Remove an authentication handler from the network.
 
         Args:
@@ -244,16 +262,16 @@ class Request:
     def __init__(
         self,
         network: Network,
-        request_id,
-        body_size=None,
-        cookies=None,
-        resource_type=None,
-        headers=None,
-        headers_size=None,
-        method=None,
-        timings=None,
-        url=None,
-    ):
+        request_id: str | None,
+        body_size: int | None = None,
+        cookies: list[Any] | None = None,
+        resource_type: str | None = None,
+        headers: list[Any] | None = None,
+        headers_size: int | None = None,
+        method: str | None = None,
+        timings: dict[str, Any] | None = None,
+        url: str | None = None,
+    ) -> None:
         self.network = network
         self.request_id = request_id
         self.body_size = body_size
@@ -265,7 +283,7 @@ class Request:
         self.timings = timings
         self.url = url
 
-    def fail_request(self):
+    def fail_request(self) -> None:
         """Fail this request."""
         if not self.request_id:
             raise ValueError("Request not found.")
@@ -273,12 +291,19 @@ class Request:
         params = {"request": self.request_id}
         self.network.conn.execute(command_builder("network.failRequest", params))
 
-    def continue_request(self, body=None, method=None, headers=None, cookies=None, url=None):
+    def continue_request(
+        self,
+        body: Any = None,
+        method: str | None = None,
+        headers: list[Any] | None = None,
+        cookies: list[Any] | None = None,
+        url: str | None = None,
+    ) -> None:
         """Continue after intercepting this request."""
         if not self.request_id:
             raise ValueError("Request not found.")
 
-        params = {"request": self.request_id}
+        params: dict[str, Any] = {"request": self.request_id}
         if body is not None:
             params["body"] = body
         if method is not None:
@@ -292,7 +317,7 @@ class Request:
 
         self.network.conn.execute(command_builder("network.continueRequest", params))
 
-    def _continue_with_auth(self, username=None, password=None):
+    def _continue_with_auth(self, username: str | None = None, password: str | None = None) -> None:
         """Continue with authentication.
 
         Args:
@@ -302,7 +327,7 @@ class Request:
         Note:
             If username or password is None, it attempts auth with no credentials.
         """
-        params = {}
+        params: dict[str, Any] = {}
         params["request"] = self.request_id
 
         if not username or not password:  # no credentials is valid option
