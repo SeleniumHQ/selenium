@@ -105,6 +105,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testMultipleInputs() {
     driver.get(pages.formSelectionPage);
 

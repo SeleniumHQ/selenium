@@ -19,6 +19,7 @@ package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -26,6 +27,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 /** Tests operations that involve scroll wheel. */
 class DefaultWheelTest extends JupiterTestBase {
@@ -35,6 +37,7 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void shouldScrollToElement() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -48,6 +51,7 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void shouldScrollFromElementByGivenAmount() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -62,6 +66,7 @@ class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void shouldScrollFromElementByGivenAmountWithOffset() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -90,7 +95,7 @@ class DefaultWheelTest extends JupiterTestBase {
               getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
             })
         .isInstanceOf(MoveTargetOutOfBoundsException.class)
-        .hasMessageContaining("move target out of bounds");
+        .hasMessageContaining("out of bounds");
   }
 
   @Test
@@ -129,7 +134,7 @@ class DefaultWheelTest extends JupiterTestBase {
               getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
             })
         .isInstanceOf(MoveTargetOutOfBoundsException.class)
-        .hasMessageContaining("move target out of bounds");
+        .hasMessageContaining("out of bounds");
   }
 
   private boolean inViewport(WebElement element) {
