@@ -88,7 +88,7 @@ public sealed record WheelActions(string? Id = null) : SourceActions<IWheelSourc
 [JsonDerivedType(typeof(Pause), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
-public sealed record NoneActions(string Id) : SourceActions<INoneSourceAction>(Id);
+public sealed record NoneActions(string? Id = null) : SourceActions<INoneSourceAction>(Id);
 
 public abstract record Key : IKeySourceAction;
 
