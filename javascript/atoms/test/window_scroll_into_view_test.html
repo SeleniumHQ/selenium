@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 <title>window_scroll_into_view_test</title>
+<link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+<script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+<script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
 <script src="test_bootstrap.js"></script>
 <script type="text/javascript">
   goog.require('bot.userAgent');
   goog.require('bot.window');
   goog.require('goog.dom');
   goog.require('goog.math.Coordinate');
-  goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
   goog.require('goog.userAgent.product');
 </script>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 <script type="text/javascript">
   function shouldRunTests() {
     // Safari 6 applies scroll effects asynchronously.
@@ -21,51 +26,67 @@
         !(goog.userAgent.IE && !bot.userAgent.isProductVersion(7));
   }
 
-  function setUp() {
+  QUnit.testStart(function() {
     window.scrollTo(0, 0);
-  }
+  });
 
-  function tearDownPage() {
+  QUnit.done(function() {
     // So we can see the test results
     window.scrollTo(0, 0);
-  }
+  });
 
-  function testScrollToPositionAlreadyInViewDoesNotChangeScrollPosition() {
+  QUnit.test('scrollToPositionAlreadyInViewDoesNotChangeScrollPosition', function(assert) {
+    if (!shouldRunTests()) {
+      assert.ok(true, 'Skipping: browser not supported');
+      return;
+    }
     var preScroll = goog.dom.getDocumentScroll();
     bot.window.scrollIntoView(new goog.math.Coordinate(1, 1));
     var postScroll = goog.dom.getDocumentScroll();
-    assertTrue(goog.math.Coordinate.equals(preScroll, postScroll));
-  }
+    assert.ok(goog.math.Coordinate.equals(preScroll, postScroll));
+  });
 
-  function testScrollOutOfViewportInXChangesScrollXPosition() {
+  QUnit.test('scrollOutOfViewportInXChangesScrollXPosition', function(assert) {
+    if (!shouldRunTests()) {
+      assert.ok(true, 'Skipping: browser not supported');
+      return;
+    }
     var viewport = goog.dom.getViewportSize();
     bot.window.scrollIntoView(new goog.math.Coordinate(viewport.width + 100, 0));
     var afterPositiveScroll = goog.dom.getDocumentScroll();
-    assertTrue(0 < afterPositiveScroll.x);
-    assertEquals(0, afterPositiveScroll.y);
+    assert.ok(0 < afterPositiveScroll.x);
+    assert.strictEqual(afterPositiveScroll.y, 0);
 
     bot.window.scrollIntoView(new goog.math.Coordinate(50, 0));
     var afterNegativeScroll = goog.dom.getDocumentScroll();
-    assertTrue(afterPositiveScroll.x > afterNegativeScroll.x);
-    assertTrue(0 < afterNegativeScroll.x);
-    assertEquals(0, afterNegativeScroll.y);
-  }
+    assert.ok(afterPositiveScroll.x > afterNegativeScroll.x);
+    assert.ok(0 < afterNegativeScroll.x);
+    assert.strictEqual(afterNegativeScroll.y, 0);
+  });
 
-  function testScrollOutOfViewportInYChangesScrollXPosition() {
+  QUnit.test('scrollOutOfViewportInYChangesScrollXPosition', function(assert) {
+    if (!shouldRunTests()) {
+      assert.ok(true, 'Skipping: browser not supported');
+      return;
+    }
     var viewport = goog.dom.getViewportSize();
     bot.window.scrollIntoView(new goog.math.Coordinate(0, viewport.height + 100));
     var afterPositiveScroll = goog.dom.getDocumentScroll();
-    assertTrue(0 < afterPositiveScroll.y);
-    assertEquals(0, afterPositiveScroll.x);
+    assert.ok(0 < afterPositiveScroll.y);
+    assert.strictEqual(afterPositiveScroll.x, 0);
 
     bot.window.scrollIntoView(new goog.math.Coordinate(0, 50));
     var afterNegativeScroll = goog.dom.getDocumentScroll();
-    assertTrue(afterPositiveScroll.y > afterNegativeScroll.y);
-    assertTrue(0 < afterNegativeScroll.y);
-    assertEquals(0, afterNegativeScroll.x);
-  }
+    assert.ok(afterPositiveScroll.y > afterNegativeScroll.y);
+    assert.ok(0 < afterNegativeScroll.y);
+    assert.strictEqual(afterNegativeScroll.x, 0);
+  });
 
-  function testScrollOutOfDocumentRaisesError() {
+  QUnit.test('scrollOutOfDocumentRaisesError', function(assert) {
+    if (!shouldRunTests()) {
+      assert.ok(true, 'Skipping: browser not supported');
+      return;
+    }
     assertScrollIntoViewRaises(-100, 0);
     assertScrollIntoViewRaises(0, -100);
     assertScrollIntoViewRaises(10000, 0);
@@ -73,11 +94,12 @@
 
     function assertScrollIntoViewRaises(x, y) {
       var coord = new goog.math.Coordinate(x, y);
-      assertThrows(goog.bind(bot.window.scrollIntoView, coord));
+      assert.throws(function() {
+        bot.window.scrollIntoView(coord);
+      });
     }
-  }
+  });
 </script>
 <div style="width:8000px;height:8000px"></div>
 </body>
 </html>
-

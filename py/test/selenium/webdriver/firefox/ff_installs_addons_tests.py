@@ -27,6 +27,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 r = Runfiles.Create()
 extensions = r.Rlocation("selenium/py/test/extensions")
 
+pytestmark = pytest.mark.xfail_remote(reason="Remote WebDriver does not expose Firefox-specific addon APIs")
+
 
 @pytest.mark.no_driver_after_test
 def test_install_uninstall_signed_addon_xpi(driver, pages):

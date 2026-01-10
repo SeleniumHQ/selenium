@@ -23,7 +23,6 @@ goog.require('bot.dom');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
-goog.require('goog.testing.TestCase');
 
 
 function getTestContainer() {
@@ -47,11 +46,13 @@ function getTestContainer() {
 
 /**
  * Verifies that the visible text for the test DOM structure.
+ * @param {!Object} assert The QUnit assert object.
+ * @param {string} testName The name of the current test.
  * @param {!Element} element The element to check the text of.
  * @param {...string} var_args Variadic args for the expected lines
  *     of visible text.
  */
-function assertTextIs(element, var_args) {
+function assertTextIs(assert, testName, element, var_args) {
   if (!element.parentNode ||
       // IE sets the parentNode of unattached elements to a document fragment.
       element.parentNode.nodeType != goog.dom.NodeType.ELEMENT) {
@@ -59,15 +60,14 @@ function assertTextIs(element, var_args) {
     testContainer.appendChild(createTestDom(element));
   }
 
-  var expected = goog.array.slice(arguments, 1).join('\n');
+  var expected = goog.array.slice(arguments, 3).join('\n');
   var actual = bot.dom.getVisibleText(element);
 
-  assertEquals(
+  assert.strictEqual(actual, expected,
       'Expected: ' + escapeText(expected) +
       '\n but was: ' + escapeText(actual) +
       '\n raw html:\n' + element.innerHTML +
-      '\n------\n',
-      expected, actual);
+      '\n------\n');
 
   function createTestDom(element) {
     return goog.dom.createDom('div', {'style': 'width: 25em;'},
@@ -78,7 +78,7 @@ function assertTextIs(element, var_args) {
               'font-style: italic;',
               'color: gray;'
             ].join('')},
-            goog.testing.TestCase.currentTestName),
+            testName),
         goog.dom.createDom('div', {
           'style': 'margin-bottom: 0.5em'
         }, element));

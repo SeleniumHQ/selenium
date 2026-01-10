@@ -1,14 +1,17 @@
 <!DOCTYPE HTML>
 <html manifest="testdata/with_fallback.appcache">
 <head>
+  <meta charset="utf-8">
   <title>HTML5 application cache test with manifest</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script type="text/javascript" src="../test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.appcache');
     goog.require('bot.html5');
     goog.require('bot.test');
     goog.require('goog.events');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent.product');
   </script>
 
@@ -25,18 +28,25 @@
       });
     }
 
-    function testGetStatusWithHtmlManifest() {
+    QUnit.test('getStatusWithHtmlManifest', function(assert) {
       if (APPCACHE_NOT_WORKING) {
+        assert.ok(true, 'Skipping: appcache not working');
         return;
       }
 
       // On most browsers, the app is cached by now. This check should not be
       // made asynch because one cannot reliably detect the cached event.
       if (isCached) {
-        assertEquals(window.applicationCache.IDLE,
-                     bot.appcache.getStatus(window));
+        assert.strictEqual(bot.appcache.getStatus(window),
+                           window.applicationCache.IDLE);
+      } else {
+        assert.ok(true, 'App not yet cached');
       }
-    }
+    });
   </script>
 </head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+</body>
 </html>

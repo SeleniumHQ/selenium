@@ -17,69 +17,74 @@ limitations under the License.
 -->
 <html>
 <head>
+  <meta charset="utf-8">
   <title>property_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
     goog.require('bot.locators');
     goog.require('goog.events.EventType');
-    goog.require('goog.testing.jsunit');
   </script>
 
   <script type="text/javascript">
-    function testShouldIndicateWhetherAPropertyIsAvailableOnAnElement() {
+    QUnit.test('shouldIndicateWhetherAPropertyIsAvailableOnAnElement', function(assert) {
       var chips = bot.locators.findElement({id: 'chips'});
 
-      assertTrue('Chips has the "selected" property, but not the attribute',
-                 bot.dom.getProperty(chips, 'selected') !== undefined);
-    }
+      assert.ok(bot.dom.getProperty(chips, 'selected') !== undefined,
+               'Chips has the "selected" property, but not the attribute');
+    });
 
-    function testSelectedShouldBeFalseIfNotSet() {
+    QUnit.test('selectedShouldBeFalseIfNotSet', function(assert) {
       var chips = bot.locators.findElement({id: 'chips'});
 
       var result = bot.dom.getProperty(chips, 'selected');
-      assertTrue(typeof result === 'boolean');
-      assertFalse(result);
-    }
+      assert.ok(typeof result === 'boolean');
+      assert.notOk(result);
+    });
 
-    function testSelectedShouldBeReturnedAsABooleanWhenValueNotOnAttribute() {
+    QUnit.test('selectedShouldBeReturnedAsABooleanWhenValueNotOnAttribute', function(assert) {
       var e = bot.locators.findElement({id: 'peas'});
 
       var result = bot.dom.getProperty(e, 'selected');
-      assertTrue(typeof result === 'boolean');
-      assertTrue(result);
-    }
+      assert.ok(typeof result === 'boolean');
+      assert.ok(result);
+    });
 
-    function testShouldReturnDisabledProperty() {
+    QUnit.test('shouldReturnDisabledProperty', function(assert) {
       var disabled = bot.locators.findElement({id: 'is_disabled'});
-      assertTrue(bot.dom.getProperty(disabled, 'disabled'));
-    }
+      assert.ok(bot.dom.getProperty(disabled, 'disabled'));
+    });
 
-    function testGetsTextInsideOptionTagWhenValuePropertyIsNotDefined() {
+    QUnit.test('getsTextInsideOptionTagWhenValuePropertyIsNotDefined', function(assert) {
       var e = bot.locators.findElement({id: 'novalue'});
-      assertEquals('One', bot.dom.getProperty(e, 'value'));
-    }
+      assert.strictEqual(bot.dom.getProperty(e, 'value'), 'One');
+    });
 
-    function testCanGetBlankValueFromOptionViaPropertyWhenPropertyDoesntExist() {
+    QUnit.test('canGetBlankValueFromOptionViaPropertyWhenPropertyDoesntExist', function(assert) {
       var e = bot.locators.findElement({id: 'novalue-blank'});
-      assertEquals('', bot.dom.getProperty(e, 'value'));
-    }
+      assert.strictEqual(bot.dom.getProperty(e, 'value'), '');
+    });
 
-    function testCanGetValueFromOptionViaPropertyWhenPropertyIsEmptyString() {
+    QUnit.test('canGetValueFromOptionViaPropertyWhenPropertyIsEmptyString', function(assert) {
       var e = bot.locators.findElement({id: 'value-empty'});
-      assertEquals('', bot.dom.getProperty(e, 'value'));
-    }
+      assert.strictEqual(bot.dom.getProperty(e, 'value'), '');
+    });
 
-    function testCanGetValueFromOptionViaProperty() {
+    QUnit.test('canGetValueFromOptionViaProperty', function(assert) {
       var e = bot.locators.findElement({id: 'chips'});
-      assertEquals('chips', bot.dom.getProperty(e, 'value'));
+      assert.strictEqual(bot.dom.getProperty(e, 'value'), 'chips');
       e = bot.locators.findElement({id: 'peas'});
-      assertEquals('peas', bot.dom.getProperty(e, 'value'));
-    }
+      assert.strictEqual(bot.dom.getProperty(e, 'value'), 'peas');
+    });
 
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <div name="cheese1" id="cheddar" unknown="lovely">Cheddar</div>
   <div name="cheese2" id="brie" class="tasty">Brie</div>
   <div name="cheese3" id="gouda" empty="">Gouda</div>

@@ -17,14 +17,32 @@ limitations under the License.
 -->
 <html>
 <head>
+  <meta charset="utf-8">
   <title>is_element_clickable_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script type="text/javascript" src="test_bootstrap.js">
   </script>
   <script type="text/javascript">
     goog.require('goog.math.Coordinate');
-    goog.require('goog.testing.jsunit');
     goog.require('webdriver.chrome');
   </script>
+  <style>
+    /* Position test elements in a specific area to avoid QUnit UI interference */
+    #test-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 200px;
+      z-index: 9999;
+    }
+    /* Push QUnit UI down */
+    #qunit {
+      margin-top: 220px;
+    }
+  </style>
 
   <script type="text/javascript">
     function isClickable(elem, coord) {
@@ -40,39 +58,43 @@ limitations under the License.
       return new goog.math.Coordinate(x, y);
     }
 
-    function testElementIsClickable() {
+    QUnit.test('element is clickable', function(assert) {
       var elem = document.getElementById('1');
-      assertTrue(isClickable(elem, getMidClientRect(elem)));
-    }
+      assert.ok(isClickable(elem, getMidClientRect(elem)));
+    });
 
-    function testNotClickableAtPoint() {
+    QUnit.test('not clickable at point', function(assert) {
       var elem = document.getElementById('2');
       var otherElem = document.getElementById('2b');
-      assertFalse(isClickable(elem, getMidClientRect(otherElem)));
-    }
+      assert.notOk(isClickable(elem, getMidClientRect(otherElem)));
+    });
 
-    function testElementIsClickableByDescendant() {
+    QUnit.test('element is clickable by descendant', function(assert) {
       var elem = document.getElementById('3');
       var child = document.getElementById('4');
-      assertTrue(isClickable(elem, getMidClientRect(child)));
-    }
+      assert.ok(isClickable(elem, getMidClientRect(child)));
+    });
 
-    function testInvalidCoordinateIsNotClickable() {
+    QUnit.test('invalid coordinate is not clickable', function(assert) {
       var elem = document.getElementById('1');
-      assertFalse(isClickable(elem, new goog.math.Coordinate(-1, -1)));
-    }
+      assert.notOk(isClickable(elem, new goog.math.Coordinate(-1, -1)));
+    });
 
   </script>
 </head>
 <body>
-  <div id='1' style='background-color:black'>1</div>
-  <div id='2' style='background-color:orange'>2</div>
-  <div id='2b' style='background-color:purple'>2b</div>
-  <div id='3' style='background-color:green'>
-    <div>3</div>
-    <div id='4' style='background-color:blue; position:relative; top:50px'>
-      div
+  <div id="test-container">
+    <div id='1' style='background-color:black'>1</div>
+    <div id='2' style='background-color:orange'>2</div>
+    <div id='2b' style='background-color:purple'>2b</div>
+    <div id='3' style='background-color:green'>
+      <div>3</div>
+      <div id='4' style='background-color:blue; position:relative; top:50px'>
+        div
+      </div>
     </div>
   </div>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
 </body>
 </html>
