@@ -8,6 +8,7 @@ java_selenium_test_suite(
     srcs = glob(["*Test.java"]),
     browsers = [
         "chrome",
+        "chrome-beta",
     ],
     data = [
         "//common/extensions",
