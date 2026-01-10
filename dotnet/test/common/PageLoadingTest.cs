@@ -371,7 +371,7 @@ public class PageLoadingTest : DriverTestFixture
         WaitFor(TitleToBeEqualTo("XHTML Test Page"), "Title was not expected value");
     }
 
-    [Test]
+    [Test, Repeat(50)]
     [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public void ShouldTimeoutIfAPageTakesTooLongToRefresh()
     {
