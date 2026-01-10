@@ -80,9 +80,6 @@ java_selenium_test_suite(
         "--release",
         TOOLS_JAVA_VERSION,
     ],
-    tags = [
-        "selenium-remote",
-    ],
     deps = [
         ":support",
         "//java/src/org/openqa/selenium/chrome",
