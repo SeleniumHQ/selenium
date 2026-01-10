@@ -233,7 +233,7 @@ class NetworkCommandsTest extends JupiterTestBase {
       page = appServer.whereIs("basicAuth");
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
-      assertThatThrownBy(() -> browsingContext.navigate(page, COMPLETE))
+      assertThatThrownBy(() -> browsingContext.navigate(page, COMPLETE, Duration.ofMillis(200)))
           .isInstanceOf(WebDriverException.class);
     }
   }

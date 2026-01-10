@@ -27,6 +27,7 @@ const { until } = require('selenium-webdriver/index')
 const { ContinueRequestParameters } = require('selenium-webdriver/bidi/continueRequestParameters')
 const { ContinueResponseParameters } = require('selenium-webdriver/bidi/continueResponseParameters')
 const { ProvideResponseParameters } = require('selenium-webdriver/bidi/provideResponseParameters')
+const { BytesValue, Header } = require('selenium-webdriver/bidi/networkTypes')
 
 suite(
   function (env) {
@@ -155,6 +156,37 @@ suite(
 
         await network.beforeRequestSent(async (event) => {
           await network.provideResponse(new ProvideResponseParameters(event.request.request))
+          counter = counter + 1
+        })
+
+        await driver.get(Pages.logEntryAdded)
+
+        assert.strictEqual(counter >= 1, true)
+      })
+
+      it('can provide response with headers', async function () {
+        await network.addIntercept(new AddInterceptParameters(InterceptPhase.BEFORE_REQUEST_SENT))
+
+        let counter = 0
+
+        await network.beforeRequestSent(async (event) => {
+          const headers = [
+            new Header('content-type', new BytesValue(BytesValue.Type.STRING, 'application/json')),
+            new Header('x-custom-header', new BytesValue(BytesValue.Type.STRING, 'test-value')),
+          ]
+
+          const body = new BytesValue(
+            BytesValue.Type.BASE64,
+            Buffer.from(JSON.stringify({ status: 'ok' })).toString('base64'),
+          )
+
+          const params = new ProvideResponseParameters(event.request.request)
+            .statusCode(200)
+            .body(body)
+            .headers(headers)
+            .reasonPhrase('OK')
+
+          await network.provideResponse(params)
           counter = counter + 1
         })
 

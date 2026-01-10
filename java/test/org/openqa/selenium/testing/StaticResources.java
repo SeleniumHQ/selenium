@@ -49,37 +49,44 @@ class StaticResources {
     BazelBuild bazel = new BazelBuild();
 
     // W3C emulation
-    bazel.build("//javascript/atoms/fragments:is-displayed");
-    copy("javascript/atoms/fragments/is-displayed.js", "org/openqa/selenium/remote/isDisplayed.js");
-    bazel.build("//javascript/webdriver/atoms:get-attribute");
+    copy(
+        "javascript/atoms/fragments/is-displayed.js",
+        "org/openqa/selenium/remote/isDisplayed.js",
+        () -> bazel.build("//javascript/atoms/fragments:is-displayed"));
+
     copy(
         "javascript/webdriver/atoms/get-attribute.js",
-        "org/openqa/selenium/remote/getAttribute.js");
+        "org/openqa/selenium/remote/getAttribute.js",
+        () -> bazel.build("//javascript/webdriver/atoms:get-attribute"));
 
     // Relative locators
-    bazel.build("//javascript/atoms/fragments:find-elements");
     copy(
         "javascript/atoms/fragments/find-elements.js",
-        "org/openqa/selenium/support/locators/findElements.js");
+        "org/openqa/selenium/support/locators/findElements.js",
+        () -> bazel.build("//javascript/atoms/fragments:find-elements"));
 
     // Firefox XPI
     copy(
         "third_party/js/selenium/webdriver_prefs.json",
-        "org/openqa/selenium/firefox/webdriver_prefs.json");
-    bazel.build("third_party/js/selenium:webdriver_xpi");
-    copy("third_party/js/selenium/webdriver.xpi", "org/openqa/selenium/firefox/xpi/webdriver.xpi");
+        "org/openqa/selenium/firefox/webdriver_prefs.json",
+        () -> bazel.build("third_party/js/selenium:webdriver_json"));
+    copy(
+        "third_party/js/selenium/webdriver.xpi",
+        "org/openqa/selenium/firefox/xpi/webdriver.xpi",
+        () -> bazel.build("third_party/js/selenium:webdriver_xpi"));
   }
 
-  private static void copy(String copyFrom, String copyTo) {
+  private static void copy(String copyFrom, String copyTo, Runnable build) {
     try {
       Path source = InProject.locate("bazel-bin").resolve(copyFrom);
       Path dest = InProject.locate("java/build/test").resolve(copyTo);
 
       if (Files.exists(dest)) {
-        // Assume we're good.
+        // Target file already exists, no need to copy.
         return;
       }
 
+      build.run();
       Files.createDirectories(dest.getParent());
       Files.copy(source, dest);
     } catch (IOException e) {

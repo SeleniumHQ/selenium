@@ -128,6 +128,10 @@ public class NettyServer implements Server<NettyServer> {
 
   @Override
   public void stop() {
+    if (!isStarted()) {
+      return;
+    }
+
     try {
       Future<?> bossShutdown = bossGroup.shutdownGracefully();
       Future<?> workerShutdown = workerGroup.shutdownGracefully();

@@ -2,7 +2,11 @@
 <html>
 <head>
   <meta http-equiv="Expire" content="0"/>
+  <meta charset="utf-8">
   <title>click_link_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
@@ -17,7 +21,6 @@
     goog.require('goog.events.EventType');
     goog.require('goog.math.Coordinate');
     goog.require('goog.style');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
@@ -29,7 +32,7 @@
     var findElements = bot.locators.findElements;
     var log = goog.log.getLogger('click_link_test');
 
-    function setUp() {
+    QUnit.testStart(function() {
       iframe = bot.locators.findElement({id: 'iframe'});
       iframeWindow = goog.dom.getFrameContentWindow(iframe);
       otherFrame = bot.locators.findElement({id: 'other'});
@@ -43,9 +46,7 @@
       link.blur();
       link2.blur();
       window.focus();
-
-      return waitForLoad(iframe);
-    }
+    });
 
     function checkActionCompatibility(action) {
       if (action == bot.action.tap) {
@@ -60,16 +61,6 @@
       });
     }
 
-    /**
-     * Creates a promise that will be resolved after a 0-based setTimeout.
-     * This is used by tests to yield for a DOM reflow. The promise must
-     * is resolved after the 0-based timeout to trigger the browser's default
-     * yield (~4ms); resolving the promise immediately could potentially
-     * run on the very next tick (depending on the browser) and prevent the
-     * reflow that we are trying to yield to.
-     *
-     * @return {!goog.Promise} A new promise.
-     */
     function timeout() {
       return new goog.Promise(function(done) {
         setTimeout(done, 0);
@@ -87,217 +78,239 @@
       return target;
     }
 
-    function executesDefaultHandler(action) {
+    function executesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var clickTarget = findElement({id: 'clickTarget'});
-      // Make sure no other event listeners are interfering.
       goog.events.removeAll(clickTarget);
 
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
       var targetHref = '#' + Math.random();
       clickTarget.href = targetHref;
 
       action(clickTarget);
-      return timeout().then(function() {
-        assertEquals(targetHref, window.location.hash);
+      var done = assert.async();
+      timeout().then(function() {
+        assert.strictEqual(window.location.hash, targetHref);
+        done();
       });
     }
 
-    var testClickExecutesDefaultHandler =
-        goog.partial(executesDefaultHandler, bot.action.click);
+    QUnit.test('click executes default handler', function(assert) {
+      executesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapExecutesDefaultHandler =
-        goog.partial(executesDefaultHandler, bot.action.tap);
+    QUnit.test('tap executes default handler', function(assert) {
+      executesDefaultHandler(assert, bot.action.tap);
+    });
 
-    function nestedElementExecutesDefaultHandler(action) {
+    function nestedElementExecutesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var parent = findElement({id: 'clickTargetWithAChild'});
 
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
       var targetHref = '#' + Math.random();
       parent.href = targetHref;
 
       var clickTarget = goog.dom.getFirstElementChild(parent);
       action(clickTarget);
-      return timeout().then(function() {
-        assertEquals(targetHref, window.location.hash);
+      var done = assert.async();
+      timeout().then(function() {
+        assert.strictEqual(window.location.hash, targetHref);
+        done();
       });
     }
 
-    var testClickNestedElementExecutesDefaultHandler =
-        goog.partial(nestedElementExecutesDefaultHandler, bot.action.click);
+    QUnit.test('click nested element executes default handler', function(assert) {
+      nestedElementExecutesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapNestedElementExecutesDefaultHandler =
-        goog.partial(nestedElementExecutesDefaultHandler, bot.action.tap);
+    QUnit.test('tap nested element executes default handler', function(assert) {
+      nestedElementExecutesDefaultHandler(assert, bot.action.tap);
+    });
 
-    function correctlyResolvesEmptyFragment(action) {
+    function correctlyResolvesEmptyFragment(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      // A bug in the closure goog.Uri module once prevented this from working.
       var clickTarget = findElement({id: 'clickTarget'});
-      // Make sure no other event listeners are interfering.
       goog.events.removeAll(clickTarget);
 
       clickTarget.href = '#';
       action(clickTarget);
-      return timeout().then(function() {
+      var done = assert.async();
+      timeout().then(function() {
         var windowHref = window.location.href;
-        assertEquals('#', windowHref.charAt(windowHref.length - 1));
+        assert.strictEqual(windowHref.charAt(windowHref.length - 1), '#');
+        done();
       });
     }
 
-    var testClickCorrectlyResolvesEmptyFragment =
-        goog.partial(correctlyResolvesEmptyFragment, bot.action.click);
+    QUnit.test('click correctly resolves empty fragment', function(assert) {
+      correctlyResolvesEmptyFragment(assert, bot.action.click);
+    });
 
-    var testTapCorrectlyResolvesEmptyFragment =
-        goog.partial(correctlyResolvesEmptyFragment, bot.action.tap);
+    QUnit.test('tap correctly resolves empty fragment', function(assert) {
+      correctlyResolvesEmptyFragment(assert, bot.action.tap);
+    });
 
-    function absoluteUrlInAnIframeExecutesDefaultHandler(action) {
+    function absoluteUrlInAnIframeExecutesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var domHelper = goog.dom.getDomHelper(iframeWindow);
+        var clickTarget = domHelper.getElement('iframeClickTarget');
 
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = goog.Uri.resolve(iframeWindow.location,
-          '#' + Math.random()).toString();
+        var targetHref = goog.Uri.resolve(iframeWindow.location,
+            '#' + Math.random()).toString();
 
-      // Let's make sure it is an absolute url.
-      assertContains('http', targetHref);
+        assert.ok(targetHref.indexOf('http') !== -1);
 
-      clickTarget.href = targetHref;
-      action(clickTarget);
-      return timeout().then(function() {
-        assertEquals(targetHref, iframeWindow.location.href);
+        clickTarget.href = targetHref;
+        action(clickTarget);
+        timeout().then(function() {
+          assert.strictEqual(iframeWindow.location.href, targetHref);
+          done();
+        });
       });
     }
 
-    var testClickAbsoluteUrlInAnIframeExecutesDefaultHandler =
-        goog.partial(absoluteUrlInAnIframeExecutesDefaultHandler,
-                     bot.action.click);
+    QUnit.test('click absolute url in an iframe executes default handler', function(assert) {
+      absoluteUrlInAnIframeExecutesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapAbsoluteUrlInAnIframeExecutesDefaultHandler =
-        goog.partial(absoluteUrlInAnIframeExecutesDefaultHandler,
-                     bot.action.tap);
+    QUnit.test('tap absolute url in an iframe executes default handler', function(assert) {
+      absoluteUrlInAnIframeExecutesDefaultHandler(assert, bot.action.tap);
+    });
 
-    function absoluteServerPathAnchorInAnIframeExecutesDefaultHandler(action) {
+    function absoluteServerPathAnchorInAnIframeExecutesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var domHelper = goog.dom.getDomHelper(iframeWindow);
+        var clickTarget = domHelper.getElement('iframeClickTarget');
 
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var testPath = window.location.pathname;
-      var targetHref = testPath.substring(0, testPath.lastIndexOf('/')) +
-          '/testdata/click_iframe.html#' + Math.random();
-      clickTarget.href = targetHref;
-      action(clickTarget);
-      return timeout().then(function() {
-        assertContains(targetHref, iframeWindow.location.href);
+        var testPath = window.location.pathname;
+        var targetHref = testPath.substring(0, testPath.lastIndexOf('/')) +
+            '/testdata/click_iframe.html#' + Math.random();
+        clickTarget.href = targetHref;
+        action(clickTarget);
+        timeout().then(function() {
+          assert.ok(iframeWindow.location.href.indexOf(targetHref) !== -1);
+          done();
+        });
       });
     }
 
-    var testClickAbsoluteServerPathAnchorInAnIframeExecutesDefaultHandler =
-        goog.partial(absoluteServerPathAnchorInAnIframeExecutesDefaultHandler,
-                     bot.action.click);
+    QUnit.test('click absolute server path anchor in an iframe executes default handler', function(assert) {
+      absoluteServerPathAnchorInAnIframeExecutesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapAbsoluteServerPathAnchorInAnIframeExecutesDefaultHandler =
-        goog.partial(absoluteServerPathAnchorInAnIframeExecutesDefaultHandler,
-                     bot.action.tap);
+    QUnit.test('tap absolute server path anchor in an iframe executes default handler', function(assert) {
+      absoluteServerPathAnchorInAnIframeExecutesDefaultHandler(assert, bot.action.tap);
+    });
 
-    function relativeServerPathAnchorInAnIframeExecutesDefaultHandler(action) {
+    function relativeServerPathAnchorInAnIframeExecutesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var domHelper = goog.dom.getDomHelper(iframeWindow);
+        var clickTarget = domHelper.getElement('iframeClickTarget');
 
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = 'click_iframe.html#' + Math.random();
-      clickTarget.href = targetHref;
-      action(clickTarget);
-      return timeout().then(function() {
-        assertContains(targetHref, iframeWindow.location.href);
+        var targetHref = 'click_iframe.html#' + Math.random();
+        clickTarget.href = targetHref;
+        action(clickTarget);
+        timeout().then(function() {
+          assert.ok(iframeWindow.location.href.indexOf(targetHref) !== -1);
+          done();
+        });
       });
     }
 
-    var testClickRelativeServerPathAnchorInAnIframeExecutesDefaultHandler =
-        goog.partial(relativeServerPathAnchorInAnIframeExecutesDefaultHandler,
-                     bot.action.click);
+    QUnit.test('click relative server path anchor in an iframe executes default handler', function(assert) {
+      relativeServerPathAnchorInAnIframeExecutesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapRelativeServerPathAnchorInAnIframeExecutesDefaultHandler =
-        goog.partial(relativeServerPathAnchorInAnIframeExecutesDefaultHandler,
-                     bot.action.tap);
+    QUnit.test('tap relative server path anchor in an iframe executes default handler', function(assert) {
+      relativeServerPathAnchorInAnIframeExecutesDefaultHandler(assert, bot.action.tap);
+    });
 
-    function hashOnlyAnchorInAnIframeExecutesDefaultHandler(action) {
+    function hashOnlyAnchorInAnIframeExecutesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var domHelper = goog.dom.getDomHelper(iframeWindow);
+        var clickTarget = domHelper.getElement('iframeClickTarget');
 
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = '#' + Math.random();
-      clickTarget.href = targetHref;
-      action(clickTarget);
-      return timeout().then(function() {
-        assertEquals(targetHref, iframeWindow.location.hash);
+        var targetHref = '#' + Math.random();
+        clickTarget.href = targetHref;
+        action(clickTarget);
+        timeout().then(function() {
+          assert.strictEqual(iframeWindow.location.hash, targetHref);
+          done();
+        });
       });
     }
 
-    var testClickHashOnlyAnchorInAnIframeExecutesDefaultHandler =
-        goog.partial(hashOnlyAnchorInAnIframeExecutesDefaultHandler,
-                     bot.action.click);
+    QUnit.test('click hash only anchor in an iframe executes default handler', function(assert) {
+      hashOnlyAnchorInAnIframeExecutesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapHashOnlyAnchorInAnIframeExecutesDefaultHandler =
-        goog.partial(hashOnlyAnchorInAnIframeExecutesDefaultHandler,
-                     bot.action.tap);
+    QUnit.test('tap hash only anchor in an iframe executes default handler', function(assert) {
+      hashOnlyAnchorInAnIframeExecutesDefaultHandler(assert, bot.action.tap);
+    });
 
-    function nestedElementInAnIframeExecutesDefaultHandler(action) {
+    function nestedElementInAnIframeExecutesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var parent = domHelper.getElement('iframeClickTargetWithAChild');
-      var clickTarget = goog.dom.getFirstElementChild(parent);
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var domHelper = goog.dom.getDomHelper(iframeWindow);
+        var parent = domHelper.getElement('iframeClickTargetWithAChild');
+        var clickTarget = goog.dom.getFirstElementChild(parent);
 
-      // Use a random value as we don't want to keep an old
-      // misleading hash in the url.
-      var targetHref = '#' + Math.random();
-      parent.href = targetHref;
-      action(clickTarget);
-      return timeout().then(function() {
-        assertEquals(targetHref, iframeWindow.location.hash);
+        var targetHref = '#' + Math.random();
+        parent.href = targetHref;
+        action(clickTarget);
+        timeout().then(function() {
+          assert.strictEqual(iframeWindow.location.hash, targetHref);
+          done();
+        });
       });
     }
 
-    var testClickNestedElementInAnIframeExecutesDefaultHandler =
-        goog.partial(nestedElementInAnIframeExecutesDefaultHandler,
-                     bot.action.click);
+    QUnit.test('click nested element in an iframe executes default handler', function(assert) {
+      nestedElementInAnIframeExecutesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapHashNestedElementInAnIframeExecutesDefaultHandler =
-        goog.partial(nestedElementInAnIframeExecutesDefaultHandler,
-                     bot.action.tap);
+    QUnit.test('tap hash nested element in an iframe executes default handler', function(assert) {
+      nestedElementInAnIframeExecutesDefaultHandler(assert, bot.action.tap);
+    });
 
-    function doesNotFollowLinkWhenEventDefaultPrevented(action) {
+    function doesNotFollowLinkWhenEventDefaultPrevented(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var clickTarget = findElement({id: 'clickTarget'});
-      // Make sure no other event listeners are interfering.
       goog.events.removeAll(clickTarget);
 
       var previousLocation = window.location.href;
@@ -307,21 +320,24 @@
       });
 
       action(clickTarget);
-      return timeout().then(function() {
-        assertEquals(previousLocation, window.location.href);
+      var done = assert.async();
+      timeout().then(function() {
+        assert.strictEqual(window.location.href, previousLocation);
+        done();
       });
     }
 
-    var testClickDoesNotFollowLinkWhenEventDefaultPrevented =
-        goog.partial(doesNotFollowLinkWhenEventDefaultPrevented,
-                     bot.action.click);
+    QUnit.test('click does not follow link when event default prevented', function(assert) {
+      doesNotFollowLinkWhenEventDefaultPrevented(assert, bot.action.click);
+    });
 
-    var testTapDoesNotFollowLinkWhenEventDefaultPrevented =
-        goog.partial(doesNotFollowLinkWhenEventDefaultPrevented,
-                     bot.action.tap);
+    QUnit.test('tap does not follow link when event default prevented', function(assert) {
+      doesNotFollowLinkWhenEventDefaultPrevented(assert, bot.action.tap);
+    });
 
-    function doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler(action) {
+    function doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var clickTarget = findElement({id: 'clickTargetWithInlineHandler'});
@@ -330,189 +346,228 @@
       clickTarget.href = '#' + Math.random();
 
       action(clickTarget);
-      return timeout().then(function() {
-        assertEquals(previousLocation, window.location.href);
+      var done = assert.async();
+      timeout().then(function() {
+        assert.strictEqual(window.location.href, previousLocation);
+        done();
       });
     }
 
-    var testClickDoNotFollowLinkWhenEventDefaultPreventedWithInlineHandler =
-        goog.partial(doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler,
-                     bot.action.click);
+    QUnit.test('click do not follow link when event default prevented with inline handler', function(assert) {
+      doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler(assert, bot.action.click);
+    });
 
-    var testTapDoNotFollowLinkWhenEventDefaultPreventedWithInlineHandler =
-        goog.partial(doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler,
-                     bot.action.tap);
+    QUnit.test('tap do not follow link when event default prevented with inline handler', function(assert) {
+      doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler(assert, bot.action.tap);
+    });
 
-    function doesNotFollowLinkWhenNoHrefIsGiven(action) {
+    function doesNotFollowLinkWhenNoHrefIsGiven(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var clickTarget = findElement({id: 'clickTargetWithNoHref'});
-      // Make sure no other event listeners are interfering.
       goog.events.removeAll(clickTarget);
       var previousLocation = window.location.href;
 
       action(clickTarget);
-      return timeout().then(function() {
-        assertEquals(previousLocation, window.location.href);
+      var done = assert.async();
+      timeout().then(function() {
+        assert.strictEqual(window.location.href, previousLocation);
+        done();
       });
     }
 
-    var testClickDoesNotFollowLinkWhenNoHrefIsGiven = goog.partial(
-        doesNotFollowLinkWhenNoHrefIsGiven, bot.action.click);
+    QUnit.test('click does not follow link when no href is given', function(assert) {
+      doesNotFollowLinkWhenNoHrefIsGiven(assert, bot.action.click);
+    });
 
-    var testTapDoesNotFollowLinkWhenNoHrefIsGiven = goog.partial(
-        doesNotFollowLinkWhenNoHrefIsGiven, bot.action.tap);
+    QUnit.test('tap does not follow link when no href is given', function(assert) {
+      doesNotFollowLinkWhenNoHrefIsGiven(assert, bot.action.tap);
+    });
 
-    function nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven(action) {
+    function nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var clickTarget = findElement({id: 'clickTargetWithAChildAndNoHref'});
 
       var previousLocation = window.location.href;
       action(clickTarget);
-      assertContains(previousLocation, window.location.href);
+      assert.ok(window.location.href.indexOf(previousLocation) !== -1);
     }
 
-    var testClickNestedElelementDoesNotFollowLinkWhenNoHrefIsGiven =
-        goog.partial(nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven,
-                     bot.action.click);
+    QUnit.test('click nested elelment does not follow link when no href is given', function(assert) {
+      nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven(assert, bot.action.click);
+    });
 
-    var testTapNestedElelementDoesNotFollowLinkWhenNoHrefIsGiven =
-        goog.partial(nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven,
-                     bot.action.tap);
+    QUnit.test('tap nested elelment does not follow link when no href is given', function(assert) {
+      nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven(assert, bot.action.tap);
+    });
 
-    function doesNotEncodeReservedButAllowedCharactersInQuery(action) {
+    function doesNotEncodeReservedButAllowedCharactersInQuery(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      // A bug in the closure goog.Uri module once prevented this from working.
-      var domHelper = goog.dom.getDomHelper(iframeWindow);
-      var clickTarget = domHelper.getElement('iframeClickTarget');
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var domHelper = goog.dom.getDomHelper(iframeWindow);
+        var clickTarget = domHelper.getElement('iframeClickTarget');
 
-      var targetHref = '?a=?/+';
-      clickTarget.href = targetHref;
-      action(clickTarget);
-      return waitForLoad(iframe).then(function() {
-        assertEquals(targetHref, iframeWindow.location.search);
+        var targetHref = '?a=?/+';
+        clickTarget.href = targetHref;
+        action(clickTarget);
+        waitForLoad(iframe).then(function() {
+          assert.strictEqual(iframeWindow.location.search, targetHref);
+          done();
+        });
       });
     }
 
-    var testClickDoesNoteEncodeReservedButAllowedCharactersInQuery =
-        goog.partial(doesNotEncodeReservedButAllowedCharactersInQuery,
-                     bot.action.click);
+    QUnit.test('click does not encode reserved but allowed characters in query', function(assert) {
+      doesNotEncodeReservedButAllowedCharactersInQuery(assert, bot.action.click);
+    });
 
-    var testTapDoesNoteEncodeReservedButAllowedCharactersInQuery =
-        goog.partial(doesNotEncodeReservedButAllowedCharactersInQuery,
-                     bot.action.tap);
+    QUnit.test('tap does not encode reserved but allowed characters in query', function(assert) {
+      doesNotEncodeReservedButAllowedCharactersInQuery(assert, bot.action.tap);
+    });
 
-    function absoluteAnchorInAnIframeExecutesDefaultHandler(action) {
+    function absoluteAnchorInAnIframeExecutesDefaultHandler(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var clickTarget = getClickTarget('testdata/click_destination.html');
-      var targetHref = clickTarget.href;
-      action(clickTarget);
-      return waitForLoad(iframe).then(function() {
-        assertEquals(targetHref, iframeWindow.location.href);
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var clickTarget = getClickTarget('testdata/click_destination.html');
+        var targetHref = clickTarget.href;
+        action(clickTarget);
+        waitForLoad(iframe).then(function() {
+          assert.strictEqual(iframeWindow.location.href, targetHref);
+          done();
+        });
       });
     }
 
-    var testClickAbsoluteAnchorInAnIframeExecutesDefaultHandler =
-        goog.partial(absoluteAnchorInAnIframeExecutesDefaultHandler,
-                     bot.action.click);
+    QUnit.test('click absolute anchor in an iframe executes default handler', function(assert) {
+      absoluteAnchorInAnIframeExecutesDefaultHandler(assert, bot.action.click);
+    });
 
-    var testTapAbsoluteAnchorInAnIframeExecutesDefaultHandler =
-        goog.partial(absoluteAnchorInAnIframeExecutesDefaultHandler,
-                     bot.action.tap);
+    QUnit.test('tap absolute anchor in an iframe executes default handler', function(assert) {
+      absoluteAnchorInAnIframeExecutesDefaultHandler(assert, bot.action.tap);
+    });
 
-    function linkThatCausesContentToLoadInAnotherFrame(action) {
+    function linkThatCausesContentToLoadInAnotherFrame(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var clickTarget = getClickTarget('testdata/click_destination.html');
-      var targetHref = clickTarget.href;
-      clickTarget.target = 'other';
-      action(clickTarget);
-      return waitForLoad(otherFrame).then(function() {
-        assertEquals(targetHref, otherFrameWindow.location.href);
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var clickTarget = getClickTarget('testdata/click_destination.html');
+        var targetHref = clickTarget.href;
+        clickTarget.target = 'other';
+        action(clickTarget);
+        waitForLoad(otherFrame).then(function() {
+          assert.strictEqual(otherFrameWindow.location.href, targetHref);
+          done();
+        });
       });
     }
 
-    var testClickLinkThatCausesContentToLoadInAnotherFrame =
-        goog.partial(linkThatCausesContentToLoadInAnotherFrame,
-                     bot.action.click);
+    QUnit.test('click link that causes content to load in another frame', function(assert) {
+      linkThatCausesContentToLoadInAnotherFrame(assert, bot.action.click);
+    });
 
-    var testTapLinkThatCausesContentToLoadInAnotherFrame =
-        goog.partial(linkThatCausesContentToLoadInAnotherFrame,
-                     bot.action.tap);
+    QUnit.test('tap link that causes content to load in another frame', function(assert) {
+      linkThatCausesContentToLoadInAnotherFrame(assert, bot.action.tap);
+    });
 
-    function onSelfPageReloadsPage(action) {
+    function onSelfPageReloadsPage(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var clickTarget = getClickTarget(iframeWindow.location.href);
-      var targetHref = clickTarget.href;
-      action(clickTarget);
-      return waitForLoad(iframe).then(function() {
-        assertEquals(targetHref, iframeWindow.location.href);
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var clickTarget = getClickTarget(iframeWindow.location.href);
+        var targetHref = clickTarget.href;
+        action(clickTarget);
+        waitForLoad(iframe).then(function() {
+          assert.strictEqual(iframeWindow.location.href, targetHref);
+          done();
+        });
       });
     }
 
-    var testClickOnSelfPageReloadsPage = goog.partial(onSelfPageReloadsPage,
-                                                      bot.action.click);
+    QUnit.test('click on self page reloads page', function(assert) {
+      onSelfPageReloadsPage(assert, bot.action.click);
+    });
 
-    var testTapOnSelfPageReloadsPage = goog.partial(onSelfPageReloadsPage,
-                                                    bot.action.tap);
+    QUnit.test('tap on self page reloads page', function(assert) {
+      onSelfPageReloadsPage(assert, bot.action.tap);
+    });
 
-    function actionOnHashDoesNotReloadThePage(action) {
+    function actionOnHashDoesNotReloadThePage(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
-      var clickTarget = getClickTarget('');
-      clickTarget.href = '#';
-      // Fail immediately if the iframe is loaded.
-      return new goog.Promise(function(fulfill, reject) {
+      var done = assert.async();
+      waitForLoad(iframe).then(function() {
+        var clickTarget = getClickTarget('');
+        clickTarget.href = '#';
+
         var id = goog.events.listenOnce(iframe, 'load', function() {
-          reject(Error('Did not expect iframe to load a new page'));
+          assert.ok(false, 'Did not expect iframe to load a new page');
+          done();
         });
 
         action(clickTarget);
 
-        // After a delay, assume page is not going to load and pass the test.
         window.setTimeout(function() {
           goog.events.unlistenByKey(id);
-          fulfill();
+          assert.ok(true);
+          done();
         }, 250);
       });
     }
 
-    var testClickOnHashDoesNotReloadThePage = goog.partial(
-        actionOnHashDoesNotReloadThePage, bot.action.click);
+    QUnit.test('click on hash does not reload the page', function(assert) {
+      actionOnHashDoesNotReloadThePage(assert, bot.action.click);
+    });
 
-    var testTapOnHashDoesNotReloadThePage = goog.partial(
-        onSelfPageReloadsPage, bot.action.tap);
+    QUnit.test('tap on hash does not reload the page', function(assert) {
+      onSelfPageReloadsPage(assert, bot.action.tap);
+    });
 
-    function focusOnAnElementBeforeFinishingClickSequence(action) {
+    function focusOnAnElementBeforeFinishingClickSequence(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
 
-      return new goog.Promise(function(done) {
-        goog.events.listenOnce(link, goog.events.EventType.FOCUS, done);
-        action(link);
+      var done = assert.async();
+      goog.events.listenOnce(link, goog.events.EventType.FOCUS, function() {
+        assert.ok(true);
+        done();
       });
+      action(link);
     }
 
-    var testClickFocusOnAnElementBeforeFinishingClickSequence = goog.partial(
-        focusOnAnElementBeforeFinishingClickSequence, bot.action.click);
+    QUnit.test('click focus on an element before finishing click sequence', function(assert) {
+      focusOnAnElementBeforeFinishingClickSequence(assert, bot.action.click);
+    });
 
-    var testTapFocusOnAnElementBeforeFinishingClickSequence = goog.partial(
-        focusOnAnElementBeforeFinishingClickSequence, bot.action.tap);
+    QUnit.test('tap focus on an element before finishing click sequence', function(assert) {
+      focusOnAnElementBeforeFinishingClickSequence(assert, bot.action.tap);
+    });
 
-    function focusOnAnElementWhenMousedownChangesFocus(action) {
+    function focusOnAnElementWhenMousedownChangesFocus(assert, action) {
       if (!checkActionCompatibility(action)) {
+        assert.ok(true, 'Action not supported, skipping');
         return;
       }
       var mousedownPreemptsFocus = action == bot.action.tap ? false :
@@ -520,37 +575,49 @@
       goog.events.listen(link, goog.events.EventType.MOUSEDOWN, function() {
         link2.focus();
       });
-      return new goog.Promise(function(fulfill, reject) {
-        goog.events.listen(link, goog.events.EventType.FOCUS, function() {
-          if (mousedownPreemptsFocus) {
-            reject(Error('Did not expect link to be focused'));
-          } else {
-            fulfill();
-          }
-        });
+      var done = assert.async();
+      var resolved = false;
 
-        goog.events.listen(link2, goog.events.EventType.FOCUS, function() {
-          // If the mousedown will preempt the focus, delay the continue testing
-          // call for a short delay to make sure the above assert never triggers.
-          if (mousedownPreemptsFocus) {
-            window.setTimeout(function() {
-              fulfill();  // No-op if the above handler above calls reject.
-            }, 100);
-          }
-        });
-
-        action(link);
+      goog.events.listen(link, goog.events.EventType.FOCUS, function() {
+        if (resolved) return;
+        if (mousedownPreemptsFocus) {
+          assert.ok(false, 'Did not expect link to be focused');
+          resolved = true;
+          done();
+        } else {
+          assert.ok(true);
+          resolved = true;
+          done();
+        }
       });
+
+      goog.events.listen(link2, goog.events.EventType.FOCUS, function() {
+        if (resolved) return;
+        if (mousedownPreemptsFocus) {
+          window.setTimeout(function() {
+            if (resolved) return;
+            assert.ok(true);
+            resolved = true;
+            done();
+          }, 100);
+        }
+      });
+
+      action(link);
     }
 
-    var testClickFocusOnAnElementWhenMousedownChangesFocus = goog.partial(
-        focusOnAnElementWhenMousedownChangesFocus, bot.action.click);
+    QUnit.test('click focus on an element when mousedown changes focus', function(assert) {
+      focusOnAnElementWhenMousedownChangesFocus(assert, bot.action.click);
+    });
 
-    var testTapFocusOnAnElementWhenMousedownChangesFocus = goog.partial(
-        focusOnAnElementWhenMousedownChangesFocus, bot.action.tap);
+    QUnit.test('tap focus on an element when mousedown changes focus', function(assert) {
+      focusOnAnElementWhenMousedownChangesFocus(assert, bot.action.tap);
+    });
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <form action="javascript:void(0)">
     <div id="log"></div>
     <script>

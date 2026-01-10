@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>frame_scroll_test</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js" type="text/javascript"></script>
   <script type="text/javascript">
     goog.require('bot');
@@ -9,41 +13,42 @@
     goog.require('bot.window');
     goog.require('goog.dom');
     goog.require('goog.math.Coordinate');
-    goog.require('goog.testing.jsunit');
   </script>
 </head>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
   <iframe id="frame" src="testdata/styled_size.html"></iframe>
   <script type="text/javascript">
     var frame = document.getElementById('frame');
 
-    function setUpPage() {
+    QUnit.begin(function() {
       bot.setWindow(goog.dom.getFrameContentWindow(frame));
-    }
+    });
 
-    function verifyScroll(expectedScroll) {
+    function verifyScroll(assert, expectedScroll) {
       var actualScroll = bot.window.getScroll();
-      assertEquals(expectedScroll.width, actualScroll.width);
-      assertEquals(expectedScroll.height, actualScroll.height);
+      assert.strictEqual(actualScroll.width, expectedScroll.width);
+      assert.strictEqual(actualScroll.height, expectedScroll.height);
     }
 
-    function testFrameGetScroll() {
+    QUnit.test('frame get scroll', function(assert) {
       frame.scrollLeft = '10px';
       frame.scrollTop = '20px';
-      verifyScroll(new goog.math.Coordinate(10, 20));
-    }
+      verifyScroll(assert, new goog.math.Coordinate(10, 20));
+    });
 
-    function testFrameSetScroll() {
+    QUnit.test('frame set scroll', function(assert) {
       var pos = new goog.math.Coordinate(200, 150);
       bot.window.setScroll(pos);
-      verifyScroll(pos);
-    }
+      verifyScroll(assert, pos);
+    });
 
-    function testFrameSetScrollUsingGetScroll() {
+    QUnit.test('frame set scroll using get scroll', function(assert) {
       var pos = bot.window.getScroll();
       bot.window.setScroll(pos);
-      verifyScroll(pos);
-    }
+      verifyScroll(assert, pos);
+    });
   </script>
 </body>
 </html>

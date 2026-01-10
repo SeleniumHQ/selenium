@@ -48,12 +48,7 @@ module Selenium
         expect(e.backtrace).not_to be_empty
       end
 
-      it 'has backtrace when using a remote server', only: {driver: :remote,
-                                                            reason: 'This test should only apply to remote drivers'} do
-        unless driver.is_a?(WebDriver::Remote::Driver)
-          raise 'This error needs to be risen for the pending test not to fail on local drivers'
-        end
-
+      it 'has backtrace when using a remote server', exclusive: {driver: :remote} do
         driver.send(:bridge).instance_variable_set(:@session_id, 'fake_session_id')
         driver.window_handle
       rescue WebDriver::Error::InvalidSessionIdError => e

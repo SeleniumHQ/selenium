@@ -39,7 +39,7 @@ public class Read {
   public static byte[] toByteArray(InputStream in) throws IOException {
     int estimatedSize = Math.max(in.available(), 1024);
     try (ByteArrayOutputStream out = new ByteArrayOutputStream(estimatedSize)) {
-      byte[] buffer = new byte[4096];
+      byte[] buffer = new byte[Math.min(estimatedSize, 4096)];
 
       int readCount;
       while ((readCount = in.read(buffer)) != -1) {

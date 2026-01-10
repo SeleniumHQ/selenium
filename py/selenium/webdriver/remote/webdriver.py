@@ -1123,6 +1123,7 @@ class WebDriver(BaseWebDriver):
             self._start_bidi()
 
         if not hasattr(self, "_network") or self._network is None:
+            assert self._websocket_connection is not None
             self._network = Network(self._websocket_connection)
 
         return self._network

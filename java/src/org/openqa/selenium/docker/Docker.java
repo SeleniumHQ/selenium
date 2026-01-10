@@ -95,7 +95,7 @@ public class Docker {
     }
 
     synchronized (this) {
-      if (!dockerClient.isPresent()) {
+      if (dockerClient.isEmpty()) {
         VersionCommand versionCommand = new VersionCommand(client);
         dockerClient =
             apiVersion != null

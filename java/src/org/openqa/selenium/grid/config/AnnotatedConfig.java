@@ -18,9 +18,9 @@
 package org.openqa.selenium.grid.config;
 
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableSet;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.primitives.Primitives;
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -180,12 +180,12 @@ public class AnnotatedConfig implements Config {
 
   @Override
   public Set<String> getSectionNames() {
-    return ImmutableSortedSet.copyOf(config.keySet());
+    return unmodifiableSet(config.keySet());
   }
 
   @Override
   public Set<String> getOptions(String section) {
     Require.nonNull("Section name to get options for", section);
-    return ImmutableSortedSet.copyOf(config.getOrDefault(section, emptyMap()).keySet());
+    return unmodifiableSet(config.getOrDefault(section, emptyMap()).keySet());
   }
 }
