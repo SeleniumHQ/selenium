@@ -123,18 +123,16 @@ class FirefoxDriverTest extends JupiterTestBase {
   @Test
   void shouldWaitUntilBrowserHasClosedProperly() {
     driver.get(pages.simpleTestPage);
-    driver.quit();
     removeDriver();
 
-    driver = new WebDriverBuilder().get();
+    localDriver = new WebDriverBuilder().get();
 
-    driver.get(pages.formPage);
-    WebElement textarea = driver.findElement(By.id("withText"));
+    localDriver.get(pages.formPage);
+    WebElement textarea = localDriver.findElement(By.id("withText"));
     String sentText = "I like cheese\n\nIt's really nice";
     String expectedText = textarea.getAttribute("value") + sentText;
     textarea.sendKeys(sentText);
-    wait.until(elementValueToEqual(textarea, expectedText));
-    driver.quit();
+    wait(localDriver).until(elementValueToEqual(textarea, expectedText));
   }
 
   @Test
@@ -155,7 +153,7 @@ class FirefoxDriverTest extends JupiterTestBase {
             .withEnvironment(Map.of("NSPR_LOG_MODULES", "all:5"))
             .build();
 
-    new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities()).quit();
+    localDriver = new FirefoxDriver(service, (FirefoxOptions) FIREFOX.getCapabilities());
   }
 
   @Test
