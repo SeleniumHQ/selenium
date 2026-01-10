@@ -376,21 +376,14 @@ public class PageLoadingTest : DriverTestFixture
     public void ShouldTimeoutIfAPageTakesTooLongToRefresh()
     {
         // Get the sleeping servlet with a pause of 5 seconds
-        long pageLoadTimeout = 2;
-        long pageLoadTimeBuffer = 0;
-        string slowLoadingPageUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=" + (pageLoadTimeout + pageLoadTimeBuffer));
+        string slowLoadingPageUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("sleep?time=5");
         driver.Url = slowLoadingPageUrl;
 
         driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(2);
 
-        try
-        {
-            AssertPageLoadTimeoutIsEnforced(() => driver.Navigate().Refresh(), 2, 4);
-        }
-        finally
-        {
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(300);
-        }
+        AssertPageLoadTimeoutIsEnforced(driver.Navigate().Refresh, 2, 4);
+
+        driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(300);
 
         // Load another page after get() timed out but before test HTTP server served previous page.
         driver.Url = xhtmlTestPage;
