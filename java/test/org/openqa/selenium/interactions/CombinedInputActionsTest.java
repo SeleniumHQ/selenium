@@ -29,6 +29,7 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -322,6 +323,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(EDGE)
   public void testChordControlCutAndPaste() {
     assumeFalse(
         getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");

@@ -161,7 +161,6 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(FIREFOX)
   void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -170,7 +169,6 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(FIREFOX)
   public void testMovingPastViewPortThrowsException() {
     assertThatExceptionOfType(MoveTargetOutOfBoundsException.class)
         .isThrownBy(() -> setDefaultPen(driver).moveByOffset(-1000, -1000).perform());

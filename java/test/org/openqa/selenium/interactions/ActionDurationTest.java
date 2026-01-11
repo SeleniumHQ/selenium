@@ -20,17 +20,18 @@ package org.openqa.selenium.interactions;
 import static java.time.Duration.ofMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.WaitingConditions.elementToBeInViewport;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.time.Duration;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-@Tag("UnitTests")
 class ActionDurationTest extends JupiterTestBase {
   @Test
+  @NotYetImplemented(FIREFOX)
   void shouldScrollToElementWithCustomDuration() {
     driver.get(
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
@@ -38,8 +39,11 @@ class ActionDurationTest extends JupiterTestBase {
 
     assertThat(elementToBeInViewport(iframe).apply(driver)).isFalse();
 
-    new Actions(driver, Duration.ofMillis(111)).scrollToElement(iframe).perform();
+    long start = System.currentTimeMillis();
+    new Actions(driver, Duration.ofMillis(1000)).scrollToElement(iframe).perform();
+    long elapsed = System.currentTimeMillis() - start;
 
+    assertThat(elapsed).isGreaterThan(1000);
     wait.until(elementToBeInViewport(iframe));
   }
 
@@ -50,8 +54,11 @@ class ActionDurationTest extends JupiterTestBase {
     WebElement footer = driver.findElement(By.tagName("footer"));
     int deltaY = footer.getRect().y;
 
-    new Actions(driver, Duration.ofMillis(111)).scrollByAmount(0, deltaY).perform();
+    long start = System.currentTimeMillis();
+    new Actions(driver, Duration.ofMillis(1000)).scrollByAmount(0, deltaY).perform();
+    long elapsed = System.currentTimeMillis() - start;
 
+    assertThat(elapsed).isGreaterThan(1000);
     wait.until(elementToBeInViewport(footer));
   }
 
