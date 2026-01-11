@@ -130,7 +130,7 @@ module Selenium
         deadline = current_time + START_TIMEOUT
 
         loop do
-          error = connection_error?
+          error = check_connection_error
           return unless error
 
           raise Error::WebDriverError, "#{cannot_connect_error_text}: #{error}" if current_time > deadline
@@ -139,7 +139,7 @@ module Selenium
         end
       end
 
-      def connection_error?
+      def check_connection_error
         response = Net::HTTP.start(@host, @port, open_timeout: 0.5, read_timeout: 1) do |http|
           http.get('/status', {'Connection' => 'close'})
         end
