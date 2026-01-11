@@ -64,8 +64,14 @@ build --incompatible_strict_action_env
 
 # Required to get `protobuf` compiling, which is required for `rules_closure`
 build --incompatible_enable_cc_toolchain_resolution
-build --cxxopt=-std=c++17
-build --host_cxxopt=-std=c++17
+build:linux --cxxopt=-std=c++17
+build:linux --host_cxxopt=-std=c++17
+build:macos --cxxopt=-std=c++17
+build:macos --host_cxxopt=-std=c++17
+build:windows --cxxopt=/std:c++17
+build:windows --host_cxxopt=/std:c++17
+build:windows --per_file_copt=external/protobuf\\+.*@/w
+build:windows --host_per_file_copt=external/protobuf\\+.*@/w
 common --define=protobuf_allow_msvc=true
 
 # For build stamping
