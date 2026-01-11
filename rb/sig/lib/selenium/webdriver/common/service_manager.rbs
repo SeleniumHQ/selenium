@@ -53,7 +53,7 @@ module Selenium
 
       def connect_until_stable: () -> untyped?
 
-      def connection_error?: () -> String?
+      def check_connection_error: () -> String?
 
       def current_time: () -> Float
 
