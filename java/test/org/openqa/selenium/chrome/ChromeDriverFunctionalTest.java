@@ -179,6 +179,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
     assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
 
     conditions.deleteNetworkConditions();
+    assertThat("true").isEqualTo("Intentionally failing for CI debug rerun");
 
     assertThatThrownBy(() -> conditions.getNetworkConditions())
         .as("Network Conditions were deleted")
