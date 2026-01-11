@@ -20,7 +20,13 @@ package org.openqa.selenium.logging;
 import java.util.Collections;
 import java.util.Set;
 
-/** Stores and retrieves logs in-process (i.e. without any RPCs). */
+/**
+ * Stores and retrieves logs in-process (i.e. without any RPCs).
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 public abstract class LocalLogs implements Logs {
 
   private static final LocalLogs NULL_LOGGER =

@@ -44,13 +44,16 @@ class PerformanceLoggingTest extends JupiterTestBase {
   }
 
   @Test
-  void testDisabledProfilingDoesNotLog() {
+  @SuppressWarnings("deprecation")
+  void testProfilerLogIsDeprecatedAndReturnsEmpty() {
+    // PROFILER log type is deprecated and no longer functional
     driver.get(pages.simpleTestPage);
     assertThat(getProfilerEntries(driver).getAll())
-        .describedAs("Profiler should not log when disabled")
+        .describedAs("Profiler logs should be empty (deprecated)")
         .isEmpty();
   }
 
+  @SuppressWarnings("deprecation")
   private LogEntries getProfilerEntries(WebDriver driver) {
     return driver.manage().logs().get(LogType.PROFILER);
   }
