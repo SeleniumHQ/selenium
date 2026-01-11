@@ -188,7 +188,8 @@ module Selenium
 
         def create_driver!(listener: nil, http_client: nil, **, &block)
           check_for_previous_error
-          http_client ||= Remote::Http::Default.new(read_timeout: 30)
+          read_timeout = driver == :remote ? 45 : 30
+          http_client ||= Remote::Http::Default.new(read_timeout: read_timeout)
 
           method = :"#{driver}_driver"
           opts = {options: build_options(**), listener: listener, http_client: http_client}
