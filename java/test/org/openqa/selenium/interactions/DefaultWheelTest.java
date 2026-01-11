@@ -19,11 +19,11 @@ package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.WaitingConditions.elementToBeInViewport;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -43,11 +43,11 @@ class DefaultWheelTest extends JupiterTestBase {
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement iframe = driver.findElement(By.tagName("iframe"));
 
-    assertThat(inViewport(iframe)).isFalse();
+    assertThat(elementToBeInViewport(iframe).apply(driver)).isFalse();
 
     getBuilder(driver).scrollToElement(iframe).perform();
 
-    assertThat(inViewport(iframe)).isTrue();
+    wait.until(elementToBeInViewport(iframe));
   }
 
   @Test
@@ -62,7 +62,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertThat(inViewport(checkbox)).isTrue();
+    wait.until(elementToBeInViewport(checkbox));
   }
 
   @Test
@@ -78,7 +78,7 @@ class DefaultWheelTest extends JupiterTestBase {
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertThat(inViewport(checkbox)).isTrue();
+    wait.until(elementToBeInViewport(checkbox));
   }
 
   @Test
@@ -107,7 +107,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
     getBuilder(driver).scrollByAmount(0, deltaY).perform();
 
-    assertThat(inViewport(footer)).isTrue();
+    wait.until(elementToBeInViewport(footer));
   }
 
   @Test
@@ -120,7 +120,7 @@ class DefaultWheelTest extends JupiterTestBase {
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertThat(inViewport(checkbox)).isTrue();
+    wait.until(elementToBeInViewport(checkbox));
   }
 
   @Test
@@ -135,17 +135,5 @@ class DefaultWheelTest extends JupiterTestBase {
             })
         .isInstanceOf(MoveTargetOutOfBoundsException.class)
         .hasMessageContaining("out of bounds");
-  }
-
-  private boolean inViewport(WebElement element) {
-
-    String script =
-        "for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;\n"
-            + "e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;\n"
-            + "return"
-            + " f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>\n"
-            + "window.pageYOffset&&t+o>window.pageXOffset";
-
-    return (boolean) ((JavascriptExecutor) driver).executeScript(script, element);
   }
 }

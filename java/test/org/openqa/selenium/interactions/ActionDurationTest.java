@@ -19,12 +19,12 @@ package org.openqa.selenium.interactions;
 
 import static java.time.Duration.ofMillis;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.WaitingConditions.elementToBeInViewport;
 
 import java.time.Duration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.JupiterTestBase;
 
@@ -36,11 +36,11 @@ class ActionDurationTest extends JupiterTestBase {
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement iframe = driver.findElement(By.tagName("iframe"));
 
-    assertThat(inViewport(iframe)).isFalse();
+    assertThat(elementToBeInViewport(iframe).apply(driver)).isFalse();
 
     new Actions(driver, Duration.ofMillis(111)).scrollToElement(iframe).perform();
 
-    assertThat(inViewport(iframe)).isTrue();
+    wait.until(elementToBeInViewport(iframe));
   }
 
   @Test
@@ -52,7 +52,7 @@ class ActionDurationTest extends JupiterTestBase {
 
     new Actions(driver, Duration.ofMillis(111)).scrollByAmount(0, deltaY).perform();
 
-    assertThat(inViewport(footer)).isTrue();
+    wait.until(elementToBeInViewport(footer));
   }
 
   @Test
@@ -65,17 +65,5 @@ class ActionDurationTest extends JupiterTestBase {
   void shouldBeCustomDuration110ms() {
     Actions actions = new Actions(driver, Duration.ofMillis(110));
     assertThat(actions.getActionDuration()).isEqualTo(ofMillis(110));
-  }
-
-  private boolean inViewport(WebElement element) {
-
-    String script =
-        "for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;\n"
-            + "e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;\n"
-            + "return"
-            + " f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>\n"
-            + "window.pageYOffset&&t+o>window.pageXOffset";
-
-    return (boolean) ((JavascriptExecutor) driver).executeScript(script, element);
   }
 }
