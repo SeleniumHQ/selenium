@@ -134,8 +134,8 @@ def is_connectable(port: int, host: str | None = "localhost") -> bool:
 
 def is_url_connectable(
     port: int | str,
-    host: str | None = "127.0.0.1",
-    scheme: str | None = "http",
+    host: str = "127.0.0.1",
+    scheme: str = "http",
 ) -> bool:
     """Send a request to the HTTP server at the /status endpoint to verify connectivity.
 
@@ -147,8 +147,14 @@ def is_url_connectable(
     Returns:
         True if the service is ready to accept new sessions, False otherwise.
     """
+
     try:
-        with urllib.request.urlopen(f"{scheme}://{host}:{port}/status", timeout=1) as res:
+        # Disable proxy for localhost connections
+        proxy_handler = urllib.request.ProxyHandler({})
+        opener = urllib.request.build_opener(proxy_handler)
+
+        request = urllib.request.Request(f"{scheme}://{host}:{port}/status")
+        with opener.open(request, timeout=1) as res:
             if res.getcode() != 200:
                 return False
 
@@ -156,7 +162,9 @@ def is_url_connectable(
             data = json.loads(body)
 
             # Check top-level and value.ready, some browsers wrap it under 'value', e.g., ChromeDriver
-            ready = data.get("ready", data.get("value", {}).get("ready", False))
+            ready = data.get("ready")
+            if ready is None:
+                ready = data.get("value", {}).get("ready")
             return ready is True
     except Exception:
         return False
