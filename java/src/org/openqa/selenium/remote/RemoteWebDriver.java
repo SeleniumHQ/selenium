@@ -20,9 +20,9 @@ package org.openqa.selenium.remote;
 import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
-import static org.openqa.selenium.HasDownloads.DownloadedFile;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
+import com.google.common.net.MediaType;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,6 +83,7 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
@@ -730,12 +731,23 @@ public class RemoteWebDriver
   public void downloadFile(String fileName, Path targetLocation) throws IOException {
     requireDownloadsEnabled(capabilities);
 
-    Response response = execute(DriverCommand.GET_DOWNLOADED_FILE, Map.of("name", fileName));
-
-    Contents.Supplier content = (Contents.Supplier) response.getValue();
-    try (InputStream fileContent = content.get()) {
-      Files.createDirectories(targetLocation);
-      Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
+    Response response =
+        execute(
+            DriverCommand.DOWNLOAD_FILE,
+            Map.of("name", fileName, "format", MediaType.OCTET_STREAM.toString()));
+    if (response.getValue() instanceof Contents.Supplier) {
+      // Selenium Grid 4.40.0 or newer
+      Contents.Supplier content = (Contents.Supplier) response.getValue();
+      try (InputStream fileContent = content.get()) {
+        Files.createDirectories(targetLocation);
+        Files.copy(new BufferedInputStream(fileContent), targetLocation.resolve(fileName));
+      }
+    } else if (response.getValue() instanceof Map) {
+      // Selenium Grid 4.39.0 or older
+      String contents = ((Map<String, String>) response.getValue()).get("contents");
+      Zip.unzip(contents, targetLocation.toFile());
+    } else {
+      throw new UnsupportedOperationException("Unexpected grid response: " + response);
     }
   }
 

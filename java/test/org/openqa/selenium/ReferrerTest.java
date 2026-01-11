@@ -28,17 +28,14 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-import com.google.common.net.HostAndPort;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -135,8 +132,8 @@ class ReferrerTest {
   }
 
   /**
-   * Tests navigation when all of the files are hosted on the same domain and the browser does not
-   * have a proxy configured.
+   * Tests navigation when all files are hosted on the same domain and the browser does not have a
+   * proxy configured.
    */
   @Test
   void basicHistoryNavigationWithoutAProxy() {
@@ -153,8 +150,8 @@ class ReferrerTest {
   }
 
   /**
-   * Tests navigation when all of the files are hosted on the same domain and the browser is
-   * configured to use a proxy that permits direct access to that domain.
+   * Tests navigation when all files are hosted on the same domain and the browser is configured to
+   * use a proxy that permits direct access to that domain.
    */
   @Test
   void basicHistoryNavigationWithADirectProxy() {
@@ -259,7 +256,7 @@ class ReferrerTest {
     }
 
     public List<ExpectedRequest> getRequests() {
-      return requests.stream().collect(Collectors.toList());
+      return requests;
     }
   }
 
@@ -282,11 +279,6 @@ class ReferrerTest {
 
     public List<ExpectedRequest> getRequests() {
       return handler.getRequests();
-    }
-
-    public HostAndPort getHostAndPort() {
-      URI uri = URI.create(server.whereIs("/"));
-      return HostAndPort.fromParts(uri.getHost(), uri.getPort());
     }
   }
 
@@ -318,17 +310,8 @@ class ReferrerTest {
       return server.whereIs(relativeUrl);
     }
 
-    public List<ExpectedRequest> getRequests() {
-      return handler.getRequests();
-    }
-
     public void stop() {
       server.stop();
-    }
-
-    public HostAndPort getHostAndPort() {
-      URI uri = URI.create(server.whereIs("/"));
-      return HostAndPort.fromParts(uri.getHost(), uri.getPort());
     }
   }
 }

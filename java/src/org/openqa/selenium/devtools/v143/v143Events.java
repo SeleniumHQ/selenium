@@ -87,7 +87,7 @@ public class v143Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
     JavascriptException exception = new JavascriptException(message);
 
-    if (!maybeTrace.isPresent()) {
+    if (maybeTrace.isEmpty()) {
       StackTraceElement element =
           new StackTraceElement(
               "unknown", "unknown", details.getUrl().orElse("unknown"), details.getLineNumber());

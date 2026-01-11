@@ -19,12 +19,13 @@ package org.openqa.selenium.javascript;
 
 import static java.lang.System.getProperty;
 import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toList;
 
-import com.google.common.base.Splitter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -89,7 +90,11 @@ class TestFileLocator {
       return emptySet();
     }
 
-    Iterable<String> splitExcludes = Splitter.on(',').omitEmptyStrings().split(excludedFiles);
+    Iterable<String> splitExcludes =
+        Arrays.stream(excludedFiles.split(","))
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .collect(toList());
 
     return StreamSupport.stream(splitExcludes.spliterator(), false)
         .map(testDirectory::resolve)

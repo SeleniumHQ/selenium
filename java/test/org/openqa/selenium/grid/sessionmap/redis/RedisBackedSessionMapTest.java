@@ -18,7 +18,8 @@
 package org.openqa.selenium.grid.sessionmap.redis;
 
 import static java.util.UUID.randomUUID;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
 import java.net.URI;

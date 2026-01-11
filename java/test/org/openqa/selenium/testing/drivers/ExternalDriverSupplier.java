@@ -104,6 +104,8 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
         return Optional.of(ctor.newInstance(desiredCapabilities));
       } catch (InvocationTargetException e) {
         throw new RuntimeException(e.getTargetException());
+      } catch (RuntimeException e) {
+        throw e;
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -120,6 +122,8 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
         Class<? extends Supplier<WebDriver>> clazz =
             (Class<? extends Supplier<WebDriver>>) Class.forName(delegateClassName);
         return Optional.of(clazz);
+      } catch (RuntimeException e) {
+        throw e;
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -144,11 +148,12 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     @Override
     public WebDriver get() {
       try {
-        LOG.info("Waiting for server to be ready at " + serverUrl);
+        LOG.info(() -> "Waiting for server to be ready at " + serverUrl);
         new UrlChecker().waitUntilAvailable(60, SECONDS, new URL(serverUrl + "/status"));
-        LOG.info("Server is ready");
+        LOG.info(() -> "Server is ready at " + serverUrl);
       } catch (UrlChecker.TimeoutException e) {
-        throw new RuntimeException("The external server is not accepting commands", e);
+        throw new RuntimeException(
+            "The external server is not accepting commands at " + serverUrl, e);
       } catch (MalformedURLException e) {
         throw new RuntimeException(e);
       }

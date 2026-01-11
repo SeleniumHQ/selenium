@@ -1,0 +1,14 @@
+licenses(["notice"])
+
+filegroup(
+    name = "qunit",
+    srcs = [
+        "qunit.css",
+        "qunit.js",
+        "qunit_test_runner.js",
+    ],
+    visibility = [
+        "//java/test/org/openqa/selenium/environment:__pkg__",
+        "//javascript:__subpackages__",
+    ],
+)

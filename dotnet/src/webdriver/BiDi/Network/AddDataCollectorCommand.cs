@@ -28,11 +28,24 @@ internal sealed class AddDataCollectorCommand(AddDataCollectorParameters @params
 
 internal sealed record AddDataCollectorParameters(IEnumerable<DataType> DataTypes, int MaxEncodedDataSize, CollectorType? CollectorType, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<Browser.UserContext>? UserContexts) : Parameters;
 
-public class AddDataCollectorOptions : CommandOptions
+public class AddDataCollectorOptions() : CommandOptions
 {
+    internal AddDataCollectorOptions(BrowsingContextAddDataCollectorOptions? options) : this()
+    {
+        CollectorType = options?.CollectorType;
+        UserContexts = options?.UserContexts;
+    }
+
     public CollectorType? CollectorType { get; set; }
 
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
+
+    public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
+}
+
+public class BrowsingContextAddDataCollectorOptions
+{
+    public CollectorType? CollectorType { get; set; }
 
     public IEnumerable<Browser.UserContext>? UserContexts { get; set; }
 }

@@ -17,14 +17,17 @@ limitations under the License.
 -->
 <html>
 <head>
+  <meta charset="utf-8">
   <title>dom_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="../../test_bootstrap.js"></script>
   <script src="../../../atoms/inject/deps.js"></script>
   <script type="text/javascript">
     goog.require('goog.array');
     goog.require('goog.dom');
     goog.require('goog.style');
-    goog.require('goog.testing.jsunit');
     goog.require('webdriver.atoms.element');
     goog.require('webdriver.atoms.inject.dom');
     goog.require('webdriver.atoms.inject.frame');
@@ -32,41 +35,45 @@ limitations under the License.
   </script>
 
   <script type="text/javascript">
-    function testGetText() {
+    function getValueFromJSONObject(arg) {
+      return goog.json.parse(arg)["value"];
+    }
+
+    QUnit.test('getText', function(assert) {
       var e = webdriver.atoms.inject.locators.findElement("id", "x");
       var actual = getValueFromJSONObject(
               webdriver.atoms.inject.dom.getText(getValueFromJSONObject(e)));
-      assertEquals("Para", actual);
-    }
+      assert.strictEqual(actual, "Para");
+    });
 
-    function testGetIsSelected() {
+    QUnit.test('getIsSelected', function(assert) {
       var apples = webdriver.atoms.inject.locators.findElement('id', 'apples');
       var oranges = webdriver.atoms.inject.locators.findElement('id', 'oranges');
 
-      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isSelected(
+      assert.notOk(getValueFromJSONObject(webdriver.atoms.inject.dom.isSelected(
               getValueFromJSONObject(oranges))));
-      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isSelected(
+      assert.ok(getValueFromJSONObject(webdriver.atoms.inject.dom.isSelected(
               getValueFromJSONObject(apples))));
-    }
+    });
 
-    function testGetTopLeftCoordinates() {
+    QUnit.test('getTopLeftCoordinates', function(assert) {
       var elementX = goog.dom.$('x');
       var expectedX = webdriver.atoms.element.getLocationInView(elementX).x;
 
       var e = webdriver.atoms.inject.locators.findElement("id", "x");
       var coords = webdriver.atoms.inject.dom.getTopLeftCoordinates(
               getValueFromJSONObject(e));
-      assertEquals(expectedX, getValueFromJSONObject(coords).x);
-    }
+      assert.strictEqual(getValueFromJSONObject(coords).x, expectedX);
+    });
 
-    function testGetAttributeValue() {
+    QUnit.test('getAttributeValue', function(assert) {
       var e = webdriver.atoms.inject.locators.findElement("id", "x");
-      assertEquals("para", getValueFromJSONObject(
+      assert.strictEqual(getValueFromJSONObject(
           webdriver.atoms.inject.dom.getAttributeValue(
-              getValueFromJSONObject(e), "name")));
-    }
+              getValueFromJSONObject(e), "name")), "para");
+    });
 
-    function testGetSize() {
+    QUnit.test('getSize', function(assert) {
       var elementX = goog.dom.$('x');
       var expectedHeight = goog.style.getSize(elementX).height;
 
@@ -74,84 +81,84 @@ limitations under the License.
       var size = getValueFromJSONObject(
               webdriver.atoms.inject.dom.getSize(getValueFromJSONObject(e)));
 
-      assertEquals(expectedHeight, size.height);
-    }
+      assert.strictEqual(size.height, expectedHeight);
+    });
 
-    function testGetValueOfCssProperty() {
+    QUnit.test('getValueOfCssProperty', function(assert) {
       var e = webdriver.atoms.inject.locators.findElement('id', 'after');
       var prop = getValueFromJSONObject(
               webdriver.atoms.inject.dom.getValueOfCssProperty(
                       getValueFromJSONObject(e), "background-color"));
 
-      assertEquals('rgba(0, 128, 0, 1)', prop);
-    }
+      assert.strictEqual(prop, 'rgba(0, 128, 0, 1)');
+    });
 
-    function testIsEnabled() {
+    QUnit.test('isEnabled', function(assert) {
       var working = webdriver.atoms.inject.locators.findElement("id", "working");
       var notWorking = webdriver.atoms.inject.locators.findElement("id",
                                                              "notWorking");
-      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
+      assert.ok(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
               getValueFromJSONObject(working))));
-      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
+      assert.notOk(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
               getValueFromJSONObject(notWorking))));
 
-    }
+    });
 
-    function testIsDisplayed() {
+    QUnit.test('isDisplayed', function(assert) {
       var working = webdriver.atoms.inject.locators.findElement("id", "working");
-      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
+      assert.ok(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
               getValueFromJSONObject(working))));
       var hidden = webdriver.atoms.inject.locators.findElement("id", "hidden");
-      assertFalse(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
+      assert.notOk(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
               getValueFromJSONObject(hidden))));
-    }
+    });
 
-    function testGetAttributeWithProperty() {
+    QUnit.test('getAttributeWithProperty', function(assert) {
       var working = webdriver.atoms.inject.locators.findElement("id", "after");
-      assertEquals("DIV",
+      assert.strictEqual(
           getValueFromJSONObject(webdriver.atoms.inject.dom.getAttributeValue(
-              getValueFromJSONObject(working), "tagName")))
-    }
+              getValueFromJSONObject(working), "tagName")), "DIV");
+    });
 
-    function testGetAttributeInFrame() {
+    QUnit.test('getAttributeInFrame', function(assert) {
       var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
       var frameWindow = getValueFromJSONObject(frame);
       var element = webdriver.atoms.inject.locators.findElement(
           'id', 'submitForm', null, frameWindow);
-      assertEquals('Submit',
+      assert.strictEqual(
           getValueFromJSONObject(webdriver.atoms.inject.dom.getAttributeValue(
-              getValueFromJSONObject(element), "value", frameWindow)));
-    }
+              getValueFromJSONObject(element), "value", frameWindow)), 'Submit');
+    });
 
-    function testIsEnabledInFrame() {
+    QUnit.test('isEnabledInFrame', function(assert) {
       var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
       var frameWindow = getValueFromJSONObject(frame);
       var element = webdriver.atoms.inject.locators.findElement(
           'id', 'submitForm', null, frameWindow);
-      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
+      assert.ok(getValueFromJSONObject(webdriver.atoms.inject.dom.isEnabled(
           getValueFromJSONObject(element), frameWindow)));
-    }
+    });
 
-    function testIsDisplayedInFrame() {
+    QUnit.test('isDisplayedInFrame', function(assert) {
       var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
       var frameWindow = getValueFromJSONObject(frame);
       var element = webdriver.atoms.inject.locators.findElement(
           'id', 'submitForm', null, frameWindow);
-      assertTrue(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
+      assert.ok(getValueFromJSONObject(webdriver.atoms.inject.dom.isDisplayed(
           getValueFromJSONObject(element), frameWindow)));
-    }
+    });
 
-    function testGetTextInFrame() {
+    QUnit.test('getTextInFrame', function(assert) {
       var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
       var frameWindow = getValueFromJSONObject(frame);
       var element = webdriver.atoms.inject.locators.findElement(
           'id', 'iframeClickTarget', null, frameWindow);
       var actual = getValueFromJSONObject(webdriver.atoms.inject.dom.getText(
           getValueFromJSONObject(element), frameWindow));
-      assertEquals("An anchor in an iframe", actual);
-    }
+      assert.strictEqual(actual, "An anchor in an iframe");
+    });
 
-    function testGetSizeInFrame() {
+    QUnit.test('getSizeInFrame', function(assert) {
       var elementRef = window.frames[0].document.getElementById("submitForm");
       // On Firefox, goog.style.getSize returns 20 instead of 19. The bounding box is 19.5 on my
       // machine. Rather than allow multiple values, we'll just grab the bounding rect.
@@ -165,15 +172,13 @@ limitations under the License.
               webdriver.atoms.inject.dom.getSize(
                   getValueFromJSONObject(element), frameWindow));
 
-      assertEquals(expectedHeight, size.height);
-    }
-
-    function getValueFromJSONObject(arg) {
-      return goog.json.parse(arg)["value"];
-    }
+      assert.strictEqual(size.height, expectedHeight);
+    });
   </script>
 </head>
 <body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
   <p id="x" name="para">Para</p>
 
   <div name="right" id="after" style="background-color: green;" class="dogs">yup</div>

@@ -324,7 +324,7 @@ public class ChromiumDriver extends RemoteWebDriver
     org.openqa.selenium.bidi.Connection biDiConnection =
         new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
 
-    return Optional.of(new BiDi(biDiConnection));
+    return Optional.of(new BiDi(biDiConnection, wsConfig.wsTimeout()));
   }
 
   @Override

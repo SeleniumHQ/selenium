@@ -13,7 +13,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Build
-      cache-key: rb-build
       run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
 
   docs:
@@ -22,7 +21,6 @@ jobs:
     uses: ./.github/workflows/bazel.yml
     with:
       name: Documentation
-      cache-key: rb-docs
       run: bazel run //rb:docs
 
   steep-check:
@@ -32,21 +30,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.8
           bundler-cache: true
           working-directory: rb
-      
+
       - name: Install RBS collection
         working-directory: rb
         run: bundle exec rbs collection install
-      
+
       - name: Run Steep type check
         working-directory: rb
         run: bundle exec rake steep 2>/dev/null || (bundle exec rake steep && exit 1)
@@ -59,21 +57,22 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby-version: 3.2.8
+          - ruby-version: 3.2.9
             os: ubuntu
-          - ruby-version: 3.2.8
+          - ruby-version: 3.2.9
             os: windows
-          - ruby-version: 3.2.8
+          - ruby-version: 3.2.9
             os: macos
           - ruby-version: 3.4.3
             os: ubuntu
-          - ruby-version: jruby-10.0.0.0
+          - ruby-version: 4.0.0
             os: ubuntu
-          - ruby-version: truffleruby-24.2.1
+          - ruby-version: jruby-10.0.2.0
+            os: ubuntu
+          - ruby-version: truffleruby-33.0.0
             os: ubuntu
     with:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
-      cache-key: rb-unit-test-${{ matrix.ruby-version }}-${{ matrix.os }}
       os: ${{ matrix.os }}
       ruby-version: ${{ matrix.ruby-version }}
       run: >
@@ -103,7 +102,6 @@ jobs:
     with:
       name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
-      cache-key: rb-${{ matrix.browser }}-${{ matrix.os }}-test
       os: ${{ matrix.os }}
       run: >
         bazel test
@@ -128,7 +126,6 @@ jobs:
     with:
       name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
       browser: ${{ matrix.browser }}
-      cache-key: rb-remote-${{ matrix.browser }}-${{ matrix.os }}-test
       os: ${{ matrix.os }}
       java-version: 17
       run: >

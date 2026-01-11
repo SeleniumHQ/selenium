@@ -25,9 +25,8 @@ def test_should_be_able_to_click_on_elements_with_opacity_zero(driver, pages):
     pages.load("click_jacker.html")
     element = driver.find_element(By.ID, "clickJacker")
     assert "0" == element.value_of_css_property("opacity"), (
-        "Precondition failed: clickJacker should be transparent.\
-        Value was %s"
-        % element.value_of_css_property("opacity")
+        f"Precondition failed: clickJacker should be transparent.\
+        Value was {element.value_of_css_property('opacity')}"
     )
     element.click()
     assert "1" == element.value_of_css_property("opacity")
