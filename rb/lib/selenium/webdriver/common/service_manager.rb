@@ -144,10 +144,14 @@ module Selenium
           http.get('/status', {'Connection' => 'close'})
         end
 
-        "status returned #{response.code}\n#{response.body}" unless response.is_a?(Net::HTTPSuccess)
+        return "status returned #{response.code}\n#{response.body}" unless response.is_a?(Net::HTTPSuccess)
+
+        status = JSON.parse(response.body)
+        ready = status['ready'] || status.dig('value', 'ready')
+        "driver not ready: #{response.body}" unless ready
       rescue Errno::ECONNREFUSED, Errno::ECONNRESET, Errno::EPIPE, Errno::ETIMEDOUT,
              Errno::EADDRNOTAVAIL, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout,
-             EOFError, SocketError, Net::HTTPBadResponse => e
+             EOFError, SocketError, Net::HTTPBadResponse, JSON::ParserError => e
         "#{e.class}: #{e.message}"
       end
 
