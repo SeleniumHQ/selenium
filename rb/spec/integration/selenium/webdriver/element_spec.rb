@@ -129,7 +129,7 @@ module Selenium
         key_reporter = wait_for_element(id: 'keyReporter')
 
         key_reporter.send_keys([:shift, 'h'], 'ello')
-        expect(key_reporter.attribute('value')).to eq('Nope')
+        expect(key_reporter.attribute('value')).to eq('Hello')
       end
 
       it 'handles file uploads' do
@@ -153,15 +153,15 @@ module Selenium
           let(:prop_or_attr) { 'type' }
 
           it '#dom_attribute returns attribute value' do
-            expect(element.dom_attribute(prop_or_attr)).to eq 'nope'
+            expect(element.dom_attribute(prop_or_attr)).to eq 'checkbox'
           end
 
           it '#property returns property value' do
-            expect(element.property(prop_or_attr)).to eq 'nope'
+            expect(element.property(prop_or_attr)).to eq 'checkbox'
           end
 
           it '#attribute returns value' do
-            expect(element.attribute(prop_or_attr)).to eq 'nope'
+            expect(element.attribute(prop_or_attr)).to eq 'checkbox'
           end
         end
 
@@ -170,7 +170,7 @@ module Selenium
           let(:prop_or_attr) { 'rows' }
 
           it '#dom_attribute String' do
-            expect(element.dom_attribute(prop_or_attr)).to eq 'nope'
+            expect(element.dom_attribute(prop_or_attr)).to eq '5'
           end
 
           it '#property returns Number' do
@@ -178,7 +178,7 @@ module Selenium
           end
 
           it '#attribute returns String' do
-            expect(element.attribute(prop_or_attr)).to eq 'nope'
+            expect(element.attribute(prop_or_attr)).to eq '5'
           end
         end
 
