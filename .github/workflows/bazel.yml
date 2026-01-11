@@ -132,7 +132,7 @@ jobs:
         if: inputs.caching
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
-          cache-save: ${{ github.ref == 'refs/heads/trunk' }}
+          cache-save: ${{ github.ref_name == 'trunk' }}
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532
