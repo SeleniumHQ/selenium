@@ -34,8 +34,8 @@ public class ElementFindingTest : DriverTestFixture
     {
         driver.Url = xhtmlTestPage;
         IWebElement element = driver.FindElement(By.Id("linkId"));
-        Assert.That("true", Is.EqualTo("Intentionally failing for CI debug rerun"));
         Assert.That(element.GetAttribute("id"), Is.EqualTo("linkId"));
+        Assert.That("true", Is.EqualTo("Intentionally failing for CI debug rerun"));
     }
 
     [Test]
