@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
-import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
@@ -133,12 +132,12 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  void canCast() {
+  void canCast() throws InterruptedException {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
+    Thread.sleep(1500);
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -152,12 +151,12 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  public void canCastOnDesktop() {
+  public void canCastOnDesktop() throws InterruptedException {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
+    Thread.sleep(1500);
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available

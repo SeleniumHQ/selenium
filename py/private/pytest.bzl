@@ -74,6 +74,7 @@ def pytest_test(name, srcs, deps = None, args = None, data = None, python_versio
         python_version = python_version,
         srcs = srcs + [runner_target],
         deps = deps,
+        data = data,
         main = runner_target,
         legacy_create_init = False,
         imports = ["."],

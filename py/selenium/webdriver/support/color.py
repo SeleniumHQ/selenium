@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -21,13 +22,11 @@ from re import Match
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from typing import SupportsFloat, SupportsIndex, SupportsInt, Union
+    from typing import SupportsFloat, SupportsIndex, SupportsInt
 
-    ParseableFloat = Union[SupportsFloat, SupportsIndex, str, bytes, bytearray]
-    ParseableInt = Union[SupportsInt, SupportsIndex, str, bytes]
-else:
-    ParseableFloat = Any
-    ParseableInt = Any
+    ParseableFloat = SupportsFloat | SupportsIndex | str | bytes | bytearray
+    ParseableInt = SupportsInt | SupportsIndex | str | bytes
+
 
 RGB_PATTERN = r"^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$"
 RGB_PCT_PATTERN = (
@@ -97,7 +96,7 @@ class Color:
             return cls._from_hsl(*m.groups)
         if str_.upper() in Colors:
             return Colors[str_.upper()]
-        raise ValueError("Could not convert %s into color" % str_)
+        raise ValueError(f"Could not convert {str_} into color")
 
     @classmethod
     def _from_hsl(cls, h: ParseableFloat, s: ParseableFloat, light: ParseableFloat, a: ParseableFloat = 1) -> Color:

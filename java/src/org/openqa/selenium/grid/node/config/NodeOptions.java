@@ -20,9 +20,6 @@ package org.openqa.selenium.grid.node.config;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.io.File;
 import java.io.StringReader;
 import java.lang.reflect.Method;
@@ -34,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,6 +58,7 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Multimap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -247,15 +246,14 @@ public class NodeOptions {
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers =
         discoverDrivers(maxSessions, factoryFactory);
 
-    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories =
-        ImmutableMultimap.builder();
+    Multimap<Capabilities, SessionFactory> sessionFactories = new Multimap<>();
 
     addDriverFactoriesFromConfig(sessionFactories);
     addDriverConfigs(factoryFactory, sessionFactories, maxSessions);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
 
-    return sessionFactories.build().asMap();
+    return sessionFactories.asMap();
   }
 
   public int getMaxSessions() {
@@ -331,7 +329,7 @@ public class NodeOptions {
   }
 
   private void addDriverFactoriesFromConfig(
-      ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+      Multimap<Capabilities, SessionFactory> sessionFactories) {
     config
         .getAll(NODE_SECTION, "driver-factories")
         .ifPresent(
@@ -390,10 +388,10 @@ public class NodeOptions {
 
   private void addDriverConfigs(
       Function<ImmutableCapabilities, Collection<SessionFactory>> factoryFactory,
-      ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories,
+      Multimap<Capabilities, SessionFactory> sessionFactories,
       int maxSessions) {
 
-    Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
+    Map<WebDriverInfo, Collection<SessionFactory>> driverConfigs = new HashMap<>();
 
     // get all driver configuration settings
     config
@@ -521,14 +519,17 @@ public class NodeOptions {
                                   new ImmutableCapabilities(stereotype);
                               int maxDriverSessions = getDriverMaxSessions(info, driverMaxSessions);
                               for (int i = 0; i < maxDriverSessions; i++) {
-                                driverConfigs.putAll(
-                                    driverInfoConfig, factoryFactory.apply(immutable));
+                                Collection<SessionFactory> factories =
+                                    factoryFactory.apply(immutable);
+                                driverConfigs
+                                    .computeIfAbsent(driverInfoConfig, __ -> new HashSet<>())
+                                    .addAll(factories);
                               }
                             });
                   });
             });
 
-    driverConfigs.asMap().entrySet().stream()
+    driverConfigs.entrySet().stream()
         .peek(this::report)
         .forEach(
             entry ->
@@ -538,7 +539,7 @@ public class NodeOptions {
 
   private void addDetectedDrivers(
       Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
-      ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+      Multimap<Capabilities, SessionFactory> sessionFactories) {
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       return;
     }
@@ -557,7 +558,7 @@ public class NodeOptions {
               sessionFactories.putAll(capabilities, entry.getValue());
             });
 
-    if (sessionFactories.build().isEmpty()) {
+    if (sessionFactories.isEmpty()) {
       String logMessage = "No drivers have been configured or have been found on PATH";
       LOG.warning(logMessage);
       throw new ConfigException(logMessage);
@@ -566,7 +567,7 @@ public class NodeOptions {
 
   private void addSpecificDrivers(
       Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
-      ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+      Multimap<Capabilities, SessionFactory> sessionFactories) {
     if (config.getAll(NODE_SECTION, "driver-implementation").isEmpty()) {
       return;
     }
@@ -654,7 +655,7 @@ public class NodeOptions {
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
-    Multimap<WebDriverInfo, SessionFactory> toReturn = HashMultimap.create();
+    Multimap<WebDriverInfo, SessionFactory> toReturn = new Multimap<>();
     infos.forEach(
         info -> {
           Capabilities caps = enhanceStereotype(info.getCanonicalCapabilities());
@@ -666,7 +667,8 @@ public class NodeOptions {
                     ImmutableCapabilities immutable = new ImmutableCapabilities(caps);
                     int maxDriverSessions = getDriverMaxSessions(info, maxSessions);
                     for (int i = 0; i < maxDriverSessions; i++) {
-                      toReturn.putAll(info, factoryFactory.apply(immutable));
+                      Collection<SessionFactory> factories = factoryFactory.apply(immutable);
+                      toReturn.putAll(info, factories);
                     }
                   });
         });

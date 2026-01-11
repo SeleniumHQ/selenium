@@ -16,18 +16,17 @@
 # under the License.
 
 import time
-from collections.abc import Callable
-from typing import Generic, Literal, TypeVar, Union
+from collections.abc import Callable, Iterable
+from typing import Generic, Literal, TypeVar
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.types import WaitExcTypes
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 POLL_FREQUENCY: float = 0.5  # How long to sleep in between calls to the method
 IGNORED_EXCEPTIONS: tuple[type[Exception]] = (NoSuchElementException,)  # default to be ignored.
 
-D = TypeVar("D", bound=Union[WebDriver, WebElement])
+D = TypeVar("D", bound=WebDriver | WebElement)
 T = TypeVar("T")
 
 
@@ -37,7 +36,7 @@ class WebDriverWait(Generic[D]):
         driver: D,
         timeout: float,
         poll_frequency: float = POLL_FREQUENCY,
-        ignored_exceptions: WaitExcTypes | None = None,
+        ignored_exceptions: Iterable[type[Exception]] | None = None,
     ):
         """Constructor, takes a WebDriver instance and timeout in seconds.
 

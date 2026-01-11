@@ -1,29 +1,33 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>HTML5 application cache without html manifest attribute</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script type="text/javascript" src="../test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.appcache');
     goog.require('bot.html5');
-    goog.require('goog.testing.jsunit');
   </script>
 
   <script type="text/javascript">
-    function testGetStatusWithoutHtmlManifest() {
+    QUnit.test('getStatusWithoutHtmlManifest', function(assert) {
       if (!bot.html5.isSupported(bot.html5.API.APPCACHE)) {
+        assert.ok(true, 'Skipping: appcache not supported');
         return;
       }
 
       var win = bot.getWindow();
-      assertEquals(win.applicationCache.UNCACHED, bot.appcache.getStatus());
-    }
+      assert.strictEqual(bot.appcache.getStatus(), win.applicationCache.UNCACHED);
+    });
   </script>
 </head>
 <body>
-Test
-<img id="red" src="testdata/ps_logo2.png">
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  Test
+  <img id="red" src="testdata/ps_logo2.png">
 </body>
 </html>
-
-

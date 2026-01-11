@@ -66,14 +66,13 @@ class DefaultElementLocatorTest {
     final By by = new ByIdOrName("list");
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = List.of(element1, element2);
 
-    when(driver.findElements(by)).thenReturn(list);
+    when(driver.findElements(by)).thenReturn(List.of(element1, element2));
 
     ElementLocator locator = newLocator(driver, f);
     List<WebElement> returnedList = locator.findElements();
 
-    assertThat(returnedList).isEqualTo(list);
+    assertThat(returnedList).containsExactly(element1, element2);
   }
 
   @Test

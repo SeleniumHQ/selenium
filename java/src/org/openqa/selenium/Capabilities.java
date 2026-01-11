@@ -24,11 +24,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /** Describes a series of key/value pairs that encapsulate aspects of a browser. */
-@NullMarked
 public interface Capabilities extends Serializable {
 
   default String getBrowserName() {

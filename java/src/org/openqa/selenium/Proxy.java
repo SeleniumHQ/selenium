@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -35,7 +34,6 @@ import org.jspecify.annotations.Nullable;
  * configuration. That is, it is an error to set an <code>httpProxy</code> manually and then turn on
  * proxy autodetect.
  */
-@NullMarked
 public class Proxy {
 
   public enum ProxyType {

@@ -21,7 +21,6 @@ import socket
 import urllib.request
 from collections.abc import Iterable
 
-from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
 
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
@@ -151,7 +150,7 @@ def is_url_connectable(
         return False
 
 
-def keys_to_typing(value: Iterable[AnyKey]) -> list[str]:
+def keys_to_typing(value: Iterable[str | int | float]) -> list[str]:
     """Processes the values that will be typed in the element."""
     characters: list[str] = []
     for val in value:

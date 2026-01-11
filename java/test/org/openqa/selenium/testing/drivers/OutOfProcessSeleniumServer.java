@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -133,7 +134,7 @@ class OutOfProcessSeleniumServer {
       new UrlChecker().waitUntilAvailable(10, SECONDS, url);
       LOG.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
-      LOG.severe("Server failed to start: " + e.getMessage());
+      LOG.log(Level.SEVERE, "Server failed to start: " + e.getMessage(), e);
       process.shutdown();
       LOG.severe(process.getOutput());
       process = null;
@@ -176,6 +177,7 @@ class OutOfProcessSeleniumServer {
         return location;
       }
     } catch (IOException e) {
+      LOG.log(Level.SEVERE, "Failed to build server", e);
       // Fall through
     }
 

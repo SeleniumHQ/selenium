@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -31,7 +30,6 @@ import org.jspecify.annotations.Nullable;
  */
 // Useful URLs:
 // http://hg.openjdk.java.net/jdk7/modules/jdk/file/a37326fa7f95/src/windows/native/java/lang/java_props_md.c
-@NullMarked
 public enum Platform {
 
   /** Never returned, but can be used to request a browser running on any version of Windows. */

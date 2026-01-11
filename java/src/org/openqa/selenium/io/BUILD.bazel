@@ -4,6 +4,7 @@ java_library(
     name = "io",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/src/dev/selenium/tools/javadoc:__pkg__",
         "//java/src/dev/selenium/tools/modules:__pkg__",
         "//java/src/org/openqa/selenium:__pkg__",
         "//java/src/org/openqa/selenium/os:__pkg__",

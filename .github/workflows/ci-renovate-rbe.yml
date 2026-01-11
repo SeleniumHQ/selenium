@@ -14,7 +14,7 @@ jobs:
     permissions:
       contents: write  # for pushing repinned dependencies
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'seleniumhq'
+    if: github.event.repository.fork == false
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
   check-format:
     needs: pin
     name: Check format
-    if: github.repository_owner == 'seleniumhq'
+    if: github.event.repository.fork == false
     uses: ./.github/workflows/bazel.yml
     with:
       name: Check format script run
@@ -58,7 +58,7 @@ jobs:
   test:
     name: Test
     needs: pin
-    if: github.repository_owner == 'seleniumhq'
+    if: github.event.repository.fork == false
     uses: ./.github/workflows/bazel.yml
     with:
       name: All RBE tests
@@ -69,5 +69,5 @@ jobs:
   ci-gh:
     name: CI - GitHub
     needs: pin
-    if: github.repository_owner == 'seleniumhq'
+    if: github.event.repository.fork == false
     uses: ./.github/workflows/ci.yml

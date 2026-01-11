@@ -8,20 +8,26 @@ def closure_test_suite(name, data = [], browsers = None):
         "//third_party/closure/goog:deps",
         "//third_party/closure/goog:library",
         "//third_party/closure/goog/testing",
+        "//third_party/js/qunit",
     ]
 
-    selenium_test(
-        name = name,
-        test_class = "org.openqa.selenium.javascript.ClosureTestSuite",
-        jvm_flags = [
+    kwargs = {
+        "name": name,
+        "test_class": "org.openqa.selenium.javascript.ClosureTestSuite",
+        "jvm_flags": [
             "-Djs.test.timeout=20",
             "-Djs.test.dir=%s" % native.package_name(),
         ],
-        data = data,
-        runtime_deps = [
+        "data": data,
+        "runtime_deps": [
             "//java/test/org/openqa/selenium/javascript:javascript",
         ],
-    )
+    }
+
+    if browsers != None:
+        kwargs["browsers"] = browsers
+
+    selenium_test(**kwargs)
 
     native.java_binary(
         name = name + "_debug_server",

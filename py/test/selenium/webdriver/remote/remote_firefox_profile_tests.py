@@ -19,9 +19,10 @@ from selenium import webdriver
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 
-def test_profile_is_used(firefox_options):
+def test_profile_is_used(firefox_options, server):
     ff_profile = FirefoxProfile()
     ff_profile.set_preference("browser.startup.page", "1")
     firefox_options.profile = ff_profile
-    with webdriver.Remote(options=firefox_options) as driver:
+    server_addr = server.status_url.removesuffix("/status")
+    with webdriver.Remote(command_executor=server_addr, options=firefox_options) as driver:
         assert "browser/content/blanktab.html" in driver.current_url

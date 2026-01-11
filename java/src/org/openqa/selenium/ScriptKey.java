@@ -18,11 +18,9 @@
 package org.openqa.selenium;
 
 import java.util.Objects;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.internal.Require;
 
-@NullMarked
 public class ScriptKey {
 
   private final String identifier;

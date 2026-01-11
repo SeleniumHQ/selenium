@@ -19,6 +19,7 @@
 
 const assert = require('node:assert')
 const fs = require('node:fs')
+const path = require('node:path')
 const io = require('selenium-webdriver/io')
 const remote = require('selenium-webdriver/remote')
 const test = require('../lib/test')
@@ -76,8 +77,8 @@ test.suite(function (env) {
     await driver.switchTo().frame(frame)
     const txt = await driver.findElement(By.css('body')).getText()
 
-    assert.match(txt, new RegExp(fp1.split('/').pop())) // eslint-disable-line
-    assert.match(txt, new RegExp(fp2.split('/').pop())) // eslint-disable-line
+    assert.ok(txt.includes(path.basename(fp1)))
+    assert.ok(txt.includes(path.basename(fp2)))
   })
 
   test.ignore(env.browsers(Browser.SAFARI)).it('can upload files', async function () {
@@ -99,6 +100,6 @@ test.suite(function (env) {
     var frame = await driver.findElement(By.id('upload_target'))
     await driver.switchTo().frame(frame)
     const txt = await driver.findElement(By.css('body')).getText()
-    assert.strictEqual(txt, fp.split('/').pop(), `The document contained ${await driver.getPageSource()}`)
+    assert.strictEqual(txt, path.basename(fp), `The document contained ${await driver.getPageSource()}`)
   })
 })

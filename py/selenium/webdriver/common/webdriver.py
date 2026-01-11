@@ -15,7 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
@@ -39,7 +38,8 @@ class LocalWebDriver(RemoteWebDriver):
             # We don't care about the message because something probably has gone wrong
             pass
         finally:
-            self.service.stop()
+            if hasattr(self, "service") and self.service is not None:
+                self.service.stop()
 
     def download_file(self, *args, **kwargs):
         """Only implemented in RemoteWebDriver."""

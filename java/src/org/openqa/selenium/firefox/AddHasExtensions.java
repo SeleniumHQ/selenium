@@ -20,12 +20,12 @@ package org.openqa.selenium.firefox;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import com.google.auto.service.AutoService;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Base64;
@@ -87,7 +87,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
         String encoded;
         try {
           if (Files.isDirectory(path)) {
-            encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(zipDirectory(path)));
+            encoded = Base64.getEncoder().encodeToString(zipDirectory(path));
           } else {
             encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(path));
           }
@@ -100,23 +100,25 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
                 INSTALL_EXTENSION, Map.of("addon", encoded, "temporary", temporary));
       }
 
-      private Path zipDirectory(Path path) throws IOException {
-        Path extZip = Paths.get(path.getFileName().toString() + ".zip");
-        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(extZip.toFile()))) {
+      private byte[] zipDirectory(Path path) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
           Files.walkFileTree(
               path,
               new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                     throws IOException {
-                  zos.putNextEntry(new ZipEntry(path.relativize(file).toString()));
+                  String entryName =
+                      path.relativize(file).toString().replace(File.separatorChar, '/');
+                  zos.putNextEntry(new ZipEntry(entryName));
                   Files.copy(file, zos);
                   zos.closeEntry();
                   return FileVisitResult.CONTINUE;
                 }
               });
         }
-        return extZip;
+        return baos.toByteArray();
       }
 
       @Override

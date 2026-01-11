@@ -50,7 +50,8 @@ public class WaitingConditions {
 
     @Override
     public String toString() {
-      return "Element text mismatch: expected: " + expectedValue + " but was: '" + lastText + "'";
+      return String.format(
+          "Element text mismatch: expected: \"%s\", but was: \"%s\"", expectedValue, lastText);
     }
   }
 
@@ -76,13 +77,16 @@ public class WaitingConditions {
     };
   }
 
-  public static ExpectedCondition<String> elementTextToEqual(final By locator, final String value) {
+  public static ExpectedCondition<String> elementTextToEqual(
+      final By locator, final String expectedText) {
     return new ExpectedCondition<>() {
+      private String actualText;
+
       @Override
       public String apply(WebDriver driver) {
-        String text = driver.findElement(locator).getText();
-        if (value.equals(text)) {
-          return text;
+        actualText = driver.findElement(locator).getText();
+        if (expectedText.equals(actualText)) {
+          return actualText;
         }
 
         return null;
@@ -90,7 +94,9 @@ public class WaitingConditions {
 
       @Override
       public String toString() {
-        return "element text did not equal: " + value;
+        return String.format(
+            "element found by %s to have text \"%s\", but was: \"%s\"",
+            locator, expectedText, actualText);
       }
     };
   }
@@ -98,30 +104,38 @@ public class WaitingConditions {
   public static ExpectedCondition<String> elementTextToContain(
       final By locator, final String expected) {
     return new ExpectedCondition<>() {
+      private String actualText;
+
       @Override
       public String apply(WebDriver driver) {
-        String text = driver.findElement(locator).getText();
-        return text.contains(expected) ? text : null;
+        actualText = driver.findElement(locator).getText();
+        return actualText.contains(expected) ? actualText : null;
       }
 
       @Override
       public String toString() {
-        return String.format("element text did not contain \"%s\"", expected);
+        return String.format(
+            "element found by %s to contain text \"%s\", but was: \"%s\"",
+            locator, expected, actualText);
       }
     };
   }
 
   public static ExpectedCondition<String> elementTextToMatch(final By locator, final String regex) {
     return new ExpectedCondition<>() {
+      private String actualText;
+
       @Override
       public String apply(WebDriver driver) {
-        String text = driver.findElement(locator).getText();
-        return text.matches(regex) ? text : null;
+        actualText = driver.findElement(locator).getText();
+        return actualText.matches(regex) ? actualText : null;
       }
 
       @Override
       public String toString() {
-        return String.format("element text did not match \"%s\"", regex);
+        return String.format(
+            "element found by %s to match text \"%s\", but was: \"%s\"",
+            locator, regex, actualText);
       }
     };
   }
@@ -139,22 +153,28 @@ public class WaitingConditions {
 
       @Override
       public String toString() {
-        return "element value to equal: " + expectedValue + " was: " + lastValue;
+        return String.format(
+            "element value to equal: \"%s\", but was: \"%s\"", expectedValue, lastValue);
       }
     };
   }
 
   public static ExpectedCondition<String> pageSourceToContain(final String expectedText) {
     return new ExpectedCondition<>() {
+      private String actualPageSource;
+
       @Override
       public String apply(WebDriver driver) {
-        String source = driver.getPageSource();
-        return source.contains(expectedText) ? source : null;
+        actualPageSource = driver.getPageSource();
+        return actualPageSource != null && actualPageSource.contains(expectedText)
+            ? actualPageSource
+            : null;
       }
 
       @Override
       public String toString() {
-        return "Page source to contain: " + expectedText;
+        return String.format(
+            "page source to contain: \"%s\", but was: \"%s\"", expectedText, actualPageSource);
       }
     };
   }
@@ -162,7 +182,7 @@ public class WaitingConditions {
   public static ExpectedCondition<Point> elementLocationToBe(
       final WebElement element, final Point expectedLocation) {
     return new ExpectedCondition<>() {
-      private Point currentLocation = new Point(0, 0);
+      private Point currentLocation;
 
       @Override
       public Point apply(WebDriver ignored) {
@@ -172,15 +192,31 @@ public class WaitingConditions {
 
       @Override
       public String toString() {
-        return "location to be: " + expectedLocation + " is: " + currentLocation;
+        return "location to be: " + expectedLocation + ", but was: " + currentLocation;
       }
     };
   }
 
-  public static ExpectedCondition<Set<String>> windowHandleCountToBe(final int count) {
-    return driver -> {
-      Set<String> handles = driver.getWindowHandles();
-      return handles.size() == count ? handles : null;
+  public static ExpectedCondition<Set<String>> windowHandleCountToBe(
+      final int expectedWindowCount) {
+    return new ExpectedCondition<>() {
+      private Set<String> windowHandles;
+
+      @Override
+      public Set<String> apply(WebDriver driver) {
+        windowHandles = driver.getWindowHandles();
+        return windowHandles.size() == expectedWindowCount ? windowHandles : null;
+      }
+
+      @Override
+      public String toString() {
+        if (windowHandles == null) {
+          return String.format("window count to be: %s", expectedWindowCount);
+        }
+        return String.format(
+            "window count to be: %s, but was: %s (%s)",
+            expectedWindowCount, windowHandles.size(), windowHandles);
+      }
     };
   }
 
@@ -209,7 +245,7 @@ public class WaitingConditions {
 
       @Override
       public String toString() {
-        return String.format("window with name %s to exist", windowName);
+        return String.format("window with name \"%s\" to exist", windowName);
       }
     };
   }

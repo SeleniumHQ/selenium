@@ -190,7 +190,10 @@ rb_test(
         "//:rakefile",
     ],
     main = "@bundle//bin:rubocop",
-    tags = ["no-sandbox"],
+    tags = [
+        "no-sandbox",
+        "skip-rbe",
+    ],
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",
