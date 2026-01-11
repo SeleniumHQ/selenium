@@ -218,9 +218,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(
-      value = FIREFOX,
-      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -244,9 +241,6 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(
-      value = FIREFOX,
-      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   public void testSelectionSelectByWord() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
 

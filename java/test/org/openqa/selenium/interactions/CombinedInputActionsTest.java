@@ -197,6 +197,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(FIREFOX)
   public void testControlClickingWithMultiplePointers() {
     driver.get(pages.selectableItemsPage);
 
