@@ -20,16 +20,6 @@ import pytest
 
 @pytest.mark.no_driver_after_test
 def test_quit(driver, pages):
-    # Intentional failure to test rerun-with-debug functionality
-    # Do some WebDriver operations to generate debug log output
-    pages.load("simpleTest.html")
-    driver.current_url
-    driver.title
-    driver.current_window_handle
-    driver.find_element("id", "oneline")
-
-    pytest.fail("Intentional test failure for rerun-with-debug testing")
-
     driver.quit()
     with pytest.raises(Exception):
         pages.load("simpleTest.html")
