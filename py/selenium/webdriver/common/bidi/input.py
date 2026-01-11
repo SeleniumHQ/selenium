@@ -15,12 +15,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
+
 import math
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import Session
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
 class PointerType:
@@ -45,13 +51,13 @@ class ElementOrigin:
     """Represents an element origin for input actions."""
 
     type: str
-    element: dict
+    element: dict[str, Any]
 
-    def __init__(self, element_reference: dict):
+    def __init__(self, element_reference: dict[str, Any]) -> None:
         self.type = "element"
         self.element = element_reference
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the ElementOrigin to a dictionary."""
         return {"type": self.type, "element": self.element}
 
@@ -62,11 +68,11 @@ class PointerParameters:
 
     pointer_type: str = PointerType.MOUSE
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.pointer_type not in PointerType.VALID_TYPES:
             raise ValueError(f"Invalid pointer type: {self.pointer_type}. Must be one of {PointerType.VALID_TYPES}")
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the PointerParameters to a dictionary."""
         return {"pointerType": self.pointer_type}
 
@@ -83,7 +89,7 @@ class PointerCommonProperties:
     altitude_angle: float = 0.0
     azimuth_angle: float = 0.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.width < 1:
             raise ValueError("width must be at least 1")
         if self.height < 1:
@@ -99,7 +105,7 @@ class PointerCommonProperties:
         if not (0.0 <= self.azimuth_angle <= 2 * math.pi):
             raise ValueError("azimuth_angle must be between 0.0 and 2π")
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the PointerCommonProperties to a dictionary."""
         result: dict[str, Any] = {}
         if self.width != 1:
@@ -130,7 +136,7 @@ class PauseAction:
     def type(self) -> str:
         return "pause"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the PauseAction to a dictionary."""
         result: dict[str, Any] = {"type": self.type}
         if self.duration is not None:
@@ -148,7 +154,7 @@ class KeyDownAction:
     def type(self) -> str:
         return "keyDown"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the KeyDownAction to a dictionary."""
         return {"type": self.type, "value": self.value}
 
@@ -163,7 +169,7 @@ class KeyUpAction:
     def type(self) -> str:
         return "keyUp"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the KeyUpAction to a dictionary."""
         return {"type": self.type, "value": self.value}
 
@@ -179,7 +185,7 @@ class PointerDownAction:
     def type(self) -> str:
         return "pointerDown"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the PointerDownAction to a dictionary."""
         result: dict[str, Any] = {"type": self.type, "button": self.button}
         if self.properties:
@@ -197,7 +203,7 @@ class PointerUpAction:
     def type(self) -> str:
         return "pointerUp"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the PointerUpAction to a dictionary."""
         return {"type": self.type, "button": self.button}
 
@@ -216,7 +222,7 @@ class PointerMoveAction:
     def type(self) -> str:
         return "pointerMove"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the PointerMoveAction to a dictionary."""
         result: dict[str, Any] = {"type": self.type, "x": self.x, "y": self.y}
         if self.duration is not None:
@@ -246,7 +252,7 @@ class WheelScrollAction:
     def type(self) -> str:
         return "scroll"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the WheelScrollAction to a dictionary."""
         result: dict[str, Any] = {
             "type": self.type,
@@ -277,7 +283,7 @@ class NoneSourceActions:
     def type(self) -> str:
         return "none"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the NoneSourceActions to a dictionary."""
         return {"type": self.type, "id": self.id, "actions": [action.to_dict() for action in self.actions]}
 
@@ -293,7 +299,7 @@ class KeySourceActions:
     def type(self) -> str:
         return "key"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the KeySourceActions to a dictionary."""
         return {"type": self.type, "id": self.id, "actions": [action.to_dict() for action in self.actions]}
 
@@ -306,7 +312,7 @@ class PointerSourceActions:
     parameters: PointerParameters | None = None
     actions: list[PauseAction | PointerDownAction | PointerUpAction | PointerMoveAction] = field(default_factory=list)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.parameters is None:
             self.parameters = PointerParameters()
 
@@ -314,7 +320,7 @@ class PointerSourceActions:
     def type(self) -> str:
         return "pointer"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the PointerSourceActions to a dictionary."""
         result: dict[str, Any] = {
             "type": self.type,
@@ -337,7 +343,7 @@ class WheelSourceActions:
     def type(self) -> str:
         return "wheel"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the WheelSourceActions to a dictionary."""
         return {"type": self.type, "id": self.id, "actions": [action.to_dict() for action in self.actions]}
 
@@ -348,10 +354,10 @@ class FileDialogInfo:
 
     context: str
     multiple: bool
-    element: dict | None = None
+    element: dict[str, Any] | None = None
 
     @classmethod
-    def from_dict(cls, data: dict) -> "FileDialogInfo":
+    def from_dict(cls, data: dict[str, Any]) -> FileDialogInfo:
         """Creates a FileDialogInfo instance from a dictionary.
 
         Args:
@@ -370,7 +376,7 @@ class FileDialogOpened:
     event_class = "input.fileDialogOpened"
 
     @classmethod
-    def from_json(cls, json):
+    def from_json(cls, json: dict[str, Any]) -> FileDialogInfo:
         """Create FileDialogInfo from JSON data."""
         return FileDialogInfo.from_dict(json)
 
@@ -378,10 +384,10 @@ class FileDialogOpened:
 class Input:
     """BiDi implementation of the input module."""
 
-    def __init__(self, conn):
+    def __init__(self, conn: WebSocketConnection) -> None:
         self.conn = conn
-        self.subscriptions = {}
-        self.callbacks = {}
+        self.subscriptions: dict[str, list[int]] = {}
+        self.callbacks: dict[int, Callable[[FileDialogInfo], None]] = {}
 
     def perform_actions(
         self,
@@ -406,7 +412,7 @@ class Input:
         params = {"context": context}
         self.conn.execute(command_builder("input.releaseActions", params))
 
-    def set_files(self, context: str, element: dict, files: list[str]) -> None:
+    def set_files(self, context: str, element: dict[str, Any], files: list[str]) -> None:
         """Sets files for a file input element.
 
         Args:
@@ -417,7 +423,7 @@ class Input:
         params = {"context": context, "element": element, "files": files}
         self.conn.execute(command_builder("input.setFiles", params))
 
-    def add_file_dialog_handler(self, handler) -> int:
+    def add_file_dialog_handler(self, handler: Callable[[FileDialogInfo], None]) -> int:
         """Add a handler for file dialog opened events.
 
         Args:

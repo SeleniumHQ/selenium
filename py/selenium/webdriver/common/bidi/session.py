@@ -16,7 +16,15 @@
 # under the License.
 
 
+from __future__ import annotations
+
+from collections.abc import Generator
+from typing import TYPE_CHECKING, Any
+
 from selenium.webdriver.common.bidi.common import command_builder
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
 class UserPromptHandlerType:
@@ -98,11 +106,13 @@ class UserPromptHandler:
 
 
 class Session:
-    def __init__(self, conn):
+    def __init__(self, conn: WebSocketConnection) -> None:
         self.conn = conn
 
-    def subscribe(self, *events, browsing_contexts=None):
-        params = {
+    def subscribe(
+        self, *events: str, browsing_contexts: list[str] | None = None
+    ) -> Generator[dict[str, Any], dict[str, Any], dict[str, Any]]:
+        params: dict[str, Any] = {
             "events": events,
         }
         if browsing_contexts is None:
@@ -111,8 +121,10 @@ class Session:
             params["browsingContexts"] = browsing_contexts
         return command_builder("session.subscribe", params)
 
-    def unsubscribe(self, *events, browsing_contexts=None):
-        params = {
+    def unsubscribe(
+        self, *events: str, browsing_contexts: list[str] | None = None
+    ) -> Generator[dict[str, Any], dict[str, Any], dict[str, Any]]:
+        params: dict[str, Any] = {
             "events": events,
         }
         if browsing_contexts is None:
@@ -121,7 +133,7 @@ class Session:
             params["browsingContexts"] = browsing_contexts
         return command_builder("session.unsubscribe", params)
 
-    def status(self):
+    def status(self) -> dict[str, Any]:
         """The session.status command returns information about the remote end's readiness.
 
         Returns information about the remote end's readiness to create new sessions

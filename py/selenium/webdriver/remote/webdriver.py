@@ -1097,6 +1097,7 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if not self._script:
             self._script = Script(self._websocket_connection, self)
 
@@ -1142,6 +1143,7 @@ class WebDriver(BaseWebDriver):
         """
         if not self._websocket_connection:
             self._start_bidi()
+            assert self._websocket_connection is not None
 
         if self._browser is None:
             self._browser = Browser(self._websocket_connection)
@@ -1153,6 +1155,7 @@ class WebDriver(BaseWebDriver):
         """Returns the BiDi session object for the current WebDriver session."""
         if not self._websocket_connection:
             self._start_bidi()
+            assert self._websocket_connection is not None
 
         if self._bidi_session is None:
             self._bidi_session = Session(self._websocket_connection)
@@ -1289,6 +1292,7 @@ class WebDriver(BaseWebDriver):
         """
         if not self._websocket_connection:
             self._start_bidi()
+            assert self._websocket_connection is not None
 
         if self._input is None:
             self._input = Input(self._websocket_connection)

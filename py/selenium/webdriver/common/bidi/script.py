@@ -15,15 +15,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
+
 import datetime
 import math
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.log import LogEntryAdded
 from selenium.webdriver.common.bidi.session import Session
+
+if TYPE_CHECKING:
+    from selenium.webdriver.common.bidi.log import ConsoleLogEntry, JavaScriptLogEntry
+    from selenium.webdriver.remote.webdriver import WebDriver
+    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
 class ResultOwnership:
@@ -57,7 +65,7 @@ class RealmInfo:
     sandbox: str | None = None
 
     @classmethod
-    def from_json(cls, json: dict[str, Any]) -> "RealmInfo":
+    def from_json(cls, json: dict[str, Any]) -> RealmInfo:
         """Creates a RealmInfo instance from a dictionary.
 
         Args:
@@ -90,7 +98,7 @@ class Source:
     context: str | None = None
 
     @classmethod
-    def from_json(cls, json: dict[str, Any]) -> "Source":
+    def from_json(cls, json: dict[str, Any]) -> Source:
         """Creates a Source instance from a dictionary.
 
         Args:
@@ -114,11 +122,11 @@ class EvaluateResult:
 
     type: str
     realm: str
-    result: dict | None = None
-    exception_details: dict | None = None
+    result: dict[str, Any] | None = None
+    exception_details: dict[str, Any] | None = None
 
     @classmethod
-    def from_json(cls, json: dict[str, Any]) -> "EvaluateResult":
+    def from_json(cls, json: dict[str, Any]) -> EvaluateResult:
         """Creates an EvaluateResult instance from a dictionary.
 
         Args:
@@ -145,13 +153,13 @@ class ScriptMessage:
 
     event_class = "script.message"
 
-    def __init__(self, channel: str, data: dict, source: Source):
+    def __init__(self, channel: str, data: dict[str, Any], source: Source):
         self.channel = channel
         self.data = data
         self.source = source
 
     @classmethod
-    def from_json(cls, json: dict[str, Any]) -> "ScriptMessage":
+    def from_json(cls, json: dict[str, Any]) -> ScriptMessage:
         """Creates a ScriptMessage instance from a dictionary.
 
         Args:
@@ -183,7 +191,7 @@ class RealmCreated:
         self.realm_info = realm_info
 
     @classmethod
-    def from_json(cls, json: dict[str, Any]) -> "RealmCreated":
+    def from_json(cls, json: dict[str, Any]) -> RealmCreated:
         """Creates a RealmCreated instance from a dictionary.
 
         Args:
@@ -204,7 +212,7 @@ class RealmDestroyed:
         self.realm = realm
 
     @classmethod
-    def from_json(cls, json: dict[str, Any]) -> "RealmDestroyed":
+    def from_json(cls, json: dict[str, Any]) -> RealmDestroyed:
         """Creates a RealmDestroyed instance from a dictionary.
 
         Args:
@@ -228,24 +236,24 @@ class Script:
         "realm_destroyed": "script.realmDestroyed",
     }
 
-    def __init__(self, conn, driver=None):
+    def __init__(self, conn: WebSocketConnection, driver: WebDriver | None = None) -> None:
         self.conn = conn
         self.driver = driver
         self.log_entry_subscribed = False
-        self.subscriptions = {}
-        self.callbacks = {}
+        self.subscriptions: dict[str, Any] = {}
+        self.callbacks: dict[str, Any] = {}
 
     # High-level APIs for SCRIPT module
 
-    def add_console_message_handler(self, handler):
+    def add_console_message_handler(self, handler: Callable[[ConsoleLogEntry | JavaScriptLogEntry], Any]) -> int:
         self._subscribe_to_log_entries()
         return self.conn.add_callback(LogEntryAdded, self._handle_log_entry("console", handler))
 
-    def add_javascript_error_handler(self, handler):
+    def add_javascript_error_handler(self, handler: Callable[[ConsoleLogEntry | JavaScriptLogEntry], Any]) -> int:
         self._subscribe_to_log_entries()
         return self.conn.add_callback(LogEntryAdded, self._handle_log_entry("javascript", handler))
 
-    def remove_console_message_handler(self, id):
+    def remove_console_message_handler(self, id: int) -> None:
         self.conn.remove_callback(LogEntryAdded, id)
         self._unsubscribe_from_log_entries()
 
@@ -270,7 +278,7 @@ class Script:
         """
         self._remove_preload_script(script_id)
 
-    def execute(self, script: str, *args) -> dict:
+    def execute(self, script: str, *args: Any) -> dict[str, Any]:
         """Executes a script in the current browsing context.
 
         Args:
@@ -310,7 +318,7 @@ class Script:
 
             raise WebDriverException(error_message)
 
-    def __convert_to_local_value(self, value) -> dict:
+    def __convert_to_local_value(self, value: Any) -> dict[str, Any]:
         """Converts a Python value to BiDi LocalValue format."""
         if value is None:
             return {"type": "null"}
@@ -397,7 +405,7 @@ class Script:
             params["sandbox"] = sandbox
 
         result = self.conn.execute(command_builder("script.addPreloadScript", params))
-        return result["script"]
+        return cast(str, result["script"])
 
     def _remove_preload_script(self, script_id: str) -> None:
         """Removes a preload script.
@@ -408,7 +416,7 @@ class Script:
         params = {"script": script_id}
         self.conn.execute(command_builder("script.removePreloadScript", params))
 
-    def _disown(self, handles: list[str], target: dict) -> None:
+    def _disown(self, handles: list[str], target: dict[str, Any]) -> None:
         """Disowns the given handles.
 
         Args:
@@ -425,11 +433,11 @@ class Script:
         self,
         function_declaration: str,
         await_promise: bool,
-        target: dict,
-        arguments: list[dict] | None = None,
+        target: dict[str, Any],
+        arguments: list[dict[str, Any]] | None = None,
         result_ownership: str | None = None,
-        serialization_options: dict | None = None,
-        this: dict | None = None,
+        serialization_options: dict[str, Any] | None = None,
+        this: dict[str, Any] | None = None,
         user_activation: bool = False,
     ) -> EvaluateResult:
         """Calls a provided function with given arguments in a given realm.
@@ -469,10 +477,10 @@ class Script:
     def _evaluate(
         self,
         expression: str,
-        target: dict,
+        target: dict[str, Any],
         await_promise: bool,
         result_ownership: str | None = None,
-        serialization_options: dict | None = None,
+        serialization_options: dict[str, Any] | None = None,
         user_activation: bool = False,
     ) -> EvaluateResult:
         """Evaluates a provided script in a given realm.
@@ -527,20 +535,22 @@ class Script:
         result = self.conn.execute(command_builder("script.getRealms", params))
         return [RealmInfo.from_json(realm) for realm in result["realms"]]
 
-    def _subscribe_to_log_entries(self):
+    def _subscribe_to_log_entries(self) -> None:
         if not self.log_entry_subscribed:
             session = Session(self.conn)
             self.conn.execute(session.subscribe(LogEntryAdded.event_class))
             self.log_entry_subscribed = True
 
-    def _unsubscribe_from_log_entries(self):
+    def _unsubscribe_from_log_entries(self) -> None:
         if self.log_entry_subscribed and LogEntryAdded.event_class not in self.conn.callbacks:
             session = Session(self.conn)
             self.conn.execute(session.unsubscribe(LogEntryAdded.event_class))
             self.log_entry_subscribed = False
 
-    def _handle_log_entry(self, type, handler):
-        def _handle_log_entry(log_entry):
+    def _handle_log_entry(
+        self, type: str, handler: Callable[[ConsoleLogEntry | JavaScriptLogEntry], Any]
+    ) -> Callable[[ConsoleLogEntry | JavaScriptLogEntry], None]:
+        def _handle_log_entry(log_entry: ConsoleLogEntry | JavaScriptLogEntry) -> None:
             if log_entry.type_ == type:
                 handler(log_entry)
 

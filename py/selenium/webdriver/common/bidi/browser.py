@@ -14,12 +14,17 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
+
 import os
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 from selenium.webdriver.common.bidi.common import command_builder
 from selenium.webdriver.common.bidi.session import UserPromptHandler
 from selenium.webdriver.common.proxy import Proxy
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.websocket_connection import WebSocketConnection
 
 
 class ClientWindowState:
@@ -111,7 +116,7 @@ class ClientWindowInfo:
         return self.active
 
     @classmethod
-    def from_dict(cls, data: dict) -> "ClientWindowInfo":
+    def from_dict(cls, data: dict[str, Any]) -> ClientWindowInfo:
         """Creates a ClientWindowInfo instance from a dictionary.
 
         Args:
@@ -170,7 +175,7 @@ class ClientWindowInfo:
 class Browser:
     """BiDi implementation of the browser module."""
 
-    def __init__(self, conn):
+    def __init__(self, conn: WebSocketConnection) -> None:
         self.conn = conn
 
     def create_user_context(
@@ -201,7 +206,7 @@ class Browser:
             params["unhandledPromptBehavior"] = unhandled_prompt_behavior.to_dict()
 
         result = self.conn.execute(command_builder("browser.createUserContext", params))
-        return result["userContext"]
+        return cast(str, result["userContext"])
 
     def get_user_contexts(self) -> list[str]:
         """Gets all user contexts.
@@ -240,7 +245,7 @@ class Browser:
         self,
         *,
         allowed: bool | None = None,
-        destination_folder: str | os.PathLike | None = None,
+        destination_folder: str | os.PathLike[str] | None = None,
         user_contexts: list[str] | None = None,
     ) -> None:
         """Set the download behavior for the browser or specific user contexts.
