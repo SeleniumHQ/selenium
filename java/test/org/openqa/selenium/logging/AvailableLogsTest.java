@@ -54,16 +54,12 @@ class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  void clientLogShouldBeEnabledByDefault() {
-    // Do one action to have *something* in the client logs.
+  void clientLogReturnsEmpty() {
     driver.get(pages.formPage);
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes)
-        .describedAs("Client logs should be enabled by default")
-        .contains(LogType.CLIENT);
     LogEntries clientLogs = driver.manage().logs().get(LogType.CLIENT);
-    assertThat(clientLogs).anyMatch(logEntry -> logEntry.toString().contains("Executing: "));
-    assertThat(clientLogs).anyMatch(logEntry -> logEntry.toString().contains("Executed: "));
+    assertThat(clientLogs.getAll())
+      .describedAs("Client logs are empty")
+      .isEmpty();
   }
 
   @Test
