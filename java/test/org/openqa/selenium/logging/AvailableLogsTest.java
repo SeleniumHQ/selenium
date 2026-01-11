@@ -57,9 +57,7 @@ class AvailableLogsTest extends JupiterTestBase {
   void clientLogReturnsEmpty() {
     driver.get(pages.formPage);
     LogEntries clientLogs = driver.manage().logs().get(LogType.CLIENT);
-    assertThat(clientLogs.getAll())
-      .describedAs("Client logs are empty")
-      .isEmpty();
+    assertThat(clientLogs.getAll()).describedAs("Client logs are empty").isEmpty();
   }
 
   @Test

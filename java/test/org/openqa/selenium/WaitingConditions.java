@@ -258,18 +258,12 @@ public class WaitingConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         String script =
-            "var e = arguments[0];"
-                + "var rect = e.getBoundingClientRect();"
-                + "var inViewport = rect.top < window.innerHeight && rect.bottom > 0"
-                + "  && rect.left < window.innerWidth && rect.right > 0;"
-                + "return {"
-                + "  inViewport: inViewport,"
-                + "  rect: {top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right},"
-                + "  scrollX: window.pageXOffset,"
-                + "  scrollY: window.pageYOffset,"
-                + "  viewportWidth: window.innerWidth,"
-                + "  viewportHeight: window.innerHeight"
-                + "};";
+            "var e = arguments[0];var rect = e.getBoundingClientRect();var inViewport = rect.top <"
+                + " window.innerHeight && rect.bottom > 0  && rect.left < window.innerWidth &&"
+                + " rect.right > 0;return {  inViewport: inViewport,  rect: {top: rect.top, bottom:"
+                + " rect.bottom, left: rect.left, right: rect.right},  scrollX: window.pageXOffset,"
+                + "  scrollY: window.pageYOffset,  viewportWidth: window.innerWidth, "
+                + " viewportHeight: window.innerHeight};";
 
         @SuppressWarnings("unchecked")
         Map<String, Object> result =
