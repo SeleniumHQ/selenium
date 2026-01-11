@@ -30,21 +30,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.8
           bundler-cache: true
           working-directory: rb
-      
+
       - name: Install RBS collection
         working-directory: rb
         run: bundle exec rbs collection install
-      
+
       - name: Run Steep type check
         working-directory: rb
         run: bundle exec rake steep 2>/dev/null || (bundle exec rake steep && exit 1)
@@ -57,17 +57,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby-version: 3.2.8
+          - ruby-version: 3.2.9
             os: ubuntu
-          - ruby-version: 3.2.8
+          - ruby-version: 3.2.9
             os: windows
-          - ruby-version: 3.2.8
+          - ruby-version: 3.2.9
             os: macos
           - ruby-version: 3.4.3
             os: ubuntu
-          - ruby-version: jruby-10.0.0.0
+          - ruby-version: 4.0.0
             os: ubuntu
-          - ruby-version: truffleruby-24.2.1
+          - ruby-version: jruby-10.0.2.0
+            os: ubuntu
+          - ruby-version: truffleruby-33.0.0
             os: ubuntu
     with:
       name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})

@@ -253,6 +253,7 @@ ruby.toolchain(
         "curl",
         "libyaml",
     ],
+    ruby_build_version = "20260110",
     version_file = "//:rb/.ruby-version",
 )
 ruby.bundle_fetch(
