@@ -299,7 +299,9 @@ js_library(
         f"https://msedgedriver.microsoft.com/LATEST_RELEASE_{major_version}_MACOS",
     )
     macos_version = r.data.decode("utf-16").strip()
-    mac = "https://msedgedriver.microsoft.com/%s/edgedriver_mac64_m1.zip" % macos_version
+    mac = (
+        "https://msedgedriver.microsoft.com/%s/edgedriver_mac64_m1.zip" % macos_version
+    )
     sha = calculate_hash(mac)
     content = (
         content
