@@ -124,6 +124,7 @@ class Service(ABC):
 
     def is_connectable(self) -> bool:
         """Check if the service is ready via the W3C WebDriver /status endpoint.
+
         This makes an HTTP request to the /status endpoint and verifies if it is ready to accept new sessions.
 
         Returns:

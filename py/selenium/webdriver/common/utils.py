@@ -147,7 +147,6 @@ def is_url_connectable(
     Returns:
         True if the service is ready to accept new sessions, False otherwise.
     """
-
     try:
         # Disable proxy for localhost connections
         proxy_handler = urllib.request.ProxyHandler({})
