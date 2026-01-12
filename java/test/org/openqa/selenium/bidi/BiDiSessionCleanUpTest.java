@@ -39,8 +39,8 @@ final class BiDiSessionCleanUpTest extends JupiterTestBase {
 
     BiDiSessionStatus status = biDi.getBidiSessionStatus();
     assertThat(status).isNotNull();
-    assertThat(status.isReady()).isTrue();
-    assertThat(status.getMessage()).isNotEmpty();
+    assertThat(status.isReady()).isFalse();
+    assertThat(status.getMessage()).containsPattern("(?i)already (connected|started)");
 
     localDriver.switchTo().newWindow(WindowType.WINDOW);
     localDriver.switchTo().newWindow(WindowType.TAB);
@@ -50,8 +50,8 @@ final class BiDiSessionCleanUpTest extends JupiterTestBase {
 
     BiDiSessionStatus statusAfterClosing = biDi.getBidiSessionStatus();
     assertThat(statusAfterClosing).isNotNull();
-    assertThat(statusAfterClosing.isReady()).isTrue();
-    assertThat(statusAfterClosing.getMessage()).isNotEmpty();
+    assertThat(statusAfterClosing.isReady()).isFalse();
+    assertThat(statusAfterClosing.getMessage()).containsPattern("(?i)already (connected|started)");
   }
 
   @Test
@@ -63,8 +63,8 @@ final class BiDiSessionCleanUpTest extends JupiterTestBase {
 
     BiDiSessionStatus status = biDi.getBidiSessionStatus();
     assertThat(status).isNotNull();
-    assertThat(status.isReady()).isTrue();
-    assertThat(status.getMessage()).isNotEmpty();
+    assertThat(status.isReady()).isFalse();
+    assertThat(status.getMessage()).containsPattern("(?i)already (connected|started)");
 
     localDriver.close();
 
