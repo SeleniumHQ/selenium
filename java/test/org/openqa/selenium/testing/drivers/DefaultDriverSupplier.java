@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.WebDriverInfo;
 import org.openqa.selenium.remote.http.ClientConfig;
 
 class DefaultDriverSupplier implements Supplier<WebDriver> {
