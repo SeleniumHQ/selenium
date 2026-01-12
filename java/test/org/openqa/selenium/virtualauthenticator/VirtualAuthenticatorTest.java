@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.net.MalformedURLException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -35,9 +36,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions.Protocol;
 
+@Ignore(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/2239")
 class VirtualAuthenticatorTest extends JupiterTestBase {
 
   /** A pkcs#8 encoded encrypted RSA private key as a base64url string. */

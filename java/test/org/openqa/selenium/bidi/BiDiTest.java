@@ -18,7 +18,6 @@
 package org.openqa.selenium.bidi;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -34,14 +33,12 @@ import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 class BiDiTest extends JupiterTestBase {
 
   String page;
 
   @Test
-  @NotYetImplemented(EDGE)
   @NeedsFreshDriver
   void canNavigateAndListenToErrors()
       throws ExecutionException, InterruptedException, TimeoutException {

@@ -1122,6 +1122,7 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if not hasattr(self, "_network") or self._network is None:
             assert self._websocket_connection is not None
             self._network = Network(self._websocket_connection)
@@ -1201,6 +1202,7 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if self._storage is None:
             self._storage = Storage(self._websocket_connection)
 
@@ -1267,6 +1269,7 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
+        assert self._websocket_connection is not None
         if self._emulation is None:
             self._emulation = Emulation(self._websocket_connection)
 

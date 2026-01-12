@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.webextension;
 
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,8 +27,11 @@ import java.util.Base64;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
+@Ignore(value = CHROME, reason = "BiDi webextension module only supported on Firefox")
+@Ignore(value = EDGE, reason = "BiDi webextension module only supported on Firefox")
 public class WebExtensionTest extends JupiterTestBase {
 
   private final Map<String, String> extensionData =

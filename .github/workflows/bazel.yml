@@ -130,8 +130,9 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Setup Bazel with caching
         if: inputs.caching
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.18.0
         with:
+          cache-save: ${{ github.ref_name == 'trunk' }}
           bazelisk-cache: true
           bazelrc: common --color=yes
           # Workaround for long path issues: https://github.com/bazelbuild/bazel/pull/22532

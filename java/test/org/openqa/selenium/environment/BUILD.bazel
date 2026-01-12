@@ -110,7 +110,6 @@ java_test_suite(
     jvm_flags = firefox["jvm_flags"],
     tags = [
         "firefox",
-        "selenium-remote",
     ] + firefox["tags"],
     deps = [
         ":environment",
