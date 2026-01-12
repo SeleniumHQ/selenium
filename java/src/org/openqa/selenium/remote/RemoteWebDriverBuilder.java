@@ -100,7 +100,6 @@ public class RemoteWebDriverBuilder {
   private URI remoteHost = null;
   private DriverService driverService;
   private Credentials credentials = null;
-  private boolean useCustomConfig;
   private Augmenter augmenter = new Augmenter();
 
   RemoteWebDriverBuilder() {
@@ -256,7 +255,6 @@ public class RemoteWebDriverBuilder {
     }
 
     this.clientConfig = config;
-    this.useCustomConfig = true;
 
     return this;
   }
@@ -359,22 +357,16 @@ public class RemoteWebDriverBuilder {
                                                         "Unable to create session with " + caps))))
             .findFirst();
 
-    if (first.isEmpty()) {
-      throw new SessionNotCreatedException(
-          String.format(
-              "Unable to find matching driver for capabilities%n  requestedCapabilities: %s%n "
-                  + " infos: %s",
-              requestedCapabilities, infos));
-    }
-
-    WebDriver localDriver = first.get().get();
-
-    if (localDriver != null && this.useCustomConfig) {
-      localDriver.quit();
-      throw new IllegalArgumentException("ClientConfig instances do not work for Local Drivers");
-    }
-
-    return localDriver;
+    Supplier<WebDriver> supplier =
+        first.orElseThrow(
+            () ->
+                new SessionNotCreatedException(
+                    String.format(
+                        "Unable to find matching driver for capabilities%n"
+                            + "  requestedCapabilities: %s%n "
+                            + "  infos: %s",
+                        requestedCapabilities, infos)));
+    return supplier.get();
   }
 
   /**
