@@ -112,7 +112,7 @@ public class ChromiumDriver extends RemoteWebDriver
       Capabilities capabilities,
       String capabilityKey,
       ClientConfig clientConfig) {
-    super(commandExecutor, capabilities);
+    super(commandExecutor, capabilities, clientConfig);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     networkConditions =
         new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());

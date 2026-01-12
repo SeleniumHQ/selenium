@@ -86,10 +86,11 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   }
 
   public InternetExplorerDriver(InternetExplorerOptions options) {
-    this(
-        InternetExplorerDriverService.createDefaultService(),
-        options,
-        ClientConfig.defaultConfig());
+    this(options, ClientConfig.defaultConfig());
+  }
+
+  public InternetExplorerDriver(InternetExplorerOptions options, ClientConfig clientConfig) {
+    this(InternetExplorerDriverService.createDefaultService(), options, clientConfig);
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {

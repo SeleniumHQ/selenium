@@ -45,7 +45,11 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeOptions options) {
-    this(new EdgeDriverService.Builder().build(), options);
+    this(options, ClientConfig.defaultConfig());
+  }
+
+  public EdgeDriver(EdgeOptions options, ClientConfig clientConfig) {
+    this(new EdgeDriverService.Builder().build(), options, clientConfig);
   }
 
   public EdgeDriver(EdgeDriverService service) {

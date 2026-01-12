@@ -65,6 +65,7 @@ import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.Browser;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverService;
 
 public class NodeOptions {
@@ -720,7 +721,7 @@ public class NodeOptions {
       }
 
       @Override
-      public Optional<WebDriver> createDriver(Capabilities capabilities)
+      public Optional<WebDriver> createDriver(Capabilities capabilities, ClientConfig clientConfig)
           throws SessionNotCreatedException {
         return Optional.empty();
       }

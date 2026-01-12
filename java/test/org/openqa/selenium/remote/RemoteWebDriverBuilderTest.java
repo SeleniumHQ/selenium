@@ -224,13 +224,17 @@ class RemoteWebDriverBuilderTest {
     URI uri = URI.create("http://localhost:7575");
     AtomicReference<URI> seen = new AtomicReference<>();
 
-    RemoteWebDriver.builder()
-        .oneOf(new FirefoxOptions())
-        .address(uri)
-        .connectingWith(on(config -> seen.set(config.baseUri())))
-        .build();
+    WebDriver webDriver =
+        RemoteWebDriver.builder()
+            .oneOf(new FirefoxOptions())
+            .address(uri)
+            .connectingWith(on(config -> seen.set(config.baseUri())))
+            .build();
 
     assertThat(seen).hasValue(uri);
+    assertThat(webDriver).isInstanceOf(RemoteWebDriver.class);
+    assertThat(((RemoteWebDriver) webDriver).capabilities.asMap())
+        .containsEntry("se:cheese", "primula");
   }
 
   @Test
@@ -294,29 +298,38 @@ class RemoteWebDriverBuilderTest {
 
     AtomicReference<URI> seen = new AtomicReference<>();
 
-    RemoteWebDriver.builder()
-        .address(uri.toString())
-        .oneOf(new FirefoxOptions())
-        .connectingWith(on(config -> seen.set(config.baseUri())))
-        .build();
+    WebDriver webDriver =
+        RemoteWebDriver.builder()
+            .address(uri.toString())
+            .oneOf(new FirefoxOptions())
+            .connectingWith(on(config -> seen.set(config.baseUri())))
+            .build();
 
     assertThat(seen).hasValue(uri);
+
+    ClientConfig actualConfig = ((RemoteWebDriver) webDriver).getClientConfig();
+    ClientConfig expectedConfig = ClientConfig.defaultConfig();
+    assertThat(actualConfig).usingRecursiveComparison().isEqualTo(expectedConfig);
   }
 
   @Test
   void shouldSetRemoteHostUriOnClientConfigIfSet() {
     URI uri = URI.create("http://localhost:6546");
-    ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
+    ClientConfig config =
+        ClientConfig.defaultConfig().baseUri(uri).readTimeout(Duration.ofSeconds(1111));
 
     AtomicReference<URI> seen = new AtomicReference<>();
 
-    RemoteWebDriver.builder()
-        .config(config)
-        .oneOf(new FirefoxOptions())
-        .connectingWith(on(c -> seen.set(c.baseUri())))
-        .build();
+    WebDriver webDriver =
+        RemoteWebDriver.builder()
+            .config(config)
+            .oneOf(new FirefoxOptions())
+            .connectingWith(on(c -> seen.set(c.baseUri())))
+            .build();
 
     assertThat(seen).hasValue(uri);
+    assertThat(webDriver).isInstanceOf(RemoteWebDriver.class);
+    assertThat(((RemoteWebDriver) webDriver).getClientConfig()).isEqualTo(config);
   }
 
   @Test
@@ -327,9 +340,10 @@ class RemoteWebDriverBuilderTest {
             .oneOf(new ImmutableCapabilities(BROWSER_NAME, FAKE_BROWSER))
             .config(customConfig);
 
-    WebDriver driver = builder.build();
+    WebDriver webDriver = builder.build();
 
-    assertThat(driver).isInstanceOf(FakeWebDriverInfo.FakeWebDriver.class);
+    assertThat(webDriver).isInstanceOf(FakeWebDriverInfo.FakeWebDriver.class);
+    assertThat(((RemoteWebDriver) webDriver).getClientConfig()).isEqualTo(customConfig);
   }
 
   @Test

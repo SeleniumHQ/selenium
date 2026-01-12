@@ -91,7 +91,11 @@ public class FirefoxDriver extends RemoteWebDriver
    * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
    */
   public FirefoxDriver(FirefoxOptions options) {
-    this(GeckoDriverService.createDefaultService(), options);
+    this(options, ClientConfig.defaultConfig());
+  }
+
+  public FirefoxDriver(FirefoxOptions options, ClientConfig clientConfig) {
+    this(GeckoDriverService.createDefaultService(), options, clientConfig);
   }
 
   /**
@@ -130,7 +134,7 @@ public class FirefoxDriver extends RemoteWebDriver
 
   private FirefoxDriver(
       FirefoxDriverCommandExecutor executor, FirefoxOptions options, ClientConfig clientConfig) {
-    super(executor, checkCapabilitiesAndProxy(options));
+    super(executor, checkCapabilitiesAndProxy(options), clientConfig);
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot =
         new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());

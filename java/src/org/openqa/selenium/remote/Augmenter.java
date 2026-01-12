@@ -316,5 +316,10 @@ public class Augmenter {
           "%s must be an interface, not a concrete class",
           interfaceClass);
     }
+
+    @Override
+    public String toString() {
+      return String.format("%s(%s)", getClass().getSimpleName(), interfaceClass.getSimpleName());
+    }
   }
 }

@@ -40,6 +40,7 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -83,8 +84,8 @@ import org.openqa.selenium.remote.service.DriverService;
  *
  * <p>If no call to {@link #withDriverService(DriverService)} or {@link #address(URI)} is made, the
  * builder will use {@link ServiceLoader} to find all instances of {@link WebDriverInfo} and will
- * call {@link WebDriverInfo#createDriver(Capabilities)} for the first supported set of
- * capabilities.
+ * call {@link WebDriverInfo#createDriver(Capabilities, ClientConfig)} for the first supported set
+ * of capabilities.
  */
 @Beta
 public class RemoteWebDriverBuilder {
@@ -328,7 +329,7 @@ public class RemoteWebDriverBuilder {
   }
 
   /** visible for testing only */
-  WebDriver getLocalDriver() {
+  @Nullable WebDriver getLocalDriver() {
     if (remoteHost != null || clientConfig.baseUri() != null || driverService != null) {
       return null;
     }
@@ -350,7 +351,7 @@ public class RemoteWebDriverBuilder {
                             info ->
                                 (Supplier<WebDriver>)
                                     () ->
-                                        info.createDriver(caps)
+                                        info.createDriver(caps, clientConfig)
                                             .orElseThrow(
                                                 () ->
                                                     new SessionNotCreatedException(
@@ -428,7 +429,7 @@ public class RemoteWebDriverBuilder {
     if (result.isRight()) {
       try {
         CommandExecutor executor = result.map(res -> createExecutor(handler, res));
-        return new RemoteWebDriver(executor, new ImmutableCapabilities());
+        return new RemoteWebDriver(executor, new ImmutableCapabilities(), clientConfig);
       } catch (Throwable t) {
         try (client) {
           throw t;

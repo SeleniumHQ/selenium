@@ -75,6 +75,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -193,7 +194,9 @@ public class OneShotNode extends Node {
       throw new IllegalStateException("Only expected one session at a time");
     }
 
-    Optional<WebDriver> driver = driverInfo.createDriver(sessionRequest.getDesiredCapabilities());
+    ClientConfig config = ClientConfig.defaultConfig(); // get config from sessionRequest?
+    Optional<WebDriver> driver =
+        driverInfo.createDriver(sessionRequest.getDesiredCapabilities(), config);
     if (driver.isEmpty()) {
       return Either.left(new WebDriverException("Unable to create a driver instance"));
     }
