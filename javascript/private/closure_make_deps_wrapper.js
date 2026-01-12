@@ -26,6 +26,14 @@
 
 const fs = require('fs');
 const path = require('path');
+
+// Pre-load minimatch before google-closure-deps to work around Windows symlink
+// issues in Bazel's runfiles tree. When using pnpm-style node_modules layout
+// with aspect_rules_js, transitive dependencies are linked via symlinks.
+// On Windows, these symlinks may not resolve correctly. By requiring minimatch
+// first, we populate Node's module cache so google-closure-deps can find it.
+require('minimatch');
+
 const closureMakeDeps = require('google-closure-deps').closureMakeDeps;
 
 async function main() {
