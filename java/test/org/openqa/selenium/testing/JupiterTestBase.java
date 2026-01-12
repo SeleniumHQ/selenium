@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -97,7 +98,14 @@ public abstract class JupiterTestBase {
   @AfterEach
   public void quitLocalDriver() {
     if (localDriver != null) {
-      localDriver.quit();
+      try {
+        localDriver.quit();
+      } catch (NoSuchSessionException e) {
+        // Driver already quit
+      } catch (RuntimeException e) {
+        LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
+        // fall through
+      }
     }
   }
 

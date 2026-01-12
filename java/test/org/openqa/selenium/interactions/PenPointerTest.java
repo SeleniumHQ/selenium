@@ -97,6 +97,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testDraggingElementWithPenMovesItToAnotherList() {
     performDragAndDropWithPen();
     WebElement dragInto = driver.findElement(By.id("sortable1"));
@@ -107,6 +108,7 @@ class PenPointerTest extends JupiterTestBase {
   // difference is that this test also verifies the correct events were fired.
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testDraggingElementWithPenFiresEvents() {
     performDragAndDropWithPen();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
@@ -125,6 +127,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
@@ -143,6 +146,7 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
@@ -172,6 +176,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @NotYetImplemented(FIREFOX)
   void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
     driver.switchTo().frame("source");
@@ -185,6 +190,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(pages.javascriptPage);
 
@@ -203,6 +209,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testHoverPersists() {
     driver.get(pages.javascriptPage);
     unfocusMenu();
@@ -233,6 +240,7 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   public void testMovingPenByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -250,6 +258,7 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   public void testMovingPenToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -265,6 +274,7 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   public void testMovingPenToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -280,6 +290,7 @@ class PenPointerTest extends JupiterTestBase {
   @NeedsFreshDriver({IE, CHROME, FIREFOX, EDGE})
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testMoveRelativeToBody() {
     try {
       driver.get(pages.mouseTrackerPage);
@@ -302,6 +313,7 @@ class PenPointerTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testMovePenByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -340,6 +352,7 @@ class PenPointerTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -368,6 +381,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
+  @NotYetImplemented(FIREFOX)
   public void setPointerEventProperties() {
     driver.get(pages.pointerActionsPage);
     long start = System.currentTimeMillis();

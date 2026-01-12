@@ -25,10 +25,8 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
@@ -36,16 +34,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
 class GetLogsTest extends JupiterTestBase {
-
-  private WebDriver localDriver;
-
-  @AfterEach
-  public void quitDriver() {
-    if (localDriver != null) {
-      localDriver.quit();
-      localDriver = null;
-    }
-  }
 
   @Test
   void logBufferShouldBeResetAfterEachGetLogCall() {

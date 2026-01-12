@@ -35,7 +35,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.net.PortProber;
@@ -53,7 +52,6 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 class NetworkInterceptorTest extends JupiterTestBase {
 
   private NettyAppServer appServer;
-  private WebDriver driver;
   private NetworkInterceptor interceptor;
 
   @BeforeAll
@@ -65,10 +63,11 @@ class NetworkInterceptorTest extends JupiterTestBase {
 
   @BeforeEach
   public void setup() {
-    driver = new WebDriverBuilder().get(Objects.requireNonNull(Browser.detect()).getCapabilities());
+    localDriver =
+        new WebDriverBuilder().get(Objects.requireNonNull(Browser.detect()).getCapabilities());
 
-    assumeThat(driver).isInstanceOf(HasDevTools.class);
-    assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
+    assumeThat(localDriver).isInstanceOf(HasDevTools.class);
+    assumeThat(isFirefoxVersionOlderThan(87, localDriver)).isFalse();
 
     Route route =
         Route.combine(
@@ -109,7 +108,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
 
   @AfterEach
   public void tearDown() {
-    safelyCall(() -> interceptor.close(), () -> driver.quit(), () -> appServer.stop());
+    safelyCall(() -> interceptor.close(), () -> appServer.stop());
   }
 
   @Test
@@ -117,11 +116,11 @@ class NetworkInterceptorTest extends JupiterTestBase {
   void shouldProceedAsNormalIfRequestIsNotIntercepted() {
     interceptor =
         new NetworkInterceptor(
-            driver, Route.matching(req -> false).to(() -> req -> new HttpResponse()));
+            localDriver, Route.matching(req -> false).to(() -> req -> new HttpResponse()));
 
-    driver.get(appServer.whereIs("/cheese"));
+    localDriver.get(appServer.whereIs("/cheese"));
 
-    String source = driver.getPageSource();
+    String source = localDriver.getPageSource();
 
     assertThat(source).contains("Hello, World!");
   }
@@ -131,7 +130,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   void shouldAllowTheInterceptorToChangeTheResponse() {
     interceptor =
         new NetworkInterceptor(
-            driver,
+            localDriver,
             Route.matching(req -> true)
                 .to(
                     () ->
@@ -141,9 +140,9 @@ class NetworkInterceptorTest extends JupiterTestBase {
                                 .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
                                 .setContent(utf8String("Creamy, delicious cheese!"))));
 
-    driver.get(appServer.whereIs("/cheese"));
+    localDriver.get(appServer.whereIs("/cheese"));
 
-    String source = driver.getPageSource();
+    String source = localDriver.getPageSource();
 
     assertThat(source).contains("delicious cheese!");
   }
@@ -153,7 +152,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   void shouldAllowTheInterceptorToChangeTheRequest() {
     interceptor =
         new NetworkInterceptor(
-            driver,
+            localDriver,
             (Filter)
                 next ->
                     req -> {
@@ -161,9 +160,9 @@ class NetworkInterceptorTest extends JupiterTestBase {
                       return next.execute(req);
                     });
 
-    driver.get(appServer.whereIs("/cheese"));
+    localDriver.get(appServer.whereIs("/cheese"));
 
-    String source = driver.getPageSource();
+    String source = localDriver.getPageSource();
 
     assertThat(source).contains("London");
   }
@@ -175,7 +174,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
 
     interceptor =
         new NetworkInterceptor(
-            driver,
+            localDriver,
             Route.matching(req -> true)
                 .to(
                     () ->
@@ -184,9 +183,9 @@ class NetworkInterceptorTest extends JupiterTestBase {
                           return NetworkInterceptor.PROCEED_WITH_REQUEST;
                         }));
 
-    driver.get(appServer.whereIs("/cheese"));
+    localDriver.get(appServer.whereIs("/cheese"));
 
-    String source = driver.getPageSource();
+    String source = localDriver.getPageSource();
 
     assertThat(seen).isTrue();
     assertThat(source).contains("Hello, World!");
@@ -197,7 +196,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   void shouldClearListenersWhenNetworkInterceptorIsClosed() {
     try (NetworkInterceptor interceptor =
         new NetworkInterceptor(
-            driver,
+            localDriver,
             Route.matching(req -> true)
                 .to(
                     () ->
@@ -205,16 +204,16 @@ class NetworkInterceptorTest extends JupiterTestBase {
                             new HttpResponse()
                                 .setStatus(HTTP_NOT_FOUND)
                                 .setContent(Contents.utf8String("Oh noes!"))))) {
-      driver.get(appServer.whereIs("/cheese"));
+      localDriver.get(appServer.whereIs("/cheese"));
 
-      String text = driver.findElement(By.tagName("body")).getText();
+      String text = localDriver.findElement(By.tagName("body")).getText();
 
       assertThat(text).contains("Oh noes!");
     }
 
     // Reload the page
-    driver.get(appServer.whereIs("/cheese"));
-    String text = driver.findElement(By.tagName("body")).getText();
+    localDriver.get(appServer.whereIs("/cheese"));
+    String text = localDriver.findElement(By.tagName("body")).getText();
     assertThat(text).contains("Hello, World!");
   }
 
@@ -223,7 +222,7 @@ class NetworkInterceptorTest extends JupiterTestBase {
   void shouldBeAbleToInterceptAResponse() {
     try (NetworkInterceptor networkInterceptor =
         new NetworkInterceptor(
-            driver,
+            localDriver,
             (Filter)
                 next ->
                     req -> {
@@ -233,10 +232,10 @@ class NetworkInterceptorTest extends JupiterTestBase {
                       return res;
                     })) {
 
-      driver.get(appServer.whereIs("/cheese"));
+      localDriver.get(appServer.whereIs("/cheese"));
     }
 
-    String body = driver.findElement(By.tagName("body")).getText();
+    String body = localDriver.findElement(By.tagName("body")).getText();
     assertThat(body).contains("Sausages");
   }
 
@@ -244,10 +243,10 @@ class NetworkInterceptorTest extends JupiterTestBase {
   @NoDriverBeforeTest
   void shouldHandleRedirects() {
     try (NetworkInterceptor networkInterceptor =
-        new NetworkInterceptor(driver, (Filter) next -> next)) {
-      driver.get(appServer.whereIs("/redirect"));
+        new NetworkInterceptor(localDriver, (Filter) next -> next)) {
+      localDriver.get(appServer.whereIs("/redirect"));
 
-      String body = driver.findElement(By.tagName("body")).getText();
+      String body = localDriver.findElement(By.tagName("body")).getText();
       assertThat(body).contains("Hello, World!");
     }
   }
@@ -256,9 +255,9 @@ class NetworkInterceptorTest extends JupiterTestBase {
   @NoDriverBeforeTest
   void shouldProceedAsNormalIfRequestResultInAnKnownErrorAndExceptionNotCaughtByFilter() {
     Filter filter = next -> next;
-    try (NetworkInterceptor ignored = new NetworkInterceptor(driver, filter)) {
+    try (NetworkInterceptor ignored = new NetworkInterceptor(localDriver, filter)) {
       assertThatExceptionOfType(WebDriverException.class)
-          .isThrownBy(() -> driver.get("http://localhost:" + PortProber.findFreePort()));
+          .isThrownBy(() -> localDriver.get("http://localhost:" + PortProber.findFreePort()));
     }
   }
 
@@ -276,9 +275,9 @@ class NetworkInterceptorTest extends JupiterTestBase {
                     .setContent(Contents.utf8String("Hello, World!"));
               }
             };
-    try (NetworkInterceptor ignored = new NetworkInterceptor(driver, filter)) {
-      driver.get("http://localhost:" + PortProber.findFreePort());
-      String body = driver.findElement(By.tagName("body")).getText();
+    try (NetworkInterceptor ignored = new NetworkInterceptor(localDriver, filter)) {
+      localDriver.get("http://localhost:" + PortProber.findFreePort());
+      String body = localDriver.findElement(By.tagName("body")).getText();
       assertThat(body).contains("Hello, World!");
     }
   }
