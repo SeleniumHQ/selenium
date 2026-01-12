@@ -299,7 +299,7 @@ js_library(
         f"https://msedgedriver.microsoft.com/LATEST_RELEASE_{major_version}_MACOS",
     )
     macos_version = r.data.decode("utf-16").strip()
-    mac = "https://msedgedriver.microsoft.com/%s/edgedriver_mac64.zip" % macos_version
+    mac = "https://msedgedriver.microsoft.com/%s/edgedriver_mac64_m1.zip" % macos_version
     sha = calculate_hash(mac)
     content = (
         content
@@ -358,7 +358,7 @@ js_library(
                 % (url, sha)
             )
 
-        if a["name"].endswith("-macos.tar.gz"):
+        if a["name"].endswith("-macos-aarch64.tar.gz"):
             url = a["browser_download_url"]
             sha = calculate_hash(url)
             content = (
