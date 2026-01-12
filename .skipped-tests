@@ -13,9 +13,5 @@
 -//java/test/org/openqa/selenium/grid/gridui:OverallGridTest
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
 -//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-chrome
--//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-chrome-remote
--//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-edge
--//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-edge-remote
--//java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest-remote
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
 -//java/test/org/openqa/selenium/remote:RemoteWebDriverScreenshotTest-remote

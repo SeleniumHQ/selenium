@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import java.util.Map;
 import java.util.Set;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
@@ -246,6 +247,45 @@ public class WaitingConditions {
       @Override
       public String toString() {
         return String.format("window with name \"%s\" to exist", windowName);
+      }
+    };
+  }
+
+  public static ExpectedCondition<Boolean> elementToBeInViewport(final WebElement element) {
+    return new ExpectedCondition<>() {
+      private Map<String, Object> viewportState;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        String script =
+            "var e = arguments[0];var rect = e.getBoundingClientRect();var inViewport = rect.top <"
+                + " window.innerHeight && rect.bottom > 0  && rect.left < window.innerWidth &&"
+                + " rect.right > 0;return {  inViewport: inViewport,  rect: {top: rect.top, bottom:"
+                + " rect.bottom, left: rect.left, right: rect.right},  scrollX: window.pageXOffset,"
+                + "  scrollY: window.pageYOffset,  viewportWidth: window.innerWidth, "
+                + " viewportHeight: window.innerHeight};";
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> result =
+            (Map<String, Object>) ((JavascriptExecutor) driver).executeScript(script, element);
+        viewportState = result;
+        return (Boolean) result.get("inViewport");
+      }
+
+      @Override
+      public String toString() {
+        if (viewportState == null) {
+          return "element to be in viewport";
+        }
+        return String.format(
+            "element to be in viewport, but was not. "
+                + "Element rect: %s, scrollX: %s, scrollY: %s, "
+                + "viewportWidth: %s, viewportHeight: %s",
+            viewportState.get("rect"),
+            viewportState.get("scrollX"),
+            viewportState.get("scrollY"),
+            viewportState.get("viewportWidth"),
+            viewportState.get("viewportHeight"));
       }
     };
   }

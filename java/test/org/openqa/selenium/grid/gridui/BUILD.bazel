@@ -1,13 +1,11 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "SINGLE_BROWSER", "java_selenium_test_suite")
 
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
     srcs = glob(["*.java"]),
-    browsers = [
-        "chrome",
-    ],
+    browsers = SINGLE_BROWSER,
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/grid",
