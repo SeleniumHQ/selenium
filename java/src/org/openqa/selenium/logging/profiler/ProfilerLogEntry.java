@@ -20,6 +20,13 @@ package org.openqa.selenium.logging.profiler;
 import java.util.logging.Level;
 import org.openqa.selenium.logging.LogEntry;
 
+/**
+ * A log entry for profiler events.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 public class ProfilerLogEntry extends LogEntry {
   public ProfilerLogEntry(EventType eventType, String message) {
     super(Level.INFO, System.currentTimeMillis(), message);

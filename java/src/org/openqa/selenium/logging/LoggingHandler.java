@@ -29,7 +29,11 @@ import java.util.logging.LogRecord;
  * <p>This handler queues up log records as they come, up to MAX_RECORDS (currently 1000) records.
  * If it reaches this capacity it will remove the older records from the queue before adding the
  * next one.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
  */
+@Deprecated(forRemoval = true)
 public class LoggingHandler extends Handler {
 
   private static final int MAX_RECORDS = 1000;
