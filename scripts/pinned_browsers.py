@@ -74,7 +74,7 @@ js_library(
     )
 """
 
-    url = [d["url"] for d in drivers if d["platform"] == "mac-x64"][0]
+    url = [d["url"] for d in drivers if d["platform"] == "mac-arm64"][0]
     sha = calculate_hash(url)
 
     content += f"""
@@ -82,7 +82,7 @@ js_library(
         name = "mac_{workspace_prefix}chromedriver",
         url = "{url}",
         sha256 = "{sha}",
-        strip_prefix = "chromedriver-mac-x64",
+        strip_prefix = "chromedriver-mac-arm64",
         build_file_content = \"\"\"
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -131,14 +131,14 @@ js_library(
     )
 """
 
-    url = [d["url"] for d in chrome_downloads if d["platform"] == "mac-x64"][0]
+    url = [d["url"] for d in chrome_downloads if d["platform"] == "mac-arm64"][0]
     sha = calculate_hash(url)  # Calculate SHA for Mac chrome
 
     content += f"""    http_archive(
         name = "mac_{workspace_prefix}chrome",
         url = "{url}",
         sha256 = "{sha}",
-        strip_prefix = "chrome-mac-x64",
+        strip_prefix = "chrome-mac-arm64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
             "mv 'Chrome.app/Contents/MacOS/Google Chrome for Testing' Chrome.app/Contents/MacOS/Chrome",
