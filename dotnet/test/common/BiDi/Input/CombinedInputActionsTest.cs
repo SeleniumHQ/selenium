@@ -32,20 +32,20 @@ internal class CombinedInputActionsTest : BiDiTestFixture
 
         await Task.Delay(3000);
 
-        await context.Input.PerformActionsAsync([new PointerActions {
+        await context.Input.PerformActionsAsync([new PointerActions("id0") {
             new MovePointer(300, 300),
             new DownPointer(0),
             new MovePointer(400, 400) { Duration = 2000, Width = 1, Twist = 1 },
             new UpPointer(0),
         }]);
 
-        await context.Input.PerformActionsAsync([new KeyActions {
+        await context.Input.PerformActionsAsync([new KeyActions("id1") {
             new DownKey('U'),
             new UpKey('U'),
             new Pause { Duration = 3000 }
         }]);
 
-        await context.Input.PerformActionsAsync([new PointerActions {
+        await context.Input.PerformActionsAsync([new PointerActions("id2") {
             new MovePointer(300, 300),
             new DownPointer(0),
             new MovePointer(400, 400) { Duration = 2000 },
@@ -63,7 +63,7 @@ internal class CombinedInputActionsTest : BiDiTestFixture
         var options = await context.LocateNodesAsync(new CssLocator("option"));
 
         await context.Input.PerformActionsAsync([
-            new PointerActions
+            new PointerActions("id0")
             {
                 new DownPointer(1),
                 new UpPointer(1),
