@@ -101,11 +101,22 @@ _HEADLESS_ARGS = select({
     "//conditions:default": [],
 })
 
+_BIDI_BROWSERS = ["chrome", "edge", "firefox"]
+
 def _is_test(src, test_suffixes):
     for suffix in test_suffixes:
         if src.endswith(suffix):
             return True
     return False
+
+def _browser_variant_name(test_name, browser):
+    return "%s-%s" % (test_name, browser)
+
+def _browser_variant_tags(browser, is_bidi):
+    tags = [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"]
+    if is_bidi:
+        tags.append("bidi")
+    return tags
 
 _NUNIT_ARGS = [
     "--workers=1",  # Bazel tests share a single driver instance; prevent NUnit parallelism
@@ -139,6 +150,8 @@ def dotnet_nunit_test_suite(
         suffix = src.rfind(".")
         test_name = src[:suffix]
 
+        is_bidi = "BiDi/" in src
+
         if not browsers or not len(browsers):
             csharp_test(
                 name = test_name,
@@ -146,14 +159,16 @@ def dotnet_nunit_test_suite(
                 deps = deps + extra_deps,
                 target_frameworks = target_frameworks,
                 data = data,
-                tags = tags,
+                tags = tags + (["bidi"] if is_bidi else []),
                 size = size,
                 **kwargs
             )
             tests.append(test_name)
         else:
             for browser in browsers:
-                browser_test_name = "%s-%s" % (test_name, browser)
+                if is_bidi and browser not in _BIDI_BROWSERS:
+                    continue
+                browser_test_name = _browser_variant_name(test_name, browser)
 
                 if browser == default_browser:
                     native.test_suite(
@@ -168,7 +183,7 @@ def dotnet_nunit_test_suite(
                     target_frameworks = target_frameworks,
                     args = _NUNIT_ARGS + _BROWSERS[browser]["args"] + _HEADLESS_ARGS,
                     data = data + _BROWSERS[browser]["data"],
-                    tags = tags + [browser] + COMMON_TAGS + _BROWSERS[browser]["tags"],
+                    tags = tags + _browser_variant_tags(browser, is_bidi),
                     size = size,
                     **kwargs
                 )
