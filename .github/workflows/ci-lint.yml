@@ -62,7 +62,7 @@ jobs:
       - name: "Upload changes"
         id: upload_changes
         if: failure() && steps.check_format.outputs.exit_code == '1' && github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: format-changes
           path: changes.patch
