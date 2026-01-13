@@ -26,8 +26,8 @@ module Selenium
         SHUTDOWN_SUPPORTED = false
         DRIVER_PATH_ENV_KEY = 'SE_GECKODRIVER'
 
-        def initialize(path: nil, port: nil, log: nil, args: nil)
-          args ||= []
+        def initialize(args: nil, **)
+          args = Array(args.dup)
           unless args.any? { |arg| arg.include?('--connect-existing') || arg.include?('--websocket-port') }
             args << '--websocket-port'
             args << '0'
@@ -40,8 +40,7 @@ module Selenium
             elsif (index = args.index { |arg| arg.start_with?('--log=') })
               args.delete_at(index)
             end
-            args << '--log'
-            args << 'debug'
+            args << '-v'
           end
 
           super

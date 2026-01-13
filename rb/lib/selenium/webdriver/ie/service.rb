@@ -26,10 +26,10 @@ module Selenium
         SHUTDOWN_SUPPORTED = true
         DRIVER_PATH_ENV_KEY = 'SE_IEDRIVER'
 
-        def initialize(path: nil, port: nil, log: nil, args: nil)
-          args ||= []
+        def initialize(args: nil, **)
           if WebDriver.logger.debug?
-            args.reject! { |arg| arg.start_with?('--log-level') }
+            args = Array(args.dup)
+            args.reject! { |arg| arg.include?('log-level') || arg.include?('silent') }
             args << '--log-level=DEBUG'
           end
 
