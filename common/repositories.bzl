@@ -106,8 +106,8 @@ js_library(
 
     http_archive(
         name = "mac_geckodriver",
-        url = "https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-macos.tar.gz",
-        sha256 = "b5627bfc29801b8752c9f1e7699018963c39c076aab6576dc14fcb1ce7a256f6",
+        url = "https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-macos-aarch64.tar.gz",
+        sha256 = "c045c8c0d859e6045defbb1c31b37ebeb3c942fc61daaf11e21fc634f2d71c52",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -123,10 +123,10 @@ js_library(
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/39c16afe-6ffe-42f8-aa82-4dd057fcf1d5/MicrosoftEdge-143.0.3650.96.pkg",
-        sha256 = "3fbb541e2761d0421073aa288c227738c6e133bf3fc4ecc3897495bf78ea4a19",
+        url = "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/154ecf14-a4ec-4db2-b067-dfadc9975380/MicrosoftEdge-143.0.3650.139.pkg",
+        sha256 = "b46a657b6edf2cfcb5eba490b63f10f039a711cd8e6e2f62e87819d9f207dae9",
         move = {
-            "MicrosoftEdge-143.0.3650.96.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-143.0.3650.139.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
@@ -182,8 +182,8 @@ js_library(
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.microsoft.com/143.0.3650.96/edgedriver_mac64.zip",
-        sha256 = "99c35f51ea4ece7cce9cd640899872c72442f712c811225be867c692f8131282",
+        url = "https://msedgedriver.microsoft.com/143.0.3650.139/edgedriver_mac64_m1.zip",
+        sha256 = "097fe109a758d201a0f59801e44e5cfdbce5cce8bd4054fd39534b5a2410206b",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -220,9 +220,9 @@ js_library(
     )
     http_archive(
         name = "mac_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/143.0.7499.192/mac-x64/chrome-mac-x64.zip",
-        sha256 = "8ee39f3f60dca99aef8bddef79c46fd135db5614987f9eed6cf25f3918910271",
-        strip_prefix = "chrome-mac-x64",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/143.0.7499.192/mac-arm64/chrome-mac-arm64.zip",
+        sha256 = "c90e053355e233a7eb668c1a202f83a7aff72a30f8786835750b86371cd4065e",
+        strip_prefix = "chrome-mac-arm64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
             "mv 'Chrome.app/Contents/MacOS/Google Chrome for Testing' Chrome.app/Contents/MacOS/Chrome",
@@ -259,9 +259,9 @@ js_library(
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/143.0.7499.192/mac-x64/chromedriver-mac-x64.zip",
-        sha256 = "2e104f71d6bc9e28cb475ae3f7cd5d4e475dde130cd28af7e23ab58c4dce4d74",
-        strip_prefix = "chromedriver-mac-x64",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/143.0.7499.192/mac-arm64/chromedriver-mac-arm64.zip",
+        sha256 = "30f79f97d3a3cd391b459694b718b4b90524e1f15e0aeb47d59d13fa9a7372ee",
+        strip_prefix = "chromedriver-mac-arm64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])
@@ -298,9 +298,9 @@ js_library(
     )
     http_archive(
         name = "mac_beta_chrome",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/144.0.7559.31/mac-x64/chrome-mac-x64.zip",
-        sha256 = "1fe7c08ea99c141ea3502c1b478ce7f9a687199b489e419f50ca8a248eacaad7",
-        strip_prefix = "chrome-mac-x64",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/144.0.7559.31/mac-arm64/chrome-mac-arm64.zip",
+        sha256 = "d2c6c15b3efbd9823ec5f7d712c09dfd5894a917c619263cc15f42f151677595",
+        strip_prefix = "chrome-mac-arm64",
         patch_cmds = [
             "mv 'Google Chrome for Testing.app' Chrome.app",
             "mv 'Chrome.app/Contents/MacOS/Google Chrome for Testing' Chrome.app/Contents/MacOS/Chrome",
@@ -337,9 +337,9 @@ js_library(
 
     http_archive(
         name = "mac_beta_chromedriver",
-        url = "https://storage.googleapis.com/chrome-for-testing-public/144.0.7559.31/mac-x64/chromedriver-mac-x64.zip",
-        sha256 = "eab345eaf4255430b62cebfb3f4728c3b8468f85a4a61f90eae550aa4dad6048",
-        strip_prefix = "chromedriver-mac-x64",
+        url = "https://storage.googleapis.com/chrome-for-testing-public/144.0.7559.31/mac-arm64/chromedriver-mac-arm64.zip",
+        sha256 = "be9525554cb863f6391c7b2bdbf95b95dc8b73cd6e42a692806b953d639255ff",
+        strip_prefix = "chromedriver-mac-arm64",
         build_file_content = """
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 package(default_visibility = ["//visibility:public"])

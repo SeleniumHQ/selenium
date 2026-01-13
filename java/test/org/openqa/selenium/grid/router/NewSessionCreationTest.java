@@ -68,7 +68,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
-import org.openqa.selenium.testing.drivers.Browser;
 
 class NewSessionCreationTest {
 
@@ -94,6 +93,8 @@ class NewSessionCreationTest {
 
   @Test
   void ensureJsCannotCreateANewSession() throws URISyntaxException {
+    Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
+
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue =
         new LocalNewSessionQueue(
@@ -136,11 +137,9 @@ class NewSessionCreationTest {
     Node node =
         LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
             .add(
-                Browser.detect().getCapabilities(),
+                capabilities,
                 new TestSessionFactory(
-                    (id, caps) ->
-                        new Session(
-                            id, uri, Browser.detect().getCapabilities(), caps, Instant.now())))
+                    (id, caps) -> new Session(id, uri, capabilities, caps, Instant.now())))
             .build();
     distributor.add(node);
 
@@ -153,9 +152,7 @@ class NewSessionCreationTest {
                   .addHeader("Origin", "localhost")
                   .setContent(
                       Contents.asJson(
-                          Map.of(
-                              "capabilities",
-                              Map.of("alwaysMatch", Browser.detect().getCapabilities())))));
+                          Map.of("capabilities", Map.of("alwaysMatch", capabilities)))));
 
       assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
 
@@ -166,9 +163,7 @@ class NewSessionCreationTest {
                   .addHeader("Content-Type", JSON_UTF_8)
                   .setContent(
                       Contents.asJson(
-                          Map.of(
-                              "capabilities",
-                              Map.of("alwaysMatch", Browser.detect().getCapabilities())))));
+                          Map.of("capabilities", Map.of("alwaysMatch", capabilities)))));
 
       assertThat(res.isSuccessful()).isTrue();
     }

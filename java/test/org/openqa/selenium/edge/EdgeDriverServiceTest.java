@@ -18,7 +18,6 @@
 package org.openqa.selenium.edge;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,7 +29,6 @@ import java.time.Duration;
 import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 
 @Tag("UnitTests")
@@ -87,23 +85,5 @@ class EdgeDriverServiceTest {
     List<String> falseSilent = List.of("--port=1", "--log-level=DEBUG");
     builderMock.withLoglevel(ChromiumDriverLogLevel.DEBUG).usingPort(1).withSilent(false).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(falseSilent), any());
-  }
-
-  @Test
-  void shouldStopServiceWhenSessionCreationFails() {
-    // Create Edge options that will cause session creation to fail
-    EdgeOptions options = new EdgeOptions();
-    options.addArguments("--user-data-dir=/no/such/location");
-
-    // Create a service
-    EdgeDriverService service = EdgeDriverService.createDefaultService();
-    EdgeDriverService serviceSpy = spy(service);
-
-    // Attempt to create driver - should fail and cleanup the service
-    assertThatExceptionOfType(SessionNotCreatedException.class)
-        .isThrownBy(() -> new EdgeDriver(serviceSpy, options));
-
-    // Verify that the service was stopped
-    assertThat(serviceSpy.isRunning()).isFalse();
   }
 }

@@ -78,6 +78,7 @@ jobs:
     with:
       name: Integration Tests Remote
       browser: yes
+      rerun-with-debug: true
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote
 
@@ -97,5 +98,6 @@ jobs:
       name: Integration Tests (${{ matrix.browser }})
       browser: ${{ matrix.browser }}
       os: ${{ matrix.os }}
+      rerun-with-debug: true
       run: |
         bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-${{ matrix.browser }}

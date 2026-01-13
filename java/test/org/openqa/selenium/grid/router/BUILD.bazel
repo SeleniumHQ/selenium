@@ -10,7 +10,6 @@ STRESS_TESTS = [
 LARGE_TESTS = [
     "DistributedTest.java",
     "DistributedCdpTest.java",
-    "NewSessionCreationTest.java",
     "RemoteWebDriverDownloadTest.java",
 ]
 
