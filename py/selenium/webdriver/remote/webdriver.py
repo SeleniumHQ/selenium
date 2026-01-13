@@ -1097,9 +1097,8 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
-        assert self._websocket_connection is not None
         if not self._script:
-            self._script = Script(self._websocket_connection, self)
+            self._script = Script(cast(WebSocketConnection, self._websocket_connection), self)
 
         return self._script
 
@@ -1123,10 +1122,8 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
-        assert self._websocket_connection is not None
         if not hasattr(self, "_network") or self._network is None:
-            assert self._websocket_connection is not None
-            self._network = Network(self._websocket_connection)
+            self._network = Network(cast(WebSocketConnection, self._websocket_connection))
 
         return self._network
 
@@ -1145,10 +1142,9 @@ class WebDriver(BaseWebDriver):
         """
         if not self._websocket_connection:
             self._start_bidi()
-            assert self._websocket_connection is not None
 
         if self._browser is None:
-            self._browser = Browser(self._websocket_connection)
+            self._browser = Browser(cast(WebSocketConnection, self._websocket_connection))
 
         return self._browser
 
@@ -1157,10 +1153,9 @@ class WebDriver(BaseWebDriver):
         """Returns the BiDi session object for the current WebDriver session."""
         if not self._websocket_connection:
             self._start_bidi()
-            assert self._websocket_connection is not None
 
         if self._bidi_session is None:
-            self._bidi_session = Session(self._websocket_connection)
+            self._bidi_session = Session(cast(WebSocketConnection, self._websocket_connection))
 
         return self._bidi_session
 
@@ -1205,9 +1200,8 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
-        assert self._websocket_connection is not None
         if self._storage is None:
-            self._storage = Storage(self._websocket_connection)
+            self._storage = Storage(cast(WebSocketConnection, self._websocket_connection))
 
         return self._storage
 
@@ -1272,9 +1266,8 @@ class WebDriver(BaseWebDriver):
         if not self._websocket_connection:
             self._start_bidi()
 
-        assert self._websocket_connection is not None
         if self._emulation is None:
-            self._emulation = Emulation(self._websocket_connection)
+            self._emulation = Emulation(cast(WebSocketConnection, self._websocket_connection))
 
         return self._emulation
 
@@ -1296,10 +1289,9 @@ class WebDriver(BaseWebDriver):
         """
         if not self._websocket_connection:
             self._start_bidi()
-            assert self._websocket_connection is not None
 
         if self._input is None:
-            self._input = Input(self._websocket_connection)
+            self._input = Input(cast(WebSocketConnection, self._websocket_connection))
 
         return self._input
 
