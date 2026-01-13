@@ -18,7 +18,6 @@
 package org.openqa.selenium.chrome;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -88,14 +87,14 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  void builderWithClientConfigThrowsException() {
+  void canUseCustomClientConfigWithLocalWebDriver() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder =
         ChromeDriver.builder().oneOf(CHROME.getCapabilities()).config(clientConfig);
 
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(builder::build)
-        .withMessage("ClientConfig instances do not work for Local Drivers");
+    localDriver = builder.build();
+    assertThat(localDriver).isInstanceOf(ChromeDriver.class);
+    assertThat(localDriver).extracting("clientConfig").isEqualTo(clientConfig);
   }
 
   @Test
