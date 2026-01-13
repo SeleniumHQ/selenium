@@ -17,18 +17,20 @@
 
 package org.openqa.selenium.internal;
 
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 
 /** Used to provide information about whether Selenium is running under debug mode. */
 public class Debug {
 
   private static final boolean IS_DEBUG;
+  private static boolean loggerConfigured = false;
 
   static {
-    boolean simpleProperty = Boolean.getBoolean("selenium.debug");
-    boolean longerProperty = Boolean.getBoolean("selenium.webdriver.verbose");
-
-    IS_DEBUG = simpleProperty || longerProperty || isDebugAll();
+    IS_DEBUG =
+        Boolean.getBoolean("selenium.debug") || Boolean.getBoolean("selenium.webdriver.verbose");
   }
 
   private Debug() {
@@ -45,5 +47,26 @@ public class Debug {
 
   public static boolean isDebugAll() {
     return Boolean.parseBoolean(System.getenv("SE_DEBUG"));
+  }
+
+  public static void configureLogger() {
+    if (!isDebugAll() || loggerConfigured) {
+      return;
+    }
+
+    Logger logger = Logger.getLogger("org.openqa.selenium");
+    logger.setLevel(Level.FINE);
+
+    Handler handler =
+        new StreamHandler(System.err, new DebugLogFormatter()) {
+          @Override
+          public synchronized void publish(java.util.logging.LogRecord record) {
+            super.publish(record);
+            flush();
+          }
+        };
+    handler.setLevel(Level.FINE);
+    logger.addHandler(handler);
+    loggerConfigured = true;
   }
 }
