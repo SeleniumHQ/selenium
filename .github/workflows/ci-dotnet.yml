@@ -63,6 +63,7 @@ jobs:
       name: Browser Tests - ${{ matrix.browser }} (${{ matrix.protocol }}), ${{ matrix.os }}
       os: ${{ matrix.os }}
       browser: ${{ matrix.browser }}
+      rerun-with-debug: true
       run: >
         bazel test
         --keep_going

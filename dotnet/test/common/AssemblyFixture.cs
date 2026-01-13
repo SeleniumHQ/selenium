@@ -34,8 +34,6 @@ public class AssemblyFixture
     [OneTimeSetUp]
     public async Task RunBeforeAnyTestAsync()
     {
-        Internal.Logging.Log.SetLevel(Internal.Logging.LogEventLevel.Trace);
-
         await EnvironmentManager.Instance.WebServer.StartAsync();
         if (EnvironmentManager.Instance.Browser == Browser.Remote)
         {
