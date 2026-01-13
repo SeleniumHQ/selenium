@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.internal;
 
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 /** Used to provide information about whether Selenium is running under debug mode. */
@@ -57,14 +57,7 @@ public class Debug {
     Logger logger = Logger.getLogger("org.openqa.selenium");
     logger.setLevel(Level.FINE);
 
-    Handler handler =
-        new StreamHandler(System.err, new DebugLogFormatter()) {
-          @Override
-          public synchronized void publish(java.util.logging.LogRecord record) {
-            super.publish(record);
-            flush();
-          }
-        };
+    StreamHandler handler = new StreamHandler(System.err, new SimpleFormatter());
     handler.setLevel(Level.FINE);
     logger.addHandler(handler);
     loggerConfigured = true;
