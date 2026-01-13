@@ -25,6 +25,16 @@ module Selenium
         EXECUTABLE = 'IEDriverServer'
         SHUTDOWN_SUPPORTED = true
         DRIVER_PATH_ENV_KEY = 'SE_IEDRIVER'
+
+        def initialize(path: nil, port: nil, log: nil, args: nil)
+          args ||= []
+          if WebDriver.logger.debug?
+            args.reject! { |arg| arg.start_with?('--log-level') }
+            args << '--log-level=DEBUG'
+          end
+
+          super
+        end
       end # Server
     end # IE
   end # WebDriver

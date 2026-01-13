@@ -32,6 +32,18 @@ module Selenium
             args << '--websocket-port'
             args << '0'
           end
+
+          if WebDriver.logger.debug?
+            if (index = args.index('--log'))
+              args.delete_at(index) # delete '--log'
+              args.delete_at(index) # delete the value (now at same index)
+            elsif (index = args.index { |arg| arg.start_with?('--log=') })
+              args.delete_at(index)
+            end
+            args << '--log'
+            args << 'debug'
+          end
+
           super
         end
       end # Service
