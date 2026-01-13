@@ -142,7 +142,7 @@ jobs:
           external-cache: |
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: 'rb/.ruby-version'
+              rules_ruby++ruby+ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
               "+pin_browsers_extension+linux_beta_chrome": false
               "+pin_browsers_extension+linux_beta_chromedriver": true
               "+pin_browsers_extension+linux_beta_firefox": false
@@ -161,7 +161,7 @@ jobs:
               "+pin_browsers_extension+mac_edgedriver": false
               "+pin_browsers_extension+mac_firefox": false
               "+pin_browsers_extension+mac_geckodriver": false
-          repository-cache: false
+          repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
         uses: bazel-contrib/setup-bazel@0.15.0
