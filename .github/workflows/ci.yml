@@ -52,12 +52,20 @@ jobs:
     name: .NET
     needs: check
     uses: ./.github/workflows/ci-dotnet.yml
+    with:
+      targets: ${{ needs.check.outputs.targets }}
+      run-full-suite: >-
+        ${{
+          github.event_name == 'schedule' ||
+          github.event_name == 'workflow_dispatch' ||
+          github.event_name == 'workflow_call' ||
+          contains(github.event.pull_request.title, '[dotnet]')
+        }}
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
       contains(needs.check.outputs.targets, '//dotnet') ||
-      contains(join(github.event.commits.*.message), '[dotnet]') ||
       contains(github.event.pull_request.title, '[dotnet]')
 
   java:
