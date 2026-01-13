@@ -30,19 +30,21 @@ import org.openqa.selenium.WebDriverInfo;
 @AutoService(WebDriverInfo.class)
 public class FakeWebDriverInfo implements WebDriverInfo {
 
+  static final String FAKE_BROWSER = "selenium-test";
+
   @Override
   public String getDisplayName() {
-    return "selenium-test";
+    return FAKE_BROWSER;
   }
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, "selenium-test");
+    return new ImmutableCapabilities(BROWSER_NAME, FAKE_BROWSER);
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return true;
+    return FAKE_BROWSER.equals(capabilities.getCapability(BROWSER_NAME));
   }
 
   @Override
