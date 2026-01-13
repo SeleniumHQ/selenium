@@ -55,7 +55,6 @@ class ChromiumService(service.Service):
             self.log_output = log_output
 
         if os.environ.get("SE_DEBUG"):
-            # --verbose, --silent, and --log-level are mutually exclusive
             self._service_args = [arg for arg in self._service_args if "--log-level" not in arg and arg != "--silent"]
             self._service_args.append("--verbose")
             self.log_output = sys.stderr
