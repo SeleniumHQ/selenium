@@ -27,9 +27,8 @@ public class Debug {
   static {
     boolean simpleProperty = Boolean.getBoolean("selenium.debug");
     boolean longerProperty = Boolean.getBoolean("selenium.webdriver.verbose");
-    boolean envVar = Boolean.parseBoolean(System.getenv("SE_DEBUG"));
 
-    IS_DEBUG = simpleProperty || longerProperty || envVar;
+    IS_DEBUG = simpleProperty || longerProperty || isDebugAll();
   }
 
   private Debug() {
@@ -42,5 +41,9 @@ public class Debug {
 
   public static Level getDebugLogLevel() {
     return isDebugging() ? Level.INFO : Level.FINE;
+  }
+
+  public static boolean isDebugAll() {
+    return Boolean.parseBoolean(System.getenv("SE_DEBUG"));
   }
 }
