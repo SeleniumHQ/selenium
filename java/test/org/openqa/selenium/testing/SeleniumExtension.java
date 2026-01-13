@@ -58,6 +58,7 @@ public class SeleniumExtension
   private static final ThreadLocal<SeleniumExtension.Instances> instances = new ThreadLocal<>();
 
   private static final Logger LOG = Logger.getLogger(SeleniumExtension.class.getName());
+  protected static final ThreadLocal<String> testName = new ThreadLocal<>();
 
   private final Duration regularWait;
 
@@ -88,6 +89,7 @@ public class SeleniumExtension
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
     nullDriver = false;
+    testName.set(displayName(context));
 
     // ManageDriverRule.starting
     Browser current = Objects.requireNonNull(Browser.detect());
@@ -134,6 +136,8 @@ public class SeleniumExtension
 
   @Override
   public void afterEach(ExtensionContext context) throws Exception {
+    testName.remove();
+
     // SwitchToTopRule
     SwitchToTopRule switchToTopRule = new SwitchToTopRule(context);
     switchToTopRule.apply();
@@ -314,6 +318,10 @@ public class SeleniumExtension
     }
 
     instances.remove();
+  }
+
+  public String currentTest() {
+    return testName.get();
   }
 
   private static class Instances {

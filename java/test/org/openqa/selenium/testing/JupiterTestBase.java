@@ -90,7 +90,7 @@ public abstract class JupiterTestBase {
 
     if (driver != null) {
       driver.get("about:blank");
-      driver.get(pages.blankPage);
+      driver.get(pages.blankPage + "?test=" + seleniumExtension.currentTest());
       driver.manage().deleteAllCookies();
     }
   }
