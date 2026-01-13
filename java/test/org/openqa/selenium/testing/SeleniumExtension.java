@@ -39,6 +39,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -301,11 +302,15 @@ public class SeleniumExtension
       return;
     }
 
-    try {
-      current.driver.quit();
-    } catch (RuntimeException e) {
-      LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
-      // fall through
+    if (current.driver != null) {
+      try {
+        current.driver.quit();
+      } catch (NoSuchSessionException e) {
+        // Driver already quit
+      } catch (RuntimeException e) {
+        LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
+        // fall through
+      }
     }
 
     instances.remove();

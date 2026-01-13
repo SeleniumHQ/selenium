@@ -19,9 +19,11 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.HasDownloads.DownloadedFile;
 
+@Tag("UnitTests")
 class DownloadedFileTest {
   @Test
   void hasExtension() {

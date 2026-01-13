@@ -56,6 +56,7 @@ java_selenium_test_suite(
     srcs = LARGE_TESTS,
     browsers = [
         "firefox",
+        "firefox-beta",
     ],
     data = [
         "//common/extensions",
@@ -86,6 +87,7 @@ java_selenium_test_suite(
     srcs = REMOTE_TESTS,
     browsers = [
         "firefox",
+        "firefox-beta",
     ],
     data = [
         "//common/extensions",

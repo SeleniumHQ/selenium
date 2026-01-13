@@ -131,6 +131,8 @@ public class RemoteWebDriver
   private JsonToWebElementConverter converter;
 
   private Logs remoteLogs;
+
+  @SuppressWarnings("deprecation")
   private LocalLogs localLogs;
 
   private Script remoteScript;
@@ -167,6 +169,7 @@ public class RemoteWebDriver
         Require.nonNull("Capabilities", capabilities));
   }
 
+  @SuppressWarnings("deprecation")
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
     this.executor = Require.nonNull("Command executor", executor);
     this.capabilities = init(capabilities);
@@ -219,10 +222,18 @@ public class RemoteWebDriver
   private Capabilities init(Capabilities capabilities) {
     capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
-    LOG.addHandler(LoggingHandler.getInstance());
-
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
+
+    initLocalLogs();
+    remoteLogs = new RemoteLogs(executeMethod);
+
+    return capabilities;
+  }
+
+  @SuppressWarnings("deprecation")
+  private void initLocalLogs() {
+    LOG.addHandler(LoggingHandler.getInstance());
 
     Set<String> logTypesToIgnore = Set.of();
 
@@ -230,9 +241,6 @@ public class RemoteWebDriver
     LocalLogs clientLogs =
         LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(), logTypesToIgnore);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
-    remoteLogs = new RemoteLogs(executeMethod, localLogs);
-
-    return capabilities;
   }
 
   public SessionId getSessionId() {

@@ -18,15 +18,12 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.Set;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
@@ -34,16 +31,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
 class AvailableLogsTest extends JupiterTestBase {
-
-  private WebDriver localDriver;
-
-  @AfterEach
-  public void quitDriver() {
-    if (localDriver != null) {
-      localDriver.quit();
-      localDriver = null;
-    }
-  }
 
   @Test
   void browserLogShouldBeEnabledByDefault() {
@@ -54,16 +41,13 @@ class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  void clientLogShouldBeEnabledByDefault() {
-    // Do one action to have *something* in the client logs.
+  @SuppressWarnings("deprecation")
+  void clientLogIsDeprecatedAndReturnsEmpty() {
     driver.get(pages.formPage);
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes)
-        .describedAs("Client logs should be enabled by default")
-        .contains(LogType.CLIENT);
     LogEntries clientLogs = driver.manage().logs().get(LogType.CLIENT);
-    assertThat(clientLogs).anyMatch(logEntry -> logEntry.toString().contains("Executing: "));
-    assertThat(clientLogs).anyMatch(logEntry -> logEntry.toString().contains("Executed: "));
+    assertThat(clientLogs.getAll())
+        .describedAs("Client logs should be empty (deprecated)")
+        .isEmpty();
   }
 
   @Test
@@ -75,20 +59,22 @@ class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  void profilerLogShouldBeDisabledByDefault() {
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes.contains(LogType.PROFILER))
-        .describedAs("Profiler logs should not be enabled by default")
-        .isFalse();
+  @SuppressWarnings("deprecation")
+  void profilerLogIsDeprecatedAndReturnsEmpty() {
+    // PROFILER log type is deprecated and no longer functional
+    LogEntries profilerLogs = driver.manage().logs().get(LogType.PROFILER);
+    assertThat(profilerLogs.getAll())
+        .describedAs("Profiler logs should be empty (deprecated)")
+        .isEmpty();
   }
 
   @Test
-  void serverLogShouldBeEnabledByDefaultOnRemote() {
-    assumeTrue(Boolean.getBoolean("selenium.browser.remote"));
-
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes)
-        .describedAs("Server logs should be enabled by default")
-        .contains(LogType.SERVER);
+  @SuppressWarnings("deprecation")
+  void serverLogIsDeprecatedAndReturnsEmpty() {
+    // SERVER log type is deprecated - Grid no longer supports it
+    LogEntries serverLogs = driver.manage().logs().get(LogType.SERVER);
+    assertThat(serverLogs.getAll())
+        .describedAs("Server logs should be empty (deprecated)")
+        .isEmpty();
   }
 }
