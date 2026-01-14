@@ -18,7 +18,6 @@
 // </copyright>
 
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Session;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.Session;
@@ -33,6 +32,4 @@ internal class SessionTest : BiDiTestFixture
         Assert.That(status, Is.Not.Null);
         Assert.That(status.Message, Is.Not.Empty);
     }
-
-    
 }
