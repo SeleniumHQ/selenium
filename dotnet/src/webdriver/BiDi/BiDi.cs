@@ -60,11 +60,6 @@ public sealed class BiDi : IAsyncDisposable
 
     public Emulation.EmulationModule Emulation => AsModule<Emulation.EmulationModule>();
 
-    public Task<Session.StatusResult> StatusAsync()
-    {
-        return SessionModule.StatusAsync();
-    }
-
     public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
     {
         var bidi = new BiDi(url);
@@ -72,6 +67,16 @@ public sealed class BiDi : IAsyncDisposable
         await bidi.Broker.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
 
         return bidi;
+    }
+
+    public Task<Session.StatusResult> StatusAsync(Session.StatusOptions? options = null)
+    {
+        return SessionModule.StatusAsync(options);
+    }
+
+    public Task<Session.NewResult> NewAsync(Session.CapabilitiesRequest capabilities, Session.NewOptions? options = null)
+    {
+        return SessionModule.NewAsync(capabilities, options);
     }
 
     public Task EndAsync(Session.EndOptions? options = null)
