@@ -58,7 +58,9 @@ class Service(service.Service):
             self._service_args.append(f"--log-level={log_level}")
 
         if os.environ.get("SE_DEBUG"):
-            self._service_args = [arg for arg in self._service_args if "--log-level" not in arg]
+            self._service_args = [
+                arg for arg in self._service_args if not any(x in arg for x in ("log-level", "log-file"))
+            ]
             self._service_args.append("--log-level=DEBUG")
             log_output = sys.stderr
 
