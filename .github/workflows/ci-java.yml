@@ -2,79 +2,68 @@ name: CI - Java
 
 on:
   workflow_call:
+    inputs:
+      targets:
+        required: false
+        type: string
+        default: ''
+      run-full-suite:
+        required: false
+        type: boolean
+        default: true
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  browser-tests-windows:
-    name: Browser Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows
-    with:
-      name: Browser Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
-      rerun-with-debug: true
-      run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
-        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
-        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-        //java/test/org/openqa/selenium/devtools:NetworkInterceptorRestTest
+  filter-targets:
+    name: Filter Targets
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.filter.outputs.targets }}
+    steps:
+      - name: Filter Java targets
+        id: filter
+        shell: bash
+        run: |
+          targets="${{ inputs.targets }}"
+          filtered=()
 
-  browser-tests-macos:
-    name: Browser Tests
-    uses: ./.github/workflows/bazel.yml
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos
-    with:
-      name: Browser Tests (chrome, ${{ matrix.os }})
-      os: ${{ matrix.os }}
-      browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
-      rerun-with-debug: true
-      run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
-        //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
-        //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
-        //java/test/org/openqa/selenium/remote:RemoteWebDriverBuilderTest
-        //java/test/org/openqa/selenium/grid/router:RemoteWebDriverDownloadTest
+          for t in $targets; do
+            [[ "$t" == //java/* ]] && filtered+=("$t")
+          done
 
-  remote-tests:
-    name: Remote Tests
+          if [ ${#filtered[@]} -eq 0 ]; then
+            echo "targets=//java/..." >> "$GITHUB_OUTPUT"
+          else
+            echo "targets=${filtered[*]}" >> "$GITHUB_OUTPUT"
+          fi
+
+  browser-tests:
+    name: Browser Tests
+    needs: filter-targets
     uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: macos
+        os: [windows, macos]
+        browser: [chrome, firefox-beta, edge]
+        run_type: [driver, grid]
     with:
-      name: Remote Tests (chrome, ${{ matrix.os }})
+      name: Browser Tests (${{ matrix.os }} - ${{ matrix.browser }} - ${{ matrix.run_type }})
       os: ${{ matrix.os }}
-      browser: chrome
-      # rules_jvm_external is not fully hermetic
-      # https://github.com/bazelbuild/rules_jvm_external/issues/1046
-      java-version: 17
+      browser: ${{ matrix.browser }}
       rerun-with-debug: true
       run: >
-        bazel test --flaky_test_attempts 2
-        //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
+        bazel test
+        --keep_going
+        --build_tests_only
+        --flaky_test_attempts 2
+        --local_test_jobs 1
+        --test_size_filters=large
+        --test_tag_filters="${{ matrix.run_type == 'grid' && format('{0}-remote', matrix.browser) || format('{0},-remote', matrix.browser) }}"
+        --pin_browsers=false
+        --test_env=SE_FORCE_BROWSER_DOWNLOAD=true
+        --test_env=SE_SKIP_DRIVER_IN_PATH=true
+        ${{ needs.filter-targets.outputs.targets }}

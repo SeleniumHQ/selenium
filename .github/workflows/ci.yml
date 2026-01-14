@@ -64,12 +64,20 @@ jobs:
     name: Java
     needs: check
     uses: ./.github/workflows/ci-java.yml
+    with:
+      targets: ${{ needs.check.outputs.targets }}
+      run-full-suite: >-
+        ${{
+          github.event_name == 'schedule' ||
+          github.event_name == 'workflow_dispatch' ||
+          github.event_name == 'workflow_call' ||
+          contains(github.event.pull_request.title, '[java]')
+        }}
     if: >
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' ||
       contains(needs.check.outputs.targets, '//java') ||
-      contains(join(github.event.commits.*.message), '[java]') ||
       contains(github.event.pull_request.title, '[java]')
 
   python:

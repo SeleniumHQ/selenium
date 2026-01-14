@@ -132,7 +132,7 @@ def selenium_test(name, test_class, size = "medium", browsers = DEFAULT_BROWSERS
                     "-Dselenium.browser.remote=true",
                 ],
                 # No need to lint remote tests as the code for non-remote is the same and they get linted
-                tags = BROWSERS[browser]["tags"] + tags + ["remote-browser", "no-lint"],
+                tags = BROWSERS[browser]["tags"] + tags + ["remote", "%s-remote" % browser, "no-lint"],
                 data = BROWSERS[browser]["data"] + data + [
                     "@selenium//java/src/org/openqa/selenium/grid:selenium_server",
                 ],
