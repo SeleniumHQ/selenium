@@ -52,7 +52,7 @@ def test_should_switch_focus_to_anew_window_when_it_is_opened_and_not_stop_futur
     handles = driver.window_handles
     handles.remove(current)
     driver.switch_to.window(handles[0])
-    assert driver.title == "We Arrive Here"
+    WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
     pages.load("iframes.html")
     handle = driver.current_window_handle
