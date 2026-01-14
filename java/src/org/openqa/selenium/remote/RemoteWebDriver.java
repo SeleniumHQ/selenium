@@ -114,6 +114,10 @@ public class RemoteWebDriver
         PrintsPage,
         TakesScreenshot {
 
+  static {
+    org.openqa.selenium.internal.Debug.configureLogger();
+  }
+
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
 
   /** Boolean system property that defines whether the tracing is enabled or not. */

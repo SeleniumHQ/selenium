@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
+import sys
 from collections.abc import Sequence
 from typing import IO, Any
 
@@ -54,6 +56,13 @@ class Service(service.Service):
             self._service_args.append(f"--host={host}")
         if log_level:
             self._service_args.append(f"--log-level={log_level}")
+
+        if os.environ.get("SE_DEBUG"):
+            self._service_args = [
+                arg for arg in self._service_args if not any(x in arg for x in ("log-level", "log-file"))
+            ]
+            self._service_args.append("--log-level=DEBUG")
+            log_output = sys.stderr
 
         super().__init__(
             executable_path=executable_path,
