@@ -28,6 +28,7 @@ module Selenium
 
           before do
             allow(Platform).to receive(:assert_executable)
+            allow(WebDriver.logger).to receive(:debug?).and_return(false)
           end
 
           it 'uses default port and nil path' do
@@ -48,7 +49,7 @@ module Selenium
             expect(service.port).to eq port
           end
 
-          it 'does not create args by default' do
+          it 'creates websocket args by default' do
             service = described_class.new
 
             expect(service.extra_args.count).to eq 2

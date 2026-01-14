@@ -28,6 +28,7 @@ module Selenium
 
           before do
             allow(Platform).to receive(:assert_executable)
+            allow(WebDriver.logger).to receive(:debug?).and_return(false)
           end
 
           after { described_class.driver_path = nil }
