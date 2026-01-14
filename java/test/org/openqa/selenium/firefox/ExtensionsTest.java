@@ -18,12 +18,14 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.firefox.FirefoxAssumptions.assumeDefaultBrowserLocationUsed;
 
 import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -117,6 +119,9 @@ public class ExtensionsTest extends JupiterTestBase {
 
   @Test
   void canAddRemoveSignedExtensionsDirectory() {
+    // Firefox on Windows reports signed extension dirs as corrupt (ERROR_CORRUPT_FILE).
+    assumeThat(Platform.getCurrent().is(Platform.WINDOWS)).isFalse();
+
     Path extension = InProject.locate(EXT_SIGNED_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension);

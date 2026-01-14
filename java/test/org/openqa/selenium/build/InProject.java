@@ -17,15 +17,12 @@
 
 package org.openqa.selenium.build;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 public class InProject {
@@ -65,12 +62,13 @@ public class InProject {
   }
 
   public static Path findProjectRoot() {
-    Path dir;
-    if (!Platform.getCurrent().is(WINDOWS)) {
-      dir = findRunfilesRoot();
-      if (dir != null) {
-        return dir.resolve("_main").normalize();
+    Path dir = findRunfilesRoot();
+    if (dir != null) {
+      String workspace = System.getenv("TEST_WORKSPACE");
+      if (workspace != null && !workspace.isEmpty()) {
+        return dir.resolve(workspace).normalize();
       }
+      return dir.resolve("_main").normalize();
     }
 
     dir = Paths.get(".").toAbsolutePath();

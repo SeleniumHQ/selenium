@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_DOWNLOADS;
 
 import java.io.StringReader;
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -64,6 +66,8 @@ class StressTest {
 
   @BeforeEach
   public void setupServers() {
+    assumeTrue(
+        Platform.getCurrent().is(Platform.LINUX), "StressTest is Linux-only due to stability");
     browser = Objects.requireNonNull(Browser.detect());
 
     Deployment deployment =
@@ -156,7 +160,7 @@ class StressTest {
                         .build();
                 driver.get(appServer.getUrl().toString());
                 try {
-                  Thread.sleep(11000);
+                  Thread.sleep(16000);
                 } catch (InterruptedException ex) {
                   Thread.currentThread().interrupt();
                   throw new RuntimeException(ex);

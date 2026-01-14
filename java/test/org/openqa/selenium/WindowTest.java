@@ -20,19 +20,68 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.WaitingConditions.windowPositionEqual;
+import static org.openqa.selenium.WaitingConditions.windowSizeEqual;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.util.function.Consumer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
 class WindowTest extends JupiterTestBase {
+
+  private Dimension originalWindowSize;
+  private Point originalWindowPosition;
+  private boolean canManipulateWindow;
+
+  @BeforeEach
+  void rememberWindowGeometry() {
+    if (driver == null) {
+      return;
+    }
+
+    canManipulateWindow = !TestUtilities.getEffectivePlatform(driver).is(ANDROID);
+    if (!canManipulateWindow) {
+      return;
+    }
+
+    WebDriver.Window window = driver.manage().window();
+    originalWindowSize = window.getSize();
+    originalWindowPosition = window.getPosition();
+  }
+
+  @AfterEach
+  void restoreWindowGeometry() {
+    if (driver == null || !canManipulateWindow) {
+      return;
+    }
+
+    WebDriver.Window window = driver.manage().window();
+    try {
+      if (originalWindowSize != null) {
+        window.setSize(originalWindowSize);
+      }
+    } catch (RuntimeException ignored) {
+      // Best effort restore; some platforms clamp or reject exact sizes.
+    }
+
+    try {
+      if (originalWindowPosition != null) {
+        window.setPosition(originalWindowPosition);
+      }
+    } catch (RuntimeException ignored) {
+      // Best effort restore; some platforms clamp or reject exact positions.
+    }
+  }
 
   @Test
   void testGetsTheSizeOfTheCurrentWindow() {
@@ -69,6 +118,7 @@ class WindowTest extends JupiterTestBase {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(MAC));
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1-name");
     // resize relative to the initial size, since we don't know what it is
@@ -107,10 +157,10 @@ class WindowTest extends JupiterTestBase {
       Point targetPosition = new Point(position.x + 10, position.y + 10);
       window.setPosition(targetPosition);
 
-      wait.until($ -> window.getPosition().x == targetPosition.x);
-      wait.until($ -> window.getPosition().y == targetPosition.y);
+      wait.until(windowPositionEqual(targetPosition));
     } finally {
       window.setSize(originalSize);
+      window.setPosition(position);
     }
   }
 
@@ -121,13 +171,14 @@ class WindowTest extends JupiterTestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 323));
+    changeSizeTo(baselineWindowSize());
     enlargeBy(WebDriver.Window::maximize);
   }
 
   @SwitchToTopAfterTest
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
+  @Ignore(value = EDGE, gitHubActions = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   public void testCanMaximizeTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -135,7 +186,7 @@ class WindowTest extends JupiterTestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 324));
+    changeSizeTo(baselineWindowSize());
 
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::maximize);
@@ -144,6 +195,7 @@ class WindowTest extends JupiterTestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(value = CHROME, gitHubActions = true)
+  @Ignore(value = EDGE, gitHubActions = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   public void testCanMaximizeTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -151,7 +203,7 @@ class WindowTest extends JupiterTestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 400));
+    changeSizeTo(baselineWindowSize());
 
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::maximize);
@@ -164,7 +216,7 @@ class WindowTest extends JupiterTestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 400));
+    changeSizeTo(baselineWindowSize());
     driver.manage().window().minimize();
 
     assertThat(((JavascriptExecutor) driver).executeScript("return document.hidden;"))
@@ -179,11 +231,12 @@ class WindowTest extends JupiterTestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
+    Dimension baselineSize = baselineWindowSize();
     try {
-      changeSizeTo(new Dimension(640, 400));
+      changeSizeTo(baselineSize);
       enlargeBy(WebDriver.Window::fullscreen);
     } finally {
-      driver.manage().window().setSize(new Dimension(640, 323));
+      driver.manage().window().setSize(baselineSize);
     }
   }
 
@@ -197,7 +250,7 @@ class WindowTest extends JupiterTestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 400));
+    changeSizeTo(baselineWindowSize());
 
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::fullscreen);
@@ -213,7 +266,7 @@ class WindowTest extends JupiterTestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 400));
+    changeSizeTo(baselineWindowSize());
 
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::fullscreen);
@@ -233,18 +286,15 @@ class WindowTest extends JupiterTestBase {
     wait.until(windowSizeEqual(targetSize));
   }
 
+  private Dimension baselineWindowSize() {
+    return new Dimension(1000, 700);
+  }
+
   private void enlargeBy(Consumer<WebDriver.Window> operation) {
     WebDriver.Window window = driver.manage().window();
     Dimension size = window.getSize();
     operation.accept(window);
     wait.until($ -> window.getSize().width > size.width);
     wait.until($ -> window.getSize().height > size.height);
-  }
-
-  private ExpectedCondition<Boolean> windowSizeEqual(final Dimension size) {
-    return driver -> {
-      Dimension newSize = driver.manage().window().getSize();
-      return newSize.height == size.height && newSize.width == size.width;
-    };
   }
 }

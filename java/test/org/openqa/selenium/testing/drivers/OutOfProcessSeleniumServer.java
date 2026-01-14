@@ -131,7 +131,8 @@ class OutOfProcessSeleniumServer {
     try {
       URL url = new URL(baseUrl + "/status");
       LOG.info("Waiting for server status on URL " + url);
-      new UrlChecker().waitUntilAvailable(10, SECONDS, url);
+      long timeoutSeconds = !driverProvided ? 60 : 10;
+      new UrlChecker().waitUntilAvailable(timeoutSeconds, SECONDS, url);
       LOG.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
       LOG.log(Level.SEVERE, "Server failed to start: " + e.getMessage(), e);
@@ -171,6 +172,9 @@ class OutOfProcessSeleniumServer {
       Runfiles.Preloaded runfiles = Runfiles.preload();
       String location =
           runfiles.unmapped().rlocation("_main/java/src/org/openqa/selenium/grid/selenium_server");
+      if (Platform.getCurrent().is(Platform.WINDOWS)) {
+        location += ".exe";
+      }
       System.err.println("Location found is: " + location);
       Path path = Paths.get(location);
       if (Files.exists(path)) {

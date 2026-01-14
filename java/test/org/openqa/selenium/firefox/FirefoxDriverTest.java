@@ -26,6 +26,7 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.firefox.FirefoxAssumptions.assumeDefaultBrowserLocationUsed;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.testing.TestUtilities.isLocal;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.io.File;
@@ -197,6 +198,7 @@ class FirefoxDriverTest extends JupiterTestBase {
   // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1774
   @Test
   void canStartFirefoxDriverWithSubclassOfFirefoxProfile() {
+    assumeTrue(isLocal(), "Not supported when running against Grid");
     new WebDriverBuilder().get(new FirefoxOptions().setProfile(new CustomFirefoxProfile())).quit();
     new WebDriverBuilder().get(new FirefoxOptions().setProfile(new FirefoxProfile() {})).quit();
   }

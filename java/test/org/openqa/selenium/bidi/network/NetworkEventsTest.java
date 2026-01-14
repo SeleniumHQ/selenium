@@ -64,8 +64,13 @@ class NetworkEventsTest extends JupiterTestBase {
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
       CompletableFuture<ResponseDetails> future = new CompletableFuture<>();
-      network.onResponseStarted(future::complete);
       page = appServer.whereIs("/bidi/logEntryAdded.html");
+      network.onResponseStarted(
+          response -> {
+            if (page.equals(response.getResponseData().getUrl())) {
+              future.complete(response);
+            }
+          });
       driver.get(page);
 
       ResponseDetails response = future.get(5, TimeUnit.SECONDS);
@@ -86,8 +91,13 @@ class NetworkEventsTest extends JupiterTestBase {
       throws ExecutionException, InterruptedException, TimeoutException {
     try (Network network = new Network(driver)) {
       CompletableFuture<ResponseDetails> future = new CompletableFuture<>();
-      network.onResponseCompleted(future::complete);
       page = appServer.whereIs("/bidi/logEntryAdded.html");
+      network.onResponseCompleted(
+          response -> {
+            if (page.equals(response.getResponseData().getUrl())) {
+              future.complete(response);
+            }
+          });
       driver.get(page);
 
       ResponseDetails response = future.get(5, TimeUnit.SECONDS);

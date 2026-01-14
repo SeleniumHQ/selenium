@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.Timeout;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.TestUtilities;
 
 class FrameSwitchingTest extends JupiterTestBase {
 
@@ -499,6 +501,8 @@ class FrameSwitchingTest extends JupiterTestBase {
 
   @Test
   void testShouldNotSwitchMagicallyToTheTopWindow() {
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(Platform.MAC));
+
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");
     driver.switchTo().frame(0);

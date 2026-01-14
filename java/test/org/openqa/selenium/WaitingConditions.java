@@ -198,6 +198,40 @@ public class WaitingConditions {
     };
   }
 
+  public static ExpectedCondition<Boolean> windowSizeEqual(final Dimension size) {
+    return new ExpectedCondition<>() {
+      private Dimension last;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        last = driver.manage().window().getSize();
+        return last.height == size.height && last.width == size.width;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("window size to be %s but was %s", size, last);
+      }
+    };
+  }
+
+  public static ExpectedCondition<Boolean> windowPositionEqual(final Point position) {
+    return new ExpectedCondition<>() {
+      private Point last;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        last = driver.manage().window().getPosition();
+        return last.equals(position);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("window position to be %s but was %s", position, last);
+      }
+    };
+  }
+
   public static ExpectedCondition<Set<String>> windowHandleCountToBe(
       final int expectedWindowCount) {
     return new ExpectedCondition<>() {

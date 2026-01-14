@@ -19,12 +19,14 @@ package org.openqa.selenium.bidi.emulation;
 
 import static java.lang.Math.abs;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
@@ -37,6 +39,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsSecureServer;
+import org.openqa.selenium.testing.TestUtilities;
 
 @NeedsSecureServer
 class SetGeolocationOverrideTest extends JupiterTestBase {
@@ -75,6 +78,10 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
   @Test
   @NeedsFreshDriver
   void canSetGeolocationOverrideWithCoordinatesInContext() {
+    // Geolocation override returns null on Windows+Firefox
+    assumeThat(Platform.getCurrent().is(Platform.WINDOWS) && TestUtilities.isFirefox(driver))
+        .isFalse();
+
     BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
     String contextId = context.getId();
 
@@ -106,6 +113,10 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
 
   @Test
   void canSetGeolocationOverrideWithMultipleUserContexts() {
+    // Geolocation override returns null on Windows+Firefox
+    assumeThat(Platform.getCurrent().is(Platform.WINDOWS) && TestUtilities.isFirefox(driver))
+        .isFalse();
+
     Browser browser = new Browser(driver);
     String userContext1 = browser.createUserContext();
     String userContext2 = browser.createUserContext();
@@ -199,6 +210,10 @@ class SetGeolocationOverrideTest extends JupiterTestBase {
   @Test
   @NeedsFreshDriver
   void canResetGeolocationOverrideWithNullCoordinates() {
+    // Geolocation override returns null on Windows+Firefox
+    assumeThat(Platform.getCurrent().is(Platform.WINDOWS) && TestUtilities.isFirefox(driver))
+        .isFalse();
+
     BrowsingContext context = new BrowsingContext(driver, driver.getWindowHandle());
     String contextId = context.getId();
 
