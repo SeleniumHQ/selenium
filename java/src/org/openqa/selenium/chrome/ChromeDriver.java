@@ -69,7 +69,11 @@ public class ChromeDriver extends ChromiumDriver {
    * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
   public ChromeDriver(ChromeOptions options) {
-    this(ChromeDriverService.createDefaultService(), options);
+    this(options, ClientConfig.defaultConfig());
+  }
+
+  public ChromeDriver(ChromeOptions options, ClientConfig clientConfig) {
+    this(ChromeDriverService.createDefaultService(), options, clientConfig);
   }
 
   /**
@@ -85,7 +89,11 @@ public class ChromeDriver extends ChromiumDriver {
 
   public ChromeDriver(
       ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) {
-    super(generateExecutor(service, options, clientConfig), options, ChromeOptions.CAPABILITY);
+    super(
+        generateExecutor(service, options, clientConfig),
+        options,
+        ChromeOptions.CAPABILITY,
+        clientConfig);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }

@@ -52,7 +52,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.SlotMatcher;
@@ -65,6 +64,8 @@ import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.Browser;
+import org.openqa.selenium.remote.WebDriverInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverService;
 
 public class NodeOptions {
@@ -720,7 +721,7 @@ public class NodeOptions {
       }
 
       @Override
-      public Optional<WebDriver> createDriver(Capabilities capabilities)
+      public Optional<WebDriver> createDriver(Capabilities capabilities, ClientConfig clientConfig)
           throws SessionNotCreatedException {
         return Optional.empty();
       }

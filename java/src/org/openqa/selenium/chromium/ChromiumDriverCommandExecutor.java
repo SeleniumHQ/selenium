@@ -34,6 +34,11 @@ import org.openqa.selenium.remote.service.DriverService;
  */
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
+  /**
+   * @deprecated use {@link #ChromiumDriverCommandExecutor(DriverService, Map, ClientConfig)}
+   *     instead
+   */
+  @Deprecated
   public ChromiumDriverCommandExecutor(
       DriverService service, Map<String, CommandInfo> extraCommands) {
     this(service, extraCommands, ClientConfig.defaultConfig());

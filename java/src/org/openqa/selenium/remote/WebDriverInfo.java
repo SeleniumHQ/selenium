@@ -15,9 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.remote;
 
 import java.util.Optional;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.http.ClientConfig;
 
 /**
  * Describes, in general terms, a webdriver instance. This allows services to query the system at
@@ -37,7 +42,7 @@ public interface WebDriverInfo {
    *
    * <p>Note, this set does not need to be exhaustive: the only requirement is that if {@link
    * #isAvailable()} returns {@code true}, the returned {@link Capabilities} can be passed to {@link
-   * #createDriver(Capabilities)} and a session will be created.
+   * #createDriver(Capabilities, ClientConfig)} and a session will be created.
    *
    * @return The smallest set of {@link Capabilities} required to create an instance of this {@link
    *     WebDriver} implementation.
@@ -45,8 +50,8 @@ public interface WebDriverInfo {
   Capabilities getCanonicalCapabilities();
 
   /**
-   * @return Whether a call to {@link #createDriver(Capabilities)} would succeed if given {@code
-   *     capabilities}.
+   * @return Whether a call to {@link #createDriver(Capabilities, ClientConfig)} would succeed if
+   *     given {@code capabilities}.
    */
   boolean isSupporting(Capabilities capabilities);
 
@@ -89,10 +94,24 @@ public interface WebDriverInfo {
   int getMaximumSimultaneousSessions();
 
   /**
+   * @deprecated use {@link #createDriver(Capabilities, ClientConfig)} instead
+   */
+  @Deprecated
+  default Optional<WebDriver> createDriver(Capabilities capabilities)
+      throws SessionNotCreatedException {
+    return createDriver(capabilities, ClientConfig.defaultConfig());
+  }
+
+  /**
    * Creates a new instance of the {@link WebDriver} implementation. The instance must be killed by
    * sending the "quit" command. If the instance cannot be created because {@link #isAvailable()} is
    * {@code false}, then {@link Optional#empty()} is returned. Otherwise, an attempt to start the
    * session is made and the result returned.
    */
-  Optional<WebDriver> createDriver(Capabilities capabilities) throws SessionNotCreatedException;
+  default Optional<WebDriver> createDriver(Capabilities capabilities, ClientConfig clientConfig)
+      throws SessionNotCreatedException {
+    // TODO Remove the default implementation in Selenium 4.41.0+
+    //      All subclasses have to implement this method.
+    return createDriver(capabilities);
+  }
 }
