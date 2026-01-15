@@ -40,6 +40,7 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -47,7 +48,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -83,8 +83,8 @@ import org.openqa.selenium.remote.service.DriverService;
  *
  * <p>If no call to {@link #withDriverService(DriverService)} or {@link #address(URI)} is made, the
  * builder will use {@link ServiceLoader} to find all instances of {@link WebDriverInfo} and will
- * call {@link WebDriverInfo#createDriver(Capabilities)} for the first supported set of
- * capabilities.
+ * call {@link WebDriverInfo#createDriver(Capabilities, ClientConfig)} for the first supported set
+ * of capabilities.
  */
 @Beta
 public class RemoteWebDriverBuilder {
@@ -100,7 +100,6 @@ public class RemoteWebDriverBuilder {
   private URI remoteHost = null;
   private DriverService driverService;
   private Credentials credentials = null;
-  private boolean useCustomConfig;
   private Augmenter augmenter = new Augmenter();
 
   RemoteWebDriverBuilder() {
@@ -256,7 +255,6 @@ public class RemoteWebDriverBuilder {
     }
 
     this.clientConfig = config;
-    this.useCustomConfig = true;
 
     return this;
   }
@@ -330,7 +328,7 @@ public class RemoteWebDriverBuilder {
   }
 
   /** visible for testing only */
-  WebDriver getLocalDriver() {
+  @Nullable WebDriver getLocalDriver() {
     if (remoteHost != null || clientConfig.baseUri() != null || driverService != null) {
       return null;
     }
@@ -352,25 +350,23 @@ public class RemoteWebDriverBuilder {
                             info ->
                                 (Supplier<WebDriver>)
                                     () ->
-                                        info.createDriver(caps)
+                                        info.createDriver(caps, clientConfig)
                                             .orElseThrow(
                                                 () ->
                                                     new SessionNotCreatedException(
                                                         "Unable to create session with " + caps))))
             .findFirst();
 
-    if (first.isEmpty()) {
-      throw new SessionNotCreatedException("Unable to find matching driver for capabilities");
-    }
-
-    WebDriver localDriver = first.get().get();
-
-    if (localDriver != null && this.useCustomConfig) {
-      localDriver.quit();
-      throw new IllegalArgumentException("ClientConfig instances do not work for Local Drivers");
-    }
-
-    return localDriver;
+    Supplier<WebDriver> supplier =
+        first.orElseThrow(
+            () ->
+                new SessionNotCreatedException(
+                    String.format(
+                        "Unable to find matching driver for capabilities%n"
+                            + "  requestedCapabilities: %s%n "
+                            + "  infos: %s",
+                        requestedCapabilities, infos)));
+    return supplier.get();
   }
 
   /**
@@ -432,7 +428,7 @@ public class RemoteWebDriverBuilder {
     if (result.isRight()) {
       try {
         CommandExecutor executor = result.map(res -> createExecutor(handler, res));
-        return new RemoteWebDriver(executor, new ImmutableCapabilities());
+        return new RemoteWebDriver(executor, new ImmutableCapabilities(), clientConfig);
       } catch (Throwable t) {
         try (client) {
           throw t;
