@@ -488,6 +488,7 @@ class JsonOutputTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void convertLoggingPreferencesToJson() {
     LoggingPreferences prefs = new LoggingPreferences();
     prefs.enable(LogType.BROWSER, Level.WARNING);

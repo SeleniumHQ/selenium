@@ -18,7 +18,6 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -42,10 +41,13 @@ class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  void clientLogReturnsEmpty() {
+  @SuppressWarnings("deprecation")
+  void clientLogIsDeprecatedAndReturnsEmpty() {
     driver.get(pages.formPage);
     LogEntries clientLogs = driver.manage().logs().get(LogType.CLIENT);
-    assertThat(clientLogs.getAll()).describedAs("Client logs are empty").isEmpty();
+    assertThat(clientLogs.getAll())
+        .describedAs("Client logs should be empty (deprecated)")
+        .isEmpty();
   }
 
   @Test
@@ -57,20 +59,22 @@ class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  void profilerLogShouldBeDisabledByDefault() {
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes.contains(LogType.PROFILER))
-        .describedAs("Profiler logs should not be enabled by default")
-        .isFalse();
+  @SuppressWarnings("deprecation")
+  void profilerLogIsDeprecatedAndReturnsEmpty() {
+    // PROFILER log type is deprecated and no longer functional
+    LogEntries profilerLogs = driver.manage().logs().get(LogType.PROFILER);
+    assertThat(profilerLogs.getAll())
+        .describedAs("Profiler logs should be empty (deprecated)")
+        .isEmpty();
   }
 
   @Test
-  void serverLogShouldBeEnabledByDefaultOnRemote() {
-    assumeTrue(Boolean.getBoolean("selenium.browser.remote"));
-
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes)
-        .describedAs("Server logs should be enabled by default")
-        .contains(LogType.SERVER);
+  @SuppressWarnings("deprecation")
+  void serverLogIsDeprecatedAndReturnsEmpty() {
+    // SERVER log type is deprecated - Grid no longer supports it
+    LogEntries serverLogs = driver.manage().logs().get(LogType.SERVER);
+    assertThat(serverLogs.getAll())
+        .describedAs("Server logs should be empty (deprecated)")
+        .isEmpty();
   }
 }

@@ -26,6 +26,8 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.FakeWebDriverInfo.FAKE_BROWSER;
 
 import java.io.File;
 import java.io.IOException;
@@ -338,7 +340,7 @@ class RemoteWebDriverBuilderTest {
 
     RemoteWebDriverBuilder builder =
         RemoteWebDriver.builder()
-            .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
+            .oneOf(new ImmutableCapabilities(BROWSER_NAME, FAKE_BROWSER))
             .config(config)
             .connectingWith(clientConfig -> req -> CANNED_SESSION_RESPONSE);
 
@@ -385,7 +387,7 @@ class RemoteWebDriverBuilderTest {
       shouldUseWebDriverInfoToFindAMatchingDriverImplementationForRequestedCapabilitiesIfRemoteUrlNotSet() {
     WebDriver driver =
         RemoteWebDriver.builder()
-            .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
+            .oneOf(new ImmutableCapabilities(BROWSER_NAME, FAKE_BROWSER))
             .connectingWith(config -> req -> CANNED_SESSION_RESPONSE)
             .build();
 

@@ -83,7 +83,6 @@ jobs:
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SE_AVOID_STATS: true
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
@@ -142,7 +141,7 @@ jobs:
           external-cache: |
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: 'rb/.ruby-version'
+              rules_ruby++ruby+ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
               "+pin_browsers_extension+linux_beta_chrome": false
               "+pin_browsers_extension+linux_beta_chromedriver": true
               "+pin_browsers_extension+linux_beta_firefox": false
@@ -161,10 +160,10 @@ jobs:
               "+pin_browsers_extension+mac_edgedriver": false
               "+pin_browsers_extension+mac_firefox": false
               "+pin_browsers_extension+mac_geckodriver": false
-          repository-cache: false
+          repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.18.0
         with:
           bazelrc: common --color=yes
       - name: Setup curl for Ubuntu
@@ -197,7 +196,7 @@ jobs:
             ${{ inputs.run }}
           } 2>&1 | tee build/bazel-console.log
       - name: Rerun failures with debug
-        if: always()
+        if: failure()
         shell: bash
         run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
       - name: Collect failed test logs
