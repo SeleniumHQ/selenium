@@ -2,16 +2,16 @@
 
 - Bumping to nightly version
 - fix JS tests on RBE (#16777)
-    > get tests passing on RBE
+  > get tests passing on RBE
 - use SE_DEBUG to enable debugging (#16816)
-    > * use SE_DEBUG as the global environment variable to set to enable debugging
+  > - use SE_DEBUG as the global environment variable to set to enable debugging
 - remove references to legacy firefox from tests
 - update tests to work on windows
 - don't run lint checks in RBE
 - [node] Add asMap function to Header class and corresponding tests (#16832)
-    > * Add asMap function to Header class and corresponding tests
-    > * Add tests for ProvideResponseParameters to validate headers handling without asMap error
-    > * Add test for asMap function in Header class to validate map structure
+  > - Add asMap function to Header class and corresponding tests
+  > - Add tests for ProvideResponseParameters to validate headers handling without asMap error
+  > - Add test for asMap function in Header class to validate map structure
 - update devtools versions
 - bump versions in preparation for release
 
