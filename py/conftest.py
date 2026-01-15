@@ -27,6 +27,7 @@ from pathlib import Path
 import pytest
 import rich.console
 import rich.traceback
+
 try:
     from python.runfiles import Runfiles
 except ModuleNotFoundError:
@@ -521,7 +522,7 @@ def server(request):
                 rel_path = read[len("external/") :] if read.startswith("external/") else read
                 java_path = r.Rlocation(rel_path)
         except Exception:
-             pass
+            pass
         jar_path = r.Rlocation(built_jar)
 
     server = Server(env=remote_env, startup_timeout=60)
