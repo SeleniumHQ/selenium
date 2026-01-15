@@ -23,6 +23,9 @@ backports-tarfile==1.2.0 \
     # via
     #   -r py/requirements.txt
     #   jaraco-context
+bazel-runfiles==1.7.0 \
+    --hash=sha256:558b5f8f90285ba9a7cedbf289fa3c895a2a7abd238ad0245d84586bed224459
+    # via -r py/requirements.txt
 cachetools==6.2.4 \
     --hash=sha256:69a7a52634fed8b8bf6e24a050fb60bff1c9bd8f6d24572b99c32d4e71e62a51 \
     --hash=sha256:82c5c05585e70b6ba2d3ae09ea60b79548872185d2f24ae1f2709d37299fd607

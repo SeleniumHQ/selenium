@@ -27,7 +27,10 @@ from pathlib import Path
 import pytest
 import rich.console
 import rich.traceback
-from python.runfiles import Runfiles
+try:
+    from python.runfiles import Runfiles
+except ModuleNotFoundError:
+    from runfiles import Runfiles
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
@@ -500,30 +503,32 @@ def server(request):
         yield None
         return
 
-    r = Runfiles.Create()
-
-    java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
-    try:
-        with open(java_location_txt, encoding="utf-8") as handle:
-            read = handle.read().strip()
-            rel_path = read[len("external/") :] if read.startswith("external/") else read
-            java_path = r.Rlocation(rel_path)
-    except Exception:
-        java_path = None
-
-    built_jar = "selenium/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
-    jar_path = r.Rlocation(built_jar)
-
     remote_env = os.environ.copy()
     if sys.platform == "linux":
         # There are issues with window size/position when running Firefox
         # under Wayland, so we use XWayland instead.
         remote_env["MOZ_ENABLE_WAYLAND"] = "0"
 
+    built_jar = "selenium/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
+    jar_path = built_jar if Path(built_jar).exists() else None
+    java_path = None
+    r = Runfiles.Create()
+    if r:
+        java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
+        try:
+            with open(java_location_txt, encoding="utf-8") as handle:
+                read = handle.read().strip()
+                rel_path = read[len("external/") :] if read.startswith("external/") else read
+                java_path = r.Rlocation(rel_path)
+        except Exception:
+             pass
+        jar_path = r.Rlocation(built_jar)
+
     server = Server(env=remote_env, startup_timeout=60)
-    if Path(java_path).exists():
+
+    if java_path and Path(java_path).exists():
         server.java_path = java_path
-    if Path(jar_path).exists():
+    if jar_path and Path(jar_path).exists():
         server.path = jar_path
 
     server.port = free_port()
