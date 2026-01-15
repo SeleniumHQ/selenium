@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v141;
+package org.openqa.selenium.devtools.v144;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
@@ -35,40 +35,40 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Network;
-import org.openqa.selenium.devtools.v141.fetch.Fetch;
-import org.openqa.selenium.devtools.v141.fetch.model.AuthChallengeResponse;
-import org.openqa.selenium.devtools.v141.fetch.model.AuthRequired;
-import org.openqa.selenium.devtools.v141.fetch.model.HeaderEntry;
-import org.openqa.selenium.devtools.v141.fetch.model.RequestPattern;
-import org.openqa.selenium.devtools.v141.fetch.model.RequestPaused;
-import org.openqa.selenium.devtools.v141.fetch.model.RequestStage;
-import org.openqa.selenium.devtools.v141.network.model.Request;
+import org.openqa.selenium.devtools.v144.fetch.Fetch;
+import org.openqa.selenium.devtools.v144.fetch.model.AuthChallengeResponse;
+import org.openqa.selenium.devtools.v144.fetch.model.AuthRequired;
+import org.openqa.selenium.devtools.v144.fetch.model.HeaderEntry;
+import org.openqa.selenium.devtools.v144.fetch.model.RequestPattern;
+import org.openqa.selenium.devtools.v144.fetch.model.RequestPaused;
+import org.openqa.selenium.devtools.v144.fetch.model.RequestStage;
+import org.openqa.selenium.devtools.v144.network.model.Request;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-public class v141Network extends Network<AuthRequired, RequestPaused> {
+public class v144Network extends Network<AuthRequired, RequestPaused> {
 
-  private static final Logger LOG = Logger.getLogger(v141Network.class.getName());
+  private static final Logger LOG = Logger.getLogger(v144Network.class.getName());
 
-  public v141Network(DevTools devTools) {
+  public v144Network(DevTools devTools) {
     super(devTools);
   }
 
   @Override
   protected Command<Void> setUserAgentOverride(UserAgent userAgent) {
-    return org.openqa.selenium.devtools.v141.network.Network.setUserAgentOverride(
+    return org.openqa.selenium.devtools.v144.network.Network.setUserAgentOverride(
         userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
   }
 
   @Override
   protected Command<Void> enableNetworkCaching() {
-    return org.openqa.selenium.devtools.v141.network.Network.setCacheDisabled(false);
+    return org.openqa.selenium.devtools.v144.network.Network.setCacheDisabled(false);
   }
 
   @Override
   protected Command<Void> disableNetworkCaching() {
-    return org.openqa.selenium.devtools.v141.network.Network.setCacheDisabled(true);
+    return org.openqa.selenium.devtools.v144.network.Network.setCacheDisabled(true);
   }
 
   @Override

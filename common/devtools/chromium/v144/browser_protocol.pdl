@@ -114,7 +114,8 @@ experimental domain Accessibility
   # - from 'live' to 'root': attributes which apply to nodes in live regions
   # - from 'autocomplete' to 'valuetext': attributes which apply to widgets
   # - from 'checked' to 'selected': states which apply to widgets
-  # - from 'activedescendant' to 'owns' - relationships between elements other than parent/child/sibling.
+  # - from 'activedescendant' to 'owns': relationships between elements other than parent/child/sibling
+  # - from 'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden
   type AXPropertyName extends string
     enum
       actions
@@ -158,6 +159,25 @@ experimental domain Accessibility
       labelledby
       owns
       url
+      # LINT.IfChange(AXIgnoredReason)
+      activeFullscreenElement
+      activeModalDialog
+      activeAriaModalDialog
+      ariaHiddenElement
+      ariaHiddenSubtree
+      emptyAlt
+      emptyText
+      inertElement
+      inertSubtree
+      labelContainer
+      labelFor
+      notRendered
+      notVisible
+      presentationalRole
+      probablyPresentational
+      inactiveCarouselTabContent
+      uninteresting
+      # LINT.ThenChange(//third_party/blink/renderer/modules/accessibility/ax_enums.cc:AXIgnoredReason)
 
   # A node in the accessibility tree.
   type AXNode extends object
@@ -363,8 +383,8 @@ experimental domain Animation
       number endDelay
       # `AnimationEffect`'s iteration start.
       number iterationStart
-      # `AnimationEffect`'s iterations.
-      number iterations
+      # `AnimationEffect`'s iterations. Omitted if the value is infinite.
+      optional number iterations
       # `AnimationEffect`'s iteration duration.
       # Milliseconds for time based animations and
       # percentage [0 - 100] for scroll driven animations
@@ -800,8 +820,10 @@ experimental domain Audits
       WriteErrorInsufficientResources
       WriteErrorInvalidMatchField
       WriteErrorInvalidStructuredHeader
+      WriteErrorInvalidTTLField
       WriteErrorNavigationRequest
       WriteErrorNoMatchField
+      WriteErrorNonIntegerTTLField
       WriteErrorNonListMatchDestField
       WriteErrorNonSecureContext
       WriteErrorNonStringIdField
@@ -894,12 +916,13 @@ experimental domain Audits
       FormInputWithNoLabelError
       FormAutocompleteAttributeEmptyError
       FormEmptyIdAndNameAttributesForInputError
-      FormAriaLabelledByToNonExistingId
+      FormAriaLabelledByToNonExistingIdError
       FormInputAssignedAutocompleteValueToIdOrNameAttributeError
-      FormLabelHasNeitherForNorNestedInput
+      FormLabelHasNeitherForNorNestedInputError
       FormLabelForMatchesNonExistingIdError
       FormInputHasWrongButWellIntendedAutocompleteValueError
       ResponseWasBlockedByORB
+      NavigationEntryMarkedSkippable
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -1120,6 +1143,51 @@ experimental domain Audits
       # Applies to NoisedCanvasReadback issue type.
       optional SourceCodeLocation sourceCodeLocation
 
+  type PermissionElementIssueType extends string
+    enum
+      InvalidType
+      FencedFrameDisallowed
+      CspFrameAncestorsMissing
+      PermissionsPolicyBlocked
+      PaddingRightUnsupported
+      PaddingBottomUnsupported
+      InsetBoxShadowUnsupported
+      RequestInProgress
+      UntrustedEvent
+      RegistrationFailed
+      TypeNotSupported
+      InvalidTypeActivation
+      SecurityChecksFailed
+      ActivationDisabled
+      GeolocationDeprecated
+      InvalidDisplayStyle
+      NonOpaqueColor
+      LowContrast
+      FontSizeTooSmall
+      FontSizeTooLarge
+      InvalidSizeValue
+
+  # This issue warns about improper usage of the <permission> element.
+  type PermissionElementIssueDetails extends object
+    properties
+      PermissionElementIssueType issueType
+      # The value of the type attribute.
+      optional string type
+      # The node ID of the <permission> element.
+      optional DOM.BackendNodeId nodeId
+      # True if the issue is a warning, false if it is an error.
+      optional boolean isWarning
+
+      # Fields for message construction:
+      # Used for messages that reference a specific permission name
+      optional string permissionName
+      # Used for messages about occlusion
+      optional string occluderNodeInfo
+      # Used for messages about occluder's parent
+      optional string occluderParentNodeInfo
+      # Used for messages about activation disabled reason
+      optional string disableReason
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -1152,6 +1220,7 @@ experimental domain Audits
       SRIMessageSignatureIssue
       UnencodedDigestIssue
       UserReidentificationIssue
+      PermissionElementIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1184,6 +1253,7 @@ experimental domain Audits
       optional SRIMessageSignatureIssueDetails sriMessageSignatureIssueDetails
       optional UnencodedDigestIssueDetails unencodedDigestIssueDetails
       optional UserReidentificationIssueDetails userReidentificationIssueDetails
+      optional PermissionElementIssueDetails permissionElementIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -1269,6 +1339,8 @@ experimental domain Autofill
   type AddressField extends object
     properties
       # address field name, for example GIVEN_NAME.
+      # The full list of supported field names:
+      # https://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc;l=38
       string name
       # address field value, for example Jon Doe.
       string value
@@ -1337,8 +1409,10 @@ experimental domain Autofill
       DOM.BackendNodeId fieldId
       # Identifies the frame that field belongs to.
       optional Page.FrameId frameId
-      # Credit card information to fill out the form. Credit card data is not saved.
-      CreditCard card
+      # Credit card information to fill out the form. Credit card data is not saved.  Mutually exclusive with `address`.
+      optional CreditCard card
+      # Address to fill out the form. Address data is not saved. Mutually exclusive with `card`.
+      optional Address address
 
   # Set addresses so that developers can verify their forms implementation.
   command setAddresses
@@ -1763,24 +1837,25 @@ domain Browser
       closeTabSearch
       openGlic
 
-  # Set permission settings for given requesting and embedding origins.
+  # Set permission settings for given embedding and embedded origins.
   experimental command setPermission
     parameters
       # Descriptor of permission to override.
       PermissionDescriptor permission
       # Setting of the permission.
       PermissionSetting setting
-      # Requesting origin the permission applies to, all origins if not specified.
+      # Embedding origin the permission applies to, all origins if not specified.
       optional string origin
-      # Embedding origin the permission applies to. It is ignored unless the requesting origin is
-      # present and valid. If the requesting origin is provided but the embedding origin isn't, the
-      # requesting origin is used as the embedding origin.
-      optional string embeddingOrigin
+      # Embedded origin the permission applies to. It is ignored unless the embedding origin is
+      # present and valid. If the embedding origin is provided but the embedded origin isn't, the
+      # embedding origin is used as the embedded origin.
+      optional string embeddedOrigin
       # Context to override. When omitted, default browser context is used.
       optional BrowserContextID browserContextId
 
-  # Grant specific permissions to the given origin and reject all others.
-  experimental command grantPermissions
+  # Grant specific permissions to the given origin and reject all others. Deprecated. Use
+  # setPermission instead.
+  experimental deprecated command grantPermissions
     parameters
       array of PermissionType permissions
       # Origin the permission applies to, all origins if not specified.
@@ -2024,8 +2099,6 @@ experimental domain CSS
   depends on DOM
   depends on Page
 
-  type StyleSheetId extends string
-
   # Stylesheet type: "injected" for stylesheets injected via extension, "user-agent" for user-agent
   # stylesheets, "inspector" for stylesheets created by the inspector (i.e. those holding the "via
   # inspector" rules), "regular" for regular stylesheets.
@@ -2118,7 +2191,7 @@ experimental domain CSS
   type CSSStyleSheetHeader extends object
     properties
       # The stylesheet identifier.
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       # Owner frame identifier.
       Page.FrameId frameId
       # Stylesheet resource URL. Empty if this is a constructed stylesheet created using
@@ -2166,7 +2239,7 @@ experimental domain CSS
     properties
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Rule selector data.
       SelectorList selectorList
       # Array of selectors from ancestor style rules, sorted by distance from the current rule.
@@ -2175,6 +2248,8 @@ experimental domain CSS
       StyleSheetOrigin origin
       # Associated style declaration.
       CSSStyle style
+      # The BackendNodeId of the DOM node that constitutes the origin tree scope of this rule.
+      experimental optional DOM.BackendNodeId originTreeScopeNodeId
       # Media list array (for rules involving media queries). The array enumerates media queries
       # starting with the innermost one, going outwards.
       optional array of CSSMedia media
@@ -2213,7 +2288,7 @@ experimental domain CSS
     properties
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       # Offset of the start of the rule (including selector) from the beginning of the stylesheet.
       number startOffset
       # Offset of the end of the rule body from the beginning of the stylesheet.
@@ -2261,7 +2336,7 @@ experimental domain CSS
     properties
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # CSS properties in the style.
       array of CSSProperty cssProperties
       # Computed values for all shorthands found in the style.
@@ -2314,7 +2389,7 @@ experimental domain CSS
       # available).
       optional SourceRange range
       # Identifier of the stylesheet containing this object (if exists).
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Array of media queries.
       optional array of MediaQuery mediaList
 
@@ -2349,7 +2424,7 @@ experimental domain CSS
       # available).
       optional SourceRange range
       # Identifier of the stylesheet containing this object (if exists).
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Optional name for the container.
       optional string name
       # Optional physical axes queried for the container.
@@ -2372,7 +2447,7 @@ experimental domain CSS
       # available).
       optional SourceRange range
       # Identifier of the stylesheet containing this object (if exists).
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
 
   # CSS Scope at-rule descriptor.
   experimental type CSSScope extends object
@@ -2383,7 +2458,7 @@ experimental domain CSS
       # available).
       optional SourceRange range
       # Identifier of the stylesheet containing this object (if exists).
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
 
   # CSS Layer at-rule descriptor.
   experimental type CSSLayer extends object
@@ -2394,7 +2469,7 @@ experimental domain CSS
       # available).
       optional SourceRange range
       # Identifier of the stylesheet containing this object (if exists).
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
 
   # CSS Starting Style at-rule descriptor.
   experimental type CSSStartingStyle extends object
@@ -2403,7 +2478,7 @@ experimental domain CSS
       # available).
       optional SourceRange range
       # Identifier of the stylesheet containing this object (if exists).
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
 
   # CSS Layer data.
   experimental type CSSLayerData extends object
@@ -2472,7 +2547,7 @@ experimental domain CSS
     properties
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Parent stylesheet's origin.
       StyleSheetOrigin origin
       # Associated style declaration.
@@ -2485,7 +2560,7 @@ experimental domain CSS
       Value name
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Parent stylesheet's origin.
       StyleSheetOrigin origin
       # Associated style declaration.
@@ -2508,17 +2583,31 @@ experimental domain CSS
       boolean inherits
       string syntax
 
-
-  # CSS font-palette-values rule representation.
-  type CSSFontPaletteValuesRule extends object
+  # CSS generic @rule representation.
+  type CSSAtRule extends object
     properties
+      # Type of at-rule.
+      enum type
+        font-face
+        font-feature-values
+        font-palette-values
+      # Subsection of font-feature-values, if this is a subsection.
+      optional enum subsection
+        # LINT.IfChange(FontVariantAlternatesFeatureType)
+        swash
+        annotation
+        ornaments
+        stylistic
+        styleset
+        character-variant
+        # LINT.ThenChange(//third_party/blink/renderer/core/inspector/inspector_style_sheet.cc:FontVariantAlternatesFeatureType,//third_party/blink/renderer/core/inspector/inspector_css_agent.cc:FontVariantAlternatesFeatureType)
+      # Associated name, if applicable.
+      optional Value name
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Parent stylesheet's origin.
       StyleSheetOrigin origin
-      # Associated font palette name.
-      Value fontPaletteName
       # Associated style declaration.
       CSSStyle style
 
@@ -2527,7 +2616,7 @@ experimental domain CSS
     properties
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Parent stylesheet's origin.
       StyleSheetOrigin origin
       # Associated property name.
@@ -2572,7 +2661,7 @@ experimental domain CSS
       Value name
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Parent stylesheet's origin.
       StyleSheetOrigin origin
       # List of parameters.
@@ -2585,7 +2674,7 @@ experimental domain CSS
     properties
       # The css style sheet identifier (absent for user agent stylesheet and user-specified
       # stylesheet rules) this rule came from.
-      optional StyleSheetId styleSheetId
+      optional DOM.StyleSheetId styleSheetId
       # Parent stylesheet's origin.
       StyleSheetOrigin origin
       # Associated key text.
@@ -2597,7 +2686,7 @@ experimental domain CSS
   type StyleDeclarationEdit extends object
     properties
       # The css style sheet identifier.
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       # The range of the style text in the enclosing stylesheet.
       SourceRange range
       # New style text.
@@ -2608,7 +2697,7 @@ experimental domain CSS
   command addRule
     parameters
       # The css style sheet identifier where a new rule should be inserted.
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       # The text of a new rule.
       string ruleText
       # Text position of a new rule in the target style sheet.
@@ -2624,7 +2713,7 @@ experimental domain CSS
   # Returns all class names from specified stylesheet.
   command collectClassNames
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
     returns
       # Class name list.
       array of string classNames
@@ -2641,7 +2730,7 @@ experimental domain CSS
       optional boolean force
     returns
       # Identifier of the created "via-inspector" stylesheet.
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
 
   # Disables the CSS agent for the given page.
   command disable
@@ -2780,8 +2869,8 @@ experimental domain CSS
       optional array of CSSPropertyRule cssPropertyRules
       # A list of CSS property registrations matching this node.
       optional array of CSSPropertyRegistration cssPropertyRegistrations
-      # A font-palette-values rule matching this node.
-      optional CSSFontPaletteValuesRule cssFontPaletteValuesRule
+      # A list of simple @rules matching this node or its pseudo-elements.
+      optional array of CSSAtRule cssAtRules
       # Id of the first parent element that does not have display: contents.
       experimental optional DOM.NodeId parentLayoutNodeId
       # A list of CSS at-function rules referenced by styles of this node.
@@ -2809,7 +2898,7 @@ experimental domain CSS
   # Returns the current textual content for a stylesheet.
   command getStyleSheetText
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
     returns
       # The stylesheet text.
       string text
@@ -2828,7 +2917,7 @@ experimental domain CSS
   # returns an array of locations of the CSS selector in the style sheet.
   experimental command getLocationForSelector
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       string selectorText
     returns
       array of SourceRange ranges
@@ -2871,7 +2960,7 @@ experimental domain CSS
   # Modifies the property rule property name.
   command setPropertyRulePropertyName
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       SourceRange range
       string propertyName
     returns
@@ -2881,7 +2970,7 @@ experimental domain CSS
   # Modifies the keyframe rule key text.
   command setKeyframeKey
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       SourceRange range
       string keyText
     returns
@@ -2891,7 +2980,7 @@ experimental domain CSS
   # Modifies the rule selector.
   command setMediaText
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       SourceRange range
       string text
     returns
@@ -2901,7 +2990,7 @@ experimental domain CSS
   # Modifies the expression of a container query.
   experimental command setContainerQueryText
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       SourceRange range
       string text
     returns
@@ -2911,7 +3000,7 @@ experimental domain CSS
   # Modifies the expression of a supports at-rule.
   experimental command setSupportsText
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       SourceRange range
       string text
     returns
@@ -2921,7 +3010,7 @@ experimental domain CSS
   # Modifies the expression of a scope at-rule.
   experimental command setScopeText
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       SourceRange range
       string text
     returns
@@ -2931,7 +3020,7 @@ experimental domain CSS
   # Modifies the rule selector.
   command setRuleSelector
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       SourceRange range
       string selector
     returns
@@ -2941,7 +3030,7 @@ experimental domain CSS
   # Sets the new stylesheet text.
   command setStyleSheetText
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
       string text
     returns
       # URL of source map associated with script (if any).
@@ -3002,13 +3091,13 @@ experimental domain CSS
   # Fired whenever a stylesheet is changed as a result of the client operation.
   event styleSheetChanged
     parameters
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
 
   # Fired whenever an active document stylesheet is removed.
   event styleSheetRemoved
     parameters
       # Identifier of the removed stylesheet.
-      StyleSheetId styleSheetId
+      DOM.StyleSheetId styleSheetId
 
   experimental event computedStyleUpdated
     parameters
@@ -3227,6 +3316,9 @@ domain DOM
   # front-end.
   type BackendNodeId extends integer
 
+  # Unique identifier for a CSS stylesheet.
+  type StyleSheetId extends string
+
   # Backend node with a friendly name.
   type BackendNode extends object
     properties
@@ -3278,6 +3370,8 @@ domain DOM
       details-content
       picker
       permission-icon
+      overscroll-area-parent
+      overscroll-client-area
 
   # Shadow root type.
   type ShadowRootType extends string
@@ -3383,6 +3477,8 @@ domain DOM
       optional CompatibilityMode compatibilityMode
       optional BackendNode assignedSlot
       experimental optional boolean isScrollable
+      experimental optional boolean affectedByStartingStyles
+      experimental optional array of StyleSheetId adoptedStyleSheets
 
   # A structure to hold the top-level node of a detached tree and an array of its retained descendants.
   type DetachedElementInfo extends object
@@ -4026,6 +4122,14 @@ domain DOM
       # Attribute value.
       string value
 
+  # Fired when `Element`'s adoptedStyleSheets are modified.
+  experimental event adoptedStyleSheetsModified
+    parameters
+      # Id of the node that has changed.
+      NodeId nodeId
+      # New adoptedStyleSheets array.
+      experimental array of StyleSheetId adoptedStyleSheets
+
   # Fired when `Element`'s attribute is removed.
   event attributeRemoved
     parameters
@@ -4103,6 +4207,14 @@ domain DOM
       DOM.NodeId nodeId
       # If the node is scrollable.
       boolean isScrollable
+
+  # Fired when a node's starting styles changes.
+  experimental event affectedByStartingStylesFlagUpdated
+    parameters
+      # The id of the node.
+      DOM.NodeId nodeId
+      # If the node has starting styles.
+      boolean affectedByStartingStyles
 
   # Called when a pseudo element is removed from an element.
   experimental event pseudoElementRemoved
@@ -6090,8 +6202,8 @@ experimental domain IndexedDB
       string databaseName
       # Object store name.
       string objectStoreName
-      # Index name, empty string for object store data requests.
-      string indexName
+      # Index name. If not specified, it performs an object store data request.
+      optional string indexName
       # Number of records to skip.
       integer skipCount
       # Number of records to fetch.
@@ -6518,6 +6630,9 @@ experimental domain Inspector
 
   # Fired when debugging target has reloaded after crash
   event targetReloadedAfterCrash
+
+  # Fired on worker targets when main worker script and any imported scripts have been evaluated.
+  experimental event workerScriptLoaded
 
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
@@ -7230,6 +7345,8 @@ domain Network
       # True if this resource request is considered to be the 'same site' as the
       # request corresponding to the main frame.
       experimental optional boolean isSameSite
+      # True when the resource request is ad-related.
+      experimental optional boolean isAdRelated
 
   # Details of a signed certificate timestamp (SCT).
   type SignedCertificateTimestamp extends object
@@ -7314,25 +7431,6 @@ domain Network
       corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip
       corp-not-same-site
       sri-message-signature-mismatch
-
-  # Sets Controls for IP Proxy of requests.
-  # Page reload is required before the new behavior will be observed.
-  experimental type IpProxyStatus extends string
-    enum
-      Available
-      FeatureNotEnabled
-      MaskedDomainListNotEnabled
-      MaskedDomainListNotPopulated
-      AuthTokensUnavailable
-      Unavailable
-      BypassedByDevTools
-
-  # Returns enum representing if IP Proxy of requests is available
-  # or reason it is not active.
-  experimental command getIPProtectionProxyStatus
-    returns
-      # Whether IP proxy is available
-      IpProxyStatus status
 
   # The reason why request was blocked.
   type CorsError extends string
@@ -7538,9 +7636,6 @@ domain Network
       Security.SecurityState securityState
       # Security details for the request.
       optional SecurityDetails securityDetails
-      # Indicates whether the request was sent through IP Protection proxies. If
-      # set to true, the request used the IP Protection privacy feature.
-      experimental optional boolean isIpProtectionUsed
 
   # WebSocket request data.
   type WebSocketRequest extends object
@@ -7598,6 +7693,7 @@ domain Network
         preload
         SignedExchange
         preflight
+        FedCM
         other
       # Initiator JavaScript stack trace, set for Script only.
       # Requires the Debugger domain to be enabled.
@@ -7635,6 +7731,9 @@ domain Network
       # Cookie path.
       string path
       # Cookie expiration date as the number of seconds since the UNIX epoch.
+      # The value is set to -1 if the expiry date is not set.
+      # The value can be null for values that cannot be represented in
+      # JSON (±Inf).
       number expires
       # Cookie size.
       integer size
@@ -8095,8 +8194,30 @@ domain Network
   # Disables network tracking, prevents network events from being sent to the client.
   command disable
 
-  # Activates emulation of network conditions.
-  command emulateNetworkConditions
+  experimental type NetworkConditions extends object
+    properties
+      # Only matching requests will be affected by these conditions. Patterns use the URLPattern constructor string
+      # syntax (https://urlpattern.spec.whatwg.org/) and must be absolute. If the pattern is empty, all requests are
+      # matched (including p2p connections).
+      string urlPattern
+      # Minimum latency from request sent to response headers received (ms).
+      number latency
+      # Maximal aggregated download throughput (bytes/sec). -1 disables download throttling.
+      number downloadThroughput
+      # Maximal aggregated upload throughput (bytes/sec).  -1 disables upload throttling.
+      number uploadThroughput
+      # Connection type if known.
+      optional ConnectionType connectionType
+      # WebRTC packet loss (percent, 0-100). 0 disables packet loss emulation, 100 drops all the packets.
+      optional number packetLoss
+      # WebRTC packet queue length (packet). 0 removes any queue length limitations.
+      optional integer packetQueueLength
+      # WebRTC packetReordering feature.
+      optional boolean packetReordering
+
+  # Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
+  # and overrideNetworkState commands, which can be used together to the same effect.
+  deprecated command emulateNetworkConditions
     parameters
       # True to emulate internet disconnection.
       boolean offline
@@ -8114,6 +8235,36 @@ domain Network
       experimental optional integer packetQueueLength
       # WebRTC packetReordering feature.
       experimental optional boolean packetReordering
+
+  # Activates emulation of network conditions for individual requests using URL match patterns. Unlike the deprecated
+  # Network.emulateNetworkConditions this method does not affect `navigator` state. Use Network.overrideNetworkState to
+  # explicitly modify `navigator` behavior.
+  experimental command emulateNetworkConditionsByRule
+    parameters
+      # True to emulate internet disconnection.
+      boolean offline
+      # Configure conditions for matching requests. If multiple entries match a request, the first entry wins.  Global
+      # conditions can be configured by leaving the urlPattern for the conditions empty. These global conditions are
+      # also applied for throttling of p2p connections.
+      array of NetworkConditions matchedNetworkConditions
+    returns
+      # An id for each entry in matchedNetworkConditions. The id will be included in the requestWillBeSentExtraInfo for
+      # requests affected by a rule.
+      array of string ruleIds
+
+  # Override the state of navigator.onLine and navigator.connection.
+  experimental command overrideNetworkState
+    parameters
+      # True to emulate internet disconnection.
+      boolean offline
+      # Minimum latency from request sent to response headers received (ms).
+      number latency
+      # Maximal aggregated download throughput (bytes/sec). -1 disables download throttling.
+      number downloadThroughput
+      # Maximal aggregated upload throughput (bytes/sec).  -1 disables upload throttling.
+      number uploadThroughput
+      # Connection type if known.
+      optional ConnectionType connectionType
 
   # Enables network tracking, network events will now be delivered to the client.
   command enable
@@ -8223,11 +8374,23 @@ domain Network
       # List of search matches.
       array of Debugger.SearchMatch result
 
+  experimental type BlockPattern extends object
+    properties
+      # URL pattern to match. Patterns use the URLPattern constructor string syntax
+      # (https://urlpattern.spec.whatwg.org/) and must be absolute. Example: `*://*:*/*.css`.
+      string urlPattern
+      # Whether or not to block the pattern. If false, a matching request will not be blocked even if it matches a later
+      # `BlockPattern`.
+      boolean block
+
   # Blocks URLs from loading.
   experimental command setBlockedURLs
     parameters
+      # Patterns to match in the order in which they are given. These patterns
+      # also take precedence over any wildcard patterns defined in `urls`.
+      optional array of BlockPattern urlPatterns
       # URL patterns to block. Wildcards ('*') are allowed.
-      array of string urls
+      deprecated optional array of string urls
 
   # Toggles ignoring of service worker for each request.
   command setBypassServiceWorker
@@ -8677,6 +8840,20 @@ domain Network
       optional number sendBufferSize
       # Expected to be unsigned integer.
       optional number receiveBufferSize
+      optional boolean multicastLoopback
+      # Unsigned int 8.
+      optional integer multicastTimeToLive
+      optional boolean multicastAllowAddressSharing
+
+  experimental event directUDPSocketJoinedMulticastGroup
+    parameters
+      RequestId identifier
+      string IPAddress
+
+  experimental event directUDPSocketLeftMulticastGroup
+    parameters
+      RequestId identifier
+      string IPAddress
 
 
   # Fired upon direct_socket.UDPSocket creation.
@@ -8740,8 +8917,6 @@ domain Network
       Allow
       BlockFromInsecureToMorePrivate
       WarnFromInsecureToMorePrivate
-      PreflightBlock
-      PreflightWarn
       PermissionBlock
       PermissionWarn
 
@@ -8784,6 +8959,9 @@ domain Network
       optional ClientSecurityState clientSecurityState
       # Whether the site has partitioned cookies stored in a partition different than the current one.
       optional boolean siteHasCookieInOtherPartition
+      # The network conditions id if this request was affected by network conditions configured via
+      # emulateNetworkConditionsByRule.
+      optional string appliedNetworkConditionsId
 
   # Fired when additional information about a responseReceived event is available from the network
   # stack. Not every responseReceived event will have an additional responseReceivedExtraInfo for
@@ -8868,50 +9046,6 @@ domain Network
 
   # Fired once security policy has been updated.
   experimental event policyUpdated
-
-  # Fired once when parsing the .wbn file has succeeded.
-  # The event contains the information about the web bundle contents.
-  experimental event subresourceWebBundleMetadataReceived
-    parameters
-      # Request identifier. Used to match this information to another event.
-      RequestId requestId
-      # A list of URLs of resources in the subresource Web Bundle.
-      array of string urls
-
-  # Fired once when parsing the .wbn file has failed.
-  experimental event subresourceWebBundleMetadataError
-    parameters
-      # Request identifier. Used to match this information to another event.
-      RequestId requestId
-      # Error message
-      string errorMessage
-
-  # Fired when handling requests for resources within a .wbn file.
-  # Note: this will only be fired for resources that are requested by the webpage.
-  experimental event subresourceWebBundleInnerResponseParsed
-    parameters
-      # Request identifier of the subresource request
-      RequestId innerRequestId
-      # URL of the subresource resource.
-      string innerRequestURL
-      # Bundle request identifier. Used to match this information to another event.
-      # This made be absent in case when the instrumentation was enabled only
-      # after webbundle was parsed.
-      optional RequestId bundleRequestId
-
-  # Fired when request for resources within a .wbn file failed.
-  experimental event subresourceWebBundleInnerResponseError
-    parameters
-      # Request identifier of the subresource request
-      RequestId innerRequestId
-      # URL of the subresource resource.
-      string innerRequestURL
-      # Error message
-      string errorMessage
-      # Bundle request identifier. Used to match this information to another event.
-      # This made be absent in case when the instrumentation was enabled only
-      # after webbundle was parsed.
-      optional RequestId bundleRequestId
 
   experimental type CrossOriginOpenerPolicyValue extends string
     enum
@@ -9634,7 +9768,8 @@ experimental domain PWA
   #
   # To generate bundle id for proxy mode:
   # 1. Generate 32 random bytes.
-  # 2. Add a specific suffix 0x00 at the end.
+  # 2. Add a specific suffix at the end following the documentation
+  #    https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix
   # 3. Encode the entire sequence using Base32 without padding.
   #
   # If Chrome is not in IWA dev
@@ -9824,6 +9959,7 @@ domain Page
       ambient-light-sensor
       aria-notify
       attribution-reporting
+      autofill
       autoplay
       bluetooth
       browsing-topics
@@ -9864,6 +10000,7 @@ domain Page
       digital-credentials-create
       digital-credentials-get
       direct-sockets
+      direct-sockets-multicast
       direct-sockets-private
       display-capture
       document-domain
@@ -9888,6 +10025,7 @@ domain Page
       local-fonts
       local-network-access
       magnetometer
+      manual-text
       media-playback-while-not-visible
       microphone
       midi
@@ -9895,7 +10033,6 @@ domain Page
       otp-credentials
       payment
       picture-in-picture
-      popins
       private-aggregation
       private-state-token-issuance
       private-state-token-redemption
@@ -9906,7 +10043,6 @@ domain Page
       run-ad-auction
       screen-wake-lock
       serial
-      shared-autofill
       shared-storage
       shared-storage-select-url
       smart-card
@@ -11300,8 +11436,10 @@ domain Page
       WebXR
       SharedWorker
       SharedWorkerMessage
+      SharedWorkerWithNoActiveClient
       WebLocks
       WebHID
+      WebBluetooth
       WebShare
       RequestedStorageAccessGrant
       WebNfc
@@ -11490,6 +11628,18 @@ domain Page
     parameters
       boolean isAllowed
 
+  # Get the annotated page content for the main frame.
+  # This is an experimental command that is subject to change.
+  experimental command getAnnotatedPageContent
+    parameters
+      # Whether to include actionable information. Defaults to true.
+      optional boolean includeActionableInformation
+    returns
+      # The annotated page content as a base64 encoded protobuf.
+      # The format is defined by the `AnnotatedPageContent` message in
+      # components/optimization_guide/proto/features/common_quality_data.proto
+      binary content
+
 # Copyright 2017 The Chromium Authors
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -11659,6 +11809,9 @@ experimental domain Preload
       optional RuleSetErrorType errorType
       # TODO(https://crbug.com/1425354): Replace this property with structured error.
       deprecated optional string errorMessage
+      # For more details, see:
+      # https://github.com/WICG/nav-speculation/blob/main/speculation-rules-tags.md
+      optional string tag
 
   type RuleSetErrorType extends string
     enum
@@ -11673,6 +11826,7 @@ experimental domain Preload
     enum
       Prefetch
       Prerender
+      PrerenderUntilScript
 
   # Corresponds to mojom::SpeculationTargetHint.
   # See https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints
@@ -12468,9 +12622,18 @@ experimental domain Storage
       StorageBucketsDurability durability
 
   # Returns a storage key given a frame id.
-  command getStorageKeyForFrame
+  # Deprecated. Please use Storage.getStorageKey instead.
+  deprecated command getStorageKeyForFrame
     parameters
       Page.FrameId frameId
+    returns
+      SerializedStorageKey storageKey
+
+  # Returns storage key for the given frame. If no frame ID is provided,
+  # the storage key of the target executing this command is returned.
+  experimental command getStorageKey
+    parameters
+      optional Page.FrameId frameId
     returns
       SerializedStorageKey storageKey
 
@@ -13217,19 +13380,6 @@ experimental domain SystemInfo
       webp
       unknown
 
-  # Describes a supported image decoding profile with its associated minimum and
-  # maximum resolutions and subsampling.
-  type ImageDecodeAcceleratorCapability extends object
-    properties
-      # Image coded, e.g. Jpeg.
-      ImageType imageType
-      # Maximum supported dimensions of the image in pixels.
-      Size maxDimensions
-      # Minimum supported dimensions of the image in pixels.
-      Size minDimensions
-      # Optional array of supported subsampling formats, e.g. 4:2:0, if known.
-      array of SubsamplingFormat subsamplings
-
   # Provides information about the GPU(s) on the system.
   type GPUInfo extends object
     properties
@@ -13245,8 +13395,6 @@ experimental domain SystemInfo
       array of VideoDecodeAcceleratorCapability videoDecoding
       # Supported accelerated video encoding capabilities.
       array of VideoEncodeAcceleratorCapability videoEncoding
-      # Supported accelerated image decoding capabilities.
-      array of ImageDecodeAcceleratorCapability imageDecoding
 
   # Represents process info.
   type ProcessInfo extends object
@@ -13554,6 +13702,16 @@ domain Target
       # List of remote locations.
       array of RemoteLocation locations
 
+  # Gets the targetId of the DevTools page target opened for the given target
+  # (if any).
+  experimental command getDevToolsTarget
+    parameters
+      # Page or tab target ID.
+      TargetID targetId
+    returns
+      # The targetId of DevTools page target if exists.
+      optional TargetID targetId
+
   # Issued when attached to target because of auto-attach or `attachToTarget` command.
   experimental event attachedToTarget
     parameters
@@ -13611,6 +13769,10 @@ domain Target
     parameters
       # This can be the page or tab target ID.
       TargetID targetId
+      # The id of the panel we want DevTools to open initially. Currently
+      # supported panels are elements, console, network, sources, resources
+      # and performance.
+      optional string panelId
     returns
       # The targetId of DevTools page target.
       TargetID targetId
