@@ -1,3 +1,34 @@
+4.40.0 (2026-01-15)
+=========================
+* Bumping to nightly version
+* add page url and source if some element was not found
+* add synchronization and error handling for socket interactions (#16487)
+    > * fix when errors get bubbled up
+    > * do not override the connection error type
+    > * fix debug logging id names
+    > * keep error propagation for devtools but mark deprecated
+    > * just switch to logging errors instead of propagating them
+* mark low level bidi implementation as private api (#16475)
+* ensure driver process is always stopped (#15635)
+* create user-friendly method for enabling bidi (#14284)
+    > * Add support for bidi as an initialization parameter
+    > * change which tests guard for bidi
+* Add force encoding to remove warnings caused by json 3.0 (#16728)
+    > * add force encoding for compatibility with json 3
+    > * fix rubocop issues
+* use SE_DEBUG to enable debugging (#16816)
+    > * use SE_DEBUG as the global environment variable to set to enable debugging
+* cannot return from a thread block
+* ensure the grid is properly restarted in tests when there is a problem (#16842)
+    > * ensure the grid is properly restarted in tests when there is a problem
+* fix incorrect debug label
+* wait for grid to be ready when starting server (#16896)
+    > * check grid status endpoint response to determine when server has started
+* check driver status endpoint rather than socket connection (#16877)
+    > * check driver status endpoint rather than socket connection
+* update devtools versions
+* bump versions in preparation for release
+
 4.39.0 (2025-12-06)
 =========================
 * Add CDP for Chrome 143 and remove 140

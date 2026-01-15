@@ -1,3 +1,171 @@
+v4.40.0
+======
+* use the right AssertJ method `assertThatThrownBy` instead of error-prone construct "try/fail/catch(expected)".
+* [BiDi] change emulation commands return type to void
+* refactor: Improve string handling and encoding in ModuleGenerator and AbstractHttpCommandCodec
+* use proper AssertJ asserts that generate a useful error message
+    > In case of test failure, it's important that the error message shows all the needed information: what was the actual/expected value etc. This commit makes many asserts show this info.
+    > For example,
+    > * `assertThat(a == b).isTrue()` does NOT show what were `a` and `b` values;
+    > * `assertThat(list.contain("foo")).isTrue()` does NOT show what was the `list` value;
+    > * `assertThat(model == 32 || model == 64).isTrue()` does NOT show what was `model` value
+    > etc.
+* [BiDi] implement `emulation.setScreenOrientationOverride` (#16705)
+* #16720 avoid failing because of temporary Chrome internal files (#16722)
+    > ... that Chrome downloads and immediately deletes.
+* Create target directories before copying file (#16739)
+    > fixes #16738
+* Avoid sleep in tests (#16713)
+    > * remove useless sleeps from SessionHandlingTest
+    > This change decrease execution time of `SessionHandlingTest` from ~28s to 7s.
+    > * Avoid `sleep(2000)` in hover tests
+    > Instead of wasting 2 second (which doesn't guarantee the result), just wait for the needed element that should appear as a result of hovering.
+    > * use much shorter polling interval to speed up the tests
+    > if the first try failed, wasting the whole 0.5 second is a huge waste of time. Let's try sooner!
+    > * Avoid `sleep` in drag'n'drop tests
+    > fix the test page usability: make the elements visible only after they are fully initialized.
+    > To force revealing potential flaky tests in the future, I've added a small pause for the initialization code. So the tests should wait until the element appears on the screen - then it's ready for manipulations.
+    > * Open a blank page before every test
+    > It's a good practice to avoid tests affecting each other:
+    > 1. Open "about:blank" page - this stops any current activity / background requests / animations on the previous page
+    > 2. Open an empty page which clears sessionStorage, localStorage and cookies.
+    > This technique allows reusing the browser between tests, while keeping the tests independent.
+    > * tiny cleanup in ExpectedConditions.java
+    > * fix potential NPE in tearDown methods
+    > Also, reset the link to static field after test run - to avoid holding heavy objects in memory till the end of all tests.
+* [refactor] call WebDriverException constructor instead of using reflection (#16763)
+* [refactor] replace JUnit assertions by AssertJ (#16765)
+    > in many cases, it produces a better error message in case of test failure.
+* Fix bug in FileHandler: it always failed on MacOS (#16771)
+    > The `alternatives` list is immutable, so trying to add `"mac/" + name` to it always failed.
+    > P.S. I suspect this class is not used anymore, and should be removed.
+* #16753 workaround for JDK bug JDK-8228970 (#16793)
+    > #16753 workaround for JDK bug https://bugs.openjdk.org/browse/JDK-8228970
+    > Replace all usages of JDK built-in method `stream.readAllBytes()` by our own (fixed) method `Read.toByteArray(stream)`.
+* [BiDi] implement `emulation.setNetworkConditions` (#16794)
+    > [BiDi] implement emulation.setNetworkConditions
+* [refactor] replace most of Guava collections by Java built-in collections (#16776)
+    > * [refactor] replace `Arrays.asList` by `List.of`
+    > `List.of` is preferred because it
+    > 1. Optimized, and
+    > 2. Returns a truly immutable object.
+    > While `Arrays.asList` returns a list that allows modifications, e.g. using method `*.set(index, value)`.
+    > * [refactor] replace `ImmutableMap.of` by `Map.of`
+    > Guava's method `ImmutableMap.of` was needed until in Java 8 edge, when Java didn't have its own constructor for Maps. Nowadays `Map.of` is the proper way to create maps.
+    > * [refactor] replace `ImmutableList.of` by `List.of`
+    > Guava's method `ImmutableList.of` was needed until in Java 8 edge, when Java didn't have its own constructor for Lists. Nowadays `List.of` is the proper way to create immutable lists.
+    > * [refactor] replace `ImmutableSet.of` by `Set.of`
+    > Guava's method `ImmutableSet.of` was needed until in Java 8 edge, when Java didn't have its own constructor for Sets. Nowadays `Set.of` is the proper way to create immutable Sets.
+    > Sometimes we still need to use `ImmutableSet` - where we need to keep the order of elements.
+    > * use single imports instead of `import x.y.*`
+* Be more tolerant to remote responses (#16797)
+    > #16389 be more tolerant to remote responses
+    > * Some responses don't contain the required field "error" - just treat them as "unknown error"
+    > * If response doesn't contain the required field "message", just write the whole response as the message.
+* several packages marks jspecify nullmarked (#16802)
+    > * [refactor] add NullMarked annotation to Chromium package and update log level handling
+    > * [refactor] add @Nullable annotations to various classes and create package-info.java for devtools
+    > * refactor: remove @NullMarked annotations from several classes and add package-info.java for nullability specification
+    > * refactor: remove @NullMarked annotations from multiple classes in selenium package
+    > * refactor: remove @NullMarked annotation from By.java and update formatting in ConverterFunctions.java
+    > * refactor: add jspecify artifact dependency to devtools and javadoc BUILD files
+    > * replaces @NullMarked annotation to package-info.java files in chromium, devtools, and selenium packages after review
+    > * Revert "replace @NullMarked annotation to package-info.java files in chromium, devtools, and selenium packages after review"
+    > This reverts commit 52ad8fea46e068fa3ed7a0428bf2d58cc29d2218.
+* fix NPE in FirefoxOptions (#16833)
+    > fix NPE in FirefoxOptions
+    > Fixes #15991
+* Mark obsolete variables deprecated in DriverCommand and W3CHttpCommandCodec  (#16013)
+    > * Deprecate localStorage and sessionStorage commands in DriverCommand
+* remove usages of Guava collections (sets and maps) (#16835)
+    > * remove usages of Guava collections (sets and maps)
+    > * rename "orderedSet" to "sequencedSet"
+    > * remove usages of Guava collections (Multimaps)
+    > * remove usages of Guava's class Stopwatch
+    > * remove usages of Guava's class Splitter
+    > * remove usages of Guava's class Uninterruptibles
+    > * remove usages of Guava's class `Resources`
+    > * remove usages of Guava's class `Joiner`
+    > * remove usages of Guava's class `HostAndPort`
+    > Fixes #12737
+* simplify several statements with isEmpty function call (#16836)
+* JSpecify annotations for `org.openqa.selenium.json` (#16799)
+* use SE_DEBUG to enable debugging (#16816)
+    > * use SE_DEBUG as the global environment variable to set to enable debugging
+* Allow downloading files from old Grid server (#16839)
+    > allow downloading files from old Grid server
+    > Endpoint "/se/files/:name" was added in Selenium 4.39.0.
+    > If user has upgraded only Selenium client version (but not the server!) then method `remoteDriver.downloadFile()` fails with "unsupported command" exception.
+    > Now the download method will work again, falling back to the old endpoint `POST /se/files` (which is slow for large files).
+    > See issue #16612 and PR #16627.
+* Speed up tests, improve test logging and build script (#16843)
+    > * log the error if failed to close the browser
+    > It should be strictly prohibited to ignore exceptions! At least log them. Or even better, fail the test.
+    > * improve logging when preparing a browser for test
+    > * [bugfix] build "webdriver_prefs.json" before copying it
+    > * speed up tests: run "bazel build" only if the target file doesn't yet exist.
+    > We were wasting ~1.1 seconds PER TEST for re-running the same "bazel build" commands before every test.
+    > * [bugfix] add missing dependency to javadoc generator
+    > Class `JavadocJarMaker` uses class `TemporaryFilesystem` which resides in module         "//java/src/org/openqa/selenium/io".
+* [Java] check wildcard imports as part of the build (#16846)
+    > * create a java linter profile
+    > * make this part of standard build instead of a separate lint job
+* rework downloading files from Grid (#16844)
+    > rework downloading files from Grid
+    > * remove the "new" endpoint `GET /se/files/:name` (that was recently added in 4.39.0)
+    > * use the "old" endpoint `POST /se/files`, but with optional parameter "format". Possible values are "application/octet-stream" and "application/json" (default).
+    > Endpoint `POST /se/files` can respond either in JSON or binary format depending on "format" parameter.
+* configurable timeout for BiDi commands (#16796)
+    > * #16270 Make BiDi timeout configurable
+    > ...via system property "webdriver.bidi.timeout" (default: "30").
+    > It's similar to the existing system properties "webdriver.httpclient.connectionTimeout" (default: "10") and "webdriver.httpclient.readTimeout" (default: "180").
+    > * add optional timeout parameter for BiDi commands like "browsingContext.navigate"
+    > By using a shorter timeout when opening an invalid URL, I achieved a huge speed-up for test `NetworkCommandsTest.canContinueWithoutAuthCredentials`. Now it lasts 0.2s instead of 30s!
+* Unify error message format for all Expected Conditions & add tests (#16831)
+    > * Many of Expected Conditions generated misleading or incomplete error messages.
+    > * Some didn't wait for the condition
+    > * The error messages were not checked in tests at all. :(
+    > * Timeout truncated the milliseconds part, showing "4 second(s)" instead of "4.5 seconds".
+    > Fixes #16819
+    > Fixes #16005
+* Fix flaky tests (#16862)
+    > * fix flaky test: use the new port after re-creating test environment
+    > 1. When a previous test env was non-"secure",
+    > 2. And the current test env is "secure",
+    > 3. Then "appServer" was still referring the previous non-secure env.
+    > So the test failed with WebDriverException "Reached error page: about:neterror?e=dnsNotFound&u=https%3A//not_a_valid_url.test/&c=UTF-8&d=We%20can%E2%80%99t%20connect%20to%20the%20server%20at%20not_a_valid_url.test"
+    > I wonder how it worked at all...
+    > * close the unclosed browser in BiDiSessionCleanUpTest
+    > BiDiSessionCleanUpTest left the browser open if the test failed.
+    > * don't try to stop already stopped server
+    > Otherwise, method `NettyServer.stop` failed with NPE because `this.channel` was null.
+* fixes for running on windows (#16852)
+* add readable `toString()` to `org.openqa.selenium.remote.Browser` (#16873)
+    > I use `Browser` instances as parameter in parametrized tests. These parameters look unreadable in test reports:
+    > * CHROME.toString() -> "org.openqa.selenium.remote.Browser$1@62e20a76"
+    > * EDGE.toString() -> "org.openqa.selenium.remote.Browser$2@75ed9710"
+    > * HTMLUNIT.toString() -> "org.openqa.selenium.remote.Browser$$Lambda$551/0x0000008001160af8@79da1ec0"
+    > etc.
+* restore ClientConfig constructor used by Appium (for backward compatibility) (#16874)
+    > #16270 restore ClientConfig constructor used by Appium (for backward compatibility)
+    > This constructor disappeared in PR https://github.com/SeleniumHQ/selenium/pull/16796 when `wsTimeout` parameter was added.
+* deprecate unused logging implementation (#16889)
+* remove Apache Commons dependency (#16865)
+* SE_DEBUG dumps all log output to stderr (#16900)
+    > * SE_DEBUG dumps all log output to stderr
+    > * add handler for all selenium logging
+    > * use simpleformatter
+    > * keep a strong reference to prevent garbage collection
+* Use ClientConfig provided by user instead of the default one (#16882)
+    > * #16270 use ClientConfig provided by user instead of the default one
+    > All webdriver constructors (RemoteWebDriver, ChromeDriver etc.) have an optional `ClientConfig` parameter. But still, the `ClientConfig.defaultConfig()` was used in multiple places (e.g. for establishing CDP or BiDi connection).
+    > * #16270 allow using custom config for local drivers in RemoteWebDriverBuilder
+    > * #16270 pass ClientConfig parameter from RemoteWebDriverBuilder to *WebDriver constructors
+    > * #16270 move `WebDriverInfo` from `org.openqa.selenium` to `org.openqa.selenium.remote`
+    > Interface `WebDriverInfo` is only needed in `org.openqa.selenium.remote.RemoteWebDriverBuilder`, so it seems reasonable.
+    > Motivation: I added parameter `ClientConfig` to method `WebDriverInfo.createDriver()`, and it doesn't compile anymore because package `org.openqa.selenium` cannot use classes from `org.openqa.selenium.remote.http`.
+* update devtools versions
+
 v4.39.0
 ======
 * Add CDP for Chrome 143 and remove 140

@@ -1,3 +1,12 @@
+0.4.40
+======
+* fix support for Edge beta versions on Windows (#16806)
+* ignore force download for Safari (#16825)
+    > ignore force download for Safari
+* only collect stats on stamped builds (#16826)
+    > * only collect stats on stamped builds
+    > * no longer need to set avoid stats in CI
+
 0.4.39
 ======
 *no changes*
