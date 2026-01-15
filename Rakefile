@@ -908,35 +908,23 @@ namespace :dotnet do
     FileUtils.chmod(0o666, "build/dist/selenium-dotnet-strongnamed-#{dotnet_version}.zip")
   end
 
-  desc 'Upload nupkg files to Nuget'
+  desc 'Build, package, and push nupkg files to NuGet'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
     if nightly
       puts 'Updating .NET version to nightly...'
       Rake::Task['dotnet:version'].invoke('nightly')
+      ENV['NUGET_API_KEY'] = ENV.fetch('GITHUB_TOKEN', nil)
+      ENV['NUGET_SOURCE'] = 'https://nuget.pkg.github.com/seleniumhq/index.json'
+    else
+      ENV['NUGET_SOURCE'] = 'https://api.nuget.org/v3/index.json'
     end
 
-    puts 'Packaging .NET release artifacts...'
+    puts 'Building and packaging .NET artifacts...'
     Rake::Task['dotnet:package'].invoke('--config=release')
 
-    api_key = ENV.fetch('NUGET_API_KEY', nil)
-    push_destination = 'https://api.nuget.org/v3/index.json'
-
-    if nightly
-      puts 'Setting up NuGet GitHub source for nightly release...'
-      api_key = ENV.fetch('GITHUB_TOKEN', nil)
-      github_push_url = 'https://nuget.pkg.github.com/seleniumhq/index.json'
-      push_destination = 'github'
-      flags = ['--username', 'seleniumhq', '--password', api_key, '--store-password-in-clear-text', '--name',
-               push_destination, github_push_url]
-      sh "dotnet nuget add source #{flags.join(' ')}"
-    end
-
-    puts 'Pushing packages to NuGet'
-    ["./bazel-bin/dotnet/src/webdriver/Selenium.WebDriver.#{dotnet_version}.nupkg",
-     "./bazel-bin/dotnet/src/support/Selenium.Support.#{dotnet_version}.nupkg"].each do |asset|
-      sh "dotnet nuget push #{asset} --api-key #{api_key} --source #{push_destination}"
-    end
+    puts "Pushing .NET packages to #{ENV.fetch('NUGET_SOURCE', nil)}..."
+    Bazel.execute('run', ['--config=release'], '//dotnet:publish')
   end
 
   desc 'Generate .NET documentation'

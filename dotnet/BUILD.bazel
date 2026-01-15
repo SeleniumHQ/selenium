@@ -1,4 +1,5 @@
 load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
+load("//dotnet:defs.bzl", "nuget_push")
 load("//dotnet/private:docfx.bzl", "docfx")
 
 exports_files([
@@ -41,4 +42,12 @@ docfx(
     name = "docs",
     docfx_dll = "@docfx//:docfx_dll",
     docfx_json = "docs/docfx.json",
+)
+
+nuget_push(
+    name = "publish",
+    packages = [
+        "//dotnet/src/support:support-pack",
+        "//dotnet/src/webdriver:webdriver-pack",
+    ],
 )
