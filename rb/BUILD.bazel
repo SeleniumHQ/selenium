@@ -122,12 +122,12 @@ rb_gem_push(
 rb_binary(
     name = "selenium-webdriver-bump-nightly-version",
     args = [
-        "rb/lib/selenium/support/nightly_version_generator.rb",
+        "rb/support/nightly_version_generator.rb",
         "rb/lib/selenium/webdriver/version.rb",
     ],
     deps = [
-        "//rb/lib/selenium/support:nightly_version_generator",
         "//rb/lib/selenium/webdriver:version",
+        "//rb/support:nightly_version_generator",
     ],
 )
 
@@ -143,12 +143,12 @@ rb_gem_push(
 rb_binary(
     name = "selenium-devtools-bump-nightly-version",
     args = [
-        "rb/lib/selenium/support/nightly_version_generator.rb",
+        "rb/support/nightly_version_generator.rb",
         "rb/lib/selenium/devtools/version.rb",
     ],
     deps = [
         "//rb/lib/selenium/devtools:version",
-        "//rb/lib/selenium/support:nightly_version_generator",
+        "//rb/support:nightly_version_generator",
     ],
 )
 
@@ -177,6 +177,19 @@ rb_binary(
     ],
 )
 
+rb_binary(
+    name = "bundle-update",
+    args = [
+        "rb/support/bundle_update.rb",
+    ],
+    data = [
+        "Gemfile",
+    ],
+    deps = [
+        "//rb/support:bundle_update",
+    ],
+)
+
 _LINT_ARGS = [
     "--config=rb/.rubocop.yml",
     "rb/",
@@ -192,7 +205,7 @@ _LINT_DEPS = [
     ":selenium-devtools",
     ":selenium-webdriver",
     "//rb/lib/selenium/devtools:cdp-generate",
-    "//rb/lib/selenium/support:nightly_version_generator",
+    "//rb/support:nightly_version_generator",
     "//rb/spec",
     "@bundle",
 ]

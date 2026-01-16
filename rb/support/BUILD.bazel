@@ -6,3 +6,8 @@ rb_library(
     name = "nightly_version_generator",
     srcs = ["nightly_version_generator.rb"],
 )
+
+rb_library(
+    name = "bundle_update",
+    srcs = ["bundle_update.rb"],
+)

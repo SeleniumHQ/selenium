@@ -33,6 +33,9 @@ jobs:
       - name: py - repin dependencies
         if: contains(join(github.event.commits.*.message), '[py]')
         run: bazel run //py:requirements.update
+      - name: rb - repin dependencies
+        if: contains(join(github.event.commits.*.message), '[rb]')
+        run: ./go rb:pin
       - name: Commit files
         run: |
           export CHANGES=$(git status -s)
