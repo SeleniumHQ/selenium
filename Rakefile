@@ -617,13 +617,16 @@ namespace :py do
     puts 'Generating Python documentation'
 
     FileUtils.rm_rf('build/docs/api/py/')
-    FileUtils.rm_rf('build/docs/doctrees/')
-    begin
-      sh 'tox -c py/tox.ini -e docs', verbose: true
-    rescue StandardError
-      puts 'Ensure that tox is installed on your system'
-      raise
-    end
+
+    # Generate API listing and stub files in source tree
+    Bazel.execute('run', [], '//py:generate-api-listing')
+    Bazel.execute('run', [], '//py:sphinx-autogen')
+
+    # Build docs (outputs to bazel-bin)
+    Bazel.execute('build', [], '//py:docs')
+
+    FileUtils.mkdir_p('build/docs/api')
+    FileUtils.cp_r('bazel-bin/py/docs/_build/html/.', 'build/docs/api/py')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end

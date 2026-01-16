@@ -46,6 +46,11 @@ def find_modules(package_name):
 
 
 if __name__ == "__main__":
+    # Support running via bazel run (uses BUILD_WORKSPACE_DIRECTORY)
+    workspace = os.environ.get("BUILD_WORKSPACE_DIRECTORY", "")
+    base_dir = os.path.join(workspace, "py") if workspace else "."
+    os.chdir(base_dir)
+
     package_name = "selenium"
     output_file = os.path.join("docs", "source", "api.rst")
     print(f"generating module list for sphinx autodoc in: {output_file}\n")

@@ -64,16 +64,11 @@ jobs:
           git config --local user.name "Selenium CI Bot"
       - name: Setup curl for Ubuntu
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-      - name: Set up Python 3.10
-        if: ${{ inputs.language == 'py' || inputs.language == 'all' }}
-        uses: actions/setup-python@v6
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
         with:
-          python-version: '3.10'
-      - name: Install dependencies
-        if: ${{ inputs.language == 'py' || inputs.language == 'all' }}
-        run: |
-          python -m pip install --upgrade pip
-          pip install tox
+          bazelisk-cache: true
+          bazelrc: common --color=yes
       - name: Install npm dependencies
         if: ${{ inputs.language == 'node' || inputs.language == 'all' }}
         run: |

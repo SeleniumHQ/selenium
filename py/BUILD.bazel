@@ -6,6 +6,7 @@ load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+load("@rules_python//sphinxdocs:sphinx.bzl", "sphinx_build_binary", "sphinx_docs")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
@@ -611,4 +612,38 @@ py_test_suite(
         ":selenium",
         ":webserver",
     ] + TEST_DEPS,
+)
+
+py_binary(
+    name = "generate-api-listing",
+    srcs = ["generate_api_module_listing.py"],
+    main = "generate_api_module_listing.py",
+    deps = [":selenium"],
+)
+
+py_binary(
+    name = "sphinx-autogen",
+    srcs = ["run_sphinx_autogen.py"],
+    main = "run_sphinx_autogen.py",
+    deps = [
+        ":selenium",
+        requirement("sphinx"),
+    ],
+)
+
+sphinx_build_binary(
+    name = "sphinx-build",
+    deps = [
+        ":selenium",
+        requirement("sphinx"),
+        requirement("sphinx-material"),
+    ],
+)
+
+sphinx_docs(
+    name = "docs",
+    srcs = glob(["docs/source/**/*.rst"]) + ["docs/source/conf.py"],
+    config = "docs/source/conf.py",
+    formats = ["html"],
+    sphinx = ":sphinx-build",
 )
