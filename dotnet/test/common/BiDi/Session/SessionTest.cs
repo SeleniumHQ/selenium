@@ -1,4 +1,4 @@
-// <copyright file="NewCommand.cs" company="Selenium Committers">
+// <copyright file="SessionTest.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,22 +17,19 @@
 // under the License.
 // </copyright>
 
+using NUnit.Framework;
+using System.Threading.Tasks;
+
 namespace OpenQA.Selenium.BiDi.Session;
 
-internal sealed class NewCommand(NewParameters @params)
-    : Command<NewParameters, NewResult>(@params, "session.new");
-
-internal sealed record NewParameters(CapabilitiesRequest Capabilities) : Parameters;
-
-public sealed class NewOptions : CommandOptions;
-
-public sealed record NewResult(string SessionId, Capability Capabilities) : EmptyResult;
-
-public sealed record Capability(bool AcceptInsecureCerts, string BrowserName, string BrowserVersion, string PlatformName, bool SetWindowRect, string UserAgent)
+internal class SessionTest : BiDiTestFixture
 {
-    public ProxyConfiguration? Proxy { get; set; }
+    [Test]
+    public async Task CanGetStatus()
+    {
+        var status = await bidi.StatusAsync();
 
-    public UserPromptHandler? UnhandledPromptBehavior { get; set; }
-
-    public string? WebSocketUrl { get; set; }
+        Assert.That(status, Is.Not.Null);
+        Assert.That(status.Message, Is.Not.Empty);
+    }
 }
