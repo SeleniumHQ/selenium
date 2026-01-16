@@ -840,20 +840,34 @@ namespace :rb do
 
     puts "Found #{gems.size} gems: #{checksums.size} cached, #{to_download.size} to download..."
 
+    failed = []
     if to_download.any?
-      Net::HTTP.start('rubygems.org', 443, use_ssl: true) do |http|
-        to_download.each do |key|
-          response = http.get("/gems/#{key}.gem")
-          next unless response.is_a?(Net::HTTPSuccess)
+      to_download.each do |key|
+        uri = URI("https://rubygems.org/gems/#{key}.gem")
 
-          sha = Digest::SHA256.hexdigest(response.body)
-          checksums[key] = sha
-          puts "  #{key}: #{sha[0, 16]}..."
-        rescue StandardError => e
-          puts "  #{key}: skipped (#{e.message})"
+        5.times do
+          response = Net::HTTP.get_response(uri)
+          break unless response.is_a?(Net::HTTPRedirection)
+
+          uri = URI(response['location'])
         end
+
+        unless response.is_a?(Net::HTTPSuccess)
+          puts "  #{key}: failed (HTTP #{response.code})"
+          failed << key
+          next
+        end
+
+        sha = Digest::SHA256.hexdigest(response.body)
+        checksums[key] = sha
+        puts "  #{key}: #{sha[0, 16]}..."
+      rescue StandardError => e
+        puts "  #{key}: failed (#{e.message})"
+        failed << key
       end
     end
+
+    raise "Failed to download checksums for: #{failed.join(', ')}" if failed.any?
 
     checksums_lines = checksums.keys.sort.map { |k| "        \"#{k}\": \"#{checksums[k]}\"," }
     formatted = "    gem_checksums = {\n#{checksums_lines.join("\n")}\n    },"
