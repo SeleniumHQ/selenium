@@ -245,3 +245,23 @@ rb_binary(
         "@bundle",
     ],
 )
+
+rb_binary(
+    name = "steep",
+    args = [
+        "rb/support/steep_check.rb",
+    ],
+    data = [
+        "Gemfile",
+        "Gemfile.lock",
+        "Steepfile",
+        "rbs_collection.lock.yaml",
+        "rbs_collection.yaml",
+    ],
+    deps = [
+        ":selenium-devtools",
+        ":selenium-webdriver",
+        "//rb/support:steep_check",
+        "@bundle",
+    ],
+)
