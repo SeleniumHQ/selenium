@@ -159,7 +159,7 @@ public class LocalNode extends Node implements Closeable {
   private final AtomicInteger reservedOrActiveSessionCount = new AtomicInteger();
   // Tracks consecutive session creation failures to mark node DOWN if threshold exceeded
   private final AtomicInteger consecutiveSessionFailures = new AtomicInteger();
-  private final int sessionCreationRetryLimit;
+  private final int nodeDownFailureThreshold;
   private final Runnable shutdown;
   private final ReadWriteLock drainLock = new ReentrantReadWriteLock();
 
@@ -180,7 +180,7 @@ public class LocalNode extends Node implements Closeable {
       Secret registrationSecret,
       boolean managedDownloadsEnabled,
       int connectionLimitPerSession,
-      int sessionCreationRetryLimit) {
+      int nodeDownFailureThreshold) {
     super(
         tracer,
         new NodeId(UUID.randomUUID()),
@@ -204,8 +204,8 @@ public class LocalNode extends Node implements Closeable {
     this.bidiEnabled = bidiEnabled;
     this.managedDownloadsEnabled = managedDownloadsEnabled;
     this.connectionLimitPerSession = connectionLimitPerSession;
-    // Use -1 to disable the retry limit feature (unlimited retries)
-    this.sessionCreationRetryLimit = sessionCreationRetryLimit;
+    // Use 0 to disable the failure threshold feature (unlimited retries)
+    this.nodeDownFailureThreshold = nodeDownFailureThreshold;
 
     this.healthCheck =
         healthCheck == null
@@ -417,8 +417,8 @@ public class LocalNode extends Node implements Closeable {
 
   @ManagedAttribute(name = "Status")
   public Availability getAvailability() {
-    if (sessionCreationRetryLimit > 0
-        && consecutiveSessionFailures.get() >= sessionCreationRetryLimit) {
+    if (nodeDownFailureThreshold > 0
+        && consecutiveSessionFailures.get() >= nodeDownFailureThreshold) {
       return DOWN;
     }
     return isDraining() ? DRAINING : UP;
@@ -447,8 +447,8 @@ public class LocalNode extends Node implements Closeable {
 
   /**
    * Resets the consecutive session creation failure counter. This can be used to recover a node
-   * that was marked as DOWN due to exceeding the session creation retry limit, for example after
-   * external intervention has resolved the underlying issue.
+   * that was marked as DOWN due to exceeding the failure threshold, for example after external
+   * intervention has resolved the underlying issue.
    */
   public void resetConsecutiveSessionFailures() {
     int previousValue = consecutiveSessionFailures.getAndSet(0);
@@ -626,12 +626,12 @@ public class LocalNode extends Node implements Closeable {
 
         // Track consecutive session creation failures
         int failures = consecutiveSessionFailures.incrementAndGet();
-        if (sessionCreationRetryLimit > 0 && failures >= sessionCreationRetryLimit) {
+        if (nodeDownFailureThreshold > 0 && failures >= nodeDownFailureThreshold) {
           LOG.warning(
               String.format(
-                  "Node has reached the session creation retry limit (%d consecutive failures). "
+                  "Node has reached the failure threshold (%d consecutive failures). "
                       + "Node will be marked as DOWN.",
-                  sessionCreationRetryLimit));
+                  nodeDownFailureThreshold));
         }
 
         if (downloadsTfs != null) {
@@ -1157,9 +1157,9 @@ public class LocalNode extends Node implements Closeable {
 
     Availability availability = isDraining() ? DRAINING : UP;
 
-    // Check if consecutive session creation failures have exceeded the limit
-    if (sessionCreationRetryLimit > 0
-        && consecutiveSessionFailures.get() >= sessionCreationRetryLimit) {
+    // Check if consecutive session creation failures have exceeded the threshold
+    if (nodeDownFailureThreshold > 0
+        && consecutiveSessionFailures.get() >= nodeDownFailureThreshold) {
       availability = DOWN;
     }
 
@@ -1296,8 +1296,8 @@ public class LocalNode extends Node implements Closeable {
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
     private boolean managedDownloadsEnabled = false;
     private int connectionLimitPerSession = -1;
-    // Default -1 means disabled (unlimited retries allowed)
-    private int sessionCreationRetryLimit = -1;
+    // Default 0 means disabled (unlimited retries allowed)
+    private int nodeDownFailureThreshold = 0;
 
     private Builder(Tracer tracer, EventBus bus, URI uri, URI gridUri, Secret registrationSecret) {
       this.tracer = Require.nonNull("Tracer", tracer);
@@ -1362,12 +1362,12 @@ public class LocalNode extends Node implements Closeable {
      * marked as DOWN. This helps detect and isolate unhealthy nodes that consistently fail to
      * create sessions.
      *
-     * @param limit the maximum number of consecutive failures allowed (-1 to disable, which is the
-     *     default)
+     * @param threshold the maximum number of consecutive failures allowed (0 to disable, which is
+     *     the default)
      * @return this builder
      */
-    public Builder sessionCreationRetryLimit(int limit) {
-      this.sessionCreationRetryLimit = limit;
+    public Builder nodeDownFailureThreshold(int threshold) {
+      this.nodeDownFailureThreshold = threshold;
       return this;
     }
 
@@ -1389,7 +1389,7 @@ public class LocalNode extends Node implements Closeable {
           registrationSecret,
           managedDownloadsEnabled,
           connectionLimitPerSession,
-          sessionCreationRetryLimit);
+          nodeDownFailureThreshold);
     }
 
     public Advanced advanced() {
