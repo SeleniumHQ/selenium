@@ -27,8 +27,9 @@ from pathlib import Path
 import pytest
 import rich.console
 import rich.traceback
+
 try:
-    from python.runfiles import Runfiles # only exists when using bazel
+    from python.runfiles import Runfiles  # only exists when using bazel
 except ModuleNotFoundError:
     pass
 
@@ -38,10 +39,6 @@ from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
-
-
-
-
 
 drivers = (
     "chrome",
