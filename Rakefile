@@ -575,7 +575,7 @@ namespace :py do
     Bazel.execute('run', ['--config=release'], command)
   end
 
-  desc 'generate and copy files required for local development'
+  desc 'Generate and copy files required for local development'
   task :local_dev do
     dirs = %w[devtools linux macos windows]
     dirs.each do |dir|
