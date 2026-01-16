@@ -120,11 +120,7 @@ jobs:
       - name: Update changelog
         run: ./go all:changelogs
       - name: Commit changelog updates
-        run: git commit -m "WIP - rough auto-update of changelog, please edit"
-      - name: List untracked files
-        run: git status -u
-      - name: Clean working directory before PR
-        run: git clean -fd
+        run: git commit -m "changelogs updated"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
