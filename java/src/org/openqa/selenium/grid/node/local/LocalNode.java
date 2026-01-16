@@ -491,6 +491,15 @@ public class LocalNode extends Node implements Closeable {
           new RetrySessionRequestException("The node is draining. Cannot accept new sessions."));
     }
 
+    // Early check for failure threshold (fast path for unhealthy nodes)
+    if (nodeDownFailureThreshold > 0
+        && consecutiveSessionFailures.get() >= nodeDownFailureThreshold) {
+      return Either.left(
+          new RetrySessionRequestException(
+              "The node is marked as DOWN due to exceeding the failure threshold. Cannot accept new"
+                  + " sessions."));
+    }
+
     Lock lock = drainLock.readLock();
     lock.lock();
 
@@ -509,6 +518,18 @@ public class LocalNode extends Node implements Closeable {
                 "The node is draining. Cannot accept new sessions."));
         return Either.left(
             new RetrySessionRequestException("The node is draining. Cannot accept new sessions."));
+      }
+
+      // Re-check failure threshold after acquiring lock
+      if (nodeDownFailureThreshold > 0
+          && consecutiveSessionFailures.get() >= nodeDownFailureThreshold) {
+        span.setStatus(
+            Status.UNAVAILABLE.withDescription(
+                "The node is marked as DOWN due to exceeding the failure threshold."));
+        return Either.left(
+            new RetrySessionRequestException(
+                "The node is marked as DOWN due to exceeding the failure threshold. "
+                    + "Cannot accept new sessions."));
       }
 
       // Atomically check and reserve a session slot to prevent exceeding maxSessionCount
