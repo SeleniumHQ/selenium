@@ -134,8 +134,7 @@ class JmxTest {
     Object load = beanServer.getAttribute(name, "Load");
     assertNumberAttribute(load, 0.0f);
 
-    Object consecutiveSessionFailures =
-        beanServer.getAttribute(name, "ConsecutiveSessionFailures");
+    Object consecutiveSessionFailures = beanServer.getAttribute(name, "ConsecutiveSessionFailures");
     assertNumberAttribute(consecutiveSessionFailures, 0);
 
     String remoteNodeUri = (String) beanServer.getAttribute(name, "RemoteNodeUri");
