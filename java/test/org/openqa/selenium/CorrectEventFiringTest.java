@@ -17,7 +17,9 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -392,23 +394,7 @@ class CorrectEventFiringTest extends JupiterTestBase {
     element.click();
 
     // Wait until focused
-    boolean focused = false;
-    WebElement result = driver.findElement(By.id("result"));
-    for (int i = 0; i < 5; ++i) {
-      String fired = result.getText();
-      if (fired.contains("focus")) {
-        focused = true;
-        break;
-      }
-      try {
-        Thread.sleep(200);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-    assertThat(focused)
-        .as("If clicking on element didn't focus it in time, we can't proceed with the test")
-        .isTrue();
+    wait.until(elementTextToContain(By.id("result"), "focus"));
 
     element.sendKeys("a");
     assertEventNotFired("blur", driver);

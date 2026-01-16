@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
@@ -134,7 +133,7 @@ class CustomLocatorHandlerTest {
                     new HttpRequest(POST, "/session/1234/element")
                         .setContent(
                             Contents.asJson(
-                                ImmutableMap.of(
+                                Map.of(
                                     "using", "cheese",
                                     "value", "tasty")))));
   }
@@ -178,7 +177,7 @@ class CustomLocatorHandlerTest {
                 new HttpRequest(POST, "/session/1234/element")
                     .setContent(
                         Contents.asJson(
-                            ImmutableMap.of(
+                            Map.of(
                                 "using", "cheese",
                                 "value", "tasty"))));
 
@@ -224,7 +223,7 @@ class CustomLocatorHandlerTest {
             new HttpRequest(POST, "/session/1234/elements")
                 .setContent(
                     Contents.asJson(
-                        ImmutableMap.of(
+                        Map.of(
                             "using", "cheese",
                             "value", "tasty"))));
 
@@ -274,7 +273,7 @@ class CustomLocatorHandlerTest {
             new HttpRequest(POST, "/session/1234/element/234345/elements")
                 .setContent(
                     Contents.asJson(
-                        ImmutableMap.of(
+                        Map.of(
                             "using", "cheese",
                             "value", "tasty"))));
 

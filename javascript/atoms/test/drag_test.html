@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>drag_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
@@ -9,7 +13,6 @@
     goog.require('goog.events');
     goog.require('goog.fx.DragDropGroup');
     goog.require('goog.math.Coordinate');
-    goog.require('goog.testing.jsunit');
   </script>
 
   <style type="text/css">
@@ -31,8 +34,7 @@
   </style>
 
   <script type="text/javascript">
-    function testClosureFxDragAndDrop() {
-      // Setup Drag and Drop using goog.fx
+    QUnit.test('closure fx drag and drop', function(assert) {
       var testDiv = document.getElementById('testDiv');
       var testDiv2 = document.getElementById('testDiv2');
       var div1 = new goog.fx.DragDropGroup();
@@ -53,7 +55,6 @@
                           'px';
       });
 
-      // Start testing
       var target = document.getElementById('testDiv');
       var rectOld = bot.dom.getClientRect(target);
       var coords = new goog.math.Coordinate(15, 5);
@@ -62,23 +63,19 @@
       bot.action.drag(target, dx, dy, 2, coords);
 
       var rectNew = bot.dom.getClientRect(target);
-      assertEquals('Wrong x coordinate', rectNew.left, rectOld.left + dx);
-      assertEquals('Wrong y coordinate', rectNew.top, rectOld.top + dy);
+      assert.strictEqual(rectNew.left, rectOld.left + dx, 'Wrong x coordinate');
+      assert.strictEqual(rectNew.top, rectOld.top + dy, 'Wrong y coordinate');
 
-      // End of the test
       div1.dispose();
       div2.dispose();
-    }
+    });
 
-    function elementThatMovesDuringDrag(action) {
-      // IE is not compatible with touch actions.
-      // Also IE6 does not render this test page properly,
-      // so we must skip this test for IE6.
+    function elementThatMovesDuringDrag(assert, action) {
       if ((action == bot.action.swipe && !bot.events.SUPPORTS_TOUCH_EVENTS) ||
           (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+        assert.ok(true, 'Skipping: action not supported or IE6');
         return;
       }
-      // Setup a simple Drag and Drop object
       var DragDropDiv = function(element) {
         this.element_ = element;
         this.dragging_ = false;
@@ -151,7 +148,6 @@
       var target = document.getElementById('dragDiv');
       var dragDiv = new DragDropDiv(target);
 
-      // Start testing
       var initRect = bot.dom.getClientRect(target);
       var coords = new goog.math.Coordinate(5, 5);
       var dx = 25;
@@ -159,33 +155,26 @@
       action(target, dx, dy, 1, coords);
 
       var finalRect = bot.dom.getClientRect(target);
-      assertEquals(finalRect.left, initRect.left + dx);
-      assertEquals(finalRect.top, initRect.top + dy);
+      assert.strictEqual(finalRect.left, initRect.left + dx);
+      assert.strictEqual(finalRect.top, initRect.top + dy);
     }
 
-    var testDragElementThatMovesDuringDrag = goog.partial(
-        elementThatMovesDuringDrag, bot.action.drag);
+    QUnit.test('drag element that moves during drag', function(assert) {
+      elementThatMovesDuringDrag(assert, bot.action.drag);
+    });
 
-    var testSwipeElementThatMovesDuringDrag = goog.partial(
-        elementThatMovesDuringDrag, bot.action.swipe);
+    QUnit.test('swipe element that moves during drag', function(assert) {
+      elementThatMovesDuringDrag(assert, bot.action.swipe);
+    });
 
-
-    function testElementThatMovesDuringMouseMove(action) {
-      // IE6 does not render this test page properly,
-      // so we must skip this test for IE6.
+    QUnit.test('element that moves during mouse move', function(assert) {
       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
-          return;
+        assert.ok(true, 'Skipping: IE6 does not render this test page properly');
+        return;
       }
-      // Tests an element that moves when the mouse moves. Intended to mimic
-      // an element that acts as a cursor. In bot.action.drag the sequence of
-      // events is mousemove, mousedown, mousemove, and mouseup where the first
-      // mousemove is intended to simulate the event for the initial mouseover.
-      // If an element moves in response to that initial mousemove, we need to
-      // handle that case.
       var CursorDiv = function(element) {
         this.element_ = element;
         var currentRect = bot.dom.getClientRect(element);
-        // Initialize to the middle of the element.
         this.x_ = currentRect.left + 25;
         this.y_ = currentRect.top + 25;
         goog.events.listen(this.element_, goog.events.EventType.MOUSEMOVE,
@@ -205,7 +194,6 @@
       var target = document.getElementById('cursorDiv');
       var cursorDiv = new CursorDiv(target);
 
-      // Start testing
       var initRect = bot.dom.getClientRect(target);
       var coords = new goog.math.Coordinate(10, 10);
       var dx = 100;
@@ -213,12 +201,14 @@
       bot.action.drag(target, dx, dy, 1, coords);
 
       var finalRect = bot.dom.getClientRect(target);
-      assertEquals(finalRect.left, initRect.left + dx - 15);
-      assertEquals(finalRect.top, initRect.top + dy - 15);
-    }
+      assert.strictEqual(finalRect.left, initRect.left + dx - 15);
+      assert.strictEqual(finalRect.top, initRect.top + dy - 15);
+    });
   </script>
 </head>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 <div id="testDiv" style="background-color: red;" >Drag</div>
 <div id="testDiv2">Drop inside me.</div>
 <div id="dragDiv" style="position:fixed; top:50px; left:50px;

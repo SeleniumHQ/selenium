@@ -22,6 +22,13 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Combines multiple log entries into a single sorted list.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 public class LogCombiner {
   private static final Comparator<LogEntry> LOG_ENTRY_TIMESTAMP_COMPARATOR =
       Comparator.comparingLong(LogEntry::getTimestamp);

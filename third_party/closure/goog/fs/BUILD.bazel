@@ -1,0 +1,22 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+closure_js_library(
+    name = "blob",
+    srcs = ["blob.js"],
+    lenient = True,
+)
+
+alias(
+    name = "entry",
+    actual = ":filesystem",
+)
+
+closure_js_library(
+    name = "url",
+    srcs = ["url.js"],
+    lenient = True,
+)

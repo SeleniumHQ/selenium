@@ -45,7 +45,11 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeOptions options) {
-    this(new EdgeDriverService.Builder().build(), options);
+    this(options, ClientConfig.defaultConfig());
+  }
+
+  public EdgeDriver(EdgeOptions options, ClientConfig clientConfig) {
+    this(new EdgeDriverService.Builder().build(), options, clientConfig);
   }
 
   public EdgeDriver(EdgeDriverService service) {
@@ -57,7 +61,11 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
-    super(generateExecutor(service, options, clientConfig), options, EdgeOptions.CAPABILITY);
+    super(
+        generateExecutor(service, options, clientConfig),
+        options,
+        EdgeOptions.CAPABILITY,
+        clientConfig);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }

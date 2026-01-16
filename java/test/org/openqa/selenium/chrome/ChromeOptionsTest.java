@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.OFF;
 import static org.openqa.selenium.chromium.ChromiumDriverLogLevel.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
@@ -32,9 +31,7 @@ import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +49,7 @@ import org.openqa.selenium.testing.TestUtilities;
 class ChromeOptionsTest {
 
   @Test
+  @SuppressWarnings("unchecked")
   void optionsAsMapShouldBeImmutable() {
     Map<String, Object> options = new ChromeOptions().asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
@@ -101,12 +99,13 @@ class ChromeOptionsTest {
     assertThat(mappedOptions.get("strictFileInteractability")).isEqualTo(true);
     assertThat(mappedOptions.get(ENABLE_DOWNLOADS)).isEqualTo(true);
 
-    Map<String, Long> expectedTimeouts = new HashMap<>();
-    expectedTimeouts.put("implicit", 1000L);
-    expectedTimeouts.put("pageLoad", 2000L);
-    expectedTimeouts.put("script", 3000L);
-
-    assertThat(expectedTimeouts).isEqualTo(mappedOptions.get("timeouts"));
+    assertThat(mappedOptions.get("timeouts"))
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(
+            Map.of(
+                "implicit", 1000L,
+                "pageLoad", 2000L,
+                "script", 3000L));
   }
 
   @Test
@@ -115,15 +114,15 @@ class ChromeOptionsTest {
     chromeOptions.setImplicitWaitTimeout(Duration.ofSeconds(1));
 
     Map<String, Object> mappedOptions = chromeOptions.asMap();
-    Map<String, Long> expectedTimeouts = new HashMap<>();
-
-    expectedTimeouts.put("implicit", 1000L);
-    assertThat(expectedTimeouts).isEqualTo(mappedOptions.get("timeouts"));
+    assertThat(mappedOptions.get("timeouts"))
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(Map.of("implicit", 1000L));
 
     chromeOptions.setPageLoadTimeout(Duration.ofSeconds(2));
-    expectedTimeouts.put("pageLoad", 2000L);
     Map<String, Object> mappedOptions2 = chromeOptions.asMap();
-    assertThat(expectedTimeouts).isEqualTo(mappedOptions2.get("timeouts"));
+    assertThat(mappedOptions2.get("timeouts"))
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(Map.of("implicit", 1000L, "pageLoad", 2000L));
   }
 
   @Test
@@ -132,11 +131,9 @@ class ChromeOptionsTest {
     chromeOptions.setCapability(TIMEOUTS, Map.of("implicit", 1000));
     chromeOptions.setPageLoadTimeout(Duration.ofSeconds(2));
 
-    Map<String, Number> expectedTimeouts = new HashMap<>();
-    expectedTimeouts.put("implicit", 1000);
-    expectedTimeouts.put("pageLoad", 2000L);
-
-    assertThat(chromeOptions.asMap().get("timeouts")).isEqualTo(expectedTimeouts);
+    assertThat(chromeOptions.asMap().get("timeouts"))
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(Map.of("implicit", 1000, "pageLoad", 2000L));
   }
 
   @Test
@@ -313,8 +310,8 @@ class ChromeOptionsTest {
     browserCaps.setCapability("binary", binary.getPath());
     browserCaps.setCapability("opt1", "val1");
     browserCaps.setCapability("opt2", "val4");
-    browserCaps.setCapability("args", Arrays.asList("silent", "verbose"));
-    browserCaps.setCapability("extensions", Arrays.asList(ext1, ext2));
+    browserCaps.setCapability("args", List.of("silent", "verbose"));
+    browserCaps.setCapability("extensions", List.of(ext1, ext2));
 
     MutableCapabilities one = new MutableCapabilities();
     one.setCapability(ChromeOptions.CAPABILITY, browserCaps);
@@ -397,6 +394,6 @@ class ChromeOptionsTest {
     var caps = new MutableCapabilities();
     var merged = original.merge(caps);
 
-    assertEquals(original.asMap(), merged.asMap());
+    assertThat(merged.asMap()).containsExactlyInAnyOrderEntriesOf(original.asMap());
   }
 }

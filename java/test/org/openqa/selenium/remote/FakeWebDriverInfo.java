@@ -25,24 +25,26 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 
 @AutoService(WebDriverInfo.class)
 public class FakeWebDriverInfo implements WebDriverInfo {
 
+  static final String FAKE_BROWSER = "selenium-test";
+
   @Override
   public String getDisplayName() {
-    return "selenium-test";
+    return FAKE_BROWSER;
   }
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, "selenium-test");
+    return new ImmutableCapabilities(BROWSER_NAME, FAKE_BROWSER);
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return true;
+    return FAKE_BROWSER.equals(capabilities.getCapability(BROWSER_NAME));
   }
 
   @Override
@@ -71,13 +73,19 @@ public class FakeWebDriverInfo implements WebDriverInfo {
   }
 
   @Override
-  public Optional<WebDriver> createDriver(Capabilities capabilities)
+  public Optional<WebDriver> createDriver(Capabilities capabilities, ClientConfig clientConfig)
       throws SessionNotCreatedException {
 
-    return Optional.of(new FakeWebDriver());
+    return Optional.of(new FakeWebDriver(capabilities, clientConfig));
   }
 
   public static class FakeWebDriver extends RemoteWebDriver {
+    // For cglib
+    protected FakeWebDriver() {}
+
+    public FakeWebDriver(Capabilities capabilities, ClientConfig clientConfig) {
+      super(command -> null, capabilities, clientConfig);
+    }
 
     @Override
     protected void startSession(Capabilities capabilities) {

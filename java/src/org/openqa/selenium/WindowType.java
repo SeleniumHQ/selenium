@@ -17,11 +17,9 @@
 
 package org.openqa.selenium;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /** Represents the type of new browser window that may be created. */
-@NullMarked
 public enum WindowType {
   WINDOW("window"),
   TAB("tab"),

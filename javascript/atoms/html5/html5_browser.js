@@ -103,11 +103,11 @@ bot.html5.isSupported = function(api, opt_window) {
       if (bot.html5.IS_IE8_OR_EARLIER_) {
         return false;
       }
-      return goog.isDefAndNotNull(win.applicationCache);
+      return win.applicationCache != null;
 
     case bot.html5.API.BROWSER_CONNECTION:
-      return goog.isDefAndNotNull(win.navigator) &&
-          goog.isDefAndNotNull(win.navigator.onLine);
+      return win.navigator != null &&
+          win.navigator.onLine != null;
 
     case bot.html5.API.DATABASE:
       // Safari4 database API does not allow writes.
@@ -118,7 +118,7 @@ bot.html5.isSupported = function(api, opt_window) {
       if (bot.html5.IS_ANDROID_FROYO_OR_EARLIER_) {
         return false;
       }
-      return goog.isDefAndNotNull(win.openDatabase);
+      return win.openDatabase != null;
 
     case bot.html5.API.GEOLOCATION:
       // Safari 4,5 on Windows do not support geolocation, see:
@@ -126,25 +126,25 @@ bot.html5.isSupported = function(api, opt_window) {
       if (bot.html5.IS_SAFARI_WINDOWS_) {
         return false;
       }
-      return goog.isDefAndNotNull(win.navigator) &&
-          goog.isDefAndNotNull(win.navigator.geolocation);
+      return win.navigator != null &&
+          win.navigator.geolocation != null;
 
     case bot.html5.API.LOCAL_STORAGE:
       // IE8 does not support local storage, though the APIs exist.
       if (bot.html5.IS_IE8_OR_EARLIER_) {
         return false;
       }
-      return goog.isDefAndNotNull(win.localStorage);
+      return win.localStorage != null;
 
     case bot.html5.API.SESSION_STORAGE:
       // IE8 does not support session storage, though the APIs exist.
       if (bot.html5.IS_IE8_OR_EARLIER_) {
         return false;
       }
-      return goog.isDefAndNotNull(win.sessionStorage) &&
+      return win.sessionStorage != null &&
           // To avoid browsers that only support this API partially
           // like some versions of FF.
-          goog.isDefAndNotNull(win.sessionStorage.clear);
+          win.sessionStorage.clear != null;
 
     default:
       throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,

@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>focus_test.html</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
@@ -10,7 +14,6 @@
     goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
-    goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
   </script>
@@ -20,25 +23,20 @@
 
     var text1, text2, actualEvents, expectedEvents;
 
-    function setUp() {
+    QUnit.testStart(function() {
       actualEvents = [];
       expectedEvents = [];
 
       text1 = goog.dom.$('text1');
       text2 = goog.dom.$('text2');
 
-      // Make sure neither text1 nor text2 have focus. Since this could
-      // cause events to dispatch, we need to wait for them to do so
-      // before continuing. In IE, this means continuing in a timeout.
       bot.action.focusOnElement(goog.dom.$('dummyFocusHolder'));
-      return timeout();
-    }
+    });
 
-
-    function tearDown() {
+    QUnit.testDone(function() {
       events.removeAll(text1);
       events.removeAll(text2);
-    }
+    });
 
     function buildRecord(id, type) {
       return id + ': ' + type;
@@ -54,97 +52,94 @@
       expectedEvents.push(buildRecord(onElement.id, eventType));
     }
 
-    function assertHasExpectedEventOrder() {
-      assertArrayEquals(expectedEvents, actualEvents);
+    function assertHasExpectedEventOrder(assert) {
+      assert.deepEqual(actualEvents, expectedEvents);
     }
 
-    function assertElementIsActiveElement(expected) {
+    function assertElementIsActiveElement(assert, expected) {
       var actual = goog.dom.getActiveElement(document);
       if (actual) {
-        // NOTE(jleyba): Using assertEquals(expected, document.activeElement)
-        // causes an error in IE when the assertion fails (from trying to
-        // convert the DOM elements into strings for the error message):
-        //     "'constructor' is null or not an object".
-        // The following assertions give us the same check without this error.
         var msg = 'Expected "' + expected.id + '" to be the activeElement, ' +
                   'but was "' + actual.id + '".';
-        assertTrue(msg, expected == actual);
+        assert.ok(expected == actual, msg);
       }
     }
 
-    /**
-     * Pauses the test momentarily so IE can dispatch the onfocus event, which
-     * is scheduled for the next event loop after element.focus() is called.
-     */
     function timeout() {
       return new goog.Promise(function(done) {
         setTimeout(done, 5);
       });
     }
 
-    function testShouldBeAbleToFocusOnAnElement() {
-      // NOTE(jleyba): Test does not work on IE 8 with the new IE Driver,
-      // I suspect due to something similar to
-      // http://support.microsoft.com/kb/973528
+    QUnit.test('should be able to focus on an element', function(assert) {
       if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('8')) {
+        assert.ok(true, 'Skipping: IE 8+ issue');
         return;
       }
       if (!bot.test.isWindowFocused()) {
+        assert.ok(true, 'Skipping: window not focused');
         return;
       }
+      var done = assert.async();
       recordBlurAndFocus(text1);
       recordBlurAndFocus(text2);
 
       expect(eventType.FOCUS, text1);
       bot.action.focusOnElement(text1);
-      return timeout().then(function() {
-        assertHasExpectedEventOrder();
-        assertElementIsActiveElement(text1);
+      timeout().then(function() {
+        assertHasExpectedEventOrder(assert);
+        assertElementIsActiveElement(assert, text1);
 
         expect(eventType.BLUR, text1);
         expect(eventType.FOCUS, text2);
         bot.action.focusOnElement(text2);
         return timeout();
       }).then(function() {
-        assertHasExpectedEventOrder();
-        assertElementIsActiveElement(text2);
+        assertHasExpectedEventOrder(assert);
+        assertElementIsActiveElement(assert, text2);
 
         expect(eventType.BLUR, text2);
         expect(eventType.FOCUS, text1);
         bot.action.focusOnElement(text1);
         return timeout();
       }).then(function() {
-        assertHasExpectedEventOrder();
-        assertElementIsActiveElement(text1);
+        assertHasExpectedEventOrder(assert);
+        assertElementIsActiveElement(assert, text1);
+        done();
       });
-    }
+    });
 
-    function testShouldRetainFocusIfElementIsAlreadyActive() {
+    QUnit.test('should retain focus if element is already active', function(assert) {
       if (!bot.test.isWindowFocused()) {
+        assert.ok(true, 'Skipping: window not focused');
         return;
       }
+      var done = assert.async();
 
       recordBlurAndFocus(text1);
       recordBlurAndFocus(text2);
 
       expect(eventType.FOCUS, text1);
       bot.action.focusOnElement(text1);
-      return timeout().then(function() {
-        assertHasExpectedEventOrder();
-        assertElementIsActiveElement(text1);
+      timeout().then(function() {
+        assertHasExpectedEventOrder(assert);
+        assertElementIsActiveElement(assert, text1);
 
         bot.action.focusOnElement(text1);
         return timeout();
       }).then(function() {
-        assertHasExpectedEventOrder();
-        assertElementIsActiveElement(text1);
+        assertHasExpectedEventOrder(assert);
+        assertElementIsActiveElement(assert, text1);
+        done();
       });
-    }
+    });
 
-    function testShouldRetainFocusIfFirstFocusableAncestorIsAlreadyActive() {
+    QUnit.test('should retain focus if first focusable ancestor is already active', function(assert) {
       if (!bot.test.isWindowFocused()) {
+        assert.ok(true, 'Skipping: window not focused');
         return;
       }
+      var done = assert.async();
 
       var parent = document.getElementById('hideOnBlur');
       var child = document.getElementById('hideOnBlurChild');
@@ -152,46 +147,46 @@
 
       expect(eventType.FOCUS, parent);
       bot.action.focusOnElement(parent);
-      return timeout().then(function() {
-        assertHasExpectedEventOrder();
-        assertElementIsActiveElement(parent);
+      timeout().then(function() {
+        assertHasExpectedEventOrder(assert);
+        assertElementIsActiveElement(assert, parent);
 
         bot.action.focusOnElement(child);
-        // No additional events expected. The parent should retain focus.
         return timeout();
       }).then(function() {
-        assertHasExpectedEventOrder();
-        assertElementIsActiveElement(parent);
+        assertHasExpectedEventOrder(assert);
+        assertElementIsActiveElement(assert, parent);
 
         bot.action.focusOnElement(text1);
         expect(eventType.BLUR, parent);
         return timeout();
       }).then(function() {
-        assertHasExpectedEventOrder();
+        assertHasExpectedEventOrder(assert);
+        done();
       });
-    }
+    });
 
-    function testFocusOnHiddenElementThrows() {
+    QUnit.test('focus on hidden element throws', function(assert) {
       var element = document.getElementById('invisibleText');
-      assertThrows(goog.partial(bot.action.focusOnElement, element));
-    }
+      assert.throws(function() { bot.action.focusOnElement(element); });
+    });
 
-    function testFocusOnDisabledElementThrows() {
+    QUnit.test('focus on disabled element throws', function(assert) {
       var element = document.getElementById('disabledText');
-      assertThrows(goog.partial(bot.action.focusOnElement, element));
-    }
+      assert.throws(function() { bot.action.focusOnElement(element); });
+    });
 
-    function testIsFocusable() {
+    QUnit.test('is focusable', function(assert) {
       if (goog.userAgent.IE) {
-        // TODO: Don't skip this.
+        assert.ok(true, 'Skipping: IE issue');
         return;
       }
       function assertIsFocusable(element, opt_reason) {
-        assertTrue(opt_reason || '', bot.dom.isFocusable(element));
+        assert.ok(bot.dom.isFocusable(element), opt_reason || '');
       }
 
       function assertNotFocusable(element, opt_reason) {
-        assertFalse(opt_reason || '', bot.dom.isFocusable(element));
+        assert.notOk(bot.dom.isFocusable(element), opt_reason || '');
       }
 
       goog.array.forEach(bot.dom.FOCUSABLE_FORM_FIELDS_, function(tagName) {
@@ -206,20 +201,22 @@
       assertIsFocusable(div, 'has a tab index of 0');
 
       div.tabIndex = -1;
-      assertEquals('-1', bot.dom.getAttribute(div, 'tabindex'));
+      assert.strictEqual(bot.dom.getAttribute(div, 'tabindex'), '-1');
       assertNotFocusable(div, 'has a negative tab index');
 
       div.tabIndex = 2;
-      assertEquals('2', bot.dom.getAttribute(div, 'tabindex'));
+      assert.strictEqual(bot.dom.getAttribute(div, 'tabindex'), '2');
       assertIsFocusable(div, 'has a tab index of 2');
 
       div.removeAttribute('tabindex');
-      assertNull(bot.dom.getAttribute(div, 'tabindex'));
+      assert.strictEqual(bot.dom.getAttribute(div, 'tabindex'), null);
       assertNotFocusable(div, 'tab index was removed');
-    }
+    });
   </script>
 </head>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 <form action="javascript:void(0)">
   <input id="text1" type="text"/>
   <input id="text2" type="text"/>

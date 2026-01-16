@@ -25,11 +25,13 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.concurrent.Lazy;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
+import org.openqa.selenium.remote.RemoteExecuteMethod;
 
 @SuppressWarnings({"rawtypes", "RedundantSuppression"})
 @AutoService(AugmenterProvider.class)
@@ -48,7 +50,7 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   @Override
   public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
-    final Lazy<DevTools> devTools = lazy(() -> establishDevToolsConnection(caps));
+    final Lazy<DevTools> devTools = lazy(() -> establishDevToolsConnection(caps, executeMethod));
 
     LOG.log(
         INFO,
@@ -68,16 +70,18 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
     };
   }
 
-  private DevTools establishDevToolsConnection(Capabilities caps) {
+  private DevTools establishDevToolsConnection(Capabilities caps, ExecuteMethod executeMethod) {
     Object cdpVersion = caps.getCapability("se:cdpVersion");
     String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
 
     CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
-    return SeleniumCdpConnection.create(caps)
+    return SeleniumCdpConnection.create(
+            caps, ((RemoteExecuteMethod) executeMethod).getWrappedDriver().getClientConfig())
         .map(conn -> new DevTools(info::getDomains, conn))
         .orElseThrow(() -> new DevToolsException("Unable to create DevTools connection"));
   }
 
+  @Nullable
   private String getCdpUrl(Capabilities caps) {
     Object cdpEnabled = caps.getCapability("se:cdpEnabled");
     if (cdpEnabled != null && !Boolean.parseBoolean(cdpEnabled.toString())) {

@@ -27,14 +27,11 @@ using System.Text.Json.Serialization;
 namespace OpenQA.Selenium.BiDi.Input;
 
 [JsonConverter(typeof(InputSourceActionsConverter))]
-public abstract record SourceActions
-{
-    public string Id { get; } = Guid.NewGuid().ToString();
-}
+public abstract record SourceActions(string Id);
 
 public interface ISourceAction;
 
-public abstract record SourceActions<T> : SourceActions, IEnumerable<ISourceAction> where T : ISourceAction
+public abstract record SourceActions<T>(string Id) : SourceActions(Id), IEnumerable<ISourceAction> where T : ISourceAction
 {
     public IList<ISourceAction> Actions { get; set; } = [];
 
@@ -51,7 +48,7 @@ public abstract record SourceActions<T> : SourceActions, IEnumerable<ISourceActi
 [JsonDerivedType(typeof(UpKey), "keyUp")]
 public interface IKeySourceAction : ISourceAction;
 
-public sealed record KeyActions : SourceActions<IKeySourceAction>
+public sealed record KeyActions(string Id) : SourceActions<IKeySourceAction>(Id)
 {
     public KeyActions Type(string text)
     {
@@ -72,7 +69,7 @@ public sealed record KeyActions : SourceActions<IKeySourceAction>
 [JsonDerivedType(typeof(MovePointer), "pointerMove")]
 public interface IPointerSourceAction : ISourceAction;
 
-public sealed record PointerActions : SourceActions<IPointerSourceAction>
+public sealed record PointerActions(string Id) : SourceActions<IPointerSourceAction>(Id)
 {
     public PointerParameters? Options { get; set; }
 }
@@ -82,13 +79,13 @@ public sealed record PointerActions : SourceActions<IPointerSourceAction>
 [JsonDerivedType(typeof(ScrollWheel), "scroll")]
 public interface IWheelSourceAction : ISourceAction;
 
-public sealed record WheelActions : SourceActions<IWheelSourceAction>;
+public sealed record WheelActions(string Id) : SourceActions<IWheelSourceAction>(Id);
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
 [JsonDerivedType(typeof(Pause), "pause")]
 public interface INoneSourceAction : ISourceAction;
 
-public sealed record NoneActions : SourceActions<None>;
+public sealed record NoneActions(string Id) : SourceActions<INoneSourceAction>(Id);
 
 public abstract record Key : IKeySourceAction;
 

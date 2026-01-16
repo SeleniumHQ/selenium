@@ -32,7 +32,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -45,7 +44,6 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 class NetworkInterceptorRestTest extends JupiterTestBase {
 
   private NettyAppServer appServer;
-  private WebDriver driver;
   private NetworkInterceptor interceptor;
 
   @BeforeAll
@@ -57,10 +55,11 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
 
   @BeforeEach
   public void setup() {
-    driver = new WebDriverBuilder().get(Objects.requireNonNull(Browser.detect()).getCapabilities());
+    localDriver =
+        new WebDriverBuilder().get(Objects.requireNonNull(Browser.detect()).getCapabilities());
 
-    assumeThat(driver).isInstanceOf(HasDevTools.class);
-    assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
+    assumeThat(localDriver).isInstanceOf(HasDevTools.class);
+    assumeThat(isFirefoxVersionOlderThan(87, localDriver)).isFalse();
 
     Route route =
         Route.matching(req -> req.getMethod() == HttpMethod.OPTIONS)
@@ -79,14 +78,14 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
 
   @AfterEach
   public void tearDown() {
-    safelyCall(() -> interceptor.close(), () -> driver.quit(), () -> appServer.stop());
+    safelyCall(() -> interceptor.close(), () -> appServer.stop());
   }
 
   private void assertRequest(HttpMethod method, boolean withBody) throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor =
         new NetworkInterceptor(
-            driver,
+            localDriver,
             Route.matching(
                     req -> req.getMethod() == method || req.getMethod() == HttpMethod.OPTIONS)
                 .to(
@@ -107,7 +106,7 @@ class NetworkInterceptorRestTest extends JupiterTestBase {
                               .setContent(utf8String("Received response for " + method));
                         }));
 
-    JavascriptExecutor js = (JavascriptExecutor) driver;
+    JavascriptExecutor js = (JavascriptExecutor) localDriver;
     String script =
         "var url = arguments[0];"
             + "var callback = arguments[arguments.length - 1];"

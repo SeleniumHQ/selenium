@@ -18,8 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.firefox.FirefoxAssumptions.assumeDefaultBrowserLocationUsed;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
@@ -47,7 +45,7 @@ class FirefoxDriverBuilderTest extends JupiterTestBase {
     Capabilities capabilities = firefoxDriver.getCapabilities();
 
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
-    assertTrue((Boolean) capabilities.getCapability("acceptInsecureCerts"));
+    assertThat((Boolean) capabilities.getCapability("acceptInsecureCerts")).isTrue();
     assertThat(capabilities.getCapability("browserName")).isEqualTo("firefox");
   }
 
@@ -62,13 +60,13 @@ class FirefoxDriverBuilderTest extends JupiterTestBase {
   }
 
   @Test
-  void builderWithClientConfigThrowsException() {
+  void canUseCustomClientConfigWithLocalWebDriver() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder =
         FirefoxDriver.builder().oneOf(getDefaultOptions()).config(clientConfig);
 
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(builder::build)
-        .withMessage("ClientConfig instances do not work for Local Drivers");
+    localDriver = builder.build();
+    assertThat(localDriver).isInstanceOf(FirefoxDriver.class);
+    assertThat(localDriver).extracting("clientConfig").isEqualTo(clientConfig);
   }
 }

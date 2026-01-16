@@ -17,33 +17,30 @@
 
 import shutil
 from collections.abc import Mapping, Sequence
+from typing import IO, Any
 
 from selenium.webdriver.common import service
 
-DEFAULT_EXECUTABLE_PATH = shutil.which("WPEWebDriver")
+DEFAULT_EXECUTABLE_PATH: str | None = shutil.which("WPEWebDriver")
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping of `WPEWebDriver`.
+    """Service class that is responsible for the starting and stopping of `WPEWebDriver`.
 
     Args:
-        executable_path: Install path of the WPEWebDriver executable, defaults
-            to the first `WPEWebDriver` in `$PATH`.
-        port: Port for the service to run on, defaults to 0 where the
-            operating system will decide.
-        service_args: (Optional) Sequence of args to be passed to the
-            subprocess when launching the executable.
-        log_output: (Optional) File path for the file to be opened and passed
-            as the subprocess stdout/stderr handler.
-        env: (Optional) Mapping of environment variables for the new process,
-            defaults to `os.environ`.
+        executable_path: (Optional) Install path of the WPEWebDriver executable, defaults to the first `WPEWebDriver`
+            in `$PATH`.
+        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.
+        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.
+        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        executable_path: str | None = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
-        log_output: str | None = None,
+        log_output: int | str | IO[Any] | None = None,
         service_args: Sequence[str] | None = None,
         env: Mapping[str, str] | None = None,
         **kwargs,

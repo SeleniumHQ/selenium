@@ -14,11 +14,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   check:
     name: Check
     if: >
-      github.repository_owner == 'seleniumhq' &&
+      github.event.repository.fork == false &&
         (startsWith(github.head_ref, 'renovate/') != true || github.event_name == 'workflow_call')
     runs-on: ubuntu-latest
     outputs:
@@ -29,7 +32,7 @@ jobs:
         with:
           fetch-depth: 50
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.18.0
         with:
           bazelisk-cache: true
           cache-version: 2
@@ -38,7 +41,7 @@ jobs:
             manifest:
               crates: rust/Cargo.Bazel.lock
               rules_ruby~~ruby~ruby: rb/.ruby-version
-          repository-cache: true
+          repository-cache: false
       - name: Check Bazel targets
         id: check-targets
         run: ./scripts/github-actions/check-bazel-targets.sh

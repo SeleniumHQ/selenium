@@ -19,6 +19,7 @@
 
 using OpenQA.Selenium.BiDi.Network;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.BiDi.BrowsingContext;
@@ -77,6 +78,16 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
             new() { Contexts = [context] }).ConfigureAwait(false);
 
         return interception;
+    }
+
+    public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, BrowsingContextAddDataCollectorOptions? options = null)
+    {
+        AddDataCollectorOptions addDataCollectorOptions = new(options)
+        {
+            Contexts = [context]
+        };
+
+        return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, addDataCollectorOptions);
     }
 
     public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)

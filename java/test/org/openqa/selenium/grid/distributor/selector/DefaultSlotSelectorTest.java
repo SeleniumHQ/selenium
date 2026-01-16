@@ -17,25 +17,25 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.Collections.unmodifiableSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Sets.sequencedSetOf;
+import static org.openqa.selenium.internal.Sets.toSequencedSet;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -93,27 +93,26 @@ class DefaultSlotSelectorTest {
 
     NodeStatus node1 =
         createNodeWithStereotypes(
-            Arrays.asList(
-                ImmutableMap.of("browserName", "chrome", "browserVersion", "131.0"),
-                ImmutableMap.of("browserName", "chrome", "browserVersion", "132.0")));
+            List.of(
+                Map.of("browserName", "chrome", "browserVersion", "131.0"),
+                Map.of("browserName", "chrome", "browserVersion", "132.0")));
     NodeStatus node2 =
         createNodeWithStereotypes(
-            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "131.0")));
+            List.of(Map.of("browserName", "chrome", "browserVersion", "131.0")));
     NodeStatus node3 =
-        createNodeWithStereotypes(
-            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "")));
+        createNodeWithStereotypes(List.of(Map.of("browserName", "chrome", "browserVersion", "")));
     NodeStatus node4 =
         createNodeWithStereotypes(
-            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "131.1")));
+            List.of(Map.of("browserName", "chrome", "browserVersion", "131.1")));
     NodeStatus node5 =
         createNodeWithStereotypes(
-            List.of(ImmutableMap.of("browserName", "chrome", "browserVersion", "beta")));
-    Set<NodeStatus> nodes = ImmutableSet.of(node1, node2, node3, node4, node5);
+            List.of(Map.of("browserName", "chrome", "browserVersion", "beta")));
+    Set<NodeStatus> nodes = sequencedSetOf(node1, node2, node3, node4, node5);
 
     Set<SlotId> slots = selector.selectSlot(caps, nodes, new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+    Set<NodeId> nodeIds =
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds)
         .containsSequence(
@@ -139,8 +138,8 @@ class DefaultSlotSelectorTest {
 
     Set<SlotId> slots = selector.selectSlot(caps, nodes, new DefaultSlotMatcher());
 
-    ImmutableSet<NodeId> nodeIds =
-        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+    Set<NodeId> nodeIds =
+        slots.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
 
     assertThat(nodeIds)
         .containsSequence(
@@ -163,7 +162,7 @@ class DefaultSlotSelectorTest {
 
     Set<SlotId> ids =
         selector.selectSlot(
-            caps, ImmutableSet.of(heavy, medium, lightest, massive), new DefaultSlotMatcher());
+            caps, sequencedSetOf(heavy, medium, lightest, massive), new DefaultSlotMatcher());
     SlotId expected = ids.iterator().next();
 
     assertThat(lightest.getSlots().stream()).anyMatch(slot -> expected.equals(slot.getId()));
@@ -173,13 +172,13 @@ class DefaultSlotSelectorTest {
   void theNodeWhichHasExceededMaxSessionsIsNotSelected() {
     Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
 
-    NodeStatus lightLoad = createNode(ImmutableList.of(chrome), 12, 2);
-    NodeStatus mediumLoad = createNode(ImmutableList.of(chrome), 12, 5);
-    NodeStatus maximumLoad = createNode(ImmutableList.of(chrome), 12, 12);
+    NodeStatus lightLoad = createNode(List.of(chrome), 12, 2);
+    NodeStatus mediumLoad = createNode(List.of(chrome), 12, 5);
+    NodeStatus maximumLoad = createNode(List.of(chrome), 12, 12);
 
     Set<SlotId> ids =
         selector.selectSlot(
-            chrome, ImmutableSet.of(maximumLoad, mediumLoad, lightLoad), new DefaultSlotMatcher());
+            chrome, sequencedSetOf(maximumLoad, mediumLoad, lightLoad), new DefaultSlotMatcher());
     SlotId expected = ids.iterator().next();
 
     // The slot should belong to the Node with light load
@@ -188,8 +187,8 @@ class DefaultSlotSelectorTest {
     // The node whose current number of sessions is greater than or equal to the max sessions is not
     // included
     // Hence, the node with the maximum load is skipped
-    ImmutableSet<NodeId> nodeIds =
-        ids.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+    Set<NodeId> nodeIds =
+        ids.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
     assertThat(nodeIds).doesNotContain(maximumLoad.getNodeId());
     assertThat(nodeIds).containsSequence(lightLoad.getNodeId(), mediumLoad.getNodeId());
   }
@@ -200,16 +199,15 @@ class DefaultSlotSelectorTest {
     Capabilities firefox = new ImmutableCapabilities("browserName", "firefox");
     Capabilities safari = new ImmutableCapabilities("browserName", "safari");
 
-    NodeStatus lightLoadAndThreeBrowsers =
-        createNode(ImmutableList.of(chrome, firefox, safari), 12, 2);
-    NodeStatus mediumLoadAndTwoBrowsers = createNode(ImmutableList.of(chrome, firefox), 12, 5);
-    NodeStatus mediumLoadAndOtherTwoBrowsers = createNode(ImmutableList.of(safari, chrome), 12, 6);
-    NodeStatus highLoadAndOneBrowser = createNode(ImmutableList.of(chrome), 12, 8);
+    NodeStatus lightLoadAndThreeBrowsers = createNode(List.of(chrome, firefox, safari), 12, 2);
+    NodeStatus mediumLoadAndTwoBrowsers = createNode(List.of(chrome, firefox), 12, 5);
+    NodeStatus mediumLoadAndOtherTwoBrowsers = createNode(List.of(safari, chrome), 12, 6);
+    NodeStatus highLoadAndOneBrowser = createNode(List.of(chrome), 12, 8);
 
     Set<SlotId> ids =
         selector.selectSlot(
             chrome,
-            ImmutableSet.of(
+            sequencedSetOf(
                 lightLoadAndThreeBrowsers,
                 mediumLoadAndTwoBrowsers,
                 mediumLoadAndOtherTwoBrowsers,
@@ -225,8 +223,8 @@ class DefaultSlotSelectorTest {
     // Nodes are ordered by the diversity of supported browsers, then by load
     // The node whose current number of sessions is greater than or equal to the max sessions is not
     // included
-    ImmutableSet<NodeId> nodeIds =
-        ids.stream().map(SlotId::getOwningNodeId).distinct().collect(toImmutableSet());
+    Set<NodeId> nodeIds =
+        ids.stream().map(SlotId::getOwningNodeId).distinct().collect(toSequencedSet());
     assertThat(nodeIds)
         .containsSequence(
             highLoadAndOneBrowser.getNodeId(),
@@ -263,12 +261,12 @@ class DefaultSlotSelectorTest {
         nodeId,
         uri,
         count,
-        ImmutableSet.copyOf(slots),
+        unmodifiableSet(slots),
         UP,
         Duration.ofSeconds(10),
         Duration.ofSeconds(300),
         "4.0.0",
-        ImmutableMap.of(
+        Map.of(
             "name", "Max OS X",
             "arch", "x86_64",
             "version", "10.15.7"));
@@ -280,7 +278,7 @@ class DefaultSlotSelectorTest {
         LocalNode.builder(tracer, bus, uri, uri, new Secret("cornish yarg"));
     nodeBuilder.maximumConcurrentSessions(browsers.length);
 
-    Arrays.stream(browsers)
+    Stream.of(browsers)
         .forEach(
             browser -> {
               Capabilities caps = new ImmutableCapabilities("browserName", browser);
@@ -291,7 +289,7 @@ class DefaultSlotSelectorTest {
     return myNode.getStatus();
   }
 
-  private NodeStatus createNodeWithStereotypes(List<ImmutableMap> stereotypes) {
+  private NodeStatus createNodeWithStereotypes(List<Map<?, ?>> stereotypes) {
     URI uri = createUri();
     LocalNode.Builder nodeBuilder =
         LocalNode.builder(tracer, bus, uri, uri, new Secret("cornish yarg"));

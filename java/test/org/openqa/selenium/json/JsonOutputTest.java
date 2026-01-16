@@ -19,21 +19,21 @@ package org.openqa.selenium.json;
 
 import static java.lang.Integer.valueOf;
 import static java.time.format.DateTimeFormatter.ISO_INSTANT;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.internal.Sets.sortedSetOf;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.logging.LogType.BROWSER;
 import static org.openqa.selenium.logging.LogType.CLIENT;
 import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.logging.LogType.SERVER;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -45,16 +45,16 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -102,9 +102,10 @@ class JsonOutputTest {
 
   @Test
   void shouldConvertAMapIntoAJsonObject() {
-    Map<String, String> toConvert = new HashMap<>();
-    toConvert.put("cheese", "cheddar");
-    toConvert.put("fish", "nice bit of haddock");
+    Map<String, String> toConvert =
+        Map.of(
+            "cheese", "cheddar",
+            "fish", "nice bit of haddock");
 
     String json = convert(toConvert);
 
@@ -128,7 +129,7 @@ class JsonOutputTest {
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
     JsonArray allNames = converted.get("names").getAsJsonArray();
-    assertThat(allNames).hasSize(3);
+    assertThat(arrayAsString(allNames)).containsExactly("peter", "paul", "mary");
   }
 
   @Test
@@ -137,7 +138,7 @@ class JsonOutputTest {
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
     JsonArray allNames = converted.get("something").getAsJsonArray();
-    assertThat(allNames).hasSize(2);
+    assertThat(arrayAsInt(allNames)).containsExactlyInAnyOrder(1, 43, 99, 20, 6, 7, 999);
   }
 
   @Test
@@ -243,7 +244,7 @@ class JsonOutputTest {
 
     MutableCapabilities caps = new DesiredCapabilities("foo", "1", Platform.LINUX);
     caps.setCapability(CapabilityType.PROXY, proxy);
-    Map<String, ?> asMap = ImmutableMap.of("desiredCapabilities", caps);
+    Map<String, ?> asMap = Map.of("desiredCapabilities", caps);
     Command command = new Command(new SessionId("empty"), DriverCommand.NEW_SESSION, asMap);
 
     String json = convert(command.getParameters());
@@ -272,7 +273,7 @@ class JsonOutputTest {
     class ToJsonReturnsMap {
       @SuppressWarnings("unused")
       public Map<String, Object> toJson() {
-        return ImmutableMap.of("cheese", "peas");
+        return Map.of("cheese", "peas");
       }
     }
 
@@ -288,7 +289,7 @@ class JsonOutputTest {
     class ToJsonReturnsCollection {
       @SuppressWarnings("unused")
       public Set<String> toJson() {
-        return ImmutableSortedSet.of("cheese", "peas");
+        return sortedSetOf("cheese", "peas");
       }
     }
 
@@ -308,7 +309,7 @@ class JsonOutputTest {
 
     Map<String, Object> value = new Json().toType(json, MAP_TYPE);
 
-    assertThat(value).isEqualTo(ImmutableMap.of("a key", "a value"));
+    assertThat(value).containsExactlyInAnyOrderEntriesOf(Map.of("a key", "a value"));
   }
 
   @Test
@@ -317,7 +318,7 @@ class JsonOutputTest {
 
     Map<String, Object> value = new Json().toType(json, MAP_TYPE);
 
-    assertThat(value).isEqualTo(ImmutableMap.of("a key", "a value"));
+    assertThat(value).containsExactlyInAnyOrderEntriesOf(Map.of("a key", "a value"));
   }
 
   @Test
@@ -365,7 +366,7 @@ class JsonOutputTest {
       }
       assertThat(json)
           .contains(
-              "\"lineNumber\": " + e.getLineNumber() + "",
+              "\"lineNumber\": " + e.getLineNumber(),
               "\"class\": \"" + e.getClass().getName() + "\"",
               "\"className\": \"" + e.getClassName() + "\"",
               "\"methodName\": \"" + e.getMethodName() + "\"");
@@ -413,7 +414,9 @@ class JsonOutputTest {
     RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
     Map<String, Object> obj = new Json().toType(new StringReader(convert(clientError)), Map.class);
     assertThat(obj).containsKey("alert");
-    assertThat(obj.get("alert")).isEqualTo(ImmutableMap.of("text", "cheese!"));
+    assertThat(obj.get("alert"))
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(Map.of("text", "cheese!"));
   }
 
   @Test
@@ -485,6 +488,7 @@ class JsonOutputTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void convertLoggingPreferencesToJson() {
     LoggingPreferences prefs = new LoggingPreferences();
     prefs.enable(LogType.BROWSER, Level.WARNING);
@@ -518,7 +522,7 @@ class JsonOutputTest {
     long timestamp = new Date().getTime();
     final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
     final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
-    LogEntries entries = new LogEntries(asList(entry1, entry2));
+    LogEntries entries = new LogEntries(List.of(entry1, entry2));
 
     String json = convert(entries);
 
@@ -538,9 +542,10 @@ class JsonOutputTest {
   void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("some id");
     String commandName = "some command";
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put("param1", "value1");
-    parameters.put("param2", "value2");
+    Map<String, Object> parameters =
+        Map.of(
+            "param1", "value1",
+            "param2", "value2");
     Command command = new Command(sessionId, commandName, parameters);
 
     String json = convert(command);
@@ -551,19 +556,19 @@ class JsonOutputTest {
     JsonPrimitive sid = converted.get("sessionId").getAsJsonPrimitive();
     assertThat(sid.getAsString()).isEqualTo(sessionId.toString());
 
-    assertThat(commandName).isEqualTo(converted.get("name").getAsString());
+    assertThat(converted.get("name").getAsString()).isEqualTo(commandName);
 
     assertThat(converted.has("parameters")).isTrue();
     JsonObject pars = converted.get("parameters").getAsJsonObject();
     assertThat(pars.entrySet()).hasSize(2);
-    assertThat(pars.get("param1").getAsString()).isEqualTo(parameters.get("param1"));
-    assertThat(pars.get("param2").getAsString()).isEqualTo(parameters.get("param2"));
+    assertThat(pars.get("param1").getAsString()).isEqualTo("value1");
+    assertThat(pars.get("param2").getAsString()).isEqualTo("value2");
   }
 
   @Test
   void shouldConvertAUrlToAString() throws MalformedURLException {
     URL url = new URL("http://example.com/cheese?type=edam");
-    Map<String, URL> toConvert = ImmutableMap.of("url", url);
+    Map<String, URL> toConvert = Map.of("url", url);
 
     String seen = new Json().toJson(toConvert);
     JsonObject converted = JsonParser.parseString(seen).getAsJsonObject();
@@ -592,7 +597,9 @@ class JsonOutputTest {
     }
 
     assertThat((Object) new Json().toType(builder.toString(), Object.class))
-        .isEqualTo(Arrays.asList("brie", "peas"));
+        .isInstanceOf(List.class)
+        .asInstanceOf(LIST)
+        .containsExactly("brie", "peas");
   }
 
   @Test
@@ -609,13 +616,16 @@ class JsonOutputTest {
           .endObject();
     }
 
-    assertThat((Object) new Json().toType(builder.toString(), MAP_TYPE))
-        .isEqualTo(ImmutableMap.of("cheese", "brie", "vegetable", "peas"));
+    Map<String, String> parsedJson = new Json().toType(builder.toString(), MAP_TYPE);
+
+    assertThat(parsedJson)
+        .asInstanceOf(MAP)
+        .containsExactlyInAnyOrderEntriesOf(Map.of("cheese", "brie", "vegetable", "peas"));
   }
 
   @Test
   void whenConvertingObjectsContainingClassesDoNotBeNoisy() {
-    String json = convert(ImmutableMap.of("thing", SimpleBean.class));
+    String json = convert(Map.of("thing", SimpleBean.class));
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
@@ -627,9 +637,9 @@ class JsonOutputTest {
   @Test
   void canDisablePrettyPrintingToGetSingleLineOutput() {
     Map<String, Object> toEncode =
-        ImmutableMap.of(
-            "ary", Arrays.asList("one", "two"),
-            "map", ImmutableMap.of("cheese", "cheddar"),
+        Map.of(
+            "ary", List.of("one", "two"),
+            "map", Map.of("cheese", "cheddar"),
             "string", "This has a \nnewline in it");
 
     StringBuilder json = new StringBuilder();
@@ -651,8 +661,7 @@ class JsonOutputTest {
 
   @Test
   void shouldNotWriteOptionalFieldsThatAreEmptyInAMap() {
-    String json =
-        convert(ImmutableMap.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
+    String json = convert(Map.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
@@ -662,7 +671,7 @@ class JsonOutputTest {
 
   @Test
   void shouldNotWriteOptionalsThatAreNotPresentToAList() {
-    String json = convert(Arrays.asList(Optional.of("cheese"), Optional.empty()));
+    String json = convert(List.of(Optional.of("cheese"), Optional.empty()));
 
     JsonArray converted = JsonParser.parseString(json).getAsJsonArray();
 
@@ -828,10 +837,7 @@ class JsonOutputTest {
 
     @SuppressWarnings("unused")
     public Set<?> getSomething() {
-      Set<Integer> integers = new HashSet<>();
-      integers.add(1);
-      integers.add(43);
-      return integers;
+      return Set.of(1, 43, 99, 20, 6, 7, 999);
     }
   }
 
@@ -843,7 +849,7 @@ class JsonOutputTest {
     }
   }
 
-  class JsonAware {
+  private static class JsonAware {
     private final String convertedValue;
 
     public JsonAware(String convertedValue) {
@@ -855,7 +861,7 @@ class JsonOutputTest {
     }
   }
 
-  class MappableJsonAware {
+  private static class MappableJsonAware {
     private final String convertedValue;
 
     public MappableJsonAware(String convertedValue) {
@@ -867,11 +873,11 @@ class JsonOutputTest {
     }
 
     public Map<String, Object> asMap() {
-      return ImmutableMap.of("key", "value");
+      return Map.of("key", "value");
     }
   }
 
-  class Mappable1 {
+  private static class Mappable1 {
     private final String key;
     private final Object value;
 
@@ -881,11 +887,11 @@ class JsonOutputTest {
     }
 
     public Map<String, Object> asMap() {
-      return ImmutableMap.of(key, value);
+      return Map.of(key, value);
     }
   }
 
-  class Mappable2 {
+  private static class Mappable2 {
     private final String key;
     private final Object value;
 
@@ -895,7 +901,19 @@ class JsonOutputTest {
     }
 
     public Map<String, Object> toMap() {
-      return ImmutableMap.of(key, value);
+      return Map.of(key, value);
     }
+  }
+
+  private static List<String> arrayAsString(JsonArray array) {
+    return StreamSupport.stream(array.spliterator(), false)
+        .map(e -> e.getAsString())
+        .collect(Collectors.toList());
+  }
+
+  private static List<Integer> arrayAsInt(JsonArray array) {
+    return StreamSupport.stream(array.spliterator(), false)
+        .map(e -> e.getAsInt())
+        .collect(Collectors.toList());
   }
 }

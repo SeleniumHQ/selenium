@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>bot.action + editor test</title>
+  <link rel="stylesheet" href="/filez/_main/third_party/js/qunit/qunit.css">
+  <script src="/filez/_main/third_party/js/qunit/qunit.js"></script>
+  <script src="/filez/_main/third_party/js/qunit/qunit_test_runner.js"></script>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
     goog.require('bot.action');
@@ -11,7 +15,6 @@
     goog.require('goog.events');
     goog.require('goog.ui.Component.EventType');
     goog.require('goog.ui.editor.DefaultToolbar');
-    goog.require('goog.testing.jsunit');
 
     function addStyleSheet(path) {
       document.write(
@@ -26,6 +29,8 @@
   </script>
 </head>
 <body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 <div id='toolbar' style='width:602px'></div>
 
   <script type="text/javascript">
@@ -34,21 +39,21 @@
   ], goog.dom.getElement('toolbar'));
   var bgColorMenu = toolbar.getChildAt(0);
 
-  function testCanInteractWithColorbuttonMenu_toolbarIsFocusable() {
+  QUnit.test('can interact with colorbutton menu toolbar is focusable', function(assert) {
     toolbar.setFocusable(true);
-    runColorButtonMenuInteractionTest();
-  }
+    runColorButtonMenuInteractionTest(assert);
+  });
 
-  function testCanInteractWithColorbuttonMenu_toolbarNotIsFocusable() {
+  QUnit.test('can interact with colorbutton menu toolbar not is focusable', function(assert) {
     toolbar.setFocusable(false);
-    runColorButtonMenuInteractionTest();
-  }
+    runColorButtonMenuInteractionTest(assert);
+  });
 
-  function runColorButtonMenuInteractionTest() {
+  function runColorButtonMenuInteractionTest(assert) {
     bgColorMenu.setValue('#FFF');
 
     bot.action.click(bgColorMenu.getElement());
-    assertTrue('Menu not opened', bgColorMenu.isOpen());
+    assert.ok(bgColorMenu.isOpen(), 'Menu not opened');
 
     var actionFired = false;
     goog.events.listenOnce(toolbar, goog.ui.Component.EventType.ACTION,
@@ -56,22 +61,22 @@
       actionFired = true;
     });
 
-    bot.action.click(getRedSwatch());
+    bot.action.click(getRedSwatch(assert));
 
-    assertTrue('Action event not fired!', actionFired);
+    assert.ok(actionFired, 'Action event not fired!');
   }
 
-  function getRedSwatch() {
+  function getRedSwatch(assert) {
     var colorMenu = bgColorMenu.getMenu();
     var solidPalette = colorMenu.getChildAt(1);
 
     var redSwatch = bot.locators.findElement(
         {className: 'goog-palette-colorswatch'},
         solidPalette.getElement());
-    assertNotNull(redSwatch);
+    assert.ok(redSwatch !== null, 'Red swatch should not be null');
 
     var color = bot.dom.getEffectiveStyle(redSwatch, 'background-color');
-    assertEquals('rgba(255, 0, 0, 1)', color);
+    assert.strictEqual(color, 'rgba(255, 0, 0, 1)');
     return redSwatch;
   }
   </script>

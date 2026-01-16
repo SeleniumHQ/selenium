@@ -46,6 +46,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
@@ -482,7 +483,8 @@ public class DriverService implements Closeable {
         return;
       }
 
-      String logLocation = System.getProperty(logProperty, LOG_NULL);
+      String defaultLocation = Debug.isDebugAll() ? LOG_STDERR : LOG_NULL;
+      String logLocation = System.getProperty(logProperty, defaultLocation);
       switch (logLocation) {
         case LOG_STDOUT:
           withLogOutput(System.out);

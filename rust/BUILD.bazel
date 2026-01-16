@@ -91,6 +91,10 @@ rust_library(
         ["src/**/*.rs"],
         exclude = ["main.rs"],
     ),
+    crate_features = select({
+        "//common:stamp": [],
+        "//conditions:default": ["avoid_stats"],
+    }),
     edition = "2024",
     visibility = ["//rust:__subpackages__"],
     deps = all_crate_deps(normal = True),

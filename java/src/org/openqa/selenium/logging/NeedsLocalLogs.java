@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.logging;
 
+/**
+ * Marker interface for executors that need local logs.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 public interface NeedsLocalLogs {
   void setLocalLogs(LocalLogs logs);
 }

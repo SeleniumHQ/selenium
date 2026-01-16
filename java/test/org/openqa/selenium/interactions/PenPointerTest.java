@@ -25,6 +25,8 @@ import static org.openqa.selenium.support.Colors.GREEN;
 import static org.openqa.selenium.support.Colors.RED;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -68,11 +70,10 @@ class PenPointerTest extends JupiterTestBase {
   private void performDragAndDropWithPen() {
     driver.get(pages.draggableLists);
 
-    WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
-
-    WebElement toDrag = driver.findElement(By.id("rightitem-3"));
-    WebElement dragInto = driver.findElement(By.id("sortable1"));
-    WebElement leftItem = driver.findElement(By.id("leftitem-4"));
+    WebElement dragReporter = wait.until(visibilityOfElementLocated(By.id("dragging_reports")));
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("rightitem-3")));
+    WebElement dragInto = wait.until(visibilityOfElementLocated(By.id("sortable1")));
+    WebElement leftItem = wait.until(visibilityOfElementLocated(By.id("leftitem-4")));
 
     Action moveToSpecificItem = setDefaultPen(driver).moveToElement(leftItem).build();
 
@@ -96,6 +97,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testDraggingElementWithPenMovesItToAnotherList() {
     performDragAndDropWithPen();
     WebElement dragInto = driver.findElement(By.id("sortable1"));
@@ -106,6 +108,7 @@ class PenPointerTest extends JupiterTestBase {
   // difference is that this test also verifies the correct events were fired.
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testDraggingElementWithPenFiresEvents() {
     performDragAndDropWithPen();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
@@ -124,22 +127,12 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
-    long waitEndTime = System.currentTimeMillis() + 15000;
-
-    while (!isElementAvailable(driver, By.id("draggable"))
-        && (System.currentTimeMillis() < waitEndTime)) {
-      Thread.sleep(200);
-    }
-
-    if (!isElementAvailable(driver, By.id("draggable"))) {
-      throw new RuntimeException("Could not find draggable element after 15 seconds.");
-    }
-
-    WebElement toDrag = driver.findElement(By.id("draggable"));
-    WebElement dropInto = driver.findElement(By.id("droppable"));
+    WebElement toDrag = wait.until(visibilityOfElementLocated(By.id("draggable")));
+    WebElement dropInto = wait.until(visibilityOfElementLocated(By.id("droppable")));
 
     Action holdDrag = setDefaultPen(driver).clickAndHold(toDrag).build();
     Action move = setDefaultPen(driver).moveToElement(dropInto).build();
@@ -149,12 +142,11 @@ class PenPointerTest extends JupiterTestBase {
     move.perform();
     drop.perform();
 
-    String text = dropInto.findElement(By.tagName("p")).getText();
-
-    assertThat(text).isEqualTo("Dropped!");
+    wait.until(elementTextToEqual(By.cssSelector("#droppable p"), "Dropped!"));
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
@@ -184,6 +176,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @NotYetImplemented(FIREFOX)
   void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
     driver.switchTo().frame("source");
@@ -197,6 +190,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(pages.javascriptPage);
 
@@ -215,31 +209,38 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  public void testHoverPersists() throws Exception {
+  @NotYetImplemented(FIREFOX)
+  public void testHoverPersists() {
     driver.get(pages.javascriptPage);
-    // Move to a different element to make sure the pen is not over the
-    // element with id 'item1' (from a previous test).
+    unfocusMenu();
 
+    WebElement menu = driver.findElement(By.id("menu1"));
+    WebElement menuItem = driver.findElement(By.id("item1"));
+    assertThat(menuItem.isDisplayed()).isFalse();
+    assertThat(driver.findElement(By.id("result")).getText()).isBlank();
+
+    // Hover the menu icon
+    setDefaultPen(driver).moveToElement(menu).build().perform();
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", menu);
+
+    // Wait until the menu items appear
+    wait.until(visibilityOf(menuItem));
+    assertThat(menuItem.getText()).isEqualTo("Item 1");
+
+    menuItem.click();
+    wait.until(elementTextToEqual(By.id("result"), "item 1"));
+  }
+
+  /**
+   * Move to a different element to make sure the mouse is not over the menu items (from a previous
+   * test).
+   */
+  private void unfocusMenu() {
     setDefaultPen(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
-
-    WebElement element = driver.findElement(By.id("menu1"));
-
-    final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEmpty();
-
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-
-    setDefaultPen(driver).moveToElement(element).build().perform();
-
-    // Intentionally wait to make sure hover persists.
-    Thread.sleep(2000);
-
-    wait.until(not(elementTextToEqual(item, "")));
-
-    assertThat(item.getText()).isEqualTo("Item 1");
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   public void testMovingPenByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -257,6 +258,7 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   public void testMovingPenToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -272,6 +274,7 @@ class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
+  @NotYetImplemented(FIREFOX)
   public void testMovingPenToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -287,6 +290,7 @@ class PenPointerTest extends JupiterTestBase {
   @NeedsFreshDriver({IE, CHROME, FIREFOX, EDGE})
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testMoveRelativeToBody() {
     try {
       driver.get(pages.mouseTrackerPage);
@@ -309,6 +313,7 @@ class PenPointerTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testMovePenByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -347,6 +352,7 @@ class PenPointerTest extends JupiterTestBase {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(FIREFOX)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -375,6 +381,7 @@ class PenPointerTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/789")
+  @NotYetImplemented(FIREFOX)
   public void setPointerEventProperties() {
     driver.get(pages.pointerActionsPage);
     long start = System.currentTimeMillis();

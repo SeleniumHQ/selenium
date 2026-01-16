@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
@@ -37,6 +39,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -95,7 +98,7 @@ public class SeleniumExtension
     if (noDriverBeforeTest.isPresent()) {
       NoDriverBeforeTest annotation = noDriverBeforeTest.get();
       if (current.matches(annotation.value())) {
-        LOG.info("Destroying driver before test " + context.getDisplayName());
+        LOG.info(() -> "Destroying driver before test " + displayName(context));
         removeDriver();
         nullDriver = true;
         return;
@@ -106,19 +109,27 @@ public class SeleniumExtension
     if (needsFreshDriver.isPresent()) {
       NeedsFreshDriver annotation = needsFreshDriver.get();
       if (current.matches(annotation.value())) {
-        LOG.info("Restarting driver before test " + context.getDisplayName());
+        LOG.info(() -> "Restarting driver before test " + displayName(context));
         removeDriver();
       }
     }
 
     // TraceMethodNameRule.starting
-    LOG.info(">>> Starting " + context.getDisplayName());
+    LOG.info(() -> ">>> Starting " + displayName(context));
 
     // NotYetImplementedRule
     failedWithNotYetImplemented = false;
 
     // Remote builds
     failedWithRemoteBuild = false;
+  }
+
+  @NonNull
+  private static String displayName(ExtensionContext context) {
+    return context
+        .getTestClass()
+        .map(testClass -> testClass.getSimpleName() + '.' + context.getDisplayName())
+        .orElse(context.getDisplayName());
   }
 
   @Override
@@ -128,7 +139,7 @@ public class SeleniumExtension
     switchToTopRule.apply();
 
     // TraceMethodNameRule.finished
-    LOG.info("<<< Finished  " + context.getDisplayName());
+    LOG.info(() -> "<<< Finished  " + displayName(context));
 
     // CaptureLoggingRule
     captureLoggingRule.endLogCapture();
@@ -250,9 +261,9 @@ public class SeleniumExtension
       return null;
     }
 
-    LOG.info("CREATING DRIVER");
+    LOG.info(() -> "CREATING DRIVER");
     WebDriver driver = actuallyCreateDriver();
-    LOG.info("CREATED " + driver);
+    LOG.info(() -> "CREATED " + driver);
     return driver;
   }
 
@@ -291,10 +302,15 @@ public class SeleniumExtension
       return;
     }
 
-    try {
-      current.driver.quit();
-    } catch (RuntimeException ignored) {
-      // fall through
+    if (current.driver != null) {
+      try {
+        current.driver.quit();
+      } catch (NoSuchSessionException e) {
+        // Driver already quit
+      } catch (RuntimeException e) {
+        LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
+        // fall through
+      }
     }
 
     instances.remove();
@@ -307,8 +323,8 @@ public class SeleniumExtension
 
     public Instances(WebDriver driver, Duration regularWait, Duration shortWait) {
       this.driver = driver;
-      this.regularWait = new WebDriverWait(driver, regularWait);
-      this.shortWait = new WebDriverWait(driver, shortWait);
+      this.regularWait = new WebDriverWait(driver, regularWait, Duration.ofMillis(20));
+      this.shortWait = new WebDriverWait(driver, shortWait, Duration.ofMillis(20));
     }
   }
 

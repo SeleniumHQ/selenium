@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.bidi.input;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.openqa.selenium.WaitingConditions.elementToBeInViewport;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -27,7 +27,6 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.BiDiException;
@@ -65,11 +64,11 @@ class DefaultWheelTest extends JupiterTestBase {
         appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement iframe = driver.findElement(By.tagName("iframe"));
 
-    assertFalse(inViewport(iframe));
+    assertThat(elementToBeInViewport(iframe).apply(driver)).isFalse();
 
     input.perform("iframe", getBuilder(driver).scrollToElement(iframe).getSequences());
 
-    assertTrue(inViewport(iframe));
+    wait.until(elementToBeInViewport(iframe));
   }
 
   @Test
@@ -88,7 +87,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertTrue(inViewport(checkbox));
+    wait.until(elementToBeInViewport(checkbox));
     driver.switchTo().window(windowHandle);
   }
 
@@ -108,26 +107,28 @@ class DefaultWheelTest extends JupiterTestBase {
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertTrue(inViewport(checkbox));
+    wait.until(elementToBeInViewport(checkbox));
   }
 
   @Test
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   void throwErrorWhenElementOriginIsOutOfViewport() {
-    assertThrows(
-        BiDiException.class,
-        () -> {
-          driver.get(
-              appServer.whereIs(
-                  "scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
-          WebElement footer = driver.findElement(By.tagName("footer"));
-          WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, 50);
+    assertThatThrownBy(
+            () -> {
+              driver.get(
+                  appServer.whereIs(
+                      "scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
+              WebElement footer = driver.findElement(By.tagName("footer"));
+              WheelInput.ScrollOrigin scrollOrigin =
+                  WheelInput.ScrollOrigin.fromElement(footer, 0, 50);
 
-          input.perform(
-              windowHandle,
-              getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).getSequences());
-        });
+              input.perform(
+                  windowHandle,
+                  getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).getSequences());
+            })
+        .isInstanceOf(BiDiException.class)
+        .hasMessageContaining("move target out of bounds");
   }
 
   @NeedsFreshDriver
@@ -148,7 +149,7 @@ class DefaultWheelTest extends JupiterTestBase {
 
     wait.until(driver -> driver.findElement(By.name("nested_scrolling_frame")).isDisplayed());
 
-    assertTrue(inViewport(footer));
+    wait.until(elementToBeInViewport(footer));
   }
 
   @NeedsFreshDriver
@@ -168,33 +169,23 @@ class DefaultWheelTest extends JupiterTestBase {
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
     WebElement checkbox = driver.findElement(By.name("scroll_checkbox"));
-    assertTrue(inViewport(checkbox));
+    wait.until(elementToBeInViewport(checkbox));
     driver.switchTo().window(windowHandle);
   }
 
   @Test
   void throwErrorWhenOriginOffsetIsOutOfViewport() {
-    assertThrows(
-        BiDiException.class,
-        () -> {
-          driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
-          WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);
+    assertThatThrownBy(
+            () -> {
+              driver.get(
+                  appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
+              WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);
 
-          input.perform(
-              windowHandle,
-              getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).getSequences());
-        });
-  }
-
-  private boolean inViewport(WebElement element) {
-
-    String script =
-        "for(var e=arguments[0],f=e.offsetTop,t=e.offsetLeft,o=e.offsetWidth,n=e.offsetHeight;\n"
-            + "e.offsetParent;)f+=(e=e.offsetParent).offsetTop,t+=e.offsetLeft;\n"
-            + "return"
-            + " f<window.pageYOffset+window.innerHeight&&t<window.pageXOffset+window.innerWidth&&f+n>\n"
-            + "window.pageYOffset&&t+o>window.pageXOffset";
-
-    return (boolean) ((JavascriptExecutor) driver).executeScript(script, element);
+              input.perform(
+                  windowHandle,
+                  getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).getSequences());
+            })
+        .isInstanceOf(BiDiException.class)
+        .hasMessageContaining("move target out of bounds");
   }
 }

@@ -28,9 +28,15 @@ import org.jspecify.annotations.NullMarked;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
-/** Contains the logs for a session divided by supported log types. */
+/**
+ * Contains the logs for a session divided by supported log types.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
 @Beta
 @NullMarked
+@Deprecated(forRemoval = true)
 public class SessionLogs {
   private final Map<String, LogEntries> logTypeToEntriesMap;
 

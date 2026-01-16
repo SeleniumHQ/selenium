@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.grid.config;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
-import static java.util.Comparator.naturalOrder;
+import static java.util.stream.Collectors.toUnmodifiableList;
+import static org.openqa.selenium.internal.Sets.toSortedSet;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +35,7 @@ public class CompoundConfig implements Config {
       throw new ConfigException("List of config files must be greater than 0.");
     }
 
-    this.allConfigs = ImmutableList.copyOf(allConfigsInDescendingOrderOfImportance);
+    this.allConfigs = List.of(allConfigsInDescendingOrderOfImportance);
   }
 
   @Override
@@ -51,7 +49,7 @@ public class CompoundConfig implements Config {
             .filter(Optional::isPresent)
             .map(Optional::get)
             .flatMap(Collection::stream)
-            .collect(toImmutableList());
+            .collect(toUnmodifiableList());
 
     return values.isEmpty() ? Optional.empty() : Optional.of(values);
   }
@@ -61,7 +59,7 @@ public class CompoundConfig implements Config {
     return allConfigs.stream()
         .map(Config::getSectionNames)
         .flatMap(Collection::stream)
-        .collect(toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 
   @Override
@@ -71,6 +69,6 @@ public class CompoundConfig implements Config {
     return allConfigs.stream()
         .map(config -> config.getOptions(section))
         .flatMap(Collection::stream)
-        .collect(toImmutableSortedSet(naturalOrder()));
+        .collect(toSortedSet());
   }
 }

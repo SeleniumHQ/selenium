@@ -1380,20 +1380,12 @@ class WebDriver {
       }
     })
 
-    await connection.execute(
-      'Fetch.enable',
-      {
-        handleAuthRequests: true,
-      },
-      null,
-    )
-    await connection.execute(
-      'Network.setCacheDisabled',
-      {
-        cacheDisabled: true,
-      },
-      null,
-    )
+    await connection.send('Fetch.enable', {
+      handleAuthRequests: true,
+    })
+    await connection.send('Network.setCacheDisabled', {
+      cacheDisabled: true,
+    })
   }
 
   /**
@@ -1563,15 +1555,11 @@ class WebDriver {
       connection = this._cdpConnection
     }
 
-    await connection.execute('Page.enable', {}, null)
+    await connection.send('Page.enable', {})
 
-    await connection.execute(
-      'Runtime.evaluate',
-      {
-        expression: pinnedScript.creationScript(),
-      },
-      null,
-    )
+    await connection.send('Runtime.evaluate', {
+      expression: pinnedScript.creationScript(),
+    })
 
     let result = await connection.send('Page.addScriptToEvaluateOnNewDocument', {
       source: pinnedScript.creationScript(),
@@ -1597,23 +1585,15 @@ class WebDriver {
         connection = this._cdpConnection
       }
 
-      await connection.execute('Page.enable', {}, null)
+      await connection.send('Page.enable', {})
 
-      await connection.execute(
-        'Runtime.evaluate',
-        {
-          expression: script.removalScript(),
-        },
-        null,
-      )
+      await connection.send('Runtime.evaluate', {
+        expression: script.removalScript(),
+      })
 
-      await connection.execute(
-        'Page.removeScriptToEvaluateOnLoad',
-        {
-          identifier: script.scriptId,
-        },
-        null,
-      )
+      await connection.send('Page.removeScriptToEvaluateOnLoad', {
+        identifier: script.scriptId,
+      })
 
       delete this.pinnedScripts_[script.handle]
     }

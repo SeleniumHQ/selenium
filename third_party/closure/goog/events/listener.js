@@ -1,16 +1,8 @@
-// Copyright 2005 The Closure Library Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS-IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright The Closure Library Authors.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 /**
  * @fileoverview Listener object.
@@ -20,6 +12,7 @@
 goog.provide('goog.events.Listener');
 
 goog.require('goog.events.ListenableKey');
+goog.requireType('goog.events.Listenable');
 
 
 
@@ -37,6 +30,7 @@ goog.require('goog.events.ListenableKey');
  */
 goog.events.Listener = function(
     listener, proxy, src, type, capture, opt_handler) {
+  'use strict';
   if (goog.events.Listener.ENABLE_MONITORING) {
     this.creationStack = new Error().stack;
   }
@@ -104,7 +98,8 @@ goog.events.Listener = function(
  *     performance and memory usage. If switched off, the monitoring code
  *     compiles down to 0 bytes.
  */
-goog.define('goog.events.Listener.ENABLE_MONITORING', false);
+goog.events.Listener.ENABLE_MONITORING =
+    goog.define('goog.events.Listener.ENABLE_MONITORING', false);
 
 
 /**
@@ -120,6 +115,7 @@ goog.events.Listener.prototype.creationStack;
  * this listener object (such as listener and event source).
  */
 goog.events.Listener.prototype.markAsRemoved = function() {
+  'use strict';
   this.removed = true;
   this.listener = null;
   this.proxy = null;

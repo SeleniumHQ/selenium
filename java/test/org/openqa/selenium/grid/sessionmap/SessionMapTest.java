@@ -21,7 +21,6 @@ import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -79,7 +78,7 @@ class SessionMapTest {
 
   @Test
   void shouldBeAbleToAddASession() {
-    assertTrue(remote.add(expected));
+    assertThat(remote.add(expected)).isTrue();
 
     assertThat(local.get(id)).isEqualTo(expected);
   }

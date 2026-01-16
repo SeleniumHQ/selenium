@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.logging.profiler;
 
+/**
+ * Event types for profiler log entries.
+ *
+ * @deprecated logging is not in the W3C WebDriver spec and is no longer supported. This class will
+ *     be removed in a future release.
+ */
+@Deprecated(forRemoval = true)
 public enum EventType {
   HTTP_COMMAND,
   YIELD_TO_PAGE_LOAD,

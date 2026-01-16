@@ -34,6 +34,7 @@ java_test_suite(
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
         artifact("org.mockito:mockito-core"),
     ] + JUNIT5_DEPS,
 )

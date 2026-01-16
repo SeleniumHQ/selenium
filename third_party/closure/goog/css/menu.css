@@ -7,10 +7,9 @@
 
 /*
  * Standard styling for menus created by goog.ui.MenuRenderer.
- *
- * @author attila@google.com (Attila Bodis)
  */
 
+@provide 'goog.css.menu';
 
 .goog-menu {
   background: #fff;

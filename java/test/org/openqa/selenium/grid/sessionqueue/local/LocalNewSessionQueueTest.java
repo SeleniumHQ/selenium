@@ -27,14 +27,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -48,7 +58,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.grid.data.*;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
+import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionRequest;
+import org.openqa.selenium.grid.data.SessionRequestCapability;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueue;
@@ -174,9 +189,9 @@ class LocalNewSessionQueueTest {
                   new CreateSessionResponse(
                       session,
                       JSON.toJson(
-                              ImmutableMap.of(
+                              Map.of(
                                   "value",
-                                  ImmutableMap.of(
+                                  Map.of(
                                       "sessionId", sessionId,
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
@@ -222,9 +237,9 @@ class LocalNewSessionQueueTest {
                   new CreateSessionResponse(
                       session,
                       JSON.toJson(
-                              ImmutableMap.of(
+                              Map.of(
                                   "value",
-                                  ImmutableMap.of(
+                                  Map.of(
                                       "sessionId", sessionId,
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
@@ -268,9 +283,9 @@ class LocalNewSessionQueueTest {
                   new CreateSessionResponse(
                       session,
                       JSON.toJson(
-                              ImmutableMap.of(
+                              Map.of(
                                   "value",
-                                  ImmutableMap.of(
+                                  Map.of(
                                       "sessionId", sessionId,
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
@@ -379,9 +394,9 @@ class LocalNewSessionQueueTest {
                   new CreateSessionResponse(
                       session,
                       JSON.toJson(
-                              ImmutableMap.of(
+                              Map.of(
                                   "value",
-                                  ImmutableMap.of(
+                                  Map.of(
                                       "sessionId", sessionId,
                                       "capabilities", capabilities)))
                           .getBytes(UTF_8));
@@ -539,9 +554,9 @@ class LocalNewSessionQueueTest {
                         new CreateSessionResponse(
                             session,
                             JSON.toJson(
-                                    ImmutableMap.of(
+                                    Map.of(
                                         "value",
-                                        ImmutableMap.of(
+                                        Map.of(
                                             "sessionId", sessionId,
                                             "capabilities", capabilities)))
                                 .getBytes(UTF_8));
@@ -593,9 +608,9 @@ class LocalNewSessionQueueTest {
                         new CreateSessionResponse(
                             session,
                             JSON.toJson(
-                                    ImmutableMap.of(
+                                    Map.of(
                                         "value",
-                                        ImmutableMap.of(
+                                        Map.of(
                                             "sessionId", sessionId,
                                             "capabilities", capabilities)))
                                 .getBytes(UTF_8));

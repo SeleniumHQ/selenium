@@ -18,10 +18,12 @@
 package org.openqa.selenium.virtualauthenticator;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import java.net.MalformedURLException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -34,9 +36,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions.Protocol;
 
+@Ignore(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/2239")
 class VirtualAuthenticatorTest extends JupiterTestBase {
 
   /** A pkcs#8 encoded encrypted RSA private key as a base64url string. */
@@ -218,7 +222,7 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
     authenticator.addCredential(credential);
 
     // Attempt to use the credential to generate an assertion.
-    Object response = getAssertionFor(Arrays.asList(1, 2, 3, 4));
+    Object response = getAssertionFor(List.of(1, 2, 3, 4));
     assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
   }
 
@@ -240,33 +244,35 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
             "getCredential([]).then(arguments[arguments.length - 1]);");
 
     assertThat(response).asInstanceOf(MAP).containsEntry("status", "OK");
-    assertThat(response).extracting("attestation.userHandle").asList().containsExactly(1L);
+    assertThat(response)
+        .extracting("attestation.userHandle")
+        .asInstanceOf(LIST)
+        .containsExactly(1L);
   }
 
   @Test
   void testAddResidentCredentialNotSupportedWhenAuthenticatorUsesU2FProtocol() {
-    assertThrows(
-        InvalidArgumentException.class,
-        () -> {
-          // Add a resident credential using the testing API.
-          createRKEnabledU2FAuthenticator();
+    // Add a resident credential using the testing API.
+    createRKEnabledU2FAuthenticator();
 
-          /** A pkcs#8 encoded unencrypted EC256 private key as a base64url string. */
-          String base64EncodedPK =
-              "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
-                  + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
-                  + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
+    // A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
+    String base64EncodedPK =
+        "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
+            + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
+            + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
 
-          PKCS8EncodedKeySpec privateKey =
-              new PKCS8EncodedKeySpec(Base64.getUrlDecoder().decode(base64EncodedPK));
+    PKCS8EncodedKeySpec privateKey =
+        new PKCS8EncodedKeySpec(Base64.getUrlDecoder().decode(base64EncodedPK));
 
-          byte[] credentialId = {1, 2, 3, 4};
-          byte[] userHandle = {1};
-          Credential credential =
-              Credential.createResidentCredential(
-                  credentialId, "localhost", privateKey, userHandle, /* signCount= */ 0);
-          authenticator.addCredential(credential);
-        });
+    byte[] credentialId = {1, 2, 3, 4};
+    byte[] userHandle = {1};
+    Credential credential =
+        Credential.createResidentCredential(
+            credentialId, "localhost", privateKey, userHandle, /* signCount= */ 0);
+
+    assertThatThrownBy(() -> authenticator.addCredential(credential))
+        .isInstanceOf(InvalidArgumentException.class)
+        .hasMessageContaining("The Authenticator does not support Resident Credentials");
   }
 
   @Test

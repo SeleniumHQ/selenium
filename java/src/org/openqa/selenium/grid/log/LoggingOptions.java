@@ -32,6 +32,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
@@ -51,7 +52,7 @@ public class LoggingOptions {
   private Level level = Level.INFO;
   public static final String DEFAULT_LOG_TIMESTAMP_FORMAT = "HH:mm:ss.SSS";
   private static final List<Level> DEFAULT_LOG_LEVELS =
-      Arrays.asList(
+      List.of(
           Level.ALL,
           Level.INFO,
           Level.CONFIG,
@@ -84,6 +85,9 @@ public class LoggingOptions {
 
   public void setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
+    if (Debug.isDebugAll()) {
+      configLevel = Level.FINE.getName();
+    }
 
     try {
       level = Level.parse(configLevel.toUpperCase(Locale.ROOT));
@@ -189,7 +193,7 @@ public class LoggingOptions {
                 throw new UncheckedIOException(e);
               }
             })
-        .orElse(System.out);
+        .orElseGet(() -> Debug.isDebugAll() ? System.err : System.out);
   }
 
   public String getLogTimestampFormat() {

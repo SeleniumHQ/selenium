@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.chromium;
 
-import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.WebDriverInfo;
 
 public abstract class ChromiumDriverInfo implements WebDriverInfo {
 

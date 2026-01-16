@@ -22,7 +22,6 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
@@ -33,24 +32,17 @@ import org.openqa.selenium.testing.JupiterTestBase;
 @Ignore(FIREFOX)
 class PerformanceLoggingTest extends JupiterTestBase {
 
-  private WebDriver loggingDriver;
-
-  @AfterEach
-  public void quitDriver() {
-    if (loggingDriver != null) {
-      loggingDriver.quit();
-      loggingDriver = null;
-    }
-  }
-
   @Test
-  void testDisabledProfilingDoesNotLog() {
+  @SuppressWarnings("deprecation")
+  void testProfilerLogIsDeprecatedAndReturnsEmpty() {
+    // PROFILER log type is deprecated and no longer functional
     driver.get(pages.simpleTestPage);
     assertThat(getProfilerEntries(driver).getAll())
-        .describedAs("Profiler should not log when disabled")
+        .describedAs("Profiler logs should be empty (deprecated)")
         .isEmpty();
   }
 
+  @SuppressWarnings("deprecation")
   private LogEntries getProfilerEntries(WebDriver driver) {
     return driver.manage().logs().get(LogType.PROFILER);
   }

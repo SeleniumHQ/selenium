@@ -132,7 +132,7 @@ impl ManagerConfig {
             avoid_browser_download: BooleanKey("avoid-browser-download", false).get_value(),
             language_binding: StringKey(vec!["language-binding"], "").get_value(),
             selenium_version: StringKey(vec!["selenium-version"], "").get_value(),
-            avoid_stats: BooleanKey("avoid-stats", false).get_value(),
+            avoid_stats: BooleanKey("avoid-stats", cfg!(feature = "avoid_stats")).get_value(),
             skip_driver_in_path: BooleanKey("skip-driver-in-path", false).get_value(),
             skip_browser_in_path: BooleanKey("skip-browser-in-path", false).get_value(),
         }

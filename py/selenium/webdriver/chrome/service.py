@@ -15,10 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from collections.abc import Mapping, Sequence
+from typing import IO, Any
 
-from selenium.types import SubprocessStdAlias
 from selenium.webdriver.chromium import service
 
 
@@ -43,11 +42,11 @@ class Service(service.ChromiumService):
         executable_path: str | None = None,
         port: int = 0,
         service_args: Sequence[str] | None = None,
-        log_output: SubprocessStdAlias | None = None,
+        log_output: int | str | IO[Any] | None = None,
         env: Mapping[str, str] | None = None,
         **kwargs,
     ) -> None:
-        self._service_args = service_args or []
+        self._service_args = list(service_args or [])
 
         super().__init__(
             executable_path=executable_path,

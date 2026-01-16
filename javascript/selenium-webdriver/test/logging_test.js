@@ -63,7 +63,7 @@ test.suite(function (env) {
       })
 
       // Firefox does not capture JS error console log messages.
-      test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).it('can be turned down', async function () {
+      test.ignore(env.browsers(Browser.FIREFOX)).it('can be turned down', async function () {
         var prefs = new logging.Preferences()
         prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE)
 
@@ -91,7 +91,7 @@ test.suite(function (env) {
       })
 
       // Firefox does not capture JS error console log messages.
-      test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).it('can be made verbose', async function () {
+      test.ignore(env.browsers(Browser.FIREFOX)).it('can be made verbose', async function () {
         var prefs = new logging.Preferences()
         prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG)
 
@@ -127,34 +127,32 @@ test.suite(function (env) {
       })
 
       // Firefox does not capture JS error console log messages.
-      test
-        .ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox'))
-        .it('clears records after retrieval', async function () {
-          var prefs = new logging.Preferences()
-          prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG)
+      test.ignore(env.browsers(Browser.FIREFOX)).it('clears records after retrieval', async function () {
+        var prefs = new logging.Preferences()
+        prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG)
 
-          driver = await env.builder().setLoggingPrefs(prefs).build()
+        driver = await env.builder().setLoggingPrefs(prefs).build()
 
-          await driver.get(
-            dataUrl(
-              '<!DOCTYPE html><script>',
-              'console.debug("hello");',
-              'console.warn("this is a warning");',
-              'console.error("and this is an error");',
-              '</script>',
-            ),
-          )
-          await driver
-            .manage()
-            .logs()
-            .get(logging.Type.BROWSER)
-            .then((entries) => assert.strictEqual(entries.length, 3))
-          return driver
-            .manage()
-            .logs()
-            .get(logging.Type.BROWSER)
-            .then((entries) => assert.strictEqual(entries.length, 0))
-        })
+        await driver.get(
+          dataUrl(
+            '<!DOCTYPE html><script>',
+            'console.debug("hello");',
+            'console.warn("this is a warning");',
+            'console.error("and this is an error");',
+            '</script>',
+          ),
+        )
+        await driver
+          .manage()
+          .logs()
+          .get(logging.Type.BROWSER)
+          .then((entries) => assert.strictEqual(entries.length, 3))
+        return driver
+          .manage()
+          .logs()
+          .get(logging.Type.BROWSER)
+          .then((entries) => assert.strictEqual(entries.length, 0))
+      })
 
       it('does not mix log types', async function () {
         var prefs = new logging.Preferences()

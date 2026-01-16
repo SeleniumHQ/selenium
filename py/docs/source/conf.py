@@ -57,7 +57,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Selenium"
-copyright = "2009-2025 Software Freedom Conservancy"
+copyright = "Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

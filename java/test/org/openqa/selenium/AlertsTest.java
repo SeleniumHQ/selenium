@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
@@ -456,7 +457,7 @@ class AlertsTest extends JupiterTestBase {
     driver.findElement(By.id("alert")).click();
     wait.until(alertIsPresent());
 
-    driver.quit();
+    assertThatCode(() -> driver.quit()).doesNotThrowAnyException();
   }
 
   @Test

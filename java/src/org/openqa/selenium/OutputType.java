@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Defines the output type for a screenshot.
@@ -30,7 +29,6 @@ import org.jspecify.annotations.NullMarked;
  * @see TakesScreenshot
  * @param <T> Type for the screenshot output.
  */
-@NullMarked
 public interface OutputType<T> {
   /** Obtain the screenshot as base64 data. */
   OutputType<String> BASE64 =

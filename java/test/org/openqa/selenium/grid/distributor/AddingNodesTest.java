@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -155,7 +154,7 @@ class AddingNodesTest {
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, getStereotypes(status).get(CAPS));
+    assertThat(getStereotypes(status).get(CAPS)).isEqualTo(1);
   }
 
   @Test
@@ -196,8 +195,8 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(status).get(CAPS));
-      assertEquals(Duration.ofSeconds(300), status.getSessionTimeout());
+      assertThat(getStereotypes(status).get(CAPS)).isEqualTo(1);
+      assertThat(status.getSessionTimeout()).isEqualTo(ofSeconds(300));
     }
   }
 
@@ -237,7 +236,7 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(status).get(CAPS));
+      assertThat(getStereotypes(status).get(CAPS)).isEqualTo(1);
     }
   }
 
@@ -289,7 +288,7 @@ class AddingNodesTest {
 
       Set<NodeStatus> nodes = distributor.getStatus().getNodes();
 
-      assertEquals(1, nodes.size());
+      assertThat(nodes).hasSize(1);
     }
   }
 
@@ -331,7 +330,7 @@ class AddingNodesTest {
       wait.until(obj -> distributor.getStatus().hasCapacity());
 
       NodeStatus nodeStatus = getOnlyElement(distributor.getStatus().getNodes());
-      assertEquals(1, getStereotypes(nodeStatus).get(CAPS));
+      assertThat(getStereotypes(nodeStatus).get(CAPS)).isEqualTo(1);
 
       // Craft a status that makes it look like the node is busy, and post it on the bus.
       NodeStatus status = node.getStatus();
@@ -340,7 +339,7 @@ class AddingNodesTest {
               status.getNodeId(),
               status.getExternalUri(),
               status.getMaxSessionCount(),
-              ImmutableSet.of(
+              Set.of(
                   new Slot(
                       new SlotId(status.getNodeId(), UUID.randomUUID()),
                       CAPS,
@@ -373,7 +372,12 @@ class AddingNodesTest {
       stereotypes.put(slot.getStereotype(), count);
     }
 
-    return ImmutableMap.copyOf(stereotypes);
+    return Map.copyOf(stereotypes);
+  }
+
+  private static <T> T getOnlyElement(Collection<T> collection) {
+    assertThat(collection).hasSize(1);
+    return collection.iterator().next();
   }
 
   static class CustomNode extends Node {
@@ -485,8 +489,7 @@ class AddingNodesTest {
           getId(),
           getUri(),
           1,
-          ImmutableSet.of(
-              new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
+          Set.of(new Slot(new SlotId(getId(), UUID.randomUUID()), CAPS, Instant.now(), sess)),
           UP,
           Duration.ofSeconds(10),
           getSessionTimeout(),

@@ -26,7 +26,6 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
-import com.google.common.collect.Sets;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
@@ -364,7 +363,7 @@ class TakesScreenshotTest extends JupiterTestBase {
     assertThat(onlyWhite(actualColors)).as("Only white").isFalse();
 
     // Ignore black and white for further comparison
-    Set<String> cleanActualColors = Sets.newHashSet(actualColors);
+    Set<String> cleanActualColors = new HashSet<>(actualColors);
     cleanActualColors.remove("#000000");
     cleanActualColors.remove("#ffffff");
 

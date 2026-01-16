@@ -18,20 +18,18 @@
 package org.openqa.selenium.grid.router;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.StringReader;
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
@@ -45,6 +43,8 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.ExecuteMethod;
+import org.openqa.selenium.remote.RemoteExecuteMethod;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
@@ -66,7 +66,7 @@ class DistributedTest {
 
   @BeforeEach
   public void setupServers() {
-    browser = Objects.requireNonNull(Browser.detect());
+    browser = requireNonNull(Browser.detect());
 
     Deployment deployment =
         DeploymentTypes.DISTRIBUTED.start(
@@ -90,7 +90,7 @@ class DistributedTest {
 
     appServer =
         new NettyServer(
-            new BaseServerOptions(new MemoizedConfig(new MapConfig(Map.of()))),
+            new BaseServerOptions(new MemoizedConfig(new MapConfig())),
             req -> {
               try {
                 Thread.sleep(2000);
@@ -131,9 +131,7 @@ class DistributedTest {
 
     try {
       // provoke the client to run into a http timeout
-      SessionNotCreatedException nce =
-          Assertions.assertThrows(
-              SessionNotCreatedException.class,
+      assertThatThrownBy(
               () ->
                   RemoteWebDriver.builder()
                       .oneOf(browser.getCapabilities())
@@ -141,15 +139,14 @@ class DistributedTest {
                           ClientConfig.defaultConfig()
                               .baseUrl(server.getUrl())
                               .readTimeout(Duration.ofMillis(600)))
-                      .build());
-
-      assertThat(nce.getMessage()).contains("TimeoutException");
+                      .build())
+          .isInstanceOf(SessionNotCreatedException.class)
+          .hasMessageContaining("TimeoutException");
 
       // ensure the grid has some time to start the browser and shutdown the browser
       Thread.sleep(Duration.ofNanos((end - start) * 3).toMillis());
 
-      HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
-      try {
+      try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
         HttpRequest request = new HttpRequest(HttpMethod.POST, "/graphql");
         request.setContent(Contents.utf8String("{\"query\": \"{grid { sessionCount }}\"}"));
         HttpResponse response = client.execute(request);
@@ -169,7 +166,7 @@ class DistributedTest {
                     while (input.hasNext()) {
                       switch (input.nextName()) {
                         case "sessionCount":
-                          sessionCount = input.read(Integer.class);
+                          sessionCount = requireNonNull(input.read(Integer.class));
                           break;
                         default:
                           input.skipValue();
@@ -191,9 +188,7 @@ class DistributedTest {
           }
         }
 
-        Assertions.assertEquals(1, sessionCount);
-      } finally {
-        Safely.safelyCall(client::close);
+        assertThat(sessionCount).isEqualTo(1);
       }
     } finally {
       Safely.safelyCall(healthy::quit);
@@ -201,38 +196,39 @@ class DistributedTest {
   }
 
   @Test
-  void connectionLimitIsRespected() throws Exception {
+  void connectionLimitIsRespected() {
     assertThat(server.isStarted()).isTrue();
 
     // don't use the RemoteWebDriver.builder here, using it does create an unknown number of
     // connections
-    WebDriver driver = new RemoteWebDriver(server.getUrl(), browser.getCapabilities());
+    RemoteWebDriver driver = new RemoteWebDriver(server.getUrl(), browser.getCapabilities());
 
     try {
-      Capabilities caps = ((HasCapabilities) driver).getCapabilities();
+      Capabilities caps = driver.getCapabilities();
       BiDiProvider biDiProvider = new BiDiProvider();
 
-      BiDi cnn1 = biDiProvider.getImplementation(caps, null).getBiDi();
-      BiDi cnn2 = biDiProvider.getImplementation(caps, null).getBiDi();
-      BiDi cnn3 = biDiProvider.getImplementation(caps, null).getBiDi();
+      ExecuteMethod executeMethod = new RemoteExecuteMethod(driver);
+      BiDi cnn1 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
+      BiDi cnn2 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
+      BiDi cnn3 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
 
-      Assertions.assertThrows(
-          ConnectionFailedException.class,
-          () -> biDiProvider.getImplementation(caps, null).getBiDi());
+      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
+          .isInstanceOf(ConnectionFailedException.class)
+          .hasMessageStartingWith("JdkWebSocket initial request execution error");
       cnn1.close();
-      BiDi cnn4 = biDiProvider.getImplementation(caps, null).getBiDi();
+      BiDi cnn4 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
 
-      Assertions.assertThrows(
-          ConnectionFailedException.class,
-          () -> biDiProvider.getImplementation(caps, null).getBiDi());
+      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
+          .isInstanceOf(ConnectionFailedException.class)
+          .hasMessageStartingWith("JdkWebSocket initial request execution error");
       cnn2.close();
       cnn3.close();
-      BiDi cnn5 = biDiProvider.getImplementation(caps, null).getBiDi();
-      BiDi cnn6 = biDiProvider.getImplementation(caps, null).getBiDi();
+      BiDi cnn5 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
+      BiDi cnn6 = biDiProvider.getImplementation(caps, executeMethod).getBiDi();
 
-      Assertions.assertThrows(
-          ConnectionFailedException.class,
-          () -> biDiProvider.getImplementation(caps, null).getBiDi());
+      assertThatThrownBy(() -> biDiProvider.getImplementation(caps, executeMethod).getBiDi())
+          .isInstanceOf(ConnectionFailedException.class)
+          .hasMessageStartingWith("JdkWebSocket initial request execution error");
 
       cnn4.close();
       cnn5.close();

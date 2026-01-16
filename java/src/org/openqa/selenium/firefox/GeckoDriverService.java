@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +34,7 @@ import java.util.Map;
 import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -234,11 +234,11 @@ public class GeckoDriverService extends FirefoxDriverService {
     @Override
     protected void loadSystemProperties() {
       parseLogOutput(GECKO_DRIVER_LOG_PROPERTY);
-      if (logLevel == null) {
-        String logFilePath = System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY);
-        if (logFilePath != null) {
-          this.logLevel = FirefoxDriverLogLevel.fromString(logFilePath);
-        }
+      if (Debug.isDebugAll()) {
+        logLevel = FirefoxDriverLogLevel.DEBUG;
+      } else if (logLevel == null) {
+        logLevel =
+            FirefoxDriverLogLevel.fromString(System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY));
       }
       if (logTruncate == null) {
         logTruncate = !Boolean.getBoolean(GECKO_DRIVER_LOG_NO_TRUNCATE);
@@ -292,7 +292,7 @@ public class GeckoDriverService extends FirefoxDriverService {
 
       if (allowHosts != null) {
         args.add("--allow-hosts");
-        args.addAll(Arrays.asList(allowHosts.split(" ")));
+        args.addAll(List.of(allowHosts.split(" ")));
       }
       return unmodifiableList(args);
     }

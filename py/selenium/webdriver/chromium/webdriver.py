@@ -15,22 +15,21 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.chromium.service import ChromiumService
 from selenium.webdriver.common.driver_finder import DriverFinder
+from selenium.webdriver.common.webdriver import LocalWebDriver
 from selenium.webdriver.remote.command import Command
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 
-class ChromiumDriver(RemoteWebDriver):
+class ChromiumDriver(LocalWebDriver):
     """Control the WebDriver instance of ChromiumDriver and drive the browser."""
 
     def __init__(
         self,
-        browser_name: str | None = None,
-        vendor_prefix: str | None = None,
+        browser_name: str,
+        vendor_prefix: str,
         options: ChromiumOptions | None = None,
         service: ChromiumService | None = None,
         keep_alive: bool = True,
@@ -40,17 +39,17 @@ class ChromiumDriver(RemoteWebDriver):
         Args:
             browser_name: Browser name used when matching capabilities.
             vendor_prefix: Company prefix to apply to vendor-specific WebDriver extension commands.
-            options: This takes an instance of ChromiumOptions.
+            options: Instance of ChromiumOptions.
             service: Service object for handling the browser driver if you need to pass extra details.
             keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
         self.service = service if service else ChromiumService()
-        options = options if options else ChromiumOptions()
+        self.options = options if options else ChromiumOptions()
 
-        finder = DriverFinder(self.service, options)
+        finder = DriverFinder(self.service, self.options)
         if finder.get_browser_path():
-            options.binary_location = finder.get_browser_path()
-            options.browser_version = None
+            self.options.binary_location = finder.get_browser_path()
+            self.options.browser_version = None
 
         self.service.path = self.service.env_path() or finder.get_driver_path()
         self.service.start()
@@ -60,16 +59,14 @@ class ChromiumDriver(RemoteWebDriver):
             browser_name=browser_name,
             vendor_prefix=vendor_prefix,
             keep_alive=keep_alive,
-            ignore_proxy=options._ignore_local_proxy,
+            ignore_proxy=self.options._ignore_local_proxy,
         )
 
         try:
-            super().__init__(command_executor=executor, options=options)
+            super().__init__(command_executor=executor, options=self.options)
         except Exception:
             self.quit()
             raise
-
-        self._is_remote = False
 
     def launch_app(self, id):
         """Launches Chromium app specified by id.
@@ -206,25 +203,3 @@ class ChromiumDriver(RemoteWebDriver):
             sink_name: Name of the sink to stop the Cast session.
         """
         return self.execute("stopCasting", {"sinkName": sink_name})
-
-    def quit(self) -> None:
-        """Closes the browser and shuts down the ChromiumDriver executable."""
-        try:
-            super().quit()
-        except Exception:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
-
-    def download_file(self, *args, **kwargs):
-        """Download file functionality is not implemented for Chromium driver."""
-        raise NotImplementedError
-
-    def get_downloadable_files(self, *args, **kwargs):
-        """Get downloadable files functionality is not implemented for Chromium driver."""
-        raise NotImplementedError
-
-    def delete_downloadable_files(self, *args, **kwargs):
-        """Delete downloadable files functionality is not implemented for Chromium driver."""
-        raise NotImplementedError
