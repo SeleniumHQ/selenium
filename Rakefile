@@ -577,9 +577,9 @@ namespace :py do
 
   desc 'generate and copy files required for local development'
   task :local_dev do
-    dirs = ['devtools', 'linux', 'macos', 'windows']
+    dirs = %w[devtools linux macos windows]
     dirs.each do |dir|
-      target = "../../../../bazel-bin/py/selenium/webdriver/common/#{dir}"  # relative path from symlink location
+      target = "../../../../bazel-bin/py/selenium/webdriver/common/#{dir}" # relative path from symlink location
       link = "py/selenium/webdriver/common/#{dir}"
       FileUtils.rm_rf(link)
       FileUtils.symlink(target, link)
