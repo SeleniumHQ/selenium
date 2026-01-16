@@ -3,7 +3,9 @@
 require 'English'
 $LOAD_PATH.unshift File.expand_path('.')
 
+require 'base64'
 require 'rake'
+require 'net/http'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
@@ -384,12 +386,12 @@ end
 task 'release-java': %i[java-release-zip publish-maven]
 
 def read_m2_user_pass
-  puts 'Maven environment variables not set, inspecting /.m2/settings.xml.'
+  puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
   settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
   settings.each_line do |line|
     if !found_section
-      found_section = line.include? '<id>sonatype-nexus-staging</id>'
+      found_section = line.include? '<id>central</id>'
     elsif line.include?('<username>')
       ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
     elsif line.include?('<password>')
@@ -505,7 +507,6 @@ namespace :node do
     Bazel.execute('run', ['--config=release'], '//javascript/selenium-webdriver:selenium-webdriver.publish')
   end
 
-  desc 'Release Node npm package'
   task deploy: :release
 
   desc 'Generate Node documentation'
@@ -616,13 +617,16 @@ namespace :py do
     puts 'Generating Python documentation'
 
     FileUtils.rm_rf('build/docs/api/py/')
-    FileUtils.rm_rf('build/docs/doctrees/')
-    begin
-      sh 'tox -c py/tox.ini -e docs', verbose: true
-    rescue StandardError
-      puts 'Ensure that tox is installed on your system'
-      raise
-    end
+
+    # Generate API listing and stub files in source tree
+    Bazel.execute('run', [], '//py:generate-api-listing')
+    Bazel.execute('run', [], '//py:sphinx-autogen')
+
+    # Build docs (outputs to bazel-bin)
+    Bazel.execute('build', [], '//py:docs')
+
+    FileUtils.mkdir_p('build/docs/api')
+    FileUtils.cp_r('bazel-bin/py/docs/_build/html/.', 'build/docs/api/py')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
@@ -757,9 +761,7 @@ namespace :rb do
 
   desc 'Push Ruby gems to rubygems'
   task :release do |_task, arguments|
-    nightly = arguments.to_a.include?('nightly')
-
-    if nightly
+    if arguments.to_a.include?('nightly')
       puts 'Bumping Ruby nightly version...'
       Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
@@ -880,28 +882,7 @@ namespace :dotnet do
 
     puts 'Generating .NET documentation'
     FileUtils.rm_rf('build/docs/api/dotnet/')
-    begin
-      # Pinning to 2.78.2 to avoid breaking changes in newer versions
-      sh 'dotnet tool uninstall --global docfx || true'
-      sh 'dotnet tool install --global --version 2.78.2 docfx'
-      # sh 'dotnet tool update -g docfx'
-    rescue StandardError
-      puts 'Please ensure that .NET SDK is installed.'
-      raise
-    end
-
-    begin
-      sh 'docfx dotnet/docs/docfx.json'
-    rescue StandardError
-      case $CHILD_STATUS.exitstatus
-      when 133
-        raise 'Ensure the dotnet/tools directory is added to your PATH environment variable (e.g., `~/.dotnet/tools`)'
-      when 255
-        puts '.NET documentation build failed, likely because of DevTools namespacing. This is ok; continuing'
-      else
-        raise
-      end
-    end
+    Bazel.execute('run', [], '//dotnet:docs')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
@@ -982,6 +963,37 @@ namespace :java do
 
     puts "Releasing Java artifacts to Maven repository at '#{ENV.fetch('MAVEN_REPO', nil)}'"
     java_release_targets.each { |target| Bazel.execute('run', ['--config=release'], target) }
+
+    Rake::Task['java:publish'].invoke unless nightly
+  end
+
+  desc 'Publish to sonatype'
+  task :publish do |_task|
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+    user = ENV.fetch('MAVEN_USER')
+    pass = ENV.fetch('MAVEN_PASSWORD')
+
+    uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq')
+    encoded = Base64.strict_encode64("#{user}:#{pass}")
+
+    puts 'Triggering validation POST to Central Portal...'
+    req = Net::HTTP::Post.new(uri)
+    req['Authorization'] = "Basic #{encoded}"
+    req['Accept'] = '*/*'
+    req['Content-Length'] = '0'
+
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
+                                                  open_timeout: 10, read_timeout: 60) do |http|
+      http.request(req)
+    end
+
+    if res.is_a?(Net::HTTPSuccess)
+      puts "Manual upload triggered successfully (HTTP #{res.code})"
+    else
+      warn "Manual upload failed (HTTP #{res.code}): #{res.code} #{res.message}"
+      warn res.body if res.body && !res.body.empty?
+      exit(1)
+    end
   end
 
   desc 'Install jars to local m2 directory'
@@ -1166,7 +1178,8 @@ namespace :all do
     sh "./scripts/format.#{ext}", verbose: true
   end
 
-  # Example: `./go all:prepare 4.31.0 early-stable`
+  # Example: `./go all:prepare[4.31.0,early-stable]`
+  # Equivalent to .github/workflows/pre-release.yml in a single command
   desc 'Update everything in preparation for a release'
   task :prepare, [:version, :channel] do |_task, arguments|
     version = arguments[:version]
@@ -1177,7 +1190,7 @@ namespace :all do
     Rake::Task['java:update'].invoke
     Rake::Task['authors'].invoke
     Rake::Task['all:version'].invoke(version)
-    Rake::Task['all:changelogs']
+    Rake::Task['all:changelogs'].invoke
   end
 
   desc 'Update all versions'

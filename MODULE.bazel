@@ -101,6 +101,9 @@ use_repo(dotnet, "dotnet_toolchains")
 selenium_paket = use_extension("//dotnet:paket.nuget_extension.bzl", "nuget_extension")
 use_repo(selenium_paket, "paket.nuget")
 
+docfx_ext = use_extension("//dotnet/private:docfx_repo.bzl", "docfx_extension")
+use_repo(docfx_ext, "docfx")
+
 register_toolchains("@dotnet_toolchains//:all")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
