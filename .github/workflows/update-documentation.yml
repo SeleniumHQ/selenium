@@ -75,11 +75,6 @@ jobs:
               rules_ruby++ruby+ruby: rb/.ruby-version
           repository-cache: true
           bazelrc: common --color=yes
-      - name: Install npm dependencies
-        if: ${{ inputs.language == 'node' || inputs.language == 'all' }}
-        run: |
-          npm install
-          npm install --prefix javascript/selenium-webdriver
       - name: Generate Documentation for selected langauges
         run: ./go ${{ inputs.language }}:docs ${{ inputs.force }}
       - name: Documentation Pull Request

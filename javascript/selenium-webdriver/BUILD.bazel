@@ -8,6 +8,7 @@ load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("//common:defs.bzl", "copy_file")
 load("//javascript:defs.bzl", "mocha_test")
 load("//javascript/private:browsers.bzl", "BROWSERS")
+load("//javascript/private:jsdoc.bzl", "jsdoc")
 
 npm_link_all_packages(name = "node_modules")
 
@@ -283,4 +284,13 @@ copy_to_bin(
 copy_to_bin(
     name = "prettier-ignore",
     srcs = [".prettierignore"],
+)
+
+jsdoc(
+    name = "docs",
+    config = "jsdoc_conf.json",
+    data = [
+        ":node_modules/clean-jsdoc-theme",
+        ":prod-src-files",
+    ],
 )

@@ -518,14 +518,7 @@ namespace :node do
 
     puts 'Generating Node documentation'
     FileUtils.rm_rf('build/docs/api/javascript/')
-    begin
-      Dir.chdir('javascript/selenium-webdriver') do
-        sh 'pnpm install', verbose: true
-        sh 'pnpm run generate-docs', verbose: true
-      end
-    rescue StandardError => e
-      puts "Node documentation generation contains errors; continuing... #{e.message}"
-    end
+    Bazel.execute('run', [], '//javascript/selenium-webdriver:docs')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
