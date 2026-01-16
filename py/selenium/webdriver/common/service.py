@@ -130,7 +130,7 @@ class Service(ABC):
         Returns:
             True if the service is ready to accept new sessions, False otherwise.
         """
-        return utils.is_url_connectable(self.port, host="localhost", scheme="http")
+        return utils.is_url_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
         """Dispatch an HTTP request to the shutdown endpoint to stop the service."""

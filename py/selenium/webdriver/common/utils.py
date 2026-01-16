@@ -134,7 +134,7 @@ def is_connectable(port: int, host: str | None = "localhost") -> bool:
 
 def is_url_connectable(
     port: int | str,
-    host: str = "127.0.0.1",
+    host: str = "localhost",
     scheme: str = "http",
 ) -> bool:
     """Send a request to the HTTP server at the /status endpoint to verify connectivity.
