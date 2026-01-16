@@ -182,7 +182,7 @@ jobs:
       run: |
         sed -i 's|https://registry.npmjs.org/|https://npm.pkg.github.com|g' javascript/selenium-webdriver/package.json
         sed -i 's|"name": "selenium-webdriver"|"name": "@seleniumhq/selenium-webdriver"|g' javascript/selenium-webdriver/package.json
-        echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+        echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> ~/.npmrc
         echo "@seleniumhq:registry=https://npm.pkg.github.com" >> ~/.npmrc
         echo "always-auth=true" >> ~/.npmrc
         ./go node:release[--stamp,nightly]

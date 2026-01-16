@@ -71,6 +71,11 @@ on:
         required: false
         type: boolean
         default: false
+      gpg-sign:
+        description: Import GPG key for signing (Java releases)
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   bazel:
@@ -82,7 +87,9 @@ jobs:
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
@@ -196,6 +203,12 @@ jobs:
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
+      - name: Import GPG key
+        if: inputs.gpg-sign
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Run Bazel
         shell: bash
         env:
