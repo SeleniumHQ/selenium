@@ -29,7 +29,7 @@ import rich.console
 import rich.traceback
 
 try:
-    from python.runfiles import Runfiles  # only exists when using bazel
+    from python.runfiles import Runfiles # only exists when using bazel
 except ModuleNotFoundError:
     pass
 
