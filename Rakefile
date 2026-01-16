@@ -841,30 +841,28 @@ namespace :rb do
     puts "Found #{gems.size} gems: #{checksums.size} cached, #{to_download.size} to download..."
 
     failed = []
-    if to_download.any?
-      to_download.each do |key|
-        uri = URI("https://rubygems.org/gems/#{key}.gem")
+    to_download.each do |key|
+      uri = URI("https://rubygems.org/gems/#{key}.gem")
 
-        5.times do
-          response = Net::HTTP.get_response(uri)
-          break unless response.is_a?(Net::HTTPRedirection)
+      5.times do
+        response = Net::HTTP.get_response(uri)
+        break unless response.is_a?(Net::HTTPRedirection)
 
-          uri = URI(response['location'])
-        end
-
-        unless response.is_a?(Net::HTTPSuccess)
-          puts "  #{key}: failed (HTTP #{response.code})"
-          failed << key
-          next
-        end
-
-        sha = Digest::SHA256.hexdigest(response.body)
-        checksums[key] = sha
-        puts "  #{key}: #{sha[0, 16]}..."
-      rescue StandardError => e
-        puts "  #{key}: failed (#{e.message})"
-        failed << key
+        uri = URI(response['location'])
       end
+
+      unless response.is_a?(Net::HTTPSuccess)
+        puts "  #{key}: failed (HTTP #{response.code})"
+        failed << key
+        next
+      end
+
+      sha = Digest::SHA256.hexdigest(response.body)
+      checksums[key] = sha
+      puts "  #{key}: #{sha[0, 16]}..."
+    rescue StandardError => e
+      puts "  #{key}: failed (#{e.message})"
+      failed << key
     end
 
     raise "Failed to download checksums for: #{failed.join(', ')}" if failed.any?
@@ -882,6 +880,8 @@ namespace :rb do
   task :update do
     Bazel.execute('run', [], '//rb:bundle-update')
     @git.add('rb/Gemfile.lock')
+    Bazel.execute('run', [], '//rb:rbs-update')
+    @git.add('rb/rbs_collection.lock.yaml')
     Rake::Task['rb:pin'].invoke
   end
 end

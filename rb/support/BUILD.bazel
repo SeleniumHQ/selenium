@@ -16,3 +16,8 @@ rb_library(
     name = "steep_check",
     srcs = ["steep_check.rb"],
 )
+
+rb_library(
+    name = "rbs_collection_update",
+    srcs = ["rbs_collection_update.rb"],
+)

@@ -18,8 +18,6 @@
 # under the License.
 
 require "rbconfig"
-require "fileutils"
-require "open3"
 
 # Find the rb directory - try multiple strategies for different Bazel contexts
 root = if ENV['BUILD_WORKSPACE_DIRECTORY']
@@ -46,16 +44,5 @@ Dir.chdir(root)
 
 ruby = RbConfig.ruby
 
-# Install RBS collection if not present
-rbs_collection_dir = File.join(root, ".gem_rbs_collection")
-unless Dir.exist?(rbs_collection_dir)
-  puts "Installing RBS collection..."
-  system(ruby, "-S", "rbs", "collection", "install") || exit(1)
-end
-
-# Run steep check, discarding stderr (internal Steep logs, not type errors)
-cmd = [ruby, "-S", "steep", "check", "--severity-level=error", *ARGV]
-stdout, status = Open3.capture2(*cmd, err: File::NULL)
-
-print stdout
-exit status.exitstatus
+# Run rbs collection update
+exec ruby, "-S", "rbs", "collection", "update", *ARGV

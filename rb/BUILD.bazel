@@ -265,3 +265,20 @@ rb_binary(
         "@bundle",
     ],
 )
+
+rb_binary(
+    name = "rbs-update",
+    args = [
+        "rb/support/rbs_collection_update.rb",
+    ],
+    data = [
+        "Gemfile",
+        "Gemfile.lock",
+        "rbs_collection.lock.yaml",
+        "rbs_collection.yaml",
+    ],
+    deps = [
+        "//rb/support:rbs_collection_update",
+        "@bundle",
+    ],
+)
