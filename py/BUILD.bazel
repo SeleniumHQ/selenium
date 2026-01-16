@@ -1,5 +1,4 @@
 load("@aspect_bazel_lib//lib:copy_directory.bzl", "copy_directory")
-load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_files")
 load("@bazel_skylib//rules:select_file.bzl", "select_file")
 load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
@@ -401,14 +400,6 @@ py_binary(
     outdir = "selenium/webdriver/common/devtools/{}".format(devtools_version),
     protocol_version = devtools_version,
 ) for devtools_version in BROWSER_VERSIONS]
-
-write_source_files(
-    name = "update-cdp-srcs",
-    files = {
-        "selenium/webdriver/common/devtools/{}".format(devtools_version): ":create-cdp-srcs-{}".format(devtools_version)
-        for devtools_version in BROWSER_VERSIONS
-    },
-)
 
 py_test_suite(
     name = "unit",
