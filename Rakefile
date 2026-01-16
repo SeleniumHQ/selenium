@@ -882,28 +882,7 @@ namespace :dotnet do
 
     puts 'Generating .NET documentation'
     FileUtils.rm_rf('build/docs/api/dotnet/')
-    begin
-      # Pinning to 2.78.2 to avoid breaking changes in newer versions
-      sh 'dotnet tool uninstall --global docfx || true'
-      sh 'dotnet tool install --global --version 2.78.2 docfx'
-      # sh 'dotnet tool update -g docfx'
-    rescue StandardError
-      puts 'Please ensure that .NET SDK is installed.'
-      raise
-    end
-
-    begin
-      sh 'docfx dotnet/docs/docfx.json'
-    rescue StandardError
-      case $CHILD_STATUS.exitstatus
-      when 133
-        raise 'Ensure the dotnet/tools directory is added to your PATH environment variable (e.g., `~/.dotnet/tools`)'
-      when 255
-        puts '.NET documentation build failed, likely because of DevTools namespacing. This is ok; continuing'
-      else
-        raise
-      end
-    end
+    Bazel.execute('run', [], '//dotnet:docs')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
