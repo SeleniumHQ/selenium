@@ -31,7 +31,7 @@ import rich.traceback
 try:
     from python.runfiles import Runfiles # only exists when using bazel
 except ModuleNotFoundError:
-    pass
+    Runfiles = None
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
@@ -522,7 +522,7 @@ def server(request):
         # Found in bazel-bin relative to repo root (pytest from anywhere)
         server.path = str(repo_root / "bazel-bin" / jar_path)
 
-    if "python.runfiles" in sys.modules:
+    if Runfiles is not None:
         # Find bazel's Java
         r = Runfiles.Create()
         java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
