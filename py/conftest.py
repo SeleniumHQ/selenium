@@ -27,11 +27,10 @@ from pathlib import Path
 import pytest
 import rich.console
 import rich.traceback
-
 try:
-    from python.runfiles import Runfiles
+    from python.runfiles import Runfiles # only exists when using bazel
 except ModuleNotFoundError:
-    from runfiles import Runfiles
+    pass
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
@@ -39,6 +38,10 @@ from selenium.webdriver.common.utils import free_port
 from selenium.webdriver.remote.server import Server
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
+
+
+
+
 
 drivers = (
     "chrome",
@@ -510,27 +513,27 @@ def server(request):
         # under Wayland, so we use XWayland instead.
         remote_env["MOZ_ENABLE_WAYLAND"] = "0"
 
-    built_jar = "selenium/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
-    jar_path = built_jar if Path(built_jar).exists() else None
-    java_path = None
-    r = Runfiles.Create()
-    if r:
-        java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
-        try:
-            with open(java_location_txt, encoding="utf-8") as handle:
-                read = handle.read().strip()
-                rel_path = read[len("external/") :] if read.startswith("external/") else read
-                java_path = r.Rlocation(rel_path)
-        except Exception:
-            pass
-        jar_path = r.Rlocation(built_jar)
-
     server = Server(env=remote_env, startup_timeout=60)
 
-    if java_path and Path(java_path).exists():
-        server.java_path = java_path
-    if jar_path and Path(jar_path).exists():
+    repo_root = Path(__file__).parent.parent  # py/conftest.py -> py/ -> selenium/
+    jar_path = "java/src/org/openqa/selenium/grid/selenium_server_deploy.jar"
+
+    if Path(jar_path).exists():
+        # Found in runfiles (bazel test) - relative to cwd
         server.path = jar_path
+    elif (repo_root / "bazel-bin" / jar_path).exists():
+        # Found in bazel-bin relative to repo root (pytest from anywhere)
+        server.path = str(repo_root / "bazel-bin" / jar_path)
+
+    if "python.runfiles" in sys.modules:
+        # Find bazel's Java
+        r = Runfiles.Create()
+        java_location_txt = r.Rlocation("_main/" + os.environ.get("SE_BAZEL_JAVA_LOCATION"))
+        try:
+            rel_path = Path(java_location_txt).read_text().strip().removeprefix("external/")
+            server.java_path = r.Rlocation(rel_path)
+        except Exception:
+            pass
 
     server.port = free_port()
     server.start()

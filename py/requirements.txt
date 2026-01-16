@@ -1,7 +1,6 @@
 async-generator==1.10
 attrs==25.4.0
 backports.tarfile==1.2.0
-bazel-runfiles==1.7.0
 cachetools==6.2.4
 certifi==2026.1.4
 cffi==2.0.0
