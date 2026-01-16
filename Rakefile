@@ -1297,27 +1297,22 @@ end
 
 def update_changelog(version, language, path, changelog, header)
   tag = previous_tag(version, language)
-  bullet = language == 'javascript' ? '- ' : '* '
-  commit_delimiter = '===DELIM==='
+  bullet = language == 'javascript' ? '-' : '*'
+  skip_patterns = /^(bump|update.*version|Bumping to nightly)/i
   tags_to_remove = /\[(dotnet|rb|py|java|js|rust)\]:?\s?/
 
-  command = "git --no-pager log #{tag}...HEAD --pretty=format:\"%s%n%b#{commit_delimiter}\" --reverse #{path}"
-  puts "Executing git command: #{command}"
-
+  command = "git log #{tag}...HEAD --pretty=format:'%s' --reverse -- #{path}"
   log = `#{command}`
 
-  commits = log.split(commit_delimiter).map { |commit|
-    lines = commit.gsub(tags_to_remove, '').strip.lines.map(&:chomp)
-    subject = "#{bullet}#{lines[0]}"
-
-    body = lines[1..]
-           .reject { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
-           .map { |line| "    > #{line}" }
-           .join("\n")
-    body.empty? ? subject : "#{subject}\n#{body}"
-  }.join("\n")
+  entries = log.lines
+               .map(&:strip)
+               .select { |line| line.match?(/\(#\d+\)/) }
+               .reject { |line| line.match?(skip_patterns) }
+               .map { |line| line.gsub(tags_to_remove, '') }
+               .map { |line| "#{bullet} #{line}" }
+               .join("\n")
 
   content = File.read(changelog)
-  File.write(changelog, "#{header}\n#{commits}\n\n#{content}")
+  File.write(changelog, "#{header}\n#{entries}\n\n#{content}")
   @git.add(changelog)
 end
