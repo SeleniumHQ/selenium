@@ -577,8 +577,6 @@ namespace :py do
 
   desc 'generate and copy files required for local development'
   task :local_dev do
-    Bazel.execute('build', [], '//py:selenium')
-    Rake::Task['grid'].invoke
     dirs = ['devtools', 'linux', 'macos', 'windows']
     dirs.each do |dir|
       target = "../../../../bazel-bin/py/selenium/webdriver/common/#{dir}"  # relative path from symlink location
