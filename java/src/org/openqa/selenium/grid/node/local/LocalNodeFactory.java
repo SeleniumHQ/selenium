@@ -72,7 +72,8 @@ public class LocalNodeFactory {
             .enableBiDi(nodeOptions.isBiDiEnabled())
             .enableManagedDownloads(nodeOptions.isManagedDownloadsEnabled())
             .heartbeatPeriod(nodeOptions.getHeartbeatPeriod())
-            .connectionLimitPerSession(nodeOptions.getConnectionLimitPerSession());
+            .connectionLimitPerSession(nodeOptions.getConnectionLimitPerSession())
+            .sessionCreationRetryLimit(nodeOptions.getSessionCreationRetryLimit());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);

@@ -30,6 +30,7 @@ import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NODE_IMPL
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NO_VNC_PORT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_CREATION_RETRY_LIMIT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_USE_SELENIUM_MANAGER;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VARS;
@@ -290,6 +291,16 @@ public class NodeFlags implements HasRoles {
               + "all files that were downloaded for a given session are stored in.")
   @ConfigValue(section = NODE_SECTION, name = "enable-managed-downloads", example = "false")
   public Boolean managedDownloadsEnabled;
+
+  @Parameter(
+      names = {"--session-creation-retry-limit"},
+      description =
+          "Maximum number of consecutive session creation failures before the Node is marked "
+              + "as DOWN. This helps detect and isolate unhealthy Nodes that consistently fail "
+              + "to create sessions. A value of -1 (default) disables this feature, allowing "
+              + "unlimited retries. A value higher than zero enables this feature.")
+  @ConfigValue(section = NODE_SECTION, name = "session-creation-retry-limit", example = "3")
+  public int sessionCreationRetryLimit = DEFAULT_SESSION_CREATION_RETRY_LIMIT;
 
   @Override
   public Set<Role> getRoles() {
