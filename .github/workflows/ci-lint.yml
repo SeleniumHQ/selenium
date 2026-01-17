@@ -14,6 +14,15 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  actionlint:
+    name: Validate workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate workflows
+        uses: raven-actions/actionlint@v2.1.0
+
   format:
     name: Format
     if: startsWith(github.head_ref, 'renovate/') != true
@@ -47,6 +56,13 @@ jobs:
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
+          cache-save: false
+          bazelisk-cache: true
+          external-cache: |
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              rules_ruby++ruby+ruby: rb/.ruby-version
+          repository-cache: true
           bazelrc: common --color=yes
       - name: Check code formatting
         id: check_format

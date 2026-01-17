@@ -43,7 +43,8 @@ public abstract class JupiterTestBase {
 
   private static final Logger LOG = Logger.getLogger(JupiterTestBase.class.getName());
 
-  @RegisterExtension protected static SeleniumExtension seleniumExtension = new SeleniumExtension();
+  @RegisterExtension
+  protected static final SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   protected TestEnvironment environment;
   protected AppServer appServer;

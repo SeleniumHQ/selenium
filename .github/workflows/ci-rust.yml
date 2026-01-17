@@ -5,7 +5,7 @@ on:
     inputs:
       release:
         required: false
-        type: string
+        type: boolean
         default: false
       branch:
         required: false
@@ -234,7 +234,7 @@ jobs:
     name: "Release Binaries"
     runs-on: ubuntu-latest
     needs: [ macos-stable, linux-stable, windows-stable, macos-debug, linux-debug, windows-debug ]
-    if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release == 'true')
+    if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
     steps:
       - name: "Checkout selenium_manager_artifacts"
         uses: actions/checkout@v4
@@ -256,8 +256,8 @@ jobs:
           git add latest.json
           git commit -m "Update hash values for latest binaries"
           short_hash=$(git rev-parse --short HEAD)
-          echo "TAG_NAME=selenium-manager-$short_hash" >> $GITHUB_ENV
-          git tag ${{ env.TAG_NAME }}
+          echo "TAG_NAME=selenium-manager-$short_hash" >> "$GITHUB_ENV"
+          git tag "selenium-manager-$short_hash"
           git push && git push --tags
       - name: "Release"
         uses: softprops/action-gh-release@v2

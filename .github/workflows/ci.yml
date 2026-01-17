@@ -34,14 +34,14 @@ jobs:
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
+          cache-save: false
           bazelisk-cache: true
-          cache-version: 2
           external-cache: |
-            name: ci-check
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby~~ruby~ruby: rb/.ruby-version
-          repository-cache: false
+              rules_ruby++ruby+ruby: rb/.ruby-version
+          repository-cache: true
+          bazelrc: common --color=yes
       - name: Check Bazel targets
         id: check-targets
         run: ./scripts/github-actions/check-bazel-targets.sh

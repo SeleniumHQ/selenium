@@ -1,0 +1,167 @@
+name: Release Selenium
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., selenium-4.28.0)'
+        required: true
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: read
+
+jobs:
+  stage:
+    name: Build and Stage Packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: >
+      github.event.repository.fork == false &&
+      ((startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
+       github.event.pull_request.merged == true) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.tag != ''))
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Extract tag and version
+        id: tag
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            TAG="$INPUT_TAG"
+          else
+            VERSION=$(echo "$PR_HEAD_REF" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+            TAG="selenium-${VERSION}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$(echo "$TAG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" >> "$GITHUB_OUTPUT"
+      - name: Prep git
+        run: |
+          git config --local user.email "selenium-ci@users.noreply.github.com"
+          git config --local user.name "Selenium CI Bot"
+      - name: Setup curl for Ubuntu
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          cache-save: false
+          bazelisk-cache: true
+          external-cache: |
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              rules_ruby++ruby+ruby: rb/.ruby-version
+          repository-cache: true
+          bazelrc: common --color=yes
+      - name: Build Java & .NET packages
+        run: ./go all:package --config=release
+      - name: Delete nightly tag
+        run: |
+          if git ls-remote --tags origin | grep -q "refs/tags/nightly"; then
+            git push origin --delete refs/tags/nightly || true
+          fi
+      - name: Draft GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/dist/*.*"
+          bodyFile: "scripts/github-actions/release_header.md"
+          draft: true
+          generateReleaseNotes: true
+          name: "Selenium ${{ steps.tag.outputs.version }}"
+          prerelease: false
+          skipIfReleaseExists: true
+          tag: "${{ steps.tag.outputs.tag }}"
+          commit: "${{ github.sha }}"
+
+  authorize:
+    name: Authorize Release
+    needs: stage
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Approved
+        run: echo "Release ${{ needs.stage.outputs.tag }} approved for publishing"
+
+  publish:
+    name: Publish ${{ matrix.language }}
+    needs: authorize
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [java, py, rb, dotnet, node]
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Publish ${{ matrix.language }}
+      gpg-sign: ${{ matrix.language == 'java' }}
+      run: ./go ${{ matrix.language }}:release
+    secrets: inherit
+
+  docs:
+    name: Update ${{ matrix.language }} Documentation
+    needs: [stage, publish]
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [java, py, rb, dotnet, node]
+    uses: ./.github/workflows/update-documentation.yml
+    with:
+      tag: ${{ needs.stage.outputs.tag }}
+      language: ${{ matrix.language }}
+    secrets:
+      SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
+
+  github-release:
+    name: GitHub Release
+    needs: [stage, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Publish GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: "${{ needs.stage.outputs.tag }}"
+          draft: false
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+
+  update-version:
+    name: Reset Versions to Nightly
+    needs: [stage, docs]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          bazelisk-cache: true
+          bazelrc: common --color=yes
+      - name: Prep git
+        run: |
+          git config --local user.email "selenium-ci@users.noreply.github.com"
+          git config --local user.name "Selenium CI Bot"
+      - name: Reset versions to nightly
+        run: ./go all:version nightly
+      - name: Push version changes
+        run: |
+          git commit -m "[build] Reset versions to nightly after ${{ needs.stage.outputs.tag }} release"
+          git push

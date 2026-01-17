@@ -88,6 +88,23 @@ public class SessionSlot
     }
   }
 
+  /**
+   * Atomically attempts to reserve this slot if it's available and matches the given capabilities.
+   * This method is thread-safe and eliminates the need for external synchronization.
+   *
+   * @param capabilities the capabilities to test against this slot's stereotype
+   * @return true if the slot was successfully reserved, false if already reserved or capabilities
+   *     don't match
+   */
+  public boolean tryReserve(Capabilities capabilities) {
+    // First check capabilities without reserving (fast path for non-matching slots)
+    if (!test(capabilities)) {
+      return false;
+    }
+    // Atomically try to reserve - only succeeds if currently unreserved
+    return reserved.compareAndSet(false, true);
+  }
+
   public void release() {
     reserved.set(false);
   }
