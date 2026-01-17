@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 import org.openqa.selenium.Platform;
 
 public class ExecutableFinder {
@@ -42,6 +43,7 @@ public class ExecutableFinder {
    * @param named The name of the executable to find
    * @return The absolute path to the executable, or null if no match is made.
    */
+  @Nullable
   public String find(String named) {
     File file = new File(named);
     if (canExecute(file)) {
