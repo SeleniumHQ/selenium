@@ -411,7 +411,7 @@ RELEASE_CREDENTIALS = {
 def credential_valid?(cred)
   has_env = cred[:env]&.all? { |vars| vars.any? { |v| ENV.fetch(v, nil) } }
   has_file = cred[:file]&.call
-  has_cmd = cred[:cmd].nil? || system("which #{cred[:cmd]} > /dev/null 2>&1") || system("where #{cred[:cmd]} > nul 2>&1")
+  has_cmd = cred[:cmd] && (system('which', cred[:cmd], out: File::NULL, err: File::NULL) || system('where', cred[:cmd], out: File::NULL, err: File::NULL))
   has_env || has_file || has_cmd
 end
 
