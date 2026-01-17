@@ -386,6 +386,40 @@ end
 
 task 'release-java': %i[java-release-zip publish-maven]
 
+RELEASE_CREDENTIALS = {
+  java: {
+    env: [%w[MAVEN_USER SEL_M2_USER], %w[MAVEN_PASSWORD SEL_M2_PASS]],
+    file: -> { File.exist?("#{Dir.home}/.m2/settings.xml") && File.read("#{Dir.home}/.m2/settings.xml").include?('<id>central</id>') }
+  },
+  java_gpg: {cmd: 'gpg'},
+  python: {
+    env: [%w[TWINE_USERNAME], %w[TWINE_PASSWORD]],
+    file: -> { File.exist?("#{Dir.home}/.pypirc") }
+  },
+  ruby: {
+    env: [%w[GEM_HOST_API_KEY]],
+    file: -> { File.exist?("#{Dir.home}/.gem/credentials") }
+  },
+  node: {
+    env: [%w[NODE_AUTH_TOKEN]],
+    file: -> { File.exist?("#{Dir.home}/.npmrc") && File.read("#{Dir.home}/.npmrc").include?('//registry.npmjs.org/:_authToken') }
+  },
+  dotnet: {env: [%w[NUGET_API_KEY]]},
+  dotnet_nightly: {env: [%w[GITHUB_TOKEN]]}
+}.freeze
+
+def credential_valid?(cred)
+  has_env = cred[:env]&.all? { |vars| vars.any? { |v| ENV.fetch(v, nil) } }
+  has_file = cred[:file]&.call
+  has_cmd = cred[:cmd].nil? || system("which #{cred[:cmd]} > /dev/null 2>&1") || system("where #{cred[:cmd]} > nul 2>&1")
+  has_env || has_file || has_cmd
+end
+
+def check_credentials(langs)
+  missing = langs.select { |lang| RELEASE_CREDENTIALS[lang] && !credential_valid?(RELEASE_CREDENTIALS[lang]) }
+  raise "Missing credentials: #{missing.join(', ')}" if missing.any?
+end
+
 def read_m2_user_pass
   puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
   settings = File.read("#{Dir.home}/.m2/settings.xml")
@@ -499,6 +533,8 @@ namespace :node do
   desc 'Release Node npm package'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    check_credentials(%i[node]) unless nightly
+
     if nightly
       puts 'Updating Node version to nightly...'
       Rake::Task['node:version'].invoke('nightly') if nightly
@@ -561,6 +597,8 @@ namespace :py do
   desc 'Release Python wheel and sdist to pypi'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    check_credentials(%i[python]) unless nightly
+
     if nightly
       puts 'Updating Python version to nightly...'
       Rake::Task['py:version'].invoke('nightly')
@@ -764,6 +802,7 @@ namespace :rb do
       puts 'Releasing nightly WebDriver gem...'
       Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
     else
+      check_credentials(%i[ruby])
       patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
       puts 'Releasing Ruby gems...'
@@ -911,6 +950,8 @@ namespace :dotnet do
   desc 'Build, package, and push nupkg files to NuGet'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    check_credentials(nightly ? %i[dotnet_nightly] : %i[dotnet])
+
     if nightly
       puts 'Updating .NET version to nightly...'
       Rake::Task['dotnet:version'].invoke('nightly')
@@ -997,6 +1038,7 @@ namespace :java do
   desc 'Deploy all jars to Maven'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
+    check_credentials(nightly ? %i[java] : %i[java java_gpg])
 
     ENV['MAVEN_USER'] ||= ENV.fetch('SEL_M2_USER', nil)
     ENV['MAVEN_PASSWORD'] ||= ENV.fetch('SEL_M2_PASS', nil)
@@ -1218,6 +1260,13 @@ namespace :all do
     args = arguments.to_a.compact
     Rake::Task['java:package'].invoke(*args)
     Rake::Task['dotnet:package'].invoke(*args)
+  end
+
+  desc 'Validate release credentials for all languages without releasing'
+  task :check_credentials do |_task, arguments|
+    nightly = arguments.to_a.include?('nightly')
+    langs = nightly ? %i[java dotnet_nightly] : %i[java java_gpg python ruby node dotnet]
+    check_credentials(langs)
   end
 
   desc 'Release all artifacts for all language bindings'
