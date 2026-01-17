@@ -65,7 +65,7 @@ jobs:
           repository-cache: true
           bazelrc: common --color=yes
       - name: Build Java & .NET packages
-        run: ./go 'all:package[--config=release]'
+        run: ./go all:package --config=release
       - name: Delete nightly tag
         run: |
           if git ls-remote --tags origin | grep -q "refs/tags/nightly"; then
@@ -160,7 +160,7 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
       - name: Reset versions to nightly
-        run: ./go all:version[nightly]
+        run: ./go all:version nightly
       - name: Push version changes
         run: |
           git commit -m "[build] Reset versions to nightly after ${{ needs.stage.outputs.tag }} release"
