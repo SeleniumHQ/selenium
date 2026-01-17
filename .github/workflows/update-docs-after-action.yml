@@ -21,9 +21,10 @@ jobs:
       - name: Extract language from PR title
         id: extract-language
         run: |
-          PR_TITLE="${{ github.event.pull_request.title }}"
           LANGUAGE=$(echo "$PR_TITLE" | grep -o '[^-]*$')
-          echo "language=$LANGUAGE" >> $GITHUB_OUTPUT
+          echo "language=$LANGUAGE" >> "$GITHUB_OUTPUT"
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
   update-version:
     needs: parse-pr-title
     uses: ./.github/workflows/nightly.yml

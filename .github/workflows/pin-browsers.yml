@@ -34,7 +34,7 @@ jobs:
       - name: Check Changes
         run: |
           if [[ -n $(git status --porcelain common/repositories.bzl) ]]; then
-          echo "CHANGES_FOUND=true" >> $GITHUB_ENV
+            echo "CHANGES_FOUND=true" >> "$GITHUB_ENV"
           fi
       - name: Create Pull Request
         if: env.CHANGES_FOUND == 'true'

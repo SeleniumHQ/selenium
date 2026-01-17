@@ -3,7 +3,10 @@
 require 'English'
 $LOAD_PATH.unshift File.expand_path('.')
 
+require 'base64'
+require 'json'
 require 'rake'
+require 'net/http'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
@@ -384,12 +387,12 @@ end
 task 'release-java': %i[java-release-zip publish-maven]
 
 def read_m2_user_pass
-  puts 'Maven environment variables not set, inspecting /.m2/settings.xml.'
+  puts 'Maven environment variables not set, inspecting ~/.m2/settings.xml.'
   settings = File.read("#{Dir.home}/.m2/settings.xml")
   found_section = false
   settings.each_line do |line|
     if !found_section
-      found_section = line.include? '<id>sonatype-nexus-staging</id>'
+      found_section = line.include? '<id>central</id>'
     elsif line.include?('<username>')
       ENV['MAVEN_USER'] = line[%r{<username>(.*?)</username>}, 1]
     elsif line.include?('<password>')
@@ -505,7 +508,6 @@ namespace :node do
     Bazel.execute('run', ['--config=release'], '//javascript/selenium-webdriver:selenium-webdriver.publish')
   end
 
-  desc 'Release Node npm package'
   task deploy: :release
 
   desc 'Generate Node documentation'
@@ -516,14 +518,7 @@ namespace :node do
 
     puts 'Generating Node documentation'
     FileUtils.rm_rf('build/docs/api/javascript/')
-    begin
-      Dir.chdir('javascript/selenium-webdriver') do
-        sh 'pnpm install', verbose: true
-        sh 'pnpm run generate-docs', verbose: true
-      end
-    rescue StandardError => e
-      puts "Node documentation generation contains errors; continuing... #{e.message}"
-    end
+    Bazel.execute('run', [], '//javascript/selenium-webdriver:docs')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
@@ -616,13 +611,16 @@ namespace :py do
     puts 'Generating Python documentation'
 
     FileUtils.rm_rf('build/docs/api/py/')
-    FileUtils.rm_rf('build/docs/doctrees/')
-    begin
-      sh 'tox -c py/tox.ini -e docs', verbose: true
-    rescue StandardError
-      puts 'Ensure that tox is installed on your system'
-      raise
-    end
+
+    # Generate API listing and stub files in source tree
+    Bazel.execute('run', [], '//py:generate-api-listing')
+    Bazel.execute('run', [], '//py:sphinx-autogen')
+
+    # Build docs (outputs to bazel-bin)
+    Bazel.execute('build', [], '//py:docs')
+
+    FileUtils.mkdir_p('build/docs/api')
+    FileUtils.cp_r('bazel-bin/py/docs/_build/html/.', 'build/docs/api/py')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
@@ -757,9 +755,7 @@ namespace :rb do
 
   desc 'Push Ruby gems to rubygems'
   task :release do |_task, arguments|
-    nightly = arguments.to_a.include?('nightly')
-
-    if nightly
+    if arguments.to_a.include?('nightly')
       puts 'Bumping Ruby nightly version...'
       Bazel.execute('run', [], '//rb:selenium-webdriver-bump-nightly-version')
 
@@ -805,14 +801,81 @@ namespace :rb do
     File.open(file, 'w') { |f| f.puts text }
     @git.add(file)
 
-    sh 'cd rb && bundle --version && bundle update'
-    @git.add('rb/Gemfile.lock')
+    Rake::Task['rb:update'].invoke
   end
 
   desc 'Update Ruby Syntax'
   task :lint do |_task, arguments|
     args = arguments.to_a.compact
     Bazel.execute('run', args, '//rb:lint')
+  end
+
+  desc 'Sync gem checksums from Gemfile.lock to MODULE.bazel (use force to re-download all)'
+  task :pin, [:force] do |_task, arguments|
+    require 'digest'
+
+    gemfile_lock = 'rb/Gemfile.lock'
+    module_bazel = 'MODULE.bazel'
+    force = arguments[:force] == 'force'
+
+    lock_content = File.read(gemfile_lock)
+    gem_section = lock_content[/GEM\n\s+remote:.*?\n\s+specs:\n(.*?)(?=\n[A-Z]|\Z)/m, 1]
+    gems = gem_section.scan(/^    ([a-zA-Z0-9_-]+) \(([^)]+)\)$/)
+    needed_gems = gems.map { |name, version| "#{name}-#{version}" }
+
+    # Parse existing checksums from MODULE.bazel
+    module_content = File.read(module_bazel)
+    existing = module_content.scan(/"([^"]+)":\s*"([a-f0-9]{64})"/).to_h
+
+    # Keep existing checksums for gems still in Gemfile.lock (unless force)
+    checksums = force ? {} : existing.slice(*needed_gems)
+    to_download = needed_gems - checksums.keys
+
+    puts "Found #{gems.size} gems: #{checksums.size} cached, #{to_download.size} to download..."
+
+    failed = []
+    to_download.each do |key|
+      uri = URI("https://rubygems.org/gems/#{key}.gem")
+
+      5.times do
+        response = Net::HTTP.get_response(uri)
+        break unless response.is_a?(Net::HTTPRedirection)
+
+        uri = URI(response['location'])
+      end
+
+      unless response.is_a?(Net::HTTPSuccess)
+        puts "  #{key}: failed (HTTP #{response.code})"
+        failed << key
+        next
+      end
+
+      sha = Digest::SHA256.hexdigest(response.body)
+      checksums[key] = sha
+      puts "  #{key}: #{sha[0, 16]}..."
+    rescue StandardError => e
+      puts "  #{key}: failed (#{e.message})"
+      failed << key
+    end
+
+    raise "Failed to download checksums for: #{failed.join(', ')}" if failed.any?
+
+    checksums_lines = checksums.keys.sort.map { |k| "        \"#{k}\": \"#{checksums[k]}\"," }
+    formatted = "    gem_checksums = {\n#{checksums_lines.join("\n")}\n    },"
+
+    new_content = module_content.sub(/    gem_checksums = \{[^}]+\},/m, formatted)
+    File.write(module_bazel, new_content)
+
+    @git.add(module_bazel)
+  end
+
+  desc 'Update Ruby dependencies and sync checksums to MODULE.bazel'
+  task :update do
+    Bazel.execute('run', [], '//rb:bundle-update')
+    @git.add('rb/Gemfile.lock')
+    Bazel.execute('run', [], '//rb:rbs-update')
+    @git.add('rb/rbs_collection.lock.yaml')
+    Rake::Task['rb:pin'].invoke
   end
 end
 
@@ -880,28 +943,7 @@ namespace :dotnet do
 
     puts 'Generating .NET documentation'
     FileUtils.rm_rf('build/docs/api/dotnet/')
-    begin
-      # Pinning to 2.78.2 to avoid breaking changes in newer versions
-      sh 'dotnet tool uninstall --global docfx || true'
-      sh 'dotnet tool install --global --version 2.78.2 docfx'
-      # sh 'dotnet tool update -g docfx'
-    rescue StandardError
-      puts 'Please ensure that .NET SDK is installed.'
-      raise
-    end
-
-    begin
-      sh 'docfx dotnet/docs/docfx.json'
-    rescue StandardError
-      case $CHILD_STATUS.exitstatus
-      when 133
-        raise 'Ensure the dotnet/tools directory is added to your PATH environment variable (e.g., `~/.dotnet/tools`)'
-      when 255
-        puts '.NET documentation build failed, likely because of DevTools namespacing. This is ok; continuing'
-      else
-        raise
-      end
-    end
+    Bazel.execute('run', [], '//dotnet:docs')
 
     update_gh_pages unless arguments.to_a.include?('skip_update')
   end
@@ -982,6 +1024,37 @@ namespace :java do
 
     puts "Releasing Java artifacts to Maven repository at '#{ENV.fetch('MAVEN_REPO', nil)}'"
     java_release_targets.each { |target| Bazel.execute('run', ['--config=release'], target) }
+
+    Rake::Task['java:publish'].invoke unless nightly
+  end
+
+  desc 'Publish to sonatype'
+  task :publish do |_task|
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+    user = ENV.fetch('MAVEN_USER')
+    pass = ENV.fetch('MAVEN_PASSWORD')
+
+    uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq')
+    encoded = Base64.strict_encode64("#{user}:#{pass}")
+
+    puts 'Triggering validation POST to Central Portal...'
+    req = Net::HTTP::Post.new(uri)
+    req['Authorization'] = "Basic #{encoded}"
+    req['Accept'] = '*/*'
+    req['Content-Length'] = '0'
+
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
+                                                  open_timeout: 10, read_timeout: 60) do |http|
+      http.request(req)
+    end
+
+    if res.is_a?(Net::HTTPSuccess)
+      puts "Manual upload triggered successfully (HTTP #{res.code})"
+    else
+      warn "Manual upload failed (HTTP #{res.code}): #{res.code} #{res.message}"
+      warn res.body if res.body && !res.body.empty?
+      exit(1)
+    end
   end
 
   desc 'Install jars to local m2 directory'
@@ -1061,7 +1134,7 @@ namespace :rust do
 
   desc 'Update the rust lock files'
   task :update do
-    sh 'CARGO_BAZEL_REPIN=true bazel sync --only=crates'
+    sh 'CARGO_BAZEL_REPIN=true bazel build @rules_rust//:rustfmt'
   end
 
   desc 'Update Rust changelog'
@@ -1162,11 +1235,21 @@ namespace :all do
   end
 
   task :lint do
+    before_diff = `git diff`
+
     ext = /mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os']) ? 'ps1' : 'sh'
     sh "./scripts/format.#{ext}", verbose: true
+
+    after_diff = `git diff`
+    raise 'Formatting updated files; please review, stage, and commit the changes.' if before_diff != after_diff
+
+    Bazel.execute('run', [], '//rb:steep')
+    shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
+    Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
   end
 
-  # Example: `./go all:prepare 4.31.0 early-stable`
+  # Example: `./go all:prepare[4.31.0,early-stable]`
+  # Equivalent to .github/workflows/pre-release.yml in a single command
   desc 'Update everything in preparation for a release'
   task :prepare, [:version, :channel] do |_task, arguments|
     version = arguments[:version]
@@ -1177,7 +1260,7 @@ namespace :all do
     Rake::Task['java:update'].invoke
     Rake::Task['authors'].invoke
     Rake::Task['all:version'].invoke(version)
-    Rake::Task['all:changelogs']
+    Rake::Task['all:changelogs'].invoke
   end
 
   desc 'Update all versions'
@@ -1284,27 +1367,22 @@ end
 
 def update_changelog(version, language, path, changelog, header)
   tag = previous_tag(version, language)
-  bullet = language == 'javascript' ? '- ' : '* '
-  commit_delimiter = '===DELIM==='
+  bullet = language == 'javascript' ? '-' : '*'
+  skip_patterns = /^(bump|update.*version|Bumping to nightly)/i
   tags_to_remove = /\[(dotnet|rb|py|java|js|rust)\]:?\s?/
 
-  command = "git --no-pager log #{tag}...HEAD --pretty=format:\"%s%n%b#{commit_delimiter}\" --reverse #{path}"
-  puts "Executing git command: #{command}"
-
+  command = "git log #{tag}...HEAD --pretty=format:'%s' --reverse -- #{path}"
   log = `#{command}`
 
-  commits = log.split(commit_delimiter).map { |commit|
-    lines = commit.gsub(tags_to_remove, '').strip.lines.map(&:chomp)
-    subject = "#{bullet}#{lines[0]}"
-
-    body = lines[1..]
-           .reject { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
-           .map { |line| "    > #{line}" }
-           .join("\n")
-    body.empty? ? subject : "#{subject}\n#{body}"
-  }.join("\n")
+  entries = log.lines
+               .map(&:strip)
+               .grep(/\(#\d+\)/)
+               .grep_v(skip_patterns)
+               .map { |line| line.gsub(tags_to_remove, '') }
+               .map { |line| "#{bullet} #{line}" }
+               .join("\n")
 
   content = File.read(changelog)
-  File.write(changelog, "#{header}\n#{commits}\n\n#{content}")
+  File.write(changelog, "#{header}\n#{entries}\n\n#{content}")
   @git.add(changelog)
 end

@@ -88,10 +88,14 @@ jobs:
         uses: actions/checkout@v4
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
-        run: git pull origin ${{ github.head_ref }}
+        run: git pull origin "$HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.head_ref }}
       - name: Pull latest changes from ref for branch pushes
         if: contains(github.ref, 'renovate/')
-        run: git pull origin ${{ github.ref }}
+        run: git pull origin "$GIT_REF"
+        env:
+          GIT_REF: ${{ github.ref }}
       - name: Free space
         if: inputs.os != 'windows'
         run: ./scripts/github-actions/free-disk-space.sh
@@ -118,7 +122,7 @@ jobs:
           dotnet-version: ${{ inputs.dotnet-version }}
       - name: Setup Java
         if: inputs.java-version != ''
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ inputs.java-version }}
           distribution: 'temurin'
@@ -165,6 +169,13 @@ jobs:
         if: inputs.caching == false
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
+          cache-save: false
+          bazelisk-cache: true
+          external-cache: |
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              rules_ruby++ruby+ruby: rb/.ruby-version
+          repository-cache: true
           bazelrc: common --color=yes
       - name: Setup curl for Ubuntu
         if: inputs.os == 'ubuntu'
@@ -217,7 +228,7 @@ jobs:
           limit-access-to-actor: false
       - name: Release Nightly
         if: inputs.nightly-release-files != ''
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "nightly"

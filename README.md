@@ -287,7 +287,7 @@ you can configure it use Bazel artifacts:
 To keep `Cargo.Bazel.lock` synchronized with `Cargo.lock`, run:
 
 ```shell
-CARGO_BAZEL_REPIN=true bazel sync --only=crates
+CARGO_BAZEL_REPIN=true bazel build @rules_rust//:rustfmt
 ```
 
 ## Testing

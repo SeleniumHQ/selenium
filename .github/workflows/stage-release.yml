@@ -36,25 +36,37 @@ jobs:
       - name: Extract version from branch name
         if: github.event.pull_request.merged == true
         run: |
-          TEMP_BRANCH_NAME=${{ github.event.pull_request.head.ref }}
-          VERSION=$(echo $TEMP_BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          VERSION=$(echo "$BRANCH_NAME" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+        env:
+          BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
       - name: Extract version from workflow input
         if: github.event_name == 'workflow_dispatch'
         run: |
-          VERSION=${{ inputs.version }}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          VERSION="${{ inputs.version }}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
       - name: Prep git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'temurin'
       - name: Setup curl for Ubuntu
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          cache-save: false
+          bazelisk-cache: true
+          external-cache: |
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              rules_ruby++ruby+ruby: rb/.ruby-version
+          repository-cache: true
+          bazelrc: common --color=yes
       - name: Delete nightly tag
         run: |
           if git rev-parse --verify refs/tags/nightly >/dev/null 2>&1; then
@@ -64,7 +76,7 @@ jobs:
             echo "No nightly tag found - nothing to delete"
           fi
       - name: Build and Stage Packages
-        run: ./go all:package[--config=release]
+        run: ./go 'all:package[--config=release]'
       - name: Generate Draft Release
         uses: ncipollo/release-action@v1
         with:

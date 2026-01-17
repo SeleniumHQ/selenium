@@ -159,3 +159,7 @@ Lint/Debugger:
 
 Lint/UselessConstantScoping:
   Enabled: false
+
+RSpec/Output:
+  Exclude:
+    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'

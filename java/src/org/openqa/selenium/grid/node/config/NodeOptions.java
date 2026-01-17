@@ -75,6 +75,7 @@ public class NodeOptions {
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
   public static final int DEFAULT_DRAIN_AFTER_SESSION_COUNT = 0;
   public static final int DEFAULT_CONNECTION_LIMIT = 10;
+  public static final int DEFAULT_NODE_DOWN_FAILURE_THRESHOLD = 0;
   public static final boolean DEFAULT_DELETE_SESSION_ON_UI = false;
   public static final boolean DEFAULT_ENABLE_CDP = true;
   public static final boolean DEFAULT_ENABLE_BIDI = true;
@@ -275,6 +276,12 @@ public class NodeOptions {
             .orElse(DEFAULT_CONNECTION_LIMIT);
     Require.positive("Session connection limit", connectionLimit);
     return connectionLimit;
+  }
+
+  public int getNodeDownFailureThreshold() {
+    return config
+        .getInt(NODE_SECTION, "node-down-failure-threshold")
+        .orElse(DEFAULT_NODE_DOWN_FAILURE_THRESHOLD);
   }
 
   public Duration getSessionTimeout() {
