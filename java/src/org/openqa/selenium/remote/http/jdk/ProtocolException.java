@@ -15,32 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.http.jdk;
 
-public class CloseMessage implements Message {
+import java.net.URI;
+import org.openqa.selenium.remote.http.HttpMethod;
 
-  private final int code;
-  private final String reason;
-
-  public CloseMessage(int code) {
-    this(code, "");
-  }
-
-  public CloseMessage(int code, String reason) {
-    this.code = code;
-    this.reason = reason == null ? "" : reason;
-  }
-
-  public int code() {
-    return code;
-  }
-
-  public String reason() {
-    return reason;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("%s{code=%d, reason=%s}", getClass().getSimpleName(), code, reason);
+class ProtocolException extends RuntimeException {
+  public ProtocolException(String message, HttpMethod method, URI uri) {
+    super(String.format("%s (%s %s)", message, method, uri));
   }
 }

@@ -15,32 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.http.jdk;
 
-public class CloseMessage implements Message {
+import java.io.UncheckedIOException;
+import java.net.ConnectException;
+import java.net.URI;
+import org.openqa.selenium.remote.http.HttpMethod;
 
-  private final int code;
-  private final String reason;
+public class ConnectionException extends UncheckedIOException {
+  private final URI uri;
 
-  public CloseMessage(int code) {
-    this(code, "");
+  public ConnectionException(HttpMethod method, URI uri, ConnectException cause) {
+    super(String.format("Connection error (%s %s)", method, uri), cause);
+    this.uri = uri;
   }
 
-  public CloseMessage(int code, String reason) {
-    this.code = code;
-    this.reason = reason == null ? "" : reason;
-  }
-
-  public int code() {
-    return code;
-  }
-
-  public String reason() {
-    return reason;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("%s{code=%d, reason=%s}", getClass().getSimpleName(), code, reason);
+  public URI uri() {
+    return uri;
   }
 }
