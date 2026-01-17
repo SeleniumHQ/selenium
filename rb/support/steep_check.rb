@@ -46,12 +46,8 @@ Dir.chdir(root)
 
 ruby = RbConfig.ruby
 
-# Install RBS collection if not present
-rbs_collection_dir = File.join(root, ".gem_rbs_collection")
-unless Dir.exist?(rbs_collection_dir)
-  puts "Installing RBS collection..."
-  system(ruby, "-S", "rbs", "collection", "install") || exit(1)
-end
+# Install RBS collection from lockfile (--frozen skips Gemfile.lock validation)
+system(ruby, "-S", "rbs", "collection", "install", "--frozen") || exit(1)
 
 # Run steep check, discarding stderr (internal Steep logs, not type errors)
 cmd = [ruby, "-S", "steep", "check", "--severity-level=error", *ARGV]
