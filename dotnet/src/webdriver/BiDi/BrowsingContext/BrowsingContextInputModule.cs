@@ -54,7 +54,7 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
 
     public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, ContextSubscriptionOptions? options = null)
     {
-        return inputModule.OnFileDialogOpenedAsync((e) =>
+        return inputModule.OnFileDialogOpenedAsync(e =>
         {
             if (context.Equals(e.Context))
             {
