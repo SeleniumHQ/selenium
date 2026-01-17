@@ -56,19 +56,13 @@ public class SeleniumExtension
         TestExecutionExceptionHandler {
 
   private static final ThreadLocal<SeleniumExtension.Instances> instances = new ThreadLocal<>();
-
   private static final Logger LOG = Logger.getLogger(SeleniumExtension.class.getName());
 
   private final Duration regularWait;
-
   private final Duration shortWait;
-
   private boolean nullDriver = false;
-
   private final TestIgnorance ignorance;
-
-  private final CaptureLoggingRule captureLoggingRule;
-
+  private final CaptureLoggingRule captureLoggingRule = new CaptureLoggingRule();
   private boolean failedWithNotYetImplemented = false;
   private boolean failedWithRemoteBuild = false;
 
@@ -82,11 +76,11 @@ public class SeleniumExtension
 
     this.ignorance =
         new TestIgnorance(Optional.ofNullable(Browser.detect()).orElse(Browser.CHROME));
-    this.captureLoggingRule = new CaptureLoggingRule();
   }
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
+    captureLoggingRule.startLogCapture();
     nullDriver = false;
 
     // ManageDriverRule.starting
@@ -138,11 +132,11 @@ public class SeleniumExtension
     SwitchToTopRule switchToTopRule = new SwitchToTopRule(context);
     switchToTopRule.apply();
 
-    // TraceMethodNameRule.finished
-    LOG.info(() -> "<<< Finished  " + displayName(context));
+    Level logLevel =
+        context.getExecutionException().map(testFailed -> Level.ALL).orElse(Level.WARNING);
+    captureLoggingRule.endLogCapture(logLevel);
 
-    // CaptureLoggingRule
-    captureLoggingRule.endLogCapture();
+    LOG.info(() -> "<<< Finished  " + displayName(context));
 
     // NotYetImplementedRule
     NotYetImplementedRule notYetImplementedRule = new NotYetImplementedRule(context);
@@ -211,8 +205,7 @@ public class SeleniumExtension
       }
     }
 
-    // CaptureLoggingRule
-    captureLoggingRule.writeCapturedLogs();
+    captureLoggingRule.endLogCapture(Level.ALL);
   }
 
   @Override
@@ -346,7 +339,7 @@ public class SeleniumExtension
       return nyi.anyMatch(driver -> current.matches(driver.value()));
     }
 
-    public boolean check() throws Exception {
+    public boolean check() {
       Optional<AnnotatedElement> element = context.getElement();
       Optional<NotYetImplementedList> notYetImplementedList =
           findAnnotation(element, NotYetImplementedList.class);
