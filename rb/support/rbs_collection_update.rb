@@ -45,4 +45,12 @@ Dir.chdir(root)
 ruby = RbConfig.ruby
 
 # Run rbs collection update
-exec ruby, "-S", "rbs", "collection", "update", *ARGV
+system(ruby, "-S", "rbs", "collection", "update", *ARGV) || exit(1)
+
+# Fix the gemfile_lock_path to be relative (rbs writes absolute paths when run via bazel)
+lockfile = File.join(root, "rbs_collection.lock.yaml")
+content = File.read(lockfile)
+content.gsub!(/^gemfile_lock_path:.*$/, 'gemfile_lock_path: Gemfile.lock')
+File.write(lockfile, content)
+
+puts "Updated rbs_collection.lock.yaml with fixed gemfile_lock_path"

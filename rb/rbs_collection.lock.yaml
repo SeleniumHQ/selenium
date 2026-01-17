@@ -193,4 +193,4 @@ gems:
     revision: d07edeb13c53de1c65b2bede98a720ac52d497a2
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
-gemfile_lock_path: "../../../../../private/var/tmp/_bazel_titus/d2818cab46616d68c3fe1dda8630cb65/execroot/_main/bazel-out/darwin_arm64-fastbuild/bin/rb/rbs-update.sh.runfiles/rules_ruby++ruby+bundle/rb/Gemfile.lock"
+gemfile_lock_path: Gemfile.lock
