@@ -19,5 +19,5 @@
 
 namespace OpenQA.Selenium.BiDi.Input;
 
-public sealed record FileDialogInfo(BrowsingContext.BrowsingContext Context, bool Multiple, Script.ISharedReference? Element)
+public sealed record FileDialogInfo(BrowsingContext.BrowsingContext Context, bool Multiple, Script.SharedReference? Element)
     : EventArgs;
