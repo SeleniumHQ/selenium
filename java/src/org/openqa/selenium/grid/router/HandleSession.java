@@ -118,31 +118,28 @@ class HandleSession implements HttpHandler, Closeable {
         () -> {
           Instant staleBefore = Instant.now().minus(2, ChronoUnit.MINUTES);
 
-          // Use computeIfPresent for atomic check-and-remove to avoid TOCTOU race condition
-          // where inUse could be incremented between check and removal
-          httpClients.forEach(
-              (uri, entry) -> {
-                httpClients.computeIfPresent(
-                    uri,
-                    (key, currentEntry) -> {
-                      // Atomically check conditions and remove if stale
-                      if (currentEntry.inUse.get() != 0) {
-                        // the client is currently in use
-                        return currentEntry;
-                      } else if (!currentEntry.lastUse.isBefore(staleBefore)) {
-                        // the client was recently used
-                        return currentEntry;
-                      } else {
-                        // the client has not been used for a while, remove it from the cache
-                        try {
-                          currentEntry.httpClient.close();
-                        } catch (Exception ex) {
-                          LOG.log(Level.WARNING, "failed to close a stale httpclient", ex);
-                        }
-                        return null; // removes entry from map
-                      }
-                    });
-              });
+          // Use removeIf for safe and efficient removal from ConcurrentHashMap
+          httpClients
+              .entrySet()
+              .removeIf(
+                  entry -> {
+                    CacheEntry cacheEntry = entry.getValue();
+                    if (cacheEntry.inUse.get() != 0) {
+                      // the client is currently in use
+                      return false;
+                    }
+                    if (!cacheEntry.lastUse.isBefore(staleBefore)) {
+                      // the client was recently used
+                      return false;
+                    }
+                    // the client has not been used for a while, close and remove it
+                    try {
+                      cacheEntry.httpClient.close();
+                    } catch (Exception ex) {
+                      LOG.log(Level.WARNING, "failed to close a stale httpclient", ex);
+                    }
+                    return true;
+                  });
         };
 
     this.cleanUpHttpClientsCacheService =
