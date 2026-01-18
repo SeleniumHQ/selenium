@@ -46,7 +46,7 @@ jobs:
       ENFORCEMENT: ${{ inputs.enforcement || (github.event.action == 'ready_for_review' && 'active') || 'disabled' }}
     steps:
       - name: Update ruleset enforcement
-        uses: octokit/request-action@v2.x
+        uses: octokit/request-action@v2.4.0
         with:
           route: PUT /repos/{owner}/{repo}/rulesets/{ruleset_id}
           owner: ${{ github.repository_owner }}
