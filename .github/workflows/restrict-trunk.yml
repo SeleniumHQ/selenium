@@ -13,19 +13,16 @@ on:
       - trunk
   workflow_dispatch:
     inputs:
-      enforcement:
-        description: 'Ruleset enforcement level'
+      restrict:
+        description: 'Restrict trunk branch'
         required: true
-        type: choice
-        options:
-          - active
-          - disabled
+        type: boolean
   workflow_call:
     inputs:
-      enforcement:
-        description: 'Ruleset enforcement level'
+      restrict:
+        description: 'Restrict trunk branch'
         required: true
-        type: string
+        type: boolean
 
 jobs:
   manage-trunk:
@@ -33,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.event.repository.fork == false &&
-      (inputs.enforcement ||
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' ||
        (startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
         (github.event.action == 'ready_for_review' ||
          (github.event.action == 'closed' && github.event.pull_request.merged == false))))
@@ -43,7 +40,7 @@ jobs:
           - 11911909  # Release In Progress Access (restrict updates to trunk to release managers)
           - 11912022  # Release In Progress Flow (requires branches to be up to date before merging)
     env:
-      ENFORCEMENT: ${{ inputs.enforcement || (github.event.action == 'ready_for_review' && 'active') || 'disabled' }}
+      TRUNK_RESTRICTED: ${{ inputs.restrict || github.event.action == 'ready_for_review' }}
     steps:
       - name: Update ruleset enforcement
         uses: octokit/request-action@v2.4.0
@@ -52,6 +49,6 @@ jobs:
           owner: ${{ github.repository_owner }}
           repo: ${{ github.event.repository.name }}
           ruleset_id: ${{ matrix.ruleset_id }}
-          enforcement: ${{ env.ENFORCEMENT }}
+          enforcement: ${{ env.TRUNK_RESTRICTED == 'true' && 'active' || 'disabled' }}
         env:
           GITHUB_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
