@@ -4,7 +4,7 @@ permissions: {}
 
 concurrency:
   group: manage-trunk-restrictions
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 on:
   pull_request:
