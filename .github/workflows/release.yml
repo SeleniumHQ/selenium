@@ -174,3 +174,31 @@ jobs:
         run: |
           git commit -m "[build] Reset versions to nightly after ${{ needs.stage.outputs.tag }} release"
           git push
+
+  on-release-failure:
+    name: On Release Failure
+    runs-on: ubuntu-latest
+    needs: [publish, github-release, unrestrict-trunk, update-version]
+    if: >
+      always() &&
+      (needs.publish.result == 'failure' ||
+       needs.github-release.result == 'failure' ||
+       needs.unrestrict-trunk.result == 'failure' ||
+       needs.update-version.result == 'failure')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_ICON_EMOJI: ":rotating_light:"
+          SLACK_COLOR: failure
+          SLACK_CHANNEL: selenium-tlc
+          SLACK_USERNAME: GitHub Workflows
+          SLACK_TITLE: Release failed
+          SLACK_MESSAGE: >
+            Selenium Published: ${{ needs.publish.result }},
+            GitHub Release Published: ${{ needs.github-release.result }},
+            Trunk Unlocked: ${{ needs.unrestrict-trunk.result }},
+            Nightly Version Updated: ${{ needs.update-version.result }}
+          MSG_MINIMAL: actions url
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
