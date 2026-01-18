@@ -139,9 +139,18 @@ jobs:
           omitBodyDuringUpdate: true
           omitNameDuringUpdate: true
 
+  unrestrict-trunk:
+    name: Unrestrict Trunk Branch
+    needs: [github-release]
+    if: always()
+    uses: ./.github/workflows/restrict-trunk.yml
+    with:
+      enforcement: disabled
+    secrets: inherit
+
   update-version:
     name: Reset Versions to Nightly
-    needs: [stage, docs]
+    needs: [stage, docs, unrestrict-trunk]
     runs-on: ubuntu-latest
     permissions:
       contents: write

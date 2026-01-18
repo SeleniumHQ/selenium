@@ -22,6 +22,7 @@ jobs:
   update-rust:
     name: Update Rust Version
     runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
     steps:
       - name: "Checkout repo"
         uses: actions/checkout@v4

@@ -1,0 +1,49 @@
+name: Manage Trunk Restrictions
+
+on:
+  pull_request:
+    types: [ready_for_review, closed]
+    branches:
+      - trunk
+  workflow_dispatch:
+    inputs:
+      enforcement:
+        description: 'Ruleset enforcement level'
+        required: true
+        type: choice
+        options:
+          - active
+          - disabled
+  workflow_call:
+    inputs:
+      enforcement:
+        description: 'Ruleset enforcement level'
+        required: true
+        type: string
+
+jobs:
+  manage-trunk:
+    name: Manage Trunk Branch
+    runs-on: ubuntu-latest
+    if: |
+      github.event.repository.fork == false &&
+      (inputs.enforcement ||
+       (startsWith(github.event.pull_request.head.ref, 'release-preparation-') &&
+        (github.event.action == 'ready_for_review' ||
+         (github.event.action == 'closed' && github.event.pull_request.merged == false))))
+    strategy:
+      matrix:
+        ruleset_id: [11911909, 11912022]
+    env:
+      ENFORCEMENT: ${{ inputs.enforcement || (github.event.action == 'ready_for_review' && 'active') || 'disabled' }}
+    steps:
+      - name: Update ruleset enforcement
+        uses: octokit/request-action@v2.x
+        with:
+          route: PUT /repos/{owner}/{repo}/rulesets/{ruleset_id}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          ruleset_id: ${{ matrix.ruleset_id }}
+          enforcement: ${{ env.ENFORCEMENT }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
