@@ -2,6 +2,10 @@ name: Manage Trunk Restrictions
 
 permissions: {}
 
+concurrency:
+  group: manage-trunk-restrictions
+  cancel-in-progress: true
+
 on:
   pull_request:
     types: [ready_for_review, closed]
@@ -35,7 +39,9 @@ jobs:
          (github.event.action == 'closed' && github.event.pull_request.merged == false))))
     strategy:
       matrix:
-        ruleset_id: [11911909, 11912022]
+        ruleset_id:
+          - 11911909  # Release In Progress Access (restrict updates to trunk to release managers)
+          - 11912022  # Release In Progress Flow (requires branches to be up to date before merging)
     env:
       ENFORCEMENT: ${{ inputs.enforcement || (github.event.action == 'ready_for_review' && 'active') || 'disabled' }}
     steps:
