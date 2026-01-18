@@ -25,6 +25,7 @@ import java.io.UncheckedIOException;
 import java.net.Authenticator;
 import java.net.ConnectException;
 import java.net.PasswordAuthentication;
+import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
@@ -454,7 +455,7 @@ public class JdkHttpClient implements HttpClient {
       for (int i = 0; i < 100; i++) {
         if (Thread.interrupted()) {
           throw new InterruptedException(
-              String.format("http request has been interrupted: %s %s", method, rawUri));
+              String.format("http request has been interrupted: %s", describe(req)));
         }
 
         java.net.http.HttpRequest request = messages.createRequest(req, method, rawUri);
@@ -478,19 +479,20 @@ public class JdkHttpClient implements HttpClient {
         }
       }
 
-      throw new ProtocolException("Too many redirects: 101", method, rawUri);
+      throw new ProtocolException(String.format("Too many redirects: 101 (%s)", describe(req)));
     } catch (HttpTimeoutException e) {
       throw new TimeoutException(
-          String.format("Timeout when executing request (%s %s)", method, rawUri), e);
+          String.format("Timeout when executing request (%s)", describe(req)), e);
     } catch (ConnectException e) {
-      throw new ConnectionException(method, rawUri, e);
+      throw new ConnectionException(
+          String.format("Connection error (%s)", describe(req)), maskUrlCredentials(rawUri), e);
     } catch (IOException e) {
       throw new UncheckedIOException(
-          String.format("Failed to execute request (%s %s)", method, rawUri), e);
+          String.format("Failed to execute request (%s)", describe(req)), e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new WebDriverException(
-          String.format("%s when executing request (%s %s)", e.getMessage(), method, rawUri), e);
+          String.format("%s when executing request (%s)", e.getMessage(), describe(req)), e);
     } finally {
       LOG.log(
           Level.FINE,
@@ -507,6 +509,39 @@ public class JdkHttpClient implements HttpClient {
     }
   }
 
+  private String describe(HttpRequest req) {
+    String uri = maskUrlCredentials(messages.getRawUri(req));
+    HttpMethod method = req.getMethod();
+    return String.format("%s %s", method, uri);
+  }
+
+  static String maskUrlCredentials(String uri) {
+    try {
+      return maskUrlCredentials(new URI(uri));
+    } catch (URISyntaxException invalidUri) {
+      return uri;
+    }
+  }
+
+  private static String maskUrlCredentials(URI u) {
+    if (u.getUserInfo() == null) {
+      return u.toString();
+    }
+    try {
+      return new URI(
+              u.getScheme(),
+              "***",
+              u.getHost(),
+              u.getPort(),
+              u.getPath(),
+              u.getQuery(),
+              u.getFragment())
+          .toString();
+    } catch (URISyntaxException e) {
+      return u.toString();
+    }
+  }
+
   private String getLocationHeader(
       java.net.http.HttpResponse<InputStream> response, HttpMethod method, URI uri)
       throws ProtocolException {
@@ -517,9 +552,9 @@ public class JdkHttpClient implements HttpClient {
             () -> {
               String message =
                   String.format(
-                      "HTTP response with status %s but without \"location\" header",
-                      response.statusCode());
-              return new ProtocolException(message, method, uri);
+                      "HTTP response with status %d but without \"location\" header (%s %s)",
+                      response.statusCode(), method, maskUrlCredentials(uri));
+              return new ProtocolException(message);
             });
   }
 

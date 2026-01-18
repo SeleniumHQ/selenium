@@ -19,18 +19,16 @@ package org.openqa.selenium.remote.http.jdk;
 
 import java.io.UncheckedIOException;
 import java.net.ConnectException;
-import java.net.URI;
-import org.openqa.selenium.remote.http.HttpMethod;
 
 public class ConnectionException extends UncheckedIOException {
-  private final URI uri;
+  private final String uri;
 
-  public ConnectionException(HttpMethod method, URI uri, ConnectException cause) {
-    super(String.format("Connection error (%s %s)", method, uri), cause);
+  public ConnectionException(String message, String uri, ConnectException cause) {
+    super(message, cause);
     this.uri = uri;
   }
 
-  public URI uri() {
+  public String uri() {
     return uri;
   }
 }
