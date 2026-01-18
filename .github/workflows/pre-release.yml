@@ -176,14 +176,15 @@ jobs:
             git commit -m "update selenium manager versions"
             echo "updated=true" >> "$GITHUB_OUTPUT"
           fi
-      - name: Update Maven dependency versions
-        id: maven
+      - name: Update Dependency versions
+        id: dependencies
         run: |
           ./go java:update
+          ./go node:update
           if git diff --staged --quiet; then
             echo "updated=false" >> "$GITHUB_OUTPUT"
           else
-            git commit -m "update maven dependency versions"
+            git commit -m "update dependency versions"
             echo "updated=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Update Authors file
@@ -221,7 +222,7 @@ jobs:
             | Browser  and driver versions | ${{ steps.browsers.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | CDP version | ${{ steps.devtools.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Selenium Manager version | ${{ steps.manager.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
-            | Maven dependencies | ${{ steps.maven.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
+            | Dependencies | ${{ steps.dependencies.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Update Authors | ${{ steps.authors.outputs.updated == 'true' && '✅ Updated' || '⏭️ Skipped (no changes)' }} |
             | Bump Versions | ✅ Updated |
             | Draft Changelogs | ✅ Updated |
