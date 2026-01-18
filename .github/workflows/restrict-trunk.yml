@@ -1,5 +1,7 @@
 name: Manage Trunk Restrictions
 
+permissions: {}
+
 on:
   pull_request:
     types: [ready_for_review, closed]
