@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
       - name: Validate workflows
         uses: raven-actions/actionlint@v2.1.0
 
@@ -36,7 +36,7 @@ jobs:
       patch_uploaded: ${{ steps.patch_uploaded.outputs.outcome }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
       - name: Check for protected files
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
         uses: dorny/paths-filter@v3
@@ -102,7 +102,7 @@ jobs:
           echo "::error::Code needs formatting. Run ./scripts/format.sh locally and push changes."
           exit 1
       - name: Checkout PR
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           ref: ${{ github.event.pull_request.head.ref }}
       - name: Download format changes

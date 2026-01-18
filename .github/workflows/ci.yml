@@ -28,9 +28,7 @@ jobs:
       targets: ${{ steps.check-targets.outputs.bazel-targets }}
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 50
+        uses: ./.github/actions/fast-checkout
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.18.0
         with:

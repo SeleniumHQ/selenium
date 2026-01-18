@@ -91,7 +91,7 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
         run: git pull origin "$HEAD_REF"

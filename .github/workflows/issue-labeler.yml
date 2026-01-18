@@ -12,7 +12,7 @@ jobs:
     permissions:
       issues: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fast-checkout
 
       - name: Parse bug report form
         id: bug-parser

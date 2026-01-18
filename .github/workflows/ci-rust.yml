@@ -52,7 +52,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           ref: ${{ inputs.branch }}
       - name: "Update Rust"
@@ -82,7 +82,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           ref: ${{ inputs.branch }}
       - name: "Update Rust"
@@ -110,7 +110,7 @@ jobs:
     if: github.event_name != 'schedule'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           ref: ${{ inputs.branch }}
       - name: "Update Rust"
@@ -139,7 +139,7 @@ jobs:
     if: github.event_name != 'schedule'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           ref: ${{ inputs.branch }}
       - name: "Update Rust"
@@ -171,7 +171,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           ref: ${{ inputs.branch }}
       - name: "Update Rust"
@@ -204,7 +204,7 @@ jobs:
       RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           ref: ${{ inputs.branch }}
       - name: "Update Rust"
@@ -237,7 +237,7 @@ jobs:
     if: github.event_name != 'schedule' && github.event.repository.fork == false && (github.ref == 'refs/heads/trunk' || inputs.release)
     steps:
       - name: "Checkout selenium_manager_artifacts"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           repository: SeleniumHQ/selenium_manager_artifacts

@@ -37,10 +37,9 @@ jobs:
     if: github.event.repository.fork == false
     steps:
       - name: "Checkout repo"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           persist-credentials: false
-          fetch-depth: 0
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
@@ -87,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout repo"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: "Delete rust release branch"
@@ -108,14 +107,10 @@ jobs:
     needs: restrict-trunk
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
         with:
           persist-credentials: false
-          fetch-depth: 0
           fetch-tags: true
-          ref: trunk
-      - name: Get latest trunk
-        run: git pull --ff-only origin trunk
       - name: Setup curl for Ubuntu
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Setup Bazel

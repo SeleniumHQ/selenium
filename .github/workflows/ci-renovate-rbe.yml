@@ -17,7 +17,7 @@ jobs:
     if: github.event.repository.fork == false
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.18.0
         with:

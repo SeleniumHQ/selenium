@@ -76,7 +76,7 @@ jobs:
     if: ${{ always() && (needs.ruby.result == 'failure' || needs.ruby.result == 'timed_out') }}
     needs: ruby
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fast-checkout
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -103,7 +103,7 @@ jobs:
     if: ${{ always() && (needs.python.result == 'failure' || needs.python.result == 'timed_out') }}
     needs: python
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fast-checkout
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -130,7 +130,7 @@ jobs:
     if: ${{ always() && (needs.java.result == 'failure' || needs.java.result == 'timed_out') }}
     needs: java
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fast-checkout
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -158,7 +158,7 @@ jobs:
     if: ${{ always() && (needs.dotnet.result == 'failure' || needs.dotnet.result == 'timed_out') }}
     needs: dotnet
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fast-checkout
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -187,7 +187,7 @@ jobs:
     if: ${{ always() && (needs.grid.result == 'failure' || needs.grid.result == 'timed_out') }}
     needs: grid
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fast-checkout
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
@@ -221,7 +221,7 @@ jobs:
     if: ${{ always() && (needs.javascript.result == 'failure' || needs.javascript.result == 'timed_out') }}
     needs: javascript
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fast-checkout
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:

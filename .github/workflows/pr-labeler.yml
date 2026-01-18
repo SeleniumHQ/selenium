@@ -14,10 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout base repo to get config file
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.base.ref }}
-          repository: seleniumhq/selenium
+        uses: ./.github/actions/fast-checkout
       - name: Auto label Pull Requests
         uses: actions/labeler@v5
         with:

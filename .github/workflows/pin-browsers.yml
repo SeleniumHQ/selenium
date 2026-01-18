@@ -22,7 +22,7 @@ jobs:
     needs: update
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: ./.github/actions/fast-checkout
       - name: Download patch
         uses: actions/download-artifact@v4
         with:

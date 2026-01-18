@@ -1,0 +1,62 @@
+name: 'Fast Checkout'
+description: 'Intelligently determines how much history to fetch by default'
+inputs:
+  fetch-depth:
+    description: 'Override the intelligent default for number of commits to fetch. 0 indicates all history.'
+    required: false
+    default: ''
+  ref:
+    description: 'The branch, tag or SHA to checkout.'
+    required: false
+    default: ''
+  token:
+    description: 'Personal access token (PAT) used to fetch the repository.'
+    required: false
+    default: ${{ github.token }}
+  persist-credentials:
+    description: 'Whether to configure the token or SSH key with the local git config.'
+    required: false
+    default: true
+  repository:
+    description: 'Repository name with owner. For example, actions/checkout.'
+    required: false
+    default: ${{ github.repository }}
+  fetch-tags:
+    description: 'Whether to fetch tags, even if fetch-depth > 0.'
+    required: false
+    default: false
+outputs:
+  depth:
+    description: 'The fetch depth used'
+    value: ${{ steps.calc.outputs.val }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Calculate Depth
+      id: calc
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.fetch-depth }}" ]; then
+          echo "val=${{ inputs.fetch-depth }}" >> $GITHUB_OUTPUT
+        elif [ -n "${{ inputs.ref }}" ] || [ "${{ inputs.repository }}" != "${{ github.repository }}" ]; then
+          # Custom ref or different repository - event-based calculation doesn't apply
+          echo "val=1" >> $GITHUB_OUTPUT
+        elif [[ "${{ github.event_name }}" == "pull_request"* ]]; then
+          echo "val=$((${{ github.event.pull_request.commits }} + 1))" >> $GITHUB_OUTPUT
+        elif [ "${{ github.event_name }}" == "push" ]; then
+          COMMIT_COUNT=$(jq '.commits | length // 0' "$GITHUB_EVENT_PATH")
+          echo "val=$((COMMIT_COUNT + 1))" >> $GITHUB_OUTPUT
+        else
+          echo "val=1" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ steps.calc.outputs.val }}
+        ref: ${{ inputs.ref }}
+        token: ${{ inputs.token }}
+        persist-credentials: ${{ inputs.persist-credentials }}
+        repository: ${{ inputs.repository }}
+        fetch-tags: ${{ inputs.fetch-tags }}
