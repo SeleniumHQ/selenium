@@ -54,7 +54,7 @@ from selenium.webdriver.wpewebkit.options import Options as WPEWebKitOptions
 from selenium.webdriver.wpewebkit.service import Service as WPEWebKitService
 from selenium.webdriver.wpewebkit.webdriver import WebDriver as WPEWebKit
 
-__version__ = "4.40.0.202512070022"
+__version__ = "4.40.0"
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [
