@@ -48,7 +48,7 @@ public sealed class BiDi : IAsyncDisposable
 
     public Network.NetworkModule Network => AsModule<Network.NetworkModule>();
 
-    internal Input.InputModule InputModule => AsModule<Input.InputModule>();
+    public Input.InputModule Input => AsModule<Input.InputModule>();
 
     public Script.ScriptModule Script => AsModule<Script.ScriptModule>();
 
