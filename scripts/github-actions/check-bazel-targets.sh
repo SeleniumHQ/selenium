@@ -50,38 +50,49 @@ if [[ -z "${source_targets}" ]]; then
   exit 0
 fi
 
-# Query each binding in parallel
-tmpdir=$(mktemp -d)
-trap 'rm -rf "$tmpdir"' EXIT
+# Query each binding and accumulate results
+test_targets=""
 
-bindings=("//java/..." "//py/..." "//rb/..." "//dotnet/..." "//javascript/selenium-webdriver/...")
+# Hack for Python since it takes CI 5 minutes to run rdeps for some reason only to always return all //py test targets
+py_changed=false
+for file in $affected_files; do
+  if [[ "$file" == py/* ]]; then
+    py_changed=true
+    break
+  fi
+done
+
+if [[ "$py_changed" == true ]]; then
+  echo "Python files changed, adding all Python tests targets..."
+  result=$(bazel query --keep_going --noshow_progress \
+    "kind(test, //py/...) except attr('tags','manual', //py/...) except attr('tags','lint', //py/...)" 2>/dev/null || true)
+  if [[ -n "$result" ]]; then
+    count=$(echo "$result" | wc -l | tr -d ' ')
+    echo "Finished //py/...: ${count} targets"
+    test_targets="$result"
+  else
+    echo "Finished //py/...: 0 targets"
+  fi
+fi
+
+bindings=("//java/..." "//rb/..." "//dotnet/..." "//javascript/selenium-webdriver/...")
 
 for binding in "${bindings[@]}"; do
-  (
-    echo "Starting query for ${binding}..."
-    if bazel query --keep_going --noshow_progress \
-      "kind(test, rdeps(set(${binding}), set(${source_targets}))) \
-       except attr('tags','manual', set(${binding})) \
-       except attr('tags','lint', set(${binding}))" \
-      > "${tmpdir}/${binding//\//_}.txt" 2>&1; then
-      count=$(wc -l < "${tmpdir}/${binding//\//_}.txt" | tr -d ' ')
-      echo "Finished ${binding}: ${count} targets"
-    else
-      echo "Failed ${binding}"
-      cat "${tmpdir}/${binding//\//_}.txt"
-      rm -f "${tmpdir}/${binding//\//_}.txt"
-    fi
-  ) &
+  echo "Starting query for ${binding}..."
+  result=$(bazel query --keep_going --noshow_progress \
+    "kind(test, rdeps(set(${binding}), set(${source_targets}))) \
+     except attr('tags','manual', set(${binding})) \
+     except attr('tags','lint', set(${binding}))" 2>/dev/null || true)
+  if [[ -n "$result" ]]; then
+    count=$(echo "$result" | wc -l | tr -d ' ')
+    echo "Finished ${binding}: ${count} targets"
+    test_targets="${test_targets}"$'\n'"${result}"
+  else
+    echo "Finished ${binding}: 0 targets"
+  fi
 done
 
-wait
 echo "All queries complete"
-
-# Combine results
-test_targets=""
-for f in "${tmpdir}"/*.txt; do
-  [[ -s "$f" ]] && test_targets="${test_targets} $(cat "$f")"
-done
 
 test_targets=$(echo "${test_targets}" | xargs -n1 | sort -u | xargs)
 

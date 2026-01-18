@@ -174,34 +174,95 @@ def case_insensitive_json_loads(json_str):
     return convert_keys_to_lowercase(data)
 
 
-def edge():
-    content = ""
-    r = http.request("GET", "https://edgeupdates.microsoft.com/api/products")
+def get_edge_versions(platform):
+    """Fetch all available Edge browser versions for a platform from enterprise API."""
+    r = http.request(
+        "GET", "https://edgeupdates.microsoft.com/api/products?view=enterprise"
+    )
     all_data = case_insensitive_json_loads(r.data)
 
-    linux = None
-    linux_hash = None
-    mac = None
-    mac_hash = None
+    platform_name = "MacOS" if platform == "mac" else "Linux"
+    artifact_name = "pkg" if platform == "mac" else "deb"
 
+    versions = []
     for data in all_data:
-        if not "Stable" == data.get("product"):
+        if data.get("product") != "Stable":
             continue
         for release in data["releases"]:
-            if "MacOS" == release.get("platform"):
-                for artifact in release["artifacts"]:
-                    if "pkg" == artifact["artifactname"]:
-                        mac = artifact["location"]
-                        mac_hash = artifact["hash"]
-                        mac_version = release["productversion"]
-            elif "Linux" == release.get("platform"):
-                for artifact in release["artifacts"]:
-                    if "deb" == artifact["artifactname"]:
-                        linux = artifact["location"]
-                        linux_hash = artifact["hash"]
+            if release.get("platform") != platform_name:
+                continue
+            for artifact in release["artifacts"]:
+                if artifact["artifactname"] == artifact_name:
+                    versions.append(
+                        {
+                            "url": artifact["location"],
+                            "hash": artifact["hash"],
+                            "version": release["productversion"],
+                        }
+                    )
+    return versions
 
-    if mac and mac_hash:
-        content += """
+
+def get_edgedriver_version(major, platform):
+    """Get the latest EdgeDriver version for a given major version and platform."""
+    platform_suffix = "LINUX" if platform == "linux" else "MACOS"
+    r = http.request(
+        "GET",
+        f"https://msedgedriver.microsoft.com/LATEST_RELEASE_{major}_{platform_suffix}",
+    )
+    if r.status != 200:
+        return None
+    return r.data.decode("utf-16").strip()
+
+
+def get_edgedriver_url(version, platform):
+    """Get EdgeDriver download URL if it exists."""
+    if platform == "linux":
+        url = f"https://msedgedriver.microsoft.com/{version}/edgedriver_linux64.zip"
+    else:
+        url = f"https://msedgedriver.microsoft.com/{version}/edgedriver_mac64_m1.zip"
+    r = http.request("HEAD", url)
+    return url if r.status == 200 else None
+
+
+def find_matching_edge_version(platform):
+    """Find the latest Edge version where both browser and driver are available."""
+    browsers = get_edge_versions(platform)
+
+    # Sort by version descending (newest first)
+    browsers.sort(key=lambda x: parse(x["version"]), reverse=True)
+
+    for browser in browsers:
+        major = browser["version"].split(".")[0]
+        driver_version = get_edgedriver_version(major, platform)
+        if not driver_version:
+            print(f"  No driver for {platform} major version {major}", file=sys.stderr)
+            continue
+
+        driver_url = get_edgedriver_url(driver_version, platform)
+        if not driver_url:
+            print(
+                f"  Driver {driver_version} not downloadable for {platform}",
+                file=sys.stderr,
+            )
+            continue
+
+        print(
+            f"  Found match: browser={browser['version']}, driver={driver_version}",
+            file=sys.stderr,
+        )
+        return {
+            "browser": browser,
+            "driver_version": driver_version,
+            "driver_url": driver_url,
+        }
+
+    return None
+
+
+def mac_edge_browser_content(browser_url, browser_hash, browser_version):
+    """Generate Bazel content for Mac Edge browser."""
+    return """
     pkg_archive(
         name = "mac_edge",
         url = "%s",
@@ -221,14 +282,12 @@ js_library(
 )
 \"\"\",
     )
-""" % (
-            mac,
-            mac_hash.lower(),
-            mac_version,
-        )
+""" % (browser_url, browser_hash.lower(), browser_version)
 
-    if linux and linux_hash:
-        content += """
+
+def linux_edge_browser_content(browser_url, browser_hash):
+    """Generate Bazel content for Linux Edge browser."""
+    return """
     deb_archive(
         name = "linux_edge",
         url = "%s",
@@ -250,82 +309,70 @@ js_library(
 )
 \"\"\",
     )
-""" % (linux, linux_hash.lower())
-
-    return content
+""" % (browser_url, browser_hash.lower())
 
 
-def edgedriver():
-    r_stable = http.request("GET", "https://msedgedriver.microsoft.com/LATEST_STABLE")
-    stable_version = r_stable.data.decode("utf-16").strip()
-    major_version = stable_version.split(".")[0]
-    r = http.request(
-        "GET",
-        f"https://msedgedriver.microsoft.com/LATEST_RELEASE_{major_version}_LINUX",
-    )
-    linux_version = r.data.decode("utf-16").strip()
+def edge_and_edgedriver():
+    """Fetch Edge browser and EdgeDriver, ensuring versions are compatible."""
+    matches = {}
+
+    for platform in ["mac", "linux"]:
+        print(f"Finding matching Edge version for {platform}...", file=sys.stderr)
+        match = find_matching_edge_version(platform)
+        if match:
+            matches[platform] = match
+        else:
+            print(
+                f"Warning: No matching Edge browser/driver found for {platform}",
+                file=sys.stderr,
+            )
 
     content = ""
 
-    linux = (
-        "https://msedgedriver.microsoft.com/%s/edgedriver_linux64.zip" % linux_version
-    )
-    sha = calculate_hash(linux)
-    content = (
-        content
-        + """
-    http_archive(
-        name = "linux_edgedriver",
-        url = "%s",
-        sha256 = "%s",
-        build_file_content = \"\"\"
-load("@aspect_rules_js//js:defs.bzl", "js_library")
-package(default_visibility = ["//visibility:public"])
+    # Output browsers first: mac, then linux
+    if "mac" in matches:
+        browser = matches["mac"]["browser"]
+        content += mac_edge_browser_content(
+            browser["url"], browser["hash"], browser["version"]
+        )
 
-exports_files(["msedgedriver"])
+    if "linux" in matches:
+        browser = matches["linux"]["browser"]
+        content += linux_edge_browser_content(browser["url"], browser["hash"])
 
-js_library(
-    name = "msedgedriver-js",
-    data = ["msedgedriver"],
-)
-\"\"\",
-    )
-"""
-        % (linux, sha)
-    )
+    # Output drivers: linux, then mac
+    if "linux" in matches:
+        content += edgedriver_content(
+            "linux_edgedriver", matches["linux"]["driver_url"]
+        )
 
-    r = http.request(
-        "GET",
-        f"https://msedgedriver.microsoft.com/LATEST_RELEASE_{major_version}_MACOS",
-    )
-    macos_version = r.data.decode("utf-16").strip()
-    mac = (
-        "https://msedgedriver.microsoft.com/%s/edgedriver_mac64_m1.zip" % macos_version
-    )
-    sha = calculate_hash(mac)
-    content = (
-        content
-        + """
-    http_archive(
-        name = "mac_edgedriver",
-        url = "%s",
-        sha256 = "%s",
-        build_file_content = \"\"\"
-load("@aspect_rules_js//js:defs.bzl", "js_library")
-package(default_visibility = ["//visibility:public"])
+    if "mac" in matches:
+        content += edgedriver_content("mac_edgedriver", matches["mac"]["driver_url"])
 
-exports_files(["msedgedriver"])
-
-js_library(
-    name = "msedgedriver-js",
-    data = ["msedgedriver"],
-)
-\"\"\",
-    )
-"""
-        % (mac, sha)
-    )
     return content
+
+
+def edgedriver_content(name, driver_url):
+    """Generate Bazel content for EdgeDriver."""
+    driver_sha = calculate_hash(driver_url)
+    return """
+    http_archive(
+        name = "%s",
+        url = "%s",
+        sha256 = "%s",
+        build_file_content = \"\"\"
+load("@aspect_rules_js//js:defs.bzl", "js_library")
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["msedgedriver"])
+
+js_library(
+    name = "msedgedriver-js",
+    data = ["msedgedriver"],
+)
+\"\"\",
+    )
+""" % (name, driver_url, driver_sha)
 
 
 def geckodriver():
@@ -500,8 +547,7 @@ def pin_browsers():
 """
     content = content + firefox()
     content = content + geckodriver()
-    content = content + edge()
-    content = content + edgedriver()
+    content = content + edge_and_edgedriver()
 
     # Stable Chrome
     stable_chrome_info = get_chrome_info_for_channel(channel="Stable")

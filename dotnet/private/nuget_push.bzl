@@ -53,9 +53,9 @@ def _create_windows_script(ctx, dotnet, nupkg_files):
     for nupkg in nupkg_files:
         nupkg_path = nupkg.short_path.replace("/", "\\")
         push_commands.append(
-            '"%DOTNET%" nuget push "%s" --api-key "%NUGET_API_KEY%" --source "%NUGET_SOURCE%"' % nupkg_path,
+            '"%%DOTNET%%" nuget push "%s" --api-key "%%NUGET_API_KEY%%" --source "%%NUGET_SOURCE%%"' % nupkg_path,
         )
-        push_commands.append("if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%")
+        push_commands.append("if %%ERRORLEVEL%% neq 0 exit /b %%ERRORLEVEL%%")
 
     dotnet_path = dotnet.short_path.replace("/", "\\")
 

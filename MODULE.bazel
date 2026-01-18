@@ -287,7 +287,6 @@ ruby.bundle_fetch(
         "erb-6.0.1": "28ecdd99c5472aebd5674d6061e3c6b0a45c049578b071e5a52c2a7f13c197e5",
         "erb-6.0.1-java": "5c6b8d885fb0220d4a8ad158f70430d805845939dd44827e5130ef7fdbaed8ba",
         "ffi-1.17.3": "0e9f39f7bb3934f77ad6feab49662be77e87eedcdeb2a3f5c0234c2938563d4c",
-        "ffi-1.17.3-java": "be1ecc86edbf71b9ab59212a23b33efec431c0446cb3183066d8a960a1946d3a",
         "fileutils-1.8.0": "8c6b1df54e2540bdb2f39258f08af78853aa70bad52b4d394bbc6424593c6e02",
         "git-1.19.1": "b0a422d9f6517353c48a330d6114de4db9e0c82dbe7202964a1d9f1fbc827d70",
         "hashdiff-1.2.1": "9c079dbc513dfc8833ab59c0c2d8f230fa28499cc5efb4b8dd276cf931457cd1",

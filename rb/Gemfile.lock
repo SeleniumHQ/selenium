@@ -49,7 +49,6 @@ GEM
     erb (6.0.1)
     erb (6.0.1-java)
     ffi (1.17.3)
-    ffi (1.17.3-java)
     fileutils (1.8.0)
     git (1.19.1)
       addressable (~> 2.8)
@@ -221,4 +220,4 @@ DEPENDENCIES
   yard (~> 0.9.11, >= 0.9.36)
 
 BUNDLED WITH
-   2.6.3
+   2.4.19

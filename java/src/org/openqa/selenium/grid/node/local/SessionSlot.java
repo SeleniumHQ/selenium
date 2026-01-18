@@ -62,7 +62,8 @@ public class SessionSlot
   private final boolean supportingCdp;
   private final boolean supportingBiDi;
   private final AtomicLong connectionCounter;
-  private ActiveSession currentSession;
+  // volatile ensures memory visibility across threads when session is set after reservation
+  private volatile ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
     this.bus = Require.nonNull("Event bus", bus);
@@ -131,16 +132,17 @@ public class SessionSlot
     }
 
     SessionId id = currentSession.getId();
+    LOG.info(String.format("Stopping session %s (reason: %s)", id, reason));
     try {
       currentSession.stop();
+      LOG.info(String.format("Session stopped successfully: %s", id));
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Unable to cleanly close session", e);
+      LOG.log(Level.WARNING, String.format("Unable to cleanly close session %s", id), e);
     }
     currentSession = null;
     connectionCounter.set(0);
     release();
     bus.fire(new SessionClosedEvent(id, reason));
-    LOG.info(String.format("Stopping session %s (reason: %s)", id, reason));
   }
 
   @Override
