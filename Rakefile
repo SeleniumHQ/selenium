@@ -533,8 +533,9 @@ namespace :node do
 
   desc 'Update JavaScript dependencies and refresh lockfile (use "latest" to bump ranges)'
   task :update, [:latest] do |_task, arguments|
-    args = ['--', 'update', '-r', '--dir', Dir.pwd]
-    args.insert(4, '--latest') if arguments[:latest] == 'latest'
+    args = ['--', 'update', '-r']
+    args << '--latest' if arguments[:latest] == 'latest'
+    args += ['--dir', Dir.pwd]
     Bazel.execute('run', args, '@pnpm//:pnpm')
     Rake::Task['node:pin'].invoke
   end
