@@ -396,6 +396,48 @@ RELEASE_CREDENTIALS = {
   dotnet_nightly: {env: [%w[GITHUB_TOKEN]]}
 }.freeze
 
+def verify_package_published(url, max_attempts: 12, delay: 10)
+  puts "Verifying #{url}..."
+  attempts = 0
+
+  loop do
+    attempts += 1
+    uri = URI(url)
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https',
+                                                  open_timeout: 10, read_timeout: 10) do |http|
+      http.request(Net::HTTP::Get.new(uri))
+    end
+
+    if res.is_a?(Net::HTTPSuccess)
+      puts 'Verified!'
+      return true
+    elsif attempts >= max_attempts
+      warn "Not found after #{max_attempts * delay}s"
+      return false
+    else
+      puts "Not yet indexed, waiting... (#{attempts}/#{max_attempts})"
+      sleep(delay)
+    end
+  rescue StandardError => e
+    warn "Error: #{e.message}"
+    return false if attempts >= max_attempts
+
+    sleep(delay)
+    retry
+  end
+end
+
+def sonatype_api_post(url, token)
+  uri = URI(url)
+  req = Net::HTTP::Post.new(uri)
+  req['Authorization'] = "Bearer #{token}"
+
+  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+  raise "Sonatype API error (#{res.code}): #{res.body}" unless res.is_a?(Net::HTTPSuccess)
+
+  res.body.empty? ? {} : JSON.parse(res.body)
+end
+
 def credential_valid?(cred)
   has_env = cred[:env]&.all? { |vars| vars.any? { |v| ENV.fetch(v, nil) } }
   has_file = cred[:file]&.call
@@ -1127,28 +1169,80 @@ namespace :java do
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
     user = ENV.fetch('MAVEN_USER')
     pass = ENV.fetch('MAVEN_PASSWORD')
+    token = Base64.strict_encode64("#{user}:#{pass}")
 
+    puts 'Triggering Sonatype validation...'
     uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.seleniumhq')
-    encoded = Base64.strict_encode64("#{user}:#{pass}")
 
-    puts 'Triggering validation POST to Central Portal...'
     req = Net::HTTP::Post.new(uri)
-    req['Authorization'] = "Basic #{encoded}"
+    req['Authorization'] = "Basic #{token}"
     req['Accept'] = '*/*'
     req['Content-Length'] = '0'
 
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
-                                                  open_timeout: 10, read_timeout: 60) do |http|
-      http.request(req)
+    begin
+      res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true,
+                                                    open_timeout: 10, read_timeout: 180) do |http|
+        http.request(req)
+      end
+    rescue Net::ReadTimeout, Net::OpenTimeout => e
+      warn <<~MSG
+        Request timed out waiting for deployment ID.
+        The deployment may still have been created on the server.
+        Check https://central.sonatype.com/publishing/deployments for pending deployments,
+        then run: ./go java:publish_deployment <deployment_id>
+      MSG
+      raise e
     end
 
     if res.is_a?(Net::HTTPSuccess)
-      puts "Manual upload triggered successfully (HTTP #{res.code})"
+      deployment_id = res.body.strip
+      puts "Got deployment ID: #{deployment_id}"
+      Rake::Task['java:publish_deployment'].invoke(deployment_id)
     else
-      warn "Manual upload failed (HTTP #{res.code}): #{res.code} #{res.message}"
-      warn res.body if res.body && !res.body.empty?
+      warn "Failed to get deployment ID (HTTP #{res.code}): #{res.body}"
       exit(1)
     end
+  end
+
+  desc 'Publish a Sonatype deployment by ID'
+  task :publish_deployment, [:deployment_id] do |_task, arguments|
+    deployment_id = arguments[:deployment_id] || ENV['DEPLOYMENT_ID']
+    raise 'Deployment ID required' if deployment_id.nil? || deployment_id.empty?
+
+    read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
+    token = Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
+
+    60.times do
+      status = sonatype_api_post("https://central.sonatype.com/api/v1/publisher/status?id=#{deployment_id}", token)
+      state = status['deploymentState']
+      puts "Deployment state: #{state}"
+
+      case state
+      when 'VALIDATED' then break
+      when 'PUBLISHED' then exit(0)
+      when 'FAILED' then raise "Deployment failed: #{status['errors']}"
+      end
+      sleep(5)
+    end
+    raise 'Timed out waiting for validation' unless status['deploymentState'] == 'VALIDATED'
+
+    expected = java_release_targets.size
+    actual = status['purls']&.size || 0
+    raise "Expected #{expected} packages but found #{actual}" if actual != expected
+
+    puts 'Publishing deployed packages...'
+    sonatype_api_post("https://central.sonatype.com/api/v1/publisher/deployment/#{deployment_id}", token)
+    puts "Published! Deployment ID: #{deployment_id}"
+
+    Rake::Task['java:verify'].invoke
+  end
+
+  desc 'Verify Java packages are published on Maven Central'
+  task :verify do
+    verify_package_published(
+      "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-java/#{java_version}/selenium-java-#{java_version}.pom",
+      max_attempts: 30, delay: 60
+    ) || warn('Maven Central verification failed - may still be syncing')
   end
 
   desc 'Install jars to local m2 directory'
