@@ -116,6 +116,14 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
+      - name: Normalize version
+        id: version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if [[ "$VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+            VERSION="${VERSION}.0"
+          fi
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Update browser versions
         id: browsers
         run: |
@@ -168,7 +176,7 @@ jobs:
           fi
       - name: Bump versions
         run: |
-          ./go all:version ${{ github.event.inputs.version }}
+          ./go all:version ${{ steps.version.outputs.value }}
           git commit -m "bump versions in preparation for release"
       - name: Update changelogs
         run: |
@@ -180,9 +188,9 @@ jobs:
           token: ${{ secrets.SELENIUM_CI_TOKEN }}
           author: Selenium CI Bot <selenium-ci@users.noreply.github.com>
           delete-branch: true
-          branch: release-preparation-${{ github.event.inputs.version }}
+          branch: release-preparation-${{ steps.version.outputs.value }}
           base: trunk
-          title: "[build] Prepare for release of Selenium ${{ github.event.inputs.version }}"
+          title: "[build] Prepare for release of Selenium ${{ steps.version.outputs.value }}"
           body: |
 
             ### Updates Applied
