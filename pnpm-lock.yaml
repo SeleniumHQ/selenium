@@ -119,6 +119,9 @@ importers:
 
   javascript/private:
     dependencies:
+      balanced-match:
+        specifier: ^1.0.2
+        version: 1.0.2
       brace-expansion:
         specifier: ^2.0.1
         version: 2.0.2

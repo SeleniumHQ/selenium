@@ -32,6 +32,7 @@ const path = require('path');
 // with aspect_rules_js, transitive dependencies are linked via symlinks.
 // On Windows, these symlinks may not resolve correctly. By requiring these
 // first, we populate Node's module cache so google-closure-deps can find it.
+require('balanced-match');
 require('brace-expansion')
 require('minimatch');
 
