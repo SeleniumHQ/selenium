@@ -647,3 +647,17 @@ sphinx_docs(
     formats = ["html"],
     sphinx = ":sphinx-build",
 )
+
+py_binary(
+    name = "mypy",
+    srcs = ["run_mypy.py"],
+    data = [
+        "pyproject.toml",
+        ":selenium",
+    ],
+    main = "run_mypy.py",
+    deps = [
+        ":selenium",
+        requirement("mypy"),
+    ],
+)

@@ -1494,6 +1494,7 @@ namespace :all do
       raise "Formatting updated files:\n#{changed_files}\nPlease review, stage, and commit the changes."
     end
 
+    Bazel.execute('run', [], '//py:mypy')
     Bazel.execute('run', [], '//rb:steep')
     shellcheck = Bazel.execute('build', [], '@multitool//tools/shellcheck')
     Bazel.execute('run', ['--', '-shellcheck', shellcheck], '@multitool//tools/actionlint:cwd')
