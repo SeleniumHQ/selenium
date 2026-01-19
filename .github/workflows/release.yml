@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SELENIUM_CI_TOKEN }}
       - name: Extract tag and version
         id: tag
         env:
@@ -66,11 +68,12 @@ jobs:
           bazelrc: common --color=yes
       - name: Build Java & .NET packages
         run: ./go all:package --config=release
-      - name: Delete nightly tag
+      - name: Delete nightly release and tag
+        env:
+          GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
         run: |
-          if git ls-remote --tags origin | grep -q "refs/tags/nightly"; then
-            git push origin --delete refs/tags/nightly || true
-          fi
+          gh release delete nightly --yes || true
+          git push origin --delete refs/tags/nightly || true
       - name: Draft GitHub release
         uses: ncipollo/release-action@v1
         with:
