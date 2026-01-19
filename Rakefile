@@ -419,12 +419,12 @@ end
 def sonatype_api_post(url, token)
   uri = URI(url)
   req = Net::HTTP::Post.new(uri)
-  req['Authorization'] = "Bearer #{token}"
+  req['Authorization'] = "Basic #{token}"
 
   res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
   raise "Sonatype API error (#{res.code}): #{res.body}" unless res.is_a?(Net::HTTPSuccess)
 
-  res.body.empty? ? {} : JSON.parse(res.body)
+  res.body.to_s.empty? ? {} : JSON.parse(res.body)
 end
 
 def credential_valid?(cred)
@@ -1247,14 +1247,16 @@ namespace :java do
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
     token = Base64.strict_encode64("#{ENV.fetch('MAVEN_USER')}:#{ENV.fetch('MAVEN_PASSWORD')}")
 
+    encoded_id = URI.encode_www_form_component(deployment_id.strip)
+    status = {}
     60.times do
-      status = sonatype_api_post("https://central.sonatype.com/api/v1/publisher/status?id=#{deployment_id}", token)
+      status = sonatype_api_post("https://central.sonatype.com/api/v1/publisher/status?id=#{encoded_id}", token)
       state = status['deploymentState']
       puts "Deployment state: #{state}"
 
       case state
       when 'VALIDATED' then break
-      when 'PUBLISHED' then exit(0)
+      when 'PUBLISHED' then return
       when 'FAILED' then raise "Deployment failed: #{status['errors']}"
       end
       sleep(5)
@@ -1263,10 +1265,13 @@ namespace :java do
 
     expected = java_release_targets.size
     actual = status['purls']&.size || 0
-    raise "Expected #{expected} packages but found #{actual}" if actual != expected
+    if actual != expected
+      raise "Expected #{expected} packages but found #{actual}. " \
+            'Drop the deployment at https://central.sonatype.com/publishing/deployments and redeploy.'
+    end
 
     puts 'Publishing deployed packages...'
-    sonatype_api_post("https://central.sonatype.com/api/v1/publisher/deployment/#{deployment_id}", token)
+    sonatype_api_post("https://central.sonatype.com/api/v1/publisher/deployment/#{encoded_id}", token)
     puts "Published! Deployment ID: #{deployment_id}"
 
     Rake::Task['java:verify'].invoke
