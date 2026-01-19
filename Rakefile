@@ -1259,8 +1259,7 @@ namespace :java do
       puts "Deployment state: #{state}"
 
       case state
-      when 'VALIDATED' then break
-      when 'PUBLISHED' then return # rubocop:disable Lint/NonLocalExitFromIterator
+      when 'VALIDATED', 'PUBLISHED' then break
       when 'FAILED' then raise "Deployment failed: #{status['errors']}"
       end
       sleep(delay)
@@ -1268,9 +1267,10 @@ namespace :java do
       warn "API error (attempt #{attempt + 1}/#{max_attempts}): #{e.message}"
       sleep(delay) unless attempt == max_attempts - 1
     end
-    unless status['deploymentState'] == 'VALIDATED'
-      raise "Timed out after #{(max_attempts * delay) / 60} minutes waiting for validation"
-    end
+
+    return if status['deploymentState'] == 'PUBLISHED'
+
+    raise "Timed out after #{(max_attempts * delay) / 60} minutes waiting for validation" unless state == 'VALIDATED'
 
     expected = java_release_targets.size
     actual = status['purls']&.size || 0
