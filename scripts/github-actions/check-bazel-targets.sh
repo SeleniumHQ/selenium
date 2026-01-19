@@ -12,7 +12,7 @@ affected_files=$(git diff --name-only "${COMMIT_RANGE}")
 file_count=$(echo "${affected_files}" | wc -l | tr -d ' ')
 echo "Changed files: ${file_count}"
 if [[ -z "${affected_files}" ]]; then
-  echo "bazel-targets=''" >> "$GITHUB_OUTPUT"
+  echo "" > bazel-targets.txt
   exit 0
 fi
 
@@ -37,7 +37,7 @@ done
 
 echo "Bazel labels: ${#labels[@]}"
 if (( ${#labels[@]} == 0 )); then
-  echo "bazel-targets=''" >> "$GITHUB_OUTPUT"
+  echo "" > bazel-targets.txt
   exit 0
 fi
 
@@ -46,7 +46,7 @@ source_targets=$(bazel query --keep_going --noshow_progress "set(${labels[*]})" 
 target_count=$(echo "${source_targets}" | wc -l | tr -d ' ')
 echo "Source targets: ${target_count}"
 if [[ -z "${source_targets}" ]]; then
-  echo "bazel-targets=''" >> "$GITHUB_OUTPUT"
+  echo "" > bazel-targets.txt
   exit 0
 fi
 
@@ -98,15 +98,11 @@ test_targets=$(echo "${test_targets}" | xargs -n1 | sort -u | xargs)
 
 if [[ -z "${test_targets}" ]]; then
   echo "No test targets found for the changed files."
-  echo "bazel-targets=''" >> "$GITHUB_OUTPUT"
+  echo "" > bazel-targets.txt
   exit 0
 fi
 
 echo "Found test targets:"
 echo "${test_targets}" | xargs -n1
 
-{
-  echo "bazel-targets<<EOF"
-  echo "${test_targets}"
-  echo "EOF"
-} >> "$GITHUB_OUTPUT"
+echo "${test_targets}" > bazel-targets.txt

@@ -99,7 +99,7 @@ jobs:
 
   get-approval:
     name: Get Approval
-    needs: create-release
+    needs: [prepare, create-release]
     if: needs.create-release.result == 'success'
     uses: ./.github/workflows/get-approval.yml
     with:
