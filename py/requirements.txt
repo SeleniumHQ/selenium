@@ -60,7 +60,7 @@ trio-typing==0.10.0
 trio-websocket==0.12.2
 twine==6.2.0
 types-certifi==2021.10.8.3
-types-urllib3==1.26.25.14
+types-PySocks==1.7.1.20251001
 typing_extensions==4.15.0
 urllib3[socks]==2.6.3
 virtualenv==20.36.1

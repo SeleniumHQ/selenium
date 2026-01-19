@@ -421,6 +421,7 @@ jeepney==0.9.0 \
     --hash=sha256:cf0e9e845622b81e4a28df94c40345400256ec608d0e55bb8a3feaa9163f5732
     # via
     #   -r py/requirements.txt
+    #   keyring
     #   secretstorage
 jinja2==3.1.6 \
     --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d \
@@ -847,7 +848,9 @@ rich==14.2.0 \
 secretstorage==3.5.0 \
     --hash=sha256:0ce65888c0725fcb2c5bc0fdb8e5438eece02c523557ea40ce0703c266248137 \
     --hash=sha256:f04b8e4689cbce351744d5537bf6b1329c6fc68f91fa666f60a380edddcd11be
-    # via -r py/requirements.txt
+    # via
+    #   -r py/requirements.txt
+    #   keyring
 sniffio==1.3.1 \
     --hash=sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2 \
     --hash=sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc
@@ -988,9 +991,9 @@ types-certifi==2021.10.8.3 \
     --hash=sha256:72cf7798d165bc0b76e1c10dd1ea3097c7063c42c21d664523b928e88b554a4f \
     --hash=sha256:b2d1e325e69f71f7c78e5943d410e650b4707bb0ef32e4ddf3da37f54176e88a
     # via -r py/requirements.txt
-types-urllib3==1.26.25.14 \
-    --hash=sha256:229b7f577c951b8c1b92c1bc2b2fdb0b49847bd2af6d1cc2a2e3dd340f3bda8f \
-    --hash=sha256:9683bbb7fb72e32bfe9d2be6e04875fbe1b3eeec3cbb4ea231435aa7fd6b4f0e
+types-pysocks==1.7.1.20251001 \
+    --hash=sha256:50a0e737d42527abbec09e891c64f76a9f66f302e673cd149bc112c15764869f \
+    --hash=sha256:dd9abcfc7747aeddf1bab270c8daab3a1309c3af9e07c8c2c52038ab8539f06c
     # via -r py/requirements.txt
 typing-extensions==4.15.0 \
     --hash=sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466 \
