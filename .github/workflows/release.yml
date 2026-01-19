@@ -155,7 +155,7 @@ jobs:
 
   update-version:
     name: Reset Versions to Nightly
-    needs: [stage, docs, unrestrict-trunk]
+    needs: [stage, unrestrict-trunk]
     runs-on: ubuntu-latest
     permissions:
       contents: write
