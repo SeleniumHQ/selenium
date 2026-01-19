@@ -44,11 +44,15 @@ jobs:
       - name: Read targets
         id: read
         run: |
-          {
-            echo "targets<<EOF"
-            cat bazel-targets.txt
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          if [ -s bazel-targets.txt ]; then
+            {
+              echo "targets<<EOF"
+              cat bazel-targets.txt
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "targets=" >> "$GITHUB_OUTPUT"
+          fi
 
   dotnet:
     name: .NET

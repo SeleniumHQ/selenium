@@ -54,16 +54,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: rust-version
-      - name: Apply patch
-        run: git apply --index changes.patch
-      - name: Prep git
+      - name: Apply and push
         run: |
-          git config --local user.email "selenium-ci@users.noreply.github.com"
-          git config --local user.name "Selenium CI Bot"
-      - name: Push changes
-        run: |
-          git commit -m "update selenium manager version and rust changelog"
-          git push origin HEAD:rust-release-${{ inputs.version }} --force
+          if [ -f changes.patch ] && [ -s changes.patch ]; then
+            git apply --index changes.patch
+            git config --local user.email "selenium-ci@users.noreply.github.com"
+            git config --local user.name "Selenium CI Bot"
+            git commit -m "update selenium manager version and rust changelog"
+            git push origin HEAD:rust-release-${{ inputs.version }} --force
+          else
+            echo "::error::No changes to apply for rust version update"
+            exit 1
+          fi
 
   selenium-manager:
     name: Release Selenium Manager

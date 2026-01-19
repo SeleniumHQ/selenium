@@ -194,16 +194,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: version-reset
-      - name: Apply patch
-        run: git apply --index changes.patch || echo "No changes to apply"
-      - name: Prep git
+      - name: Apply and push
         run: |
-          git config --local user.email "selenium-ci@users.noreply.github.com"
-          git config --local user.name "Selenium CI Bot"
-      - name: Push version changes
-        run: |
-          git commit -m "[build] Reset versions to nightly after ${{ needs.prepare.outputs.tag }} release" || echo "No changes to commit"
-          git push
+          if [ -f changes.patch ] && [ -s changes.patch ]; then
+            git apply --index changes.patch
+            git config --local user.email "selenium-ci@users.noreply.github.com"
+            git config --local user.name "Selenium CI Bot"
+            git commit -m "[build] Reset versions to nightly after ${{ needs.prepare.outputs.tag }} release"
+            git push
+          else
+            echo "::notice::No version changes to apply"
+          fi
 
   nightly:
     name: Publish Nightly Packages
@@ -220,7 +221,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [stage, publish, docs, github-release, update-version, nightly, mirror, verify]
+    needs: [build, publish, docs, github-release, update-version, nightly, mirror, verify]
     if: failure()
     steps:
       - uses: actions/checkout@v4
