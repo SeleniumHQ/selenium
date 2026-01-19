@@ -72,8 +72,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
         run: |
-          gh release delete nightly --yes || true
-          git push origin --delete refs/tags/nightly || true
+          if gh release view nightly >/dev/null 2>&1; then
+            gh release delete nightly --yes
+          fi
+          if git ls-remote --tags origin refs/tags/nightly | grep -q nightly; then
+            git push origin --delete refs/tags/nightly
+          fi
       - name: Draft GitHub release
         uses: ncipollo/release-action@v1
         with:
