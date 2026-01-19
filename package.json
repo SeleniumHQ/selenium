@@ -11,14 +11,19 @@
   },
   "pnpm": {
     "packageExtensions": {
-      "brace-expansion": {
+      "google-closure-deps": {
         "dependencies": {
-          "balanced-match": "*"
+          "minimatch": "*"
         }
       },
       "minimatch": {
         "dependencies": {
           "brace-expansion": "*"
+        }
+      },
+      "brace-expansion": {
+        "dependencies": {
+          "balanced-match": "*"
         }
       }
     }
