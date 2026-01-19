@@ -94,6 +94,10 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
           ref: trunk
+      - name: Get latest trunk
+        run: |
+          git fetch origin trunk
+          git reset --hard origin/trunk
       - name: Setup curl for Ubuntu
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
       - name: Setup Bazel
