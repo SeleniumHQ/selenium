@@ -392,18 +392,6 @@ RELEASE_CREDENTIALS = {
     file: -> { File.exist?("#{Dir.home}/.m2/settings.xml") && File.read("#{Dir.home}/.m2/settings.xml").include?('<id>central</id>') }
   },
   java_gpg: {cmd: 'gpg'},
-  python: {
-    env: [%w[TWINE_USERNAME], %w[TWINE_PASSWORD]],
-    file: -> { File.exist?("#{Dir.home}/.pypirc") }
-  },
-  ruby: {
-    env: [%w[GEM_HOST_API_KEY]],
-    file: -> { File.exist?("#{Dir.home}/.gem/credentials") }
-  },
-  node: {
-    env: [%w[NODE_AUTH_TOKEN]],
-    file: -> { File.exist?("#{Dir.home}/.npmrc") && File.read("#{Dir.home}/.npmrc").include?('//registry.npmjs.org/:_authToken') }
-  },
   dotnet: {env: [%w[NUGET_API_KEY]]},
   dotnet_nightly: {env: [%w[GITHUB_TOKEN]]}
 }.freeze
@@ -413,6 +401,61 @@ def credential_valid?(cred)
   has_file = cred[:file]&.call
   has_cmd = cred[:cmd] && (system('which', cred[:cmd], out: File::NULL, err: File::NULL) || system('where', cred[:cmd], out: File::NULL, err: File::NULL))
   has_env || has_file || has_cmd
+end
+
+def setup_npm_auth
+  npmrc = File.join(Dir.home, '.npmrc')
+  return if File.exist?(npmrc) && File.read(npmrc).include?('//registry.npmjs.org/:_authToken=')
+
+  token = ENV.fetch('NODE_AUTH_TOKEN', nil)
+  raise 'Missing npm credentials: set NODE_AUTH_TOKEN or configure ~/.npmrc' if token.nil? || token.empty?
+
+  auth_line = "//registry.npmjs.org/:_authToken=#{token}"
+  if File.exist?(npmrc)
+    File.open(npmrc, 'a') { |f| f.puts(auth_line) }
+  else
+    File.write(npmrc, "#{auth_line}\n")
+  end
+end
+
+def setup_gem_credentials
+  gem_dir = File.join(Dir.home, '.gem')
+  credentials = File.join(gem_dir, 'credentials')
+  return if File.exist?(credentials) && File.read(credentials).include?(':rubygems_api_key:')
+
+  token = ENV.fetch('GEM_HOST_API_KEY', nil)
+  if token.nil? || token.empty?
+    raise 'Missing RubyGems credentials: set GEM_HOST_API_KEY or configure ~/.gem/credentials'
+  end
+
+  FileUtils.mkdir_p(gem_dir)
+  if File.exist?(credentials)
+    File.open(credentials, 'a') { |f| f.puts(":rubygems_api_key: #{token}") }
+  else
+    File.write(credentials, ":rubygems_api_key: #{token}\n")
+  end
+  File.chmod(0o600, credentials)
+end
+
+def setup_pypirc
+  pypirc = File.join(Dir.home, '.pypirc')
+  return if File.exist?(pypirc) && File.read(pypirc).match?(/^\[pypi\]/m)
+
+  token = ENV.fetch('TWINE_PASSWORD', nil)
+  raise 'Missing PyPI credentials: set TWINE_PASSWORD or configure ~/.pypirc' if token.nil? || token.empty?
+
+  pypi_section = <<~PYPIRC
+    [pypi]
+    username = __token__
+    password = #{token}
+  PYPIRC
+
+  if File.exist?(pypirc)
+    File.open(pypirc, 'a') { |f| f.puts("\n#{pypi_section}") }
+  else
+    File.write(pypirc, pypi_section)
+  end
+  File.chmod(0o600, pypirc)
 end
 
 def check_credentials(langs)
@@ -533,7 +576,7 @@ namespace :node do
   desc 'Release Node npm package'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
-    check_credentials(%i[node]) unless nightly
+    setup_npm_auth unless nightly
 
     if nightly
       puts 'Updating Node version to nightly...'
@@ -597,9 +640,7 @@ namespace :py do
   desc 'Release Python wheel and sdist to pypi'
   task :release do |_task, arguments|
     nightly = arguments.to_a.include?('nightly')
-    check_credentials(%i[python]) unless nightly
-
-    ENV['TWINE_USERNAME'] = '__token__'
+    setup_pypirc unless nightly
 
     if nightly
       puts 'Updating Python version to nightly...'
@@ -804,7 +845,7 @@ namespace :rb do
       puts 'Releasing nightly WebDriver gem...'
       Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
     else
-      check_credentials(%i[ruby])
+      setup_gem_credentials
       patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
       puts 'Releasing Ruby gems...'
