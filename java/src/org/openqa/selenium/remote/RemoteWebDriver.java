@@ -114,6 +114,10 @@ public class RemoteWebDriver
         PrintsPage,
         TakesScreenshot {
 
+  static {
+    org.openqa.selenium.internal.Debug.configureLogger();
+  }
+
   private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
 
   /** Boolean system property that defines whether the tracing is enabled or not. */
@@ -122,15 +126,18 @@ public class RemoteWebDriver
   private final ElementLocation elementLocation = new ElementLocation();
   private Level level = Level.FINE;
   private ErrorHandler errorHandler = new ErrorHandler();
+  private final ClientConfig clientConfig;
   private CommandExecutor executor;
   protected Capabilities capabilities;
   private SessionId sessionId;
   private FileDetector fileDetector = new UselessFileDetector();
-  private ExecuteMethod executeMethod;
+  private final ExecuteMethod executeMethod = new RemoteExecuteMethod(this);
 
   private JsonToWebElementConverter converter;
 
   private Logs remoteLogs;
+
+  @SuppressWarnings("deprecation")
   private LocalLogs localLogs;
 
   private Script remoteScript;
@@ -140,6 +147,7 @@ public class RemoteWebDriver
   // For cglib
   protected RemoteWebDriver() {
     this.capabilities = init(new ImmutableCapabilities());
+    this.clientConfig = ClientConfig.defaultConfig();
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
@@ -154,20 +162,42 @@ public class RemoteWebDriver
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
+    this(remoteAddress, capabilities, ClientConfig.defaultConfig());
+  }
+
+  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, ClientConfig clientConfig) {
     this(
         createExecutor(
             Require.nonNull("Server URL", remoteAddress),
-            Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true"))),
-        Require.nonNull("Capabilities", capabilities));
+            Boolean.parseBoolean(System.getProperty(WEBDRIVER_REMOTE_ENABLE_TRACING, "true")),
+            clientConfig),
+        Require.nonNull("Capabilities", capabilities),
+        clientConfig);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
-    this(
-        createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing),
-        Require.nonNull("Capabilities", capabilities));
+    this(remoteAddress, capabilities, ClientConfig.defaultConfig(), enableTracing);
   }
 
+  public RemoteWebDriver(
+      URL remoteAddress,
+      Capabilities capabilities,
+      ClientConfig clientConfig,
+      boolean enableTracing) {
+    this(
+        createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing, clientConfig),
+        Require.nonNull("Capabilities", capabilities),
+        clientConfig);
+  }
+
+  @SuppressWarnings("deprecation")
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
+    this(executor, capabilities, ClientConfig.defaultConfig());
+  }
+
+  public RemoteWebDriver(
+      CommandExecutor executor, Capabilities capabilities, ClientConfig clientConfig) {
+    this.clientConfig = Require.nonNull("Client config", clientConfig);
     this.executor = Require.nonNull("Command executor", executor);
     this.capabilities = init(capabilities);
 
@@ -196,8 +226,9 @@ public class RemoteWebDriver
     }
   }
 
-  private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing) {
-    ClientConfig config = ClientConfig.defaultConfig().baseUrl(remoteAddress);
+  private static CommandExecutor createExecutor(
+      URL remoteAddress, boolean enableTracing, ClientConfig clientConfig) {
+    ClientConfig config = clientConfig.baseUrl(remoteAddress);
     if (enableTracing) {
       Tracer tracer = OpenTelemetryTracer.getInstance();
       CommandExecutor executor =
@@ -219,10 +250,17 @@ public class RemoteWebDriver
   private Capabilities init(Capabilities capabilities) {
     capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
-    LOG.addHandler(LoggingHandler.getInstance());
-
     converter = new JsonToWebElementConverter(this);
-    executeMethod = new RemoteExecuteMethod(this);
+
+    initLocalLogs();
+    remoteLogs = new RemoteLogs(executeMethod);
+
+    return capabilities;
+  }
+
+  @SuppressWarnings("deprecation")
+  private void initLocalLogs() {
+    LOG.addHandler(LoggingHandler.getInstance());
 
     Set<String> logTypesToIgnore = Set.of();
 
@@ -230,9 +268,6 @@ public class RemoteWebDriver
     LocalLogs clientLogs =
         LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(), logTypesToIgnore);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
-    remoteLogs = new RemoteLogs(executeMethod, localLogs);
-
-    return capabilities;
   }
 
   public SessionId getSessionId() {
@@ -307,6 +342,10 @@ public class RemoteWebDriver
 
   public void setErrorHandler(ErrorHandler handler) {
     this.errorHandler = handler;
+  }
+
+  public ClientConfig getClientConfig() {
+    return clientConfig;
   }
 
   public CommandExecutor getCommandExecutor() {

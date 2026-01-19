@@ -21,7 +21,6 @@ import static com.google.common.net.HttpHeaders.REFERER;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -40,7 +39,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
@@ -48,7 +46,9 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.SeleniumExtension;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 /**
  * Tests that "Referer" headers are generated as expected under various conditions. Each test will
@@ -76,9 +76,7 @@ import org.openqa.selenium.testing.SeleniumExtension;
  * <p>Note: depending on the condition under test, the various pages may or may not be served by the
  * same server.
  */
-class ReferrerTest {
-
-  @RegisterExtension static SeleniumExtension seleniumExtension = new SeleniumExtension();
+class ReferrerTest extends JupiterTestBase {
 
   private static final String PAGE_1 = "/page1.html";
   private static final String PAGE_2 = "/page2.html";
@@ -89,11 +87,6 @@ class ReferrerTest {
   private TestServer server1;
   private TestServer server2;
   private ProxyServer proxyServer;
-
-  @BeforeAll
-  public static void shouldTestBeRunAtAll() {
-    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
-  }
 
   @BeforeAll
   public static void readContents() throws IOException {
@@ -122,13 +115,13 @@ class ReferrerTest {
     }
   }
 
-  private WebDriver createDriver(String pacUrl) {
+  private WebDriver createProxyDriver(String pacUrl) {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl(pacUrl);
 
     Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-    return seleniumExtension.createNewDriver(caps);
+    return new WebDriverBuilder().get(caps);
   }
 
   /**
@@ -140,7 +133,7 @@ class ReferrerTest {
     String page1Url = server1.whereIs(PAGE_1 + "?next=" + encode(server1.whereIs(PAGE_2)));
     String page2Url = server1.whereIs(PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3)));
 
-    performNavigation(seleniumExtension.getDriver(), page1Url);
+    performNavigation(driver, page1Url);
 
     assertThat(server1.getRequests())
         .containsExactly(
@@ -154,14 +147,15 @@ class ReferrerTest {
    * use a proxy that permits direct access to that domain.
    */
   @Test
+  @NoDriverBeforeTest
   void basicHistoryNavigationWithADirectProxy() {
     proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
-    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
+    localDriver = createProxyDriver(proxyServer.whereIs("/pac.js"));
 
     String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server1.whereIs(PAGE_2));
     String page2Url = server1.whereIs(PAGE_2) + "?next=" + encode(server1.whereIs(PAGE_3));
 
-    performNavigation(driver, page1Url);
+    performNavigation(localDriver, page1Url);
 
     assertThat(server1.getRequests())
         .containsExactly(

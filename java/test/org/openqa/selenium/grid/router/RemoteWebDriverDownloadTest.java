@@ -48,8 +48,6 @@ import org.openqa.selenium.HasDownloads;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.grid.server.Server;
@@ -57,26 +55,25 @@ import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
 import org.openqa.selenium.testing.drivers.Browser;
 
-class RemoteWebDriverDownloadTest {
+@Ignore(value = IE, reason = "browser must support setting download location")
+@Ignore(value = SAFARI, reason = "browser must support setting download location")
+class RemoteWebDriverDownloadTest extends JupiterTestBase {
 
   private static final Set<String> FILE_EXTENSIONS = Set.of(".txt", ".jpg");
 
   private Server<?> server;
-  private NettyAppServer appServer;
   private Capabilities capabilities;
-  private WebDriver driver;
   private final List<TearDownFixture> tearDowns = new ArrayList<>(2);
 
   @BeforeEach
   public void setupServers() {
     Browser browser = Browser.detect();
-    assert browser != null;
-    ChromeOptions options = new ChromeOptions();
-    options.setEnableDownloads(true);
 
     capabilities =
         new PersistentCapabilities(browser.getCapabilities()).setCapability(ENABLE_DOWNLOADS, true);
@@ -88,64 +85,55 @@ class RemoteWebDriverDownloadTest {
                 new StringReader(
                     "[node]\n"
                         + "selenium-manager = true\n"
-                        + "enable-managed-downloads = true\n"
                         + "driver-implementation = "
                         + String.format("\"%s\"", browser.displayName()))));
     tearDowns.add(deployment);
 
     server = deployment.getServer();
-    appServer = new NettyAppServer(false);
-    tearDowns.add(() -> appServer.stop());
-    appServer.start();
   }
 
   @AfterEach
-  public void tearDown() {
-    if (driver != null) {
-      driver.quit();
-    }
+  public void tearDownGrid() {
     tearDowns.parallelStream().forEach(Safely::safelyCall);
   }
 
   @Test
-  @Ignore(IE)
-  @Ignore(SAFARI)
+  @NoDriverBeforeTest
   void canListDownloadedFiles() {
-    driver = createWebdriver(capabilities);
+    localDriver = createWebdriver(capabilities);
 
-    driver.get(appServer.whereIs("downloads/download.html"));
-    driver.findElement(By.id("file-1")).click();
-    driver.findElement(By.id("file-2")).click();
-    driver.findElement(By.id("file-3")).click();
-    waitForDownloadedFiles(driver, 3);
+    localDriver.get(appServer.whereIs("downloads/download.html"));
+    localDriver.findElement(By.id("file-1")).click();
+    localDriver.findElement(By.id("file-2")).click();
+    localDriver.findElement(By.id("file-3")).click();
+    waitForDownloadedFiles(localDriver, 3);
 
     @SuppressWarnings("deprecation")
-    List<String> downloadableFiles = ((HasDownloads) driver).getDownloadableFiles();
+    List<String> downloadableFiles = ((HasDownloads) localDriver).getDownloadableFiles();
     assertThat(downloadableFiles)
         .contains("file_1.txt", "file_2.jpg", "file-with-space 0 & _ ' ~.txt");
 
-    List<DownloadedFile> downloadedFiles = ((HasDownloads) driver).getDownloadedFiles();
+    List<DownloadedFile> downloadedFiles = ((HasDownloads) localDriver).getDownloadedFiles();
     assertThat(downloadedFiles.stream().map(f -> f.getName()).collect(Collectors.toList()))
         .contains("file_1.txt", "file_2.jpg", "file-with-space 0 & _ ' ~.txt");
   }
 
   @ParameterizedTest
   @MethodSource("downloadableFiles")
-  @Ignore(IE)
-  @Ignore(SAFARI)
+  @NoDriverBeforeTest
   void canDownloadFiles(By selector, String expectedFileName, String expectedFileContent)
       throws IOException {
-    driver = createWebdriver(capabilities);
+    localDriver = createWebdriver(capabilities);
 
-    driver.get(appServer.whereIs("downloads/download.html"));
-    driver.findElement(selector).click();
-    waitForDownloadedFiles(driver, 1);
+    localDriver.get(appServer.whereIs("downloads/download.html"));
+    localDriver.findElement(selector).click();
+    waitForDownloadedFiles(localDriver, 1);
 
-    DownloadedFile file = ((HasDownloads) driver).getDownloadedFiles().get(0);
+    DownloadedFile file = ((HasDownloads) localDriver).getDownloadedFiles().get(0);
     assertThat(file.getName()).isEqualTo(expectedFileName);
 
     Path targetLocation = Files.createTempDirectory("download");
-    ((HasDownloads) driver).downloadFile(file.getName(), targetLocation);
+    ((HasDownloads) localDriver).downloadFile(file.getName(), targetLocation);
 
     File localFile = targetLocation.resolve(expectedFileName).toFile();
     assertThat(localFile).hasName(expectedFileName);
@@ -161,21 +149,21 @@ class RemoteWebDriverDownloadTest {
   }
 
   @Test
-  @Ignore(IE)
-  @Ignore(SAFARI)
+  @NoDriverBeforeTest
   void testCanDeleteFiles() {
-    driver = createWebdriver(capabilities);
-    driver.get(appServer.whereIs("downloads/download.html"));
-    driver.findElement(By.id("file-1")).click();
-    waitForDownloadedFiles(driver, 1);
+    localDriver = createWebdriver(capabilities);
+    localDriver.get(appServer.whereIs("downloads/download.html"));
+    localDriver.findElement(By.id("file-1")).click();
+    waitForDownloadedFiles(localDriver, 1);
 
-    ((HasDownloads) driver).deleteDownloadableFiles();
+    ((HasDownloads) localDriver).deleteDownloadableFiles();
 
-    var afterDeleteNames = ((HasDownloads) driver).getDownloadedFiles();
+    var afterDeleteNames = ((HasDownloads) localDriver).getDownloadedFiles();
     assertThat(afterDeleteNames).isEmpty();
   }
 
   @Test
+  @NoDriverBeforeTest
   void errorsWhenCapabilityMissing() {
     Browser browser = Browser.detect();
 
@@ -183,14 +171,14 @@ class RemoteWebDriverDownloadTest {
         new PersistentCapabilities(Objects.requireNonNull(browser).getCapabilities())
             .setCapability(ENABLE_DOWNLOADS, false);
 
-    driver = createWebdriver(caps);
-    assertThatThrownBy(() -> ((HasDownloads) driver).getDownloadedFiles())
+    localDriver = createWebdriver(caps);
+    assertThatThrownBy(() -> ((HasDownloads) localDriver).getDownloadedFiles())
         .isInstanceOf(WebDriverException.class)
         .hasMessageStartingWith(
             "You must enable downloads in order to work with downloadable files");
 
     //noinspection deprecation
-    assertThatThrownBy(() -> ((HasDownloads) driver).getDownloadableFiles())
+    assertThatThrownBy(() -> ((HasDownloads) localDriver).getDownloadableFiles())
         .isInstanceOf(WebDriverException.class)
         .hasMessageStartingWith(
             "You must enable downloads in order to work with downloadable files");

@@ -17,8 +17,14 @@
 
 package org.openqa.selenium;
 
+import static java.lang.Integer.parseInt;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
+
+import java.util.Map;
 import java.util.Set;
+import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class WaitingConditions {
 
@@ -248,5 +254,77 @@ public class WaitingConditions {
         return String.format("window with name \"%s\" to exist", windowName);
       }
     };
+  }
+
+  public static ExpectedCondition<Boolean> elementToBeInViewport(final WebElement element) {
+    return new ExpectedCondition<>() {
+      private Map<String, Object> viewportState;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        String script =
+            "var e = arguments[0];var rect = e.getBoundingClientRect();var inViewport = rect.top <"
+                + " window.innerHeight && rect.bottom > 0  && rect.left < window.innerWidth &&"
+                + " rect.right > 0;return {  inViewport: inViewport,  rect: {top: rect.top, bottom:"
+                + " rect.bottom, left: rect.left, right: rect.right},  scrollX: window.pageXOffset,"
+                + "  scrollY: window.pageYOffset,  viewportWidth: window.innerWidth, "
+                + " viewportHeight: window.innerHeight};";
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> result =
+            (Map<String, Object>) ((JavascriptExecutor) driver).executeScript(script, element);
+        viewportState = result;
+        return (Boolean) result.get("inViewport");
+      }
+
+      @Override
+      public String toString() {
+        if (viewportState == null) {
+          return "element to be in viewport";
+        }
+        return String.format(
+            "element to be in viewport, but was not. "
+                + "Element rect: %s, scrollX: %s, scrollY: %s, "
+                + "viewportWidth: %s, viewportHeight: %s",
+            viewportState.get("rect"),
+            viewportState.get("scrollX"),
+            viewportState.get("scrollY"),
+            viewportState.get("viewportWidth"),
+            viewportState.get("viewportHeight"));
+      }
+    };
+  }
+
+  public static ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
+      final WebElement element, final int x, final int y) {
+    return new ExpectedCondition<>() {
+      private static final int ALLOWED_DEVIATION_PIXELS = 10;
+
+      @Override
+      public Boolean apply(WebDriver ignored) {
+        return fuzzyPositionMatching(x, y, element.getText());
+      }
+
+      private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTuple) {
+        String[] splitString = locationTuple.split("[,\\s]+", 2);
+        int gotX = parseInt(splitString[0]);
+        int gotY = parseInt(splitString[1]);
+
+        return Math.abs(expectedX - gotX) < ALLOWED_DEVIATION_PIXELS
+            && Math.abs(expectedY - gotY) < ALLOWED_DEVIATION_PIXELS;
+      }
+
+      @Override
+      public String toString() {
+        return String.format("Coordinates: (%s, %s), but was: (%s)", x, y, element.getText());
+      }
+    };
+  }
+
+  public static ExpectedCondition<Boolean> color(
+      final WebElement element, final String cssPropertyName, final Colors expectedColor) {
+    return ExpectedConditions.or(
+        attributeToBe(element, cssPropertyName, expectedColor.getColorValue().asRgb()),
+        attributeToBe(element, cssPropertyName, expectedColor.getColorValue().asRgba()));
   }
 }

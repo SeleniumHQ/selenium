@@ -18,8 +18,6 @@
 package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import java.io.StringReader;
 import java.util.Objects;
@@ -27,13 +25,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.BiDiSessionStatus;
@@ -44,30 +39,24 @@ import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.script.Source;
-import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
+import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.drivers.Browser;
 
-class RemoteWebDriverBiDiTest {
-  private static AppServer server;
-  private WebDriver driver;
+class RemoteWebDriverBiDiTest extends JupiterTestBase {
 
-  @BeforeAll
-  static void serverSetup() {
-    server = new NettyAppServer(false);
-    server.start();
-  }
+  private Deployment deployment;
 
   @BeforeEach
   void setup() {
     Browser browser = Objects.requireNonNull(Browser.detect());
 
-    Deployment deployment =
+    deployment =
         DeploymentTypes.STANDALONE.start(
             browser.getCapabilities(),
             new TomlConfig(
@@ -76,16 +65,24 @@ class RemoteWebDriverBiDiTest {
                         + "selenium-manager = false\n"
                         + "driver-implementation = "
                         + String.format("\"%s\"", browser.displayName()))));
+  }
 
-    driver = new RemoteWebDriver(deployment.getServer().getUrl(), browser.getCapabilities());
-    driver = new Augmenter().augment(driver);
+  private void createDriver() {
+    Browser browser = Objects.requireNonNull(Browser.detect());
+    localDriver = new RemoteWebDriver(deployment.getServer().getUrl(), browser.getCapabilities());
+    localDriver = new Augmenter().augment(localDriver);
+  }
+
+  @AfterEach
+  void tearDownDeployment() {
+    Safely.safelyCall(() -> deployment.tearDown());
   }
 
   @Test
-  @Ignore(IE)
-  @Ignore(SAFARI)
+  @NoDriverBeforeTest
   void ensureBiDiSessionCreation() {
-    try (BiDi biDi = ((HasBiDi) driver).getBiDi()) {
+    createDriver();
+    try (BiDi biDi = ((HasBiDi) localDriver).getBiDi()) {
       BiDiSessionStatus status = biDi.getBidiSessionStatus();
       assertThat(status).isNotNull();
       assertThat(status.getMessage()).isNotEmpty();
@@ -93,16 +90,16 @@ class RemoteWebDriverBiDiTest {
   }
 
   @Test
-  @Ignore(IE)
-  @Ignore(SAFARI)
+  @NoDriverBeforeTest
   void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
-    try (LogInspector logInspector = new LogInspector(driver)) {
+    createDriver();
+    try (LogInspector logInspector = new LogInspector(localDriver)) {
       CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
       logInspector.onConsoleEntry(future::complete);
 
-      String page = server.whereIs("/bidi/logEntryAdded.html");
-      driver.get(page);
-      driver.findElement(By.id("consoleLog")).click();
+      String page = appServer.whereIs("/bidi/logEntryAdded.html");
+      localDriver.get(page);
+      localDriver.findElement(By.id("consoleLog")).click();
 
       ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
@@ -118,29 +115,16 @@ class RemoteWebDriverBiDiTest {
   }
 
   @Test
-  @Ignore(IE)
-  @Ignore(SAFARI)
+  @NoDriverBeforeTest
   void canNavigateToUrl() {
-    BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
+    createDriver();
+    BrowsingContext browsingContext = new BrowsingContext(localDriver, WindowType.TAB);
 
-    String url = server.whereIs("/bidi/logEntryAdded.html");
+    String url = appServer.whereIs("/bidi/logEntryAdded.html");
     NavigationResult info = browsingContext.navigate(url);
 
     assertThat(browsingContext.getId()).isNotEmpty();
     assertThat(info.getNavigationId()).isNotNull();
     assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
-  }
-
-  @AfterEach
-  void clean() {
-    if (driver != null) {
-      driver.quit();
-    }
-  }
-
-  @AfterAll
-  static void stopServer() {
-    server.stop();
-    server = null;
   }
 }

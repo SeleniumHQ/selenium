@@ -26,6 +26,8 @@ module Selenium
 
     @socket: WebDriver::SocketPoller
 
+    @socket_connected: bool?
+
     class Error < StandardError
     end
 
@@ -73,7 +75,9 @@ module Selenium
 
     def process: () -> untyped
 
-    def poll_for_service: () -> nil?
+    def poll_for_ready: () -> nil?
+
+    def socket_connected?: () -> bool?
 
     def poll_for_shutdown: () -> nil?
 

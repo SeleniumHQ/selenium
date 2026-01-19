@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -42,7 +43,8 @@ public abstract class JupiterTestBase {
 
   private static final Logger LOG = Logger.getLogger(JupiterTestBase.class.getName());
 
-  @RegisterExtension protected static SeleniumExtension seleniumExtension = new SeleniumExtension();
+  @RegisterExtension
+  protected static final SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   protected TestEnvironment environment;
   protected AppServer appServer;
@@ -89,7 +91,7 @@ public abstract class JupiterTestBase {
 
     if (driver != null) {
       driver.get("about:blank");
-      driver.get(pages.blankPage);
+      driver.get(pages.blankPage + "?test=" + seleniumExtension.currentTest());
       driver.manage().deleteAllCookies();
     }
   }
@@ -97,7 +99,14 @@ public abstract class JupiterTestBase {
   @AfterEach
   public void quitLocalDriver() {
     if (localDriver != null) {
-      localDriver.quit();
+      try {
+        localDriver.quit();
+      } catch (NoSuchSessionException e) {
+        // Driver already quit
+      } catch (RuntimeException e) {
+        LOG.log(Level.SEVERE, "Failed to quit browser: ", e);
+        // fall through
+      }
     }
   }
 

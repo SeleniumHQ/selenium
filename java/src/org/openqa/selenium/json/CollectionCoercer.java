@@ -21,20 +21,27 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.function.BiFunction;
-import java.util.stream.Collector;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import org.openqa.selenium.internal.Require;
 
-public class CollectionCoercer<T extends Collection> extends TypeCoercer<T> {
+class CollectionCoercer<T extends Collection, I extends T> extends TypeCoercer<T> {
 
   private final Class<T> stereotype;
   private final JsonTypeCoercer coercer;
-  private final Collector<Object, ?, ? extends T> collector;
+  private final Supplier<I> supplier;
+  private final Function<I, Consumer<Object>> consumerFactory;
 
   public CollectionCoercer(
-      Class<T> stereotype, JsonTypeCoercer coercer, Collector<Object, ?, T> collector) {
+      Class<T> stereotype,
+      JsonTypeCoercer coercer,
+      Supplier<I> supplier,
+      Function<I, Consumer<Object>> consumerFactory) {
     this.stereotype = Require.nonNull("Stereotype", stereotype);
     this.coercer = Require.nonNull("Coercer", coercer);
-    this.collector = Require.nonNull("Collector", collector);
+    this.supplier = Require.nonNull("Supplier", supplier);
+    this.consumerFactory = Require.nonNull("Consumer factory", consumerFactory);
   }
 
   @Override
@@ -57,11 +64,11 @@ public class CollectionCoercer<T extends Collection> extends TypeCoercer<T> {
 
     return (jsonInput, setting) -> {
       jsonInput.beginArray();
-      T toReturn =
-          new JsonInputIterator(jsonInput)
-              .asStream()
-              .map(in -> coercer.coerce(in, valueType, setting))
-              .collect(collector);
+      I toReturn = supplier.get();
+      Consumer<Object> consumer = consumerFactory.apply(toReturn);
+      while (jsonInput.hasNext()) {
+        consumer.accept(coercer.coerce(jsonInput, valueType, setting));
+      }
       jsonInput.endArray();
 
       return toReturn;

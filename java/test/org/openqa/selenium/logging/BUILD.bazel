@@ -25,7 +25,7 @@ java_selenium_test_suite(
         ["*.java"],
         exclude = SMALL_TEST_SRCS,
     ),
-    browsers = ["firefox"],
+    browsers = ["chrome"],
     deps = [
         "//java/src/org/openqa/selenium/remote",
         "//java/test/org/openqa/selenium/testing:annotations",

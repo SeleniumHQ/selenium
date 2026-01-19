@@ -17,6 +17,7 @@
 // under the License.
 // </copyright>
 
+using System;
 using System.Threading.Tasks;
 using OpenQA.Selenium.BiDi.Input;
 using System.Collections.Generic;
@@ -38,5 +39,27 @@ public sealed class BrowsingContextInputModule(BrowsingContext context, InputMod
     public Task<SetFilesResult> SetFilesAsync(Script.ISharedReference element, IEnumerable<string> files, SetFilesOptions? options = null)
     {
         return inputModule.SetFilesAsync(context, element, files, options);
+    }
+
+    public Task<Subscription> OnFileDialogOpenedAsync(Func<FileDialogInfo, Task> handler, ContextSubscriptionOptions? options = null)
+    {
+        return inputModule.OnFileDialogOpenedAsync(async e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                await handler(e).ConfigureAwait(false);
+            }
+        }, options.WithContext(context));
+    }
+
+    public Task<Subscription> OnFileDialogOpenedAsync(Action<FileDialogInfo> handler, ContextSubscriptionOptions? options = null)
+    {
+        return inputModule.OnFileDialogOpenedAsync(e =>
+        {
+            if (context.Equals(e.Context))
+            {
+                handler(e);
+            }
+        }, options.WithContext(context));
     }
 }

@@ -69,7 +69,7 @@ public sealed record BrowsingContext
     public BrowsingContextStorageModule Storage => _storageModule ?? Interlocked.CompareExchange(ref _storageModule, new BrowsingContextStorageModule(this, BiDi.Storage), null) ?? _storageModule;
 
     [JsonIgnore]
-    public BrowsingContextInputModule Input => _inputModule ?? Interlocked.CompareExchange(ref _inputModule, new BrowsingContextInputModule(this, BiDi.InputModule), null) ?? _inputModule;
+    public BrowsingContextInputModule Input => _inputModule ?? Interlocked.CompareExchange(ref _inputModule, new BrowsingContextInputModule(this, BiDi.Input), null) ?? _inputModule;
 
     public Task<NavigateResult> NavigateAsync(string url, NavigateOptions? options = null)
     {

@@ -71,6 +71,11 @@ on:
         required: false
         type: boolean
         default: false
+      gpg-sign:
+        description: Import GPG key for signing (Java releases)
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   bazel:
@@ -82,17 +87,22 @@ jobs:
       SEL_M2_PASS: ${{ secrets.SEL_M2_PASS }}
       TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
       TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      SE_AVOID_STATS: true
+      GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
       - name: Pull latest changes from head ref for PRs
         if: contains(github.head_ref, 'renovate/')
-        run: git pull origin ${{ github.head_ref }}
+        run: git pull origin "$HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.head_ref }}
       - name: Pull latest changes from ref for branch pushes
         if: contains(github.ref, 'renovate/')
-        run: git pull origin ${{ github.ref }}
+        run: git pull origin "$GIT_REF"
+        env:
+          GIT_REF: ${{ github.ref }}
       - name: Free space
         if: inputs.os != 'windows'
         run: ./scripts/github-actions/free-disk-space.sh
@@ -119,7 +129,7 @@ jobs:
           dotnet-version: ${{ inputs.dotnet-version }}
       - name: Setup Java
         if: inputs.java-version != ''
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ inputs.java-version }}
           distribution: 'temurin'
@@ -142,7 +152,7 @@ jobs:
           external-cache: |
             manifest:
               crates: rust/Cargo.Bazel.lock
-              rules_ruby++ruby+ruby: 'rb/.ruby-version'
+              rules_ruby++ruby+ruby: ${{ inputs.os == 'windows' && 'false' || 'rb/.ruby-version' }}
               "+pin_browsers_extension+linux_beta_chrome": false
               "+pin_browsers_extension+linux_beta_chromedriver": true
               "+pin_browsers_extension+linux_beta_firefox": false
@@ -161,11 +171,18 @@ jobs:
               "+pin_browsers_extension+mac_edgedriver": false
               "+pin_browsers_extension+mac_firefox": false
               "+pin_browsers_extension+mac_geckodriver": false
-          repository-cache: false
+          repository-cache: true
       - name: Setup Bazel without caching
         if: inputs.caching == false
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.18.0
         with:
+          cache-save: false
+          bazelisk-cache: true
+          external-cache: |
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              rules_ruby++ruby+ruby: rb/.ruby-version
+          repository-cache: true
           bazelrc: common --color=yes
       - name: Setup curl for Ubuntu
         if: inputs.os == 'ubuntu'
@@ -186,6 +203,12 @@ jobs:
       - name: Setup Safari
         if: inputs.browser == 'safari'
         run: sudo safaridriver --enable
+      - name: Import GPG key
+        if: inputs.gpg-sign
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Run Bazel
         shell: bash
         env:
@@ -193,25 +216,24 @@ jobs:
           MSYS2_ARG_CONV_EXCL: "*"
         run: |
           mkdir -p build
-          ${{ inputs.run }} 2>&1 | tee build/bazel-console.log
-      - name: Parse Bazel log for failures
-        if: always()
-        shell: bash
-        run: |
-          awk '
-            /PASSED in/ {n=0; delete a; next}
-            /FAILED in/ {a[++n]=$1}
-            END {for (i=1; i<=n; i++) print a[i]}
-          ' build/bazel-console.log > build/bazel-failures.txt
+          {
+            ${{ inputs.run }}
+          } 2>&1 | tee build/bazel-console.log
       - name: Rerun failures with debug
-        if: failure() && inputs.rerun-with-debug
+        if: failure()
         shell: bash
-        run: |
-          if [ -s build/bazel-failures.txt ]; then
-            base_cmd=$(echo "${{ inputs.run }}" | sed 's| //[^ ]*||g')
-            targets=$(cat build/bazel-failures.txt | tr '\n' ' ')
-            $base_cmd --test_env=SE_DEBUG=true --flaky_test_attempts=1 $targets
-          fi
+        run: ./scripts/github-actions/rerun-failures.sh '${{ inputs.run }}' '${{ inputs.rerun-with-debug }}'
+      - name: Collect failed test logs
+        if: failure()
+        shell: bash
+        run: ./scripts/github-actions/collect-test-logs.sh
+      - name: Upload failed test logs
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
+          retention-days: 7
+          path: build/failures/**
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3
@@ -219,7 +241,7 @@ jobs:
           limit-access-to-actor: false
       - name: Release Nightly
         if: inputs.nightly-release-files != ''
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "nightly"
@@ -230,18 +252,9 @@ jobs:
         if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
         run: |
           git diff > changes.patch
-      - name: "Upload test logs"
-        if: failure()
-        uses: actions/upload-artifact@v5
-        with:
-          name: test-logs-${{ inputs.os }}-${{ inputs.name }}-${{ inputs.browser }}
-          retention-days: 7
-          path: |
-            bazel-testlogs/**/*.log
-            build/bazel-failures.txt
       - name: "Upload changes"
         if: ${{ always() && inputs.artifact-name != 'ignore-artifacts' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ inputs.artifact-name }}
           path: changes.patch

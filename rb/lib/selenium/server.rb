@@ -21,6 +21,7 @@ require 'selenium/webdriver/common/child_process'
 require 'selenium/webdriver/common/port_prober'
 require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
+require 'json'
 
 module Selenium
   #
@@ -203,7 +204,7 @@ module Selenium
 
     def start
       process.start
-      poll_for_service
+      poll_for_ready
 
       process.wait unless @background
     end
@@ -220,11 +221,14 @@ module Selenium
     end
 
     def status_ok?
-      return false unless @process&.alive? && socket.connected?
+      return false unless @process&.alive? && socket_connected?
 
       Net::HTTP.start(@host, @port, open_timeout: 2, read_timeout: 2) do |http|
-        response = http.get('/wd/hub/status')
-        response.is_a?(Net::HTTPSuccess)
+        response = http.get('/status')
+        return false unless response.is_a?(Net::HTTPSuccess)
+
+        status = JSON.parse(response.body)
+        status.dig('value', 'ready') == true
       end
     rescue StandardError
       false
@@ -268,10 +272,20 @@ module Selenium
       end
     end
 
-    def poll_for_service
-      return if socket.connected?
+    def poll_for_ready
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      loop do
+        return if status_ok?
 
-      raise Error, "remote server not launched in #{@timeout} seconds"
+        elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
+        raise Error, "remote server not ready in #{@timeout} seconds" if elapsed > @timeout
+
+        sleep 0.5
+      end
+    end
+
+    def socket_connected?
+      @socket_connected ||= socket.connected?
     end
 
     def poll_for_shutdown

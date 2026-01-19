@@ -30,6 +30,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.concurrent.Lazy;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
+import org.openqa.selenium.remote.RemoteExecuteMethod;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
@@ -50,7 +51,7 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
 
   @Override
   public HasBiDi getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
-    final Lazy<BiDi> biDi = lazy(() -> establishBiDiConnection(caps));
+    final Lazy<BiDi> biDi = lazy(() -> establishBiDiConnection(caps, executeMethod));
 
     LOG.log(
         INFO,
@@ -70,11 +71,13 @@ public class BiDiProvider implements AugmenterProvider<HasBiDi> {
     };
   }
 
-  private BiDi establishBiDiConnection(Capabilities caps) {
+  private BiDi establishBiDiConnection(Capabilities caps, ExecuteMethod executeMethod) {
     URI wsUri = getBiDiUrl(caps).orElseThrow(() -> new BiDiException("BiDi not supported"));
+    ClientConfig clientConfig =
+        ((RemoteExecuteMethod) executeMethod).getWrappedDriver().getClientConfig();
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
+    ClientConfig wsConfig = clientConfig.baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
     Connection connection = new Connection(wsClient, wsUri.toString());
 

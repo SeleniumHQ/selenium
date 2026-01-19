@@ -23,8 +23,9 @@ jobs:
       # rules_jvm_external is not fully hermetic
       # https://github.com/bazelbuild/rules_jvm_external/issues/1046
       java-version: 17
+      rerun-with-debug: true
       run: >
-        bazel test --flaky_test_attempts 3
+        bazel test --flaky_test_attempts 2
         //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest
         //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
         //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
@@ -48,8 +49,9 @@ jobs:
       # rules_jvm_external is not fully hermetic
       # https://github.com/bazelbuild/rules_jvm_external/issues/1046
       java-version: 17
+      rerun-with-debug: true
       run: >
-        bazel test --flaky_test_attempts 3
+        bazel test --flaky_test_attempts 2
         //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote
         //java/test/org/openqa/selenium/federatedcredentialmanagement:FederatedCredentialManagementTest
         //java/test/org/openqa/selenium/firefox:FirefoxDriverBuilderTest
@@ -72,6 +74,7 @@ jobs:
       # rules_jvm_external is not fully hermetic
       # https://github.com/bazelbuild/rules_jvm_external/issues/1046
       java-version: 17
+      rerun-with-debug: true
       run: >
-        bazel test --flaky_test_attempts 3
+        bazel test --flaky_test_attempts 2
         //java/test/org/openqa/selenium/chrome:ChromeDriverFunctionalTest-remote

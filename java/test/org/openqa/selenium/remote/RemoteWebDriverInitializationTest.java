@@ -53,6 +53,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 @Tag("UnitTests")
 class RemoteWebDriverInitializationTest {
@@ -97,6 +98,21 @@ class RemoteWebDriverInitializationTest {
         .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
     verifyNoCommands(executor);
+  }
+
+  @Test
+  void closesDriverCommandExecutorWhenSessionCreationFailsAfterNewSessionResponse()
+      throws IOException {
+    DriverCommandExecutor executor = mock(DriverCommandExecutor.class);
+    Response response = new Response();
+    response.setState("success");
+    response.setValue(null);
+    when(executor.execute(any())).thenReturn(response);
+
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+        .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
+
+    verify(executor).close();
   }
 
   @Test
