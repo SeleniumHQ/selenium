@@ -87,18 +87,20 @@ jobs:
           tag: "${{ steps.tag.outputs.tag }}"
           commit: "${{ github.sha }}"
 
-  authorize:
-    name: Authorize Release
+  get-approval:
+    name: Get Approval
     needs: stage
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Approved
-        run: echo "Release ${{ needs.stage.outputs.tag }} approved for publishing"
+    if: needs.stage.result == 'success'
+    uses: ./.github/workflows/get-approval.yml
+    with:
+      title: Release approval required
+      message: Approval is needed to publish ${{ needs.stage.outputs.tag }}.
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish:
     name: Publish ${{ matrix.language }}
-    needs: authorize
+    needs: get-approval
     strategy:
       fail-fast: false
       matrix:
@@ -181,7 +183,7 @@ jobs:
   on-release-failure:
     name: On Release Failure
     runs-on: ubuntu-latest
-    needs: [stage, authorize, publish, docs, github-release, unrestrict-trunk, update-version]
+    needs: [stage, get-approval, publish, docs, github-release, unrestrict-trunk, update-version]
     if: failure()
     steps:
       - uses: actions/checkout@v4
