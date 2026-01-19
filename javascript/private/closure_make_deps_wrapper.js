@@ -26,6 +26,15 @@
 
 const fs = require('fs');
 const path = require('path');
+
+// Pre-load transitive deps to work around Windows symlink issues in Bazel's
+// runfiles tree. On Windows, pnpm-style symlinks in .aspect_rules_js don't
+// resolve correctly. By requiring these first from our node_modules (where
+// they're direct deps), we populate Node's module cache.
+require('balanced-match');
+require('brace-expansion');
+require('minimatch');
+
 const closureMakeDeps = require('google-closure-deps').closureMakeDeps;
 
 async function main() {

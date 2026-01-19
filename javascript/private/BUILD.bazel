@@ -19,7 +19,10 @@ js_binary(
     name = "closure_make_deps_wrapper",
     data = [
         "closure_make_deps_wrapper.js",
+        ":node_modules/balanced-match",
+        ":node_modules/brace-expansion",
         ":node_modules/google-closure-deps",
+        ":node_modules/minimatch",
     ],
     entry_point = ":closure_make_deps_wrapper.js",
     visibility = [
