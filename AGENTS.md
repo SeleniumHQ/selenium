@@ -12,15 +12,13 @@ The repository README is aimed at contributors; end-user docs live elsewhere.
 - Avoid repo-wide refactors/formatting; prefer small, reversible diffs
 
 ## Toolchain
-- Expect Bazelisk and a hermetic Bazel toolset, so do not run tests or execute selenium code expecting language specific local dev environment
+- The project uses Bazelisk with a hermetic Bazel toolset. Do not run tests or execute Selenium code assuming a language-specific local development environment is configured.
 - Rakefile tasks are executed with a bundled jruby wrapped with `go`/`go.bat` and frequently used by CI jobs
 - Prefer targeted Bazel commands; use `bazel query ...` to locate labels before build/test
 
 ## Execution model
 - Use `bazel query` to explore build graph before reading files
-- Attempt to execute Bazel commands directly. If prevented due to network/toolchain restrictions with sandbox: 
-Fall back to suggesting copy/paste commands for the user on a separate line
-
+- Attempt to execute Bazel commands directly. If prevented due to network/toolchain restrictions within the sandbox, fall back to suggesting copy/paste commands for the user on a separate line.
 ## Repo layout
 Bindings (see `AGENTS.md` in each directory for language-specific details):
 - Java: `java/`
@@ -35,8 +33,8 @@ Shared/high-risk areas:
 - `common/src/` (test HTML fixtures)
 - `javascript/atoms/` (shared JS atoms; high blast radius)
 - `scripts/`, `rake_tasks/`, `.github/`, `Rakefile` (tooling/build)
-- `third_party` treat as read-only
-- `bazel-*` treat as generated output
+- `third_party/` treat as read-only
+- `bazel-*/` treat as generated output
 
 ### Agent workspace
 The `.local/` directory (gitignored) is available for generated artifacts or temporary files:
@@ -45,14 +43,14 @@ The `.local/` directory (gitignored) is available for generated artifacts or tem
 
 ## Cross-binding consistency checks
 When changing user-visible behavior, compare with at least one other binding:
-- `rg <term> java/ py/ rb/ dotnet/ javascript/selenium-webdriver/`
+- Example: `rg <term> java/ py/ rb/ dotnet/ javascript/selenium-webdriver/`
 
 If behavior is shared/low-level (protocol, serialization, "remote"/transport), suggest follow-up parity work or to file an issue
 
 ## Testing
 When implementing solutions prefer writing a test for it first 
 Prefer small (unit) tests over browser tests for speed/reliability
-Avoid mocks - they can misrepresent API contracts
+Avoid mocks—they can misrepresent API contracts
 
 Useful flags:
 - `--test_size_filters=small` (unit tests only)
@@ -65,7 +63,7 @@ Add logging where users may need insight into what's happening
 See language-specific AGENTS.md for applicable logging usage
 
 ## Deprecation policy
-We don't follow semver; before removing public functionality, mark deprecated with message pointing to the alternative
+This project does not follow semantic versioning (semver); before removing public functionality, mark it as deprecated with a message pointing to the alternative.
 See language-specific AGENTS.md for applicable deprecation usage
 
 ## General Guidelines

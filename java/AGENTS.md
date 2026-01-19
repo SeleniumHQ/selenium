@@ -6,7 +6,7 @@
 
 ## Common commands
 - Build: `bazel build //java/...`
-- Build: `bazel build grid`
+- Build Grid: `bazel build grid`
 
 ## Testing
 See `java/TESTING.md`
