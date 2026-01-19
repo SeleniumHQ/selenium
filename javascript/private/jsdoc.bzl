@@ -44,7 +44,7 @@ mkdir -p "$DEST"
 "$0.runfiles/_main/{jsdoc_bin}" --configure {config} --destination "$DEST" --template "$TEMPLATE" "$@" || true
 
 # Verify docs were generated
-if [[ -d "$DEST" ]] && [[ -n "$(ls -A "$DEST" 2>/dev/null)" ]]; then
+if [[ -f "$DEST/index.html" ]]; then
     echo "Documentation generated successfully at $DEST"
 else
     echo "ERROR: Documentation was not generated"
