@@ -416,6 +416,7 @@ def setup_npm_auth
   else
     File.write(npmrc, "#{auth_line}\n")
   end
+  File.chmod(0o600, npmrc)
 end
 
 def setup_gem_credentials
