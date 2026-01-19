@@ -1232,13 +1232,16 @@ namespace :java do
       when 'VALIDATED', 'PUBLISHED' then break
       when 'FAILED' then raise "Deployment failed: #{status['errors']}"
       end
-      sleep(delay)
+      sleep(delay) unless attempt == max_attempts - 1
     rescue StandardError => e
+      raise if e.message.start_with?('Deployment failed')
+
       warn "API error (attempt #{attempt + 1}/#{max_attempts}): #{e.message}"
       sleep(delay) unless attempt == max_attempts - 1
     end
 
-    return if status['deploymentState'] == 'PUBLISHED'
+    state = status['deploymentState']
+    return if state == 'PUBLISHED'
 
     raise "Timed out after #{(max_attempts * delay) / 60} minutes waiting for validation" unless state == 'VALIDATED'
 
