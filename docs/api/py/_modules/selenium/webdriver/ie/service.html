@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.ie.service &#8212; Selenium 4.39.0 documentation</title>
+    <title>selenium.webdriver.ie.service &#8212; Selenium 4.40.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
+    <script src="../../../../_static/documentation_options.js?v=cb21b19a"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.40.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.ie.service </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
+       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
   </label>
   
 
@@ -209,16 +209,30 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">IO</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubprocessStdAlias</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
 
 
 <div class="viewcode-block" id="Service">
 <a class="viewcode-back" href="../../../../selenium_webdriver_ie/selenium.webdriver.ie.service.html#selenium.webdriver.ie.service.Service">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Service</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">Service</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Object that manages the starting and stopping of the IEDriver."""</span>
+<span class="w">    </span><span class="sd">"""Service class responsible for starting and stopping of `IEDriver`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        executable_path: (Optional) Install path of the executable.</span>
+<span class="sd">        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.</span>
+<span class="sd">        host: (Optional) IP address the service port is bound</span>
+<span class="sd">        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.</span>
+<span class="sd">        log_level: (Optional) Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG",</span>
+<span class="sd">            "TRACE". Default is "FATAL".</span>
+<span class="sd">        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.</span>
+<span class="sd">        driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.</span>
+<span class="sd">        **kwargs: Additional keyword arguments to pass to the parent Service class.</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -227,24 +241,10 @@
         <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">service_args</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">log_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">log_output</span><span class="p">:</span> <span class="n">SubprocessStdAlias</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">log_output</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">IO</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">driver_path_env_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Creates a new instance of the Service.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            executable_path: Path to the IEDriver</span>
-<span class="sd">            port: Port the service is running on</span>
-<span class="sd">            host: (Optional) IP address the service port is bound</span>
-<span class="sd">            service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.</span>
-<span class="sd">            log_level: (Optional) Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG",</span>
-<span class="sd">                "TRACE". Default is "FATAL".</span>
-<span class="sd">            log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.</span>
-<span class="sd">                Default is "stdout".</span>
-<span class="sd">            driver_path_env_key: (Optional) Environment variable to use to get the path to the driver executable.</span>
-<span class="sd">            **kwargs: Additional keyword arguments to pass to the parent Service class.</span>
-<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">service_args</span> <span class="ow">or</span> <span class="p">[])</span>
         <span class="n">driver_path_env_key</span> <span class="o">=</span> <span class="n">driver_path_env_key</span> <span class="ow">or</span> <span class="s2">"SE_IEDRIVER"</span>
 
@@ -252,6 +252,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--host=</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">log_level</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--log-level=</span><span class="si">{</span><span class="n">log_level</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"SE_DEBUG"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"log-level"</span><span class="p">,</span> <span class="s2">"log-file"</span><span class="p">))</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"--log-level=DEBUG"</span><span class="p">)</span>
+            <span class="n">log_output</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">executable_path</span><span class="o">=</span><span class="n">executable_path</span><span class="p">,</span>
@@ -298,7 +305,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2009-2025 Software Freedom Conservancy.
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
               
           </div>
         </div>

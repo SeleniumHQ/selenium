@@ -115,9 +115,9 @@ loadScripts(document, 'script');</script>
  secret passphrase of our account with the cloud "Selenium as a Service" provider.
 
  <p>If no call to <a href="#withDriverService(org.openqa.selenium.remote.service.DriverService)"><code>withDriverService(DriverService)</code></a> or <a href="#address(java.net.URI)"><code>address(URI)</code></a> is made, the
- builder will use <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ServiceLoader.html" title="class or interface in java.util" class="external-link"><code>ServiceLoader</code></a> to find all instances of <a href="../WebDriverInfo.html" title="interface in org.openqa.selenium"><code>WebDriverInfo</code></a> and will
- call <a href="../WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)"><code>WebDriverInfo.createDriver(Capabilities)</code></a> for the first supported set of
- capabilities.</div>
+ builder will use <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ServiceLoader.html" title="class or interface in java.util" class="external-link"><code>ServiceLoader</code></a> to find all instances of <a href="WebDriverInfo.html" title="interface in org.openqa.selenium.remote"><code>WebDriverInfo</code></a> and will
+ call <a href="WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)"><code>WebDriverInfo.createDriver(Capabilities, ClientConfig)</code></a> for the first supported set
+ of capabilities.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">

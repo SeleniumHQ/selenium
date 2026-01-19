@@ -102,7 +102,7 @@ Class ReturnedCookie  <a class="header-action link-secondary" title="View source
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ReturnedCookie : Cookie</code></pre>
+    <pre><code class="lang-csharp hljs">public class ReturnedCookie : Cookie, IEquatable&lt;Cookie&gt;</code></pre>
   </div>
 
 
@@ -117,6 +117,12 @@ Class ReturnedCookie  <a class="header-action link-secondary" title="View source
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -151,6 +157,9 @@ Class ReturnedCookie  <a class="header-action link-secondary" title="View source
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.Cookie.html#OpenQA_Selenium_Cookie_Equals_System_Object_">Cookie.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Cookie.html#OpenQA_Selenium_Cookie_Equals_OpenQA_Selenium_Cookie_">Cookie.Equals(Cookie)</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.Cookie.html#OpenQA_Selenium_Cookie_GetHashCode">Cookie.GetHashCode()</a>

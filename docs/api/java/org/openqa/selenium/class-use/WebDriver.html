@@ -148,17 +148,6 @@ loadScripts(document, 'script');</script>
 <div class="block">Switch the focus of future commands for this driver to the window with the given name/handle.</div>
 </div>
 </div>
-<div class="caption"><span>Methods in <a href="../package-summary.html">org.openqa.selenium</a> that return types with arguments of type <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Method</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">WebDriverInfo.</span><code><a href="../WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Creates a new instance of the <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.</div>
-</div>
-</div>
 </section>
 </li>
 <li>
@@ -299,7 +288,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ChromeDriverInfo.</span><code><a href="../chrome/ChromeDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ChromeDriverInfo.</span><code><a href="../chrome/ChromeDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -330,7 +320,15 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../devtools/Connection.html" title="class in org.openqa.selenium.devtools">Connection</a>&gt;</code></div>
 <div class="col-second even-row-color"><span class="type-name-label">SeleniumCdpConnection.</span><code><a href="../devtools/SeleniumCdpConnection.html#create(org.openqa.selenium.WebDriver)" class="member-name-link">create</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="../devtools/SeleniumCdpConnection.html#create(org.openqa.selenium.WebDriver,org.openqa.selenium.remote.http.ClientConfig)"><code>SeleniumCdpConnection.create(WebDriver, ClientConfig)</code></a> instead</div>
+</div>
+</div>
+<div class="col-first odd-row-color"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../devtools/Connection.html" title="class in org.openqa.selenium.devtools">Connection</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SeleniumCdpConnection.</span><code><a href="../devtools/SeleniumCdpConnection.html#create(org.openqa.selenium.WebDriver,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">create</a><wbr>(<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 <div class="caption"><span>Constructors in <a href="../devtools/package-summary.html">org.openqa.selenium.devtools</a> with parameters of type <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></span></div>
 <div class="summary-table three-column-summary">
@@ -372,7 +370,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">EdgeDriverInfo.</span><code><a href="../edge/EdgeDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">EdgeDriverInfo.</span><code><a href="../edge/EdgeDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -397,7 +396,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">GeckoDriverInfo.</span><code><a href="../firefox/GeckoDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">GeckoDriverInfo.</span><code><a href="../firefox/GeckoDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -420,7 +420,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">InternetExplorerDriverInfo.</span><code><a href="../ie/InternetExplorerDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">InternetExplorerDriverInfo.</span><code><a href="../ie/InternetExplorerDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -497,20 +498,36 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color"><span class="type-name-label">RemoteWebDriver.RemoteTargetLocator.</span><code><a href="../remote/RemoteWebDriver.RemoteTargetLocator.html#frame(org.openqa.selenium.WebElement)" class="member-name-link">frame</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameElement)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RemoteExecuteMethod.</span><code><a href="../remote/RemoteExecuteMethod.html#getWrappedDriver()" class="member-name-link">getWrappedDriver</a>()</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RemoteWebElement.</span><code><a href="../remote/RemoteWebElement.html#getWrappedDriver()" class="member-name-link">getWrappedDriver</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">RemoteWebElement.</span><code><a href="../remote/RemoteWebElement.html#getWrappedDriver()" class="member-name-link">getWrappedDriver</a>()</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RemoteWebDriver.RemoteTargetLocator.</span><code><a href="../remote/RemoteWebDriver.RemoteTargetLocator.html#newWindow(org.openqa.selenium.WindowType)" class="member-name-link">newWindow</a><wbr>(<a href="../WindowType.html" title="enum class in org.openqa.selenium">WindowType</a>&nbsp;typeHint)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RemoteWebDriver.RemoteTargetLocator.</span><code><a href="../remote/RemoteWebDriver.RemoteTargetLocator.html#newWindow(org.openqa.selenium.WindowType)" class="member-name-link">newWindow</a><wbr>(<a href="../WindowType.html" title="enum class in org.openqa.selenium">WindowType</a>&nbsp;typeHint)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">RemoteWebDriver.RemoteTargetLocator.</span><code><a href="../remote/RemoteWebDriver.RemoteTargetLocator.html#parentFrame()" class="member-name-link">parentFrame</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">RemoteWebDriver.RemoteTargetLocator.</span><code><a href="../remote/RemoteWebDriver.RemoteTargetLocator.html#parentFrame()" class="member-name-link">parentFrame</a>()</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">RemoteWebDriver.RemoteTargetLocator.</span><code><a href="../remote/RemoteWebDriver.RemoteTargetLocator.html#window(java.lang.String)" class="member-name-link">window</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;windowHandleOrName)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code><a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></div>
-<div class="col-second even-row-color"><span class="type-name-label">RemoteWebDriver.RemoteTargetLocator.</span><code><a href="../remote/RemoteWebDriver.RemoteTargetLocator.html#window(java.lang.String)" class="member-name-link">window</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;windowHandleOrName)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+</div>
+<div class="caption"><span>Methods in <a href="../remote/package-summary.html">org.openqa.selenium.remote</a> that return types with arguments of type <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>default <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">WebDriverInfo.</span><code><a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use <a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)"><code>WebDriverInfo.createDriver(Capabilities, ClientConfig)</code></a> instead</div>
+</div>
+</div>
+<div class="col-first odd-row-color"><code>default <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">WebDriverInfo.</span><code><a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
+<div class="col-last odd-row-color">
+<div class="block">Creates a new instance of the <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.</div>
+</div>
 </div>
 <div class="caption"><span>Methods in <a href="../remote/package-summary.html">org.openqa.selenium.remote</a> with parameters of type <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></span></div>
 <div class="summary-table three-column-summary">
@@ -546,10 +563,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">SafariDriverInfo.</span><code><a href="../safari/SafariDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">SafariDriverInfo.</span><code><a href="../safari/SafariDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">SafariTechPreviewDriverInfo.</span><code><a href="../safari/SafariTechPreviewDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">SafariTechPreviewDriverInfo.</span><code><a href="../safari/SafariTechPreviewDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
@@ -880,12 +899,12 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static <a href="../support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color"><span class="type-name-label">ExpectedConditions.</span><code><a href="../support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(int)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(int&nbsp;frameLocator)</code></div>
+<div class="col-first even-row-color"><code>static <a href="../support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
+<div class="col-second even-row-color"><span class="type-name-label">ExpectedConditions.</span><code><a href="../support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(int)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(int&nbsp;frameIndex)</code></div>
 <div class="col-last even-row-color">
-<div class="block">An expectation for checking whether the given frame is available to switch to.</div>
+<div class="block">An expectation for checking whether a frame with given index is available to switch to.</div>
 </div>
-<div class="col-first odd-row-color"><code>static <a href="../support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
+<div class="col-first odd-row-color"><code>static <a href="../support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
 <div class="col-second odd-row-color"><span class="type-name-label">ExpectedConditions.</span><code><a href="../support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(java.lang.String)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;frameLocator)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">An expectation for checking whether the given frame is available to switch to.</div>
@@ -896,7 +915,7 @@ loadScripts(document, 'script');</script>
 <div class="block">An expectation for checking whether the given frame is available to switch to.</div>
 </div>
 <div class="col-first odd-row-color"><code>static <a href="../support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second odd-row-color"><span class="type-name-label">ExpectedConditions.</span><code><a href="../support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(org.openqa.selenium.WebElement)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameLocator)</code></div>
+<div class="col-second odd-row-color"><span class="type-name-label">ExpectedConditions.</span><code><a href="../support/ui/ExpectedConditions.html#frameToBeAvailableAndSwitchToIt(org.openqa.selenium.WebElement)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frame)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">An expectation for checking whether the given frame is available to switch to.</div>
 </div>

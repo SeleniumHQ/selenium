@@ -89,7 +89,7 @@
 
 
   <h1 id="OpenQA_Selenium_BiDi_Input_NoneActions" data-uid="OpenQA.Selenium.BiDi.Input.NoneActions" class="text-break">
-Class NoneActions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L91"><i class="bi bi-code-slash"></i></a>
+Class NoneActions  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L88"><i class="bi bi-code-slash"></i></a>
   </h1>
 
   <div class="facts text-secondary">
@@ -101,7 +101,7 @@ Class NoneActions  <a class="header-action link-secondary" title="View source" h
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed record NoneActions : SourceActions&lt;None&gt;, IEquatable&lt;SourceActions&gt;, IEnumerable&lt;ISourceAction&gt;, IEnumerable, IEquatable&lt;SourceActions&lt;None&gt;&gt;, IEquatable&lt;NoneActions&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed record NoneActions : SourceActions&lt;INoneSourceAction&gt;, IEquatable&lt;SourceActions&gt;, IEnumerable&lt;ISourceAction&gt;, IEnumerable, IEquatable&lt;SourceActions&lt;INoneSourceAction&gt;&gt;, IEquatable&lt;NoneActions&gt;</code></pre>
   </div>
 
 
@@ -112,7 +112,7 @@ Class NoneActions  <a class="header-action link-secondary" title="View source" h
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions.html">SourceActions</a></div>
-      <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html">SourceActions</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.None.html">None</a>&gt;</div>
+      <div><a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html">SourceActions</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.INoneSourceAction.html">INoneSourceAction</a>&gt;</div>
       <div><span class="xref">NoneActions</span></div>
     </dd>
   </dl>
@@ -123,7 +123,7 @@ Class NoneActions  <a class="header-action link-secondary" title="View source" h
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions.html">SourceActions</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.ISourceAction.html">ISourceAction</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html">SourceActions</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.None.html">None</a>&gt;&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html">SourceActions</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.INoneSourceAction.html">INoneSourceAction</a>&gt;&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.BiDi.Input.NoneActions.html">NoneActions</a>&gt;</div>
     </dd>
   </dl>
@@ -133,13 +133,13 @@ Class NoneActions  <a class="header-action link-secondary" title="View source" h
     <dt>Inherited Members</dt>
     <dd>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html#OpenQA_Selenium_BiDi_Input_SourceActions_1_Actions">SourceActions&lt;None&gt;.Actions</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html#OpenQA_Selenium_BiDi_Input_SourceActions_1_Actions">SourceActions&lt;INoneSourceAction&gt;.Actions</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html#OpenQA_Selenium_BiDi_Input_SourceActions_1_GetEnumerator">SourceActions&lt;None&gt;.GetEnumerator()</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html#OpenQA_Selenium_BiDi_Input_SourceActions_1_GetEnumerator">SourceActions&lt;INoneSourceAction&gt;.GetEnumerator()</a>
     </div>
     <div>
-      <a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html#OpenQA_Selenium_BiDi_Input_SourceActions_1_Add_OpenQA_Selenium_BiDi_Input_ISourceAction_">SourceActions&lt;None&gt;.Add(ISourceAction)</a>
+      <a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions-1.html#OpenQA_Selenium_BiDi_Input_SourceActions_1_Add_OpenQA_Selenium_BiDi_Input_ISourceAction_">SourceActions&lt;INoneSourceAction&gt;.Add(ISourceAction)</a>
     </div>
     <div>
       <a class="xref" href="OpenQA.Selenium.BiDi.Input.SourceActions.html#OpenQA_Selenium_BiDi_Input_SourceActions_Id">SourceActions.Id</a>
@@ -169,11 +169,46 @@ Class NoneActions  <a class="header-action link-secondary" title="View source" h
 
 
 
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_BiDi_Input_NoneActions__ctor_" data-uid="OpenQA.Selenium.BiDi.Input.NoneActions.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_BiDi_Input_NoneActions__ctor_System_String_" data-uid="OpenQA.Selenium.BiDi.Input.NoneActions.#ctor(System.String)">
+  NoneActions(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L88"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public NoneActions(string Id)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>Id</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L91" class="edit-link">Edit this page</a>
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/BiDi/Input/SourceActions.cs/#L88" class="edit-link">Edit this page</a>
         </div>
 
 

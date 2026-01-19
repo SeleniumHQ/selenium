@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>selenium.webdriver.common.webdriver &#8212; Selenium 4.40.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css?v=79c92029" />
+    <script src="../_static/documentation_options.js?v=cb21b19a"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#selenium_webdriver_common/selenium.webdriver.common.webdriver" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Selenium 4.40.0 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
+          <span class="md-header-nav__topic"> selenium.webdriver.common.webdriver </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
+  </label>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#selenium-webdriver-common-selenium-webdriver-common-webdriver--page-root" class="md-nav__link">selenium.webdriver.common.webdriver</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.quit" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.quit()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.download_file" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.download_file()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_downloadable_files" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_downloadable_files()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.delete_downloadable_files" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.delete_downloadable_files()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.add_cookie" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.add_cookie()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.add_credential" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.add_credential()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.add_virtual_authenticator" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.add_virtual_authenticator()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.back" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.back()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.bidi_connection" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.bidi_connection()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.browser" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.browser</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.browsing_context" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.browsing_context</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.capabilities" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.capabilities</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.close" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.close()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.create_web_element" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.create_web_element()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.current_url" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.current_url</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.current_window_handle" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.current_window_handle</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.delete_all_cookies" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.delete_all_cookies()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.delete_cookie" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.delete_cookie()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.dialog" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.dialog</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.emulation" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.emulation</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.execute" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.execute()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.execute_async_script" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.execute_async_script()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.execute_cdp_cmd" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.execute_cdp_cmd()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.execute_script" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.execute_script()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.fedcm" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.fedcm</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.fedcm_dialog" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.fedcm_dialog()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.file_detector" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.file_detector</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.file_detector_context" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.file_detector_context()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.find_element" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.find_element()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.find_elements" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.find_elements()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.forward" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.forward()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.fullscreen_window" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.fullscreen_window()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_cookie" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_cookie()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_cookies" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_cookies()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_credentials" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_credentials()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_pinned_scripts" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_pinned_scripts()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_base64" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_screenshot_as_base64()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_file" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_screenshot_as_file()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_png" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_screenshot_as_png()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_position" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_window_position()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_rect" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_window_rect()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_size" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.get_window_size()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.implicitly_wait" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.implicitly_wait()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.input" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.input</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.maximize_window" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.maximize_window()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.minimize_window" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.minimize_window()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.mobile" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.mobile</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.name" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.name</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.network" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.network</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.orientation" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.orientation</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.page_source" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.page_source</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.permissions" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.permissions</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.pin_script" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.pin_script()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.print_page" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.print_page()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.refresh" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.refresh()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.remove_all_credentials" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.remove_all_credentials()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.remove_credential" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.remove_credential()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.remove_virtual_authenticator" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.remove_virtual_authenticator()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.save_screenshot" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.save_screenshot()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.script" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.script</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_page_load_timeout" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.set_page_load_timeout()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_script_timeout" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.set_script_timeout()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_user_verified" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.set_user_verified()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_window_position" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.set_window_position()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_window_rect" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.set_window_rect()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_window_size" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.set_window_size()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.start_client" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.start_client()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.start_devtools" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.start_devtools()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.start_session" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.start_session()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.stop_client" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.stop_client()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.storage" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.storage</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.supports_fedcm" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.supports_fedcm</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.switch_to" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.switch_to</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.timeouts" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.timeouts</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.title" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.title</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.unpin" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.unpin()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.virtual_authenticator_id" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.virtual_authenticator_id</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.webextension" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.webextension</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#selenium.webdriver.common.webdriver.LocalWebDriver.window_handles" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">LocalWebDriver.window_handles</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/selenium_webdriver_common/selenium.webdriver.common.webdriver.rst.txt">Show Source</a> </li>
+
+<li id="searchbox" class="md-nav__item"></li>
+
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="module-selenium.webdriver.common.webdriver">
+<span id="selenium-webdriver-common-webdriver"></span><h1 id="selenium-webdriver-common-selenium-webdriver-common-webdriver--page-root">selenium.webdriver.common.webdriver<a class="headerlink" href="#selenium-webdriver-common-selenium-webdriver-common-webdriver--page-root" title="Link to this heading">¶</a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#selenium.webdriver.common.webdriver.LocalWebDriver" title="selenium.webdriver.common.webdriver.LocalWebDriver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocalWebDriver</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Base class for local WebDrivers.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">selenium.webdriver.common.webdriver.</span></span><span class="sig-name descname"><span class="pre">LocalWebDriver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/webdriver.html#LocalWebDriver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver" title="Link to this definition">¶</a></dt>
+<dd><p>Base class for local WebDrivers.</p>
+<p>Create a new driver instance that issues commands using the WebDriver protocol.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>command_executor: Either a string representing the URL of the remote</dt><dd><p>server or a custom remote_connection.RemoteConnection object.
+Defaults to ‘<a class="reference external" href="http://127.0.0.1:4444/wd/hub">http://127.0.0.1:4444/wd/hub</a>’.</p>
+</dd>
+<dt>keep_alive: (Deprecated) Whether to configure</dt><dd><p>remote_connection.RemoteConnection to use HTTP keep-alive.
+Defaults to True.</p>
+</dd>
+<dt>file_detector: Pass a custom file detector object during</dt><dd><p>instantiation. If None, the default LocalFileDetector() will be
+used.</p>
+</dd>
+</dl>
+<p>options: Instance of a driver options.Options class.
+locator_converter: Custom locator converter to use. Defaults to None.
+web_element_cls: Custom class to use for web elements. Defaults to</p>
+<blockquote>
+<div><p>WebElement.</p>
+</div></blockquote>
+<p>client_config: Custom client configuration to use. Defaults to None.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.quit">
+<span class="sig-name descname"><span class="pre">quit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/selenium/webdriver/common/webdriver.html#LocalWebDriver.quit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.quit" title="Link to this definition">¶</a></dt>
+<dd><p>Closes the browser and shuts down the driver executable.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.download_file">
+<span class="sig-name descname"><span class="pre">download_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/webdriver.html#LocalWebDriver.download_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.download_file" title="Link to this definition">¶</a></dt>
+<dd><p>Only implemented in RemoteWebDriver.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_downloadable_files">
+<span class="sig-name descname"><span class="pre">get_downloadable_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/webdriver.html#LocalWebDriver.get_downloadable_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_downloadable_files" title="Link to this definition">¶</a></dt>
+<dd><p>Only implemented in RemoteWebDriver.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.delete_downloadable_files">
+<span class="sig-name descname"><span class="pre">delete_downloadable_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/webdriver.html#LocalWebDriver.delete_downloadable_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.delete_downloadable_files" title="Link to this definition">¶</a></dt>
+<dd><p>Only implemented in RemoteWebDriver.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.add_cookie">
+<span class="sig-name descname"><span class="pre">add_cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cookie_dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.add_cookie" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a cookie to your current session.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>cookie_dict: A dictionary object, with required keys - “name” and</dt><dd><p>“value”; Optional keys - “path”, “domain”, “secure”, “httpOnly”,
+“expiry”, “sameSite”.</p>
+</dd>
+</dl>
+</dd>
+<dt>Examples:</dt><dd><p><cite>driver.add_cookie({“name”: “foo”, “value”: “bar”})</cite>
+<cite>driver.add_cookie({“name”: “foo”, “value”: “bar”, “path”: “/”})</cite>
+<cite>driver.add_cookie({“name”: “foo”, “value”: “bar”, “path”: “/”, “secure”: True})</cite>
+<cite>driver.add_cookie({“name”: “foo”, “value”: “bar”, “sameSite”: “Strict”})</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.add_credential">
+<span class="sig-name descname"><span class="pre">add_credential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credential</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential" title="selenium.webdriver.common.virtual_authenticator.Credential"><span class="pre">Credential</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.add_credential" title="Link to this definition">¶</a></dt>
+<dd><p>Injects a credential into the authenticator.</p>
+<dl>
+<dt>Example:</dt><dd><p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
+from selenium.webdriver.common.credential import Credential</p>
+<p>credential = Credential(id=”<a class="reference external" href="mailto:user%40example.com">user<span>@</span>example<span>.</span>com</a>”, password=”aPassword”)
+driver.add_credential(credential)
+<a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.add_virtual_authenticator">
+<span class="sig-name descname"><span class="pre">add_virtual_authenticator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions" title="selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions"><span class="pre">VirtualAuthenticatorOptions</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.add_virtual_authenticator" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a virtual authenticator with the given options.</p>
+<dl>
+<dt>Example:</dt><dd><p><a href="#id7"><span class="problematic" id="id8">``</span></a>`
+from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions</p>
+<p>options = VirtualAuthenticatorOptions(protocol=”u2f”, transport=”usb”, device_id=”myDevice123”)
+driver.add_virtual_authenticator(options)
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.back">
+<span class="sig-name descname"><span class="pre">back</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.back" title="Link to this definition">¶</a></dt>
+<dd><p>Goes one step backward in the browser history.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.bidi_connection">
+<span class="sig-name descname"><span class="pre">bidi_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.bidi_connection" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.browser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">browser</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browser.html#selenium.webdriver.common.bidi.browser.Browser" title="selenium.webdriver.common.bidi.browser.Browser"><span class="pre">Browser</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.browser" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a browser module object for BiDi browser commands.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>An object containing access to BiDi browser commands.</p>
+</dd>
+<dt>Examples:</dt><dd><p><cite>user_context = driver.browser.create_user_context()</cite>
+<cite>user_contexts = driver.browser.get_user_contexts()</cite>
+<cite>client_windows = driver.browser.get_client_windows()</cite>
+<cite>driver.browser.remove_user_context(user_context)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.browsing_context">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">browsing_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.browsing_context.html#selenium.webdriver.common.bidi.browsing_context.BrowsingContext" title="selenium.webdriver.common.bidi.browsing_context.BrowsingContext"><span class="pre">BrowsingContext</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.browsing_context" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a browsing context module object for BiDi browsing context commands.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>An object containing access to BiDi browsing context commands.</p>
+</dd>
+<dt>Examples:</dt><dd><p><cite>context_id = driver.browsing_context.create(type=”tab”)</cite>
+<cite>driver.browsing_context.navigate(context=context_id, url=”https://www.selenium.dev”)</cite>
+<cite>driver.browsing_context.capture_screenshot(context=context_id)</cite>
+<cite>driver.browsing_context.close(context_id)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.capabilities">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">capabilities</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.capabilities" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the drivers current capabilities being used.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.close" title="Link to this definition">¶</a></dt>
+<dd><p>Closes the current window.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.create_web_element">
+<span class="sig-name descname"><span class="pre">create_web_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.create_web_element" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a web element with the specified <cite>element_id</cite>.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.current_url">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.current_url" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the URL of the current page.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.current_window_handle">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_window_handle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.current_window_handle" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the handle of the current window.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.delete_all_cookies">
+<span class="sig-name descname"><span class="pre">delete_all_cookies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.delete_all_cookies" title="Link to this definition">¶</a></dt>
+<dd><p>Delete all cookies in the scope of the session.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.delete_cookie">
+<span class="sig-name descname"><span class="pre">delete_cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.delete_cookie" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a single cookie with the given name (case-sensitive).</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>ValueError if the name is empty or whitespace.</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.delete_cookie(“my_cookie”)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.dialog">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dialog</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_fedcm/selenium.webdriver.common.fedcm.dialog.html#selenium.webdriver.common.fedcm.dialog.Dialog" title="selenium.webdriver.common.fedcm.dialog.Dialog"><span class="pre">Dialog</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.dialog" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the FedCM dialog object for interaction.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.emulation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">emulation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.emulation.html#selenium.webdriver.common.bidi.emulation.Emulation" title="selenium.webdriver.common.bidi.emulation.Emulation"><span class="pre">Emulation</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.emulation" title="Link to this definition">¶</a></dt>
+<dd><p>Get an emulation module object for BiDi emulation commands.</p>
+<dl>
+<dt>Returns:</dt><dd><p>An object containing access to BiDi emulation commands.</p>
+</dd>
+<dt>Examples:</dt><dd><p><a href="#id13"><span class="problematic" id="id14">``</span></a>`
+from selenium.webdriver.common.bidi.emulation import GeolocationCoordinates</p>
+<p>coordinates = GeolocationCoordinates(37.7749, -122.4194)
+driver.emulation.set_geolocation_override(coordinates=coordinates, contexts=[context_id])
+<a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver_command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.execute" title="Link to this definition">¶</a></dt>
+<dd><p>Sends a command to be executed by a command.CommandExecutor.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>driver_command: The name of the command to execute as a string.
+params: A dictionary of named parameters to send with the command.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The command’s JSON response loaded into a dictionary object.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.execute_async_script">
+<span class="sig-name descname"><span class="pre">execute_async_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.execute_async_script" title="Link to this definition">¶</a></dt>
+<dd><p>Asynchronously Executes JavaScript in the current window/frame.</p>
+<dl>
+<dt>Args:</dt><dd><p>script: The javascript to execute.
+<a href="#id19"><span class="problematic" id="id20">*</span></a>args: Any applicable arguments for your JavaScript.</p>
+</dd>
+<dt>Example:</dt><dd><p><a href="#id21"><span class="problematic" id="id22">``</span></a>`
+script = “var callback = arguments[arguments.length - 1]; “</p>
+<blockquote>
+<div><p>“window.setTimeout(function(){ callback(‘timeout’) }, 3000);”</p>
+</div></blockquote>
+<p>driver.execute_async_script(script)
+<a href="#id23"><span class="problematic" id="id24">``</span></a><a href="#id25"><span class="problematic" id="id26">`</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.execute_cdp_cmd">
+<span class="sig-name descname"><span class="pre">execute_cdp_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmd_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.execute_cdp_cmd" title="Link to this definition">¶</a></dt>
+<dd><p>Execute Chrome Devtools Protocol command and get returned result.</p>
+<dl class="simple">
+<dt>The command and command args should follow chrome devtools protocol domains/commands:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://chromedevtools.github.io/devtools-protocol/">https://chromedevtools.github.io/devtools-protocol/</a></p></li>
+</ul>
+</dd>
+<dt>Args:</dt><dd><p>cmd: Command name.
+cmd_args: Command args. Empty dict {} if there is no command args.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A dict, empty dict {} if there is no result to return. To
+getResponseBody: {‘base64Encoded’: False, ‘body’: ‘response body
+string’}</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.execute_cdp_cmd(“Network.getResponseBody”, {“requestId”: requestId})</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.execute_script">
+<span class="sig-name descname"><span class="pre">execute_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.execute_script" title="Link to this definition">¶</a></dt>
+<dd><p>Synchronously Executes JavaScript in the current window/frame.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>script: The javascript to execute.
+<a href="#id27"><span class="problematic" id="id28">*</span></a>args: Any applicable arguments for your JavaScript.</p>
+</dd>
+<dt>Example:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">id</span> <span class="pre">=</span> <span class="pre">"username"</span>
+<span class="pre">value</span> <span class="pre">=</span> <span class="pre">"test_user"</span>
+<span class="pre">driver.execute_script("document.getElementById(arguments[0]).value</span> <span class="pre">=</span> <span class="pre">arguments[1];",</span> <span class="pre">id,</span> <span class="pre">value)</span>
+<span class="pre">`</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.fedcm">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fedcm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.fedcm.html#selenium.webdriver.remote.fedcm.FedCM" title="selenium.webdriver.remote.fedcm.FedCM"><span class="pre">FedCM</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.fedcm" title="Link to this definition">¶</a></dt>
+<dd><p>Get the Federated Credential Management (FedCM) dialog commands.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>An object providing access to all Federated Credential Management
+(FedCM) dialog commands.</p>
+</dd>
+<dt>Examples:</dt><dd><p><cite>driver.fedcm.title</cite>
+<cite>driver.fedcm.subtitle</cite>
+<cite>driver.fedcm.dialog_type</cite>
+<cite>driver.fedcm.account_list</cite>
+<cite>driver.fedcm.select_account(0)</cite>
+<cite>driver.fedcm.accept()</cite>
+<cite>driver.fedcm.dismiss()</cite>
+<cite>driver.fedcm.enable_delay()</cite>
+<cite>driver.fedcm.disable_delay()</cite>
+<cite>driver.fedcm.reset_cooldown()</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.fedcm_dialog">
+<span class="sig-name descname"><span class="pre">fedcm_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignored_exceptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.fedcm_dialog" title="Link to this definition">¶</a></dt>
+<dd><p>Waits for and returns the FedCM dialog.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>timeout: How long to wait for the dialog.
+poll_frequency: How frequently to poll.
+ignored_exceptions: Exceptions to ignore while waiting.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The FedCM dialog object if found.</p>
+</dd>
+<dt>Raises:</dt><dd><p>TimeoutException: If dialog doesn’t appear.
+WebDriverException: If FedCM not supported.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.file_detector">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file_detector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.FileDetector" title="selenium.webdriver.remote.file_detector.FileDetector"><span class="pre">FileDetector</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.file_detector" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.file_detector_context">
+<span class="sig-name descname"><span class="pre">file_detector_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_detector_class</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.file_detector_context" title="Link to this definition">¶</a></dt>
+<dd><p>Override the current file detector temporarily within a limited context.</p>
+<p>Ensures the original file detector is set after exiting the context.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>file_detector_class: Class of the desired file detector. If the</dt><dd><p>class is different from the current file_detector, then the
+class is instantiated with args and kwargs and used as a file
+detector during the duration of the context manager.</p>
+</dd>
+<dt><a href="#id29"><span class="problematic" id="id30">*</span></a>args: Optional arguments that get passed to the file detector class</dt><dd><p>during instantiation.</p>
+</dd>
+</dl>
+<p><a href="#id31"><span class="problematic" id="id32">**</span></a>kwargs: Keyword arguments, passed the same way as args.</p>
+</dd>
+<dt>Example:</dt><dd><p><a href="#id33"><span class="problematic" id="id34">``</span></a>`
+with webdriver.file_detector_context(UselessFileDetector):</p>
+<blockquote>
+<div><p>someinput.send_keys(“/etc/hosts”)</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.find_element">
+<span class="sig-name descname"><span class="pre">find_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_support/selenium.webdriver.support.relative_locator.html#selenium.webdriver.support.relative_locator.RelativeBy" title="selenium.webdriver.support.relative_locator.RelativeBy"><span class="pre">RelativeBy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.find_element" title="Link to this definition">¶</a></dt>
+<dd><p>Find an element given a By strategy and locator.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>by: The locating strategy to use. Default is <cite>By.ID</cite>. Supported</dt><dd><p>values include: By.ID, By.NAME, By.XPATH, By.CSS_SELECTOR,
+By.CLASS_NAME, By.TAG_NAME, By.LINK_TEXT, By.PARTIAL_LINK_TEXT,
+or RelativeBy.</p>
+</dd>
+</dl>
+<p>value: The locator value to use with the specified <cite>by</cite> strategy.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The first matching WebElement found on the page.</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>element = driver.find_element(By.ID, ‘foo’)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.find_elements">
+<span class="sig-name descname"><span class="pre">find_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_support/selenium.webdriver.support.relative_locator.html#selenium.webdriver.support.relative_locator.RelativeBy" title="selenium.webdriver.support.relative_locator.RelativeBy"><span class="pre">RelativeBy</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement"><span class="pre">WebElement</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.find_elements" title="Link to this definition">¶</a></dt>
+<dd><p>Find elements given a By strategy and locator.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>by: The locating strategy to use. Default is <cite>By.ID</cite>. Supported</dt><dd><p>values include: By.ID, By.NAME, By.XPATH, By.CSS_SELECTOR,
+By.CLASS_NAME, By.TAG_NAME, By.LINK_TEXT, By.PARTIAL_LINK_TEXT,
+or RelativeBy.</p>
+</dd>
+</dl>
+<p>value: The locator value to use with the specified <cite>by</cite> strategy.</p>
+</dd>
+<dt>Returns:</dt><dd><p>List of WebElements matching locator strategy found on the page.</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>element = driver.find_elements(By.ID, ‘foo’)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.forward" title="Link to this definition">¶</a></dt>
+<dd><p>Goes one step forward in the browser history.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.fullscreen_window">
+<span class="sig-name descname"><span class="pre">fullscreen_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.fullscreen_window" title="Link to this definition">¶</a></dt>
+<dd><p>Invokes the window manager-specific ‘full screen’ operation.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get" title="Link to this definition">¶</a></dt>
+<dd><p>Navigate the browser to the specified URL.</p>
+<p>The method does not return until the page is fully loaded (i.e. the
+onload event has fired) in the current window or tab.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>url: The URL to be opened by the browser. Must include the protocol</dt><dd><p>(e.g., <a class="reference external" href="http://">http://</a>, <a class="reference external" href="https://">https://</a>).</p>
+</dd>
+</dl>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.get(“https://example.com”)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_cookie">
+<span class="sig-name descname"><span class="pre">get_cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_cookie" title="Link to this definition">¶</a></dt>
+<dd><p>Get a single cookie by name (case-sensitive,).</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>A cookie dictionary or None if not found.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError if the name is empty or whitespace.</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>cookie = driver.get_cookie(“my_cookie”)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_cookies">
+<span class="sig-name descname"><span class="pre">get_cookies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_cookies" title="Link to this definition">¶</a></dt>
+<dd><p>Get all cookies visible to the current WebDriver instance.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>A list of dictionaries, corresponding to cookies visible in the
+current session.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_credentials">
+<span class="sig-name descname"><span class="pre">get_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential" title="selenium.webdriver.common.virtual_authenticator.Credential"><span class="pre">Credential</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_credentials" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the list of credentials owned by the authenticator.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_pinned_scripts">
+<span class="sig-name descname"><span class="pre">get_pinned_scripts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_pinned_scripts" title="Link to this definition">¶</a></dt>
+<dd><p>Return a list of all pinned scripts.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>pinned_scripts = driver.get_pinned_scripts()</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_base64">
+<span class="sig-name descname"><span class="pre">get_screenshot_as_base64</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_base64" title="Link to this definition">¶</a></dt>
+<dd><p>Get a base64-encoded screenshot of the current window.</p>
+<p>This encoding is useful for embedding screenshots in HTML.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>driver.get_screenshot_as_base64()</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_file">
+<span class="sig-name descname"><span class="pre">get_screenshot_as_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_file" title="Link to this definition">¶</a></dt>
+<dd><p>Save a screenshot of the current window to a PNG image file.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>False if there is any IOError, else returns True. Use full paths in your filename.</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>filename: The full path you wish to save your screenshot to. This</dt><dd><p>should end with a <cite>.png</cite> extension.</p>
+</dd>
+</dl>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.get_screenshot_as_file(“./screenshots/foo.png”)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_png">
+<span class="sig-name descname"><span class="pre">get_screenshot_as_png</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_screenshot_as_png" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the screenshot of the current window as a binary data.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>driver.get_screenshot_as_png()</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_window_position">
+<span class="sig-name descname"><span class="pre">get_window_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">windowHandle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'current'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_position" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the x,y position of the current window.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>driver.get_window_position()</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_window_rect">
+<span class="sig-name descname"><span class="pre">get_window_rect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_rect" title="Link to this definition">¶</a></dt>
+<dd><p>Get the window’s position and size.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>x, y coordinates and height and width of the current window.</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.get_window_rect()</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.get_window_size">
+<span class="sig-name descname"><span class="pre">get_window_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">windowHandle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'current'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.get_window_size" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the width and height of the current window.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>driver.get_window_size()</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.implicitly_wait">
+<span class="sig-name descname"><span class="pre">implicitly_wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_to_wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.implicitly_wait" title="Link to this definition">¶</a></dt>
+<dd><p>Set a sticky implicit timeout for element location and command completion.</p>
+<p>This method sets a timeout that applies to all element location strategies
+for the duration of the session. It only needs to be called once per session.
+To set the timeout for asynchronous script execution, see set_script_timeout.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>time_to_wait: Amount of time to wait (in seconds).</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.implicitly_wait(30)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.input">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">input</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.input.html#selenium.webdriver.common.bidi.input.Input" title="selenium.webdriver.common.bidi.input.Input"><span class="pre">Input</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.input" title="Link to this definition">¶</a></dt>
+<dd><p>Get an input module object for BiDi input commands.</p>
+<dl>
+<dt>Returns:</dt><dd><p>An object containing access to BiDi input commands.</p>
+</dd>
+<dt>Examples:</dt><dd><p><a href="#id35"><span class="problematic" id="id36">``</span></a>`
+from selenium.webdriver.common.bidi.input import KeySourceActions, KeyDownAction, KeyUpAction</p>
+<p>actions = KeySourceActions(id=”keyboard”, actions=[KeyDownAction(value=”a”), KeyUpAction(value=”a”)])
+driver.input.perform_actions(driver.current_window_handle, [actions])
+driver.input.release_actions(driver.current_window_handle)
+<a href="#id37"><span class="problematic" id="id38">``</span></a><a href="#id39"><span class="problematic" id="id40">`</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.maximize_window">
+<span class="sig-name descname"><span class="pre">maximize_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.maximize_window" title="Link to this definition">¶</a></dt>
+<dd><p>Maximizes the current window that webdriver is using.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.minimize_window">
+<span class="sig-name descname"><span class="pre">minimize_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.minimize_window" title="Link to this definition">¶</a></dt>
+<dd><p>Invokes the window manager-specific ‘minimize’ operation.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.mobile">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mobile</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.mobile.html#selenium.webdriver.remote.mobile.Mobile" title="selenium.webdriver.remote.mobile.Mobile"><span class="pre">Mobile</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.mobile" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.name" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the name of the underlying browser for this instance.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.network">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">network</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network" title="selenium.webdriver.common.bidi.network.Network"><span class="pre">Network</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.network" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.orientation">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orientation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.orientation" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the current orientation of the device.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>orientation = driver.orientation</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.page_source">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page_source</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.page_source" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the source of the current page.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.permissions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">permissions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.permissions.html#selenium.webdriver.common.bidi.permissions.Permissions" title="selenium.webdriver.common.bidi.permissions.Permissions"><span class="pre">Permissions</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.permissions" title="Link to this definition">¶</a></dt>
+<dd><p>Get a permissions module object for BiDi permissions commands.</p>
+<dl>
+<dt>Returns:</dt><dd><p>An object containing access to BiDi permissions commands.</p>
+</dd>
+<dt>Examples:</dt><dd><p><a href="#id41"><span class="problematic" id="id42">``</span></a>`
+from selenium.webdriver.common.bidi.permissions import PermissionDescriptor, PermissionState</p>
+<p>descriptor = PermissionDescriptor(“geolocation”)
+driver.permissions.set_permission(descriptor, PermissionState.GRANTED, “<a class="reference external" href="https://example.com">https://example.com</a>”)
+<a href="#id43"><span class="problematic" id="id44">``</span></a><a href="#id45"><span class="problematic" id="id46">`</span></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.pin_script">
+<span class="sig-name descname"><span class="pre">pin_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.script_key.html#selenium.webdriver.remote.script_key.ScriptKey" title="selenium.webdriver.remote.script_key.ScriptKey"><span class="pre">ScriptKey</span></a></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.pin_script" title="Link to this definition">¶</a></dt>
+<dd><p>Store a JavaScript script by a unique hashable ID for later execution.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>script = “return document.getElementById(‘foo’).value”</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.print_page">
+<span class="sig-name descname"><span class="pre">print_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">print_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="selenium.webdriver.common.print_page_options.html#selenium.webdriver.common.print_page_options.PrintOptions" title="selenium.webdriver.common.print_page_options.PrintOptions"><span class="pre">PrintOptions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.print_page" title="Link to this definition">¶</a></dt>
+<dd><p>Takes PDF of the current page.</p>
+<p>The driver makes a best effort to return a PDF based on the
+provided parameters.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.refresh" title="Link to this definition">¶</a></dt>
+<dd><p>Refreshes the current page.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.remove_all_credentials">
+<span class="sig-name descname"><span class="pre">remove_all_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.remove_all_credentials" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all credentials from the authenticator.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.remove_credential">
+<span class="sig-name descname"><span class="pre">remove_credential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credential_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytearray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.remove_credential" title="Link to this definition">¶</a></dt>
+<dd><p>Removes a credential from the authenticator.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>credential_id = “user@example.com”</cite>
+<cite>driver.remove_credential(credential_id)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.remove_virtual_authenticator">
+<span class="sig-name descname"><span class="pre">remove_virtual_authenticator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.remove_virtual_authenticator" title="Link to this definition">¶</a></dt>
+<dd><p>Removes a previously added virtual authenticator.</p>
+<p>The authenticator is no longer valid after removal, so no
+methods may be called.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.save_screenshot">
+<span class="sig-name descname"><span class="pre">save_screenshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.save_screenshot" title="Link to this definition">¶</a></dt>
+<dd><p>Save a screenshot of the current window to a PNG image file.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>False if there is any IOError, else returns True. Use full paths in your filename.</p>
+</dd>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>filename: The full path you wish to save your screenshot to. This</dt><dd><p>should end with a <cite>.png</cite> extension.</p>
+</dd>
+</dl>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.save_screenshot(“./screenshots/foo.png”)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.script">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.script.html#selenium.webdriver.common.bidi.script.Script" title="selenium.webdriver.common.bidi.script.Script"><span class="pre">Script</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.script" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.set_page_load_timeout">
+<span class="sig-name descname"><span class="pre">set_page_load_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_to_wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_page_load_timeout" title="Link to this definition">¶</a></dt>
+<dd><p>Set the timeout for page load completion.</p>
+<p>This specifies how long to wait for a page load to complete before
+throwing an error.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>time_to_wait: The amount of time to wait (in seconds).</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.set_page_load_timeout(30)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.set_script_timeout">
+<span class="sig-name descname"><span class="pre">set_script_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_to_wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_script_timeout" title="Link to this definition">¶</a></dt>
+<dd><p>Set the timeout for asynchronous script execution.</p>
+<p>This timeout specifies how long a script can run during an
+execute_async_script call before throwing an error.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>time_to_wait: The amount of time to wait (in seconds).</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.set_script_timeout(30)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.set_user_verified">
+<span class="sig-name descname"><span class="pre">set_user_verified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verified</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_user_verified" title="Link to this definition">¶</a></dt>
+<dd><p>Set whether the authenticator will simulate success or failure on user verification.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>verified: True if the authenticator will pass user verification,</dt><dd><p>False otherwise.</p>
+</dd>
+</dl>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.set_user_verified(True)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.set_window_position">
+<span class="sig-name descname"><span class="pre">set_window_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowHandle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'current'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_window_position" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the x,y position of the current window.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>x: The x-coordinate in pixels to set the window position.
+y: The y-coordinate in pixels to set the window position.
+windowHandle: The handle of the window to reposition. Default is “current”.</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.set_window_position(0, 0)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.set_window_rect">
+<span class="sig-name descname"><span class="pre">set_window_rect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_window_rect" title="Link to this definition">¶</a></dt>
+<dd><p>Set the window’s position and size.</p>
+<p>Sets the x, y coordinates and height and width of the current window.
+This method is only supported for W3C compatible browsers; other browsers
+should use <cite>set_window_position</cite> and <cite>set_window_size</cite>.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>driver.set_window_rect(x=10, y=10)</cite>
+<cite>driver.set_window_rect(width=100, height=200)</cite>
+<cite>driver.set_window_rect(x=10, y=10, width=100, height=200)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.set_window_size">
+<span class="sig-name descname"><span class="pre">set_window_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowHandle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'current'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.set_window_size" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the width and height of the current window.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>width: The width in pixels to set the window to.
+height: The height in pixels to set the window to.
+windowHandle: The handle of the window to resize. Default is “current”.</p>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.set_window_size(800, 600)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.start_client">
+<span class="sig-name descname"><span class="pre">start_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.start_client" title="Link to this definition">¶</a></dt>
+<dd><p>Called before starting a new session.</p>
+<p>This method may be overridden to define custom startup behavior.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.start_devtools">
+<span class="sig-name descname"><span class="pre">start_devtools</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.websocket_connection.html#selenium.webdriver.remote.websocket_connection.WebSocketConnection" title="selenium.webdriver.remote.websocket_connection.WebSocketConnection"><span class="pre">WebSocketConnection</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.start_devtools" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.start_session">
+<span class="sig-name descname"><span class="pre">start_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capabilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.start_session" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new session with the desired capabilities.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>capabilities: A capabilities dict to start the session with.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.stop_client">
+<span class="sig-name descname"><span class="pre">stop_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.stop_client" title="Link to this definition">¶</a></dt>
+<dd><p>Called after executing a quit command.</p>
+<p>This method may be overridden to define custom shutdown
+behavior.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.storage">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">storage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.Storage" title="selenium.webdriver.common.bidi.storage.Storage"><span class="pre">Storage</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.storage" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a storage module object for BiDi storage commands.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>An object containing access to BiDi storage commands.</p>
+</dd>
+<dt>Examples:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">cookie_filter</span> <span class="pre">=</span> <span class="pre">CookieFilter(name="example")</span>
+<span class="pre">result</span> <span class="pre">=</span> <span class="pre">driver.storage.get_cookies(filter=cookie_filter)</span>
+<span class="pre">cookie=PartialCookie("name",</span> <span class="pre">BytesValue(BytesValue.TYPE_STRING,</span> <span class="pre">"value")</span>
+<span class="pre">driver.storage.set_cookie(cookie=cookie,</span> <span class="pre">"domain"))</span>
+<span class="pre">cookie_filter=CookieFilter(name="example")</span>
+<span class="pre">driver.storage.delete_cookies(filter=cookie_filter)</span>
+<span class="pre">`</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.supports_fedcm">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_fedcm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.supports_fedcm" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether the browser supports FedCM capabilities.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.switch_to">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">switch_to</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo" title="selenium.webdriver.remote.switch_to.SwitchTo"><span class="pre">SwitchTo</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.switch_to" title="Link to this definition">¶</a></dt>
+<dd><p>Return an object containing all options to switch focus into.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>An object containing all options to switch focus into.</p>
+</dd>
+<dt>Examples:</dt><dd><p><cite>element = driver.switch_to.active_element</cite>
+<cite>alert = driver.switch_to.alert</cite>
+<cite>driver.switch_to.default_content()</cite>
+<cite>driver.switch_to.frame(“frame_name”)</cite>
+<cite>driver.switch_to.frame(1)</cite>
+<cite>driver.switch_to.frame(driver.find_elements(By.TAG_NAME, “iframe”)[0])</cite>
+<cite>driver.switch_to.parent_frame()</cite>
+<cite>driver.switch_to.window(“main”)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.timeouts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timeouts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="selenium.webdriver.common.timeouts.html#selenium.webdriver.common.timeouts.Timeouts" title="selenium.webdriver.common.timeouts.Timeouts"><span class="pre">Timeouts</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.timeouts" title="Link to this definition">¶</a></dt>
+<dd><p>Get all the timeouts that have been set on the current session.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>A named tuple with the following fields:</dt><dd><ul class="simple">
+<li><p>implicit_wait: The time to wait for elements to be found.</p></li>
+<li><p>page_load: The time to wait for a page to load.</p></li>
+<li><p>script: The time to wait for scripts to execute.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Example:</dt><dd><p><cite>driver.timeouts</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.title">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.title" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the title of the current page.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">element</span> <span class="pre">=</span> <span class="pre">driver.find_element(By.ID,</span> <span class="pre">"foo")</span>
+<span class="pre">print(element.title())</span>
+<span class="pre">`</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.unpin">
+<span class="sig-name descname"><span class="pre">unpin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../selenium_webdriver_remote/selenium.webdriver.remote.script_key.html#selenium.webdriver.remote.script_key.ScriptKey" title="selenium.webdriver.remote.script_key.ScriptKey"><span class="pre">ScriptKey</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.unpin" title="Link to this definition">¶</a></dt>
+<dd><p>Remove a pinned script from storage.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p><cite>driver.unpin(script_key)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.virtual_authenticator_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">virtual_authenticator_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.virtual_authenticator_id" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the id of the virtual authenticator.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.webextension">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">webextension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.webextension.html#selenium.webdriver.common.bidi.webextension.WebExtension" title="selenium.webdriver.common.bidi.webextension.WebExtension"><span class="pre">WebExtension</span></a></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.webextension" title="Link to this definition">¶</a></dt>
+<dd><p>Get a webextension module object for BiDi webextension commands.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>An object containing access to BiDi webextension commands.</p>
+</dd>
+<dt>Examples:</dt><dd><p><cite>extension_path = “/path/to/extension”</cite>
+<cite>extension_result = driver.webextension.install(path=extension_path)</cite>
+<cite>driver.webextension.uninstall(extension_result)</cite></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="selenium.webdriver.common.webdriver.LocalWebDriver.window_handles">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">window_handles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#selenium.webdriver.common.webdriver.LocalWebDriver.window_handles" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the handles of all windows within the current session.</p>
+</dd></dl>
+</dd></dl>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

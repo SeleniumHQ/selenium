@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::LocalDriver
   
-    &mdash; Documentation by YARD 0.9.37
+    &mdash; Documentation by YARD 0.9.38
   
 </title>
 
@@ -147,6 +147,28 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#service_url-instance_method" title="#service_url (instance method)">#<strong>service_url</strong>(service)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -201,7 +223,12 @@
 28
 29
 30
-31</pre>
+31
+32
+33
+34
+35
+36</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/local_driver.rb', line 23</span>
@@ -213,7 +240,12 @@
   <span class='id identifier rubyid_caps'>caps</span> <span class='op'>=</span> <span class='id identifier rubyid_process_options'>process_options</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='id identifier rubyid_service_url'>service_url</span><span class='lparen'>(</span><span class='id identifier rubyid_service'>service</span><span class='rparen'>)</span>
 
-  <span class='lbracket'>[</span><span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='rbracket'>]</span>
+  <span class='kw'>begin</span>
+    <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
+  <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span>
+    <span class='ivar'>@service_manager</span><span class='op'>&amp;.</span><span class='id identifier rubyid_stop'>stop</span>
+    <span class='id identifier rubyid_raise'>raise</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -235,16 +267,6 @@
       <pre class="lines">
 
 
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
 43
 44
 45
@@ -252,10 +274,20 @@
 47
 48
 49
-50</pre>
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/local_driver.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/local_driver.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_process_options'>process_options</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_default_options'>default_options</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_browser'>browser</span><span class='rparen'>)</span>
@@ -280,14 +312,46 @@
 </table>
 </div>
     
+      <div class="method_details ">
+  <h3 class="signature " id="service_url-instance_method">
+  
+    #<strong>service_url</strong>(service)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+38
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/local_driver.rb', line 38</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_service_url'>service_url</span><span class='lparen'>(</span><span class='id identifier rubyid_service'>service</span><span class='rparen'>)</span>
+  <span class='ivar'>@service_manager</span> <span class='op'>=</span> <span class='id identifier rubyid_service'>service</span><span class='period'>.</span><span class='id identifier rubyid_launch'>launch</span>
+  <span class='ivar'>@service_manager</span><span class='period'>.</span><span class='id identifier rubyid_uri'>uri</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  6 22:51:15 2025 by
+  Generated on Sun Jan 18 18:47:56 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.37 (ruby-3.2.8).
+  0.9.38 (ruby-3.2.9).
 </div>
 
     </div>

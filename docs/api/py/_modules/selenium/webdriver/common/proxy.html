@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.proxy &#8212; Selenium 4.39.0 documentation</title>
+    <title>selenium.webdriver.common.proxy &#8212; Selenium 4.40.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
+    <script src="../../../../_static/documentation_options.js?v=cb21b19a"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.40.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.proxy </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
+       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
   </label>
   
 
@@ -210,8 +210,6 @@
 <span class="c1"># under the License.</span>
 
 <span class="sd">"""The Proxy implementation."""</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 
 <div class="viewcode-block" id="ProxyTypeFactory">
@@ -272,14 +270,6 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"autodetect"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Autodetect proxy value needs to be a boolean"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"ftpProxy"</span><span class="p">:</span>
-            <span class="c1"># TODO: Remove ftpProxy in future version and remove deprecation warning</span>
-            <span class="c1"># https://github.com/SeleniumHQ/selenium/issues/15905</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">"ftpProxy is deprecated and will be removed in the future"</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="p">)</span>
         <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"_verify_proxy_type_compatibility"</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"proxyType"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -292,7 +282,6 @@
 
     <span class="n">proxyType</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">UNSPECIFIED</span>
     <span class="n">autodetect</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">ftpProxy</span> <span class="o">=</span> <span class="s2">""</span>  <span class="c1"># TODO: Remove ftpProxy in future version and remove deprecation warning</span>
     <span class="n">httpProxy</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">noProxy</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">proxyAutoconfigUrl</span> <span class="o">=</span> <span class="s2">""</span>
@@ -305,10 +294,6 @@
     <span class="c1"># create descriptor type objects</span>
     <span class="n">auto_detect</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">"autodetect"</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""Proxy autodetection setting (boolean)."""</span>
-
-    <span class="c1"># TODO: Remove ftpProxy in future version and remove deprecation warning</span>
-    <span class="n">ftp_proxy</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">"ftpProxy"</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">"""FTP proxy address (deprecated)."""</span>
 
     <span class="n">http_proxy</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">"httpProxy"</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""HTTP proxy address."""</span>
@@ -334,42 +319,36 @@
     <span class="n">socks_version</span> <span class="o">=</span> <span class="n">_ProxyTypeDescriptor</span><span class="p">(</span><span class="s2">"socksVersion"</span><span class="p">,</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">"""SOCKS proxy version."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Creates a new Proxy.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            raw: Raw proxy data. If None, default class values are used.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">raw</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">"proxyType"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"proxyType"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">proxy_type</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s2">"proxyType"</span><span class="p">])</span>
-            <span class="c1"># TODO: Remove ftpProxy in future version and remove deprecation warning</span>
-            <span class="c1"># https://github.com/SeleniumHQ/selenium/issues/15905</span>
-            <span class="k">if</span> <span class="s2">"ftpProxy"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"ftpProxy"</span><span class="p">]:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="s2">"ftpProxy is deprecated and will be removed in the future"</span><span class="p">,</span>
-                    <span class="ne">DeprecationWarning</span><span class="p">,</span>
-                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ftp_proxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"ftpProxy"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"httpProxy"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"httpProxy"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">http_proxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"httpProxy"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"noProxy"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"noProxy"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">no_proxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"noProxy"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"proxyAutoconfigUrl"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"proxyAutoconfigUrl"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">proxy_autoconfig_url</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"proxyAutoconfigUrl"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"sslProxy"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"sslProxy"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"sslProxy"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"autodetect"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"autodetect"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">auto_detect</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"autodetect"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"socksProxy"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksProxy"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">socks_proxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksProxy"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"socksUsername"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksUsername"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">socks_username</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksUsername"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"socksPassword"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksPassword"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">socks_password</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksPassword"</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">"socksVersion"</span> <span class="ow">in</span> <span class="n">raw</span> <span class="ow">and</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksVersion"</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">socks_version</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksVersion"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"`raw` must be a dict, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"proxyType"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">proxy_type</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s2">"proxyType"</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"httpProxy"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">http_proxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"httpProxy"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"noProxy"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">no_proxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"noProxy"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"proxyAutoconfigUrl"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">proxy_autoconfig_url</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"proxyAutoconfigUrl"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sslProxy"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sslProxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"sslProxy"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"autodetect"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auto_detect</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"autodetect"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"socksProxy"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socks_proxy</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksProxy"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"socksUsername"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socks_username</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksUsername"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"socksPassword"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socks_password</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksPassword"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"socksVersion"</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socks_version</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"socksVersion"</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">proxy_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -396,10 +375,8 @@
 <a class="viewcode-back" href="../../../../selenium_webdriver_common/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy.to_capabilities">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">proxy_caps</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"proxyType"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span><span class="p">[</span><span class="s2">"string"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()}</span>
-        <span class="c1"># TODO: Remove ftpProxy in future version and remove deprecation warning</span>
         <span class="n">proxies</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s2">"autodetect"</span><span class="p">,</span>
-            <span class="s2">"ftpProxy"</span><span class="p">,</span>
             <span class="s2">"httpProxy"</span><span class="p">,</span>
             <span class="s2">"proxyAutoconfigUrl"</span><span class="p">,</span>
             <span class="s2">"sslProxy"</span><span class="p">,</span>
@@ -474,7 +451,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2009-2025 Software Freedom Conservancy.
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
               
           </div>
         </div>

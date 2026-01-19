@@ -102,7 +102,7 @@ Class WebElement  <a class="header-action link-secondary" title="View source" hr
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class WebElement : IWebElement, ISearchContext, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot</code></pre>
+    <pre><code class="lang-csharp hljs">public class WebElement : IWebElement, ISearchContext, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IEquatable&lt;IWebElement&gt;</code></pre>
   </div>
 
 
@@ -125,6 +125,7 @@ Class WebElement  <a class="header-action link-secondary" title="View source" hr
       <div><a class="xref" href="OpenQA.Selenium.IWrapsDriver.html">IWrapsDriver</a></div>
       <div><a class="xref" href="OpenQA.Selenium.ILocatable.html">ILocatable</a></div>
       <div><a class="xref" href="OpenQA.Selenium.ITakesScreenshot.html">ITakesScreenshot</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>&gt;</div>
     </dd>
   </dl>
 
@@ -812,12 +813,54 @@ behavior.</p>
 
   <a id="OpenQA_Selenium_WebElement_Equals_" data-uid="OpenQA.Selenium.WebElement.Equals*"></a>
 
+  <h3 id="OpenQA_Selenium_WebElement_Equals_OpenQA_Selenium_IWebElement_" data-uid="OpenQA.Selenium.WebElement.Equals(OpenQA.Selenium.IWebElement)">
+  Equals(IWebElement?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebElement.cs/#L670"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the current <a class="xref" href="OpenQA.Selenium.WebElement.html">WebElement</a> is equal to another <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(IWebElement? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a></dt>
+    <dd><p>An <a class="xref" href="OpenQA.Selenium.IWebElement.html">IWebElement</a> to compare with this <a class="xref" href="OpenQA.Selenium.WebElement.html">WebElement</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the current <a class="xref" href="OpenQA.Selenium.WebElement.html">WebElement</a> is equal to the <code class="paramref">other</code> parameter; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_WebElement_Equals_OpenQA_Selenium_IWebElement__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This method only returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">other</code> is or wraps a <a class="xref" href="OpenQA.Selenium.WebElement.html">WebElement</a>.</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_WebElement_Equals_" data-uid="OpenQA.Selenium.WebElement.Equals*"></a>
+
   <h3 id="OpenQA_Selenium_WebElement_Equals_System_Object_" data-uid="OpenQA.Selenium.WebElement.Equals(System.Object)">
   Equals(object?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebElement.cs/#L659"><i class="bi bi-code-slash"></i></a>
   </h3>
 
-  <div class="markdown level1 summary"><p>Compares if two elements are equal</p>
+  <div class="markdown level1 summary"><p>Indicates whether the current <a class="xref" href="OpenQA.Selenium.WebElement.html">WebElement</a> is equal to another object.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -828,14 +871,14 @@ behavior.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>obj</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
-    <dd><p>Object to compare against</p>
+    <dd><p>An object to compare with this <a class="xref" href="OpenQA.Selenium.WebElement.html">WebElement</a>.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p>A boolean if it is equal or not</p>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the current <a class="xref" href="OpenQA.Selenium.WebElement.html">WebElement</a> is equal to the other parameter; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
 </dd>
   </dl>
 
@@ -853,7 +896,7 @@ behavior.</p>
 
   <h3 id="OpenQA_Selenium_WebElement_Execute_System_String_System_Collections_Generic_Dictionary_System_String_System_Object__" data-uid="OpenQA.Selenium.WebElement.Execute(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
   Execute(string, Dictionary&lt;string, object&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebElement.cs/#L700"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/WebElement.cs/#L706"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Executes a command on this element using the specified parameters.</p>

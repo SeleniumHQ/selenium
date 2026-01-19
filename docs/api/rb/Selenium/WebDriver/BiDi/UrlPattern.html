@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::BiDi::UrlPattern
   
-    &mdash; Documentation by YARD 0.9.37
+    &mdash; Documentation by YARD 0.9.38
   
 </title>
 
@@ -62,7 +62,7 @@
       <div id="content"><h1>Module: Selenium::WebDriver::BiDi::UrlPattern
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 <div class="box_info">
   
@@ -83,7 +83,20 @@
   
 </div>
 
+<div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This module is part of a private API.</strong>
+  You should avoid using this module if possible, as it may be removed or be changed in the future.
+</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -112,7 +125,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -134,7 +147,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -156,7 +169,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -182,25 +195,38 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-28
-29
-30
-31
 32
 33
 34
 35
 36
-37</pre>
+37
+38
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/url_pattern.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/url_pattern.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_format_pattern'>format_pattern</span><span class='lparen'>(</span><span class='id identifier rubyid_url_patterns'>url_patterns</span><span class='comma'>,</span> <span class='id identifier rubyid_pattern_type'>pattern_type</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_pattern_type'>pattern_type</span>
@@ -226,16 +252,25 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-39
-40
-41
-42
 43
 44
 45
@@ -245,10 +280,14 @@
 49
 50
 51
-52</pre>
+52
+53
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/url_pattern.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/url_pattern.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_url_pattern'>to_url_pattern</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_url_patterns'>url_patterns</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_url_patterns'>url_patterns</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_url_pattern'>url_pattern</span><span class='op'>|</span>
@@ -278,23 +317,36 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-54
-55
-56
-57
 58
 59
 60
-61</pre>
+61
+62
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/url_pattern.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/network/url_pattern.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_url_string_pattern'>to_url_string_pattern</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_url_patterns'>url_patterns</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_url_patterns'>url_patterns</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_url_pattern'>url_pattern</span><span class='op'>|</span>
@@ -314,9 +366,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  6 22:51:15 2025 by
+  Generated on Sun Jan 18 18:47:56 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.37 (ruby-3.2.8).
+  0.9.38 (ruby-3.2.9).
 </div>
 
     </div>

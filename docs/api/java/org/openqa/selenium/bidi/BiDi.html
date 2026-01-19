@@ -109,7 +109,8 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.bidi.Connection)" class="member-name-link">BiDi</a><wbr>(<a href="Connection.html" title="class in org.openqa.selenium.bidi">Connection</a>&nbsp;connection)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.bidi.Connection,java.time.Duration)" class="member-name-link">BiDi</a><wbr>(<a href="Connection.html" title="class in org.openqa.selenium.bidi">Connection</a>&nbsp;connection,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -160,6 +161,10 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#send(org.openqa.selenium.bidi.Command)" class="member-name-link">send</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;X&gt;&nbsp;X</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#send(org.openqa.selenium.bidi.Command,java.time.Duration)" class="member-name-link">send</a><wbr>(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -178,9 +183,10 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.openqa.selenium.bidi.Connection)">
+<section class="detail" id="&lt;init&gt;(org.openqa.selenium.bidi.Connection,java.time.Duration)">
 <h3>BiDi</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">BiDi</span><wbr><span class="parameters">(<a href="Connection.html" title="class in org.openqa.selenium.bidi">Connection</a>&nbsp;connection)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">BiDi</span><wbr><span class="parameters">(<a href="Connection.html" title="class in org.openqa.selenium.bidi">Connection</a>&nbsp;connection,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</span></div>
 </section>
 </li>
 </ul>
@@ -213,6 +219,13 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <section class="detail" id="send(org.openqa.selenium.bidi.Command)">
 <h3>send</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type">X</span>&nbsp;<span class="element-name">send</span><wbr><span class="parameters">(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="send(org.openqa.selenium.bidi.Command,java.time.Duration)">
+<h3>send</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;X&gt;</span>&nbsp;<span class="return-type">X</span>&nbsp;<span class="element-name">send</span><wbr><span class="parameters">(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</span></div>
 </section>
 </li>
 <li>

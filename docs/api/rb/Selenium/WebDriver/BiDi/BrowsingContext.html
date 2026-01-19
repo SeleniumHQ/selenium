@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::BrowsingContext
   
-    &mdash; Documentation by YARD 0.9.37
+    &mdash; Documentation by YARD 0.9.38
   
 </title>
 
@@ -106,7 +106,7 @@
   You should avoid using this class if possible, as it may be removed or be changed in the future.
 </p>
 
-<p>Implements the browsingContext Module of the WebDriver-BiDi specification</p>
+<p>Implements the BrowsingContext Module of the WebDriver-BiDi specification Continue to use functionality from existing <code>driver.navigate</code> method</p>
 
 
   </div>
@@ -410,15 +410,15 @@
       <pre class="lines">
 
 
-35
 36
 37
 38
 39
-40</pre>
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -466,13 +466,13 @@
       <pre class="lines">
 
 
-108
 109
 110
-111</pre>
+111
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_activate'>activate</span><span class='lparen'>(</span><span class='label'>context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_context_id'>context_id</span> <span class='op'>||=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
@@ -535,13 +535,13 @@
       <pre class="lines">
 
 
-78
 79
 80
-81</pre>
+81
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span><span class='lparen'>(</span><span class='label'>context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_context_id'>context_id</span> <span class='op'>||=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
@@ -640,15 +640,15 @@
       <pre class="lines">
 
 
-91
 92
 93
 94
 95
-96</pre>
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='label'>type:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_type'>type</span> <span class='op'>||=</span> <span class='symbol'>:window</span>
@@ -689,12 +689,12 @@
       <pre class="lines">
 
 
-104
 105
-106</pre>
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 105</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_handle_user_prompt'>handle_user_prompt</span><span class='lparen'>(</span><span class='id identifier rubyid_context_id'>context_id</span><span class='comma'>,</span> <span class='label'>accept:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>text:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browsingContext.handleUserPrompt</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>context:</span> <span class='id identifier rubyid_context_id'>context_id</span><span class='comma'>,</span> <span class='label'>accept:</span> <span class='id identifier rubyid_accept'>accept</span><span class='comma'>,</span> <span class='label'>text:</span> <span class='id identifier rubyid_text'>text</span><span class='rparen'>)</span>
@@ -772,13 +772,13 @@
       <pre class="lines">
 
 
-47
 48
 49
-50</pre>
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_navigate'>navigate</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='label'>context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_context_id'>context_id</span> <span class='op'>||=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
@@ -859,14 +859,14 @@
       <pre class="lines">
 
 
-68
 69
 70
 71
-72</pre>
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reload'>reload</span><span class='lparen'>(</span><span class='label'>context_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>ignore_cache:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_context_id'>context_id</span> <span class='op'>||=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
@@ -906,14 +906,14 @@
       <pre class="lines">
 
 
-98
 99
 100
 101
-102</pre>
+102
+103</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_viewport'>set_viewport</span><span class='lparen'>(</span><span class='label'>context_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>width:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>height:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>device_pixel_ratio:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_context_id'>context_id</span> <span class='op'>||=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
@@ -993,13 +993,13 @@
       <pre class="lines">
 
 
-58
 59
 60
-61</pre>
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browsing_context.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_traverse_history'>traverse_history</span><span class='lparen'>(</span><span class='id identifier rubyid_delta'>delta</span><span class='comma'>,</span> <span class='label'>context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_context_id'>context_id</span> <span class='op'>||=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
@@ -1015,9 +1015,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  6 22:51:18 2025 by
+  Generated on Sun Jan 18 18:47:57 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.37 (ruby-3.2.8).
+  0.9.38 (ruby-3.2.9).
 </div>
 
     </div>

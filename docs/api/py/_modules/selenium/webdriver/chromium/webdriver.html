@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 4.39.0 documentation</title>
+    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 4.40.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
+    <script src="../../../../_static/documentation_options.js?v=cb21b19a"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.40.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.chromium.webdriver </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
+       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
   </label>
   
 
@@ -209,24 +209,23 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.chromium.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChromiumOptions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.chromium.remote_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChromiumRemoteConnection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.chromium.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChromiumService</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.driver_finder</span><span class="w"> </span><span class="kn">import</span> <span class="n">DriverFinder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.webdriver</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalWebDriver</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.webdriver</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
 
 
 <div class="viewcode-block" id="ChromiumDriver">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ChromiumDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChromiumDriver</span><span class="p">(</span><span class="n">LocalWebDriver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Control the WebDriver instance of ChromiumDriver and drive the browser."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">browser_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">vendor_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">browser_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">vendor_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="n">ChromiumOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">service</span><span class="p">:</span> <span class="n">ChromiumService</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -236,17 +235,17 @@
 <span class="sd">        Args:</span>
 <span class="sd">            browser_name: Browser name used when matching capabilities.</span>
 <span class="sd">            vendor_prefix: Company prefix to apply to vendor-specific WebDriver extension commands.</span>
-<span class="sd">            options: This takes an instance of ChromiumOptions.</span>
+<span class="sd">            options: Instance of ChromiumOptions.</span>
 <span class="sd">            service: Service object for handling the browser driver if you need to pass extra details.</span>
 <span class="sd">            keep_alive: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">ChromiumService</span><span class="p">()</span>
-        <span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">ChromiumOptions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">ChromiumOptions</span><span class="p">()</span>
 
-        <span class="n">finder</span> <span class="o">=</span> <span class="n">DriverFinder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="n">finder</span> <span class="o">=</span> <span class="n">DriverFinder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">finder</span><span class="o">.</span><span class="n">get_browser_path</span><span class="p">():</span>
-            <span class="n">options</span><span class="o">.</span><span class="n">binary_location</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">get_browser_path</span><span class="p">()</span>
-            <span class="n">options</span><span class="o">.</span><span class="n">browser_version</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">binary_location</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">get_browser_path</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">browser_version</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">env_path</span><span class="p">()</span> <span class="ow">or</span> <span class="n">finder</span><span class="o">.</span><span class="n">get_driver_path</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -256,16 +255,14 @@
             <span class="n">browser_name</span><span class="o">=</span><span class="n">browser_name</span><span class="p">,</span>
             <span class="n">vendor_prefix</span><span class="o">=</span><span class="n">vendor_prefix</span><span class="p">,</span>
             <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">,</span>
-            <span class="n">ignore_proxy</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span><span class="p">,</span>
+            <span class="n">ignore_proxy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
             <span class="k">raise</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="ChromiumDriver.launch_app">
 <a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.launch_app">[docs]</a>
@@ -440,40 +437,6 @@
 <span class="sd">            sink_name: Name of the sink to stop the Cast session.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"stopCasting"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"sinkName"</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
-
-
-<div class="viewcode-block" id="ChromiumDriver.quit">
-<a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.quit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Closes the browser and shuts down the ChromiumDriver executable."""</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="c1"># We don't care about the message because something probably has gone wrong</span>
-            <span class="k">pass</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="ChromiumDriver.download_file">
-<a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.download_file">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Download file functionality is not implemented for Chromium driver."""</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-
-<div class="viewcode-block" id="ChromiumDriver.get_downloadable_files">
-<a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_downloadable_files">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Get downloadable files functionality is not implemented for Chromium driver."""</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-
-<div class="viewcode-block" id="ChromiumDriver.delete_downloadable_files">
-<a class="viewcode-back" href="../../../../selenium_webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_downloadable_files">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">delete_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Delete downloadable files functionality is not implemented for Chromium driver."""</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
 
 </pre></div>
@@ -496,7 +459,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2009-2025 Software Freedom Conservancy.
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
               
           </div>
         </div>

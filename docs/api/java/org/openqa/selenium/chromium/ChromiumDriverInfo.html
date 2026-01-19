@@ -92,7 +92,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 </dl>
 <dl class="notes">
 <dt>Direct Known Subclasses:</dt>
@@ -101,7 +101,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">ChromiumDriverInfo</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></span></div>
+implements <a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></span></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -142,8 +142,8 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
 <div class="inherited-list">
-<h3 id="methods-inherited-from-class-org.openqa.selenium.WebDriverInfo">Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></h3>
-<code><a href="../WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">createDriver</a>, <a href="../WebDriverInfo.html#getCanonicalCapabilities()">getCanonicalCapabilities</a>, <a href="../WebDriverInfo.html#getDisplayName()">getDisplayName</a>, <a href="../WebDriverInfo.html#isAvailable()">isAvailable</a>, <a href="../WebDriverInfo.html#isPresent()">isPresent</a>, <a href="../WebDriverInfo.html#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a>, <a href="../WebDriverInfo.html#isSupportingBiDi()">isSupportingBiDi</a>, <a href="../WebDriverInfo.html#isSupportingCdp()">isSupportingCdp</a></code></div>
+<h3 id="methods-inherited-from-class-org.openqa.selenium.remote.WebDriverInfo">Methods inherited from interface&nbsp;org.openqa.selenium.remote.<a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></h3>
+<code><a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">createDriver</a>, <a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)">createDriver</a>, <a href="../remote/WebDriverInfo.html#getCanonicalCapabilities()">getCanonicalCapabilities</a>, <a href="../remote/WebDriverInfo.html#getDisplayName()">getDisplayName</a>, <a href="../remote/WebDriverInfo.html#isAvailable()">isAvailable</a>, <a href="../remote/WebDriverInfo.html#isPresent()">isPresent</a>, <a href="../remote/WebDriverInfo.html#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a>, <a href="../remote/WebDriverInfo.html#isSupportingBiDi()">isSupportingBiDi</a>, <a href="../remote/WebDriverInfo.html#isSupportingCdp()">isSupportingCdp</a></code></div>
 </section>
 </li>
 </ul>
@@ -173,7 +173,7 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <section class="detail" id="getMaximumSimultaneousSessions()">
 <h3>getMaximumSimultaneousSessions</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getMaximumSimultaneousSessions</span>()</div>
-<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../WebDriverInfo.html#getMaximumSimultaneousSessions()">WebDriverInfo</a></code></span></div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../remote/WebDriverInfo.html#getMaximumSimultaneousSessions()">WebDriverInfo</a></code></span></div>
 <div class="block">Some browsers require all the resources of the current system in order to run (for example,
  Safari on iOS) and so do not support multiple simultaneous sessions on the same system. Other
  browsers can create isolated state for each new <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance.
@@ -182,7 +182,7 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
  cores, or <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html#MAX_VALUE" title="class or interface in java.lang" class="external-link"><code>Integer.MAX_VALUE</code></a> if the number is unbounded or no-one cares.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#getMaximumSimultaneousSessions()">getMaximumSimultaneousSessions</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#getMaximumSimultaneousSessions()">getMaximumSimultaneousSessions</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 </dl>
 </section>
 </li>

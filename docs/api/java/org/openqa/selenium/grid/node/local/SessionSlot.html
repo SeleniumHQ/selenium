@@ -175,6 +175,11 @@ implements <a href="../../../remote/http/HttpHandler.html" title="interface in o
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#test(org.openqa.selenium.Capabilities)" class="member-name-link">test</a><wbr>(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tryReserve(org.openqa.selenium.Capabilities)" class="member-name-link">tryReserve</a><wbr>(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Atomically attempts to reserve this slot if it's available and matches the given capabilities.</div>
+</div>
 </div>
 </div>
 </div>
@@ -233,6 +238,21 @@ implements <a href="../../../remote/http/HttpHandler.html" title="interface in o
 <section class="detail" id="reserve()">
 <h3>reserve</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">reserve</span>()</div>
+</section>
+</li>
+<li>
+<section class="detail" id="tryReserve(org.openqa.selenium.Capabilities)">
+<h3>tryReserve</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">tryReserve</span><wbr><span class="parameters">(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</span></div>
+<div class="block">Atomically attempts to reserve this slot if it's available and matches the given capabilities.
+ This method is thread-safe and eliminates the need for external synchronization.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>capabilities</code> - the capabilities to test against this slot's stereotype</dd>
+<dt>Returns:</dt>
+<dd>true if the slot was successfully reserved, false if already reserved or capabilities
+     don't match</dd>
+</dl>
 </section>
 </li>
 <li>

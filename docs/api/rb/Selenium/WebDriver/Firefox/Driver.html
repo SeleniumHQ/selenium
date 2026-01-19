@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Driver
   
-    &mdash; Documentation by YARD 0.9.37
+    &mdash; Documentation by YARD 0.9.38
   
 </title>
 
@@ -238,7 +238,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../LocalDriver.html" title="Selenium::WebDriver::LocalDriver (module)">LocalDriver</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../LocalDriver.html#initialize_local_driver-instance_method" title="Selenium::WebDriver::LocalDriver#initialize_local_driver (method)">#initialize_local_driver</a></span>, <span class='object_link'><a href="../LocalDriver.html#process_options-instance_method" title="Selenium::WebDriver::LocalDriver#process_options (method)">#process_options</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../LocalDriver.html#initialize_local_driver-instance_method" title="Selenium::WebDriver::LocalDriver#initialize_local_driver (method)">#initialize_local_driver</a></span>, <span class='object_link'><a href="../LocalDriver.html#process_options-instance_method" title="Selenium::WebDriver::LocalDriver#process_options (method)">#process_options</a></span>, <span class='object_link'><a href="../LocalDriver.html#service_url-instance_method" title="Selenium::WebDriver::LocalDriver#service_url (method)">#service_url</a></span></p>
 
   
   
@@ -308,14 +308,16 @@
 39
 40
 41
-42</pre>
+42
+43</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/driver.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>options:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>service:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='id identifier rubyid_initialize_local_driver'>initialize_local_driver</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
-  <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>caps:</span> <span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='op'>**</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_initialize_local_driver'>initialize_local_driver</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_driver_url'>driver_url</span><span class='op'>|</span>
+    <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>caps:</span> <span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='id identifier rubyid_driver_url'>driver_url</span><span class='comma'>,</span> <span class='op'>**</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -357,12 +359,12 @@
       <pre class="lines">
 
 
-44
 45
-46</pre>
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/driver.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/driver.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:firefox</span>
@@ -377,9 +379,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  6 22:51:17 2025 by
+  Generated on Sun Jan 18 18:47:57 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.37 (ruby-3.2.8).
+  0.9.38 (ruby-3.2.9).
 </div>
 
     </div>

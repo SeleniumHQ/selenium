@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::BiDiBridge
   
-    &mdash; Documentation by YARD 0.9.37
+    &mdash; Documentation by YARD 0.9.38
   
 </title>
 
@@ -415,12 +415,12 @@
       <pre class="lines">
 
 
-54
-55
-56</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:close_window</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_handles'>handles</span><span class='op'>|</span> <span class='id identifier rubyid_bidi'>bidi</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span> <span class='kw'>if</span> <span class='id identifier rubyid_handles'>handles</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span>
@@ -573,15 +573,19 @@
 49
 50
 51
-52</pre>
+52
+53
+54</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bidi_bridge.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
-  <span class='kw'>super</span>
-<span class='kw'>ensure</span>
   <span class='id identifier rubyid_bidi'>bidi</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
+<span class='kw'>rescue</span> <span class='op'>*</span><span class='const'><span class='object_link'><a href="Bridge.html#QUIT_ERRORS-constant" title="Selenium::WebDriver::Remote::Bridge::QUIT_ERRORS (constant)">QUIT_ERRORS</a></span></span>
+  <span class='kw'>nil</span>
+<span class='kw'>ensure</span>
+  <span class='kw'>super</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -623,9 +627,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  6 22:51:18 2025 by
+  Generated on Sun Jan 18 18:47:57 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.37 (ruby-3.2.8).
+  0.9.38 (ruby-3.2.9).
 </div>
 
     </div>

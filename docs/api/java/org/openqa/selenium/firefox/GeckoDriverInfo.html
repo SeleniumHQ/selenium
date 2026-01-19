@@ -92,13 +92,13 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="annotations">@AutoService(<a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo.class</a>)
+<div class="type-signature"><span class="annotations">@AutoService(<a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo.class</a>)
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">GeckoDriverInfo</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></span></div>
+implements <a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></span></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -127,7 +127,8 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDriver(org.openqa.selenium.Capabilities)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)" class="member-name-link">createDriver</a><wbr>(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Creates a new instance of the <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.</div>
 </div>
@@ -172,6 +173,9 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-org.openqa.selenium.remote.WebDriverInfo">Methods inherited from interface&nbsp;org.openqa.selenium.remote.<a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></h3>
+<code><a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">createDriver</a></code></div>
 </section>
 </li>
 </ul>
@@ -203,7 +207,7 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getDisplayName</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#getDisplayName()">getDisplayName</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#getDisplayName()">getDisplayName</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 <dt>Returns:</dt>
 <dd>A human-readable name that describes the browser.</dd>
 </dl>
@@ -213,14 +217,14 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <section class="detail" id="getCanonicalCapabilities()">
 <h3>getCanonicalCapabilities</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></span>&nbsp;<span class="element-name">getCanonicalCapabilities</span>()</div>
-<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../WebDriverInfo.html#getCanonicalCapabilities()">WebDriverInfo</a></code></span></div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../remote/WebDriverInfo.html#getCanonicalCapabilities()">WebDriverInfo</a></code></span></div>
 <div class="block">Describes the smallest set of <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> that could be used to create an instance of
  this <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.
 
- <p>Note, this set does not need to be exhaustive: the only requirement is that if <a href="../WebDriverInfo.html#isAvailable()"><code>WebDriverInfo.isAvailable()</code></a> returns <code>true</code>, the returned <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> can be passed to <a href="../WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)"><code>WebDriverInfo.createDriver(Capabilities)</code></a> and a session will be created.</div>
+ <p>Note, this set does not need to be exhaustive: the only requirement is that if <a href="../remote/WebDriverInfo.html#isAvailable()"><code>WebDriverInfo.isAvailable()</code></a> returns <code>true</code>, the returned <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> can be passed to <a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)"><code>WebDriverInfo.createDriver(Capabilities, ClientConfig)</code></a> and a session will be created.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#getCanonicalCapabilities()">getCanonicalCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#getCanonicalCapabilities()">getCanonicalCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 <dt>Returns:</dt>
 <dd>The smallest set of <a href="../Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> required to create an instance of this <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation.</dd>
 </dl>
@@ -232,10 +236,10 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isSupporting</span><wbr><span class="parameters">(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 <dt>Returns:</dt>
-<dd>Whether a call to <a href="../WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)"><code>WebDriverInfo.createDriver(Capabilities)</code></a> would succeed if given <code>
-     capabilities</code>.</dd>
+<dd>Whether a call to <a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)"><code>WebDriverInfo.createDriver(Capabilities, ClientConfig)</code></a> would succeed if
+     given <code>capabilities</code>.</dd>
 </dl>
 </section>
 </li>
@@ -245,7 +249,7 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isSupportingCdp</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#isSupportingCdp()">isSupportingCdp</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#isSupportingCdp()">isSupportingCdp</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 <dt>Returns:</dt>
 <dd>Whether the driver has enabled the CDP interface.</dd>
 </dl>
@@ -257,7 +261,7 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isSupportingBiDi</span>()</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#isSupportingBiDi()">isSupportingBiDi</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#isSupportingBiDi()">isSupportingBiDi</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 <dt>Returns:</dt>
 <dd>Whether the driver has enabled the BiDi interface.</dd>
 </dl>
@@ -267,14 +271,14 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <section class="detail" id="isAvailable()">
 <h3>isAvailable</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isAvailable</span>()</div>
-<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../WebDriverInfo.html#isAvailable()">WebDriverInfo</a></code></span></div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../remote/WebDriverInfo.html#isAvailable()">WebDriverInfo</a></code></span></div>
 <div class="block">Often, a <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance needs one or more supporting files or executables to be
  present (such as a vendor-provided executable which speaks the WebDriver Protocol). This means
  that even though the driver classes might be present in Java, it would make no sense to attempt
  to instantiate the driver itself.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#isAvailable()">isAvailable</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#isAvailable()">isAvailable</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 <dt>Returns:</dt>
 <dd>Whether the prerequisites required for this <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> are present.</dd>
 </dl>
@@ -284,11 +288,11 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <section class="detail" id="isPresent()">
 <h3>isPresent</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isPresent</span>()</div>
-<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../WebDriverInfo.html#isPresent()">WebDriverInfo</a></code></span></div>
-<div class="block">Checks whether the browser driver is already present on the host machine. Different from <a href="../WebDriverInfo.html#isAvailable()"><code>WebDriverInfo.isAvailable()</code></a> which uses Selenium Manager to obtain the driver when not present.</div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../remote/WebDriverInfo.html#isPresent()">WebDriverInfo</a></code></span></div>
+<div class="block">Checks whether the browser driver is already present on the host machine. Different from <a href="../remote/WebDriverInfo.html#isAvailable()"><code>WebDriverInfo.isAvailable()</code></a> which uses Selenium Manager to obtain the driver when not present.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#isPresent()">isPresent</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#isPresent()">isPresent</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 <dt>Returns:</dt>
 <dd>Whether the browser driver is present on the host machine.</dd>
 </dl>
@@ -298,7 +302,7 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
 <section class="detail" id="getMaximumSimultaneousSessions()">
 <h3>getMaximumSimultaneousSessions</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getMaximumSimultaneousSessions</span>()</div>
-<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../WebDriverInfo.html#getMaximumSimultaneousSessions()">WebDriverInfo</a></code></span></div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../remote/WebDriverInfo.html#getMaximumSimultaneousSessions()">WebDriverInfo</a></code></span></div>
 <div class="block">Some browsers require all the resources of the current system in order to run (for example,
  Safari on iOS) and so do not support multiple simultaneous sessions on the same system. Other
  browsers can create isolated state for each new <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance.
@@ -307,23 +311,24 @@ implements <a href="../WebDriverInfo.html" title="interface in org.openqa.seleni
  cores, or <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html#MAX_VALUE" title="class or interface in java.lang" class="external-link"><code>Integer.MAX_VALUE</code></a> if the number is unbounded or no-one cares.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#getMaximumSimultaneousSessions()">getMaximumSimultaneousSessions</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#getMaximumSimultaneousSessions()">getMaximumSimultaneousSessions</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="createDriver(org.openqa.selenium.Capabilities)">
+<section class="detail" id="createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)">
 <h3>createDriver</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>&nbsp;<span class="element-name">createDriver</span><wbr><span class="parameters">(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</span>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>&nbsp;<span class="element-name">createDriver</span><wbr><span class="parameters">(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+ <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</span>
                                  throws <span class="exceptions"><a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></span></div>
-<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">WebDriverInfo</a></code></span></div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)">WebDriverInfo</a></code></span></div>
 <div class="block">Creates a new instance of the <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> implementation. The instance must be killed by
- sending the "quit" command. If the instance cannot be created because <a href="../WebDriverInfo.html#isAvailable()"><code>WebDriverInfo.isAvailable()</code></a> is
+ sending the "quit" command. If the instance cannot be created because <a href="../remote/WebDriverInfo.html#isAvailable()"><code>WebDriverInfo.isAvailable()</code></a> is
  <code>false</code>, then <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Optional.html#empty()" title="class or interface in java.util" class="external-link"><code>Optional.empty()</code></a> is returned. Otherwise, an attempt to start the
  session is made and the result returned.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities)">createDriver</a></code>&nbsp;in interface&nbsp;<code><a href="../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a></code></dd>
+<dd><code><a href="../remote/WebDriverInfo.html#createDriver(org.openqa.selenium.Capabilities,org.openqa.selenium.remote.http.ClientConfig)">createDriver</a></code>&nbsp;in interface&nbsp;<code><a href="../remote/WebDriverInfo.html" title="interface in org.openqa.selenium.remote">WebDriverInfo</a></code></dd>
 <dt>Throws:</dt>
 <dd><code><a href="../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></code></dd>
 </dl>

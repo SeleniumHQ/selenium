@@ -103,7 +103,7 @@ Class Cookie  <a class="header-action link-secondary" title="View source" href="
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Serializable]
-public class Cookie</code></pre>
+public class Cookie : IEquatable&lt;Cookie&gt;</code></pre>
   </div>
 
 
@@ -117,6 +117,12 @@ public class Cookie</code></pre>
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a>&gt;</div>
+    </dd>
+  </dl>
 
   <dl class="typelist derived">
     <dt>Derived</dt>
@@ -698,6 +704,48 @@ public string Value { get; }</code></pre>
 
   <a id="OpenQA_Selenium_Cookie_Equals_" data-uid="OpenQA.Selenium.Cookie.Equals*"></a>
 
+  <h3 id="OpenQA_Selenium_Cookie_Equals_OpenQA_Selenium_Cookie_" data-uid="OpenQA.Selenium.Cookie.Equals(OpenQA.Selenium.Cookie)">
+  Equals(Cookie?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L342"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the current <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a> is equal to another <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(Cookie? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a></dt>
+    <dd><p>A <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a> to compare with this <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the current <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a> is equal to the <code class="paramref">other</code> parameter; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Cookie_Equals_OpenQA_Selenium_Cookie__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Two cookies are equal if the <a class="xref" href="OpenQA.Selenium.Cookie.html#OpenQA_Selenium_Cookie_Name">Name</a> and <a class="xref" href="OpenQA.Selenium.Cookie.html#OpenQA_Selenium_Cookie_Value">Value</a> match.</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_Cookie_Equals_" data-uid="OpenQA.Selenium.Cookie.Equals*"></a>
+
   <h3 id="OpenQA_Selenium_Cookie_Equals_System_Object_" data-uid="OpenQA.Selenium.Cookie.Equals(System.Object)">
   Equals(object?)
   <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L331"><i class="bi bi-code-slash"></i></a>
@@ -782,7 +830,7 @@ is equal to the current <a class="xref" href="https://learn.microsoft.com/dotnet
 
   <h3 id="OpenQA_Selenium_Cookie_GetHashCode" data-uid="OpenQA.Selenium.Cookie.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L356"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Cookie.cs/#L362"><i class="bi bi-code-slash"></i></a>
   </h3>
 
   <div class="markdown level1 summary"><p>Serves as a hash function for a particular type.</p>
@@ -797,7 +845,7 @@ is equal to the current <a class="xref" href="https://learn.microsoft.com/dotnet
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>A hash code for the current <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">Object</a>.</p>
+    <dd><p>A hash code for the current <a class="xref" href="OpenQA.Selenium.Cookie.html">Cookie</a>, based on the <a class="xref" href="OpenQA.Selenium.Cookie.html#OpenQA_Selenium_Cookie_Name">Name</a> and <a class="xref" href="OpenQA.Selenium.Cookie.html#OpenQA_Selenium_Cookie_Value">Value</a>.</p>
 </dd>
   </dl>
 

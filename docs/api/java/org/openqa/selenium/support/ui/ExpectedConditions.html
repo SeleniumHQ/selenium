@@ -119,8 +119,8 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#attributeContains(org.openqa.selenium.By,java.lang.String,java.lang.String)" class="member-name-link">attributeContains</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attribute,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking WebElement with given locator has attribute which contains specific
  value</div>
@@ -128,7 +128,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#attributeContains(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">attributeContains</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attribute,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking WebElement with given locator has attribute which contains specific
  value</div>
@@ -143,7 +143,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#attributeToBe(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">attributeToBe</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attribute,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking given WebElement has attribute with a specific value</div>
 </div>
@@ -151,7 +151,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#attributeToBeNotEmpty(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">attributeToBeNotEmpty</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attribute)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">An expectation for checking WebElement any non empty value for given attribute</div>
+<div class="block">An expectation for checking WebElement any non-empty value for given attribute</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#domAttributeToBe(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">domAttributeToBe</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
@@ -163,7 +163,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#domPropertyToBe(org.openqa.selenium.WebElement,java.lang.String,java.lang.String)" class="member-name-link">domPropertyToBe</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;property,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking given WebElement has DOM property with a specific value</div>
 </div>
@@ -177,12 +177,12 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking if the given element is selected.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#elementToBeClickable(org.openqa.selenium.By)" class="member-name-link">elementToBeClickable</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking an element is visible and enabled such that you can click it.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#elementToBeClickable(org.openqa.selenium.WebElement)" class="member-name-link">elementToBeClickable</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking an element is visible and enabled such that you can click it.</div>
@@ -195,12 +195,12 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking if the given element is selected.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#frameToBeAvailableAndSwitchToIt(int)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(int&nbsp;frameLocator)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#frameToBeAvailableAndSwitchToIt(int)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(int&nbsp;frameIndex)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">An expectation for checking whether the given frame is available to switch to.</div>
+<div class="block">An expectation for checking whether a frame with given index is available to switch to.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#frameToBeAvailableAndSwitchToIt(java.lang.String)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;frameLocator)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking whether the given frame is available to switch to.</div>
@@ -211,7 +211,7 @@ loadScripts(document, 'script');</script>
 <div class="block">An expectation for checking whether the given frame is available to switch to.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#frameToBeAvailableAndSwitchToIt(org.openqa.selenium.WebElement)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameLocator)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#frameToBeAvailableAndSwitchToIt(org.openqa.selenium.WebElement)" class="member-name-link">frameToBeAvailableAndSwitchToIt</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frame)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking whether the given frame is available to switch to.</div>
 </div>
@@ -250,7 +250,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#jsReturnsValue(java.lang.String)" class="member-name-link">jsReturnsValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;javaScript)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">An expectation for String value from javascript</div>
+<div class="block">An expectation for String value from JavaScript</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#not(org.openqa.selenium.support.ui.ExpectedCondition)" class="member-name-link">not</a><wbr>(<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;?&gt;&nbsp;condition)</code></div>
@@ -259,7 +259,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#numberOfElementsToBe(org.openqa.selenium.By,java.lang.Integer)" class="member-name-link">numberOfElementsToBe</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;number)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;expectedNumberOfElements)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking number of WebElements with given locator</div>
 </div>
@@ -272,7 +272,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#numberOfElementsToBeMoreThan(org.openqa.selenium.By,java.lang.Integer)" class="member-name-link">numberOfElementsToBeMoreThan</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;number)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;expectedNumber)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking number of WebElements with given locator being more than defined
  number</div>
@@ -290,28 +290,29 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking that there is at least one element present on a web page.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#presenceOfElementLocated(org.openqa.selenium.By)" class="member-name-link">presenceOfElementLocated</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking that an element is present on the DOM of a page.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#presenceOfNestedElementLocatedBy(org.openqa.selenium.By,org.openqa.selenium.By)" class="member-name-link">presenceOfNestedElementLocatedBy</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
  <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">An expectation for checking child WebElement as a part of parent element to present</div>
+<div class="block">An expectation for parent element to have a child with given locator (either visible or hidden)</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#presenceOfNestedElementLocatedBy(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">presenceOfNestedElementLocatedBy</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">An expectation for checking child WebElement as a part of parent element to be present</div>
+<div class="block">An expectation for checking that given parent element contains a child element with given
+ locator (either visible or hidden).</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#presenceOfNestedElementsLocatedBy(org.openqa.selenium.By,org.openqa.selenium.By)" class="member-name-link">presenceOfNestedElementsLocatedBy</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;parent,
  <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">An expectation for checking child WebElement as a part of parent element to present</div>
+<div class="block">An expectation for parent element to have some children with locator (either visible or hidden)</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable T&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#refreshed(org.openqa.selenium.support.ui.ExpectedCondition)" class="member-name-link">refreshed</a><wbr>(<a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;T&gt;&nbsp;condition)</code></div>
@@ -331,7 +332,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#textToBe(org.openqa.selenium.By,java.lang.String)" class="member-name-link">textToBe</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedText)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking WebElement with given locator has specific text</div>
 </div>
@@ -350,14 +351,14 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#textToBePresentInElementValue(org.openqa.selenium.By,java.lang.String)" class="member-name-link">textToBePresentInElementValue</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking if the given text is present in the specified elements value
  attribute.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#textToBePresentInElementValue(org.openqa.selenium.WebElement,java.lang.String)" class="member-name-link">textToBePresentInElementValue</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking if the given text is present in the specified elements value
  attribute.</div>
@@ -383,49 +384,54 @@ loadScripts(document, 'script');</script>
 <div class="block">Expectation for the URL to match a specific regular expression</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#urlToBe(java.lang.String)" class="member-name-link">urlToBe</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#urlMatches(java.util.regex.Pattern)" class="member-name-link">urlMatches</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html" title="class or interface in java.util.regex" class="external-link">Pattern</a>&nbsp;regex)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Expectation for the URL to match a specific regular expression</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#urlToBe(java.lang.String)" class="member-name-link">urlToBe</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for the URL of the current page to be a specific url.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOf(org.openqa.selenium.WebElement)" class="member-name-link">visibilityOf</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOf(org.openqa.selenium.WebElement)" class="member-name-link">visibilityOf</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking that an element, known to be present on the DOM of a page, is
  visible.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfAllElements(java.util.List)" class="member-name-link">visibilityOfAllElements</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;elements)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">An expectation for checking that all elements present on the web page that match the locator
+ are visible.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfAllElements(java.util.List)" class="member-name-link">visibilityOfAllElements</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;elements)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfAllElements(org.openqa.selenium.WebElement...)" class="member-name-link">visibilityOfAllElements</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>...&nbsp;elements)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking that all elements present on the web page that match the locator
  are visible.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfAllElements(org.openqa.selenium.WebElement...)" class="member-name-link">visibilityOfAllElements</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>...&nbsp;elements)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfAllElementsLocatedBy(org.openqa.selenium.By)" class="member-name-link">visibilityOfAllElementsLocatedBy</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking that all elements present on the web page that match the locator
  are visible.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfAllElementsLocatedBy(org.openqa.selenium.By)" class="member-name-link">visibilityOfAllElementsLocatedBy</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfElementLocated(org.openqa.selenium.By)" class="member-name-link">visibilityOfElementLocated</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">An expectation for checking that all elements present on the web page that match the locator
- are visible.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfElementLocated(org.openqa.selenium.By)" class="member-name-link">visibilityOfElementLocated</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking that an element is present on the DOM of a page and visible.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfNestedElementsLocatedBy(org.openqa.selenium.By,org.openqa.selenium.By)" class="member-name-link">visibilityOfNestedElementsLocatedBy</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;parent,
- <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">An expectation for checking child WebElement as a part of parent element to be visible</div>
-</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfNestedElementsLocatedBy(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">visibilityOfNestedElementsLocatedBy</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfNestedElementsLocatedBy(org.openqa.selenium.By,org.openqa.selenium.By)" class="member-name-link">visibilityOfNestedElementsLocatedBy</a><wbr>(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;parent,
  <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">An expectation for checking all child elements inside the parent element to be visible</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a><wbr>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#visibilityOfNestedElementsLocatedBy(org.openqa.selenium.WebElement,org.openqa.selenium.By)" class="member-name-link">visibilityOfNestedElementsLocatedBy</a><wbr>(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+ <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">An expectation for checking child WebElement as a part of parent element to be visible</div>
 </div>
 </div>
@@ -511,9 +517,22 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="urlMatches(java.util.regex.Pattern)">
+<h3>urlMatches</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">urlMatches</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html" title="class or interface in java.util.regex" class="external-link">Pattern</a>&nbsp;regex)</span></div>
+<div class="block">Expectation for the URL to match a specific regular expression</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>regex</code> - the regular expression that the URL should match</dd>
+<dt>Returns:</dt>
+<dd><code>true</code> if the URL matches the specified regular expression</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="presenceOfElementLocated(org.openqa.selenium.By)">
 <h3>presenceOfElementLocated</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">presenceOfElementLocated</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">presenceOfElementLocated</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</span></div>
 <div class="block">An expectation for checking that an element is present on the DOM of a page. This does not
  necessarily mean that the element is visible.</div>
 <dl class="notes">
@@ -527,7 +546,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="visibilityOfElementLocated(org.openqa.selenium.By)">
 <h3>visibilityOfElementLocated</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">visibilityOfElementLocated</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">visibilityOfElementLocated</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</span></div>
 <div class="block">An expectation for checking that an element is present on the DOM of a page and visible.
  Visibility means that the element is not only displayed but also has a height and width that is
  greater than 0.</div>
@@ -639,7 +658,7 @@ loadScripts(document, 'script');</script>
 <dd><code>locator</code> - used to find the element</dd>
 <dd><code>text</code> - to be present in the element found by the locator</dd>
 <dt>Returns:</dt>
-<dd>true once the first element located by locator contains the given text</dd>
+<dd>true once the first element found by locator contains the given text</dd>
 </dl>
 </section>
 </li>
@@ -647,13 +666,13 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="textToBePresentInElementValue(org.openqa.selenium.WebElement,java.lang.String)">
 <h3>textToBePresentInElementValue</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">textToBePresentInElementValue</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</span></div>
 <div class="block">An expectation for checking if the given text is present in the specified elements value
  attribute.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>element</code> - the WebElement</dd>
-<dd><code>text</code> - to be present in the element's value attribute</dd>
+<dd><code>expectedValue</code> - to be present in the element's value attribute</dd>
 <dt>Returns:</dt>
 <dd>true once the element's value attribute contains the given text</dd>
 </dl>
@@ -663,23 +682,23 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="textToBePresentInElementValue(org.openqa.selenium.By,java.lang.String)">
 <h3>textToBePresentInElementValue</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">textToBePresentInElementValue</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;text)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</span></div>
 <div class="block">An expectation for checking if the given text is present in the specified elements value
  attribute.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>locator</code> - used to find the element</dd>
-<dd><code>text</code> - to be present in the value attribute of the element found by the locator</dd>
+<dd><code>expectedValue</code> - to be present in the value attribute of the element found by the locator</dd>
 <dt>Returns:</dt>
-<dd>true once the value attribute of the first element located by locator contains the
-     given text</dd>
+<dd>true once the value attribute of the first element found by locator contains the given
+     text</dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="frameToBeAvailableAndSwitchToIt(java.lang.String)">
 <h3>frameToBeAvailableAndSwitchToIt</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>&nbsp;<span class="element-name">frameToBeAvailableAndSwitchToIt</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;frameLocator)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>&nbsp;<span class="element-name">frameToBeAvailableAndSwitchToIt</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;frameLocator)</span></div>
 <div class="block">An expectation for checking whether the given frame is available to switch to.
 
  <p>If the frame is available it switches the given driver to the specified frame.</div>
@@ -709,13 +728,13 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="frameToBeAvailableAndSwitchToIt(int)">
 <h3>frameToBeAvailableAndSwitchToIt</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>&nbsp;<span class="element-name">frameToBeAvailableAndSwitchToIt</span><wbr><span class="parameters">(int&nbsp;frameLocator)</span></div>
-<div class="block">An expectation for checking whether the given frame is available to switch to.
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>&nbsp;<span class="element-name">frameToBeAvailableAndSwitchToIt</span><wbr><span class="parameters">(int&nbsp;frameIndex)</span></div>
+<div class="block">An expectation for checking whether a frame with given index is available to switch to.
 
  <p>If the frame is available it switches the given driver to the specified frameIndex.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>frameLocator</code> - used to find the frame (index)</dd>
+<dd><code>frameIndex</code> - the number of the frame among all frames (index)</dd>
 <dt>Returns:</dt>
 <dd>WebDriver instance after frame has been switched</dd>
 </dl>
@@ -724,13 +743,13 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="frameToBeAvailableAndSwitchToIt(org.openqa.selenium.WebElement)">
 <h3>frameToBeAvailableAndSwitchToIt</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>&nbsp;<span class="element-name">frameToBeAvailableAndSwitchToIt</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frameLocator)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>&nbsp;<span class="element-name">frameToBeAvailableAndSwitchToIt</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;frame)</span></div>
 <div class="block">An expectation for checking whether the given frame is available to switch to.
 
  <p>If the frame is available it switches the given driver to the specified web element.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>frameLocator</code> - used to find the frame (webelement)</dd>
+<dd><code>frame</code> - used to find the frame (web element)</dd>
 <dt>Returns:</dt>
 <dd>WebDriver instance after frame has been switched</dd>
 </dl>
@@ -768,7 +787,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="elementToBeClickable(org.openqa.selenium.By)">
 <h3>elementToBeClickable</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">elementToBeClickable</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">elementToBeClickable</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</span></div>
 <div class="block">An expectation for checking an element is visible and enabled such that you can click it.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -781,7 +800,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="elementToBeClickable(org.openqa.selenium.WebElement)">
 <h3>elementToBeClickable</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">elementToBeClickable</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</span></div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">elementToBeClickable</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</span></div>
 <div class="block">An expectation for checking an element is visible and enabled such that you can click it.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -902,10 +921,10 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>locator</code> - used to find the element</dd>
-<dd><code>attribute</code> - used to define css or html attribute</dd>
+<dd><code>attribute</code> - used to define CSS value or HTML attribute</dd>
 <dd><code>value</code> - used as expected attribute value</dd>
 <dt>Returns:</dt>
-<dd>Boolean true when element has css or html attribute with the value</dd>
+<dd>Boolean true when element has CSS value or HTML attribute with the value</dd>
 </dl>
 </section>
 </li>
@@ -913,12 +932,12 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="textToBe(org.openqa.selenium.By,java.lang.String)">
 <h3>textToBe</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">textToBe</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedText)</span></div>
 <div class="block">An expectation for checking WebElement with given locator has specific text</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>locator</code> - used to find the element</dd>
-<dd><code>value</code> - used as expected text</dd>
+<dd><code>expectedText</code> - used as expected text</dd>
 <dt>Returns:</dt>
 <dd>Boolean true when element has text value equal to @value</dd>
 </dl>
@@ -943,13 +962,13 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="numberOfElementsToBeMoreThan(org.openqa.selenium.By,java.lang.Integer)">
 <h3>numberOfElementsToBeMoreThan</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</span>&nbsp;<span class="element-name">numberOfElementsToBeMoreThan</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;number)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;expectedNumber)</span></div>
 <div class="block">An expectation for checking number of WebElements with given locator being more than defined
  number</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>locator</code> - used to find the element</dd>
-<dd><code>number</code> - used to define minimum number of elements</dd>
+<dd><code>expectedNumber</code> - used to define minimum number of elements</dd>
 <dt>Returns:</dt>
 <dd>Boolean true when size of elements list is more than defined</dd>
 </dl>
@@ -975,12 +994,12 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="numberOfElementsToBe(org.openqa.selenium.By,java.lang.Integer)">
 <h3>numberOfElementsToBe</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</span>&nbsp;<span class="element-name">numberOfElementsToBe</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;number)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;expectedNumberOfElements)</span></div>
 <div class="block">An expectation for checking number of WebElements with given locator</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>locator</code> - used to find the element</dd>
-<dd><code>number</code> - used to define number of elements</dd>
+<dd><code>expectedNumberOfElements</code> - used to define number of elements</dd>
 <dt>Returns:</dt>
 <dd>Boolean true when size of elements list is equal to defined</dd>
 </dl>
@@ -991,13 +1010,13 @@ loadScripts(document, 'script');</script>
 <h3>domPropertyToBe</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">domPropertyToBe</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;property,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</span></div>
 <div class="block">An expectation for checking given WebElement has DOM property with a specific value</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>element</code> - used to check its parameters</dd>
 <dd><code>property</code> - property name</dd>
-<dd><code>value</code> - used as expected property value</dd>
+<dd><code>expectedValue</code> - used as expected property value</dd>
 <dt>Returns:</dt>
 <dd>Boolean true when element has DOM property with the value</dd>
 </dl>
@@ -1025,15 +1044,15 @@ loadScripts(document, 'script');</script>
 <h3>attributeToBe</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">attributeToBe</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attribute,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</span></div>
 <div class="block">An expectation for checking given WebElement has attribute with a specific value</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>element</code> - used to check its parameters</dd>
 <dd><code>attribute</code> - used to define css or html attribute</dd>
-<dd><code>value</code> - used as expected attribute value</dd>
+<dd><code>expectedValue</code> - used as expected attribute value</dd>
 <dt>Returns:</dt>
-<dd>Boolean true when element has css or html attribute with the value</dd>
+<dd>Boolean true when element has CSS property or HTML attribute with the value</dd>
 </dl>
 </section>
 </li>
@@ -1042,16 +1061,16 @@ loadScripts(document, 'script');</script>
 <h3>attributeContains</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">attributeContains</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attribute,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</span></div>
 <div class="block">An expectation for checking WebElement with given locator has attribute which contains specific
  value</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>element</code> - used to check its parameters</dd>
 <dd><code>attribute</code> - used to define css or html attribute</dd>
-<dd><code>value</code> - used as expected attribute value</dd>
+<dd><code>expectedValue</code> - used as expected attribute value</dd>
 <dt>Returns:</dt>
-<dd>Boolean true when element has css or html attribute which contains the value</dd>
+<dd>Boolean true when element has CSS property or HTML attribute which contains the value</dd>
 </dl>
 </section>
 </li>
@@ -1059,15 +1078,15 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="attributeContains(org.openqa.selenium.By,java.lang.String,java.lang.String)">
 <h3>attributeContains</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">attributeContains</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attribute,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attributeName,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;expectedValue)</span></div>
 <div class="block">An expectation for checking WebElement with given locator has attribute which contains specific
  value</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>locator</code> - used to define WebElement to check its parameters</dd>
-<dd><code>attribute</code> - used to define css or html attribute</dd>
-<dd><code>value</code> - used as expected attribute value</dd>
+<dd><code>attributeName</code> - used to define css or html attribute</dd>
+<dd><code>expectedValue</code> - used as expected attribute value</dd>
 <dt>Returns:</dt>
 <dd>Boolean true when element has css or html attribute which contains the value</dd>
 </dl>
@@ -1078,13 +1097,13 @@ loadScripts(document, 'script');</script>
 <h3>attributeToBeNotEmpty</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">attributeToBeNotEmpty</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;attribute)</span></div>
-<div class="block">An expectation for checking WebElement any non empty value for given attribute</div>
+<div class="block">An expectation for checking WebElement any non-empty value for given attribute</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>element</code> - used to check its parameters</dd>
 <dd><code>attribute</code> - used to define css or html attribute</dd>
 <dt>Returns:</dt>
-<dd>Boolean true when element has css or html attribute with non empty value</dd>
+<dd>Boolean true when element has CSS value or HTML attribute with non-empty value</dd>
 </dl>
 </section>
 </li>
@@ -1093,11 +1112,12 @@ loadScripts(document, 'script');</script>
 <h3>visibilityOfNestedElementsLocatedBy</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</span>&nbsp;<span class="element-name">visibilityOfNestedElementsLocatedBy</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;parent,
  <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</span></div>
-<div class="block">An expectation for checking child WebElement as a part of parent element to be visible</div>
+<div class="block">An expectation for checking all child elements inside the parent element to be visible</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>parent</code> - used to check parent element. For example table with locator By.id("fish")</dd>
-<dd><code>childLocator</code> - used to find the ultimate child element.</dd>
+<dd><code>parent</code> - used to check parent element. For example, table with locator <code>
+     By.id("fish")</code>.</dd>
+<dd><code>childLocator</code> - used to find the child elements.</dd>
 <dt>Returns:</dt>
 <dd>visible nested element</dd>
 </dl>
@@ -1111,8 +1131,10 @@ loadScripts(document, 'script');</script>
 <div class="block">An expectation for checking child WebElement as a part of parent element to be visible</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>element</code> - used as parent element. For example table with locator By.xpath("//table")</dd>
-<dd><code>childLocator</code> - used to find child element. For example td By.xpath("./tr/td")</dd>
+<dd><code>element</code> - used as parent element. For example, table with locator <code>
+     By.xpath("//table")</code>.</dd>
+<dd><code>childLocator</code> - used to find child element. For example, td with locator <code>
+     By.xpath("./tr/td")</code>.</dd>
 <dt>Returns:</dt>
 <dd>visible sub-element</dd>
 </dl>
@@ -1121,13 +1143,15 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="presenceOfNestedElementLocatedBy(org.openqa.selenium.By,org.openqa.selenium.By)">
 <h3>presenceOfNestedElementLocatedBy</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">presenceOfNestedElementLocatedBy</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">presenceOfNestedElementLocatedBy</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
  <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</span></div>
-<div class="block">An expectation for checking child WebElement as a part of parent element to present</div>
+<div class="block">An expectation for parent element to have a child with given locator (either visible or hidden)</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>locator</code> - used to check parent element. For example table with locator By.xpath("//table")</dd>
-<dd><code>childLocator</code> - used to find child element. For example td By.xpath("./tr/td")</dd>
+<dd><code>locator</code> - used to check parent element. For example, table with locator <code>
+     By.xpath("//table")</code>.</dd>
+<dd><code>childLocator</code> - used to find child element. For example, td with locator <code>
+     By.xpath("./tr/td")</code>.</dd>
 <dt>Returns:</dt>
 <dd>sub-element</dd>
 </dl>
@@ -1136,13 +1160,15 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="presenceOfNestedElementLocatedBy(org.openqa.selenium.WebElement,org.openqa.selenium.By)">
 <h3>presenceOfNestedElementLocatedBy</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">presenceOfNestedElementLocatedBy</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</span>&nbsp;<span class="element-name">presenceOfNestedElementLocatedBy</span><wbr><span class="parameters">(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
  <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</span></div>
-<div class="block">An expectation for checking child WebElement as a part of parent element to be present</div>
+<div class="block">An expectation for checking that given parent element contains a child element with given
+ locator (either visible or hidden).</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>element</code> - used as parent element</dd>
-<dd><code>childLocator</code> - used to find child element. For example td By.xpath("./tr/td")</dd>
+<dd><code>childLocator</code> - used to find child element. For example, td with locator <code>
+     By.xpath("./tr/td")</code>.</dd>
 <dt>Returns:</dt>
 <dd>sub-element</dd>
 </dl>
@@ -1153,11 +1179,13 @@ loadScripts(document, 'script');</script>
 <h3>presenceOfNestedElementsLocatedBy</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</span>&nbsp;<span class="element-name">presenceOfNestedElementsLocatedBy</span><wbr><span class="parameters">(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;parent,
  <a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;childLocator)</span></div>
-<div class="block">An expectation for checking child WebElement as a part of parent element to present</div>
+<div class="block">An expectation for parent element to have some children with locator (either visible or hidden)</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>parent</code> - used to check parent element. For example table with locator By.xpath("//table")</dd>
-<dd><code>childLocator</code> - used to find child element. For example td By.xpath("./tr/td")</dd>
+<dd><code>parent</code> - used to check parent element. For example, table with locator <code>
+     By.xpath("//table")</code>.</dd>
+<dd><code>childLocator</code> - used to find child element. For example, td with locator <code>
+     By.xpath("./tr/td")</code>.</dd>
 <dt>Returns:</dt>
 <dd>sub-element</dd>
 </dl>
@@ -1238,12 +1266,12 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&gt;</span>&nbsp;<span class="element-name">javaScriptThrowsNoExceptions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;javaScript)</span></div>
 <div class="block">An expectation to check if js executable.
 
- <p>Useful when you know that there should be a Javascript value or something at the stage.</div>
+ <p>Useful when you know that there should be a JavaScript value or something at the stage.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>javaScript</code> - used as executable script</dd>
 <dt>Returns:</dt>
-<dd>true once javaScript executed without errors</dd>
+<dd>true once JavaScript executed without errors</dd>
 </dl>
 </section>
 </li>
@@ -1251,12 +1279,12 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="jsReturnsValue(java.lang.String)">
 <h3>jsReturnsValue</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</span>&nbsp;<span class="element-name">jsReturnsValue</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;javaScript)</span></div>
-<div class="block">An expectation for String value from javascript</div>
+<div class="block">An expectation for String value from JavaScript</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>javaScript</code> - as executable js line</dd>
 <dt>Returns:</dt>
-<dd>object once javaScript executes without errors</dd>
+<dd>object once JavaScript executes without errors</dd>
 </dl>
 </section>
 </li>

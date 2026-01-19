@@ -1,0 +1,12 @@
+selenium.webdriver.common.webdriver
+===================================
+
+.. automodule:: selenium.webdriver.common.webdriver
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LocalWebDriver
+   

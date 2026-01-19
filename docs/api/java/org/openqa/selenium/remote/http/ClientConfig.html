@@ -106,7 +106,18 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.net.URI,java.time.Duration,java.time.Duration,org.openqa.selenium.remote.http.Filter,java.net.Proxy,org.openqa.selenium.Credentials,javax.net.ssl.SSLContext,java.lang.String)" class="member-name-link">ClientConfig</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;baseUri,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.net.URI,java.time.Duration,java.time.Duration,java.time.Duration,org.openqa.selenium.remote.http.Filter,java.net.Proxy,org.openqa.selenium.Credentials,javax.net.ssl.SSLContext,java.lang.String)" class="member-name-link">ClientConfig</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;baseUri,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;connectionTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;readTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;wsTimeout,
+ <a href="Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filters,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/Proxy.html" title="class or interface in java.net" class="external-link">Proxy</a>&nbsp;proxy,
+ <a href="../../Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&nbsp;credentials,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/javax/net/ssl/SSLContext.html" title="class or interface in javax.net.ssl" class="external-link">SSLContext</a>&nbsp;sslContext,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;version)</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected </code></div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.net.URI,java.time.Duration,java.time.Duration,org.openqa.selenium.remote.http.Filter,java.net.Proxy,org.openqa.selenium.Credentials,javax.net.ssl.SSLContext,java.lang.String)" class="member-name-link">ClientConfig</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;baseUri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;connectionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;readTimeout,
  <a href="Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filters,
@@ -114,7 +125,7 @@ loadScripts(document, 'script');</script>
  <a href="../../Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&nbsp;credentials,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/javax/net/ssl/SSLContext.html" title="class or interface in javax.net.ssl" class="external-link">SSLContext</a>&nbsp;sslContext,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;version)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -192,6 +203,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withRetries()" class="member-name-link">withRetries</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#wsTimeout()" class="member-name-link">wsTimeout</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#wsTimeout(java.time.Duration)" class="member-name-link">wsTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -215,6 +232,20 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">ClientConfig</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;baseUri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;connectionTimeout,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;readTimeout,
+ <a href="Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filters,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/Proxy.html" title="class or interface in java.net" class="external-link">Proxy</a>&nbsp;proxy,
+ <a href="../../Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&nbsp;credentials,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/javax/net/ssl/SSLContext.html" title="class or interface in javax.net.ssl" class="external-link">SSLContext</a>&nbsp;sslContext,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;version)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(java.net.URI,java.time.Duration,java.time.Duration,java.time.Duration,org.openqa.selenium.remote.http.Filter,java.net.Proxy,org.openqa.selenium.Credentials,javax.net.ssl.SSLContext,java.lang.String)">
+<h3>ClientConfig</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">ClientConfig</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;baseUri,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;connectionTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;readTimeout,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;wsTimeout,
  <a href="Filter.html" title="interface in org.openqa.selenium.remote.http">Filter</a>&nbsp;filters,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/Proxy.html" title="class or interface in java.net" class="external-link">Proxy</a>&nbsp;proxy,
  <a href="../../Credentials.html" title="interface in org.openqa.selenium">Credentials</a>&nbsp;credentials,
@@ -279,9 +310,21 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="wsTimeout(java.time.Duration)">
+<h3>wsTimeout</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a></span>&nbsp;<span class="element-name">wsTimeout</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</span></div>
+</section>
+</li>
+<li>
 <section class="detail" id="readTimeout()">
 <h3>readTimeout</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a></span>&nbsp;<span class="element-name">readTimeout</span>()</div>
+</section>
+</li>
+<li>
+<section class="detail" id="wsTimeout()">
+<h3>wsTimeout</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a></span>&nbsp;<span class="element-name">wsTimeout</span>()</div>
 </section>
 </li>
 <li>

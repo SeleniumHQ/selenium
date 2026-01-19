@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Browser
   
-    &mdash; Documentation by YARD 0.9.37
+    &mdash; Documentation by YARD 0.9.38
   
 </title>
 
@@ -62,7 +62,7 @@
       <div id="content"><h1>Class: Selenium::WebDriver::BiDi::Browser
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 <div class="box_info">
   
@@ -99,7 +99,22 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong>
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>BiDi Implementation of the Browser Module Continue to use functionality from existing <code>driver.manager.window</code> method</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -138,7 +153,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -162,7 +177,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
@@ -186,7 +201,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -208,7 +223,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -230,7 +245,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -255,7 +270,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Returns a new instance of Browser.</p>
 
 
@@ -270,12 +289,12 @@
       <pre class="lines">
 
 
-29
-30
-31</pre>
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bidi'>bidi</span><span class='rparen'>)</span>
   <span class='ivar'>@bidi</span> <span class='op'>=</span> <span class='id identifier rubyid_bidi'>bidi</span>
@@ -301,18 +320,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-33
-34
-35</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_user_context'>create_user_context</span>
   <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browser.createUserContext</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -331,18 +363,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-41
-42
-43</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_user_context'>remove_user_context</span><span class='lparen'>(</span><span class='id identifier rubyid_user_context'>user_context</span><span class='rparen'>)</span>
   <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browser.removeUserContext</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>userContext:</span> <span class='id identifier rubyid_user_context'>user_context</span><span class='rparen'>)</span>
@@ -361,18 +406,31 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-37
-38
-39</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_contexts'>user_contexts</span>
   <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browser.getUserContexts</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -391,19 +449,25 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-45
-46
-47
-48
-49
-50
-51
 52
 53
 54
@@ -412,10 +476,17 @@
 57
 58
 59
-60</pre>
+60
+61
+62
+63
+64
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/browser.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_windows'>windows</span>
   <span class='id identifier rubyid_response'>response</span> <span class='op'>=</span> <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>browser.getClientWindows</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -443,9 +514,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  6 22:51:16 2025 by
+  Generated on Sun Jan 18 18:47:56 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.37 (ruby-3.2.8).
+  0.9.38 (ruby-3.2.9).
 </div>
 
     </div>

@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.webkitgtk.service &#8212; Selenium 4.39.0 documentation</title>
+    <title>selenium.webdriver.webkitgtk.service &#8212; Selenium 4.40.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
+    <script src="../../../../_static/documentation_options.js?v=cb21b19a"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.40.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.webkitgtk.service </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
+       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
   </label>
   
 
@@ -210,52 +210,43 @@
 <span class="c1"># under the License.</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">IO</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
 
-<span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"WebKitWebDriver"</span><span class="p">)</span>
+<span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"WebKitWebDriver"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Service">
 <a class="viewcode-back" href="../../../../selenium_webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.webkitgtk.service.Service">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Service</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">Service</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""A Service class that is responsible for the starting and stopping of `WebKitWebDriver`.</span>
+<span class="w">    </span><span class="sd">"""Service class that is responsible for the starting and stopping of `WebKitWebDriver`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        executable_path: Install path of the WebKitWebDriver executable,</span>
-<span class="sd">            defaults to the first `WebKitWebDriver` in `$PATH`.</span>
-<span class="sd">        port: Port for the service to run on, defaults to 0 where the</span>
-<span class="sd">            operating system will decide.</span>
-<span class="sd">        service_args: (Optional) Sequence of args to be passed to the</span>
-<span class="sd">            subprocess when launching the executable.</span>
-<span class="sd">        log_output: (Optional) File path for the file to be opened and passed</span>
-<span class="sd">            as the subprocess stdout/stderr handler.</span>
-<span class="sd">        env: (Optional) Mapping of environment variables for the new process,</span>
-<span class="sd">            defaults to `os.environ`.</span>
+<span class="sd">        executable_path: Install path of the WebKitWebDriver executable, defaults to the first `WebKitWebDriver`</span>
+<span class="sd">            in `$PATH`.</span>
+<span class="sd">        port: (Optional) Port for the service to run on, defaults to 0 where the operating system will decide.</span>
+<span class="sd">        log_output: (Optional) int representation of STDOUT/DEVNULL, any IO instance or String path to file.</span>
+<span class="sd">        service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.</span>
+<span class="sd">        env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">executable_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">,</span>
+        <span class="n">executable_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">,</span>
         <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">log_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">log_output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">log_output</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">IO</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">service_args</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">env</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_service_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">service_args</span> <span class="ow">or</span> <span class="p">[])</span>
-        <span class="k">if</span> <span class="n">log_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"log_path is deprecated, use log_output instead"</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-            <span class="n">log_path</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span>
-        <span class="n">log_output</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_output</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">if</span> <span class="n">log_output</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">executable_path</span><span class="o">=</span><span class="n">executable_path</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
-            <span class="n">log_output</span><span class="o">=</span><span class="n">log_path</span> <span class="ow">or</span> <span class="n">log_output</span><span class="p">,</span>
+            <span class="n">log_output</span><span class="o">=</span><span class="n">log_output</span><span class="p">,</span>
             <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
@@ -297,7 +288,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2009-2025 Software Freedom Conservancy.
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
               
           </div>
         </div>

@@ -137,7 +137,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int)" class="member-name-link">LocalNode</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int)" class="member-name-link">LocalNode</a><wbr>(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;gridUri,
@@ -152,7 +152,8 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="SessionSlot.html" title="class in org.openqa.selenium.grid.node.local">SessionSlot</a>&gt;&nbsp;factories,
  <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
  boolean&nbsp;managedDownloadsEnabled,
- int&nbsp;connectionLimitPerSession)</code></div>
+ int&nbsp;connectionLimitPerSession,
+ int&nbsp;nodeDownFailureThreshold)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -192,59 +193,67 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAvailability()" class="member-name-link">getAvailability</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCurrentSessionCount()" class="member-name-link">getCurrentSessionCount</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getConsecutiveSessionFailures()" class="member-name-link">getConsecutiveSessionFailures</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDownloadsFilesystem(org.openqa.selenium.remote.SessionId)" class="member-name-link">getDownloadsFilesystem</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCurrentSessionCount()" class="member-name-link">getCurrentSessionCount</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExternalUri()" class="member-name-link">getExternalUri</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDownloadsFilesystem(org.openqa.selenium.remote.SessionId)" class="member-name-link">getDownloadsFilesystem</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getGridUri()" class="member-name-link">getGridUri</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getExternalUri()" class="member-name-link">getExternalUri</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHealthCheck()" class="member-name-link">getHealthCheck</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getGridUri()" class="member-name-link">getGridUri</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>float</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLoad()" class="member-name-link">getLoad</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../HealthCheck.html" title="interface in org.openqa.selenium.grid.node">HealthCheck</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHealthCheck()" class="member-name-link">getHealthCheck</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxSessionCount()" class="member-name-link">getMaxSessionCount</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>float</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLoad()" class="member-name-link">getLoad</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxSessionCount()" class="member-name-link">getMaxSessionCount</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSession(org.openqa.selenium.remote.SessionId)" class="member-name-link">getSession</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getNodeId()" class="member-name-link">getNodeId</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStatus()" class="member-name-link">getStatus</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSession(org.openqa.selenium.remote.SessionId)" class="member-name-link">getSession</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTotalSlots()" class="member-name-link">getTotalSlots</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStatus()" class="member-name-link">getStatus</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUploadsFilesystem(org.openqa.selenium.remote.SessionId)" class="member-name-link">getUploadsFilesystem</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTotalSlots()" class="member-name-link">getTotalSlots</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>long</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUsedSlots()" class="member-name-link">getUsedSlots</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUploadsFilesystem(org.openqa.selenium.remote.SessionId)" class="member-name-link">getUploadsFilesystem</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReady()" class="member-name-link">isReady</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>long</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUsedSlots()" class="member-name-link">getUsedSlots</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSessionOwner(org.openqa.selenium.remote.SessionId)" class="member-name-link">isSessionOwner</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReady()" class="member-name-link">isReady</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSupporting(org.openqa.selenium.Capabilities)" class="member-name-link">isSupporting</a><wbr>(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSessionOwner(org.openqa.selenium.remote.SessionId)" class="member-name-link">isSessionOwner</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a><wbr>&lt;<a href="../../../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a>,<wbr><a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newSession(org.openqa.selenium.grid.data.CreateSessionRequest)" class="member-name-link">newSession</a><wbr>(<a href="../../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;sessionRequest)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSupporting(org.openqa.selenium.Capabilities)" class="member-name-link">isSupporting</a><wbr>(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a><wbr>&lt;<a href="../../../WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a>,<wbr><a href="../../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newSession(org.openqa.selenium.grid.data.CreateSessionRequest)" class="member-name-link">newSession</a><wbr>(<a href="../../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;sessionRequest)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#releaseConnection(org.openqa.selenium.remote.SessionId)" class="member-name-link">releaseConnection</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#releaseConnection(org.openqa.selenium.remote.SessionId)" class="member-name-link">releaseConnection</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetConsecutiveSessionFailures()" class="member-name-link">resetConsecutiveSessionFailures</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Resets the consecutive session creation failure counter.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stop(org.openqa.selenium.remote.SessionId)" class="member-name-link">stop</a><wbr>(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
@@ -279,7 +288,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int)">
+<section class="detail" id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,java.net.URI,java.net.URI,org.openqa.selenium.grid.node.HealthCheck,int,int,boolean,boolean,com.github.benmanes.caffeine.cache.Ticker,java.time.Duration,java.time.Duration,java.util.List,org.openqa.selenium.grid.security.Secret,boolean,int,int)">
 <h3>LocalNode</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">LocalNode</span><wbr><span class="parameters">(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
  <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
@@ -296,7 +305,8 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="SessionSlot.html" title="class in org.openqa.selenium.grid.node.local">SessionSlot</a>&gt;&nbsp;factories,
  <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
  boolean&nbsp;managedDownloadsEnabled,
- int&nbsp;connectionLimitPerSession)</span></div>
+ int&nbsp;connectionLimitPerSession,
+ int&nbsp;nodeDownFailureThreshold)</span></div>
 </section>
 </li>
 </ul>
@@ -373,6 +383,21 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <section class="detail" id="getLoad()">
 <h3>getLoad</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">float</span>&nbsp;<span class="element-name">getLoad</span>()</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getConsecutiveSessionFailures()">
+<h3>getConsecutiveSessionFailures</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getConsecutiveSessionFailures</span>()</div>
+</section>
+</li>
+<li>
+<section class="detail" id="resetConsecutiveSessionFailures()">
+<h3>resetConsecutiveSessionFailures</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">resetConsecutiveSessionFailures</span>()</div>
+<div class="block">Resets the consecutive session creation failure counter. This can be used to recover a node
+ that was marked as DOWN due to exceeding the failure threshold, for example after external
+ intervention has resolved the underlying issue.</div>
 </section>
 </li>
 <li>
@@ -475,13 +500,10 @@ implements <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <li>
 <section class="detail" id="getDownloadsFilesystem(org.openqa.selenium.remote.SessionId)">
 <h3>getDownloadsFilesystem</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../../io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></span>&nbsp;<span class="element-name">getDownloadsFilesystem</span><wbr><span class="parameters">(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId)</span>
-                                           throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../../io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></span>&nbsp;<span class="element-name">getDownloadsFilesystem</span><wbr><span class="parameters">(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId)</span></div>
 <dl class="notes">
 <dt>Overrides:</dt>
 <dd><code><a href="../Node.html#getDownloadsFilesystem(org.openqa.selenium.remote.SessionId)">getDownloadsFilesystem</a></code>&nbsp;in class&nbsp;<code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></dd>
-<dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
 </dl>
 </section>
 </li>

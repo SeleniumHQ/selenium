@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::BiDi::Session
   
-    &mdash; Documentation by YARD 0.9.37
+    &mdash; Documentation by YARD 0.9.38
   
 </title>
 
@@ -62,7 +62,7 @@
       <div id="content"><h1>Class: Selenium::WebDriver::BiDi::Session
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 <div class="box_info">
   
@@ -99,7 +99,22 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong>
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Implements the Session Module of the WebDriver-BiDi specification</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -140,7 +155,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
@@ -164,7 +179,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -186,7 +201,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -208,7 +223,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -233,7 +248,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Returns a new instance of Session.</p>
 
 
@@ -248,12 +267,12 @@
       <pre class="lines">
 
 
-26
-27
-28</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bidi'>bidi</span><span class='rparen'>)</span>
   <span class='ivar'>@bidi</span> <span class='op'>=</span> <span class='id identifier rubyid_bidi'>bidi</span>
@@ -279,19 +298,32 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-30
-31
-32
-33</pre>
+34
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_status'>status</span>
   <span class='id identifier rubyid_status'>status</span> <span class='op'>=</span> <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.status</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -311,21 +343,34 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-35
-36
-37
-38
 39
-40</pre>
+40
+41
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_subscribe'>subscribe</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='comma'>,</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>events:</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='rparen'>)</span><span class='rbrace'>}</span>
@@ -347,21 +392,34 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-42
-43
-44
-45
 46
-47</pre>
+47
+48
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unsubscribe'>unsubscribe</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='comma'>,</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>events:</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='rparen'>)</span><span class='rbrace'>}</span>
@@ -379,9 +437,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  6 22:51:16 2025 by
+  Generated on Sun Jan 18 18:47:56 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.37 (ruby-3.2.8).
+  0.9.38 (ruby-3.2.9).
 </div>
 
     </div>

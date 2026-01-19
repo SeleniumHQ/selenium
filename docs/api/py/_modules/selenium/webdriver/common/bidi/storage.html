@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.storage &#8212; Selenium 4.39.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.storage &#8212; Selenium 4.40.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=feee11cf"></script>
+    <script src="../../../../../_static/documentation_options.js?v=cb21b19a"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.39.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.40.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.storage </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
+       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
   </label>
   
 
@@ -208,10 +208,14 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.websocket_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebSocketConnection</span>
 
 
 <div class="viewcode-block" id="SameSite">
@@ -240,7 +244,7 @@
 
 <div class="viewcode-block" id="BytesValue.to_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.BytesValue.to_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Converts the BytesValue to a dictionary.</span>
 
 <span class="sd">        Returns:</span>
@@ -281,7 +285,7 @@
 <div class="viewcode-block" id="Cookie.from_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.Cookie.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Cookie"</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Cookie</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a Cookie instance from a dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -385,7 +389,7 @@
 <div class="viewcode-block" id="PartitionKey.from_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.PartitionKey.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"PartitionKey"</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PartitionKey</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a PartitionKey instance from a dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -413,7 +417,7 @@
 
 <div class="viewcode-block" id="BrowsingContextPartitionDescriptor.to_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.BrowsingContextPartitionDescriptor.to_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Converts the BrowsingContextPartitionDescriptor to a dictionary.</span>
 
 <span class="sd">        Returns:</span>
@@ -436,7 +440,7 @@
 
 <div class="viewcode-block" id="StorageKeyPartitionDescriptor.to_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.StorageKeyPartitionDescriptor.to_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Converts the StorageKeyPartitionDescriptor to a dictionary.</span>
 
 <span class="sd">        Returns:</span>
@@ -518,7 +522,7 @@
 <div class="viewcode-block" id="GetCookiesResult.from_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.GetCookiesResult.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"GetCookiesResult"</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">GetCookiesResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a GetCookiesResult instance from a dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -545,7 +549,7 @@
 <div class="viewcode-block" id="SetCookieResult.from_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.SetCookieResult.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SetCookieResult"</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SetCookieResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a SetCookieResult instance from a dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -571,7 +575,7 @@
 <div class="viewcode-block" id="DeleteCookiesResult.from_dict">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.storage.html#selenium.webdriver.common.bidi.storage.DeleteCookiesResult.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DeleteCookiesResult"</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DeleteCookiesResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Creates a DeleteCookiesResult instance from a dictionary.</span>
 
 <span class="sd">        Args:</span>
@@ -591,7 +595,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Storage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""BiDi implementation of the storage module."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">WebSocketConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
 
 <div class="viewcode-block" id="Storage.get_cookies">
@@ -696,7 +700,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2009-2025 Software Freedom Conservancy.
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
               
           </div>
         </div>

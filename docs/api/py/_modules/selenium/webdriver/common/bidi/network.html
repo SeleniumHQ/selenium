@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.common.bidi.network &#8212; Selenium 4.39.0 documentation</title>
+    <title>selenium.webdriver.common.bidi.network &#8212; Selenium 4.40.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../../_static/documentation_options.js?v=feee11cf"></script>
+    <script src="../../../../../_static/documentation_options.js?v=cb21b19a"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../../index.html" title="Selenium 4.39.0 documentation"
+        <a href="../../../../../index.html" title="Selenium 4.40.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.common.bidi.network </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../../index.html"
-       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
+       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
   </label>
   
 
@@ -209,7 +209,13 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.bidi.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">command_builder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.websocket_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebSocketConnection</span>
 
 
 <div class="viewcode-block" id="NetworkEvent">
@@ -217,15 +223,15 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">NetworkEvent</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Represents a network event."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">event_class</span> <span class="o">=</span> <span class="n">event_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">kwargs</span>
 
 <div class="viewcode-block" id="NetworkEvent.from_json">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.NetworkEvent.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">event_class</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_class"</span><span class="p">),</span> <span class="o">**</span><span class="n">json</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NetworkEvent</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">event_class</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_class"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span> <span class="o">**</span><span class="n">json</span><span class="p">)</span></div>
 </div>
 
 
@@ -249,13 +255,18 @@
         <span class="s2">"auth_required"</span><span class="p">:</span> <span class="s2">"authRequired"</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">WebSocketConnection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">intercepts</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intercepts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_add_intercept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url_patterns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_intercept</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">phases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url_patterns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Add an intercept to the network.</span>
 
 <span class="sd">        Args:</span>
@@ -279,11 +290,11 @@
             <span class="n">params</span><span class="p">[</span><span class="s2">"phases"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"beforeRequestSent"</span><span class="p">]</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="n">command_builder</span><span class="p">(</span><span class="s2">"network.addIntercept"</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intercepts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">"intercept"</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_intercept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_intercept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intercept</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Remove a specific intercept, or all intercepts.</span>
 
 <span class="sd">        Args:</span>
@@ -307,7 +318,7 @@
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Request</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Set a callback function to subscribe to a network event.</span>
 
 <span class="sd">        Args:</span>
@@ -320,7 +331,7 @@
 <span class="sd">        """</span>
         <span class="n">event</span> <span class="o">=</span> <span class="n">NetworkEvent</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">_callback</span><span class="p">(</span><span class="n">event_data</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_callback</span><span class="p">(</span><span class="n">event_data</span><span class="p">:</span> <span class="n">NetworkEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
                 <span class="n">network</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">request_id</span><span class="o">=</span><span class="n">event_data</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">"request"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"request"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
@@ -334,7 +345,7 @@
             <span class="p">)</span>
             <span class="n">callback</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
 
-        <span class="n">callback_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">add_callback</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">_callback</span><span class="p">)</span>
+        <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">add_callback</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">_callback</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
@@ -345,7 +356,13 @@
 
 <div class="viewcode-block" id="Network.add_request_handler">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.add_request_handler">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_request_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">url_patterns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contexts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_request_handler</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Request</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">url_patterns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add a request handler to the network.</span>
 
 <span class="sd">        Args:</span>
@@ -370,7 +387,7 @@
         <span class="k">if</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">"events"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">event_name</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"session.subscribe"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">callback_id</span><span class="p">]</span>
@@ -381,7 +398,7 @@
 
 <div class="viewcode-block" id="Network.remove_request_handler">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.remove_request_handler">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">remove_request_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_request_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Remove a request handler from the network.</span>
 
 <span class="sd">        Args:</span>
@@ -400,7 +417,7 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">callback_id</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">"events"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">event_name</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"session.unsubscribe"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span></div>
@@ -408,7 +425,7 @@
 
 <div class="viewcode-block" id="Network.clear_request_handlers">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.clear_request_handlers">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear_request_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_request_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Clear all request handlers from the network."""</span>
         <span class="k">for</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span><span class="p">:</span>
             <span class="n">net_event</span> <span class="o">=</span> <span class="n">NetworkEvent</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
@@ -416,7 +433,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">remove_callback</span><span class="p">(</span><span class="n">net_event</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_remove_intercept</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">callback_id</span><span class="p">])</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">[</span><span class="n">callback_id</span><span class="p">]</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">"events"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">event_name</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"session.unsubscribe"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subscriptions</span> <span class="o">=</span> <span class="p">{}</span></div>
@@ -424,7 +441,7 @@
 
 <div class="viewcode-block" id="Network.add_auth_handler">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.add_auth_handler">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_auth_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_auth_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add an authentication handler to the network.</span>
 
 <span class="sd">        Args:</span>
@@ -436,7 +453,7 @@
 <span class="sd">        """</span>
         <span class="n">event</span> <span class="o">=</span> <span class="s2">"auth_required"</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">_callback</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_callback</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">_continue_with_auth</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_request_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">_callback</span><span class="p">)</span></div>
@@ -444,7 +461,7 @@
 
 <div class="viewcode-block" id="Network.remove_auth_handler">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Network.remove_auth_handler">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">remove_auth_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_auth_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Remove an authentication handler from the network.</span>
 
 <span class="sd">        Args:</span>
@@ -464,16 +481,16 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">network</span><span class="p">:</span> <span class="n">Network</span><span class="p">,</span>
-        <span class="n">request_id</span><span class="p">,</span>
-        <span class="n">body_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">cookies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">resource_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">headers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">headers_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">timings</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">request_id</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">body_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cookies</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">resource_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">headers</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">headers_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timings</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span> <span class="o">=</span> <span class="n">request_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">body_size</span> <span class="o">=</span> <span class="n">body_size</span>
@@ -487,23 +504,30 @@
 
 <div class="viewcode-block" id="Request.fail_request">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request.fail_request">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fail_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fail_request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Fail this request."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Request not found."</span><span class="p">)</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"request"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">}</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"request"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"network.failRequest"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Request.continue_request">
 <a class="viewcode-back" href="../../../../../selenium_webdriver_common_bidi/selenium.webdriver.common.bidi.network.html#selenium.webdriver.common.bidi.network.Request.continue_request">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">continue_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">continue_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">body</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">headers</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cookies</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Continue after intercepting this request."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Request not found."</span><span class="p">)</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"request"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">}</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"request"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">body</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">"body"</span><span class="p">]</span> <span class="o">=</span> <span class="n">body</span>
         <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -518,7 +542,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command_builder</span><span class="p">(</span><span class="s2">"network.continueRequest"</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_continue_with_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_continue_with_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Continue with authentication.</span>
 
 <span class="sd">        Args:</span>
@@ -528,7 +552,7 @@
 <span class="sd">        Note:</span>
 <span class="sd">            If username or password is None, it attempts auth with no credentials.</span>
 <span class="sd">        """</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">"request"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_id</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">password</span><span class="p">:</span>  <span class="c1"># no credentials is valid option</span>
@@ -559,7 +583,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2009-2025 Software Freedom Conservancy.
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
               
           </div>
         </div>

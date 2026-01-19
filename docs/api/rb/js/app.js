@@ -1,4 +1,4 @@
-(function () {
+window.__app = function () {
   var localStorage = {},
     sessionStorage = {};
   try {
@@ -153,7 +153,6 @@
           });
           // Add the value of the constant as "Tooltip" to the summary object
           list.find("pre.code").each(function () {
-            console.log($(this).parent());
             var dt_element = $(this).parent().prev();
             var tooltip = $(this).text();
             if (dt_element.hasClass("deprecated")) {
@@ -250,37 +249,46 @@
     );
   }
 
-  function navResizeFn(e) {
-    if (e.which !== 1) {
-      navResizeFnStop();
-      return;
-    }
-
-    sessionStorage.navWidth = e.pageX.toString();
-    $(".nav_wrap").css("width", e.pageX);
-    $(".nav_wrap").css("-ms-flex", "inherit");
-  }
-
-  function navResizeFnStop() {
-    $(window).unbind("mousemove", navResizeFn);
-    window.removeEventListener("message", navMessageFn, false);
-  }
-
-  function navMessageFn(e) {
-    if (e.data.action === "mousemove") navResizeFn(e.data.event);
-    if (e.data.action === "mouseup") navResizeFnStop();
-  }
-
   function navResizer() {
-    $("#resizer").mousedown(function (e) {
-      e.preventDefault();
-      $(window).mousemove(navResizeFn);
-      window.addEventListener("message", navMessageFn, false);
-    });
-    $(window).mouseup(navResizeFnStop);
+    const resizer = document.getElementById("resizer");
+    resizer.addEventListener(
+      "pointerdown",
+      function (e) {
+        resizer.setPointerCapture(e.pointerId);
+        e.preventDefault();
+        e.stopPropagation();
+      },
+      false
+    );
+    resizer.addEventListener(
+      "pointerup",
+      function (e) {
+        resizer.releasePointerCapture(e.pointerId);
+        e.preventDefault();
+        e.stopPropagation();
+      },
+      false
+    );
+    resizer.addEventListener(
+      "pointermove",
+      function (e) {
+        if ((e.buttons & 1) === 0) {
+          return;
+        }
+
+        sessionStorage.navWidth = e.pageX.toString();
+        $(".nav_wrap").css("width", Math.max(200, e.pageX));
+        e.preventDefault();
+        e.stopPropagation();
+      },
+      false
+    );
 
     if (sessionStorage.navWidth) {
-      navResizeFn({ which: 1, pageX: parseInt(sessionStorage.navWidth, 10) });
+      $(".nav_wrap").css(
+        "width",
+        Math.max(200, parseInt(sessionStorage.navWidth, 10))
+      );
     }
   }
 
@@ -295,15 +303,6 @@
       document.getElementById("nav").contentWindow.postMessage(opts, "*");
       done = true;
     }
-
-    window.addEventListener(
-      "message",
-      function (event) {
-        if (event.data === "navReady") postMessage();
-        return false;
-      },
-      false
-    );
   }
 
   function mainFocus() {
@@ -341,4 +340,56 @@
     mainFocus();
     navigationChange();
   });
-})();
+};
+window.__app();
+
+window.addEventListener(
+  "message",
+  async (e) => {
+    if (e.data.action === "navigate") {
+      const response = await fetch(e.data.url);
+      const text = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, "text/html");
+
+      const classListLink =
+        document.getElementById("class_list_link").classList;
+
+      const content = doc.querySelector("#main").innerHTML;
+      document.querySelector("#main").innerHTML = content;
+      document.title = doc.head.querySelector("title").innerText;
+      document.head.querySelectorAll("script").forEach((script) => {
+        if (
+          !script.type ||
+          (script.type.includes("text/javascript") && !script.src)
+        ) {
+          script.remove();
+        }
+      });
+
+      doc.head.querySelectorAll("script").forEach((script) => {
+        if (
+          !script.type ||
+          (script.type.includes("text/javascript") && !script.src)
+        ) {
+          const newScript = document.createElement("script");
+          newScript.type = "text/javascript";
+          newScript.textContent = script.textContent;
+          document.head.appendChild(newScript);
+        }
+      });
+
+      window.__app();
+
+      document.getElementById("class_list_link").classList = classListLink;
+
+      const url = new URL(e.data.url, "https://localhost");
+      const hash = decodeURIComponent(url.hash ?? "");
+      if (hash) {
+        document.getElementById(hash.substring(1)).scrollIntoView();
+      }
+      history.pushState({}, document.title, e.data.url);
+    }
+  },
+  false
+);

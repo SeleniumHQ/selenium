@@ -45,10 +45,10 @@
   
   
   
-    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.39.0 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.40.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/material.css?v=79c92029" />
-    <script src="../../../../_static/documentation_options.js?v=feee11cf"></script>
+    <script src="../../../../_static/documentation_options.js?v=cb21b19a"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -76,7 +76,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../../../../index.html" title="Selenium 4.39.0 documentation"
+        <a href="../../../../index.html" title="Selenium 4.40.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -88,7 +88,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Selenium 4.39.0 documentation</span>
+          <span class="md-header-nav__topic">Selenium 4.40.0 documentation</span>
           <span class="md-header-nav__topic"> selenium.webdriver.firefox.webdriver </span>
         </div>
       </div>
@@ -145,7 +145,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.39.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../../../../index.html" class="md-tabs__link">Selenium 4.40.0 documentation</a></li>
           <li class="md-tabs__item"><a href="../../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -158,13 +158,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../../../../index.html" title="Selenium 4.39.0 documentation" class="md-nav__button md-logo">
+    <a href="../../../../index.html" title="Selenium 4.40.0 documentation" class="md-nav__button md-logo">
       
         <img src="../../../../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../../../../index.html"
-       title="Selenium 4.39.0 documentation">Selenium 4.39.0 documentation</a>
+       title="Selenium 4.40.0 documentation">Selenium 4.40.0 documentation</a>
   </label>
   
 
@@ -208,6 +208,7 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -216,15 +217,15 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.driver_finder</span><span class="w"> </span><span class="kn">import</span> <span class="n">DriverFinder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.common.webdriver</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalWebDriver</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.firefox.options</span><span class="w"> </span><span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.firefox.remote_connection</span><span class="w"> </span><span class="kn">import</span> <span class="n">FirefoxRemoteConnection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.firefox.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">Service</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">selenium.webdriver.remote.webdriver</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
 
 
 <div class="viewcode-block" id="WebDriver">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WebDriver</span><span class="p">(</span><span class="n">LocalWebDriver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Controls the GeckoDriver and allows you to drive the browser."""</span>
 
     <span class="n">CONTEXT_CHROME</span> <span class="o">=</span> <span class="s2">"chrome"</span>
@@ -239,17 +240,17 @@
 <span class="w">        </span><span class="sd">"""Create a new instance of the Firefox driver, start the service, and create new instance.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            options: Instance of ``options.Options``.</span>
-<span class="sd">            service: (Optional) service instance for managing the starting and stopping of the driver.</span>
-<span class="sd">            keep_alive: Whether to configure remote_connection.RemoteConnection to use HTTP keep-alive.</span>
+<span class="sd">            options: Instance of Options.</span>
+<span class="sd">            service: Service object for handling the browser driver if you need to pass extra details.</span>
+<span class="sd">            keep_alive: Whether to configure FirefoxRemoteConnection to use HTTP keep-alive.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span> <span class="k">if</span> <span class="n">service</span> <span class="k">else</span> <span class="n">Service</span><span class="p">()</span>
-        <span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">Options</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="k">if</span> <span class="n">options</span> <span class="k">else</span> <span class="n">Options</span><span class="p">()</span>
 
-        <span class="n">finder</span> <span class="o">=</span> <span class="n">DriverFinder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="n">finder</span> <span class="o">=</span> <span class="n">DriverFinder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">finder</span><span class="o">.</span><span class="n">get_browser_path</span><span class="p">():</span>
-            <span class="n">options</span><span class="o">.</span><span class="n">binary_location</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">get_browser_path</span><span class="p">()</span>
-            <span class="n">options</span><span class="o">.</span><span class="n">browser_version</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">binary_location</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">get_browser_path</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">browser_version</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">env_path</span><span class="p">()</span> <span class="ow">or</span> <span class="n">finder</span><span class="o">.</span><span class="n">get_driver_path</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -257,29 +258,14 @@
         <span class="n">executor</span> <span class="o">=</span> <span class="n">FirefoxRemoteConnection</span><span class="p">(</span>
             <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
             <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">,</span>
-            <span class="n">ignore_proxy</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span><span class="p">,</span>
+            <span class="n">ignore_proxy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">command_executor</span><span class="o">=</span><span class="n">executor</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
             <span class="k">raise</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="kc">False</span>
-
-<div class="viewcode-block" id="WebDriver.quit">
-<a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.quit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Closes the browser and shuts down the GeckoDriver executable."""</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="c1"># We don't care about the message because something probably has gone wrong</span>
-            <span class="k">pass</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
-
 
 <div class="viewcode-block" id="WebDriver.set_context">
 <a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.set_context">[docs]</a>
@@ -445,27 +431,6 @@
 <span class="sd">            driver.get_full_page_screenshot_as_base64()</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"FULL_PAGE_SCREENSHOT"</span><span class="p">)[</span><span class="s2">"value"</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="WebDriver.download_file">
-<a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.download_file">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Download file functionality is not implemented for Firefox driver."""</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-
-<div class="viewcode-block" id="WebDriver.get_downloadable_files">
-<a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_downloadable_files">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Get downloadable files functionality is not implemented for Firefox driver."""</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-
-<div class="viewcode-block" id="WebDriver.delete_downloadable_files">
-<a class="viewcode-back" href="../../../../selenium_webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.delete_downloadable_files">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">delete_downloadable_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Delete downloadable files functionality is not implemented for Firefox driver."""</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
 
 </pre></div>
@@ -488,7 +453,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2009-2025 Software Freedom Conservancy.
+              &#169; Copyright Copyright 2004-2011 Selenium committers, 2011-2026 Software Freedom Conservancy.
               
           </div>
         </div>

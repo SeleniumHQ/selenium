@@ -102,7 +102,7 @@ Class SessionId  <a class="header-action link-secondary" title="View source" hre
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class SessionId</code></pre>
+    <pre><code class="lang-csharp hljs">public class SessionId : IEquatable&lt;SessionId&gt;</code></pre>
   </div>
 
 
@@ -116,6 +116,12 @@ Class SessionId  <a class="header-action link-secondary" title="View source" hre
     </dd>
   </dl>
 
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="OpenQA.Selenium.SessionId.html">SessionId</a>&gt;</div>
+    </dd>
+  </dl>
 
 
   <dl class="typelist inheritedMembers">
@@ -185,6 +191,45 @@ Class SessionId  <a class="header-action link-secondary" title="View source" hre
 
   <h2 class="section" id="methods">Methods
 </h2>
+
+
+  <a id="OpenQA_Selenium_SessionId_Equals_" data-uid="OpenQA.Selenium.SessionId.Equals*"></a>
+
+  <h3 id="OpenQA_Selenium_SessionId_Equals_OpenQA_Selenium_SessionId_" data-uid="OpenQA.Selenium.SessionId.Equals(OpenQA.Selenium.SessionId)">
+  Equals(SessionId?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/SessionId.cs/#L74"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Indicates whether the current session ID value is the same as <code class="paramref">other</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Equals(SessionId? other)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>other</code> <a class="xref" href="OpenQA.Selenium.SessionId.html">SessionId</a></dt>
+    <dd><p>The session to compare to.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if the values are equal; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
 
 
   <a id="OpenQA_Selenium_SessionId_Equals_" data-uid="OpenQA.Selenium.SessionId.Equals*"></a>

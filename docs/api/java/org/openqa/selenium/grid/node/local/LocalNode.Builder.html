@@ -158,8 +158,14 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#maximumConcurrentSessions(int)" class="member-name-link">maximumConcurrentSessions</a><wbr>(int&nbsp;maxCount)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sessionTimeout(java.time.Duration)" class="member-name-link">sessionTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#nodeDownFailureThreshold(int)" class="member-name-link">nodeDownFailureThreshold</a><wbr>(int&nbsp;threshold)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the maximum number of consecutive session creation failures allowed before the node is
+ marked as DOWN.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sessionTimeout(java.time.Duration)" class="member-name-link">sessionTimeout</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link">Duration</a>&nbsp;timeout)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -230,6 +236,22 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="connectionLimitPerSession(int)">
 <h3>connectionLimitPerSession</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></span>&nbsp;<span class="element-name">connectionLimitPerSession</span><wbr><span class="parameters">(int&nbsp;connectionLimitPerSession)</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="nodeDownFailureThreshold(int)">
+<h3>nodeDownFailureThreshold</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></span>&nbsp;<span class="element-name">nodeDownFailureThreshold</span><wbr><span class="parameters">(int&nbsp;threshold)</span></div>
+<div class="block">Sets the maximum number of consecutive session creation failures allowed before the node is
+ marked as DOWN. This helps detect and isolate unhealthy nodes that consistently fail to
+ create sessions.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>threshold</code> - the maximum number of consecutive failures allowed (0 to disable, which is
+     the default)</dd>
+<dt>Returns:</dt>
+<dd>this builder</dd>
+</dl>
 </section>
 </li>
 <li>

@@ -20,17 +20,6 @@ function escapeShortcut() {
   });
 }
 
-function navResizer() {
-  $(window).mousemove(function(e) {
-    window.parent.postMessage({
-      action: 'mousemove', event: {pageX: e.pageX, which: e.which}
-    }, '*');
-  }).mouseup(function(e) {
-    window.parent.postMessage({action: 'mouseup'}, '*');
-  });
-  window.parent.postMessage("navReady", "*");
-}
-
 function clearSearchTimeout() {
   clearTimeout(searchTimeout);
   searchTimeout = null;
@@ -44,14 +33,21 @@ function enableLinks() {
     $clicked.addClass('clicked');
     evt.stopPropagation();
 
-    if (evt.target.tagName === 'A') return true;
+    if (window.origin === "null") {
+      if (evt.target.tagName === 'A') return true;
 
-    var elem = $clicked.find('> .item .object_link a')[0];
-    var e = evt.originalEvent;
-    var newEvent = new MouseEvent(evt.originalEvent.type);
-    newEvent.initMouseEvent(e.type, e.canBubble, e.cancelable, e.view, e.detail, e.screenX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button, e.relatedTarget);
-    elem.dispatchEvent(newEvent);
-    evt.preventDefault();
+      var elem = $clicked.find('> .item .object_link a')[0];
+      var e = evt.originalEvent;
+      var newEvent = new MouseEvent(evt.originalEvent.type);
+      newEvent.initMouseEvent(e.type, e.canBubble, e.cancelable, e.view, e.detail, e.screenX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button, e.relatedTarget);
+      elem.dispatchEvent(newEvent);
+      evt.preventDefault();
+    } else {
+      window.top.postMessage({
+        action: "navigate",
+        url: $clicked.find('.object_link a').attr('href'),
+      }, "*");
+    }
     return false;
   });
 }
@@ -199,6 +195,13 @@ function highlight() {
   });
 }
 
+function isInView(element) {
+  const rect = element.getBoundingClientRect();
+  const windowHeight =
+    window.innerHeight || document.documentElement.clientHeight;
+  return rect.left >= 0 && rect.bottom <= windowHeight;
+}
+  
 /**
  * Expands the tree to the target element and its immediate
  * children.
@@ -214,7 +217,7 @@ function expandTo(path) {
     $(el).find('> div > a.toggle').attr('aria-expanded', 'true');
   });
 
-  if($target[0]) {
+  if($target[0] && !isInView($target[0])) {
     window.scrollTo(window.scrollX, $target.offset().top - 250);
     highlight();
   }
@@ -232,7 +235,6 @@ window.addEventListener("message", windowEvents, false);
 
 $(document).ready(function() {
   escapeShortcut();
-  navResizer();
   enableLinks();
   enableToggles();
   populateSearchCache();
