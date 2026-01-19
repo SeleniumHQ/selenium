@@ -1251,19 +1251,26 @@ namespace :java do
 
     encoded_id = URI.encode_www_form_component(deployment_id.strip)
     status = {}
-    60.times do
+    max_attempts = 60
+    delay = 5
+    max_attempts.times do |attempt|
       status = sonatype_api_post("https://central.sonatype.com/api/v1/publisher/status?id=#{encoded_id}", token)
       state = status['deploymentState']
       puts "Deployment state: #{state}"
 
       case state
       when 'VALIDATED' then break
-      when 'PUBLISHED' then return
+      when 'PUBLISHED' then return # rubocop:disable Lint/NonLocalExitFromIterator
       when 'FAILED' then raise "Deployment failed: #{status['errors']}"
       end
-      sleep(5)
+      sleep(delay)
+    rescue StandardError => e
+      warn "API error (attempt #{attempt + 1}/#{max_attempts}): #{e.message}"
+      sleep(delay) unless attempt == max_attempts - 1
     end
-    raise 'Timed out after 5 minutes waiting for validation' unless status['deploymentState'] == 'VALIDATED'
+    unless status['deploymentState'] == 'VALIDATED'
+      raise "Timed out after #{(max_attempts * delay) / 60} minutes waiting for validation"
+    end
 
     expected = java_release_targets.size
     actual = status['purls']&.size || 0
