@@ -28,13 +28,14 @@ internal sealed class AddInterceptCommand(AddInterceptParameters @params)
 
 internal sealed record AddInterceptParameters(IEnumerable<InterceptPhase> Phases, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, IEnumerable<UrlPattern>? UrlPatterns) : Parameters;
 
-public class AddInterceptOptions : CommandOptions
+public sealed class AddInterceptOptions : CommandOptions
 {
     public AddInterceptOptions() { }
 
-    internal AddInterceptOptions(BrowsingContextAddInterceptOptions? options)
+    internal AddInterceptOptions(ContextAddInterceptOptions? options)
     {
         UrlPatterns = options?.UrlPatterns;
+        Timeout = options?.Timeout;
     }
 
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
@@ -42,7 +43,7 @@ public class AddInterceptOptions : CommandOptions
     public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
 }
 
-public record BrowsingContextAddInterceptOptions
+public class ContextAddInterceptOptions : CommandOptions
 {
     public IEnumerable<UrlPattern>? UrlPatterns { get; set; }
 }

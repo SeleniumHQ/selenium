@@ -27,14 +27,14 @@ internal sealed class AddPreloadScriptCommand(AddPreloadScriptParameters @params
 
 internal sealed record AddPreloadScriptParameters([StringSyntax(StringSyntaxConstants.JavaScript)] string FunctionDeclaration, IEnumerable<ChannelLocalValue>? Arguments, IEnumerable<BrowsingContext.BrowsingContext>? Contexts, string? Sandbox) : Parameters;
 
-public sealed class AddPreloadScriptOptions : CommandOptions
+public sealed class AddPreloadScriptOptions() : CommandOptions
 {
-    public AddPreloadScriptOptions() { }
-
-    internal AddPreloadScriptOptions(BrowsingContextAddPreloadScriptOptions? options)
+    internal AddPreloadScriptOptions(ContextAddPreloadScriptOptions? options)
+        : this()
     {
         Arguments = options?.Arguments;
         Sandbox = options?.Sandbox;
+        Timeout = options?.Timeout;
     }
 
     public IEnumerable<ChannelLocalValue>? Arguments { get; set; }
@@ -44,7 +44,7 @@ public sealed class AddPreloadScriptOptions : CommandOptions
     public string? Sandbox { get; set; }
 }
 
-public sealed record BrowsingContextAddPreloadScriptOptions
+public sealed class ContextAddPreloadScriptOptions : CommandOptions
 {
     public IEnumerable<ChannelLocalValue>? Arguments { get; set; }
 

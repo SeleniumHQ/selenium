@@ -80,7 +80,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return interception;
     }
 
-    public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, BrowsingContextAddDataCollectorOptions? options = null)
+    public Task<AddDataCollectorResult> AddDataCollectorAsync(IEnumerable<DataType> dataTypes, int maxEncodedDataSize, ContextAddDataCollectorOptions? options = null)
     {
         AddDataCollectorOptions addDataCollectorOptions = new(options)
         {
@@ -90,7 +90,7 @@ public sealed class BrowsingContextNetworkModule(BrowsingContext context, Networ
         return networkModule.AddDataCollectorAsync(dataTypes, maxEncodedDataSize, addDataCollectorOptions);
     }
 
-    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, BrowsingContextSetCacheBehaviorOptions? options = null)
+    public Task<SetCacheBehaviorResult> SetCacheBehaviorAsync(CacheBehavior behavior, ContextSetCacheBehaviorOptions? options = null)
     {
         SetCacheBehaviorOptions setCacheBehaviorOptions = new(options)
         {

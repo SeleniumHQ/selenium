@@ -30,15 +30,15 @@ internal sealed record SetCacheBehaviorParameters(CacheBehavior CacheBehavior, I
 
 public sealed class SetCacheBehaviorOptions() : CommandOptions
 {
-    internal SetCacheBehaviorOptions(BrowsingContextSetCacheBehaviorOptions? options) : this()
+    internal SetCacheBehaviorOptions(ContextSetCacheBehaviorOptions? options) : this()
     {
-
+        Timeout = options?.Timeout;
     }
 
     public IEnumerable<BrowsingContext.BrowsingContext>? Contexts { get; set; }
 }
 
-public sealed record BrowsingContextSetCacheBehaviorOptions;
+public sealed class ContextSetCacheBehaviorOptions : CommandOptions;
 
 [JsonConverter(typeof(CamelCaseEnumConverter<CacheBehavior>))]
 public enum CacheBehavior

@@ -121,7 +121,7 @@ public sealed record BrowsingContext
         return BiDi.BrowsingContext.HandleUserPromptAsync(this, options);
     }
 
-    public Task<GetTreeResult> GetTreeAsync(BrowsingContextGetTreeOptions? options = null)
+    public Task<GetTreeResult> GetTreeAsync(ContextGetTreeOptions? options = null)
     {
         GetTreeOptions getTreeOptions = new(options)
         {

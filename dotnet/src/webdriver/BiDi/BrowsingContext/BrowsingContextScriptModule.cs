@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.BiDi.BrowsingContext;
 
 public sealed class BrowsingContextScriptModule(BrowsingContext context, ScriptModule scriptModule)
 {
-    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, BrowsingContextAddPreloadScriptOptions? options = null)
+    public async Task<AddPreloadScriptResult> AddPreloadScriptAsync([StringSyntax(StringSyntaxConstants.JavaScript)] string functionDeclaration, ContextAddPreloadScriptOptions? options = null)
     {
         AddPreloadScriptOptions addPreloadScriptOptions = new(options)
         {
