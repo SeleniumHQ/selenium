@@ -399,8 +399,7 @@ RELEASE_CREDENTIALS = {
 def verify_package_published(url)
   puts "Verifying #{url}..."
   uri = URI(url)
-  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https',
-                                                open_timeout: 10, read_timeout: 10) { |http| http.request(Net::HTTP::Get.new(uri)) }
+  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') { |http| http.request(Net::HTTP::Get.new(uri)) }
   raise "Package not published: #{url}" unless res.is_a?(Net::HTTPSuccess)
 
   puts 'Verified!'
@@ -1462,11 +1461,13 @@ namespace :all do
 
   desc 'Verify all packages are published to their registries'
   task :verify do
-    Rake::Task['java:verify'].invoke
-    Rake::Task['py:verify'].invoke
-    Rake::Task['rb:verify'].invoke
-    Rake::Task['dotnet:verify'].invoke
-    Rake::Task['node:verify'].invoke
+    failures = []
+    %w[java py rb dotnet node].each do |lang|
+      Rake::Task["#{lang}:verify"].invoke
+    rescue StandardError => e
+      failures << "#{lang}: #{e.message}"
+    end
+    raise "Verification failed:\n#{failures.join("\n")}" unless failures.empty?
   end
 
   desc 'Release all artifacts for all language bindings'
