@@ -190,11 +190,11 @@ jobs:
           SLACK_CHANNEL: selenium-tlc
           SLACK_USERNAME: GitHub Workflows
           SLACK_TITLE: Release failed
-          SLACK_MESSAGE: >
-            Selenium Published: ${{ needs.publish.result }},
-            Docs Updated: ${{ needs.docs.result }},
-            GitHub Release Published: ${{ needs.github-release.result }},
-            Trunk Unlocked: ${{ needs.unrestrict-trunk.result }},
-            Nightly Version Updated: ${{ needs.update-version.result }}
+          SLACK_MESSAGE: |
+            • Selenium Published: ${{ needs.publish.result }}
+            • Docs Updated: ${{ needs.docs.result }}
+            • GitHub Release Published: ${{ needs.github-release.result }}
+            • Trunk Unlocked: ${{ needs.unrestrict-trunk.result }}
+            • Nightly Version Updated: ${{ needs.update-version.result }}
           MSG_MINIMAL: actions url
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
