@@ -114,7 +114,7 @@ jobs:
 
   docs:
     name: Update ${{ matrix.language }} Documentation
-    needs: [stage, publish]
+    needs: [stage, publish, github-release]
     permissions:
       contents: write
     strategy:
