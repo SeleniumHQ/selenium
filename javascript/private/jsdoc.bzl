@@ -36,6 +36,10 @@ TEMPLATE="$0.runfiles/_main/javascript/selenium-webdriver/node_modules/clean-jsd
 # Set BAZEL_BINDIR to suppress rules_js error for non-build actions
 export BAZEL_BINDIR="."
 
+# Clean destination to prevent stale files
+rm -rf "$DEST"
+mkdir -p "$DEST"
+
 # Run jsdoc - ignore exit code since it fails on type warnings
 "$0.runfiles/_main/{jsdoc_bin}" --configure {config} --destination "$DEST" --template "$TEMPLATE" "$@" || true
 
@@ -53,6 +57,9 @@ cd /d "%BUILD_WORKSPACE_DIRECTORY%\\javascript\\selenium-webdriver"
 set DEST=%BUILD_WORKSPACE_DIRECTORY%\\build\\docs\\api\\javascript
 set TEMPLATE=%~dp0.runfiles\\_main\\javascript\\selenium-webdriver\\node_modules\\clean-jsdoc-theme
 set BAZEL_BINDIR=.
+
+if exist "%DEST%" rmdir /s /q "%DEST%"
+mkdir "%DEST%"
 
 "%~dp0.runfiles\\_main\\{jsdoc_bin}" --configure {config} --destination "%DEST%" --template "%TEMPLATE%" %*
 if %ERRORLEVEL% neq 0 (
